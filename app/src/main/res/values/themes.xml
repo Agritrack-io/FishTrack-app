@@ -1,0 +1,11 @@
+<resources>
+    <style name="Theme.FishTrack" parent="Theme.MaterialComponents.Light" />
+
+    <style name="Theme.FishTrack.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.FishTrack.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.FishTrack.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>
