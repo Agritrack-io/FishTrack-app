@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="margin10">10dp</dimen>
+    <dimen name="margin3">3dp</dimen>
+    <dimen name="margin2">2dp</dimen>
+    <dimen name="margin1">1dp</dimen>
+    <dimen name="margin12">12dp</dimen>
+
+    <dimen name="margin9">9dp</dimen>
+    <dimen name="margin15">15dp</dimen>
+    <dimen name="margin20">20dp</dimen>
+
+    <dimen name="margin25">25dp</dimen>
+    <dimen name="margin30">30dp</dimen>
+
+    <dimen name="margin38">38dp</dimen>
+
+    <dimen name="margin35">35dp</dimen>
+    <dimen name="margin40">40dp</dimen>
+
+    <dimen name="margin45">45dp</dimen>
+    <dimen name="margin50">50dp</dimen>
+
+    <dimen name="margin55">55dp</dimen>
+    <dimen name="margin60">60dp</dimen>
+
+    <dimen name="margin65">65dp</dimen>
+    <dimen name="margin70">70dp</dimen>
+
+    <dimen name="margin75">75dp</dimen>
+
+
+    <dimen name="margin90">90dp</dimen>
+    <dimen name="margin95">95dp</dimen>
+
+
+    <dimen name="margin5">5dp</dimen>
+    <dimen name="margin7">7dp</dimen>
+
+    // dimen text
+    <dimen name="text_smallest">10sp</dimen>
+    <dimen name="text_smallest_medium">11sp</dimen>
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_small_default">13sp</dimen>
+    <dimen name="text_default">14sp</dimen>
+    <dimen name="text_semi_medium">15sp</dimen>
+    <dimen name="text_medium">16sp</dimen>
+    <dimen name="text_semi_large">17sp</dimen>
+    <dimen name="text_large">18sp</dimen>
+    <dimen name="text_huge2">24sp</dimen>
+
+    <item name="dialog_min_width_major" type="dimen">50%</item>
+
+    <dimen name="divider_view">1.5dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+</resources>

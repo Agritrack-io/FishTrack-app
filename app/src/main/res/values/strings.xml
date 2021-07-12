@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">FishTrack</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+
+    <string name="label_copyright_splash">Copyright AgriTrack v1.0.0</string>
+
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="label_login">Login</string>
+
+    <string name="label_email_hint">Email</string>
+    <string name="label_password_hint">Password</string>
+
+    <string name="label_login_header_content">Please login with your email</string>
+    <string name="label_tv_forgot_pwd">Did you forget your password?</string>
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+
+    <string name="label_assets_home">Asset with uniq ID</string>
+
+    <string name="label_profil_title_page">Profile</string>
+    <string name="label_phone_number_profile">Phone Number</string>
+    <string name="label_address_profile">Address</string>
+    <string name="label_pengaturan_profile_detail">Profile Setting</string>
+    <string name="label_ganti_password_profile">Change Password</string>
+    <string name="label_tv_logout">Logout</string>
+
+    <string name="label_version_fish_track_profile">FishTrack v1.0.0</string>
+
+
+
+</resources>

@@ -1,0 +1,24 @@
+package io.agritrack.fishtrack;
+
+import android.app.Application;
+import android.content.Context;
+
+public class FishTrackApplication extends Application {
+    private static Context mContext;
+
+    public void onCreate() {
+        super.onCreate();
+        this.mContext = this;
+        if (BuildConfig.DEBUG) {
+            //Stetho.initializeWithDefaults(this);
+        }
+    }
+
+    public static Context getContext(){
+        return mContext;
+    }
+
+    public static Context getAppContext() {
+        return FishTrackApplication.mContext;
+    }
+}
