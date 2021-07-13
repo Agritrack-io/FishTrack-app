@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.ui.activity.HomeActivity;
+import io.agritrack.fishtrack.ui.activity.asset.ItemAssetsListActivity;
+import io.agritrack.fishtrack.ui.activity.profile.Home2Activity;
 import io.agritrack.fishtrack.ui.activity.profile.ProfileActivity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
@@ -30,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         final Button btLogin = findViewById(R.id.btnLogin);
         btLogin.setOnClickListener(view -> {
             Toast.makeText(getContext(), "Logged IN!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+            Intent i = new Intent(getApplicationContext(), Home2Activity.class);
             startActivity(i);
         });
 

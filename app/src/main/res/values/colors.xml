@@ -23,4 +23,12 @@
 
     <color name="color_btn_red_logout">#FB6B6B</color>
 
+    <color name="color_tv_title_item_list_barang">#2D3642</color>
+    <color name="color_tv_gray_tv_desc_item_home">#9A9A9A</color>
+    <color name="color_gray_tv_name_profil">#555555</color>
+
+    <color name="color_gray_title_add_dialog">#4A4A4A</color>
+
+    <color name="color_black_tv_title_item_home">#393557</color>
+
 </resources>

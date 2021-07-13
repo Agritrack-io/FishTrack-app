@@ -27,6 +27,19 @@
 
     <string name="label_version_fish_track_profile">FishTrack v1.0.0</string>
 
+    <string name="label_menu_title_menu_item_barang_assets">Item Assets</string>
+    <string name="label_kode">code</string>
+    <string name="label_gudang">Gudang</string>
+    <string name="label_tanggal_waktu">Date/Time</string>
+
+    <string name="label_empty_data_title">Data is Empty</string>
+    <string name="label_empty_data_content">No data is displayed at this time</string>
+
+    <string name="label_title_page_list_gudang">Warehouse</string>
+    <string name="label_header_list_gudang">Please select warehouse first!</string>
+
+
+    <string name="main_menu_title_fishing">Fishing</string>
 
 
 </resources>
