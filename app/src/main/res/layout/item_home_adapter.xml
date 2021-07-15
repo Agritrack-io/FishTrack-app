@@ -1,94 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/lParentContent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:clickable="true"
+    android:orientation="vertical"
+    android:focusable="true">
 
 
     <androidx.cardview.widget.CardView
-        android:foreground="?selectableItemBackground"
         android:id="@+id/cvParent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin10"
         android:layout_marginLeft="@dimen/margin15"
-        android:layout_marginRight="@dimen/margin15"
         android:layout_marginTop="@dimen/margin10"
+        android:layout_marginRight="@dimen/margin15"
+        android:layout_marginBottom="@dimen/margin10"
+        android:foreground="?selectableItemBackground"
         app:cardCornerRadius="@dimen/margin5"
         app:cardElevation="@dimen/margin3">
 
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="100sp">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/ivImage"
+                android:layout_width="98sp"
+                android:layout_height="96sp"
+                android:src="@drawable/ic_barang_masuk"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/todo" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                fontPath="fonts/open_sans_extra_bold.ttf"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_height="41dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/assets_masuk"
+                android:textAlignment="center"
+                android:textColor="@color/agri_green"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:verticalScrollbarPosition="left"
+                app:barrierDirection="left"
+                app:layout_constraintEnd_toStartOf="@+id/ivImage"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingPrefix" />
 
-                <TextView
-                    android:id="@+id/tvTitle"
-                    fontPath="fonts/open_sans_extra_bold.ttf"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin20"
-                    android:layout_marginTop="@dimen/margin25"
-                    android:text="Assets Masuk"
-                    android:textColor="@color/color_black_tv_title_item_home"
-                    android:textSize="@dimen/text_semi_medium"
-                    tools:ignore="MissingPrefix"/>
-
-
-                <TextView
-                    android:id="@+id/tvDesc1"
-                    fontPath="fonts/open_sans_semibold.ttf"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin20"
-                    android:layout_marginTop="@dimen/margin10"
-                    android:text="Berapa banyak barang"
-                    android:textColor="@color/color_tv_gray_tv_desc_item_home"
-                    android:textSize="@dimen/text_small_default"
-                    tools:ignore="MissingPrefix"/>
-
-                <TextView
-                    android:id="@+id/tvDesc2"
-                    fontPath="fonts/open_sans_semibold.ttf"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin25"
-                    android:layout_marginLeft="@dimen/margin20"
-                    android:text="yang masuk hari ini?"
-                    android:textColor="@color/color_tv_gray_tv_desc_item_home"
-                    android:textSize="@dimen/text_small_default"
-                    tools:ignore="MissingPrefix"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_list_home"
-                android:gravity="center">
-
-
-                <ImageView
-                    android:id="@+id/ivImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_barang_masuk"/>
-
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.cardview.widget.CardView>

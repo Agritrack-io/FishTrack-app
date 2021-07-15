@@ -28,16 +28,16 @@ public class MainMenuAdapter extends RecyclerView.Adapter<MainMenuAdapter.ViewHo
      */
     public static class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView txtTitle;
-        private final TextView txtDesc1;
-        private final TextView txtDesc2;
+        //private final TextView txtDesc1;
+        //private final TextView txtDesc2;
         private final ImageView ivImage;
 
         public ViewHolder(View view) {
             super(view);
 
             txtTitle = (TextView) view.findViewById(R.id.tvTitle);
-            txtDesc1 = (TextView) view.findViewById(R.id.tvDesc1);
-            txtDesc2 = (TextView) view.findViewById(R.id.tvDesc2);
+            // txtDesc1 = (TextView) view.findViewById(R.id.tvDesc1);
+            // txtDesc2 = (TextView) view.findViewById(R.id.tvDesc2);
             ivImage = (ImageView) view.findViewById(R.id.ivImage);
         }
 
@@ -45,13 +45,9 @@ public class MainMenuAdapter extends RecyclerView.Adapter<MainMenuAdapter.ViewHo
             return txtTitle;
         }
 
-        public TextView getDesc1() {
-            return txtDesc1;
-        }
+        //public TextView getDesc1() { return txtDesc1; }
 
-        public TextView getDesc2() {
-            return txtDesc2;
-        }
+       // public TextView getDesc2() { return txtDesc2; }
 
         public ImageView getImage() {
             return ivImage;
@@ -75,8 +71,8 @@ public class MainMenuAdapter extends RecyclerView.Adapter<MainMenuAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MenuItemData menuItem = mData.get(position);
         holder.getTitle().setText(menuItem.getTitle());
-        holder.getDesc1().setText(menuItem.getDescription1());
-        holder.getDesc2().setText(menuItem.getDescription2());
+       // holder.getDesc1().setText(menuItem.getDescription1());
+       // holder.getDesc2().setText(menuItem.getDescription2());
         holder.getImage().setImageResource(menuItem.getImage());
 
 

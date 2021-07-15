@@ -25,6 +25,8 @@ public class Home2Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home2);
 
+        getSupportActionBar().hide();
+
         //resources = getApplicationContext().getResources();
 
         final MKLoader pbLoading = findViewById(R.id.pbLoading);
