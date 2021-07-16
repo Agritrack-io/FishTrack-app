@@ -23,10 +23,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FishTrack">
-
+        <activity android:name=".ui.activity.fishing.FishingTeamActivity"></activity>
+        <activity android:name=".ui.activity.fishing.FishingBinsActivity" />
         <activity android:name=".ui.activity.fishing.FishingMainActivity" />
         <activity android:name=".ui.activity.TemplateActivity" />
-        <activity android:name=".ui.activity.fishing.FishingMainActivity2" />
         <activity android:name=".ui.activity.profile.Home2Activity" />
         <activity android:name=".ui.activity.asset.ItemAssetsListActivity" />
         <activity android:name=".ui.activity.profile.ProfileActivity" />

@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
@@ -32,6 +33,7 @@
             android:layout_marginBottom="14dp"
             android:contentDescription="back Image"
             android:src="@drawable/ic_back"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvTitleToolbar"
             app:layout_constraintStart_toStartOf="parent"
@@ -63,13 +65,14 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="14dp"
             android:src="@drawable/ic_next"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvTitleToolbar"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tvUsername"
+            android:id="@+id/tvUsernamePlatform"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -93,22 +96,21 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/agri_green"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/footerLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerLayout"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
 
         <TextView
             android:id="@+id/tvRequestedQuantity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:gravity="left"
             android:text="@string/requested_quantity"
-            android:textSize="20sp"
+            android:textSize="26sp"
             app:layout_constraintBottom_toTopOf="@+id/spRequestedQuantity"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -121,10 +123,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="32dp"
             android:gravity="left"
             android:text="@string/choose_harvest"
-            android:textSize="20sp"
+            android:textSize="26sp"
             app:layout_constraintBottom_toTopOf="@+id/spHarvest"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,8 +138,9 @@
             android:id="@+id/spHarvest"
             style="@style/spinner_style"
             android:layout_width="0dp"
-            android:layout_height="25dp"
+            android:layout_height="0dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="17dp"
             android:dropDownWidth="match_parent"
@@ -154,15 +157,16 @@
             tools:layout_conversion_absoluteHeight="0dp"
             tools:layout_conversion_absoluteWidth="0dp" />
 
+
         <TextView
             android:id="@+id/tvFishType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:gravity="left"
             android:text="@string/fish_type"
-            android:textSize="20sp"
+            android:textSize="26sp"
             app:layout_constraintBottom_toTopOf="@+id/spFishType"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -174,8 +178,9 @@
             android:id="@+id/spFishType"
             style="@style/spinner_style"
             android:layout_width="0dp"
-            android:layout_height="25dp"
+            android:layout_height="0dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
             android:dropDownWidth="match_parent"
@@ -194,8 +199,9 @@
             android:id="@+id/spRequestedQuantity"
             style="@style/spinner_style"
             android:layout_width="0dp"
-            android:layout_height="25dp"
+            android:layout_height="0dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
             android:dropDownWidth="match_parent"
@@ -203,7 +209,7 @@
             android:requiresFadingEdge="horizontal"
             android:textAlignment="textStart"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/btnScanPlatform"
+            app:layout_constraintBottom_toTopOf="@+id/actvPlatformName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
@@ -211,38 +217,72 @@
             tools:layout_conversion_absoluteHeight="0dp"
             tools:layout_conversion_absoluteWidth="0dp" />
 
-        <Button
-            android:id="@+id/btnScanPlatform"
-            android:layout_width="315dp"
-            android:layout_height="94dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="50dp"
-            android:backgroundTint="@color/agri_blue"
-            android:text="@string/scan_platform"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/actvPlatformName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spRequestedQuantity"
-            tools:layout_conversion_absoluteHeight="120dp"
-            tools:layout_conversion_absoluteWidth="0dp" />
-
         <TextView
             android:id="@+id/actvPlatformName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="38dp"
             android:layout_marginEnd="50dp"
             android:layout_marginBottom="16dp"
             android:gravity="center|center_vertical"
             android:text="@string/name_platform"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/btnScanPlatform"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spRequestedQuantity" />
+
+        <Button
+            android:id="@+id/btnScanPlatform"
+            android:layout_width="0dp"
+            android:layout_height="94dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/agri_blue"
+            android:text="@string/scan_platform"
+            android:textColor="@color/yellow"
+            android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.75"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnScanPlatform" />
+            app:layout_constraintTop_toBottomOf="@+id/actvPlatformName"
+            tools:layout_conversion_absoluteHeight="120dp"
+            tools:layout_conversion_absoluteWidth="0dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/footerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/formLayout">
+
+        <ImageView
+            android:id="@+id/ivBackToMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_shortcut_arrow_back" />
+
+        <ImageView
+            android:id="@+id/ivToBins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

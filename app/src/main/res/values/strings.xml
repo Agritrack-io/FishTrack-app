@@ -51,5 +51,8 @@
     <string name="name_platform">Name Platform</string>
     <string name="todo">TODO</string>
 
+    <string name="title_user_date_platform">USER NAME / DATE / PLATFORM</string>
+
+
 
 </resources>

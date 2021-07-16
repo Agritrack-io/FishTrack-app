@@ -6,7 +6,8 @@
     android:layout_height="48dp"
     android:layout_margin="4dp"
     android:height="48dp"
-    android:minHeight="48dp"
     android:ellipsize="marquee"
+    android:minHeight="36dp"
     android:singleLine="true"
-    android:textColor="@android:color/black" />
+    android:textColor="@android:color/black"
+    android:textSize="28sp" />

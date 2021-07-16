@@ -2,11 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
-    tools:context=".ui.activity.fishing.FishingMainActivity">
+    tools:context=".ui.activity.fishing.FishingTeamActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -79,7 +78,7 @@
             android:backgroundTint="@color/agri_blue"
             android:backgroundTintMode="screen"
             android:gravity="center"
-            android:text="@string/title_user_date"
+            android:text="@string/title_user_date_platform"
             android:textColor="@color/agri_green"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -109,7 +108,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
-            android:id="@+id/ivBackToFishing"
+            android:id="@+id/ivBackToBins"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -118,7 +117,7 @@
             app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
         <ImageView
-            android:id="@+id/ivToTeam"
+            android:id="@+id/ivToCage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -126,5 +125,4 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
