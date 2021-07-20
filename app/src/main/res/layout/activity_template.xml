@@ -49,7 +49,7 @@
             android:gravity="center|top|fill_vertical"
             android:text="@string/title_fishing"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_semi_medium"
+            android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivNext"
             app:layout_constraintStart_toEndOf="@+id/ivBack"
@@ -72,7 +72,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tvUsernamePlatform"
+            android:id="@+id/tvPlatformQuantityNoBins"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -81,7 +81,7 @@
             android:gravity="center"
             android:text="@string/title_user_date"
             android:textColor="@color/agri_green"
-            android:textSize="14sp"
+            android:textSize="@dimen/subtitle_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -103,13 +103,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footerLayout"
         android:layout_width="0dp"
-        android:layout_height="50sp"
+        android:layout_height="68sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/formLayout">
 
         <ImageView
-            android:id="@+id/ivBackToFishing"
+            android:id="@+id/ivBackToFillBins"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -118,7 +119,7 @@
             app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
         <ImageView
-            android:id="@+id/ivToTeam"
+            android:id="@+id/ivToCongs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"

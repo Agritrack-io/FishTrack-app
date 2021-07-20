@@ -52,7 +52,49 @@
     <string name="todo">TODO</string>
 
     <string name="title_user_date_platform">USER NAME / DATE / PLATFORM</string>
+    <string name="bins_to_use">Selected bins to use</string>
+    <string name="scan_bin">Scan Bin</string>
+    <string name="delete_bin">Delete Bin</string>
+    <string name="number_of_bins">Number of bins:</string>
 
+    <string name="fishing_team">Selected fishing team</string>
+    <string name="add_employee">Add employee</string>
+    <string name="delete_employee">Del employee</string>
+    <string name="pick_fishing_team">Pick team members</string>
+    <string name="number_of_employees"># of employees:</string>
+
+    <string name="title_platform_quantity_no_bins">PLATFORM / REQUESTED QUANTITY / # BINS</string>
+    <string name="scan_cage_nets">Please scan cage and net</string>
+    <string name="name_cage">Name Cage</string>
+    <string name="scan_cage">Scan Cage</string>
+    <string name="name_net">Name Net</string>
+    <string name="scan_net">Scan Net</string>
+
+    <string name="title_cage_quantity_no_bins">CAGE / REQUESTED QUANTITY / # BINS</string>
+    <string name="choose_sea_temp">Please choose sea temp</string>
+    <string name="ichthyopathologist">Ichthyopathologist</string>
+    <string name="ichthyopathologist_name">Name of ichthyopathologist</string>
+    <string name="last_fed">Date of last nutrition</string>
+    <string name="last_fed_date">Date</string>
+    <string name="type_of_fish">Type of fish</string>
+    <string name="ice_adequacy">Ice adequacy</string>
+    <string name="choose_ice_supplier">Please choose ice supplier</string>
+
+
+    <string name="no">NO</string>
+    <string name="yes">YES</string>
+
+    <string name="back_button">BACK</string>
+    <string name="next_bin_button">NEXT BIN</string>
+    <string name="end_fishing__button">END FISHING</string>
+    <string name="end_bin__button">END BIN</string>
+    <string name="weight_bin">Weight of Bin:</string>
+    <string name="fishing_batches">Fishing Batches</string>
+    <string name="fishing_summary">Fishing Summary</string>
+    <string name="total_weight">TOTAL WEIGHT:</string>
+    <string name="used_bins">USED BINS:</string>
+    <string name="available_bins">AVAILABLE BINS:</string>
+    <string name="total_quantity">Total quantity:</string>
 
 
 </resources>

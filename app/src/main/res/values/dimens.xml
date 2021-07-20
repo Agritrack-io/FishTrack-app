@@ -47,8 +47,18 @@
     <dimen name="text_semi_medium">15sp</dimen>
     <dimen name="text_medium">16sp</dimen>
     <dimen name="text_semi_large">17sp</dimen>
-    <dimen name="text_large">18sp</dimen>
     <dimen name="text_huge2">24sp</dimen>
+
+
+
+
+    <dimen name="title_font_size">18sp</dimen>
+    <dimen name="subtitle_font_size">16sp</dimen>
+    <dimen name="button_font_size">24sp</dimen>
+    <dimen name="text_view_font_size_small">16sp</dimen>
+    <dimen name="text_view_font_size_medium">20sp</dimen>
+    <dimen name="text_view_font_size">26sp</dimen>
+
 
     <item name="dialog_min_width_major" type="dimen">50%</item>
 

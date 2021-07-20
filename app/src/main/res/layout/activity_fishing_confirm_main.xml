@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
-    tools:context=".ui.activity.fishing.FishingMainActivity">
+    tools:context=".ui.activity.fishing.FishingConfirmActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -95,194 +95,140 @@
         android:id="@+id/formLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/agri_green"
         app:layout_constraintBottom_toTopOf="@+id/footerLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
+
+        app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
         <TextView
-            android:id="@+id/tvRequestedQuantity"
+            android:id="@+id/textView2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:gravity="left"
-            android:text="@string/requested_quantity"
-            android:textSize="@dimen/text_view_font_size"
-            app:layout_constraintBottom_toTopOf="@+id/spRequestedQuantity"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spFishType"
-            tools:layout_conversion_absoluteHeight="172dp"
-            tools:layout_conversion_absoluteWidth="0dp" />
-
-        <TextView
-            android:id="@+id/tvHarvest"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
-            android:gravity="left"
-            android:text="@string/choose_harvest"
-            android:textSize="@dimen/text_view_font_size"
-            app:layout_constraintBottom_toTopOf="@+id/spHarvest"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_conversion_absoluteHeight="0dp"
-            tools:layout_conversion_absoluteWidth="0dp" />
-
-        <Spinner
-            android:id="@+id/spHarvest"
-            style="@style/spinner_style"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="17dp"
-            android:dropDownWidth="match_parent"
-            android:focusableInTouchMode="true"
-            android:requiresFadingEdge="horizontal"
-            android:spinnerMode="dropdown"
-            android:textAlignment="textStart"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/tvFishType"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvHarvest"
-            tools:layout_conversion_absoluteHeight="0dp"
-            tools:layout_conversion_absoluteWidth="0dp" />
-
-
-        <TextView
-            android:id="@+id/tvFishType"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:gravity="left"
-            android:text="@string/fish_type"
-            android:textSize="@dimen/text_view_font_size"
-            app:layout_constraintBottom_toTopOf="@+id/spFishType"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spHarvest"
-            tools:layout_conversion_absoluteHeight="0dp"
-            tools:layout_conversion_absoluteWidth="0dp" />
-
-        <Spinner
-            android:id="@+id/spFishType"
-            style="@style/spinner_style"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
-            android:dropDownWidth="match_parent"
-            android:focusableInTouchMode="true"
-            android:requiresFadingEdge="horizontal"
-            android:textAlignment="textStart"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/tvRequestedQuantity"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvFishType"
-            tools:layout_conversion_absoluteHeight="24dp"
-            tools:layout_conversion_absoluteWidth="0dp" />
-
-        <Spinner
-            android:id="@+id/spRequestedQuantity"
-            style="@style/spinner_style"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
-            android:dropDownWidth="match_parent"
-            android:focusableInTouchMode="true"
-            android:requiresFadingEdge="horizontal"
-            android:textAlignment="textStart"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/actvPlatformName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvRequestedQuantity"
-            tools:layout_conversion_absoluteHeight="0dp"
-            tools:layout_conversion_absoluteWidth="0dp" />
-
-        <TextView
-            android:id="@+id/actvPlatformName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="38dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginBottom="16dp"
-            android:gravity="center|center_vertical"
-            android:text="@string/name_platform"
+            android:gravity="center"
+            android:text="Please confirm the following details"
             android:textSize="@dimen/text_view_font_size"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/btnScanPlatform"
+            app:layout_constraintBottom_toTopOf="@+id/textView3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/total_quantity"
+            android:textSize="@dimen/text_view_font_size"
+            app:layout_constraintBottom_toTopOf="@+id/textView4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spRequestedQuantity" />
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-        <Button
-            android:id="@+id/btnScanPlatform"
+        <TextView
+            android:id="@+id/textView4"
             android:layout_width="0dp"
-            android:layout_height="94dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginBottom="8dp"
-            android:backgroundTint="@color/agri_blue"
-            android:text="@string/scan_platform"
-            android:textColor="@color/yellow"
-            android:textSize="@dimen/button_font_size"
+            android:layout_height="wrap_content"
+            android:text="@string/requested_quantity"
+            android:textSize="@dimen/text_view_font_size"
+            app:layout_constraintBottom_toTopOf="@+id/textView5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/number_of_bins"
+            android:textSize="@dimen/text_view_font_size"
+            app:layout_constraintBottom_toTopOf="@+id/textView6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/name_cage"
+            android:textSize="@dimen/text_view_font_size"
+            app:layout_constraintBottom_toTopOf="@+id/textView7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/fish_type"
+            android:textSize="@dimen/text_view_font_size"
+            app:layout_constraintBottom_toTopOf="@+id/textView8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Please enter your personal PIN"
+            android:textSize="@dimen/text_view_font_size"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textView9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="TextView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.75"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/actvPlatformName"
-            tools:layout_conversion_absoluteHeight="120dp"
-            tools:layout_conversion_absoluteWidth="0dp" />
+            app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footerLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="68sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/formLayout">
+        app:layout_constraintTop_toBottomOf="@+id/formLayout">
 
         <ImageView
-            android:id="@+id/ivBackToMain"
+            android:id="@+id/ivBackToFillBins"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
         <ImageView
-            android:id="@+id/ivToBins"
+            android:id="@+id/ivToCongs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

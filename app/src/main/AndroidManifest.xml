@@ -23,15 +23,45 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FishTrack">
-        <activity android:name=".ui.activity.fishing.FishingTeamActivity"></activity>
-        <activity android:name=".ui.activity.fishing.FishingBinsActivity" />
-        <activity android:name=".ui.activity.fishing.FishingMainActivity" />
-        <activity android:name=".ui.activity.TemplateActivity" />
-        <activity android:name=".ui.activity.profile.Home2Activity" />
-        <activity android:name=".ui.activity.asset.ItemAssetsListActivity" />
-        <activity android:name=".ui.activity.profile.ProfileActivity" />
-        <activity android:name=".ui.activity.HomeActivity" />
-        <activity android:name=".ui.activity.login.LoginActivity">
+        <activity
+            android:name=".ui.activity.fishing.FishingConfirmActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".ui.activity.fishing.FishingFillBinsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.fishing.FishingDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.fishing.FishingCageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.fishing.FishingTeamActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.fishing.FishingBinsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.fishing.FishingMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.TemplateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.profile.Home2Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.asset.ItemAssetsListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.profile.ProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.HomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.login.LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
