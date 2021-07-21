@@ -16,7 +16,7 @@ public class FishingConfirmActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fishing_confirm_main);
+        setContentView(R.layout.activity_fishing_confirm);
 
         getSupportActionBar().hide();
 

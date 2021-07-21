@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import io.agritrack.fishtrack.R;
@@ -25,14 +26,14 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     protected void configFooter() {
 
-        Button ivBack = (Button) findViewById(R.id.btnBackToDetails);
+        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToDetails);
         ivBack.setOnClickListener(view -> {
             Toast.makeText(getContext(), "Details!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
             startActivity(i);
         });
 
-        Button ivNext = (Button) findViewById(R.id.btnEndFishing);
+        ImageView ivNext = (ImageView) findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
             Toast.makeText(getContext(), "Confirm!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), FishingConfirmActivity.class);

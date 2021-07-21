@@ -9,6 +9,8 @@
     <color name="colorPrimaryDark">@color/black</color>
     <color name="colorAccent">#D6E4FE</color>
     <color name="dark_grey">#A9A9A9A9</color>
+    <color name="light_grey">#d3d3d3</color>
+
 
     <color name="color_bg_edit_text_login">#6b9ce7</color>
 
@@ -32,5 +34,12 @@
 
     <color name="agri_green">#e4fcc2</color>
     <color name="agri_blue">#16325c</color>
+    <color name="footer_green">#cde2ae</color>
+    <color name="secondary_text_material_light">#8a000000</color>
+
+
+    <color name="label_blue">#16325c</color>
+
+
 
 </resources>
