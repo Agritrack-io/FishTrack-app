@@ -13,7 +13,7 @@ import io.agritrack.fishtrack.R;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
-public class FishingMainActivity extends AppCompatActivity {
+public class FishingStartActivity extends AppCompatActivity {
     String[] harvestRequestors = {"Nikos", "George", "Vlasis"};
 
     Spinner harvestSpinner;
@@ -21,7 +21,7 @@ public class FishingMainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fishing_main);
+        setContentView(R.layout.activity_fishing_start);
 
         getSupportActionBar().hide();
 

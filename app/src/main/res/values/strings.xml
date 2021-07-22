@@ -98,9 +98,12 @@
     <string name="confirm_requested_quantity">Req Quantity:</string>
     <string name="confirm_name_cage">Name Cage:</string>
     <string name="confirm_fish_type">Fish Type:</string>
-
     <string name="fishing_confirm">Confirm details</string>
     <string name="fishing_enter_pin">Enter PIN</string>
+
+
+    <string name="choose_packaging_site">Choose packaging site</string>
+    <string name="driver_name">Enter driver name</string>
 
 
 </resources>

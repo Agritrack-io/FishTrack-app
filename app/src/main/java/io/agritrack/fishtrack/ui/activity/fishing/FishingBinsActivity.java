@@ -57,7 +57,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMain);
         ivBack.setOnClickListener(view -> {
             Toast.makeText(getContext(), "Fishing!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), FishingMainActivity.class);
+            Intent i = new Intent(getApplicationContext(), FishingStartActivity.class);
             startActivity(i);
         });
     }
