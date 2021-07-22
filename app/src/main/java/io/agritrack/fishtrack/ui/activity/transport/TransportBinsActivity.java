@@ -1,4 +1,4 @@
-package io.agritrack.fishtrack.ui.activity.fishing;
+package io.agritrack.fishtrack.ui.activity.transport;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -18,16 +18,14 @@ import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
-public class FishingBinsActivity extends AppCompatActivity {
+public class TransportBinsActivity extends AppCompatActivity {
 
     private String[] bins = {"1","2","3","4","5"};
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fishing_bins);
+        setContentView(R.layout.activity_transport_bins);
 
         getSupportActionBar().hide();
 
@@ -42,22 +40,22 @@ public class FishingBinsActivity extends AppCompatActivity {
 
 
         configFooter();
+
+
     }
 
-
-
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToTeam);
-        ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Fishing team!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
+        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartTransport);
+        ivBack.setOnClickListener(view -> {
+            Toast.makeText(getContext(), "Start Transport!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), TransportStartActivity.class);
             startActivity(i);
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMain);
-        ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Fishing!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), FishingStartActivity.class);
+        ImageView ivNext = (ImageView) findViewById(R.id.ivToDriverConfirm);
+        ivNext.setOnClickListener(view -> {
+            Toast.makeText(getContext(), "Driver confirms!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), TransportDriverConfirmActivity.class);
             startActivity(i);
         });
     }

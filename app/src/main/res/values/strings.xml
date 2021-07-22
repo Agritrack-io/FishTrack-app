@@ -103,7 +103,24 @@
 
 
     <string name="choose_packaging_site">Choose packaging site</string>
-    <string name="driver_name">Enter driver name</string>
+
+    <string name="driver_name">Type driver name</string>
+    <string name="license_plate">Type license plate</string>
+    <string name="choose_company">Choose company</string>
+    <string name="truck_refrigerated">Refrigerated truck</string>
+    <string name="parallel_transport">Parallel transport</string>
+    <string name="security_clip_label">Security clip number</string>
+    <string name="bins_for_transport">Bins for transport</string>
+
+    <string name="packaging_site">Packaging site:</string>
+    <string name="company">Company:</string>
+    <string name="driver_name_label">Driver name:</string>
+    <string name="license_plate_label">License plate:</string>
+    <string name="security_clip_label_confirm">Security clip number:</string>
+
+
+
+
 
 
 </resources>

@@ -103,14 +103,14 @@
         app:layout_constraintTop_toBottomOf="@+id/headerLayout">
 
         <RelativeLayout
-            android:id="@+id/transportStartLayout"
+            android:id="@+id/transportStartALayout"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="260dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/transportStartBLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -128,7 +128,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="8dp"
                     android:gravity="left"
                     android:text="@string/choose_packaging_site"
                     android:textColor="@color/label_blue"
@@ -147,13 +147,14 @@
                     android:layout_height="60dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
                     android:dropDownWidth="match_parent"
                     android:focusableInTouchMode="true"
                     android:requiresFadingEdge="horizontal"
                     android:spinnerMode="dropdown"
                     android:textAlignment="textStart"
                     android:visibility="visible"
-                    app:layout_constraintBottom_toTopOf="@+id/tvFishType"
+                    app:layout_constraintBottom_toTopOf="@+id/tvChooseCompany"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.496"
                     app:layout_constraintStart_toStartOf="parent"
@@ -163,49 +164,39 @@
 
 
                 <TextView
-                    android:id="@+id/tvDriverName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="left"
-                    android:text="@string/driver_name"
-                    android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spPackagingSite"
-                    tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
-
-                <TextView
-                    android:id="@+id/tvRequestedQuantity"
+                    android:id="@+id/tvChooseCompany"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:gravity="left"
-                    android:text="@string/requested_quantity"
+                    android:text="@string/choose_company"
                     android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/spCompany"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:layout_conversion_absoluteHeight="172dp"
-                    tools:layout_conversion_absoluteWidth="0dp"
-                    tools:layout_editor_absoluteY="236dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/spPackagingSite" />
 
-                <EditText
-                    android:id="@+id/etDriverName"
+                <Spinner
+                    android:id="@+id/spCompany"
+                    style="@style/spinner_style"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    android:text="Name"
+                    android:layout_marginBottom="8dp"
+                    android:dropDownWidth="match_parent"
+                    android:focusableInTouchMode="true"
+                    android:requiresFadingEdge="horizontal"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="textStart"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDriverName" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvChooseCompany"
+                    tools:layout_conversion_absoluteHeight="0dp"
+                    tools:layout_conversion_absoluteWidth="0dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -216,7 +207,163 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_green"
                 android:paddingHorizontal="8dp"
-                android:text="Start Transport"
+                android:text="Packaging site and company"
+                android:textColor="@color/label_blue"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/transportStartBLayout"
+            android:layout_width="0dp"
+            android:layout_height="240dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/transportStartCLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/transportStartALayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <EditText
+                    android:id="@+id/etDriverName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:ems="10"
+                    android:hint="@string/driver_name"
+                    android:inputType="textPersonName"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/etLicensePlate"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/etLicensePlate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:ems="10"
+                    android:hint="@string/license_plate"
+                    android:inputType="textPersonName"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/swRefrigeratedTruck"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etDriverName" />
+
+                <Switch
+                    android:id="@+id/swRefrigeratedTruck"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:scaleX="1"
+                    android:showText="true"
+                    android:textColor="@color/label_blue"
+                    android:textOff="@string/no"
+                    android:textOn="@string/yes"
+                    android:text="@string/truck_refrigerated"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/swParallelTransport"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etLicensePlate" />
+
+                <Switch
+                    android:id="@+id/swParallelTransport"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layoutDirection="rtl"
+                    android:scaleX="1"
+                    android:showText="true"
+                    android:textOff="@string/no"
+                    android:textOn="@string/yes"
+                    android:text="@string/parallel_transport"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/swRefrigeratedTruck" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_green"
+                android:paddingHorizontal="8dp"
+                android:text="Details"
+                android:textColor="@color/label_blue"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/transportStartCLayout"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/transportStartBLayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <EditText
+                    android:id="@+id/etSecurityClip"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="7dp"
+                    android:ems="10"
+                    android:inputType="numberSigned"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_green"
+                android:paddingHorizontal="8dp"
+                android:text="Enter security clip number"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 
@@ -243,13 +390,13 @@
             android:scaleX="0.7"
             android:scaleY="0.7"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivToTeam"
-            app:layout_constraintStart_toEndOf="@+id/ivBackToMain"
+            app:layout_constraintEnd_toStartOf="@+id/ivToTransportDetails"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToMenu"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
         <ImageView
-            android:id="@+id/ivBackToMain"
+            android:id="@+id/ivBackToMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -261,7 +408,7 @@
             app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
         <ImageView
-            android:id="@+id/ivToTeam"
+            android:id="@+id/ivToTransportBins"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
