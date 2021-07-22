@@ -112,6 +112,9 @@
 
     </LinearLayout>
 
-    <include layout="@layout/item_empty_data" />
+    <include
+        layout="@layout/item_empty_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

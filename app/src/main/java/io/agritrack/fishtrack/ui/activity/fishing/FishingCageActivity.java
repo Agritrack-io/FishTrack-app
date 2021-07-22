@@ -27,14 +27,14 @@ public class FishingCageActivity extends AppCompatActivity {
 
     protected void configFooter() {
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToFillBins);
+        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToTeam);
         ivBack.setOnClickListener(view -> {
             Toast.makeText(getContext(), "Team!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
             startActivity(i);
         });
 
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
+        ImageView ivNext = (ImageView) findViewById(R.id.ivToDeatails);
         ivNext.setOnClickListener(view -> {
             Toast.makeText(getContext(), "Details!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);

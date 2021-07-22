@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.ui.activity.fishing.FishingMainActivity;
+import io.agritrack.fishtrack.ui.activity.profile.Home2Activity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
