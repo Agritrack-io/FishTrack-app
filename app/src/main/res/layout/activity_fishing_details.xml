@@ -275,26 +275,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFishType2" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchIceAdequacy"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
-                android:scaleX="1"
                 android:showText="true"
+                android:checked="false"
                 android:text="@string/ice_adequacy"
                 android:textColor="@color/label_blue"
                 android:textOff="@string/no"
                 android:textOn="@string/yes"
                 android:textSize="@dimen/text_view_font_size"
+                android:theme="@style/SCBSwitch"
+                android:thumb="@drawable/thumb"
                 app:layout_constraintBottom_toTopOf="@+id/tvIceSupplier"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvTypeOfFish" />
+                app:layout_constraintTop_toBottomOf="@+id/tvTypeOfFish"
+
+
+                app:showText="true"
+                app:switchTextAppearance="@style/texton"
+                app:track="@drawable/track" />
 
             <TextView
                 android:id="@+id/tvIceSupplier"

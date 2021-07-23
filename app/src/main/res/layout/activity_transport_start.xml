@@ -144,7 +144,7 @@
                     android:id="@+id/spPackagingSite"
                     style="@style/spinner_style"
                     android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_height="52dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
@@ -181,7 +181,7 @@
                     android:id="@+id/spCompany"
                     style="@style/spinner_style"
                     android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_height="52dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
@@ -266,43 +266,55 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/etDriverName" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/swRefrigeratedTruck"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:scaleX="1"
+                    android:checked="false"
                     android:showText="true"
+                    android:text="@string/truck_refrigerated"
+                    android:textAlignment="viewStart"
                     android:textColor="@color/label_blue"
                     android:textOff="@string/no"
                     android:textOn="@string/yes"
-                    android:text="@string/truck_refrigerated"
                     android:textSize="@dimen/text_view_font_size"
+                    android:theme="@style/SCBSwitch"
+                    android:thumb="@drawable/thumb"
                     app:layout_constraintBottom_toTopOf="@+id/swParallelTransport"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/etLicensePlate" />
+                    app:layout_constraintTop_toBottomOf="@+id/etLicensePlate"
+                    app:showText="true"
+                    app:switchTextAppearance="@style/texton"
+                    app:track="@drawable/track" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/swParallelTransport"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layoutDirection="rtl"
-                    android:scaleX="1"
+                    android:checked="false"
                     android:showText="true"
-                    android:textOff="@string/no"
-                    android:textOn="@string/yes"
                     android:text="@string/parallel_transport"
                     android:textAlignment="viewStart"
                     android:textColor="@color/label_blue"
+                    android:textOff="@string/no"
+                    android:textOn="@string/yes"
                     android:textSize="@dimen/text_view_font_size"
+                    android:theme="@style/SCBSwitch"
+                    app:track="@drawable/track"
+                    android:thumb="@drawable/thumb"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/swRefrigeratedTruck" />
+                    app:layout_constraintTop_toBottomOf="@+id/swRefrigeratedTruck"
+                    app:showText="true"
+                    app:switchTextAppearance="@style/texton" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
