@@ -10,4 +10,4 @@
     android:minHeight="36dp"
     android:singleLine="true"
     android:textColor="@android:color/black"
-    android:textSize="28sp" />
+    android:textSize="26sp" />

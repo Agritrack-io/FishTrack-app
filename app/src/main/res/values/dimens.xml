@@ -57,7 +57,7 @@
     <dimen name="button_font_size">24sp</dimen>
     <dimen name="text_view_font_size_small">16sp</dimen>
     <dimen name="text_view_font_size_medium">20sp</dimen>
-    <dimen name="text_view_font_size">26sp</dimen>
+    <dimen name="text_view_font_size">24sp</dimen>
 
 
     <item name="dialog_min_width_major" type="dimen">50%</item>

@@ -141,7 +141,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivSend"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintStart_tostartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
