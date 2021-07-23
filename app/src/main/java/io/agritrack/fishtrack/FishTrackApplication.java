@@ -3,6 +3,8 @@ package io.agritrack.fishtrack;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.stetho.Stetho;
+
 public class FishTrackApplication extends Application {
     private static Context mContext;
 
@@ -10,7 +12,7 @@ public class FishTrackApplication extends Application {
         super.onCreate();
         this.mContext = this;
         if (BuildConfig.DEBUG) {
-            //Stetho.initializeWithDefaults(this);
+            Stetho.initializeWithDefaults(this);
         }
     }
 
