@@ -3,8 +3,8 @@ package io.agritrack.fishtrack.ui.activity.login;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,10 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import gr.beffect.agritrack.AgriTrackApplication;
-import gr.beffect.agritrack.R;
-import gr.beffect.agritrack.service.RestfulCommunicationSingleton;
-import gr.beffect.agritrack.state.ForgotYourPinState;
+import io.agritrack.fishtrack.FishTrackApplication;
+import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.service.RestfulCommunicationSingleton;
+import io.agritrack.fishtrack.ui.state.ForgotYourPinState;
 
 public class ForgotYourPinActivity extends AppCompatActivity {
     EditText phoneNumberText;
@@ -32,10 +32,10 @@ public class ForgotYourPinActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_your_pin);
 
-        phoneNumberText = findViewById(R.id.phone_number_text);
-        usernameText = findViewById(R.id.username_text);
-        Button cancelButton = findViewById(R.id.cancel_button);
-        Button sendButton = findViewById(R.id.send_button);
+        phoneNumberText = findViewById(R.id.tvPhoneNumber_text);
+        usernameText = findViewById(R.id.tvUserName_text);
+        ImageView cancelButton = findViewById(R.id.ivCancelSend);
+        ImageView sendButton = findViewById(R.id.ivSend);
 
         cancelButton.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
@@ -48,7 +48,7 @@ public class ForgotYourPinActivity extends AppCompatActivity {
     public void sendPasswordReminder() {
         String mUrlString;
         try {
-            InputStream is = AgriTrackApplication.getContext().getAssets().open("connection.properties");
+            InputStream is = FishTrackApplication.getContext().getAssets().open("connection.properties");
             Properties props = new Properties();
             props.load(is);
             mUrlString = props.getProperty("url", null) + "/users/password.remind";
@@ -80,7 +80,7 @@ public class ForgotYourPinActivity extends AppCompatActivity {
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             ar.setShouldCache(false);
-            RestfulCommunicationSingleton.getInstance(AgriTrackApplication.getContext()).addToRequestQueue(ar);
+            RestfulCommunicationSingleton.getInstance(FishTrackApplication.getContext()).addToRequestQueue(ar);
         } catch (IOException e) {
             e.printStackTrace();
         }

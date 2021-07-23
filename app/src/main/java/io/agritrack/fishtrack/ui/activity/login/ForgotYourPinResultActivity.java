@@ -3,11 +3,13 @@ package io.agritrack.fishtrack.ui.activity.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.ui.state.ForgotYourPinState;
 
 
 public class ForgotYourPinResultActivity extends AppCompatActivity {
@@ -17,8 +19,9 @@ public class ForgotYourPinResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_your_pin_result);
 
-        Button continueButton = findViewById(R.id.continue_button);
+        ImageView continueButton = findViewById(R.id.ivSend);
         TextView forgotYourPinResultText = findViewById(R.id.forgot_your_pin_result_text);
+
         if (ForgotYourPinState.getInstance().isSuccess()) {
             continueButton.setOnClickListener(view -> {
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
@@ -27,9 +30,8 @@ public class ForgotYourPinResultActivity extends AppCompatActivity {
             });
         } else {
             forgotYourPinResultText.setText(R.string.forgot_your_pin_failure);
-            continueButton.setText(R.string.back);
             continueButton.setOnClickListener(view -> {
-                Intent i = new Intent(getApplicationContext(), gr.beffect.agritrack.ui.login.ForgotYourPinActivity.class);
+                Intent i = new Intent(getApplicationContext(), ForgotYourPinActivity.class);
                 startActivity(i);
             });
         }
