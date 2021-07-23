@@ -321,7 +321,7 @@
                     android:background="@drawable/border_all"
                     android:ems="10"
                     android:hint="PIN"
-                    android:inputType="textPassword"
+                    android:inputType="numberPassword"
                     android:textAlignment="center"
                     android:textColorHint="@color/black"
                     android:textSize="@dimen/text_view_font_size"

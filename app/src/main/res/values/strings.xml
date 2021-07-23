@@ -102,6 +102,8 @@
     <string name="fishing_enter_pin">Enter PIN</string>
 
 
+    <string name="title_transport">TRANSPORT</string>
+    <string name="title_packaging_site_company_license_plate">PACKAGING SITE / COMPANY / LICENSE PLATE</string>
     <string name="choose_packaging_site">Choose packaging site</string>
 
     <string name="driver_name">Type driver name</string>

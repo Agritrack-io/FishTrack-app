@@ -47,7 +47,7 @@
             android:layout_marginBottom="32dp"
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
-            android:text="@string/title_fishing"
+            android:text="@string/title_transport"
             android:textColor="@color/white"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -79,7 +79,7 @@
             android:backgroundTint="@color/agri_blue"
             android:backgroundTintMode="screen"
             android:gravity="center"
-            android:text="@string/title_user_date_platform"
+            android:text="@string/title_packaging_site_company_license_plate"
             android:textColor="@color/agri_green"
             android:textSize="@dimen/subtitle_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -132,7 +132,7 @@
                     android:text="@string/bins_for_transport"
                     android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/rvBins"
+                    app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
                     app:layout_constraintEnd_toStartOf="@+id/ivDeleteBin"
                     app:layout_constraintStart_toEndOf="@+id/ivAddBin"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -158,7 +158,7 @@
                     tools:layout_conversion_absoluteWidth="0dp" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvBins"
+                    android:id="@+id/rvBinsForTransport"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="8dp"
@@ -185,7 +185,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/btnScanBin"
                     app:layout_constraintEnd_toStartOf="@+id/tvBinsCount"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rvBins" />
+                    app:layout_constraintTop_toBottomOf="@+id/rvBinsForTransport" />
 
                 <TextView
                     android:id="@+id/tvBinsCount"
@@ -202,7 +202,7 @@
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/tvNumberBins"
-                    app:layout_constraintTop_toBottomOf="@+id/rvBins" />
+                    app:layout_constraintTop_toBottomOf="@+id/rvBinsForTransport" />
 
                 <ImageView
                     android:id="@+id/ivDeleteBin"
@@ -211,7 +211,7 @@
                     android:layout_marginEnd="16dp"
 
                     android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@+id/rvBins"
+                    app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvSelectBins"
                     app:srcCompat="@drawable/ic_delete" />
@@ -222,7 +222,7 @@
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@+id/rvBins"
+                    app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
                     app:layout_constraintEnd_toStartOf="@+id/tvSelectBins"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/ic_add_stock_opname" />

@@ -29,7 +29,7 @@ public class TransportBinsActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
-        RecyclerView rvBins = (RecyclerView) findViewById(R.id.rvBins);
+        RecyclerView rvBins = (RecyclerView) findViewById(R.id.rvBinsForTransport);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBins.setLayoutManager(layoutManager);
         TemplateRecyclerAdapter adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(Arrays.asList( bins)));

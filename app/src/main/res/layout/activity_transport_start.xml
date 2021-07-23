@@ -47,7 +47,7 @@
             android:layout_marginBottom="32dp"
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
-            android:text="@string/title_fishing"
+            android:text="@string/title_transport"
             android:textColor="@color/white"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
