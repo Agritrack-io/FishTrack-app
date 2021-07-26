@@ -18,8 +18,6 @@ public class FishingConfirmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_confirm);
 
-        getSupportActionBar().hide();
-
         configFooter();
     }
 

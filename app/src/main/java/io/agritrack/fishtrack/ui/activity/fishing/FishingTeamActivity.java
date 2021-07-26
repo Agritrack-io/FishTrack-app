@@ -32,8 +32,6 @@ public class FishingTeamActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_team);
 
-        getSupportActionBar().hide();
-
         Spinner fishingTeamSpinner = (Spinner) findViewById(R.id.spFishingTeam);
         ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, fishTeam);
         hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);

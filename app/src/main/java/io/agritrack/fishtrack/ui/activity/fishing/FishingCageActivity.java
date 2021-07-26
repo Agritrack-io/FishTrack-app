@@ -18,8 +18,6 @@ public class FishingCageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_cage);
 
-        getSupportActionBar().hide();
-
         configFooter();
 
 

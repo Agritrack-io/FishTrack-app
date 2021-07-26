@@ -129,7 +129,7 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvDispatchNoteLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvTotalQuantityCount"
+                app:layout_constraintEnd_toStartOf="@+id/tvNumberOfBinsCount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -141,7 +141,7 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvPackagingLotLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvReqQuantityCount"
+                app:layout_constraintEnd_toStartOf="@+id/tvDispatchNote"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsLabel" />
 
@@ -153,39 +153,39 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvSecurityClipNumberLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvNumberOfBinsCount"
+                app:layout_constraintEnd_toStartOf="@+id/tvPackagingLot"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDispatchNoteLabel" />
 
             <TextView
-                android:id="@+id/tvReqQuantityCount"
+                android:id="@+id/tvDispatchNote"
                 android:layout_width="136dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
-                android:text="1000"
-                android:textAlignment="viewEnd"
+                android:text="ΔΑ67890"
+                android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvNumberOfBinsCount"
+                app:layout_constraintBottom_toTopOf="@+id/tvPackagingLot"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvDispatchNoteLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvTotalQuantityCount" />
+                app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsCount" />
 
             <TextView
-                android:id="@+id/tvNumberOfBinsCount"
+                android:id="@+id/tvPackagingLot"
                 android:layout_width="136dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
-                android:text="5"
-                android:textAlignment="viewEnd"
+                android:text="V34944"
+                android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvNameCage"
+                app:layout_constraintBottom_toTopOf="@+id/tvSecurityClipNumber"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvPackagingLotLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvReqQuantityCount" />
+                app:layout_constraintTop_toBottomOf="@+id/tvDispatchNote" />
 
             <TextView
                 android:id="@+id/tvSecurityClipNumberLabel"
@@ -195,39 +195,40 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvFishConditionLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvNameCage"
+                app:layout_constraintEnd_toStartOf="@+id/tvSecurityClipNumber"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvPackagingLotLabel" />
 
             <TextView
-                android:id="@+id/tvTotalQuantityCount"
+                android:id="@+id/tvNumberOfBinsCount"
                 android:layout_width="136dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
-                android:text="1000"
+                android:text="10"
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvReqQuantityCount"
+                app:layout_constraintBottom_toTopOf="@+id/tvDispatchNote"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvNumberOfBinsLabel"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvNameCage"
+                android:id="@+id/tvSecurityClipNumber"
                 android:layout_width="136dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
-                android:textAlignment="viewEnd"
+                android:text="12345"
+                android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvTypeOfFishConfirm"
+                app:layout_constraintBottom_toTopOf="@+id/tvFishCondition"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvSecurityClipNumberLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsCount" />
+                app:layout_constraintTop_toBottomOf="@+id/tvPackagingLot" />
 
             <TextView
                 android:id="@+id/tvFishConditionLabel"
@@ -237,26 +238,26 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvTypeOfFishConfirm"
+                app:layout_constraintEnd_toStartOf="@+id/tvFishCondition"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvSecurityClipNumberLabel" />
 
             <TextView
-                android:id="@+id/tvTypeOfFishConfirm"
+                android:id="@+id/tvFishCondition"
                 android:layout_width="136dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
                 android:paddingStart="3dp"
-                android:text="@string/type_of_fish"
+                android:text="good"
                 android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvFishConditionLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvNameCage" />
+                app:layout_constraintTop_toBottomOf="@+id/tvSecurityClipNumber" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

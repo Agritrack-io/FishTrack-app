@@ -130,8 +130,8 @@
             android:text="@string/username"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/phone_number_label"
-            app:layout_constraintEnd_toEndOf="@+id/phone_number_label"
+            app:layout_constraintBottom_toTopOf="@+id/password_label"
+            app:layout_constraintEnd_toStartOf="@+id/tvUserName_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin" />
 
@@ -150,14 +150,14 @@
             android:inputType="textPersonName"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/tvPhoneNumber_text"
+            app:layout_constraintBottom_toTopOf="@+id/tvPassword_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/username_label"
             app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin"
             tools:ignore="LabelFor,RelativeOverlap" />
 
         <TextView
-            android:id="@+id/phone_number_label"
+            android:id="@+id/password_label"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginEnd="200dp"
@@ -165,7 +165,7 @@
             android:gravity="center|end"
             android:labelFor="@+id/pin_text"
             android:paddingEnd="24dp"
-            android:text="@string/phone_number"
+            android:text="@string/prompt_password"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -174,7 +174,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
-            android:id="@+id/tvPhoneNumber_text"
+            android:id="@+id/tvPassword_text"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
@@ -183,12 +183,12 @@
             android:layout_marginBottom="180dp"
             android:ems="9"
             android:importantForAutofill="no"
-            android:inputType="phone"
+            android:inputType="numberPassword"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/phone_number_label"
+            app:layout_constraintStart_toEndOf="@+id/password_label"
             tools:ignore="LabelFor,RelativeOverlap" />
 
         <Button
@@ -204,7 +204,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/phone_number_label" />
+            app:layout_constraintTop_toBottomOf="@+id/password_label" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"

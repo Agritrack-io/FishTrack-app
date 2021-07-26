@@ -18,8 +18,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_fill_bins);
 
-        getSupportActionBar().hide();
-
         configFooter();
     }
 

@@ -23,9 +23,6 @@ public class FishingStartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_start);
 
-        getSupportActionBar().hide();
-
-
         Spinner harvestSpinner = (Spinner) findViewById(R.id.spHarvest);
         ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, harvestRequestors);
         hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);

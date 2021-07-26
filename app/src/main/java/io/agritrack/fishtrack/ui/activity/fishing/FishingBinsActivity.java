@@ -29,8 +29,6 @@ public class FishingBinsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_bins);
 
-        getSupportActionBar().hide();
-
         RecyclerView rvBins = (RecyclerView) findViewById(R.id.rvBins);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBins.setLayoutManager(layoutManager);
