@@ -34,7 +34,7 @@ public class FishingCageActivity extends AppCompatActivity {
             startActivity(i);
         });
 
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToDeatails);
+        ImageView ivNext = (ImageView) findViewById(R.id.ivToDetails);
         ivNext.setOnClickListener(view -> {
             Toast.makeText(getContext(), "Details!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);

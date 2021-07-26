@@ -267,8 +267,8 @@
             android:scaleX="0.7"
             android:scaleY="0.7"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
-            app:layout_constraintStart_toEndOf="@+id/ivBackToFillBins"
+            app:layout_constraintEnd_toStartOf="@+id/ivToDetails"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToTeam"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
@@ -285,7 +285,7 @@
             app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
         <ImageView
-            android:id="@+id/ivToDeatails"
+            android:id="@+id/ivToDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"

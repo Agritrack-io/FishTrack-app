@@ -305,6 +305,7 @@
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
                     android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/etPasswordFishing"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.1"
                     app:layout_constraintStart_toStartOf="parent"

@@ -127,10 +127,23 @@
     <string name="insert_user_details">Please insert your phone number and your username to be reminded of your PIN</string>
     <string name="forgot_your_pin_success">Your PIN was successfully sent to your phone number. Please use the button below to login to the application.</string>
     <string name="forgot_your_pin_failure">There was an issue with sending the SMS or with the information you provided. Please use the button below to try again.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login_failed">Login failed</string>
     <string name="logo">Logo</string>
+
+
+    <string name="dispatch_note">Type dispatch note</string>
+    <string name="choose_package_lot">Choose LOT</string>
+    <string name="enter_security_clip">Security number</string>
+    <string name="clean_truck">Clean truck:  </string>
+    <string name="smell_truck">Smells:  </string>
+    <string name="fish_condition">Fish condition</string>
+    <string name="receipt_remarks">Type your remarks</string>
+
+    <string name="received_bins">Received bins</string>
+
+    <string name="dispatch_note_confirm_label">Dispatch note:</string>
+    <string name="product_lot_confirm_label">LOT:</string>
+    <string name="fish_condition_confirm_label">Fish condition:</string>
 
 
 </resources>

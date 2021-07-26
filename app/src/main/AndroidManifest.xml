@@ -18,8 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/FishTrack">
 
-        <activity android:name=".ui.activity.transport.TransportSupervisorConfirmActivity"
+        <activity android:name=".ui.activity.process.ProcessConfirmActivity"
             android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".ui.activity.process.ProcessBinsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.process.ProcessStartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.transport.TransportSupervisorConfirmActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.transport.TransportDriverConfirmActivity"
             android:screenOrientation="portrait" />

@@ -12,6 +12,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.MobileDB;
+import io.agritrack.fishtrack.ui.activity.fishing.FishingStartActivity;
+import io.agritrack.fishtrack.ui.activity.process.ProcessStartActivity;
 import io.agritrack.fishtrack.ui.activity.transport.TransportStartActivity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
@@ -30,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         final Button btLogin = findViewById(R.id.btnLogin);
         btLogin.setOnClickListener(view -> {
             Toast.makeText(getContext(), "Logged IN!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), TransportStartActivity.class);// ForgotYourPinActivity.class);//TransportStartActivity.class);
+            Intent i = new Intent(getApplicationContext(), ProcessStartActivity.class);
             startActivity(i);
         });
 
