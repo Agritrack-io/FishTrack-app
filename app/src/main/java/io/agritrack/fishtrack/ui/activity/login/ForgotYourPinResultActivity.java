@@ -2,7 +2,6 @@ package io.agritrack.fishtrack.ui.activity.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 

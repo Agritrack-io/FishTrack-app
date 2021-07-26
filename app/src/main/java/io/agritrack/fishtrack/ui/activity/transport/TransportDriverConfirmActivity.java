@@ -1,11 +1,11 @@
 package io.agritrack.fishtrack.ui.activity.transport;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import io.agritrack.fishtrack.R;
 
@@ -17,8 +17,6 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transport_driver_confirm);
-
-        getSupportActionBar().hide();
 
         configFooter();
     }

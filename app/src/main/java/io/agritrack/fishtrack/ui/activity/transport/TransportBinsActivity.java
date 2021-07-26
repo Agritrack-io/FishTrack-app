@@ -1,14 +1,14 @@
 package io.agritrack.fishtrack.ui.activity.transport;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,8 +27,6 @@ public class TransportBinsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transport_bins);
 
-        getSupportActionBar().hide();
-
         RecyclerView rvBins = (RecyclerView) findViewById(R.id.rvBinsForTransport);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBins.setLayoutManager(layoutManager);
@@ -38,10 +36,7 @@ public class TransportBinsActivity extends AppCompatActivity {
         rvBins.setNestedScrollingEnabled(false);
 
 
-
         configFooter();
-
-
     }
 
     protected void configFooter() {

@@ -1,27 +1,15 @@
 package io.agritrack.fishtrack.ui.activity.transport;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import androidx.appcompat.app.AppCompatActivity;
 
 import io.agritrack.fishtrack.R;
-import io.agritrack.fishtrack.ui.activity.fishing.FishingStartActivity;
-import io.agritrack.fishtrack.ui.activity.fishing.FishingTeamActivity;
-import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
@@ -39,8 +27,6 @@ public class TransportStartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transport_start);
-
-        getSupportActionBar().hide();
 
         Spinner siteSpinner = (Spinner) findViewById(R.id.spPackagingSite);
         ArrayAdapter<String> psAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, sites);

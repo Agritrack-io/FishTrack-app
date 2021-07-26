@@ -1,193 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/lParentContent"
+    android:id="@+id/forgotYourPINLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_gradient_login"
-    android:backgroundTint="@color/agri_blue"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:background="@color/agri_green"
+    tools:context=".ui.activity.login.LoginActivity">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layoutAnimation="@anim/layout_animation_float"
-                    android:orientation="vertical">
-
-                    <TextView
-                        fontPath="fonts/open_sans_regular.ttf"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin35"
-                        android:layout_marginTop="140dp"
-                        android:layout_marginRight="@dimen/margin35"
-                        android:gravity="center"
-                        android:text="@string/label_login"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_huge2"
-                        tools:ignore="MissingPrefix" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin35"
-                        android:layout_marginTop="@dimen/margin20"
-                        android:layout_marginRight="@dimen/margin35"
-                        android:layout_marginBottom="@dimen/margin15"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvSubHeader"
-                            fontPath="fonts/open_sans_regular.ttf"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="@string/label_login_header_content"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text_semi_medium"
-                            tools:ignore="MissingPrefix" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layoutAnimation="@anim/layout_animation_float"
-                    android:orientation="vertical">
+        android:layout_height="75dp"
+        android:background="@drawable/bg_form_screen"
+        android:backgroundTint="@color/agri_blue"
+        android:backgroundTintMode="multiply"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:fadingEdge="horizontal"
+        android:paddingTop="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
 
-                    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-                        android:id="@+id/tfbEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin35"
-                        android:layout_marginTop="@dimen/margin25"
-                        android:layout_marginRight="@dimen/margin35"
-                        android:animateLayoutChanges="true"
-                        android:background="@drawable/bg_rounded_login_edit_text"
-                        app:counterTextColor="@color/colorAccent"
-                        app:helperTextColor="@color/colorAccent"
-                        app:labelText="@string/label_email_hint"
-                        app:primaryColor="@color/colorAccent"
-                        app:secondaryColor="@color/colorAccent">
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="14dp"
+            android:contentDescription="back Image"
+            android:src="@drawable/ic_back"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvTitleToolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-                        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                            android:id="@+id/etEmail"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:imeOptions="actionNext"
-                            android:inputType="text"
-                            android:maxLines="1"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white"
-                            android:textSize="@dimen/text_small"
-                            app:prefixTextColor="@color/colorAccent"
-                            app:suffixTextColor="@color/colorAccent" />
-
-
-                    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
-
-
-                    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-                        android:id="@+id/tfbPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin35"
-                        android:layout_marginTop="@dimen/margin25"
-                        android:layout_marginRight="@dimen/margin35"
-                        android:animateLayoutChanges="true"
-                        android:background="@drawable/bg_rounded_login_edit_text"
-                        app:counterTextColor="@color/colorAccent"
-                        app:helperTextColor="@color/colorAccent"
-                        app:labelText="@string/label_password_hint"
-                        app:primaryColor="@color/colorAccent"
-                        app:secondaryColor="@color/colorAccent">
-
-                        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-                            android:id="@+id/etPassword"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:imeOptions="actionDone"
-                            android:inputType="textPassword"
-                            android:maxLines="1"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white"
-                            android:textSize="@dimen/text_small"
-                            app:prefixTextColor="@color/colorAccent"
-                            app:suffixTextColor="@color/colorAccent" />
-                    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
-
-                    <Button
-                        android:id="@+id/btnLogin"
-                        fontPath="fonts/open_sans_bold.ttf"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/margin55"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/margin95"
-                        android:layout_marginBottom="@dimen/margin10"
-                        android:background="@drawable/bg_rounded_btn_login"
-                        android:backgroundTint="@color/agri_green"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:paddingLeft="@dimen/margin95"
-                        android:paddingRight="@dimen/margin95"
-                        android:text="@string/label_login"
-                        android:textColor="@color/color_tv_blue_btn_login"
-                        android:textSize="@dimen/text_default"
-                        tools:ignore="MissingPrefix">
-
-                    </Button>
+        <TextView
+            android:id="@+id/tvTitleToolbar"
+            fontPath="fonts/open_sans_semibold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:width="250sp"
+            android:gravity="center|top|fill_vertical"
+            android:text="@string/title_fishing"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivNext"
+            app:layout_constraintStart_toEndOf="@+id/ivBack"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingPrefix" />
 
 
-                    <TextView
-                        android:id="@+id/tvLupaSandi"
-                        fontPath="fonts/open_sans_bold.ttf"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/margin35"
-                        android:layout_marginTop="@dimen/margin40"
-                        android:layout_marginRight="@dimen/margin35"
-                        android:layout_marginBottom="@dimen/margin15"
-                        android:gravity="center"
-                        android:text="@string/label_tv_forgot_pwd"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_default"
-                        tools:ignore="MissingPrefix" />
+        <ImageView
+            android:id="@+id/ivNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="14dp"
+            android:src="@drawable/ic_next"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvTitleToolbar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvPlatformQuantityNoBins"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/agri_blue"
+            android:backgroundTintMode="screen"
+            android:gravity="center"
+            android:text="@string/title_user_date"
+            android:textColor="@color/agri_green"
+            android:textSize="@dimen/subtitle_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleToolbar"
+            tools:layout_conversion_absoluteHeight="0dp"
+            tools:layout_conversion_absoluteWidth="0dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/formLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/footerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
 
 
-                    <TextView
-                        fontPath="fonts/open_sans_bold.ttf"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin35"
-                        android:layout_marginRight="@dimen/margin35"
-                        android:layout_marginBottom="@dimen/margin15"
-                        android:gravity="center"
-                        android:text="@string/label_copyright_splash"
-                        android:textColor="@color/color_tv_copyright_login"
-                        android:textSize="@dimen/text_default"
-                        tools:ignore="MissingPrefix" />
+        <ImageView
+            android:id="@+id/ivLogoLogin"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="80dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/logo"
+            android:src="@drawable/agritrack_logo_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-                </LinearLayout>
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
-</LinearLayout>
+        <TextView
+            android:id="@+id/username_label"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center|end"
+            android:labelFor="@+id/pin_text"
+            android:paddingEnd="24dp"
+            android:text="@string/username"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/phone_number_label"
+            app:layout_constraintEnd_toEndOf="@+id/phone_number_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin" />
+
+
+        <EditText
+            android:id="@+id/tvUserName_text"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:ems="9"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/tvPhoneNumber_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/username_label"
+            app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin"
+            tools:ignore="LabelFor,RelativeOverlap" />
+
+        <TextView
+            android:id="@+id/phone_number_label"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="200dp"
+            android:layout_marginBottom="180dp"
+            android:gravity="center|end"
+            android:labelFor="@+id/pin_text"
+            android:paddingEnd="24dp"
+            android:text="@string/phone_number"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/tvPhoneNumber_text"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="180dp"
+            android:ems="9"
+            android:importantForAutofill="no"
+            android:inputType="phone"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/phone_number_label"
+            tools:ignore="LabelFor,RelativeOverlap" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:layout_marginEnd="100dp"
+            android:background="@color/agri_blue"
+            android:text="@string/label_login"
+            android:textColor="@color/yellow"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/phone_number_label" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="20dp" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/footerLayout"
+        android:layout_width="0dp"
+        android:layout_height="68sp"
+        android:background="@drawable/border_top"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/formLayout">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/powered_by_agritrack" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

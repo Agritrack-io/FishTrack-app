@@ -3,6 +3,7 @@ package io.agritrack.fishtrack;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.stetho.BuildConfig;
 import com.facebook.stetho.Stetho;
 
 public class FishTrackApplication extends Application {

@@ -7,10 +7,13 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+import io.agritrack.fishtrack.data.dao.AppUserDAO;
 import io.agritrack.fishtrack.data.dao.SiteDAO;
+import io.agritrack.fishtrack.data.model.AppUser;
 import io.agritrack.fishtrack.data.model.Site;
 
-@Database(entities = {Site.class}, version = 31)
+
+@Database(entities = {Site.class, AppUser.class}, version = 31)
 @TypeConverters({DateConverter.class, LongListConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
@@ -34,6 +37,8 @@ public abstract class MobileDB extends RoomDatabase {
     }
 
     public abstract SiteDAO siteDAO();
+
+    public abstract AppUserDAO userDAO();
 
 //    public abstract PlantDAO plantDAO();
 //

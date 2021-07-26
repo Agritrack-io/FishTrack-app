@@ -1,6 +1,5 @@
 package io.agritrack.fishtrack.ui.activity.profile.adapter;
 
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import io.agritrack.fishtrack.R;
-import io.agritrack.fishtrack.ui.activity.profile.Home2Activity;
 import io.agritrack.fishtrack.ui.bo.MenuItemData;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;

@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         final Button btLogin = findViewById(R.id.btnLogin);
         btLogin.setOnClickListener(view -> {
             Toast.makeText(getContext(), "Logged IN!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), TransportStartActivity.class);
+            Intent i = new Intent(getApplicationContext(), TransportStartActivity.class);// ForgotYourPinActivity.class);//TransportStartActivity.class);
             startActivity(i);
         });
 
