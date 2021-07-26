@@ -18,7 +18,6 @@ public class ProcessBinsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_process_bins);
 
-        getSupportActionBar().hide();
 
        /* Spinner siteSpinner = (Spinner) findViewById(R.id.spPackagingSite);
         ArrayAdapter<String> psAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, sites);

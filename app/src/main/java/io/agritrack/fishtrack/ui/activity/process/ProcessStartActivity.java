@@ -22,8 +22,6 @@ public class ProcessStartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_process_start);
 
-        getSupportActionBar().hide();
-
        /* Spinner siteSpinner = (Spinner) findViewById(R.id.spPackagingSite);
         ArrayAdapter<String> psAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, sites);
         psAdapter.setDropDownViewResource(R.layout.simple_spinner_item);

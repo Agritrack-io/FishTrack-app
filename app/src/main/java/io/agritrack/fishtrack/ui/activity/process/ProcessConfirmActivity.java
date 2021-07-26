@@ -19,8 +19,6 @@ public class ProcessConfirmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_process_confirm);
 
-        getSupportActionBar().hide();
-
         configFooter();
     }
 
