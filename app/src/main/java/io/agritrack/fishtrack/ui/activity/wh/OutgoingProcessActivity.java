@@ -1,0 +1,38 @@
+package io.agritrack.fishtrack.ui.activity.wh;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import io.agritrack.fishtrack.R;
+
+import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+
+public class OutgoingProcessActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_outgoing_process);
+        configFooter();
+    }
+
+    protected void configFooter() {
+        /*ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
+        ivNext.setOnClickListener(view -> {
+            Toast.makeText(getContext(), "Finish outgoing!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), OutgoingProcessActivity.class);
+            startActivity(i);
+        });*/
+
+        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartOutgoing);
+        ivBack.setOnClickListener(view -> {
+            Toast.makeText(getContext(), "Start outgoing!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), OutgoingStartActivity.class);
+            startActivity(i);
+        });
+    }
+}

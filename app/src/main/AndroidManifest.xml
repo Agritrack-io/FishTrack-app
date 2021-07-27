@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
         android:name=".FishTrackApplication"
         android:allowBackup="true"
@@ -17,9 +16,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/FishTrack">
-
-        <activity android:name=".ui.activity.process.ProcessConfirmActivity"
-            android:screenOrientation="portrait"></activity>
+        <activity android:name=".ui.activity.wh.OutgoingProcessActivity"></activity>
+        <activity android:name=".ui.activity.wh.OutgoingStartActivity" />
+        <activity
+            android:name=".ui.activity.wh.IncomingProcessActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.wh.IncomingStartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.process.ProcessConfirmActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.process.ProcessBinsActivity"
             android:screenOrientation="portrait" />
@@ -74,19 +81,18 @@
         <activity
             android:name=".ui.activity.HomeActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ui.activity.login.ForgotYourPinActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.login.ForgotYourPinResultActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ui.activity.login.LoginActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/rootLayout"
+android:id="@+id/fishingBinsLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
-tools:context=".ui.activity.process.ProccesConfirmActivity">
+tools:context=".ui.activity.wh.OutgoingProcessActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -47,7 +47,7 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
         android:layout_marginBottom="32dp"
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
-        android:text="@string/title_processing"
+        android:text="@string/title_outgoing"
         android:textColor="@color/white"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -79,7 +79,7 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
         android:backgroundTint="@color/agri_blue"
         android:backgroundTintMode="screen"
         android:gravity="center"
-        android:text="@string/title_user_date"
+        android:text="@string/title_date_type_of_asset"
         android:textColor="@color/agri_green"
         android:textSize="@dimen/subtitle_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -97,20 +97,21 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
     android:layout_height="0dp"
     app:layout_constraintBottom_toTopOf="@+id/footerLayout"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.0"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
     <RelativeLayout
-        android:id="@+id/fishConfirmLayout"
+        android:id="@+id/outgoingProcessALayout"
         android:layout_width="0dp"
-        android:layout_height="280dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@id/fishEnterPinLayout"
+        android:layout_height="120dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/outgoingProcessBLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/formLayout">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -118,146 +119,83 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
             android:layout_marginTop="12dp"
             android:background="@drawable/shape_rounded_corner_with_shadow"
             android:orientation="vertical"
-            android:padding="15dp">
+            android:padding="1dp">
 
             <TextView
-                android:id="@+id/tvNumberOfBinsLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/number_of_bins"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvDispatchNoteLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvNumberOfBinsCount"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvDispatchNoteLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/dispatch_note_confirm_label"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvPackagingLotLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvDispatchNote"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsLabel" />
-
-            <TextView
-                android:id="@+id/tvPackagingLotLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/product_lot_confirm_label"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvSecurityClipNumberLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvPackagingLot"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDispatchNoteLabel" />
-
-            <TextView
-                android:id="@+id/tvDispatchNote"
-                android:layout_width="136dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:text="ΔΑ67890"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvPackagingLot"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvDispatchNoteLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsCount" />
-
-            <TextView
-                android:id="@+id/tvPackagingLot"
-                android:layout_width="136dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:text="V34944"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvSecurityClipNumber"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvPackagingLotLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvDispatchNote" />
-
-            <TextView
-                android:id="@+id/tvSecurityClipNumberLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/security_clip_label_confirm"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvFishConditionLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvSecurityClipNumber"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPackagingLotLabel" />
-
-            <TextView
-                android:id="@+id/tvNumberOfBinsCount"
-                android:layout_width="136dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:text="10"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvDispatchNote"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvNumberOfBinsLabel"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvSecurityClipNumber"
-                android:layout_width="136dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:text="12345"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvFishCondition"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvSecurityClipNumberLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvPackagingLot" />
-
-            <TextView
-                android:id="@+id/tvFishConditionLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/fish_condition_confirm_label"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvFishCondition"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSecurityClipNumberLabel" />
-
-            <TextView
-                android:id="@+id/tvFishCondition"
-                android:layout_width="136dp"
-                android:layout_height="wrap_content"
+                android:id="@+id/tvFrom"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:paddingStart="3dp"
-                android:text="good"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
+                android:layout_marginTop="16dp"
+                android:inputType="text"
+                android:text="From:"
+                android:textColor="@color/agri_blue"
+                android:textIsSelectable="false"
                 android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/tvTo"
+                app:layout_constraintEnd_toStartOf="@+id/tvOutgoingProcessFrom"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvOutgoingProcessTo"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/border_bottom"
+                android:gravity="center"
+                android:inputType="text"
+                android:text="site, supplier or asset"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/text_view_font_size"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvFishConditionLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvSecurityClipNumber" />
+                app:layout_constraintStart_toEndOf="@+id/tvTo"
+                app:layout_constraintTop_toBottomOf="@+id/tvOutgoingProcessFrom" />
+
+            <TextView
+                android:id="@+id/tvTo"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:inputType="text"
+                android:text="To:"
+                android:textColor="@color/agri_blue"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvOutgoingProcessTo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvFrom" />
+
+            <TextView
+                android:id="@+id/tvOutgoingProcessFrom"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/border_bottom"
+                android:gravity="center"
+                android:inputType="text"
+                android:text="Subsite or asset"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/text_view_font_size"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/tvOutgoingProcessTo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvFrom"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -268,22 +206,24 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="@string/fishing_confirm"
+            android:text="Outgoing details"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/fishEnterPinLayout"
+        android:id="@+id/outgoingProcessBLayout"
         android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/formLayout"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fishConfirmLayout">
+        app:layout_constraintTop_toBottomOf="@+id/outgoingProcessALayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -291,46 +231,113 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
             android:layout_marginTop="12dp"
             android:background="@drawable/shape_rounded_corner_with_shadow"
             android:orientation="vertical"
-            android:padding="15dp">
+            android:padding="1dp">
 
             <TextView
-                android:id="@+id/tvUsername"
+                android:id="@+id/tvSelectBins"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="70dp"
+                android:layout_marginStart="32dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="70dp"
-                android:background="@drawable/border_all"
-                android:text="USERNAME"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
+                android:layout_marginEnd="32dp"
+                android:gravity="center_horizontal"
+                android:text="@string/outgoing_assets"
+                android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/etPasswordFishing"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.1"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
+                app:layout_constraintEnd_toStartOf="@+id/ivDeleteBin"
+                app:layout_constraintStart_toEndOf="@+id/ivAddBin"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/etPasswordFishing"
+            <Button
+                android:id="@+id/btnScanAsset"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="70dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="70dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/border_all"
-                android:ems="10"
-                android:hint="PIN"
-                android:inputType="numberPassword"
-                android:textAlignment="center"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size"
+                android:layout_height="78dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="8dp"
+                android:backgroundTint="@color/agri_blue"
+                android:text="@string/scan_assets"
+                android:textColor="@color/yellow"
+                android:textSize="@dimen/button_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
+                app:layout_constraintTop_toBottomOf="@+id/tvNumberBins"
+                tools:layout_conversion_absoluteHeight="120dp"
+                tools:layout_conversion_absoluteWidth="0dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBinsForTransport"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="#fff"
+                app:layout_constraintBottom_toTopOf="@+id/tvNumberBins"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvSelectBins">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/tvNumberBins"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_horizontal"
+                android:text="@string/number_of_assets"
+                android:textColor="@color/label_blue"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
+                app:layout_constraintEnd_toStartOf="@+id/tvBinsCount"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rvBinsForTransport" />
+
+            <TextView
+                android:id="@+id/tvBinsCount"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/border_bottom"
+                android:gravity="center"
+                android:inputType="number"
+                android:text="10"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/tvNumberBins"
+                app:layout_constraintTop_toBottomOf="@+id/rvBinsForTransport" />
+
+            <ImageView
+                android:id="@+id/ivDeleteBin"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="16dp"
+
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvSelectBins"
+                app:srcCompat="@drawable/ic_delete" />
+
+            <ImageView
+                android:id="@+id/ivAddBin"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
+                app:layout_constraintEnd_toStartOf="@+id/tvSelectBins"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/ic_add_stock_opname" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -341,7 +348,7 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="@string/fishing_enter_pin"
+            android:text="Assets"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
@@ -359,7 +366,7 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
     app:layout_constraintTop_toBottomOf="@+id/formLayout">
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -368,12 +375,12 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
         android:scaleY="0.7"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToReceiveBins"
+        app:layout_constraintStart_toEndOf="@+id/ivBackToStartOutgoing"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/powered_by_agritrack" />
 
     <ImageView
-        android:id="@+id/ivBackToReceiveBins"
+        android:id="@+id/ivBackToStartOutgoing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -396,6 +403,6 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_check_blue" />
-</androidx.constraintlayout.widget.ConstraintLayout>
 
+</androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

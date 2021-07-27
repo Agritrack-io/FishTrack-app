@@ -130,10 +130,12 @@
     <string name="login_failed">Login failed</string>
     <string name="logo">Logo</string>
 
+    <string name="title_processing">PROCESSING</string>
+    <string name="title_date_lot_dispatch_note">DATE / LOT / DISPATCH NOTE</string>
 
     <string name="dispatch_note">Type dispatch note</string>
     <string name="choose_package_lot">Choose LOT</string>
-    <string name="enter_security_clip">Security number</string>
+    <string name="enter_security_clip">Type security clip number</string>
     <string name="clean_truck">Clean truck:  </string>
     <string name="smell_truck">Smells:  </string>
     <string name="fish_condition">Fish condition</string>
@@ -148,6 +150,24 @@
     <string name="welcome">Welcome</string>
     <string name="authenticating">Please wait, authenticating user</string>
     <string name="syncing">Please wait, syncing routes</string>
+
+    <string name="title_incoming">INCOMING</string>
+    <string name="title_date_type_of_asset">DATE / TYPE OF ASSET</string>
+    <string name="title_outgoing">OUTGOING</string>
+
+    <string name="incoming_assets">Incoming assets</string>
+    <string name="number_of_assets"># of assets:</string>
+    <string name="scan_assets">SCAN</string>
+    <string name="outgoing_assets">Outgoing assets</string>
+
+    <string name="title_incoming">INCOMING</string>
+    <string name="title_date_type_of_asset">DATE / TYPE OF ASSET</string>
+    <string name="title_outgoing">OUTGOING</string>
+
+    <string name="incoming_assets">Incoming assets</string>
+    <string name="number_of_assets"># of assets:</string>
+    <string name="scan_assets">SCAN</string>
+    <string name="outgoing_assets">Outgoing assets</string>
 
 
 </resources>

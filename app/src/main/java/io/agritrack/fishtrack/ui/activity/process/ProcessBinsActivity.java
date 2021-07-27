@@ -42,9 +42,9 @@ public class ProcessBinsActivity extends AppCompatActivity {
             startActivity(i);
         });
 
-         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartProcces);
+         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartProcess);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Start procces!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Start process!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), ProcessStartActivity.class);
             startActivity(i);
         });
