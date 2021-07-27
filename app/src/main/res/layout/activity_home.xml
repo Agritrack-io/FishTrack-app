@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
-    tools:context=".ui.activity.fishing.FishingStartActivity">
+    tools:context=".ui.activity.HomeActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -47,7 +47,7 @@
             android:layout_marginBottom="32dp"
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
-            android:text="@string/title_fishing"
+            android:text="@string/title_main_menu"
             android:textColor="@color/white"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -16,8 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/FishTrack">
-        <activity android:name=".ui.activity.wh.OutgoingProcessActivity"></activity>
-        <activity android:name=".ui.activity.wh.OutgoingStartActivity" />
+        <activity android:name=".ui.activity.WhMenuActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".ui.activity.wh.OutgoingProcessActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.wh.OutgoingStartActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.wh.IncomingProcessActivity"
             android:screenOrientation="portrait" />
