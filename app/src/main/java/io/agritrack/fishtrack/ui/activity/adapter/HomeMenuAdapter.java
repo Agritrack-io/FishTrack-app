@@ -16,10 +16,10 @@ import java.util.List;
 
 import io.agritrack.fishtrack.R;
 
-public class HomeMenuAdapter extends ArrayAdapter<HomeMenuItem> {
-    private List<HomeMenuItem> items = new LinkedList<>();
+public class HomeMenuAdapter extends ArrayAdapter<MenuItem> {
+    private List<MenuItem> items = new LinkedList<>();
 
-    public HomeMenuAdapter(@NonNull Context ctx, ArrayList<HomeMenuItem> menuItemsList) {
+    public HomeMenuAdapter(@NonNull Context ctx, ArrayList<MenuItem> menuItemsList) {
         super(ctx, 0, menuItemsList);
     }
 
@@ -32,7 +32,7 @@ public class HomeMenuAdapter extends ArrayAdapter<HomeMenuItem> {
             // Layout Inflater inflates each item to be displayed in GridView.
             menuItemView = LayoutInflater.from(getContext()).inflate(R.layout.home_menu_item, parent, false);
         }
-        HomeMenuItem menuItem = getItem(position);
+        MenuItem menuItem = getItem(position);
         TextView courseTV = menuItemView.findViewById(R.id.tvMenuCaption);
         ImageView courseIV = menuItemView.findViewById(R.id.ivMenuThumb);
         courseTV.setText(menuItem.getName());

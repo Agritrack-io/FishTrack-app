@@ -13,11 +13,12 @@ import java.util.ArrayList;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.ui.activity.adapter.HomeMenuAdapter;
-import io.agritrack.fishtrack.ui.activity.adapter.HomeMenuItem;
+import io.agritrack.fishtrack.ui.activity.adapter.MenuItem;
 import io.agritrack.fishtrack.ui.activity.fishing.FishingStartActivity;
 import io.agritrack.fishtrack.ui.activity.login.LoginActivity;
 import io.agritrack.fishtrack.ui.activity.process.ProcessStartActivity;
 import io.agritrack.fishtrack.ui.activity.transport.TransportStartActivity;
+import io.agritrack.fishtrack.ui.activity.wh.IncomingStartActivity;
 
 public class HomeActivity extends AppCompatActivity {
     private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenace_Idx = 4;
@@ -30,14 +31,14 @@ public class HomeActivity extends AppCompatActivity {
 
         gvMainMenu = findViewById(R.id.gvMainMenu);
 
-        ArrayList<HomeMenuItem> courseModelArrayList = new ArrayList<HomeMenuItem>();
-        courseModelArrayList.add(new HomeMenuItem("Fishing", "", R.drawable.fishing));
-        courseModelArrayList.add(new HomeMenuItem("Transport", "", R.drawable.transport));
-        //courseModelArrayList.add(new HomeMenuItem("Processing", "", R.drawable.ic_barang_masuk));
-        courseModelArrayList.add(new HomeMenuItem("Warehouse", "", R.drawable.ic_product_assets));
-        courseModelArrayList.add(new HomeMenuItem("Maintenance", "", R.drawable.repair));
+        ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
+        menuItemsList.add(new MenuItem("Fishing", "", R.drawable.fishing));
+        menuItemsList.add(new MenuItem("Transport", "", R.drawable.transport));
+        menuItemsList.add(new MenuItem("Processing", "", R.drawable.ic_barang_masuk));
+        menuItemsList.add(new MenuItem("Warehouse", "", R.drawable.ic_product_assets));
+        menuItemsList.add(new MenuItem("Maintenance", "", R.drawable.repair));
 
-        HomeMenuAdapter adapter = new HomeMenuAdapter(this, courseModelArrayList);
+        HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvMainMenu.setAdapter(adapter);
 
         gvMainMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -56,10 +57,10 @@ public class HomeActivity extends AppCompatActivity {
                         i = new Intent(appCtx, ProcessStartActivity.class);
                         break;
                     case Warehouse_Idx:
-                        //i = new Intent(appCtx, WarLoginActivity.class);
+                        i = new Intent(appCtx, IncomingStartActivity.class);
                         break;
                     case Maintenace_Idx:
-                        //i = new Intent(appCtx, LoginActivity.class);
+                        i = new Intent(appCtx, LoginActivity.class);
                         break;
                     default:
                 }

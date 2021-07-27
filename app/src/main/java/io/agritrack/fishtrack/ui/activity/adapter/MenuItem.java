@@ -1,12 +1,12 @@
 package io.agritrack.fishtrack.ui.activity.adapter;
 
 
-public class HomeMenuItem {
+public class MenuItem {
     private String name;
     private int imgId;
     private String activity;
 
-    public HomeMenuItem(String name, String activity, int imgID) {
+    public MenuItem(String name, String activity, int imgID) {
         this.name = name;
         this.activity = activity;
         this.imgId = imgID;
