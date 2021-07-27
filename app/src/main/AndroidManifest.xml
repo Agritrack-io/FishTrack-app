@@ -70,9 +70,6 @@
             android:name=".ui.activity.TemplateActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.profile.Home2Activity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.activity.asset.ItemAssetsListActivity"
             android:screenOrientation="portrait" />
         <activity
