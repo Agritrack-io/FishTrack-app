@@ -151,7 +151,6 @@
     <string name="authenticating">Please wait, authenticating user</string>
     <string name="syncing">Please wait, syncing routes</string>
 
-    <string name="title_incoming">INCOMING</string>
     <string name="title_date_type_of_asset">DATE / TYPE OF ASSET</string>
     <string name="title_outgoing">OUTGOING</string>
 
@@ -160,7 +159,11 @@
     <string name="scan_assets">SCAN</string>
     <string name="outgoing_assets">Outgoing assets</string>
 
+<<<<<<< HEAD
     <string name="title_main_menu">MAIN MENU</string>
 
 
+=======
+    <string name="title_incoming">INCOMING</string>
+>>>>>>> e66a5f3151d4415c8b28877b669d7bd191e0c8df
 </resources>
