@@ -57,7 +57,7 @@ public class HomeActivity extends AppCompatActivity {
                         i = new Intent(appCtx, ProcessStartActivity.class);
                         break;
                     case Warehouse_Idx:
-                        i = new Intent(appCtx, IncomingStartActivity.class);
+                        i = new Intent(appCtx, WhMenuActivity.class);
                         break;
                     case Maintenace_Idx:
                         i = new Intent(appCtx, LoginActivity.class);

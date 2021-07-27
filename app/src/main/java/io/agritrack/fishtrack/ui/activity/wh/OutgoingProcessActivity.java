@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.ui.activity.WhMenuActivity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
@@ -21,12 +22,12 @@ public class OutgoingProcessActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        /*ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
+        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Finish outgoing!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), OutgoingProcessActivity.class);
+            Toast.makeText(getContext(), "Congratulations!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
-        });*/
+        });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartOutgoing);
         ivBack.setOnClickListener(view -> {

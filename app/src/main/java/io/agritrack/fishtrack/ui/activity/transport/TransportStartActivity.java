@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.ui.activity.HomeActivity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
@@ -48,6 +49,13 @@ public class TransportStartActivity extends AppCompatActivity {
         ivNext.setOnClickListener(view -> {
             Toast.makeText(getContext(), "Load bins!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), TransportBinsActivity.class);
+            startActivity(i);
+        });
+
+        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
+        ivBack.setOnClickListener(view -> {
+            Toast.makeText(getContext(), "Main menu!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         });
     }
