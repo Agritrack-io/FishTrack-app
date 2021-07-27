@@ -144,6 +144,10 @@
     <string name="dispatch_note_confirm_label">Dispatch note:</string>
     <string name="product_lot_confirm_label">LOT:</string>
     <string name="fish_condition_confirm_label">Fish condition:</string>
+    <string name="forgot_your_pin">Did you forget your PIN?</string>
+    <string name="welcome">Welcome</string>
+    <string name="authenticating">Please wait, authenticating user</string>
+    <string name="syncing">Please wait, syncing routes</string>
 
 
 </resources>

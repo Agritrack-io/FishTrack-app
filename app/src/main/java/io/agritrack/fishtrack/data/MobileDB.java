@@ -13,7 +13,7 @@ import io.agritrack.fishtrack.data.model.AppUser;
 import io.agritrack.fishtrack.data.model.Site;
 
 
-@Database(entities = {Site.class, AppUser.class}, version = 31)
+@Database(entities = {Site.class, AppUser.class}, version = 31, exportSchema = false)
 @TypeConverters({DateConverter.class, LongListConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();

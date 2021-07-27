@@ -15,16 +15,19 @@ public class Site {
     public String name;
 
     @ColumnInfo(name = "description")
-    private String description;
+    public String description;
 
     @ColumnInfo(name = "code")
-    private String code;
+    public String code;
 
     @ColumnInfo(name = "site_lvl")
-    private String siteLevel;
+    public String siteLevel;
 
     @ColumnInfo(name = "active")
     public Boolean active;
+
+    public Site() {
+    }
 
     @NonNull
     public String toString() {

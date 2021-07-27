@@ -100,20 +100,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerLayout">
 
+        <TextView
+            android:id="@+id/tvWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/welcome"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/ivLogoLogin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/ivLogoLogin"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_gravity="center"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="24dp"
             android:layout_weight="1"
             android:contentDescription="@string/logo"
             android:src="@drawable/agritrack_logo_horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/tvWelcome" />
 
         <TextView
             android:id="@+id/username_label"
@@ -122,7 +136,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="80dp"
             android:layout_marginBottom="8dp"
             android:gravity="center|end"
             android:labelFor="@+id/pin_text"
@@ -131,18 +145,18 @@
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/password_label"
-            app:layout_constraintEnd_toStartOf="@+id/tvUserName_text"
+            app:layout_constraintEnd_toEndOf="@+id/password_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin" />
 
 
         <EditText
-            android:id="@+id/tvUserName_text"
+            android:id="@+id/etUserName"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="80dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:ems="9"
@@ -150,7 +164,7 @@
             android:inputType="textPersonName"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/tvPassword_text"
+            app:layout_constraintBottom_toTopOf="@+id/etPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/username_label"
             app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin"
@@ -160,8 +174,7 @@
             android:id="@+id/password_label"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginEnd="200dp"
-            android:layout_marginBottom="180dp"
+            android:layout_marginBottom="270dp"
             android:gravity="center|end"
             android:labelFor="@+id/pin_text"
             android:paddingEnd="24dp"
@@ -169,18 +182,18 @@
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/etPassword"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
-            android:id="@+id/tvPassword_text"
+            android:id="@+id/etPassword"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="180dp"
+            android:layout_marginBottom="270dp"
             android:ems="9"
             android:importantForAutofill="no"
             android:inputType="numberPassword"
@@ -194,9 +207,11 @@
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="100dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="100dp"
+            android:layout_marginBottom="140dp"
             android:background="@color/agri_blue"
             android:text="@string/label_login"
             android:textColor="@color/yellow"
@@ -206,13 +221,49 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/password_label" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
+        <TextView
+            android:id="@+id/forgot_password_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="20dp" />
+            android:layout_marginBottom="32dp"
+            android:text="@string/forgot_your_pin"
+            android:textAlignment="center"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="331dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_below="@+id/loading"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="71dp"
+            android:background="@color/colorPrimary"
+            android:textAlignment="center"
+            android:textColor="#8DC63F"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/loading"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
