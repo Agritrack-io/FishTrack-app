@@ -28,7 +28,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="13dp"
             android:background="@color/agri_blue"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?selectableItemBackground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -96,16 +96,9 @@
             android:id="@+id/gvMainMenu"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:gravity="center"
-<<<<<<< HEAD
-            android:verticalSpacing="10dp"
             android:numColumns="1"
-=======
-            android:horizontalSpacing="30dp"
-            android:numColumns="auto_fit"
->>>>>>> cb1d45e1c198f8763100265477a7851e7f992bd6
             android:stretchMode="columnWidth"
-            android:verticalSpacing="30dp"
+            android:verticalSpacing="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

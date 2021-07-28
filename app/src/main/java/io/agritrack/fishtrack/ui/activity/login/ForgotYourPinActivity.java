@@ -3,6 +3,7 @@ package io.agritrack.fishtrack.ui.activity.login;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -34,15 +35,15 @@ public class ForgotYourPinActivity extends AppCompatActivity {
 
         phoneNumberText = findViewById(R.id.tvPhoneNumber_text);
         usernameText = findViewById(R.id.tvUserName_text);
-        ImageView cancelButton = findViewById(R.id.ivCancelSend);
-        ImageView sendButton = findViewById(R.id.ivSend);
+        //ImageView cancelButton = findViewById(R.id.ivCancelSend);
+        Button promptButton = findViewById(R.id.btnSubmit);
 
-        cancelButton.setOnClickListener(view -> {
+        /*cancelButton.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(i);
-        });
+        });*/
 
-        sendButton.setOnClickListener(view -> sendPasswordReminder());
+        promptButton.setOnClickListener(view -> sendPasswordReminder());
     }
 
     public void sendPasswordReminder() {

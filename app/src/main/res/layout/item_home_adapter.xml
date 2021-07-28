@@ -17,7 +17,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout1"
         android:layout_width="match_parent"
-        android:layout_height="100sp">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/ivMenuThumb"
@@ -25,23 +25,29 @@
             android:layout_height="96sp"
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_barang_masuk"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvMenuCaption"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvMenuCaption"
             fontPath="fonts/open_sans_extra_bold.ttf"
             android:layout_width="0dp"
-            android:layout_height="41dp"
-            android:layout_marginTop="24dp"
-            android:fontFamily="sans-serif-medium"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="sans-serif"
             android:text="@string/assets_masuk"
             android:textAlignment="center"
-            android:textColor="@color/agri_green"
+            android:textColor="@color/agri_blue"
             android:textSize="30sp"
-            android:textStyle="bold"
+            android:textStyle="normal"
             android:verticalScrollbarPosition="left"
             app:barrierDirection="left"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivMenuThumb"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

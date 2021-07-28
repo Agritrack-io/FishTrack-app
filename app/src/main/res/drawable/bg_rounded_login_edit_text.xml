@@ -9,7 +9,7 @@
     <!--</gradient>-->
 
 
-    <solid android:color="@color/color_bg_edit_text_login"/>
+    <solid android:color="@color/agri_blue"/>
     <!-- this one is ths color of the Rounded Button -->
     <corners android:radius="@dimen/margin10" />
 </shape>

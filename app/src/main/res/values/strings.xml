@@ -6,12 +6,13 @@
 
     <string name="title_activity_login">LoginActivity</string>
     <string name="label_login">Login</string>
+    <string name="label_submit">Submit</string>
 
     <string name="label_email_hint">Email</string>
     <string name="label_password_hint">Password</string>
 
-    <string name="label_login_header_content">Please login with your email</string>
-    <string name="label_tv_forgot_pwd">Did you forget your password?</string>
+    <string name="label_login_header_content">Please login with your credentials</string>
+    <string name="label_tv_forgot_pwd">Did you forget your Password?</string>
 
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -124,7 +125,7 @@
 
     <string name="phone_number">Phone number</string>
     <string name="username">Username</string>
-    <string name="insert_user_details">Please insert your phone number and your username to be reminded of your PIN</string>
+    <string name="insert_user_details">Please insert your username and your phone number to be reminded of your PIN</string>
     <string name="forgot_your_pin_success">Your PIN was successfully sent to your phone number. Please use the button below to login to the application.</string>
     <string name="forgot_your_pin_failure">There was an issue with sending the SMS or with the information you provided. Please use the button below to try again.</string>
     <string name="login_failed">Login failed</string>

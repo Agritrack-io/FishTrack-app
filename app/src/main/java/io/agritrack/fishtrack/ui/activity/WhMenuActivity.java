@@ -28,7 +28,7 @@ import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class WhMenuActivity extends AppCompatActivity {
 
-    private static final int Incoming_Idx = 0, Outgoing_Idx = 1, Inventory_Idx = 2, Tools_Idx = 3;
+    private static final int Incoming_Idx = 0, Outgoing_Idx = 1, Inventory_Idx = 2, Correlation_Idx = 3, Search_Idx = 4;
     GridView gvWhMainMenu;
 
     @Override
@@ -39,10 +39,11 @@ public class WhMenuActivity extends AppCompatActivity {
         gvWhMainMenu = findViewById(R.id.gvWhMainMenu);
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem("INCOMING", "", R.drawable.ic_incoming));
-        menuItemsList.add(new MenuItem("OUTGOING", "", R.drawable.transport));
-        menuItemsList.add(new MenuItem("INVENTORY", "", R.drawable.ic_barang_masuk));
-        menuItemsList.add(new MenuItem("TOOLS", "", R.drawable.ic_product_assets));
+        menuItemsList.add(new MenuItem("Incoming", "", R.drawable.ic_incoming));
+        menuItemsList.add(new MenuItem("Outgoing", "", R.drawable.transport));
+        menuItemsList.add(new MenuItem("Inventory", "", R.drawable.ic_barang_masuk));
+        menuItemsList.add(new MenuItem("Correlation", "", R.drawable.ic_product_assets));
+        menuItemsList.add(new MenuItem("Search", "", R.drawable.ic_product_assets));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvWhMainMenu.setAdapter(adapter);
@@ -62,9 +63,12 @@ public class WhMenuActivity extends AppCompatActivity {
                     /*case Inventory_Idx:
                         i = new Intent(appCtx, InventoryStartActivity.class);
                         break;
-                    case Tools_Idx:
-                        i = new Intent(appCtx, ToolsStartActivity.class);
-                        break;     */
+                    case Correlation_Idx:
+                        i = new Intent(appCtx, CorrelationStartActivity.class);
+                        break;
+                    case Search_Idx:
+                        i = new Intent(appCtx, SearchStartActivity.class);
+                        break;*/
                     default:
                 }
 

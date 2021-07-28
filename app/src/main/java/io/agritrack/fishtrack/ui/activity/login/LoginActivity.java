@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             final EditText etUserName = findViewById(R.id.etUserName);
             final EditText etPassword = findViewById(R.id.etPassword);
-            final TextView tvForgotYourPassword = findViewById(R.id.forgot_password_text);
+            final TextView tvForgotYourPassword = findViewById(R.id.tvForgotPasswordText);
             final Button btLogin = findViewById(R.id.btnLogin);
             loadingProgressBar = findViewById(R.id.loading);
             loadingText = findViewById(R.id.loading_text);

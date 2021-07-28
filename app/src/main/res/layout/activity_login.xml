@@ -9,56 +9,14 @@
     tools:context=".ui.activity.login.LoginActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/headerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:background="@drawable/bg_form_screen"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:fadingEdge="horizontal"
-        android:paddingTop="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-        <ImageView
-            android:id="@+id/ivBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="14dp"
-            android:contentDescription="back Image"
-            android:src="@drawable/ic_back"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <ImageView
-            android:id="@+id/ivNext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="14dp"
-            android:src="@drawable/ic_next"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/formLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/footerLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tvWelcome"
@@ -89,106 +47,81 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvWelcome" />
 
-        <TextView
-            android:id="@+id/username_label"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="80dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center|end"
-            android:labelFor="@+id/pin_text"
-            android:paddingEnd="24dp"
-            android:text="@string/username"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/password_label"
-            app:layout_constraintEnd_toEndOf="@+id/password_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin" />
-
 
         <EditText
             android:id="@+id/etUserName"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="70dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="80dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="32dp"
             android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_rounded_login_edit_text"
             android:ems="9"
+            android:hint="@string/username"
             android:importantForAutofill="no"
             android:inputType="textPersonName"
+            android:padding="11dp"
+            android:shadowRadius="10"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/etPassword"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/username_label"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin"
             tools:ignore="LabelFor,RelativeOverlap" />
-
-        <TextView
-            android:id="@+id/password_label"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="270dp"
-            android:gravity="center|end"
-            android:labelFor="@+id/pin_text"
-            android:paddingEnd="24dp"
-            android:text="@string/prompt_password"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/etPassword"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="70dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
             android:layout_marginBottom="270dp"
+            android:background="@drawable/bg_rounded_login_edit_text"
             android:ems="9"
+            android:hint="@string/label_password_hint"
             android:importantForAutofill="no"
             android:inputType="numberPassword"
+            android:padding="11dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/password_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/loading"
             tools:ignore="LabelFor,RelativeOverlap" />
 
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="70dp"
             android:layout_marginStart="100dp"
-            android:layout_marginTop="32dp"
             android:layout_marginEnd="100dp"
             android:layout_marginBottom="140dp"
-            android:background="@color/agri_blue"
+            android:background="@drawable/bg_rounded_btn_login"
             android:text="@string/label_login"
             android:textColor="@color/yellow"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/password_label" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/forgot_password_text"
+            android:id="@+id/tvForgotPasswordText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:text="@string/forgot_your_pin"
+            android:layout_marginBottom="90dp"
+            android:text="@string/label_tv_forgot_pwd"
             android:textAlignment="center"
-            android:textSize="22sp"
+            android:textSize="@dimen/text_view_font_size_medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -225,32 +158,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/footerLayout"
-        android:layout_width="0dp"
-        android:layout_height="68sp"
-        android:background="@drawable/border_top"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/formLayout">
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="45dp"
+            android:text="@string/label_login_header_content"
+            android:textSize="@dimen/text_view_font_size_medium"
+            app:layout_constraintBottom_toTopOf="@+id/etUserName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin" />
 
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="8dp"
             android:scaleX="0.7"
             android:scaleY="0.7"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
