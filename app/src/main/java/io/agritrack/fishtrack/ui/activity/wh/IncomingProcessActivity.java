@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.ui.activity.HomeActivity;
+import io.agritrack.fishtrack.ui.activity.WhMenuActivity;
 import io.agritrack.fishtrack.ui.activity.fishing.FishingStartActivity;
 import io.agritrack.fishtrack.ui.activity.fishing.FishingTeamActivity;
 
@@ -24,12 +26,12 @@ public class IncomingProcessActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        /*ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
+        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Finish incoming!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
+            Toast.makeText(getContext(), "Congratulations!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
-        });*/
+        });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartIncoming);
         ivBack.setOnClickListener(view -> {

@@ -13,8 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="75dp"
         android:background="@drawable/bg_form_screen"
-        android:backgroundTint="@color/agri_blue"
-        android:backgroundTintMode="multiply"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:fadingEdge="horizontal"
@@ -23,21 +21,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
-        <ImageView
-            android:id="@+id/ivBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+        <FrameLayout
+            android:id="@+id/imageButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="14dp"
-            android:contentDescription="back Image"
-            android:src="@drawable/ic_back"
-            android:visibility="invisible"
+            android:layout_marginBottom="13dp"
+            android:background="@color/agri_blue"
+            android:foreground="?android:attr/selectableItemBackground"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvTitleToolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageButton
+                android:id="@+id/ivBackToLogin"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/agri_blue"
+                android:backgroundTintMode="multiply"
+                app:srcCompat="@drawable/logout_icon" />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tvTitleToolbar"
@@ -51,25 +56,11 @@
             android:textColor="@color/white"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivNext"
-            app:layout_constraintStart_toEndOf="@+id/ivBack"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
 
-
-        <ImageView
-            android:id="@+id/ivNext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="14dp"
-            android:src="@drawable/ic_next"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvTitleToolbar"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvPlatformQuantityNoBins"
@@ -106,9 +97,15 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:gravity="center"
+<<<<<<< HEAD
             android:verticalSpacing="10dp"
             android:numColumns="1"
+=======
+            android:horizontalSpacing="30dp"
+            android:numColumns="auto_fit"
+>>>>>>> cb1d45e1c198f8763100265477a7851e7f992bd6
             android:stretchMode="columnWidth"
+            android:verticalSpacing="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -137,22 +134,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/ivBackToMain"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
-
-        <ImageView
-            android:id="@+id/ivBackToLogin"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:scaleX="1.5"
-            android:scaleY="1.2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivPoweredByLogo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logout_icon" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,7 +8,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">@color/black</color>
     <color name="colorAccent">#D6E4FE</color>
-    <color name="dark_grey">#A9A9A9A9</color>
+    <color name="dark_grey">#A9A9A9a9</color>
     <color name="light_grey">#d3d3d3</color>
 
 

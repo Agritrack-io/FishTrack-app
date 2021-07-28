@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.ui.activity.HomeActivity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
@@ -26,6 +27,13 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
         ivBack.setOnClickListener(view -> {
             Toast.makeText(getContext(), "Driver confirms!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), TransportDriverConfirmActivity.class);
+            startActivity(i);
+        });
+
+        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
+        ivNext.setOnClickListener(view -> {
+            Toast.makeText(getContext(), "Congratulations!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         });
     }

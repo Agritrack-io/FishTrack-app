@@ -10,6 +10,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.ui.activity.HomeActivity;
 import io.agritrack.fishtrack.ui.activity.login.LoginActivity;
 import io.agritrack.fishtrack.ui.activity.transport.TransportBinsActivity;
 
@@ -47,8 +48,8 @@ public class ProcessStartActivity extends AppCompatActivity {
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Start procces!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+            Toast.makeText(getContext(), "Main menu!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         });
     }

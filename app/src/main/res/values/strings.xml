@@ -161,4 +161,6 @@
 
     <string name="title_main_menu">MAIN MENU</string>
     <string name="title_incoming">INCOMING</string>
+
+    <string name="title_wh_menu">WH MENU</string>
 </resources>
