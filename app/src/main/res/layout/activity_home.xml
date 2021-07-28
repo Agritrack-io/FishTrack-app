@@ -105,16 +105,15 @@
             android:id="@+id/gvMainMenu"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:columnWidth="150dp"
             android:gravity="center"
-            android:horizontalSpacing="30dp"
-            android:verticalSpacing="30dp"
-            android:numColumns="auto_fit"
+            android:verticalSpacing="10dp"
+            android:numColumns="1"
             android:stretchMode="columnWidth"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

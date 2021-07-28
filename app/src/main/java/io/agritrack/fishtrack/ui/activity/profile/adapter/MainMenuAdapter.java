@@ -33,10 +33,10 @@ public class MainMenuAdapter extends RecyclerView.Adapter<MainMenuAdapter.ViewHo
         public ViewHolder(View view) {
             super(view);
 
-            txtTitle = (TextView) view.findViewById(R.id.tvTitle);
+            txtTitle = (TextView) view.findViewById(R.id.tvMenuCaption);
             // txtDesc1 = (TextView) view.findViewById(R.id.tvDesc1);
             // txtDesc2 = (TextView) view.findViewById(R.id.tvDesc2);
-            ivImage = (ImageView) view.findViewById(R.id.ivImage);
+            ivImage = (ImageView) view.findViewById(R.id.ivMenuThumb);
         }
 
         public TextView getTitle() {

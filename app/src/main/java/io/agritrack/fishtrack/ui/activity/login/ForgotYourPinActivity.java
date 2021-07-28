@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import io.agritrack.fishtrack.FishTrackApplication;
 import io.agritrack.fishtrack.R;
-import io.agritrack.fishtrack.service.RestfulCommunicationSingleton;
+import io.agritrack.fishtrack.data.service.RestfulCommunicationSingleton;
 import io.agritrack.fishtrack.ui.state.ForgotYourPinState;
 
 public class ForgotYourPinActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package io.agritrack.fishtrack.service;
+package io.agritrack.fishtrack.data.service;
 
 import android.content.Context;
 

@@ -11,13 +11,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 import io.agritrack.fishtrack.R;
 
+/**
+ * Used to create Menus along the app.
+ * It uses a home_menu_item layout which comprises
+ * of an ImageView (thumb) and a TextView (caption).
+ */
 public class HomeMenuAdapter extends ArrayAdapter<MenuItem> {
-    private List<MenuItem> items = new LinkedList<>();
 
     public HomeMenuAdapter(@NonNull Context ctx, ArrayList<MenuItem> menuItemsList) {
         super(ctx, 0, menuItemsList);
@@ -26,18 +28,36 @@ public class HomeMenuAdapter extends ArrayAdapter<MenuItem> {
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View menuItemView = convertView;
+        final View menuItemView = (convertView != null ? convertView : createView(parent));
 
-        if (menuItemView == null) {
-            // Layout Inflater inflates each item to be displayed in GridView.
-            menuItemView = LayoutInflater.from(getContext()).inflate(R.layout.home_menu_item, parent, false);
-        }
-        MenuItem menuItem = getItem(position);
-        TextView courseTV = menuItemView.findViewById(R.id.tvMenuCaption);
-        ImageView courseIV = menuItemView.findViewById(R.id.ivMenuThumb);
-        courseTV.setText(menuItem.getName());
-        courseIV.setImageResource(menuItem.getImgId());
+        final MenuItemViewHolder viewHolder = (MenuItemViewHolder)menuItemView.getTag();
+        viewHolder.setMenuItem(getItem(position));
 
         return menuItemView;
+    }
+
+    private View createView(ViewGroup parent) {
+        final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        final View view = inflater.inflate(R.layout.item_home_adapter, parent, false);
+
+        final MenuItemViewHolder viewHolder = new MenuItemViewHolder(view);
+        view.setTag(viewHolder);
+
+        return view;
+    }
+
+    private static class MenuItemViewHolder {
+        private ImageView ivMenuThumb;
+        private TextView tvMenuCaption;
+
+        public MenuItemViewHolder(View v) {
+            ivMenuThumb = (ImageView) v.findViewById(R.id.ivMenuThumb);
+            tvMenuCaption = (TextView) v.findViewById(R.id.tvMenuCaption);
+        }
+
+        public void setMenuItem(MenuItem menuItem) {
+            ivMenuThumb.setImageResource(menuItem.getImgId());
+            tvMenuCaption.setText(menuItem.getName());
+        }
     }
 }

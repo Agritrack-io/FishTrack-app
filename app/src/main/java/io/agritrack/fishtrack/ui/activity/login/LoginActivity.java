@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
@@ -23,34 +24,40 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
-import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.reactivestreams.Subscription;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.MobileDB;
-import io.agritrack.fishtrack.service.AppUserService;
-import io.agritrack.fishtrack.service.RestfulCommunicationSingleton;
+import io.agritrack.fishtrack.data.model.AppUser;
+import io.agritrack.fishtrack.data.service.AppUserService;
+import io.agritrack.fishtrack.data.service.RestfulCommunicationSingleton;
 import io.agritrack.fishtrack.ui.activity.HomeActivity;
-import io.agritrack.fishtrack.ui.activity.fishing.FishingStartActivity;
-import io.agritrack.fishtrack.ui.activity.process.ProcessStartActivity;
-import io.agritrack.fishtrack.ui.activity.transport.TransportStartActivity;
+
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = LoginActivity.class.getSimpleName();
+
     private MobileDB db;
     private ProgressBar loadingProgressBar;
     private TextView loadingText;
-    private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
+    private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
+
+
+    private static void accept(List<AppUser> appUsers) {
+    }
 
 
     @Override
@@ -63,6 +70,14 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+//        if (subscription != null && !subscription.isUnsubscribed()) {
+//            subscription.unsubscribe();
+//        }
+        super.onDestroy();
     }
 
     @Override
@@ -153,6 +168,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    private void invokeLogin(String username) {
+
+    }
+
+
+
     private class SyncAllTask extends AsyncTask<Void, Integer, Void> {
         @Override
         protected void onPreExecute() {
@@ -218,6 +239,7 @@ public class LoginActivity extends AppCompatActivity {
                 props.load(is);
                 String mUrlString = props.getProperty("url", "http://192.168.0.195:8090") + "/login";
                 is.close();
+
                 SharedPreferences pref = getContext().getSharedPreferences("agritrack", Context.MODE_PRIVATE);
                 long loginTime = pref.getLong("loginTime", 0);
                 long currentTime = new Date().getTime();
@@ -226,7 +248,6 @@ public class LoginActivity extends AppCompatActivity {
                 String token = pref.getString("token", null);
 
                 AppUserService userService = new AppUserService();
-                //DriverService driverService = new DriverService();
                 boolean authentication = userService.authenticateUser(db, usernameEditText.getText().toString(), passwordEditText.getText().toString());
                 if (loginDate.getDay() == currentDate.getDay() && authentication) {
                     runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(usernameEditText.getText().toString(), token))));

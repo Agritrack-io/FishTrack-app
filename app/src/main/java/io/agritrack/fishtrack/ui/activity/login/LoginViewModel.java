@@ -27,8 +27,8 @@ import java.util.concurrent.ExecutionException;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.MobileDB;
-import io.agritrack.fishtrack.service.AppUserService;
-import io.agritrack.fishtrack.service.RestfulCommunicationSingleton;
+import io.agritrack.fishtrack.data.service.AppUserService;
+import io.agritrack.fishtrack.data.service.RestfulCommunicationSingleton;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
