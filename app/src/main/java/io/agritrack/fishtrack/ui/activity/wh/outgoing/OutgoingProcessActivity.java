@@ -1,4 +1,4 @@
-package io.agritrack.fishtrack.ui.activity.wh;
+package io.agritrack.fishtrack.ui.activity.wh.outgoing;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,20 +8,16 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import io.agritrack.fishtrack.R;
-import io.agritrack.fishtrack.ui.activity.HomeActivity;
 import io.agritrack.fishtrack.ui.activity.WhMenuActivity;
-import io.agritrack.fishtrack.ui.activity.fishing.FishingStartActivity;
-import io.agritrack.fishtrack.ui.activity.fishing.FishingTeamActivity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
-public class IncomingProcessActivity extends AppCompatActivity {
+public class OutgoingProcessActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_incoming_process);
-
+        setContentView(R.layout.activity_outgoing_process);
         configFooter();
     }
 
@@ -33,10 +29,10 @@ public class IncomingProcessActivity extends AppCompatActivity {
             startActivity(i);
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartIncoming);
+        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartOutgoing);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Start incoming!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), IncomingStartActivity.class);
+            Toast.makeText(getContext(), "Start outgoing!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), OutgoingStartActivity.class);
             startActivity(i);
         });
     }

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,7 +20,8 @@ import io.agritrack.fishtrack.ui.activity.fishing.FishingStartActivity;
 import io.agritrack.fishtrack.ui.activity.login.LoginActivity;
 import io.agritrack.fishtrack.ui.activity.process.ProcessStartActivity;
 import io.agritrack.fishtrack.ui.activity.transport.TransportStartActivity;
-import io.agritrack.fishtrack.ui.activity.wh.IncomingStartActivity;
+
+import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class HomeActivity extends AppCompatActivity {
     private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenace_Idx = 4;
@@ -71,6 +74,18 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        configHeader();
+
         
+    }
+
+    protected void configHeader() {
+        ImageButton ivBack = (ImageButton) findViewById(R.id.ivBackToLogin);
+        ivBack.setOnClickListener(view -> {
+            Toast.makeText(getContext(), "Logout!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(i);
+        });
+
     }
 }

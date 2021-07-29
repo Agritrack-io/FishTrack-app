@@ -1,4 +1,4 @@
-package io.agritrack.fishtrack.ui.activity.wh;
+package io.agritrack.fishtrack.ui.activity.wh.outgoing;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,27 +12,28 @@ import io.agritrack.fishtrack.ui.activity.WhMenuActivity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
-public class OutgoingProcessActivity extends AppCompatActivity {
+public class OutgoingStartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_outgoing_process);
+        setContentView(R.layout.activity_outgoing_start);
+
         configFooter();
     }
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
+        ImageView ivNext = (ImageView) findViewById(R.id.ivToOutgoingProcess);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Congratulations!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+            Toast.makeText(getContext(), "Outgoing process!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), OutgoingProcessActivity.class);
             startActivity(i);
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartOutgoing);
+        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Start outgoing!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), OutgoingStartActivity.class);
+            Toast.makeText(getContext(), "WH Menu!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });
     }

@@ -17,11 +17,12 @@
         android:clipToPadding="false"
         android:fadingEdge="horizontal"
         android:paddingTop="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/formLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
+        <!-- <FrameLayout
             android:id="@+id/imageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -31,18 +32,22 @@
             android:foreground="?selectableItemBackground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent">-->
 
 
-            <ImageButton
-                android:id="@+id/ivBackToLogin"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/agri_blue"
-                android:backgroundTintMode="multiply"
-                app:srcCompat="@drawable/logout_icon" />
+        <ImageButton
+            android:id="@+id/ivBackToLogin"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_press_effect"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/logout_icon" />
 
-        </FrameLayout>
+        <!-- </FrameLayout>-->
 
         <TextView
             android:id="@+id/tvTitleToolbar"
@@ -53,7 +58,7 @@
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
             android:text="@string/title_main_menu"
-            android:textColor="@color/white"
+            android:textColor="@color/yellow"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -97,6 +102,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:numColumns="1"
+            android:scrollbars="none"
             android:stretchMode="columnWidth"
             android:verticalSpacing="14dp"
             app:layout_constraintBottom_toBottomOf="parent"

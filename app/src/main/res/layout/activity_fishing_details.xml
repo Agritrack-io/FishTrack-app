@@ -46,7 +46,7 @@
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
             android:text="@string/title_fishing"
-            android:textColor="@color/white"
+            android:textColor="@color/yellow"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivNext"
@@ -209,21 +209,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/spSeaTemp" />
 
-        <TextView
-            android:id="@+id/tvNameOfIchthyopathologist"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/white"
-            android:text="@string/ichthyopathologist_name"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_view_font_size"
-            app:layout_constraintBottom_toTopOf="@+id/tvLastNutrition"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvIchthyopathologist" />
+            <TextView
+                android:id="@+id/tvNameOfIchthyopathologist"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bg_rounded_input_spinner"
+                android:padding="5dp"
+                android:paddingStart="10dp"
+                android:text="@string/ichthyopathologist_name"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/tvLastNutrition"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvIchthyopathologist" />
 
             <TextView
                 android:id="@+id/tvLastNutrition"
@@ -241,21 +243,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvNameOfIchthyopathologist" />
 
-        <TextView
-            android:id="@+id/tvDateOfLastNutrition"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/white"
-            android:text="@string/last_fed_date"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_view_font_size"
-            app:layout_constraintBottom_toTopOf="@+id/tvFishType2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLastNutrition" />
+            <TextView
+                android:id="@+id/tvDateOfLastNutrition"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bg_rounded_input_spinner"
+                android:padding="5dp"
+                android:paddingStart="10dp"
+                android:text="@string/last_fed_date"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/tvFishType2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvLastNutrition" />
 
         <TextView
             android:id="@+id/tvTypeOfFish"
@@ -263,7 +267,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:background="@color/white"
+            android:background="@drawable/bg_rounded_input_spinner"
+            android:padding="5dp"
+            android:paddingStart="10dp"
             android:text="@string/type_of_fish"
             android:textColor="@color/black"
             android:textSize="@dimen/text_view_font_size"

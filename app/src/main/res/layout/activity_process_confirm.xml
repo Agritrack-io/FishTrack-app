@@ -6,7 +6,7 @@ android:id="@+id/rootLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
-tools:context=".ui.activity.process.ProccesConfirmActivity">
+tools:context=".ui.activity.process.ProcessConfirmActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -46,7 +46,7 @@ tools:context=".ui.activity.process.ProccesConfirmActivity">
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
         android:text="@string/title_processing"
-        android:textColor="@color/white"
+        android:textColor="@color/yellow"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivNext"

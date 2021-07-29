@@ -1,4 +1,4 @@
-package io.agritrack.fishtrack.ui.activity;
+package io.agritrack.fishtrack.ui.activity.wh.correlation;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,59 +14,52 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.ui.activity.HomeActivity;
+import io.agritrack.fishtrack.ui.activity.WhMenuActivity;
 import io.agritrack.fishtrack.ui.activity.adapter.HomeMenuAdapter;
 import io.agritrack.fishtrack.ui.activity.adapter.MenuItem;
 import io.agritrack.fishtrack.ui.activity.login.LoginActivity;
-import io.agritrack.fishtrack.ui.activity.wh.correlation.CorrelationMenuActivity;
 import io.agritrack.fishtrack.ui.activity.wh.incoming.IncomingStartActivity;
 import io.agritrack.fishtrack.ui.activity.wh.inventory.InventoryActivity;
 import io.agritrack.fishtrack.ui.activity.wh.outgoing.OutgoingStartActivity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
-public class WhMenuActivity extends AppCompatActivity {
+public class CorrelationMenuActivity extends AppCompatActivity {
 
-    private static final int Incoming_Idx = 0, Outgoing_Idx = 1, Inventory_Idx = 2, Correlation_Idx = 3, Search_Idx = 4;
-    GridView gvWhMainMenu;
+    private static final int Cage_Idx = 0, Net_Idx = 1, Bin_Idx = 2;
+    GridView gvCorrelationMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wh_menu);
+        setContentView(R.layout.activity_correlation_menu);
 
-        gvWhMainMenu = findViewById(R.id.gvWhMainMenu);
+        gvCorrelationMenu = findViewById(R.id.gvCorrelationMenu);
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem("Incoming", "", R.drawable.ic_incoming));
-        menuItemsList.add(new MenuItem("Outgoing", "", R.drawable.transport));
-        menuItemsList.add(new MenuItem("Inventory", "", R.drawable.ic_barang_masuk));
-        menuItemsList.add(new MenuItem("Correlation", "", R.drawable.ic_product_assets));
-        menuItemsList.add(new MenuItem("Search", "", R.drawable.ic_product_assets));
+        menuItemsList.add(new MenuItem("Cage", "", R.drawable.ic_incoming));
+        menuItemsList.add(new MenuItem("Net", "", R.drawable.transport));
+        menuItemsList.add(new MenuItem("Bin", "", R.drawable.ic_barang_masuk));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
-        gvWhMainMenu.setAdapter(adapter);
+        gvCorrelationMenu.setAdapter(adapter);
 
-        gvWhMainMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gvCorrelationMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final Context appCtx = getApplicationContext();
                 Intent i = new Intent(appCtx, LoginActivity.class);
 
                 switch (position) {
-                    case Incoming_Idx:
-                        i = new Intent(appCtx, IncomingStartActivity.class);
+                    case Cage_Idx:
+                        i = new Intent(appCtx, CorrelationCageActivity.class);
                         break;
-                    case Outgoing_Idx:
+                    case Net_Idx:
                         i = new Intent(appCtx, OutgoingStartActivity.class);
                         break;
-                    case Inventory_Idx:
+                    case Bin_Idx:
                         i = new Intent(appCtx, InventoryActivity.class);
                         break;
-                    case Correlation_Idx:
-                        i = new Intent(appCtx, CorrelationMenuActivity.class);
-                        break;
-                    /*case Search_Idx:
-                        i = new Intent(appCtx, SearchStartActivity.class);
-                        break;*/
                     default:
                 }
 
@@ -82,8 +75,8 @@ public class WhMenuActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Main menu!!", Toast.LENGTH_LONG).show();
-            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+            Toast.makeText(getContext(), "WH menu!!", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });
     }

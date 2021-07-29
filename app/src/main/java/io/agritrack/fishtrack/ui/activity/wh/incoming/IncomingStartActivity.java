@@ -1,4 +1,4 @@
-package io.agritrack.fishtrack.ui.activity.wh;
+package io.agritrack.fishtrack.ui.activity.wh.incoming;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,8 +9,7 @@ import android.widget.Toast;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.ui.activity.WhMenuActivity;
-import io.agritrack.fishtrack.ui.activity.fishing.FishingStartActivity;
-import io.agritrack.fishtrack.ui.activity.fishing.FishingTeamActivity;
+import io.agritrack.fishtrack.ui.activity.wh.incoming.IncomingProcessActivity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 

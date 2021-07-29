@@ -10,14 +10,15 @@
     android:layout_marginRight="@dimen/margin15"
     android:layout_marginBottom="@dimen/margin10"
     android:foreground="?selectableItemBackground"
-    app:cardCornerRadius="@dimen/margin5"
+    app:cardCornerRadius="@dimen/margin10"
     app:cardElevation="@dimen/margin3">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/agri_blue">
 
         <ImageView
             android:id="@+id/ivMenuThumb"
@@ -42,7 +43,7 @@
             android:fontFamily="sans-serif"
             android:text="@string/assets_masuk"
             android:textAlignment="center"
-            android:textColor="@color/agri_blue"
+            android:textColor="@color/yellow"
             android:textSize="30sp"
             android:textStyle="normal"
             android:verticalScrollbarPosition="left"

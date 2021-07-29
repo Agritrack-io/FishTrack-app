@@ -16,17 +16,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/FishTrack">
-        <activity android:name=".ui.activity.WhMenuActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.activity.wh.OutgoingProcessActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.wh.OutgoingStartActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.wh.correlation.CorrelationCageActivity"></activity>
         <activity
-            android:name=".ui.activity.wh.IncomingProcessActivity"
+            android:name=".ui.activity.wh.correlation.CorrelationMenuActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.wh.IncomingStartActivity"
+            android:name=".ui.activity.wh.inventory.InventoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.WhMenuActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.wh.outgoing.OutgoingProcessActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.wh.outgoing.OutgoingStartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.wh.incoming.IncomingProcessActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.wh.incoming.IncomingStartActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.process.ProcessConfirmActivity"

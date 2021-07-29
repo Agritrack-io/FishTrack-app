@@ -6,7 +6,7 @@ android:id="@+id/fishingBinsLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
-tools:context=".ui.activity.wh.outgoing.OutgoingProcessActivity">
+tools:context=".ui.activity.wh.inventory.InventoryActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -45,7 +45,7 @@ tools:context=".ui.activity.wh.outgoing.OutgoingProcessActivity">
         android:layout_marginBottom="32dp"
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
-        android:text="@string/title_outgoing"
+        android:text="@string/title_inventory"
         android:textColor="@color/yellow"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -99,14 +99,14 @@ tools:context=".ui.activity.wh.outgoing.OutgoingProcessActivity">
     app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
     <RelativeLayout
-        android:id="@+id/outgoingProcessALayout"
+        android:id="@+id/inventoryALayout"
         android:layout_width="0dp"
-        android:layout_height="120dp"
+        android:layout_height="150dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/outgoingProcessBLayout"
+        app:layout_constraintBottom_toTopOf="@+id/inventoryBLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -119,81 +119,47 @@ tools:context=".ui.activity.wh.outgoing.OutgoingProcessActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <TextView
-                android:id="@+id/tvFrom"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:inputType="text"
-                android:text="From:"
-                android:textColor="@color/agri_blue"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvTo"
-                app:layout_constraintEnd_toStartOf="@+id/tvOutgoingProcessFrom"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvOutgoingProcessTo"
+            <Spinner
+                android:id="@+id/spAssetType"
+                style="@style/spinner_style"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:background="@drawable/border_bottom"
-                android:gravity="center"
-                android:inputType="text"
-                android:text="site, customer or asset"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/text_view_font_size"
-                android:textStyle="bold"
+                android:dropDownWidth="match_parent"
+                android:focusableInTouchMode="true"
+                android:requiresFadingEdge="horizontal"
+                android:spinnerMode="dropdown"
+                android:textAlignment="textStart"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvTo"
-                app:layout_constraintTop_toBottomOf="@+id/tvOutgoingProcessFrom" />
-
-            <TextView
-                android:id="@+id/tvTo"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:inputType="text"
-                android:text="To:"
-                android:textColor="@color/agri_blue"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvOutgoingProcessTo"
+                app:layout_constraintHorizontal_bias="0.496"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvFrom" />
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_conversion_absoluteWidth="0dp" />
 
-            <TextView
-                android:id="@+id/tvOutgoingProcessFrom"
+            <Spinner
+                android:id="@+id/spSite"
+                style="@style/spinner_style"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="16dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:gravity="center"
-                android:inputType="text"
-                android:text="Site or asset"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/text_view_font_size"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/tvOutgoingProcessTo"
+                android:dropDownWidth="match_parent"
+                android:focusableInTouchMode="true"
+                android:requiresFadingEdge="horizontal"
+                android:textAlignment="textStart"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvFrom"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_conversion_absoluteWidth="0dp" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -204,14 +170,14 @@ tools:context=".ui.activity.wh.outgoing.OutgoingProcessActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="Outgoing details"
+            android:text="Initiate inventory"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/outgoingProcessBLayout"
+        android:id="@+id/inventoryBLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="4dp"
@@ -221,7 +187,7 @@ tools:context=".ui.activity.wh.outgoing.OutgoingProcessActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outgoingProcessALayout">
+        app:layout_constraintTop_toBottomOf="@+id/inventoryALayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -239,7 +205,7 @@ tools:context=".ui.activity.wh.outgoing.OutgoingProcessActivity">
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
                 android:gravity="center_horizontal"
-                android:text="@string/outgoing_assets"
+                android:text="@string/inventory_item_label"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
@@ -348,7 +314,7 @@ tools:context=".ui.activity.wh.outgoing.OutgoingProcessActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="Assets"
+            android:text="Inventory"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
@@ -375,12 +341,12 @@ tools:context=".ui.activity.wh.outgoing.OutgoingProcessActivity">
         android:scaleY="0.7"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToStartOutgoing"
+        app:layout_constraintStart_toEndOf="@+id/ivBackToWhMenu"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/powered_by_agritrack" />
 
     <ImageView
-        android:id="@+id/ivBackToStartOutgoing"
+        android:id="@+id/ivBackToWhMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

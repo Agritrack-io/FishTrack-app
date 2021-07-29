@@ -9,10 +9,10 @@
     <string name="label_submit">Submit</string>
 
     <string name="label_email_hint">Email</string>
-    <string name="label_password_hint">Password</string>
+    <string name="label_password_hint">PIN</string>
 
     <string name="label_login_header_content">Please login with your credentials</string>
-    <string name="label_tv_forgot_pwd">Did you forget your Password?</string>
+    <string name="label_tv_forgot_pwd">Did you forget your PIN?</string>
 
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -156,7 +156,7 @@
     <string name="title_outgoing">OUTGOING</string>
 
     <string name="incoming_assets">Incoming assets</string>
-    <string name="number_of_assets"># of assets:</string>
+    <string name="number_of_assets"># of items:</string>
     <string name="scan_assets">SCAN</string>
     <string name="outgoing_assets">Outgoing assets</string>
 
@@ -164,4 +164,17 @@
     <string name="title_incoming">INCOMING</string>
 
     <string name="title_wh_menu">WH MENU</string>
+
+    <string name="title_inventory">INVENTORY</string>
+    <string name="inventory_item_label">Inventory items</string>
+    <string name="choose_site">Choose site</string>
+
+    <string name="title_correlation">CORRELATION</string>
+    <string name="title_user_date_asset_type">USER NAME / DATE / ASSET TYPE</string>
+    <string name="choose_cage">Choose cage</string>
+    <string name="choose_net">Choose net</string>
+    <string name="choose_bin">Choose bin</string>
+    <string name="barcode_cage">Barcode of Cage</string>
+
+
 </resources>
