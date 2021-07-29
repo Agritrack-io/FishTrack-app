@@ -45,7 +45,7 @@
 
     <string name="title_user_date">USER NAME / DATE</string>
     <string name="title_fishing">FISHING</string>
-    <string name="choose_harvest">Choose Harvest</string>
+    <string name="choose_harvest">Choose Harvest initiator</string>
     <string name="fish_type">Fish Type</string>
     <string name="requested_quantity">Requested Quantity</string>
     <string name="scan_platform">Scan Platform</string>
