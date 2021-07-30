@@ -12,73 +12,30 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.RequestFuture;
-import com.android.volley.toolbox.StringRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.reactivestreams.Subscription;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.MobileDB;
-import io.agritrack.fishtrack.data.model.AppUser;
 import io.agritrack.fishtrack.data.service.AppUserService;
-import io.agritrack.fishtrack.data.service.RestfulCommunicationSingleton;
+import io.agritrack.fishtrack.ui.activity.ConfigActivity;
 import io.agritrack.fishtrack.ui.activity.HomeActivity;
-
+import io.agritrack.fishtrack.ui.activity.api.APICommService;
+import io.agritrack.fishtrack.ui.activity.login.api.AuthResponse;
+import io.agritrack.fishtrack.ui.activity.login.api.LoginRequest;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
-
+    private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private MobileDB db;
     private ProgressBar loadingProgressBar;
     private TextView loadingText;
-    private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-
-
-    private static void accept(List<AppUser> appUsers) {
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finish();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        finish();
-    }
-
-    @Override
-    protected void onDestroy() {
-//        if (subscription != null && !subscription.isUnsubscribed()) {
-//            subscription.unsubscribe();
-//        }
-        super.onDestroy();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,22 +45,24 @@ public class LoginActivity extends AppCompatActivity {
         // get an instance of local DB
         db = MobileDB.getInstance(getContext());
 
+        // bind the credentials controls
+        final EditText etUserName = findViewById(R.id.etUserName);
+        final EditText etPassword = findViewById(R.id.etPassword);
+
         // check last login timestamp, to determine whether synch is required.
         SharedPreferences pref = getContext().getSharedPreferences("agritrack", Context.MODE_PRIVATE);
-        long loginTime = pref.getLong("loginTime", 0);
-        boolean shouldLogin = pref.getBoolean("shouldLogin", false);
-        boolean shouldSync = pref.getBoolean("shouldSync", true);
+        long loginUnixTime = pref.getLong("loginTime", 0);
+        long unixTime = System.currentTimeMillis() / 1000L;
+        long diffHours = Math.abs(unixTime - loginUnixTime) / 3600L;
 
-        long currentTime = new Date().getTime();
-        long diffHours = (currentTime - loginTime) / (60 * 60 * 1000);
+        boolean shouldLogin = pref.getBoolean("shouldLogin", true);
+        boolean shouldSync = pref.getBoolean("shouldSync", true);
 
         // if last login occurred < 2 hours ?? ago, no further login is required.
         if (diffHours < 2 && !shouldLogin && !shouldSync) {
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         } else {
-            final EditText etUserName = findViewById(R.id.etUserName);
-            final EditText etPassword = findViewById(R.id.etPassword);
             final TextView tvForgotYourPassword = findViewById(R.id.tvForgotPasswordText);
             final Button btLogin = findViewById(R.id.btnLogin);
             loadingProgressBar = findViewById(R.id.loading);
@@ -128,10 +87,21 @@ public class LoginActivity extends AppCompatActivity {
             });
 
             btLogin.setOnClickListener(v -> {
-                Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-                startActivity(i);
-//                LoginTask loginTask = new LoginTask(etUserName, etPassword);
-//                loginTask.execute();
+                // get credential string values
+                final String username = etUserName.getText().toString().trim();
+                final String pin = etPassword.getText().toString().trim();
+
+//                Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+//                startActivity(i);
+
+                if (username.isEmpty() || pin.isEmpty()) {
+                    noCredentialsEnteredAlert();
+                } else if ("config".equals(username) && "8888".equals(pin)) {
+                    Intent i = new Intent(getApplicationContext(), ConfigActivity.class);
+                    startActivity(i);
+                } else {
+                    invokeLogin(username, pin);
+                }
             });
 
             tvForgotYourPassword.setOnClickListener(view -> {
@@ -141,6 +111,10 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void noCredentialsEnteredAlert() {
+        Toast.makeText(getApplicationContext(), R.string.empty_credentials_alert, Toast.LENGTH_LONG).show();
+    }
+
     private void updateUiWithUser(LoggedInUserView model) {
 
         SharedPreferences pref = getSharedPreferences("agritrack", Context.MODE_PRIVATE);
@@ -148,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("token", model.getToken());
         editor.putString("username", model.getUsername());
-        editor.putLong("loginTime", new Date().getTime());
+        editor.putLong("loginTime", (System.currentTimeMillis() / 1000L));
         editor.apply();
 
         boolean shouldSync = pref.getBoolean("shouldSync", true);
@@ -156,8 +130,11 @@ public class LoginActivity extends AppCompatActivity {
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         } else {
+            invokeSyncAll();
+
             SyncAllTask syncAllTask = new SyncAllTask();
             syncAllTask.execute();
+
             editor.putBoolean("shouldSync", false);
             editor.apply();
         }
@@ -167,28 +144,150 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
-
-    private void invokeLogin(String username) {
-
+    private void showAuthProgress() {
+        runOnUiThread(() -> {
+            loadingProgressBar.setVisibility(View.VISIBLE);
+            loadingText.setText(R.string.authenticating);
+            loadingText.setVisibility(View.VISIBLE);
+        });
     }
 
-
-
-    private class SyncAllTask extends AsyncTask<Void, Integer, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+    private void showSyncProgress() {
+        runOnUiThread(() -> {
             loadingProgressBar.setVisibility(View.VISIBLE);
             loadingText.setText(R.string.syncing);
             loadingText.setVisibility(View.VISIBLE);
+        });
+    }
+
+    private void hideSyncProgress() {
+        runOnUiThread(() -> {
+            loadingProgressBar.setVisibility(View.GONE);
+            loadingText.setVisibility(View.GONE);
+        });
+    }
+
+    private void invokeLogin(String username, String pin) {
+        // display spinning progress bar
+        showAuthProgress();
+
+        try {
+            final SharedPreferences pref = getContext().getSharedPreferences("agritrack", Context.MODE_PRIVATE);
+            String token = pref.getString("token", null);
+
+            long loginUnixTime = pref.getLong("loginTime", 0);
+            long unixTime = System.currentTimeMillis() / 1000L;
+
+            long diffInDays = Math.abs(unixTime - loginUnixTime) / 3600L / 24L;
+
+            // query local db for previous User authentications...
+            AppUserService userService = new AppUserService();
+            boolean userIsAlreadyAuthenticated = true; //userService.authenticateUser(db, username, pin);
+
+            if (diffInDays == 0 && userIsAlreadyAuthenticated) {
+                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(username, token))));
+            } else {
+                APICommService svcREST = new APICommService();
+                LoginRequest rq = new LoginRequest(username, pin);
+                svcREST.authenticate(rq, new AuthLoginCallBack(username, pin));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void invokeSyncAll() {
+        // display spinning progress bar
+        showSyncProgress();
+
+        try {
+            SharedPreferences pref = getSharedPreferences("agritrack", Context.MODE_PRIVATE);
+            String token = pref.getString("token", null);
+            boolean syncResult = true;
+
+//            RouteSyncService routeSyncService = new RouteSyncService();
+//            syncResult = routeSyncService.syncRoute(db, token);
+//
+//            DriverAndTrucksSyncService driverAndTrucksSyncService = new DriverAndTrucksSyncService();
+//            syncResult &= driverAndTrucksSyncService.syncDriverAndTrucks(db, token);
+//
+//            DistributorsAndPlantsSyncService distributorsAndPlantsSyncService = new DistributorsAndPlantsSyncService();
+//            syncResult &= distributorsAndPlantsSyncService.syncDistributorsAndPlants(db, token);
+//
+//            TanksAndProducersSyncService tanksAndProducersSyncService = new TanksAndProducersSyncService();
+//            syncResult &= tanksAndProducersSyncService.syncTanksAndProducers(db, token);
+
+            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+            i.putExtra("syncErrors", !syncResult);
+            startActivity(i);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            hideSyncProgress();
+        }
+    }
+
+
+    public class AuthLoginCallBack implements Callback<AuthResponse> {
+        private final SharedPreferences pref;
+        private final String username;
+        private final String pin;
+
+        public AuthLoginCallBack(String username, String pin) {
+            pref = getContext().getSharedPreferences("agritrack", Context.MODE_PRIVATE);
+            this.username = username;
+            this.pin = pin;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            loadingProgressBar.setVisibility(View.GONE);
-            loadingText.setVisibility(View.GONE);
+        public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+            AuthResponse rs = response.body();
+
+            if (rs != null) {
+                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(this.username, rs.getToken()))));
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putBoolean("shouldSync", true);
+                editor.apply();
+            } else {
+                // Probably Invalid Credentials
+                runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.login_failed)));
+            }
         }
+
+        @Override
+        public void onFailure(Call<AuthResponse> call, Throwable t) {
+            // Probably Network Communication Error
+            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.login_failed)));
+        }
+    }
+
+
+    public class SyncAllCallBack implements Callback<AuthResponse> {
+        private final SharedPreferences pref;
+        private final String username;
+        private final String pin;
+
+        public SyncAllCallBack(String username, String pin) {
+            pref = getContext().getSharedPreferences("agritrack", Context.MODE_PRIVATE);
+            this.username = username;
+            this.pin = pin;
+        }
+
+        @Override
+        public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+
+        }
+
+        @Override
+        public void onFailure(Call<AuthResponse> call, Throwable t) {
+
+        }
+    }
+
+
+    private class SyncAllTask extends AsyncTask<Void, Integer, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -210,94 +309,6 @@ public class LoginActivity extends AppCompatActivity {
 //            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
 //            i.putExtra("syncErrors", !syncResult);
 //            startActivity(i);
-            return null;
-        }
-    }
-
-    private class LoginTask extends AsyncTask<Void, Integer, Void> {
-        private final EditText usernameEditText;
-        private final EditText passwordEditText;
-
-        private LoginTask(EditText usernameEditText, EditText passwordEditText) {
-            this.usernameEditText = usernameEditText;
-            this.passwordEditText = passwordEditText;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            loadingProgressBar.setVisibility(View.VISIBLE);
-            loadingText.setText(R.string.authenticating);
-            loadingText.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                InputStream is = getContext().getAssets().open("connection.properties");
-                Properties props = new Properties();
-                props.load(is);
-                String mUrlString = props.getProperty("url", "http://192.168.0.195:8090") + "/login";
-                is.close();
-
-                SharedPreferences pref = getContext().getSharedPreferences("agritrack", Context.MODE_PRIVATE);
-                long loginTime = pref.getLong("loginTime", 0);
-                long currentTime = new Date().getTime();
-                Date loginDate = new Date(loginTime);
-                Date currentDate = new Date(currentTime);
-                String token = pref.getString("token", null);
-
-                AppUserService userService = new AppUserService();
-                boolean authentication = userService.authenticateUser(db, usernameEditText.getText().toString(), passwordEditText.getText().toString());
-                if (loginDate.getDay() == currentDate.getDay() && authentication) {
-                    runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(usernameEditText.getText().toString(), token))));
-                } else {
-                    JSONObject jsonBody = new JSONObject();
-                    try {
-                        jsonBody.put("username", usernameEditText.getText().toString());
-                        jsonBody.put("pin", passwordEditText.getText().toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    final String requestBody = jsonBody.toString();
-
-                    RequestFuture<String> future = RequestFuture.newFuture();
-                    StringRequest sr = new StringRequest(Request.Method.POST, mUrlString, future, future) {
-                        @Override
-                        public String getBodyContentType() {
-                            return "application/json; charset=utf-8";
-                        }
-
-                        @Override
-                        public byte[] getBody() {
-                            return requestBody.getBytes(StandardCharsets.UTF_8);
-                        }
-
-                        @Override
-                        protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                            String token = "";
-                            if (response != null) {
-                                token = response.headers.get("Authorization");
-                            }
-                            return Response.success(token, HttpHeaderParser.parseCacheHeaders(response));
-                        }
-                    };
-
-                    sr.setRetryPolicy(new DefaultRetryPolicy(15000, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                    RestfulCommunicationSingleton.getInstance(getContext()).addToRequestQueue(sr);
-                    try {
-                        String response = future.get(); // this will block
-                        runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(usernameEditText.getText().toString(), response))));
-                        SharedPreferences.Editor editor = pref.edit();
-                        editor.putBoolean("shouldSync", true);
-                        editor.apply();
-                    } catch (InterruptedException | ExecutionException e) {
-                        runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.login_failed)));
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             return null;
         }
     }
