@@ -6,7 +6,7 @@ android:id="@+id/rootLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
-tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
+tools:context=".ui.activity.wh.correlation.CorrelationBinActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -99,7 +99,7 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
     app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
     <RelativeLayout
-        android:id="@+id/correlateCageLayout"
+        android:id="@+id/correlateNetLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="4dp"
@@ -121,52 +121,52 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
             android:padding="1dp">
 
             <TextView
-                android:id="@+id/tvCageName"
+                android:id="@+id/tvBinBarcode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
-                android:layout_marginTop="6dp"
                 android:layout_marginEnd="50dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="24dp"
                 android:background="@drawable/bg_rounded_dialog_non_input"
                 android:gravity="center|center_vertical"
                 android:padding="5dp"
-                android:text="@string/barcode_cage"
+                android:text="@string/barcode_bin"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
                 android:textStyle="normal"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/btnInitiateTempTag"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnScanCage" />
+                app:layout_constraintTop_toBottomOf="@+id/btnScanBin" />
 
             <Button
-                android:id="@+id/btnScanCage"
+                android:id="@+id/btnScanBin"
                 android:layout_width="0dp"
                 android:layout_height="94dp"
                 android:layout_marginStart="50dp"
-                android:layout_marginTop="32dp"
                 android:layout_marginEnd="50dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/button_press_effect"
-                android:text="@string/scan_cage"
+                android:text="@string/scan_bin"
                 android:textColor="@color/yellow"
                 android:textSize="@dimen/button_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvCageName"
+                app:layout_constraintBottom_toTopOf="@+id/tvBinBarcode"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvCages" />
+                app:layout_constraintTop_toBottomOf="@+id/etBinCode" />
 
             <EditText
-                android:id="@+id/etSearchCage"
+                android:id="@+id/etBinCode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="32dp"
                 android:background="@drawable/bg_rounded_dialog_input"
                 android:ems="10"
-                android:hint="Search cage"
+                android:hint="Type code of bin"
                 android:inputType="textPersonName"
                 android:padding="5dp"
                 android:paddingStart="10dp"
@@ -175,41 +175,47 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
                 android:scrollbars="horizontal"
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/rvCages"
-                app:layout_constraintEnd_toStartOf="@+id/imageView9"
+                app:layout_constraintBottom_toTopOf="@+id/btnScanBin"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvCages"
+            <Button
+                android:id="@+id/btnInitiateTempTag"
                 android:layout_width="0dp"
-                android:layout_height="300dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_rounded_input_spinner"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/btnScanCage"
+                android:layout_height="94dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/button_press_effect"
+                android:text="@string/initiate_temp_tag"
+                android:textColor="@color/yellow"
+                android:textSize="@dimen/button_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/tvBarcodeTempTag"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etSearchCage">
+                app:layout_constraintTop_toBottomOf="@+id/tvBinBarcode" />
 
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <ImageView
-                android:id="@+id/imageView9"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tvBarcodeTempTag"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="14dp"
-                app:layout_constraintBottom_toTopOf="@+id/rvCages"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/bg_rounded_dialog_non_input"
+                android:gravity="center|center_vertical"
+                android:padding="5dp"
+                android:text="@string/barcode_temp_tag"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/etSearchCage"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_shortcut_search" />
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnInitiateTempTag" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -221,7 +227,7 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="Correlate cage"
+            android:text="Correlate bin"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 

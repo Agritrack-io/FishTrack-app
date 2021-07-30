@@ -175,6 +175,14 @@
     <string name="choose_net">Choose net</string>
     <string name="choose_bin">Choose bin</string>
     <string name="barcode_cage">Barcode of Cage</string>
+    <string name="barcode_net">Barcode of Net</string>
+    <string name="initiate_temp_tag">Initiate temp tag</string>
+    <string name="barcode_bin">Barcode of Bin</string>
+    <string name="barcode_temp_tag">Barcode of Temp tag</string>
+
+    <string name="title_search">SEARCH</string>
+    <string name="choose_asset_type">Choose asset type</string>
+    <string name="choose_barcode">Choose barcode</string>
 
 
 </resources>

@@ -215,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="@drawable/bg_rounded_input_spinner"
+                android:background="@drawable/bg_rounded_dialog_non_input"
                 android:padding="5dp"
                 android:paddingStart="10dp"
                 android:text="@string/ichthyopathologist_name"
@@ -249,7 +249,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="@drawable/bg_rounded_input_spinner"
+                android:background="@drawable/bg_rounded_dialog_non_input"
                 android:padding="5dp"
                 android:paddingStart="10dp"
                 android:text="@string/last_fed_date"
@@ -261,23 +261,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvLastNutrition" />
 
-        <TextView
-            android:id="@+id/tvTypeOfFish"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_rounded_input_spinner"
-            android:padding="5dp"
-            android:paddingStart="10dp"
-            android:text="@string/type_of_fish"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_view_font_size"
-            app:layout_constraintBottom_toTopOf="@+id/switchIceAdequacy"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvFishType2" />
+            <TextView
+                android:id="@+id/tvTypeOfFish"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bg_rounded_dialog_non_input"
+                android:padding="5dp"
+                android:paddingStart="10dp"
+                android:text="@string/type_of_fish"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/switchIceAdequacy"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvFishType2" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchIceAdequacy"

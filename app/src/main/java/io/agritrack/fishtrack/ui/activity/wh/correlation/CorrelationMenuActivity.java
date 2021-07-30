@@ -55,10 +55,10 @@ public class CorrelationMenuActivity extends AppCompatActivity {
                         i = new Intent(appCtx, CorrelationCageActivity.class);
                         break;
                     case Net_Idx:
-                        i = new Intent(appCtx, OutgoingStartActivity.class);
+                        i = new Intent(appCtx, CorrelationNetActivity.class);
                         break;
                     case Bin_Idx:
-                        i = new Intent(appCtx, InventoryActivity.class);
+                        i = new Intent(appCtx, CorrelationBinActivity.class);
                         break;
                     default:
                 }
