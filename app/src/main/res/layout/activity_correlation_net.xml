@@ -6,7 +6,7 @@ android:id="@+id/rootLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
-tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
+tools:context=".ui.activity.wh.correlation.CorrelationNetActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -99,7 +99,7 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
     app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
     <RelativeLayout
-        android:id="@+id/correlateCageLayout"
+        android:id="@+id/correlateNetLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="4dp"
@@ -121,7 +121,7 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
             android:padding="1dp">
 
             <TextView
-                android:id="@+id/tvCageName"
+                android:id="@+id/tvNetBarcode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
@@ -131,17 +131,17 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
                 android:background="@drawable/bg_rounded_dialog_non_input"
                 android:gravity="center|center_vertical"
                 android:padding="5dp"
-                android:text="@string/barcode_cage"
+                android:text="@string/barcode_net"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
                 android:textStyle="normal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnScanCage" />
+                app:layout_constraintTop_toBottomOf="@+id/btnScanNet" />
 
             <Button
-                android:id="@+id/btnScanCage"
+                android:id="@+id/btnScanNet"
                 android:layout_width="0dp"
                 android:layout_height="94dp"
                 android:layout_marginStart="50dp"
@@ -149,24 +149,24 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
                 android:layout_marginEnd="50dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/button_press_effect"
-                android:text="@string/scan_cage"
+                android:text="@string/scan_net"
                 android:textColor="@color/yellow"
                 android:textSize="@dimen/button_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvCageName"
+                app:layout_constraintBottom_toTopOf="@+id/tvNetBarcode"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvCages" />
+                app:layout_constraintTop_toBottomOf="@+id/rvNets" />
 
             <EditText
-                android:id="@+id/etSearchCage"
+                android:id="@+id/etSearchNet"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/bg_rounded_dialog_input"
                 android:ems="10"
-                android:hint="Search cage"
+                android:hint="Search net"
                 android:inputType="textPersonName"
                 android:padding="5dp"
                 android:paddingStart="10dp"
@@ -175,13 +175,13 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
                 android:scrollbars="horizontal"
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/rvCages"
+                app:layout_constraintBottom_toTopOf="@+id/rvNets"
                 app:layout_constraintEnd_toStartOf="@+id/imageView9"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvCages"
+                android:id="@+id/rvNets"
                 android:layout_width="0dp"
                 android:layout_height="300dp"
                 android:layout_marginStart="8dp"
@@ -190,10 +190,10 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
                 android:background="@drawable/bg_rounded_input_spinner"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/btnScanCage"
+                app:layout_constraintBottom_toTopOf="@+id/btnScanNet"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etSearchCage">
+                app:layout_constraintTop_toBottomOf="@+id/etSearchNet">
 
             </androidx.recyclerview.widget.RecyclerView>
 
@@ -205,9 +205,9 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="14dp"
-                app:layout_constraintBottom_toTopOf="@+id/rvCages"
+                app:layout_constraintBottom_toTopOf="@+id/rvNets"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/etSearchCage"
+                app:layout_constraintStart_toEndOf="@+id/etSearchNet"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_shortcut_search" />
 
@@ -221,7 +221,7 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="Correlate cage"
+            android:text="Correlate net"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 

@@ -178,7 +178,65 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <RadioGroup
+            <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                android:id="@+id/deal_detail_toolbar"
+                android:layout_width="fill_parent"
+                android:layout_height="60dip"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/tvIncomingFrom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ToggleButton
+                    android:id="@+id/b1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_rounded_btn_login"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:textColor="@color/yellow"
+                    android:textOff="AVRAMAR"
+                    android:textOn="AVRAMAR"
+                    android:textSize="@dimen/text_view_font_size_medium" />
+
+                <ToggleButton
+                    android:id="@+id/b2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_rounded_btn_login"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:textColor="@color/yellow"
+                    android:textOff="SUPPLIER"
+                    android:textOn="SUPPLIER"
+                    android:textSize="@dimen/text_view_font_size_medium" />
+                />
+
+                <ToggleButton
+                    android:id="@+id/b3"
+                    android:layout_width="fill_parent"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_rounded_btn_login"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:textColor="@color/yellow"
+                    android:textOff="ASSET"
+                    android:textOn="ASSET"
+                    android:textSize="@dimen/text_view_font_size_medium" />
+
+
+            </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+
+
+          <!--  <RadioGroup
                 android:id="@+id/rgIncomingFrom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -217,29 +275,32 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
                     android:text="ASSET"
                     android:textColor="@color/agri_blue"
                     android:textSize="@dimen/text_view_font_size_medium" />
-            </RadioGroup>
+            </RadioGroup>-->
 
             <TextView
                 android:id="@+id/tvIncomingFrom"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/border_bottom"
+                android:background="@drawable/bg_rounded_dialog_non_input"
                 android:gravity="center"
                 android:inputType="text"
+                android:padding="5dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="site, supplier or asset"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textIsSelectable="false"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:textSize="@dimen/text_view_font_size"
+                android:textStyle="normal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rgIncomingFrom" />
+                app:layout_constraintTop_toBottomOf="@+id/deal_detail_toolbar" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -311,21 +372,24 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
 
             <TextView
                 android:id="@+id/tvIncomingTo"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/border_bottom"
+                android:background="@drawable/bg_rounded_dialog_non_input"
                 android:gravity="center"
                 android:inputType="text"
+                android:padding="5dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="Site or asset"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textIsSelectable="false"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:textSize="@dimen/text_view_font_size"
+                android:textStyle="normal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

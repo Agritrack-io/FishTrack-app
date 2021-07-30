@@ -21,6 +21,7 @@ import io.agritrack.fishtrack.ui.activity.wh.correlation.CorrelationMenuActivity
 import io.agritrack.fishtrack.ui.activity.wh.incoming.IncomingStartActivity;
 import io.agritrack.fishtrack.ui.activity.wh.inventory.InventoryActivity;
 import io.agritrack.fishtrack.ui.activity.wh.outgoing.OutgoingStartActivity;
+import io.agritrack.fishtrack.ui.activity.wh.search.SearchActivity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
@@ -64,9 +65,9 @@ public class WhMenuActivity extends AppCompatActivity {
                     case Correlation_Idx:
                         i = new Intent(appCtx, CorrelationMenuActivity.class);
                         break;
-                    /*case Search_Idx:
-                        i = new Intent(appCtx, SearchStartActivity.class);
-                        break;*/
+                    case Search_Idx:
+                        i = new Intent(appCtx, SearchActivity.class);
+                        break;
                     default:
                 }
 

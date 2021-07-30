@@ -171,6 +171,7 @@
 
     <string name="title_inventory">INVENTORY</string>
     <string name="inventory_item_label">Inventory items</string>
+
     <string name="choose_site">Choose site</string>
 
     <string name="title_correlation">CORRELATION</string>
@@ -180,13 +181,15 @@
     <string name="choose_bin">Choose bin</string>
     <string name="barcode_cage">Barcode of Cage</string>
     <string name="title_activity_config">ConfigActivity</string>
-    <!--
-    This string is used for square devices and overridden by hello_world in
-    values-round/strings.xml for round devices.
-    -->
-    <string name="hello_world">Hello Square World!</string>
     <string name="please_enter_site_details">Please select current site</string>
     <string name="current_location">Current Location</string>
+    <string name="barcode_net">Barcode of Net</string>
+    <string name="initiate_temp_tag">Initiate temp tag</string>
+    <string name="barcode_bin">Barcode of Bin</string>
+    <string name="barcode_temp_tag">Barcode of Temp tag</string>
 
+    <string name="title_search">SEARCH</string>
+    <string name="choose_asset_type">Choose asset type</string>
+    <string name="choose_barcode">Choose barcode</string>
 
 </resources>
