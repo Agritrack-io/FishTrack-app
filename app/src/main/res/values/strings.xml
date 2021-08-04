@@ -11,6 +11,7 @@
     <string name="label_email_hint">Email</string>
     <string name="label_password_hint">PIN</string>
 
+    <string name="label_current_site">Current location:</string>
     <string name="label_login_header_content">Please login with your credentials</string>
     <string name="label_tv_forgot_pwd">Did you forget your PIN?</string>
 
