@@ -5,8 +5,8 @@ import java.util.Properties;
 
 import io.agritrack.fishtrack.ui.activity.login.LoginActivity;
 import io.agritrack.fishtrack.ui.activity.login.api.AuthApi;
-import io.agritrack.fishtrack.ui.activity.login.api.AuthResponse;
-import io.agritrack.fishtrack.ui.activity.login.api.LoginRequest;
+import io.agritrack.fishtrack.ui.activity.login.api.AuthInfo;
+import io.agritrack.fishtrack.ui.activity.login.api.LoginRQ;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -28,8 +28,8 @@ public class APICommService {
         api = retrofit.create(AuthApi.class);
     }
 
-    public void authenticate(LoginRequest req, LoginActivity.AuthLoginCallBack callBack) {
-        Call<AuthResponse> call = api.login(req);
+    public void authenticate(LoginRQ req, LoginActivity.AuthLoginCallBack callBack) {
+        Call<AuthInfo> call = api.login(req);
         call.enqueue(callBack);
     }
 

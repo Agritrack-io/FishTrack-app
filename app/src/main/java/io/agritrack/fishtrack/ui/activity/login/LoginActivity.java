@@ -22,8 +22,9 @@ import io.agritrack.fishtrack.data.service.AppUserService;
 import io.agritrack.fishtrack.ui.activity.ConfigActivity;
 import io.agritrack.fishtrack.ui.activity.HomeActivity;
 import io.agritrack.fishtrack.ui.activity.api.APICommService;
-import io.agritrack.fishtrack.ui.activity.login.api.AuthResponse;
-import io.agritrack.fishtrack.ui.activity.login.api.LoginRequest;
+import io.agritrack.fishtrack.ui.activity.login.api.AuthInfo;
+import io.agritrack.fishtrack.ui.activity.login.api.LoginRQ;
+import io.agritrack.fishtrack.ui.service.SharedPreferenceService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,13 +51,10 @@ public class LoginActivity extends AppCompatActivity {
         final EditText etPassword = findViewById(R.id.etPassword);
 
         // check last login timestamp, to determine whether synch is required.
-        SharedPreferences pref = getContext().getSharedPreferences("agritrack", Context.MODE_PRIVATE);
-        long loginUnixTime = pref.getLong("loginTime", 0);
-        long unixTime = System.currentTimeMillis() / 1000L;
-        long diffHours = Math.abs(unixTime - loginUnixTime) / 3600L;
+        long diffHours = SharedPreferenceService.getLoginDiffInDays();
 
-        boolean shouldLogin = pref.getBoolean("shouldLogin", true);
-        boolean shouldSync = pref.getBoolean("shouldSync", true);
+        boolean shouldLogin = SharedPreferenceService.shouldLogin(Boolean.TRUE);
+        boolean shouldSync = SharedPreferenceService.shouldSync(Boolean.TRUE);
 
         // if last login occurred < 2 hours ?? ago, no further login is required.
         if (diffHours < 2 && !shouldLogin && !shouldSync) {
@@ -68,21 +66,21 @@ public class LoginActivity extends AppCompatActivity {
             loadingProgressBar = findViewById(R.id.loading);
             loadingText = findViewById(R.id.loading_text);
 
-            loginResult.observe(this, loginResult -> {
-                if (loginResult == null) {
+            loginResult.observe(this, response -> {
+                if (response == null) {
                     loadingProgressBar.setVisibility(View.GONE);
                     loadingText.setVisibility(View.GONE);
                     loadingText.setText(null);
                     return;
                 }
-                if (loginResult.getError() != null) {
-                    showLoginFailed(loginResult.getError());
+                if (response.getError() != null) {
+                    showLoginFailed(response.getError());
                     loadingProgressBar.setVisibility(View.GONE);
                     loadingText.setVisibility(View.GONE);
                     loadingText.setText(null);
                 }
-                if (loginResult.getSuccess() != null) {
-                    updateUiWithUser(loginResult.getSuccess());
+                if (response.getSuccess() != null) {
+                    updateUiWithUser(response.getSuccess());
                 }
             });
 
@@ -116,16 +114,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
+        SharedPreferenceService.writeValue("token", model.getToken());
+        SharedPreferenceService.writeValue("username", model.getUsername());
+        SharedPreferenceService.writeValue("loginTime", (System.currentTimeMillis() / 1000L));
+        //editor.apply();
 
-        SharedPreferences pref = getSharedPreferences("agritrack", Context.MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString("token", model.getToken());
-        editor.putString("username", model.getUsername());
-        editor.putLong("loginTime", (System.currentTimeMillis() / 1000L));
-        editor.apply();
-
-        boolean shouldSync = pref.getBoolean("shouldSync", true);
+        boolean shouldSync = SharedPreferenceService.shouldSync(Boolean.TRUE);
         if (!shouldSync) {
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
@@ -135,8 +129,8 @@ public class LoginActivity extends AppCompatActivity {
             SyncAllTask syncAllTask = new SyncAllTask();
             syncAllTask.execute();
 
-            editor.putBoolean("shouldSync", false);
-            editor.apply();
+            SharedPreferenceService.writeValue("shouldSync", false);
+            //editor.apply();
         }
     }
 
@@ -172,24 +166,18 @@ public class LoginActivity extends AppCompatActivity {
         showAuthProgress();
 
         try {
-            final SharedPreferences pref = getContext().getSharedPreferences("agritrack", Context.MODE_PRIVATE);
-            String token = pref.getString("token", null);
-
-            long loginUnixTime = pref.getLong("loginTime", 0);
-            long unixTime = System.currentTimeMillis() / 1000L;
-
-            long diffInDays = Math.abs(unixTime - loginUnixTime) / 3600L / 24L;
+            long diffInDays = SharedPreferenceService.getLoginDiffInDays();
 
             // query local db for previous User authentications...
             AppUserService userService = new AppUserService();
             boolean userIsAlreadyAuthenticated = true; //userService.authenticateUser(db, username, pin);
 
             if (diffInDays == 0 && userIsAlreadyAuthenticated) {
-                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(username, token))));
+                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(username, SharedPreferenceService.getToken()))));
             } else {
-                APICommService svcREST = new APICommService();
-                LoginRequest rq = new LoginRequest(username, pin);
-                svcREST.authenticate(rq, new AuthLoginCallBack(username, pin));
+                APICommService restService = new APICommService();
+                LoginRQ rq = new LoginRQ(username, pin);
+                restService.authenticate(rq, new AuthLoginCallBack(username, pin));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -230,7 +218,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public class AuthLoginCallBack implements Callback<AuthResponse> {
+    public class AuthLoginCallBack implements Callback<AuthInfo> {
         private final SharedPreferences pref;
         private final String username;
         private final String pin;
@@ -242,14 +230,13 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
-            AuthResponse rs = response.body();
+        public void onResponse(Call<AuthInfo> call, Response<AuthInfo> response) {
+            AuthInfo rs = response.body();
 
             if (rs != null) {
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(this.username, rs.getToken()))));
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putBoolean("shouldSync", true);
-                editor.apply();
+                SharedPreferenceService.writeValue("shouldSync", true);
+                //editor.apply();
             } else {
                 // Probably Invalid Credentials
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.login_failed)));
@@ -257,14 +244,14 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onFailure(Call<AuthResponse> call, Throwable t) {
+        public void onFailure(Call<AuthInfo> call, Throwable t) {
             // Probably Network Communication Error
             runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.login_failed)));
         }
     }
 
 
-    public class SyncAllCallBack implements Callback<AuthResponse> {
+    public class SyncAllCallBack implements Callback<AuthInfo> {
         private final SharedPreferences pref;
         private final String username;
         private final String pin;
@@ -276,12 +263,12 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+        public void onResponse(Call<AuthInfo> call, Response<AuthInfo> response) {
 
         }
 
         @Override
-        public void onFailure(Call<AuthResponse> call, Throwable t) {
+        public void onFailure(Call<AuthInfo> call, Throwable t) {
 
         }
     }

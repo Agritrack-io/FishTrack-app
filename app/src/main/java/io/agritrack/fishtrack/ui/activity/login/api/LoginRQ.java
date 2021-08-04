@@ -1,12 +1,12 @@
 package io.agritrack.fishtrack.ui.activity.login.api;
 
-public class LoginRequest {
+public class LoginRQ {
 
     private String username;
 
     private String password;
 
-    public LoginRequest(String username, String password) {
+    public LoginRQ(String username, String password) {
         this.username = username;
         this.password = password;
     }

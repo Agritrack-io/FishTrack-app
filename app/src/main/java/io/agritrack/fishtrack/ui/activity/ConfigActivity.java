@@ -1,6 +1,7 @@
 package io.agritrack.fishtrack.ui.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,37 +10,91 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.MutableLiveData;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.api.FishTrackAPIServiceGenerator;
 import io.agritrack.fishtrack.data.MobileDB;
 import io.agritrack.fishtrack.enums.CoordType;
+import io.agritrack.fishtrack.ui.activity.config.ExpandableClusterListAdapter;
+import io.agritrack.fishtrack.ui.activity.login.api.AuthApi;
+import io.agritrack.fishtrack.ui.activity.login.api.SiteInfo;
+import io.agritrack.fishtrack.ui.activity.login.api.SitesRequest;
+import io.agritrack.fishtrack.ui.service.SharedPreferenceService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class ConfigActivity extends AppCompatActivity implements LocationListener {
     private final int REQUEST_FINE_LOCATION = 1234;
     MobileDB db;
-    ProgressBar progressBar;
-    TextView loadingText, tvLongitude, tvLatitude;
+    TextView tvLongitude, tvLatitude;
     ImageView btGPS;
+    ExpandableListView xvClusters;
+    ExpandableClusterListAdapter clustersAdapter;
+    List<String> listOfClusters;
+    Map<String, List<SiteInfo>> mapOfSitesPerCluster;
     LocationManager locationManager;
-    volatile Location location;
-    Long startLocationSearchTime;
+    volatile Location currentLocation;
     private SharedPreferences pref;
+    private AlertDialog dialog;
+    private TimeoutService timeoutService;
+
+    private final MutableLiveData<List<SiteInfo>> siteInfoResults = new MutableLiveData<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_config);
+
+        // get references to coordinate text views.
+        tvLongitude = findViewById(R.id.tvLongitude);
+        tvLatitude = findViewById(R.id.tvLatitude);
+
+        // get reference to recyclerView holding the sites close to reader's location.
+        xvClusters = findViewById(R.id.xvClusters);
+        // Listview on child click listener
+        xvClusters.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                Toast.makeText(getApplicationContext(),
+                        listOfClusters.get(groupPosition) + " : " + mapOfSitesPerCluster.get(listOfClusters.get(groupPosition)).get(childPosition), Toast.LENGTH_SHORT)
+                        .show();
+                return false;
+            }
+        });
+
+        // start observing siteInfo results..
+        registerSiteInfo();
+
+        // get references to Location Manager Instance
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // get references to localDB instance
+        db = MobileDB.getInstance(getContext());
 
         // get SharedPreferences instance
         pref = getContext().getSharedPreferences("agritrack", Context.MODE_PRIVATE);
@@ -47,36 +102,60 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
         // request permission to use GPS
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
 
-        setContentView(R.layout.activity_config);
-
-        progressBar = findViewById(R.id.loading);
-//        loadingText = findViewById(R.id.loading_text);
-
-        tvLongitude = findViewById(R.id.tvLongitude);
-        tvLatitude = findViewById(R.id.tvLatitude);
-
-
+        // allow btGPS to invoke Location Updates Requests.
         btGPS = findViewById(R.id.btnGPS);
         btGPS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // permission has been granted
+                // check if permission has been granted
                 if (ActivityCompat.checkSelfPermission(ConfigActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ConfigActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                progressBar.setVisibility(View.VISIBLE);
-                locationManager.requestLocationUpdates("gps", 5000, 0, ConfigActivity.this);
+                // show Progress Dialog
+                toggleProgress(true, R.string.acquire_coordinates);
             }
         });
 
+        // hide RecyclerView 'rvSites' until data is retrieved for backend REST API
+        xvClusters.setVisibility(View.GONE);
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        db = MobileDB.getInstance(getContext());
-
-        //***************
+        //************************************************************************
+        // fill coordinate TextViews with previously stored (if any) coordinates.
         readCurrentLocationFromSharedPreferences();
 
+        //************************************************************************
+        // instantiate an AlertDialog with countdown functionality
+        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogView = inflater.inflate(R.layout.progress_indicator, null);
+        TextView tvProgressMessage = dialogView.findViewById(R.id.progressMsg);
+        tvProgressMessage.setTextSize(24.0f);
+        tvProgressMessage.setText(R.string.acquire_coordinates);
+        dlgBuilder.setView(dialogView);
+        dlgBuilder.setCancelable(false);
+        dialog = dlgBuilder.create();
+
+        timeoutService = new TimeoutService(5000l, 500l, dialog);
+    }
+
+    private void loadClusterInfo() {
+        AuthApi authService = FishTrackAPIServiceGenerator.createService(AuthApi.class);
+        SitesRequest siteRQ = new SitesRequest(SharedPreferenceService.getLatitude(), SharedPreferenceService.getLongitude());
+        Call<List<SiteInfo>> callAsync = authService.getSites(siteRQ.toMap());
+
+        callAsync.enqueue(new Callback<List<SiteInfo>>() {
+            @Override
+            public void onResponse(Call<List<SiteInfo>> call, Response<List<SiteInfo>> response) {
+                List<SiteInfo> rs = response.body();
+                siteInfoResults.setValue(rs);
+            }
+
+            @Override
+            public void onFailure(Call<List<SiteInfo>> call, Throwable t) {
+                System.out.println(t);
+                Toast.makeText(getApplicationContext(), "Plz Check WIFI connection..", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -86,7 +165,7 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d("gps", "Location permission granted");
                 try {
-                    progressBar.setVisibility(View.VISIBLE);
+                    toggleProgress(true, R.string.acquire_coordinates);
                     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
                 } catch (SecurityException ex) {
@@ -98,31 +177,30 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
 
     private void showCoords() {
         runOnUiThread(() -> {
-            tvLatitude.setText(coord2Degrees(this.location.getLatitude(), CoordType.LATITUDE));
-            tvLongitude.setText(coord2Degrees(this.location.getLongitude(), CoordType.LONGITUDE));
+            tvLatitude.setText(coord2Degrees(this.currentLocation.getLatitude(), CoordType.LATITUDE));
+            tvLongitude.setText(coord2Degrees(this.currentLocation.getLongitude(), CoordType.LONGITUDE));
             writeCurrentLocationToSharedPreferences();
-            progressBar.setVisibility(View.GONE);
+            toggleProgress(false, R.string.app_name);
         });
     }
 
-    private void toggleSyncProgress(boolean show) {
+    private void toggleProgress(boolean show, @StringRes int info) {
         if (show) {
             runOnUiThread(() -> {
-                progressBar.setVisibility(View.VISIBLE);
-                loadingText.setText(R.string.syncing);
-                loadingText.setVisibility(View.VISIBLE);
+                dialog.show();
+                timeoutService.start();
             });
         } else {
             runOnUiThread(() -> {
-                progressBar.setVisibility(View.GONE);
-                loadingText.setVisibility(View.GONE);
+                dialog.dismiss();
+                timeoutService.cancel();
             });
         }
     }
 
     private void invokeSyncSites() {
         // display spinning progress bar
-        toggleSyncProgress(true);
+        toggleProgress(true, R.string.sync_sites);
 
         try {
             SharedPreferences pref = getSharedPreferences("agritrack", Context.MODE_PRIVATE);
@@ -139,15 +217,17 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            toggleSyncProgress(false);
+            toggleProgress(false, R.string.app_name);
         }
     }
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        this.location = location;
+        this.currentLocation = location;
         locationManager.removeUpdates(this);
         showCoords();
+        locationManager.removeUpdates(this);
+        loadClusterInfo();
     }
 
     @Override
@@ -164,29 +244,47 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
         startActivity(i);
     }
 
-
     // ###################################
-    private void setPreferenceParam(String key, String value) {
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString(key, value);
-        editor.apply();
+
+    private void registerSiteInfo() {
+        siteInfoResults.observe(this, response -> {
+            if (response == null) {
+                Toast.makeText(getApplicationContext(), "No site info received...", Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (response.size() == 0) {
+                xvClusters.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplicationContext(), "No site info received...", Toast.LENGTH_LONG).show();
+//                showLoginFailed(response.getError());
+//                loadingProgressBar.setVisibility(View.GONE);
+//                loadingText.setVisibility(View.GONE);
+//                loadingText.setText(null);
+            }
+            if (response.size() > 0) {
+                mapOfSitesPerCluster = response.stream().collect(Collectors.groupingBy(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
+                listOfClusters = new ArrayList<>(mapOfSitesPerCluster.keySet());
+
+                clustersAdapter = new ExpandableClusterListAdapter(this, listOfClusters, mapOfSitesPerCluster);
+                // setting list adapter
+                xvClusters.setAdapter(clustersAdapter);
+
+                xvClusters.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
-    private String getPreferenceParam(String key) {
-        return pref.getString(key, null);
-    }
 
     private void writeCurrentLocationToSharedPreferences() {
-        if (this.location != null) {
-            setPreferenceParam("lon", String.valueOf(this.location.getLongitude()));
-            setPreferenceParam("lat", String.valueOf(this.location.getLatitude()));
+        if (this.currentLocation != null) {
+            SharedPreferenceService.writeValue("lon", String.valueOf(this.currentLocation.getLongitude()));
+            SharedPreferenceService.writeValue("lat", String.valueOf(this.currentLocation.getLatitude()));
         }
     }
 
     private void readCurrentLocationFromSharedPreferences() {
 
-        String _lon = getPreferenceParam("lon");
-        String _lat = getPreferenceParam("lat");
+        String _lon = SharedPreferenceService.getLongitude();
+        String _lat = SharedPreferenceService.getLatitude();
 
         if (_lon != null && _lat != null) {
             runOnUiThread(() -> {
@@ -211,5 +309,27 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
         }
 
         return String.format("%s°%02d'%.3f\" %s", deg, min, sec, hemisphere);
+    }
+
+    private class TimeoutService extends CountDownTimer {
+        private final AlertDialog alertDlg;
+
+        public TimeoutService(long millisInFuture, long countDownInterval, AlertDialog dlg) {
+            super(millisInFuture, countDownInterval);
+
+            this.alertDlg = dlg;
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {
+            alertDlg.dismiss();
+            // if No GPS info was fetched, the currently stored Location will be used.
+            loadClusterInfo();
+        }
     }
 }

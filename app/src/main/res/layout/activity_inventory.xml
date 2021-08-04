@@ -319,6 +319,7 @@ tools:context=".ui.activity.wh.inventory.InventoryActivity">
             android:textSize="18sp" />
 
     </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 <androidx.constraintlayout.widget.ConstraintLayout
