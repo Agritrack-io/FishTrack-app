@@ -14,6 +14,8 @@
     <string name="label_login_header_content">Please login with your credentials</string>
     <string name="label_tv_forgot_pwd">Did you forget your PIN?</string>
 
+    <string name="empty_credentials_alert">Please fill-in Username And Password.</string>
+
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
 
@@ -42,6 +44,8 @@
 
     <string name="main_menu_title_fishing">Fishing</string>
     <string name="assets_masuk">Assets Masuk</string>
+
+    <string name="title_config">Configure app</string>
 
     <string name="title_user_date">USER NAME / DATE</string>
     <string name="title_fishing">FISHING</string>
@@ -167,6 +171,7 @@
 
     <string name="title_inventory">INVENTORY</string>
     <string name="inventory_item_label">Inventory items</string>
+
     <string name="choose_site">Choose site</string>
 
     <string name="title_correlation">CORRELATION</string>
@@ -175,6 +180,9 @@
     <string name="choose_net">Choose net</string>
     <string name="choose_bin">Choose bin</string>
     <string name="barcode_cage">Barcode of Cage</string>
+    <string name="title_activity_config">ConfigActivity</string>
+    <string name="please_enter_site_details">Please select current site</string>
+    <string name="current_location">Current Location</string>
     <string name="barcode_net">Barcode of Net</string>
     <string name="initiate_temp_tag">Initiate temp tag</string>
     <string name="barcode_bin">Barcode of Bin</string>
