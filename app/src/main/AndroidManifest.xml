@@ -127,12 +127,6 @@
             android:name=".ui.activity.TemplateActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.asset.ItemAssetsListActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.activity.profile.ProfileActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.activity.HomeActivity"
             android:screenOrientation="portrait" />
         <activity

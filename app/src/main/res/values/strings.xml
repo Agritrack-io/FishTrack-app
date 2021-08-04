@@ -8,43 +8,18 @@
     <string name="label_login">Login</string>
     <string name="label_submit">Submit</string>
 
-    <string name="label_email_hint">Email</string>
     <string name="label_password_hint">PIN</string>
 
     <string name="label_current_site">Current location:</string>
     <string name="label_login_header_content">Please login with your credentials</string>
     <string name="label_tv_forgot_pwd">Did you forget your PIN?</string>
 
-    <string name="empty_credentials_alert">Please fill-in Username And Password.</string>
-
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-
-    <string name="label_assets_home">Asset with uniq ID</string>
-
-    <string name="label_profil_title_page">Profile</string>
-    <string name="label_phone_number_profile">Phone Number</string>
-    <string name="label_address_profile">Address</string>
-    <string name="label_pengaturan_profile_detail">Profile Setting</string>
-    <string name="label_ganti_password_profile">Change Password</string>
-    <string name="label_tv_logout">Logout</string>
+    <string name="empty_credentials_alert">Please fill-in Username And PIN.</string>
 
     <string name="label_version_fish_track_profile">FishTrack v1.0.0</string>
 
-    <string name="label_menu_title_menu_item_barang_assets">Item Assets</string>
-    <string name="label_kode">code</string>
-    <string name="label_gudang">Gudang</string>
-    <string name="label_tanggal_waktu">Date/Time</string>
-
-    <string name="label_empty_data_title">Data is Empty</string>
-    <string name="label_empty_data_content">No data is displayed at this time</string>
-
-    <string name="label_title_page_list_gudang">Warehouse</string>
-    <string name="label_header_list_gudang">Please select warehouse first!</string>
-
-
     <string name="main_menu_title_fishing">Fishing</string>
-    <string name="assets_masuk">Assets Masuk</string>
+    <string name="item_home_adapter_menu_item">Menu item</string>
 
     <string name="title_config">Configure app</string>
 
@@ -55,7 +30,6 @@
     <string name="requested_quantity">Requested Quantity</string>
     <string name="scan_platform">Scan Platform</string>
     <string name="name_platform">Name Platform</string>
-    <string name="todo">TODO</string>
 
     <string name="title_user_date_platform">USER NAME / DATE / PLATFORM</string>
     <string name="bins_to_use">Bins for usage</string>
@@ -92,7 +66,6 @@
 
     <string name="back_button">BACK</string>
     <string name="next_bin_button">NEXT BIN</string>
-    <string name="end_fishing__button">END FISHING</string>
     <string name="end_bin__button">END BIN</string>
     <string name="weight_bin">Weight of Bin:</string>
     <string name="fishing_batches">Fishing Batches</string>
@@ -152,7 +125,7 @@
     <string name="dispatch_note_confirm_label">Dispatch note:</string>
     <string name="product_lot_confirm_label">LOT:</string>
     <string name="fish_condition_confirm_label">Fish condition:</string>
-    <string name="forgot_your_pin">Did you forget your PIN?</string>
+
     <string name="welcome">Welcome</string>
     <string name="authenticating">Please wait, authenticating user</string>
     <string name="syncing">Please wait, syncing routes</string>
@@ -193,6 +166,9 @@
     <string name="title_search">SEARCH</string>
     <string name="choose_asset_type">Choose asset type</string>
     <string name="choose_barcode">Choose barcode</string>
+    <string name="type_barcode">Or type barcode of asset</string>
+    <string name="proximity">Proximity</string>
+
 
     <string name="title_maintenance">MAINTENANCE</string>
     <string name="barcode_asset">Barcode of asset</string>

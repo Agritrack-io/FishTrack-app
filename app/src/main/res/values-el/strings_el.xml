@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FishTrack</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+
+    <string name="label_copyright_splash">Copyright AgriTrack v1.0.0</string>
+
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="label_login">Είσοδος</string>
+    <string name="label_submit">Υποβολή</string>
+
+    <string name="label_password_hint">Κωδικός</string>
+
+    <string name="label_current_site">Τρέχουσα τοποθεσία:</string>
+    <string name="label_login_header_content">Παρακαλώ εισέλθετε με τους κωδικούς σας</string>
+    <string name="label_tv_forgot_pwd">Ξεχάσατε τον κωδικό σας;</string>
+
+    <string name="empty_credentials_alert">Παρακαλώ συμπληρώστε τους κωδικούς σας.</string>
+
+    <string name="label_version_fish_track_profile">FishTrack v1.0.0</string>
+
+    <string name="main_menu_title_fishing">Αλίευση</string>
+    <string name="item_home_adapter_menu_item">Στοιχείο μενού</string>
+
+    <string name="title_config">Διαμόρφωση εφαρμογής</string>
+
+    <string name="title_user_date">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ</string>
+    <string name="title_fishing">ΑΛΙΕΥΣΗ</string>
+    <string name="choose_harvest">Επιλέξτε εντολέα συγκομιδής</string>
+    <string name="fish_type">Τύπος ψαριού</string>
+    <string name="requested_quantity">Ζητούμενη ποσότητα</string>
+    <string name="scan_platform">Σκανάρετε πλατφόρμα</string>
+    <string name="name_platform">Πλατφόρμα</string>
+
+    <string name="title_user_date_platform">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ / ΠΛΑΤΦΟΡΜΑ</string>
+    <string name="bins_to_use">Βούτες προς χρήση</string>
+    <string name="scan_bin">Σκανάρετε βούτα</string>
+    <string name="delete_bin">Διαγράωτε βούτα</string>
+    <string name="number_of_bins"># βουτών:</string>
+
+    <string name="fishing_team">Ομάδα αλίευσης</string>
+    <string name="add_employee">Προσθέστε μέλος</string>
+    <string name="delete_employee">Διαγράψτε μέλος</string>
+    <string name="pick_fishing_team">Επιλέξτε ομάδα αλίευσης</string>
+    <string name="number_of_employees"># μελών:</string>
+
+    <string name="title_platform_quantity_no_bins">ΠΛΑΤΦΟΡΜΑ / ΖΗΤΟΥΜΕΝΗ ΠΟΣΟΤΗΤΑ / # ΒΟΥΤΩΝ</string>
+    <string name="scan_cage_nets">Σκανάρετε κλωβό και δίχτυ</string>
+    <string name="name_cage">Κλωβός</string>
+    <string name="scan_cage">Σκανάρετε κλωβό</string>
+    <string name="name_net">Δίχτυ</string>
+    <string name="scan_net">Σκανάρετε δίχτυ</string>
+
+    <string name="title_cage_quantity_no_bins">ΚΛΩΒΟΣ / ΖΗΤΟΥΜΕΝΗ ΠΟΣΟΤΗΤΑ / # ΒΟΥΤΩΝ</string>
+    <string name="choose_sea_temp">Επιλέξτε θερμοκρασία θάλασσας</string>
+    <string name="ichthyopathologist">Ιχθυοπαθολόγος</string>
+    <string name="ichthyopathologist_name">Νίκος Παπαγιαννάκης</string>
+    <string name="last_fed">Τελευταία χορήγηση τροφής</string>
+    <string name="last_fed_date">21/7/2021</string>
+    <string name="type_of_fish">Πέστροφα</string>
+    <string name="ice_adequacy">Επάρκεια πάγου</string>
+    <string name="choose_ice_supplier">Επιλέξτε προμηθευτή πάγου</string>
+
+
+    <string name="no">ΟΧΙ</string>
+    <string name="yes">ΝΑΙ</string>
+
+    <string name="back_button">ΠΙΣΩ</string>
+    <string name="next_bin_button">ΕΠΟΜΕΝΗ ΒΟΥΤΑ</string>
+    <string name="end_bin__button">ΛΗΞΗ ΒΟΥΤΑΣ</string>
+    <string name="weight_bin">Βάρος βούτας:</string>
+    <string name="fishing_batches">Ψαριές</string>
+    <string name="fishing_summary">Σύνολα αλίευσης</string>
+    <string name="total_weight">ΣΥΝΟΛΙΚΟ ΒΑΡΟΣ:</string>
+    <string name="used_bins">ΧΡΗΣΙΜΟΠΟΙΟΥΜΕΝΕΣ ΒΟΥΤΕΣ:</string>
+    <string name="available_bins">ΔΙΑΘΕΣΙΜΕΣ ΒΟΥΤΕΣ:</string>
+    <string name="total_quantity">Συνολική ποσότητα:</string>
+    <string name="confirm_requested_quantity">Ζητούμενη ποσότητα:</string>
+    <string name="confirm_name_cage">Κλωβός:</string>
+    <string name="confirm_fish_type">Τύπος ψαριού:</string>
+    <string name="fishing_confirm">Επιβεβαιώστε τα παρακάτω στοιχεία </string>
+    <string name="fishing_enter_pin">Κωδικός</string>
+
+
+    <string name="title_transport">ΜΕΤΑΦΟΡΑ</string>
+    <string name="title_packaging_site_company_license_plate">ΣΥΣΚΕΥΑΣΤΗΡΙΟ / ΕΤΑΙΡΕΙΑ / ΠΙΝΑΚΙΔΑ</string>
+    <string name="choose_packaging_site">Επιλέξτε συσκευαστήριο</string>
+
+    <string name="driver_name">Εισάγετε όνομα οδηγού</string>
+    <string name="license_plate">Εισάγετε αριθμό κυκλοφορίας</string>
+    <string name="choose_company">Επιλέξτε εταιρεία</string>
+    <string name="truck_refrigerated">Φορτηγό ψυγείο</string>
+    <string name="parallel_transport">Παράλληλη μεταφορά</string>
+    <string name="security_clip_label">Αριθμός ασφαλείας</string>
+    <string name="bins_for_transport">Βούτες για μεταφορά</string>
+
+    <string name="packaging_site">Συσκευαστήριο:</string>
+    <string name="company">Εταιρεία:</string>
+    <string name="driver_name_label">Οδηγός:</string>
+    <string name="license_plate_label">Αριθμός κυκλοφορίας:</string>
+
+    <string name="security_clip_label_confirm">Αριθμός ασφαλείας:</string>
+    <string name="sign_driver">Υπογράψτε στο κουτί</string>
+
+    <string name="phone_number">Αριθμός κινητού</string>
+    <string name="username">Όνομα χρήστη</string>
+    <string name="insert_user_details">Παρακαλώ εισάγετε το όνομα χρήστη και το κινητό σας τηλέφωνο, να λάβετε SMS με τον κωδικό σας</string>
+    <string name="forgot_your_pin_success">Ο κψδικός σας έχει σταλεί στο κινητό σας τηλέφωνο. Παρακαλώ πατήστε το κουμπί για να εισέλθετε στην εφαρμογή.</string>
+    <string name="forgot_your_pin_failure">Υπήρξε ένα πρόβλημα με την αποστολή του SMS ή με τα στοιχεία που εισάγατε. Παρακαλώ πατήστε το κουμπί για να προσπαθήσετε ξανά.</string>
+    <string name="login_failed">Η είσοδος απέτυχε</string>
+
+    <string name="welcome">Καλωσήλθατε</string>
+    <string name="authenticating">Παρακαλώ περιμένετε, γίνεται επαλήθευση των στοιχείων χρήστη</string>
+    <string name="syncing">Παρακαλώ περιμένετε, γίνεται συγχρονισμός</string>
+    <string name="logo">Logo</string>
+
+    <string name="title_processing">ΠΑΡΑΛΑΒΗ</string>
+    <string name="title_date_lot_dispatch_note">ΗΜΕΡΟΜΗΝΙΑ / LOT / ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ</string>
+
+    <string name="dispatch_note">Εισάγετε δελτίο αποστολής</string>
+    <string name="choose_package_lot">Επιλέξτε LOT</string>
+    <string name="enter_security_clip">Εισάγετε αριθμό ασφαλείας</string>
+    <string name="clean_truck">Καθαριότητα οχήματος:</string>
+    <string name="smell_truck">Δυσάρεστες οσμές:</string>
+    <string name="fish_condition">Κατάσταση ψαριών</string>
+    <string name="receipt_remarks">Εισάγετε παρατηρήσεις/σχόλια</string>
+
+    <string name="received_bins">Ληφθείσες βούτες</string>
+
+    <string name="dispatch_note_confirm_label">Δελτίο αποστολής:</string>
+    <string name="product_lot_confirm_label">LOT:</string>
+    <string name="fish_condition_confirm_label">Κατάσταση ψαριών:</string>
+
+    <string name="title_date_type_of_asset">ΗΜΕΡΟΜΗΝΙΑ / ΤΥΠΟΣ ΠΑΓΙΟΥ</string>
+    <string name="title_outgoing">ΕΞΕΡΧΟΜΕΝΑ</string>
+
+    <string name="incoming_assets">Εισερχόμενα πάγια</string>
+    <string name="number_of_assets"># τεμαχίων:</string>
+    <string name="scan_assets">ΣΚΑΝΑΡΕΤΕ</string>
+    <string name="outgoing_assets">Εξερχόμενα πάγια</string>
+
+    <string name="title_main_menu">ΚΥΡΙΟ ΜΕΝΟΥ</string>
+    <string name="title_incoming">ΕΙΣΕΡΧΟΜΕΝΑ</string>
+
+    <string name="title_wh_menu">ΑΠΟΘΗΚΗ</string>
+
+    <string name="title_inventory">ΑΠΟΓΡΑΦΗ</string>
+    <string name="inventory_item_label">Είδη αποθέματος</string>
+
+    <string name="choose_site">Επιλέξτε χώρο</string>
+    <string name="acquire_coordinates">Παρακαλώ περιμένετε, ανάκτηση συντεταγμένων GPS...</string>
+    <string name="sync_sites">Παρακαλώ περιμένετε, συγχρονισμός χώρων...</string>
+
+    <string name="title_correlation">ΣΥΣΧΕΤΙΣΗ</string>
+    <string name="title_user_date_asset_type">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ / ΤΥΠΟΣ ΠΑΓΙΟΥ</string>
+    <string name="choose_cage">Επιλέξτε κλωβό</string>
+    <string name="choose_net">Επιλέξτε δίχτυ</string>
+    <string name="choose_bin">Εισάγετε βούτα</string>
+    <string name="barcode_cage">Barcode κλωβού</string>
+    <string name="title_activity_config">ConfigActivity</string>
+    <string name="current_location">Τρέχουσα τοποθεσία</string>
+    <string name="barcode_net">Barcode διχτυού</string>
+    <string name="initiate_temp_tag">Προγραμμάτισε ετικέτα θερμοκρασίας</string>
+    <string name="barcode_bin">Barcode βούτας</string>
+    <string name="barcode_temp_tag">Barcode ετικέτας θερμοκρασίας</string>
+
+    <string name="title_search">ΑΝΑΖΗΤΗΣΗ</string>
+    <string name="choose_asset_type">Επιλέξτε τύπο παγίου</string>
+    <string name="choose_barcode">Επιλέξτε barcode</string>
+    <string name="type_barcode">Ή εισάγετε barcode</string>
+    <string name="proximity">Εγγύτητα</string>
+
+    <string name="title_maintenance">ΣΥΝΤΗΡΗΣΗ</string>
+    <string name="barcode_asset">Barcode παγίου</string>
+    <string name="choose_maintenance_type">Επιλέξτε τύπο συντήρησης</string>
+    <string name="choose_job_type">Επιλέξτε τύποο εργασίας</string>
+    <string name="maintenance_team">Ομάδα συντήρησης</string>
+    <string name="maintenance_remarks">Παρατηρήσεις / σχόλια</string>
+
+    <string name="site_label">Χώρος:</string>
+    <string name="asset_code_label">Barcode:</string>
+    <string name="job_type_label">Τύπος συντήρησης:</string>
+    <string name="team_label">Ομάδα:</string>
+    <string name="details_label">Λεπτομέρειες:</string>
+    <string name="date_next_maintenance">Επόμενη συντήρηση:</string>
+
+    <string name="choose_supplier">Επιλέξτε προμηθευτή</string>
+    <string name="maintenance_manager">Εισάγετε υπέυθυνο</string>
+    <string name="maintenance_cost">Εισάγετε κόστος</string>
+
+    <string name="supplier_label">Προμηθευτής:</string>
+    <string name="maintenance_manager_label">Υπεύθυνος:</string>
+    <string name="maintenance_cost_label">Κόστος:</string>
+
+</resources>
