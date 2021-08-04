@@ -18,13 +18,15 @@ import io.agritrack.fishtrack.ui.activity.adapter.HomeMenuAdapter;
 import io.agritrack.fishtrack.ui.activity.adapter.MenuItem;
 import io.agritrack.fishtrack.ui.activity.fishing.FishingStartActivity;
 import io.agritrack.fishtrack.ui.activity.login.LoginActivity;
+import io.agritrack.fishtrack.ui.activity.maintenance.MaintenanceInternalStartActivity;
+import io.agritrack.fishtrack.ui.activity.maintenance.MaintenanceMenuActivity;
 import io.agritrack.fishtrack.ui.activity.process.ProcessStartActivity;
 import io.agritrack.fishtrack.ui.activity.transport.TransportStartActivity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class HomeActivity extends AppCompatActivity {
-    private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenace_Idx = 4;
+    private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4;
     GridView gvMainMenu;
 
     @Override
@@ -62,8 +64,8 @@ public class HomeActivity extends AppCompatActivity {
                     case Warehouse_Idx:
                         i = new Intent(appCtx, WhMenuActivity.class);
                         break;
-                    case Maintenace_Idx:
-                        i = new Intent(appCtx, LoginActivity.class);
+                    case Maintenance_Idx:
+                        i = new Intent(appCtx, MaintenanceMenuActivity.class);
                         break;
                     default:
                 }

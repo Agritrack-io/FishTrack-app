@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
-    tools:context=".ui.activity.process.ProcessStartActivity">
+    tools:context=".ui.activity.maintenance.MaintenanceInternalConfirmActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -45,7 +45,7 @@
             android:layout_marginBottom="32dp"
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
-            android:text="@string/title_processing"
+            android:text="@string/title_maintenance"
             android:textColor="@color/yellow"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -95,21 +95,20 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/footerLayout"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerLayout">
 
         <RelativeLayout
-            android:id="@+id/processStartALayout"
+            android:id="@+id/fishConfirmLayout"
             android:layout_width="0dp"
-            android:layout_height="240dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toTopOf="@+id/processStartBLayout"
+            android:layout_height="320dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toTopOf="@id/fishEnterPinLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="@+id/formLayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -117,88 +116,150 @@
                 android:layout_marginTop="12dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
                 android:orientation="vertical"
-                android:padding="1dp">
+                android:padding="15dp">
 
-                <EditText
-                    android:id="@+id/etDispatchNote"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/tvSiteLabel"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_rounded_dialog_input"
-                    android:ems="10"
-                    android:hint="@string/dispatch_note"
-                    android:inputType="textPersonName"
-                    android:padding="5dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:textColorHint="@color/black"
+                    android:text="@string/site_label"
+                    android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/tvChoosePackageLot"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/tvAssetBarcodeLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/tvSite"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/tvChoosePackageLot"
-                    android:layout_width="0dp"
+                    android:id="@+id/tvAssetBarcodeLabel"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="left"
-                    android:text="@string/choose_package_lot"
+                    android:text="@string/asset_code_label"
                     android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/spPackagingSite"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceTypeLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/tvAssetBarcode"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/etDispatchNote"
-                    tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvSiteLabel" />
 
-                <Spinner
-                    android:id="@+id/spPackagingSite"
-                    style="@style/spinner_style"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:dropDownWidth="match_parent"
-                    android:focusableInTouchMode="true"
-                    android:requiresFadingEdge="horizontal"
-                    android:spinnerMode="dropdown"
-                    android:textAlignment="textStart"
-                    android:visibility="visible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.496"
+                <TextView
+                    android:id="@+id/tvMaintenanceTypeLabel"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/job_type_label"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceTeamLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/tvMaintenanceType"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvChoosePackageLot"
-                    tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvAssetBarcodeLabel" />
 
-                <EditText
-                    android:id="@+id/etSecurityClip"
+                <TextView
+                    android:id="@+id/tvAssetBarcode"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:paddingStart="3dp"
+                    android:text="1234567890123"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceType"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvAssetBarcodeLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSite" />
+
+                <TextView
+                    android:id="@+id/tvMaintenanceType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:paddingStart="3dp"
+                    android:text="repair"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceTeam"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvMaintenanceTypeLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvAssetBarcode" />
+
+                <TextView
+                    android:id="@+id/tvMaintenanceTeamLabel"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/team_label"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvNextDateMaintenanceLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/tvMaintenanceTeam"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceTypeLabel" />
+
+                <TextView
+                    android:id="@+id/tvSite"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:paddingStart="3dp"
+                    android:text="Sagiada"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvAssetBarcode"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvSiteLabel"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvMaintenanceTeam"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:paddingStart="3dp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvNextDateMaintenance"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvMaintenanceTeamLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceType" />
+
+                <TextView
+                    android:id="@+id/tvNextDateMaintenanceLabel"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:background="@drawable/bg_rounded_dialog_input"
-                    android:ems="10"
-                    android:hint="@string/enter_security_clip"
-                    android:inputType="number"
-                    android:padding="5dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:textColorHint="@color/black"
+                    android:text="@string/date_next_maintenance"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tvNextDateMaintenance"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceTeamLabel" />
+
+                <TextView
+                    android:id="@+id/tvNextDateMaintenance"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:paddingStart="3dp"
+                    android:text="30/08/2022"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/text_view_font_size"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spPackagingSite" />
-
+                    app:layout_constraintStart_toEndOf="@+id/tvNextDateMaintenanceLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceTeam" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -209,25 +270,22 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_green"
                 android:paddingHorizontal="8dp"
-                android:text="Dispatch note, LOT ,clip"
+                android:text="@string/fishing_confirm"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 
         </RelativeLayout>
 
-
         <RelativeLayout
-            android:id="@+id/processStartBLayout"
+            android:id="@+id/fishEnterPinLayout"
             android:layout_width="0dp"
             android:layout_height="200dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toTopOf="@+id/processStartCLayout"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/formLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/processStartALayout">
+            app:layout_constraintTop_toBottomOf="@+id/fishConfirmLayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -235,168 +293,47 @@
                 android:layout_marginTop="12dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
                 android:orientation="vertical"
-                android:padding="1dp">
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swCleanTruck"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="16dp"
-                    android:checked="false"
-                    android:showText="true"
-                    android:text="@string/clean_truck"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/label_blue"
-                    android:textOff="@string/no"
-                    android:textOn="@string/yes"
-                    android:textSize="@dimen/text_view_font_size"
-                    android:theme="@style/SCBSwitch"
-                    android:thumb="@drawable/thumb"
-                    app:layout_constraintBottom_toTopOf="@+id/tvFishCondition"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:showText="true"
-                    app:switchTextAppearance="@style/texton"
-                    app:track="@drawable/track" />
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swSmell"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="16dp"
-                    android:checked="false"
-                    android:showText="true"
-                    android:text="@string/smell_truck"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/label_blue"
-                    android:textOff="@string/no"
-                    android:textOn="@string/yes"
-                    android:textSize="@dimen/text_view_font_size"
-                    android:theme="@style/SCBSwitch"
-                    android:thumb="@drawable/thumb"
-                    app:layout_constraintBottom_toTopOf="@+id/tvFishCondition"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:showText="true"
-                    app:switchTextAppearance="@style/texton"
-                    app:track="@drawable/track" />
+                android:padding="15dp">
 
                 <TextView
-                    android:id="@+id/tvFishCondition"
+                    android:id="@+id/tvUsername"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:gravity="left"
-                    android:text="@string/fish_condition"
-                    android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/spFishCondition"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/swSmell"
-                    tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
-
-                <Spinner
-                    android:id="@+id/spFishCondition"
-                    style="@style/spinner_style"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:dropDownWidth="match_parent"
-                    android:focusableInTouchMode="true"
-                    android:requiresFadingEdge="horizontal"
-                    android:spinnerMode="dropdown"
-                    android:textAlignment="textStart"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.496"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvFishCondition"
-                    tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="16dp"
-                android:background="@color/agri_green"
-                android:paddingHorizontal="8dp"
-                android:text="Details"
-                android:textColor="@color/label_blue"
-                android:textSize="18sp" />
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/processStartCLayout"
-            android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/processStartBLayout">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/shape_rounded_corner_with_shadow"
-                android:orientation="vertical"
-                android:padding="1dp">
-
-
-                <MultiAutoCompleteTextView
-                    android:id="@+id/multiAutoCompleteTextView"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/bg_rounded_dialog_input"
-                    android:fadeScrollbars="false"
-                    android:hint="@string/receipt_remarks"
-                    android:padding="5dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:scrollbarAlwaysDrawVerticalTrack="true"
-                    android:scrollbarFadeDuration="0"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="70dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:text="USERNAME"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
                     android:textColorHint="@color/black"
                     android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/etPasswordFishing"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.1"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/imageView7"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/etPasswordFishing"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="70dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:ems="10"
+                    android:hint="PIN"
+                    android:inputType="numberPassword"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_shortcut_camera_alt" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -406,14 +343,13 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_green"
                 android:paddingHorizontal="8dp"
-                android:text="Remarks"
+                android:text="@string/fishing_enter_pin"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footerLayout"
@@ -426,7 +362,7 @@
         app:layout_constraintTop_toBottomOf="@+id/formLayout">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/imageView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -434,13 +370,13 @@
             android:scaleX="0.7"
             android:scaleY="0.7"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivToReceiveBins"
-            app:layout_constraintStart_toEndOf="@+id/ivBackToMenu"
+            app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToMaintenanceInternalTeam"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
         <ImageView
-            android:id="@+id/ivBackToMenu"
+            android:id="@+id/ivBackToMaintenanceInternalTeam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -452,7 +388,7 @@
             app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
         <ImageView
-            android:id="@+id/ivToReceiveBins"
+            android:id="@+id/ivToCongs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -461,7 +397,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
+            app:srcCompat="@drawable/ic_check_blue" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

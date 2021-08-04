@@ -30,7 +30,7 @@ public class ForgotYourPinResultActivity extends AppCompatActivity {
         } else {
             forgotYourPinResultText.setText(R.string.forgot_your_pin_failure);
             continueButton.setOnClickListener(view -> {
-                Intent i = new Intent(getApplicationContext(), ForgotYourPinActivity.class);
+                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
             });
         }

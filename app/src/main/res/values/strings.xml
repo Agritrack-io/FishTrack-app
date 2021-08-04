@@ -184,5 +184,26 @@
     <string name="choose_asset_type">Choose asset type</string>
     <string name="choose_barcode">Choose barcode</string>
 
+    <string name="title_maintenance">MAINTENANCE</string>
+    <string name="barcode_asset">Barcode of asset</string>
+    <string name="choose_maintenance_type">Choose maintenance type</string>
+    <string name="choose_job_type">Choose job type</string>
+    <string name="maintenance_team">Selected team</string>
+    <string name="maintenance_remarks">Describe your work</string>
+
+    <string name="site_label">Site:</string>
+    <string name="asset_code_label">Barcode:</string>
+    <string name="job_type_label">Type:</string>
+    <string name="team_label">Team:</string>
+    <string name="details_label">Details:</string>
+    <string name="date_next_maintenance">Next date:</string>
+
+    <string name="choose_supplier">Choose supplier</string>
+    <string name="maintenance_manager">Type maintenance manager</string>
+    <string name="maintenance_cost">Type maintenance cost</string>
+
+    <string name="supplier_label">Supplier:</string>
+    <string name="maintenance_manager_label">Manager:</string>
+    <string name="maintenance_cost_label">Cost:</string>
 
 </resources>

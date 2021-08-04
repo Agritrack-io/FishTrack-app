@@ -230,11 +230,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
+            android:foregroundGravity="center"
             android:scaleX="0.7"
             android:scaleY="0.7"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivToTeam"
-            app:layout_constraintStart_toEndOf="@+id/ivBackToMenu"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToMain"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
@@ -242,9 +243,8 @@
             android:id="@+id/ivBackToMain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/border_all"
-            android:scaleX="1.5"
+            android:layout_marginStart="8dp"
+            android:scaleX="1.1"
             android:scaleY="1.2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -255,13 +255,13 @@
             android:id="@+id/ivToTeam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/border_all"
-            android:scaleX="1.5"
+            android:layout_marginEnd="8dp"
+            android:scaleX="1.1"
             android:scaleY="1.2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.526"
             app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
