@@ -166,7 +166,7 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
                 android:layout_marginTop="16dp"
                 android:background="@drawable/bg_rounded_dialog_input"
                 android:ems="10"
-                android:hint="Search cage"
+                android:hint="@string/search_cage"
                 android:inputType="textPersonName"
                 android:padding="5dp"
                 android:paddingStart="10dp"
@@ -221,7 +221,7 @@ tools:context=".ui.activity.wh.correlation.CorrelationCageActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="Correlate cage"
+            android:text="@string/title_correlate_cage"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 

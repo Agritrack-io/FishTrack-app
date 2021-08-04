@@ -12,6 +12,7 @@
     <string name="label_password_hint">Κωδικός</string>
 
     <string name="label_current_site">Τρέχουσα τοποθεσία:</string>
+    <string name="pick_current_site">Επιλέξτε τη θέση σας</string>
     <string name="label_login_header_content">Παρακαλώ εισέλθετε με τους κωδικούς σας</string>
     <string name="label_tv_forgot_pwd">Ξεχάσατε τον κωδικό σας;</string>
 
@@ -26,6 +27,7 @@
 
     <string name="title_user_date">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ</string>
     <string name="title_fishing">ΑΛΙΕΥΣΗ</string>
+    <string name="start_fishing">Έναρξη αλίευσης</string>
     <string name="choose_harvest">Επιλέξτε εντολέα συγκομιδής</string>
     <string name="fish_type">Τύπος ψαριού</string>
     <string name="requested_quantity">Ζητούμενη ποσότητα</string>
@@ -33,11 +35,13 @@
     <string name="name_platform">Πλατφόρμα</string>
 
     <string name="title_user_date_platform">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ / ΠΛΑΤΦΟΡΜΑ</string>
+    <string name="select_bins">Επιλέξτε βούτες</string>
     <string name="bins_to_use">Βούτες προς χρήση</string>
     <string name="scan_bin">Σκανάρετε βούτα</string>
-    <string name="delete_bin">Διαγράωτε βούτα</string>
+    <string name="delete_bin">Διαγράψτε βούτα</string>
     <string name="number_of_bins"># βουτών:</string>
 
+    <string name="select_fishing_team">Επιλέξτε ομάδα αλίευσης</string>
     <string name="fishing_team">Ομάδα αλίευσης</string>
     <string name="add_employee">Προσθέστε μέλος</string>
     <string name="delete_employee">Διαγράψτε μέλος</string>
@@ -78,8 +82,8 @@
     <string name="confirm_requested_quantity">Ζητούμενη ποσότητα:</string>
     <string name="confirm_name_cage">Κλωβός:</string>
     <string name="confirm_fish_type">Τύπος ψαριού:</string>
-    <string name="fishing_confirm">Επιβεβαιώστε τα παρακάτω στοιχεία </string>
-    <string name="fishing_enter_pin">Κωδικός</string>
+    <string name="fishing_confirm">Επιβεβαιώστε τα παρακάτω στοιχεία</string>
+    <string name="fishing_enter_pin">Εισάγετε κωδικό</string>
 
 
     <string name="title_transport">ΜΕΤΑΦΟΡΑ</string>
@@ -133,14 +137,20 @@
 
     <string name="title_date_type_of_asset">ΗΜΕΡΟΜΗΝΙΑ / ΤΥΠΟΣ ΠΑΓΙΟΥ</string>
     <string name="title_outgoing">ΕΞΕΡΧΟΜΕΝΑ</string>
+    <string name="outgoing_details">Πληροφορίες εξερχομένων</string>
 
     <string name="incoming_assets">Εισερχόμενα πάγια</string>
     <string name="number_of_assets"># τεμαχίων:</string>
     <string name="scan_assets">ΣΚΑΝΑΡΕΤΕ</string>
     <string name="outgoing_assets">Εξερχόμενα πάγια</string>
 
-    <string name="title_main_menu">ΚΥΡΙΟ ΜΕΝΟΥ</string>
+    <string name="title_main_menu">ΚΕΝΤΡΙΚΟ ΜΕΝΟΥ</string>
     <string name="title_incoming">ΕΙΣΕΡΧΟΜΕΝΑ</string>
+    <string name="incoming_details">Πληροφορίες εισερχομένων</string>
+    <string name="from">Από</string>
+    <string name="to">Σε</string>
+    <string name="details_from">Από:</string>
+    <string name="details_to">Σε:</string>
 
     <string name="title_wh_menu">ΑΠΟΘΗΚΗ</string>
 
@@ -154,8 +164,14 @@
     <string name="title_correlation">ΣΥΣΧΕΤΙΣΗ</string>
     <string name="title_user_date_asset_type">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ / ΤΥΠΟΣ ΠΑΓΙΟΥ</string>
     <string name="choose_cage">Επιλέξτε κλωβό</string>
+    <string name="title_correlate_cage">Συσχέτιση κλωβού</string>
+    <string name="search_cage">Αναζήτηση κλωβού</string>
+    <string name="search_net">Αναζήτηση διχτυού</string>
+    <string name="title_correlate_net">Συσχέτιση διχτυού</string>
+    <string name="title_correlate_bin">Συσχέτιση βούτας</string>
+    <string name="type_code_of_bin">Εισάγετε κωδικό βούτας</string>
     <string name="choose_net">Επιλέξτε δίχτυ</string>
-    <string name="choose_bin">Εισάγετε βούτα</string>
+    <string name="choose_bin">Επιλέξτε βούτα</string>
     <string name="barcode_cage">Barcode κλωβού</string>
     <string name="title_activity_config">ConfigActivity</string>
     <string name="current_location">Τρέχουσα τοποθεσία</string>
@@ -181,7 +197,7 @@
     <string name="asset_code_label">Barcode:</string>
     <string name="job_type_label">Τύπος συντήρησης:</string>
     <string name="team_label">Ομάδα:</string>
-    <string name="details_label">Λεπτομέρειες:</string>
+    <string name="details_label">Λεπτομέρειες</string>
     <string name="date_next_maintenance">Επόμενη συντήρηση:</string>
 
     <string name="choose_supplier">Επιλέξτε προμηθευτή</string>

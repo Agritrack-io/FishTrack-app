@@ -272,6 +272,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:background="@drawable/shape_rounded_corner_with_shadow"
             android:scaleX="1.5"
             android:scaleY="1.2"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -290,6 +291,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.888"
             app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

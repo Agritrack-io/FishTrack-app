@@ -151,7 +151,7 @@ tools:context=".ui.activity.wh.outgoing.OutgoingStartActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="Choose asset type"
+            android:text="@string/choose_asset_type"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
@@ -253,7 +253,7 @@ tools:context=".ui.activity.wh.outgoing.OutgoingStartActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="To"
+            android:text="@string/to"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
@@ -348,7 +348,7 @@ tools:context=".ui.activity.wh.outgoing.OutgoingStartActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="From"
+            android:text="@string/from"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
