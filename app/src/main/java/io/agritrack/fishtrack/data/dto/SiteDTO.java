@@ -1,4 +1,4 @@
-package io.agritrack.fishtrack.data.dao.dto;
+package io.agritrack.fishtrack.data.dto;
 
 import io.agritrack.fishtrack.data.model.Site;
 
