@@ -46,7 +46,11 @@ tools:context=".ui.activity.process.ProcessConfirmActivity">
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
         android:text="@string/title_processing"
+<<<<<<< Updated upstream
         android:textColor="@color/yellow"
+=======
+        android:textColor="@color/white"
+>>>>>>> Stashed changes
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivNext"

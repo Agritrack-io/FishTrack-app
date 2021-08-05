@@ -6,13 +6,22 @@ android:id="@+id/rootLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
+<<<<<<< Updated upstream
 tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
+=======
+tools:context=".ui.activity.wh.IncomingStartActivity">
+>>>>>>> Stashed changes
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
     android:layout_width="match_parent"
     android:layout_height="75dp"
     android:background="@drawable/bg_form_screen"
+<<<<<<< Updated upstream
+=======
+    android:backgroundTint="@color/agri_blue"
+    android:backgroundTintMode="multiply"
+>>>>>>> Stashed changes
     android:clipChildren="false"
     android:clipToPadding="false"
     android:fadingEdge="horizontal"
@@ -46,7 +55,11 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
         android:text="@string/title_incoming"
+<<<<<<< Updated upstream
         android:textColor="@color/yellow"
+=======
+        android:textColor="@color/white"
+>>>>>>> Stashed changes
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivNext"
@@ -151,7 +164,11 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
+<<<<<<< Updated upstream
             android:text="@string/choose_asset_type"
+=======
+            android:text="Choose asset type"
+>>>>>>> Stashed changes
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
@@ -178,6 +195,7 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
+<<<<<<< Updated upstream
             <io.agritrack.fishtrack.ui.custom.ToggleGroup
                 android:id="@+id/deal_detail_toolbar"
                 android:layout_width="fill_parent"
@@ -237,6 +255,9 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
 
 
           <!--  <RadioGroup
+=======
+            <RadioGroup
+>>>>>>> Stashed changes
                 android:id="@+id/rgIncomingFrom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -275,6 +296,7 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
                     android:text="ASSET"
                     android:textColor="@color/agri_blue"
                     android:textSize="@dimen/text_view_font_size_medium" />
+<<<<<<< Updated upstream
             </RadioGroup>-->
 
             <TextView
@@ -291,16 +313,40 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
                 android:padding="5dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
+=======
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/tvIncomingFrom"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/border_bottom"
+                android:gravity="center"
+                android:inputType="text"
+>>>>>>> Stashed changes
                 android:text="site, supplier or asset"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textIsSelectable="false"
+<<<<<<< Updated upstream
                 android:textSize="@dimen/text_view_font_size"
                 android:textStyle="normal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/deal_detail_toolbar" />
+=======
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rgIncomingFrom" />
+>>>>>>> Stashed changes
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -311,7 +357,11 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
+<<<<<<< Updated upstream
             android:text="@string/from"
+=======
+            android:text="From"
+>>>>>>> Stashed changes
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
@@ -356,7 +406,11 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
+<<<<<<< Updated upstream
                     android:text="SITE"
+=======
+                    android:text="SUBSITE"
+>>>>>>> Stashed changes
                     android:textColor="@color/agri_blue"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
@@ -372,12 +426,18 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
 
             <TextView
                 android:id="@+id/tvIncomingTo"
+<<<<<<< Updated upstream
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+=======
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+>>>>>>> Stashed changes
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
+<<<<<<< Updated upstream
                 android:background="@drawable/bg_rounded_dialog_non_input"
                 android:gravity="center"
                 android:inputType="text"
@@ -390,6 +450,17 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
                 android:textIsSelectable="false"
                 android:textSize="@dimen/text_view_font_size"
                 android:textStyle="normal"
+=======
+                android:background="@drawable/border_bottom"
+                android:gravity="center"
+                android:inputType="text"
+                android:text="Subsite or asset"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="24sp"
+                android:textStyle="bold"
+>>>>>>> Stashed changes
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -406,7 +477,11 @@ tools:context=".ui.activity.wh.incoming.IncomingStartActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
+<<<<<<< Updated upstream
             android:text="@string/to"
+=======
+            android:text="To"
+>>>>>>> Stashed changes
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 

@@ -6,13 +6,22 @@ android:id="@+id/fishingBinsLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
+<<<<<<< Updated upstream
 tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
+=======
+tools:context=".ui.activity.wh.IncomingProcessActivity">
+>>>>>>> Stashed changes
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
     android:layout_width="match_parent"
     android:layout_height="75dp"
     android:background="@drawable/bg_form_screen"
+<<<<<<< Updated upstream
+=======
+    android:backgroundTint="@color/agri_blue"
+    android:backgroundTintMode="multiply"
+>>>>>>> Stashed changes
     android:clipChildren="false"
     android:clipToPadding="false"
     android:fadingEdge="horizontal"
@@ -46,7 +55,11 @@ tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
         android:text="@string/title_incoming"
+<<<<<<< Updated upstream
         android:textColor="@color/yellow"
+=======
+        android:textColor="@color/white"
+>>>>>>> Stashed changes
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivNext"
@@ -126,7 +139,11 @@ tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:inputType="text"
+<<<<<<< Updated upstream
                 android:text="@string/details_from"
+=======
+                android:text="From:"
+>>>>>>> Stashed changes
                 android:textColor="@color/agri_blue"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/text_view_font_size"
@@ -150,7 +167,11 @@ tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
                 android:textColor="@color/black"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/text_view_font_size"
+<<<<<<< Updated upstream
                 android:textStyle="normal"
+=======
+                android:textStyle="bold"
+>>>>>>> Stashed changes
                 app:layout_constraintBottom_toTopOf="@+id/tvIncomingProcessTo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvFrom"
@@ -164,7 +185,11 @@ tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:inputType="text"
+<<<<<<< Updated upstream
                 android:text="@string/details_to"
+=======
+                android:text="To:"
+>>>>>>> Stashed changes
                 android:textColor="@color/agri_blue"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/text_view_font_size"
@@ -189,7 +214,11 @@ tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
                 android:textColor="@color/black"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/text_view_font_size"
+<<<<<<< Updated upstream
                 android:textStyle="normal"
+=======
+                android:textStyle="bold"
+>>>>>>> Stashed changes
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvTo"
@@ -204,7 +233,11 @@ tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
+<<<<<<< Updated upstream
             android:text="@string/incoming_details"
+=======
+            android:text="Incoming details"
+>>>>>>> Stashed changes
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
@@ -239,7 +272,11 @@ tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
                 android:gravity="center_horizontal"
+<<<<<<< Updated upstream
                 android:text="@string/incoming_items"
+=======
+                android:text="@string/incoming_assets"
+>>>>>>> Stashed changes
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
@@ -255,7 +292,11 @@ tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="50dp"
                 android:layout_marginBottom="8dp"
+<<<<<<< Updated upstream
                 android:background="@drawable/button_press_effect"
+=======
+                android:backgroundTint="@color/agri_blue"
+>>>>>>> Stashed changes
                 android:text="@string/scan_assets"
                 android:textColor="@color/yellow"
                 android:textSize="@dimen/button_font_size"
@@ -273,9 +314,13 @@ tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+<<<<<<< Updated upstream
                 android:background="@drawable/bg_rounded_input_spinner"
                 android:padding="5dp"
                 android:paddingStart="10dp"
+=======
+                android:background="#fff"
+>>>>>>> Stashed changes
                 app:layout_constraintBottom_toTopOf="@+id/tvNumberBins"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -291,7 +336,11 @@ tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="center_horizontal"
+<<<<<<< Updated upstream
                 android:text="@string/number_of_items"
+=======
+                android:text="@string/number_of_assets"
+>>>>>>> Stashed changes
                 android:textColor="@color/label_blue"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
@@ -348,7 +397,11 @@ tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
+<<<<<<< Updated upstream
             android:text="@string/incoming"
+=======
+            android:text="Assets"
+>>>>>>> Stashed changes
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
@@ -395,9 +448,16 @@ tools:context=".ui.activity.wh.incoming.IncomingProcessActivity">
         android:id="@+id/ivToCongs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+<<<<<<< Updated upstream
         android:layout_marginEnd="16dp"
         android:scaleX="1.5"
         android:scaleY="1.2"
+=======
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:scaleX="2.8"
+        android:scaleY="2.3"
+>>>>>>> Stashed changes
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

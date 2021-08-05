@@ -21,6 +21,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/FishTrack">
+<<<<<<< Updated upstream
         <activity android:name=".ui.activity.maintenance.MaintenanceExternalConfirmActivity"
             android:screenOrientation="portrait" ></activity>
         <activity android:name=".ui.activity.maintenance.MaintenanceExternalSupplierActivity"
@@ -78,6 +79,15 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.wh.incoming.IncomingStartActivity"
+=======
+        <activity android:name=".ui.activity.wh.OutgoingProcessActivity"></activity>
+        <activity android:name=".ui.activity.wh.OutgoingStartActivity" />
+        <activity
+            android:name=".ui.activity.wh.IncomingProcessActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.wh.IncomingStartActivity"
+>>>>>>> Stashed changes
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.process.ProcessConfirmActivity"
@@ -138,6 +148,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
