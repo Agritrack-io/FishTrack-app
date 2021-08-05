@@ -280,7 +280,7 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_green"
                 android:paddingHorizontal="8dp"
-                android:text="Start Fishing"
+                android:text="@string/start_fishing"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 
@@ -303,6 +303,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:background="@drawable/shape_rounded_corner_with_shadow"
             android:scaleX="1.5"
             android:scaleY="1.2"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -315,6 +316,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:background="@drawable/shape_rounded_corner_with_shadow"
             android:scaleX="1.5"
             android:scaleY="1.2"
             app:layout_constraintBottom_toBottomOf="parent"

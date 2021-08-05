@@ -166,7 +166,7 @@ tools:context=".ui.activity.wh.correlation.CorrelationBinActivity">
                 android:layout_marginBottom="32dp"
                 android:background="@drawable/bg_rounded_dialog_input"
                 android:ems="10"
-                android:hint="Type code of bin"
+                android:hint="@string/type_code_of_bin"
                 android:inputType="textPersonName"
                 android:padding="5dp"
                 android:paddingStart="10dp"
@@ -227,7 +227,7 @@ tools:context=".ui.activity.wh.correlation.CorrelationBinActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="Correlate bin"
+            android:text="@string/title_correlate_bin"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 

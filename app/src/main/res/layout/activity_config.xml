@@ -192,7 +192,7 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_green"
                 android:paddingHorizontal="8dp"
-                android:text="Pick Current Site"
+                android:text="@string/pick_current_site"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 

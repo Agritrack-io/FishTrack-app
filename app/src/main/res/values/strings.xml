@@ -11,6 +11,8 @@
     <string name="label_password_hint">PIN</string>
 
     <string name="label_current_site">Current location:</string>
+    <string name="pick_current_site">Pick Current Site</string>
+
     <string name="label_login_header_content">Please login with your credentials</string>
     <string name="label_tv_forgot_pwd">Did you forget your PIN?</string>
 
@@ -25,6 +27,7 @@
 
     <string name="title_user_date">USER NAME / DATE</string>
     <string name="title_fishing">FISHING</string>
+    <string name="start_fishing">Start Fishing</string>
     <string name="choose_harvest">Choose Harvest initiator</string>
     <string name="fish_type">Fish Type</string>
     <string name="requested_quantity">Requested Quantity</string>
@@ -32,12 +35,14 @@
     <string name="name_platform">Name Platform</string>
 
     <string name="title_user_date_platform">USER NAME / DATE / PLATFORM</string>
+    <string name="select_bins">Select bins</string>
     <string name="bins_to_use">Bins for usage</string>
     <string name="scan_bin">Scan Bin</string>
     <string name="delete_bin">Delete Bin</string>
     <string name="number_of_bins"># of bins:</string>
 
-    <string name="fishing_team">Selected fishing team</string>
+    <string name="select_fishing_team">Select fishing team</string>
+    <string name="fishing_team">Fishing team</string>
     <string name="add_employee">Add employee</string>
     <string name="delete_employee">Del employee</string>
     <string name="pick_fishing_team">Pick team members</string>
@@ -132,6 +137,7 @@
 
     <string name="title_date_type_of_asset">DATE / TYPE OF ASSET</string>
     <string name="title_outgoing">OUTGOING</string>
+    <string name="outgoing_details">Outgoing details</string>
 
     <string name="incoming_assets">Incoming assets</string>
     <string name="number_of_assets"># of items:</string>
@@ -140,6 +146,11 @@
 
     <string name="title_main_menu">MAIN MENU</string>
     <string name="title_incoming">INCOMING</string>
+    <string name="incoming_details">Incoming details</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="details_from">From:</string>
+    <string name="details_to">To:</string>
 
     <string name="title_wh_menu">WH MENU</string>
 
@@ -153,6 +164,12 @@
     <string name="title_correlation">CORRELATION</string>
     <string name="title_user_date_asset_type">USER NAME / DATE / ASSET TYPE</string>
     <string name="choose_cage">Choose cage</string>
+    <string name="title_correlate_cage">Correlate cage</string>
+    <string name="search_cage">Search cage</string>
+    <string name="search_net">Search net</string>
+    <string name="title_correlate_net">Correlate net</string>
+    <string name="title_correlate_bin">Correlate bin</string>
+    <string name="type_code_of_bin">Type code of bin</string>
     <string name="choose_net">Choose net</string>
     <string name="choose_bin">Choose bin</string>
     <string name="barcode_cage">Barcode of Cage</string>
@@ -181,7 +198,7 @@
     <string name="asset_code_label">Barcode:</string>
     <string name="job_type_label">Type:</string>
     <string name="team_label">Team:</string>
-    <string name="details_label">Details:</string>
+    <string name="details_label">Details</string>
     <string name="date_next_maintenance">Next date:</string>
 
     <string name="choose_supplier">Choose supplier</string>
