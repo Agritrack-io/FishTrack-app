@@ -5,9 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -55,7 +53,7 @@ import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 public class ConfigActivity extends AppCompatActivity implements LocationListener {
     private final int REQUEST_FINE_LOCATION = 1234;
     private final MutableLiveData<List<SiteInfo>> siteInfoResults = new MutableLiveData<>();
-    private Boolean fetchSitesWhenNoGPSDataAcquireed = Boolean.TRUE;
+    private final Boolean fetchSitesWhenNoGPSDataAcquireed = Boolean.TRUE;
     MobileDB db;
     TextView tvLongitude, tvLatitude;
     ImageView btGPS;
@@ -92,7 +90,7 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
                 String clusterKey = clusterIDs.get(groupPosition);
                 SiteInfo selectedSite = mapOfSitesPerCluster.get(clusterKey).get(childPosition);
 
-                YesNoDialogFragment ys = new YesNoDialogFragment(selectedSite);
+                YesNoDialog ys = new YesNoDialog(selectedSite);
                 FragmentManager fm = getSupportFragmentManager();
                 ys.showNow(fm, getString(R.string.confirm_selection));
 
@@ -173,7 +171,7 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
 
             @Override
             public void onFailure(Call<List<SiteInfo>> call, Throwable t) {
-                Toast.makeText(getAppContext(), "Plz Check WIFI connection...\n"+t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getAppContext(), "Plz Check WIFI connection...\n" + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -279,8 +277,10 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
     }
 
     private AlertDialog createDialog(@StringRes int msg) {
+
         // instantiate an AlertDialog with countdown functionality
         AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(this);
+
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View dialogView = inflater.inflate(R.layout.progress_indicator, null);
         TextView tvProgressMessage = dialogView.findViewById(R.id.progressMsg);
@@ -288,7 +288,39 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
         tvProgressMessage.setText(msg);
         dlgBuilder.setView(dialogView);
         dlgBuilder.setCancelable(false);
+
         return dlgBuilder.create();
+    }
+
+    public static class YesNoDialog extends DialogFragment {
+        private final SiteInfo mSite;
+
+        public YesNoDialog(SiteInfo selectedSite) {
+            mSite = selectedSite;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            builder.setMessage(getText(R.string.accept_selected_site) + mSite.getName())
+                    .setPositiveButton(R.string.dialog_accept, (dialog, id) -> {
+                        // persist selected Site to local Preferences.
+                        SharedPreferenceService.writeValue(SharedPreferenceService.SelectedSite_Key, mSite.getName());
+                        // move to Login Screen
+                        Intent i = new Intent(getAppContext(), LoginActivity.class);
+                        i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+                        startActivity(i);
+                    })
+                    .setNegativeButton(R.string.dialog_deny, (dialog, id) -> {
+                        return;
+                    });
+
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
     }
 
     private class TimeoutService extends CountDownTimer {
@@ -309,37 +341,12 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
             this.alertDlg.dismiss();
             Toast.makeText(getAppContext(), "No GPS coords found. Plz retry...", Toast.LENGTH_LONG).show();
             // if No GPS info was fetched, the currently stored Location will be used.
-            if(fetchSitesWhenNoGPSDataAcquireed) {
+            if (fetchSitesWhenNoGPSDataAcquireed) {
                 currentLocation = new Location("gps");
                 currentLocation.setLongitude(Double.valueOf(SharedPreferenceService.getLongitude()));
                 currentLocation.setLatitude(Double.valueOf(SharedPreferenceService.getLatitude()));
                 //loadClusterInfo();
             }
-        }
-    }
-
-    public static class YesNoDialogFragment extends DialogFragment {
-        private final SiteInfo mSite;
-        public YesNoDialogFragment(SiteInfo selectedSite) {
-            mSite = selectedSite;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(getText(R.string.accept_selected_site) + mSite.getName())
-                    .setPositiveButton(R.string.dialog_accept, (dialog, id) -> {
-                        // persist selected Site to local Preferences.
-                        SharedPreferenceService.writeValue(SharedPreferenceService.SelectedSite_Key, mSite.getName());
-                        // move to Login Screen
-                        Intent i = new Intent(getAppContext(), LoginActivity.class);
-                        i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-                        startActivity(i);
-                    })
-                    .setNegativeButton(R.string.dialog_deny, (dialog, id) -> {return;});
-            // Create the AlertDialog object and return it
-            return builder.create();
         }
     }
 }
