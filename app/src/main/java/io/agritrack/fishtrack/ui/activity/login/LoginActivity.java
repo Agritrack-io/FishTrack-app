@@ -110,8 +110,8 @@ public class LoginActivity extends AppCompatActivity {
                 final String username = etUserName.getText().toString().trim();
                 final String pin = etPassword.getText().toString().trim();
 
-//                Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-//                startActivity(i);
+                Intent ii = new Intent(getApplicationContext(), HomeActivity.class);
+                 startActivity(ii);
 
                 if (username.isEmpty() || pin.isEmpty()) {
                     noCredentialsEnteredAlert();

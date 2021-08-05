@@ -89,6 +89,7 @@
     <string name="title_transport">TRANSPORT</string>
     <string name="title_packaging_site_company_license_plate">PACKAGING SITE / COMPANY / LICENSE PLATE</string>
     <string name="choose_packaging_site">Choose packaging site</string>
+    <string name="packaging_details">Packaging details</string>
 
     <string name="driver_name">Type driver name</string>
     <string name="license_plate">Type license plate</string>
@@ -97,6 +98,8 @@
     <string name="parallel_transport">Parallel transport</string>
     <string name="security_clip_label">Security clip number</string>
     <string name="bins_for_transport">Bins for transport</string>
+    <string name="enter_security_clip_number">Enter security clip number</string>
+
 
     <string name="packaging_site">Packaging site:</string>
     <string name="company">Company:</string>
@@ -116,6 +119,7 @@
 
     <string name="title_processing">PROCESSING</string>
     <string name="title_date_lot_dispatch_note">DATE / LOT / DISPATCH NOTE</string>
+    <string name="processing_details">Processing details</string>
 
     <string name="dispatch_note">Type dispatch note</string>
     <string name="choose_package_lot">Choose LOT</string>
@@ -125,6 +129,7 @@
     <string name="fish_condition">Fish condition</string>
     <string name="receipt_remarks">Type your remarks</string>
 
+    <string name="choose_fish_farm">Choose fish farm</string>
     <string name="received_bins">Received bins</string>
 
     <string name="dispatch_note_confirm_label">Dispatch note:</string>
@@ -138,11 +143,13 @@
     <string name="title_date_type_of_asset">DATE / TYPE OF ASSET</string>
     <string name="title_outgoing">OUTGOING</string>
     <string name="outgoing_details">Outgoing details</string>
+    <string name="outgoing">Outgoing</string>
 
-    <string name="incoming_assets">Incoming assets</string>
-    <string name="number_of_assets"># of items:</string>
+    <string name="incoming_items">Incoming items</string>
+    <string name="incoming">Incoming</string>
+    <string name="number_of_items"># of items:</string>
     <string name="scan_assets">SCAN</string>
-    <string name="outgoing_assets">Outgoing assets</string>
+    <string name="outgoing_items">Outgoing items</string>
 
     <string name="title_main_menu">MAIN MENU</string>
     <string name="title_incoming">INCOMING</string>
@@ -155,6 +162,8 @@
     <string name="title_wh_menu">WH MENU</string>
 
     <string name="title_inventory">INVENTORY</string>
+    <string name="inventory_details">Inventory details</string>
+    <string name="inventory">Inventory</string>
     <string name="inventory_item_label">Inventory items</string>
 
     <string name="choose_site">Choose site</string>
@@ -181,18 +190,28 @@
     <string name="barcode_temp_tag">Barcode of Temp tag</string>
 
     <string name="title_search">SEARCH</string>
+    <string name="search">Search</string>
+    <string name="search_details">Search details</string>
     <string name="choose_asset_type">Choose asset type</string>
     <string name="choose_barcode">Choose barcode</string>
     <string name="type_barcode">Or type barcode of asset</string>
     <string name="proximity">Proximity</string>
 
-
     <string name="title_maintenance">MAINTENANCE</string>
     <string name="barcode_asset">Barcode of asset</string>
     <string name="choose_maintenance_type">Choose maintenance type</string>
     <string name="choose_job_type">Choose job type</string>
+    <string name="select_team">Select team</string>
     <string name="maintenance_team">Selected team</string>
+    <string name="cleaning">Cleaning</string>
+    <string name="repair">Repair</string>
+    <string name="dates">Dates</string>
+    <string name="next_maintenance">Next maintenance</string>
+    <string name="estimated_withdrawal">Estimated withdrawal</string>
     <string name="maintenance_remarks">Describe your work</string>
+    <string name="maintenance_details">Maintenance details</string>
+    <string name="details">Details</string>
+    <string name="remarks">Remarks</string>
 
     <string name="site_label">Site:</string>
     <string name="asset_code_label">Barcode:</string>

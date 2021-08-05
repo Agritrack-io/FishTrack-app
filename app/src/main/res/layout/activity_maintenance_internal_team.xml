@@ -255,7 +255,7 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_green"
                 android:paddingHorizontal="8dp"
-                android:text="Select Team"
+                android:text="@string/select_team"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 
@@ -317,7 +317,7 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_green"
                 android:paddingHorizontal="8dp"
-                android:text="Description"
+                android:text="@string/remarks"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 

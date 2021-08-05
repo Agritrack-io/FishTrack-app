@@ -170,7 +170,7 @@ tools:context=".ui.activity.wh.inventory.InventoryActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="Initiate inventory"
+            android:text="@string/inventory_details"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
@@ -257,7 +257,7 @@ tools:context=".ui.activity.wh.inventory.InventoryActivity">
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="center_horizontal"
-                android:text="@string/number_of_assets"
+                android:text="@string/number_of_items"
                 android:textColor="@color/label_blue"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
@@ -314,7 +314,7 @@ tools:context=".ui.activity.wh.inventory.InventoryActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="Inventory"
+            android:text="@string/inventory"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 

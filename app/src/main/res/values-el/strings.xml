@@ -89,6 +89,7 @@
     <string name="title_transport">ΜΕΤΑΦΟΡΑ</string>
     <string name="title_packaging_site_company_license_plate">ΣΥΣΚΕΥΑΣΤΗΡΙΟ / ΕΤΑΙΡΕΙΑ / ΠΙΝΑΚΙΔΑ</string>
     <string name="choose_packaging_site">Επιλέξτε συσκευαστήριο</string>
+    <string name="packaging_details">Πληροφορίες μεταφοράς</string>
 
     <string name="driver_name">Εισάγετε όνομα οδηγού</string>
     <string name="license_plate">Εισάγετε αριθμό κυκλοφορίας</string>
@@ -97,6 +98,7 @@
     <string name="parallel_transport">Παράλληλη μεταφορά</string>
     <string name="security_clip_label">Αριθμός ασφαλείας</string>
     <string name="bins_for_transport">Βούτες για μεταφορά</string>
+    <string name="enter_security_clip_number">Εισάγετε αριθμό ασφαλείας</string>
 
     <string name="packaging_site">Συσκευαστήριο:</string>
     <string name="company">Εταιρεία:</string>
@@ -119,6 +121,7 @@
     <string name="logo">Logo</string>
 
     <string name="title_processing">ΠΑΡΑΛΑΒΗ</string>
+    <string name="processing_details">Πληροφορίες παραλαβής</string>
     <string name="title_date_lot_dispatch_note">ΗΜΕΡΟΜΗΝΙΑ / LOT / ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ</string>
 
     <string name="dispatch_note">Εισάγετε δελτίο αποστολής</string>
@@ -130,6 +133,7 @@
     <string name="receipt_remarks">Εισάγετε παρατηρήσεις/σχόλια</string>
 
     <string name="received_bins">Ληφθείσες βούτες</string>
+    <string name="choose_fish_farm">Επιλέξτε μονάδα εκτροφής</string>
 
     <string name="dispatch_note_confirm_label">Δελτίο αποστολής:</string>
     <string name="product_lot_confirm_label">LOT:</string>
@@ -138,11 +142,13 @@
     <string name="title_date_type_of_asset">ΗΜΕΡΟΜΗΝΙΑ / ΤΥΠΟΣ ΠΑΓΙΟΥ</string>
     <string name="title_outgoing">ΕΞΕΡΧΟΜΕΝΑ</string>
     <string name="outgoing_details">Πληροφορίες εξερχομένων</string>
+    <string name="outgoing">Εξερχόμενα</string>
 
-    <string name="incoming_assets">Εισερχόμενα πάγια</string>
-    <string name="number_of_assets"># τεμαχίων:</string>
+    <string name="incoming_items">Εισερχόμενα είδη</string>
+    <string name="incoming">Εισερχόμενα</string>
+    <string name="number_of_items"># τεμαχίων:</string>
     <string name="scan_assets">ΣΚΑΝΑΡΕΤΕ</string>
-    <string name="outgoing_assets">Εξερχόμενα πάγια</string>
+    <string name="outgoing_items">Εξερχόμενα είδη</string>
 
     <string name="title_main_menu">ΚΕΝΤΡΙΚΟ ΜΕΝΟΥ</string>
     <string name="title_incoming">ΕΙΣΕΡΧΟΜΕΝΑ</string>
@@ -155,7 +161,9 @@
     <string name="title_wh_menu">ΑΠΟΘΗΚΗ</string>
 
     <string name="title_inventory">ΑΠΟΓΡΑΦΗ</string>
-    <string name="inventory_item_label">Είδη αποθέματος</string>
+    <string name="inventory_details">Πληροφορίες απογραφής</string>
+    <string name="inventory">Απογραφή</string>
+    <string name="inventory_item_label">Είδη απογραφής</string>
 
     <string name="choose_site">Επιλέξτε χώρο</string>
     <string name="acquire_coordinates">Παρακαλώ περιμένετε, ανάκτηση συντεταγμένων GPS...</string>
@@ -181,6 +189,8 @@
     <string name="barcode_temp_tag">Barcode ετικέτας θερμοκρασίας</string>
 
     <string name="title_search">ΑΝΑΖΗΤΗΣΗ</string>
+    <string name="search">Αναζήτηση</string>
+    <string name="search_details">Πληροφορίες αναζήτησης</string>
     <string name="choose_asset_type">Επιλέξτε τύπο παγίου</string>
     <string name="choose_barcode">Επιλέξτε barcode</string>
     <string name="type_barcode">Ή εισάγετε barcode</string>
@@ -189,9 +199,18 @@
     <string name="title_maintenance">ΣΥΝΤΗΡΗΣΗ</string>
     <string name="barcode_asset">Barcode παγίου</string>
     <string name="choose_maintenance_type">Επιλέξτε τύπο συντήρησης</string>
-    <string name="choose_job_type">Επιλέξτε τύποο εργασίας</string>
+    <string name="choose_job_type">Επιλέξτε τύπο εργασίας</string>
+    <string name="select_team">Επιλέξτε ομάδα</string>
     <string name="maintenance_team">Ομάδα συντήρησης</string>
+    <string name="cleaning">Καθαρισμός</string>
+    <string name="repair">Επισκευή</string>
+    <string name="dates">Ημερομηνίες</string>
+    <string name="next_maintenance">Επόμενη συντήρηση</string>
+    <string name="estimated_withdrawal">Εκτιμώμενη απόσυρση</string>
     <string name="maintenance_remarks">Παρατηρήσεις / σχόλια</string>
+    <string name="maintenance_details">Πληροφορίες συντήρησης</string>
+    <string name="details">Πληροφορίες</string>
+    <string name="remarks">Παρατηρήσεις</string>
 
     <string name="site_label">Χώρος:</string>
     <string name="asset_code_label">Barcode:</string>
@@ -207,5 +226,10 @@
     <string name="supplier_label">Προμηθευτής:</string>
     <string name="maintenance_manager_label">Υπεύθυνος:</string>
     <string name="maintenance_cost_label">Κόστος:</string>
+
+    <string name="dialog_accept">Ναι</string>
+    <string name="dialog_deny">Όχι</string>
+    <string name="accept_selected_site">Ο επιλεγμένος χώρος θα είναι:</string>
+    <string name="confirm_selection">Παρακαλώ επιβεβαιώστε την επιλογή σας</string>
 
 </resources>
