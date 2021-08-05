@@ -1,11 +1,11 @@
 package io.agritrack.fishtrack.enums;
 
-public enum CoordType {
+public enum Coordinates {
     LONGITUDE(0), LATITUDE(1);
 
     public final int tp;
 
-    CoordType(int coordType) {
+    Coordinates(int coordType) {
         this.tp = coordType;
     }
 

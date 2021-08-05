@@ -2,10 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/forgotYourPINLayout"
+    android:id="@+id/loginActivityLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".ui.activity.login.LoginActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -115,7 +117,7 @@
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:id="@+id/tvForgotPasswordText"
@@ -177,7 +179,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/ivPoweredByLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -199,30 +201,32 @@
             app:srcCompat="@drawable/flag_great_britain" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/tvLabelCurrentLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
             android:text="@string/label_current_site"
             android:textColor="@color/agri_blue"
-            android:textSize="@dimen/text_view_font_size_medium"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvCurrentSite"
             app:layout_constraintEnd_toStartOf="@+id/tvCurrentSite"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin" />
+            app:layout_constraintTop_toTopOf="@+id/tvCurrentSite" />
 
         <TextView
             android:id="@+id/tvCurrentSite"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
+            android:gravity="left"
+            android:paddingStart="6dp"
             android:text="Sagiada Spain"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_view_font_size_medium"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView3"
+            app:layout_constraintStart_toEndOf="@+id/tvLabelCurrentLocation"
             app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

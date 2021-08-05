@@ -3,18 +3,25 @@ package io.agritrack.fishtrack.ui.activity.login;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
+
+import java.util.Locale;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.MobileDB;
@@ -37,11 +44,25 @@ public class LoginActivity extends AppCompatActivity {
     private MobileDB db;
     private ProgressBar loadingProgressBar;
     private TextView loadingText;
+    private ImageButton ibLocale;
+
+
+//    @Override
+//    protected void attachBaseContext(Context newBase) {
+//        super.attachBaseContext(LocaleHelper.onAttach(newBase));
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // bind the flags button
+        ibLocale = findViewById(R.id.ibLocale);
+
+        // Remove focus from children controls...
+        ConstraintLayout rootLayout = findViewById(R.id.loginActivityLayout);
+        rootLayout.requestFocus();
 
         // get an instance of local DB
         db = MobileDB.getInstance(getContext());
@@ -63,9 +84,9 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             final TextView tvForgotYourPassword = findViewById(R.id.tvForgotPasswordText);
             final Button btLogin = findViewById(R.id.btnLogin);
+
             loadingProgressBar = findViewById(R.id.loading);
             loadingText = findViewById(R.id.loading_text);
-
             loginResult.observe(this, response -> {
                 if (response == null) {
                     loadingProgressBar.setVisibility(View.GONE);
@@ -96,7 +117,9 @@ public class LoginActivity extends AppCompatActivity {
                     noCredentialsEnteredAlert();
                 } else if ("config".equals(username) && "8888".equals(pin)) {
                     Intent i = new Intent(getApplicationContext(), ConfigActivity.class);
+                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
                     startActivity(i);
+                    finish();
                 } else {
                     invokeLogin(username, pin);
                 }
@@ -107,6 +130,27 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
             });
         }
+
+        // Tap PoweredByLogo to reset LocalSharedPreferences
+        tapLogToResetPreferences();
+
+        // show current Site
+        showCurrentSite();
+
+        ibLocale.setOnClickListener(view -> {
+            String _lang = SharedPreferenceService.getLocale();
+            String code = _lang;
+            if ("EN".equalsIgnoreCase(_lang)) {
+                code = "el";
+            } else if ("EL".equalsIgnoreCase(_lang)) {
+                code = "es";
+            } else if ("ES".equalsIgnoreCase(_lang)) {
+                code = "en";
+            }
+            drawFlag(code);
+            applyLocale(code);
+            LoginActivity.this.recreate();
+        });
     }
 
     private void noCredentialsEnteredAlert() {
@@ -184,7 +228,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
     private void invokeSyncAll() {
         // display spinning progress bar
         showSyncProgress();
@@ -217,6 +260,65 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void showCurrentSite() {
+        final TextView tvCurrentSite = findViewById(R.id.tvCurrentSite);
+        tvCurrentSite.setText(SharedPreferenceService.getCurrentSite());
+    }
+
+    private void drawFlag(String _locale) {
+        if ("EN".equalsIgnoreCase(_locale)) {
+            ibLocale.setImageDrawable(getDrawable(R.drawable.flag_great_britain));
+        } else if ("EL".equalsIgnoreCase(_locale)) {
+            ibLocale.setImageDrawable(getDrawable(R.drawable.flag_greece));
+        } else if ("ES".equalsIgnoreCase(_locale)) {
+            ibLocale.setImageDrawable(getDrawable(R.drawable.flag_spain));
+        }
+    }
+
+    private void applyLocale(String lang) {
+        SharedPreferenceService.writeValue(SharedPreferenceService.Locale_Key, lang);
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+            getApplicationContext().createConfigurationContext(config);
+        } else {
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+        }
+//        getApplicationContext().createConfigurationContext(config);
+//        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+//        if (recreate == true) {
+//            LoginActivity.this.recreate();
+//        } else {
+//            setContentView(R.layout.activity_login);
+//        }
+    }
+
+    /**
+     * Tap 6 times on PoweredByLogo to clear LocalSharedPreferences
+     */
+    private void tapLogToResetPreferences() {
+        final ImageView ivLogo = findViewById(R.id.ivPoweredByLogo);
+        ivLogo.setOnClickListener(new View.OnClickListener() {
+            long lastTap = System.currentTimeMillis();
+            int taps = 0;
+
+            @Override
+            public void onClick(View view) {
+                long now = System.currentTimeMillis();
+                taps = (now - lastTap > 1500) ? 0 : taps;
+                taps++;
+                if (taps == 6) {
+                    SharedPreferenceService.Reset();
+                    taps = 0;
+                    Toast.makeText(getApplicationContext(), "Preferences Reset!!!", Toast.LENGTH_SHORT).show();
+                }
+                lastTap = now;
+            }
+        });
+    }
 
     public class AuthLoginCallBack implements Callback<AuthInfo> {
         private final SharedPreferences pref;

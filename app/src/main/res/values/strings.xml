@@ -191,5 +191,9 @@
     <string name="supplier_label">Supplier:</string>
     <string name="maintenance_manager_label">Manager:</string>
     <string name="maintenance_cost_label">Cost:</string>
+    <string name="dialog_accept">Yes</string>
+    <string name="dialog_deny">No</string>
+    <string name="accept_selected_site">Selected site will be:</string>
+    <string name="confirm_selection">Please confirm your selection</string>
 
 </resources>

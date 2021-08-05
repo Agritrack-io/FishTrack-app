@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,37 +18,39 @@ import io.agritrack.fishtrack.ui.activity.login.api.SiteInfo;
 public class ExpandableClusterListAdapter extends BaseExpandableListAdapter {
 
     private final Context mCtx;
-    private final List<String> mClusters; // Cluster titles
+    //private final List<String> mClusters; // Cluster titles
     // child data in format of Cluster title, Site title
     private final Map<String, List<SiteInfo>> mSites;
+    private final List<String> keys;
 
-    public ExpandableClusterListAdapter(Context context, List<String> listClustersData, Map<String, List<SiteInfo>> listSitesData) {
+    public ExpandableClusterListAdapter(Context context, Map<String, List<SiteInfo>> listSitesData) {
         this.mCtx = context;
-        this.mClusters = listClustersData;
         this.mSites = listSitesData;
+        this.keys = new ArrayList<String>(this.mSites.keySet());
     }
 
     @Override
     public int getGroupCount() {
-        return this.mClusters != null ? this.mClusters.size() : 0;
+        return this.mSites != null ? this.mSites.size() : 0;
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        if (this.mSites == null || this.mClusters == null) {
+        if (this.mSites == null) {
             return 0;
         }
-        return this.mSites.get(this.mClusters.get(groupPosition)).size();
+        return this.mSites.get(this.keys.get(groupPosition)).size();
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return this.mClusters.get(groupPosition);
+        return this.keys.get(groupPosition);
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return this.mSites.get(this.mClusters.get(groupPosition)).get(childPosition);
+        List<SiteInfo> _sites = this.mSites.get(this.keys.get(groupPosition));
+        return _sites.get(childPosition);
     }
 
     @Override

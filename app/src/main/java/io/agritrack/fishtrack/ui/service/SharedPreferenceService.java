@@ -14,6 +14,8 @@ public class SharedPreferenceService {
     public static final String LoginTime_Key = "loginTime";
     public static final String ShouldLogin_Key = "shouldLogin";
     public static final String ShouldSync_Key = "shouldSync";
+    public static final String SelectedSite_Key = "selectedSite";
+    public static final String Locale_Key = "localeCode";
 
 
 
@@ -37,6 +39,14 @@ public class SharedPreferenceService {
         return mInstance;
     }
 
+    public static String getCurrentSite() {
+        return getInstance().pref.getString(SelectedSite_Key, "N/A");
+    }
+
+    public static String getLocale() {
+        return getInstance().pref.getString(Locale_Key, "en");
+    }
+
     public static String getToken() {
         return getInstance().pref.getString(Token_Key, null);
     }
@@ -48,7 +58,6 @@ public class SharedPreferenceService {
     public static String getLatitude() {
         return getInstance().pref.getString(Latitude_Key, null);
     }
-
 
     public static Long getLoginTime() {
         return getInstance().pref.getLong(LoginTime_Key, Long.MIN_VALUE);
@@ -62,14 +71,11 @@ public class SharedPreferenceService {
         return getInstance().pref.getBoolean(ShouldSync_Key, defVal);
     }
 
-
     public static Long getLoginDiffInDays() {
         long loginUnixTime = getLoginTime();
         long unixTime = System.currentTimeMillis() / 1000L;
 
-        long diffInDays = Math.abs(unixTime - loginUnixTime) / 3600L / 24L;
-
-        return diffInDays;
+        return Math.abs(unixTime - loginUnixTime) / 3600L / 24L;
     }
 
     public static boolean writeValue(String key, Object value) {
@@ -88,6 +94,18 @@ public class SharedPreferenceService {
             ex.printStackTrace();
         }
 
+        return false;
+    }
+
+    public static boolean Reset() {
+        try {
+            SharedPreferences.Editor editor = pref.edit();
+            editor.clear();
+            editor.commit();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return false;
     }
 }

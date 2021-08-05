@@ -37,7 +37,6 @@ android {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.wear:wear:1.1.0'
 
     //define versions
     def versions_lombok = "1.18.12"
@@ -54,9 +53,6 @@ dependencies {
 
     // work-runtime
     implementation "androidx.work:work-runtime:$versions_work"
-
-    //support design
-    implementation "com.android.support.constraint:constraint-layout:1.1.3"
 
     //card view
     implementation 'androidx.cardview:cardview:1.0.0'

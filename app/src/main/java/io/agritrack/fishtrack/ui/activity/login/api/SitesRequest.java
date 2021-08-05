@@ -67,6 +67,7 @@ public class SitesRequest {
         return String.format("{'lat':%s,'lon':%s,'rad':%s,'lvl':%s}", lat, lon, rad, lvl);
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> toMap() {
         try {
             ObjectMapper mapper = new ObjectMapper();
