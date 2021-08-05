@@ -231,5 +231,6 @@
     <string name="dialog_deny">No</string>
     <string name="accept_selected_site">Selected site will be:</string>
     <string name="confirm_selection">Please confirm your selection</string>
+    <string name="acquire_cluster_info">Plz wait.\nFetcing cluster data...</string>
 
 </resources>
