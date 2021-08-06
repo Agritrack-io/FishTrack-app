@@ -1,0 +1,34 @@
+package io.agritrack.fishtrack.data.dao.common;
+
+import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.Query;
+import androidx.room.Update;
+
+import java.util.List;
+
+import io.agritrack.fishtrack.data.model.common.Employee;
+
+@Dao
+public interface EmployeeDAO {
+
+    @Query("SELECT * from employee")
+    LiveData<List<Employee>> getAll();
+
+    @Query("SELECT * from employee where id=:employeeId LIMIT 1")
+    EmployeeDAO getById(Long employeeId);
+
+    @Insert
+    void insert(Employee... employees);
+
+    @Delete
+    void delete(Employee employee);
+
+    @Query("DELETE from employee")
+    void deleteAll();
+
+    @Update
+    void update(Employee employee);
+}
