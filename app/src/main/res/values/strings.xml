@@ -23,6 +23,12 @@
     <string name="main_menu_title_fishing">Fishing</string>
     <string name="item_home_adapter_menu_item">Menu item</string>
 
+    <string name="menu_title_fishing">Fishing</string>
+    <string name="menu_title_transport">Transport</string>
+    <string name="menu_title_processing">Processing</string>
+    <string name="menu_title_warehouse">Warehouse</string>
+    <string name="menu_title_maintenance">Maintenance</string>
+
     <string name="title_config">Configure app</string>
 
     <string name="title_user_date">USER NAME / DATE</string>

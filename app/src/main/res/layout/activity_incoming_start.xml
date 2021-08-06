@@ -178,7 +178,7 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                <!--<io.agritrack.fishtrack.ui.custom.ToggleGroup
                     android:id="@+id/deal_detail_toolbar"
                     android:layout_width="fill_parent"
                     android:layout_height="60dip"
@@ -233,7 +233,7 @@
                         android:textSize="@dimen/text_view_font_size_medium" />
 
 
-                </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+                </io.agritrack.fishtrack.ui.custom.ToggleGroup>-->
 
 
                 <!--  <RadioGroup
@@ -277,6 +277,58 @@
                           android:textSize="@dimen/text_view_font_size_medium" />
                   </RadioGroup>-->
 
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/toggleGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvIncomingFrom"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button1"
+                        android:layout_width="115dp"
+                        android:layout_height="67dp"
+                        android:checked="true"
+                        android:gravity="center"
+                        android:textOff="AVRAMAR"
+                        android:textOn="AVRAMAR"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:textSize="@dimen/text_view_font_size_medium" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button2"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_rounded_btn_login"
+                        android:checked="true"
+                        android:gravity="center"
+                        android:textOff="SUPPLIER"
+                        android:textOn="SUPPLIER"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:textSize="@dimen/text_view_font_size_medium" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button3"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_rounded_btn_login"
+                        android:checked="true"
+                        android:gravity="center"
+                        android:textOff="ASSET"
+                        android:textOn="ASSET"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:textSize="@dimen/text_view_font_size_medium" />
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
                 <TextView
                     android:id="@+id/tvIncomingFrom"
                     android:layout_width="wrap_content"
@@ -300,7 +352,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/deal_detail_toolbar" />
+                    app:layout_constraintTop_toBottomOf="@+id/toggleGroup" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
