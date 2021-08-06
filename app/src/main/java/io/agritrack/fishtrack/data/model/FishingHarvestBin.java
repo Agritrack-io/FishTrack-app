@@ -8,17 +8,17 @@ import androidx.room.PrimaryKey;
 public class FishingHarvestBin {
 
     @PrimaryKey
-    private Long id;
+    public Long id;
 
     @ColumnInfo(name = "fishing_id")
-    private String fishingId;
+    public String fishingId;
 
     @ColumnInfo(name = "harvestBin_rfid")
-    private String harvestBinRFId;
+    public String harvestBinRFId;
 
     @ColumnInfo(name = "quantity")
-    private Double quantity;
+    public Double quantity;
 
     @ColumnInfo(name = "temperature")
-    private String temperature;
+    public String temperature;
 }

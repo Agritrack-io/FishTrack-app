@@ -8,30 +8,30 @@ import androidx.room.PrimaryKey;
 public class Customer {
 
     @PrimaryKey
-    private Long id;
+    public Long id;
 
     @ColumnInfo(name = "customer_code")
-    private String code;
+    public String code;
 
     @ColumnInfo(name = "customer_name")
-    private String name;
+    public String name;
 
     @ColumnInfo(name = "main_address")
-    private String mainAddress;
+    public String mainAddress;
 
     @ColumnInfo(name = "shipping_address")
-    private String shippingAddress;
+    public String shippingAddress;
 
     @ColumnInfo(name = "vat")
-    private String vat;
+    public String vat;
 
     @ColumnInfo(name = "currency")
-    private String currency;
+    public String currency;
 
     @ColumnInfo(name = "enabled")
-    private Boolean enabled;
+    public Boolean enabled;
 
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_Customer_Site"))
-    private Site site;*/
+    public Site site;*/
 }

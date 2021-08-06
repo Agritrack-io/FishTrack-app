@@ -8,45 +8,45 @@ import androidx.room.PrimaryKey;
 public class Transport {
 
     @PrimaryKey
-    private Long id;
+    public Long id;
 
     @ColumnInfo(name = "transport_head")
-    private String transportHead;
+    public String transportHead;
 
     @ColumnInfo(name = "packaging_site_id")
-    private String packagingSiteId;
+    public String packagingSiteId;
 
     @ColumnInfo(name = "truck_refrigerated")
-    private Boolean isTruckRefrigerated;
+    public Boolean isTruckRefrigerated;
 
     @ColumnInfo(name = "parallel_transport")
-    private Boolean isParallelTransport;
+    public Boolean isParallelTransport;
 
     @ColumnInfo(name = "truck_license_plate")
-    private String truckLicensePlate;
+    public String truckLicensePlate;
 
     @ColumnInfo(name = "security_clip_number")
-    private String securityClipNo;
+    public String securityClipNo;
 
     @ColumnInfo(name = "driver_name")
-    private String driverName;
+    public String driverName;
 
     @ColumnInfo(name = "driver_signature")
-    private String driverSignature;
+    public String driverSignature;
 
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "harvest_load_id", foreignKey = @ForeignKey(name="FK_Transport_Harvest_Load"))
-    private HarvestLoad harvestLoad;
+    public HarvestLoad harvestLoad;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flot_id", foreignKey = @ForeignKey(name="FK_Transport_FLOT"))
-    private Flot flot;
+    public Flot flot;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_Transport_Site"))
-    private Site site;
+    public Site site;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="FK_Transport_User"))
-    private User user;*/
+    public User user;*/
 }

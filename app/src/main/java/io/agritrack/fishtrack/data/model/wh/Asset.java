@@ -8,98 +8,98 @@ import androidx.room.PrimaryKey;
 public class Asset {
 
     @PrimaryKey
-    private Long id;
+    public Long id;
 
     @ColumnInfo(name = "rfid")
-    private String rfid;
+    public String rfid;
 
     @ColumnInfo(name = "asset_type")
-    private String assetType;
+    public String assetType;
 
     @ColumnInfo(name = "am_code")
-    private String amCode;
+    public String amCode;
 
     @ColumnInfo(name = "barcode")
-    private String barcode;
+    public String barcode;
 
     @ColumnInfo(name = "code")
-    private String code;
+    public String code;
 
     @ColumnInfo(name = "rfid_barcode")
-    private String rfidBarcode;
+    public String rfidBarcode;
 
     @ColumnInfo(name = "site_id")
-    private String siteId;
+    public String siteId;
 
     @ColumnInfo(name = "cage_rfid")
-    private String cageRFId;
+    public String cageRFId;
 
     @ColumnInfo(name = "type")
-    private String type;
+    public String type;
 
     @ColumnInfo(name = "shape")
-    private String shape;
+    public String shape;
 
     @ColumnInfo(name = "supplier_id")
-    private String supplierId;
+    public String supplierId;
 
     @ColumnInfo(name = "depth")
-    private Double depth;
+    public Double depth;
 
     @ColumnInfo(name = "width")
-    private Double width;
+    public Double width;
 
     @ColumnInfo(name = "length")
-    private Double length;
+    public Double length;
 
     @ColumnInfo(name = "volume")
-    private Double volume;
+    public Double volume;
 
     @ColumnInfo(name = "perimeter")
-    private Double perimeter;
+    public Double perimeter;
 
     @ColumnInfo(name = "net_eye_girth")
-    private Double netEyeGirth;
+    public Double netEyeGirth;
 
     @ColumnInfo(name = "purchase_date")
-    private Long purchaseDate;
+    public Long purchaseDate;
 
     @ColumnInfo(name = "cost")
-    private Double cost;
+    public Double cost;
 
     @ColumnInfo(name = "enabled")
-    private Boolean enabled;
+    public Boolean enabled;
 
     @ColumnInfo(name = "withdrawal")
-    private Long withdrewAt;
+    public Long withdrewAt;
 
     @ColumnInfo(name = "estimated_withdrawal_date")
-    private Long estiWithdrewAt;
+    public Long estiWithdrewAt;
 
     @ColumnInfo(name = "comments")
-    private String comments;
+    public String comments;
 
     @ColumnInfo(name = "max_days_in_cage")
-    private Integer maxDaysInCage;
+    public Integer maxDaysInCage;
 
     @ColumnInfo(name = "max_days_in_water")
-    private Integer maxDaysInWater;
+    public Integer maxDaysInWater;
 
     @ColumnInfo(name = "total_days_in_water")
-    private Integer totalDaysInWater;
+    public Integer totalDaysInWater;
 
     @ColumnInfo(name = "location_at_storeroom")
-    private String storeroomLoc;
+    public String storeroomLoc;
 
     @ColumnInfo(name = "ERP_Code")
-    private String erpCode;
+    public String erpCode;
 
     @ColumnInfo(name = "date_inserted_in_cage")
-    private Long insertInCageAt;
+    public Long insertInCageAt;
 
     @ColumnInfo(name = "description")
-    private String description;
+    public String description;
 
     /*@Embedded
-    private SpatialEntity location;*/
+    public SpatialEntity location;*/
 }

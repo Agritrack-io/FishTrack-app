@@ -10,56 +10,56 @@ import java.util.Date;
 public class RepairTransaction {
 
     @PrimaryKey
-    private Long id;
+    public Long id;
 
     @ColumnInfo(name = "asset_rfid")
-    private String assetRFID;
+    public String assetRFID;
 
     @ColumnInfo(name = "asset_type")
-    private String assetType;
+    public String assetType;
 
     @ColumnInfo(name = "repair_type")
-    private String repairType;
+    public String repairType;
 
     @ColumnInfo(name = "on_field")
-    private Boolean onField;
+    public Boolean onField;
 
     @ColumnInfo(name = "internal_repair")
-    private Boolean internalRepair;
+    public Boolean internalRepair;
 
     @ColumnInfo(name = "repair_FTEs")
-    private String repairFTEs;
+    public String repairFTEs;
 
     @ColumnInfo(name = "repair_manager")
-    private String repairManager;
+    public String repairManager;
 
     @ColumnInfo(name = "description")
-    private String description;
+    public String description;
 
     @ColumnInfo(name = "cost")
-    private Double cost;
+    public Double cost;
 
     @ColumnInfo(name = "timestamp")
-    private Date timestamp;
+    public Date timestamp;
 
     @ColumnInfo(name = "next_repair")
-    private Date nextRepair;
+    public Date nextRepair;
 
     @ColumnInfo(name = "estimated_withdrawal")
-    private Date estimatedWithdrawal;
+    public Date estimatedWithdrawal;
 
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_RepairTx_Site"))
-    private Site site;
+    public Site site;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="FK_RepairTx_User"))
-    private User user;
+    public User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id", foreignKey = @ForeignKey(name="FK_RepairTx_Supplier"))
-    private Supplier supplier;
+    public Supplier supplier;
 
     @Embedded
-    private SpatialEntity location;*/
+    public SpatialEntity location;*/
 }

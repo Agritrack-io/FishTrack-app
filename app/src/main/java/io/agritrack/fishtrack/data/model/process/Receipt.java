@@ -8,39 +8,39 @@ import androidx.room.PrimaryKey;
 public class Receipt {
 
     @PrimaryKey
-    private Long id;
+    public Long id;
 
     @ColumnInfo(name = "clean_truck")
-    private String cleanTruck;
+    public String cleanTruck;
 
     @ColumnInfo(name = "plot")
-    private String plot;
+    public String plot;
 
     @ColumnInfo(name = "fish_type")
-    private String fishType;
+    public String fishType;
 
     @ColumnInfo(name = "dispatch_note")
-    private String dispatchNote;
+    public String dispatchNote;
 
     @ColumnInfo(name = "fish_condition")
-    private String fishCondition;
+    public String fishCondition;
 
     @ColumnInfo(name = "security_clip_number")
-    private String securityClipNumber;
+    public String securityClipNumber;
 
 /*    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flot_id")
-    private Flot flot;
+    public Flot flot;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_Receipt_Site"))
-    private Site site;
+    public Site site;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "harvest_load_id", foreignKey = @ForeignKey(name="FK_Receipt_Harvest_Load"))
-    private HarvestLoad harvestLoad;
+    public HarvestLoad harvestLoad;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="FK_Receipt_User"))
-    private User user;*/
+    public User user;*/
 }

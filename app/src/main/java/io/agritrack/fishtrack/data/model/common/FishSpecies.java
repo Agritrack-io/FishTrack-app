@@ -8,17 +8,17 @@ import androidx.room.PrimaryKey;
 public class FishSpecies {
 
     @PrimaryKey
-    private Long id;
+    public Long id;
 
     @ColumnInfo(name="country")
-    private String country;
+    public String country;
 
     @ColumnInfo(name="tax_name")
-    private String scientificName;
+    public String scientificName;
 
     @ColumnInfo(name="local_name")
-    private String localName;
+    public String localName;
 
     @ColumnInfo(name="name")
-    private String name;
+    public String name;
 }

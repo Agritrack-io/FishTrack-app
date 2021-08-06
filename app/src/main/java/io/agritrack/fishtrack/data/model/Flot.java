@@ -8,18 +8,18 @@ import androidx.room.PrimaryKey;
 public class Flot {
 
     @PrimaryKey
-    private Long id;
+    public Long id;
 
     @ColumnInfo(name = "site_id")
-    private String siteId;
+    public String siteId;
 
     @ColumnInfo(name = "cage_rfid")
-    private String cageRFId;
+    public String cageRFId;
 
     @ColumnInfo(name = "fish_type")
-    private String fishType;
+    public String fishType;
 
     @ColumnInfo(name = "last_fed_at")
-    private Long lastFedAt;
+    public Long lastFedAt;
 
 }

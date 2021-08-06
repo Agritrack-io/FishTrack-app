@@ -8,24 +8,24 @@ import androidx.room.PrimaryKey;
 public class HarvestTransaction {
 
     @PrimaryKey
-    private Long id;
+    public Long id;
 
     @ColumnInfo(name = "transaction_type")
-    private String transactionType;
+    public String transactionType;
 
    /* @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "harvest_load_id", foreignKey = @ForeignKey(name="FK_HarvestTx_Harvest_Load"))
-    private HarvestLoad harvestLoad;
+    public HarvestLoad harvestLoad;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flot_id", foreignKey = @ForeignKey(name="FK_HarvestTx_FLOT"))
-    private Flot flot;
+    public Flot flot;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_HarvestTx_Site"))
-    private Site site;
+    public Site site;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="FK_HarvestTx_User"))
-    private User user;*/
+    public User user;*/
 }

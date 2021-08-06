@@ -10,60 +10,60 @@ import java.util.Date;
 public class Fishing {
 
     @PrimaryKey
-    private Long id;
+    public Long id;
 
     @ColumnInfo(name = "hlot")
-    private String hlot;
+    public String hlot;
 
     @ColumnInfo(name = "platform_rfid")
-    private String platformRFID;
+    public String platformRFID;
 
     @ColumnInfo(name = "cage_rfid")
-    private String cageRFID;
+    public String cageRFID;
 
     @ColumnInfo(name = "net_rfid")
-    private String netRFID;
+    public String netRFID;
 
     @ColumnInfo(name = "ichthyopathologist")
-    private String ichthyopathologist;
+    public String ichthyopathologist;
 
     @ColumnInfo(name = "fish_type")
-    private String fishType;
+    public String fishType;
 
     @ColumnInfo(name = "ice_adequacy")
-    private String iceAdequacy;
+    public String iceAdequacy;
 
     @ColumnInfo(name = "ice_supplier")
-    private String iceSupplier;
+    public String iceSupplier;
 
     @ColumnInfo(name = "last_feed")
-    private Date lastFeed;
+    public Date lastFeed;
 
     @ColumnInfo(name = "ordered_quantity")
-    private Double orderedQuantity;
+    public Double orderedQuantity;
 
     @ColumnInfo(name = "sea_temperature")
-    private Double seaTemperature;
+    public Double seaTemperature;
 
     @ColumnInfo(name = "total_quantity")
-    private Double totalQty;
+    public Double totalQty;
 
     @ColumnInfo(name = "number_harvest_bins")
-    private Short harvestBinsCnt;
+    public Short harvestBinsCnt;
 
    /* @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "harvest_load_id", foreignKey = @ForeignKey(name="FK_Fishing_Harvest_Load"))
-    private HarvestLoad harvestLoad;
+    public HarvestLoad harvestLoad;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flot_id", foreignKey = @ForeignKey(name="FK_Fishing_FLOT"))
-    private Flot flot;
+    public Flot flot;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_Fishing_Site"))
-    private Site site;
+    public Site site;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="FK_Fishing_User"))
-    private User user;*/
+    public User user;*/
 }

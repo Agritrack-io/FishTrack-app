@@ -8,32 +8,32 @@ import androidx.room.PrimaryKey;
 public class Reader {
 
     @PrimaryKey
-    private Long id;
+    public Long id;
 
     @ColumnInfo(name = "type")
-    private String type;
+    public String type;
 
     @ColumnInfo(name = "serial_number")
-    private String serialNumber;
+    public String serialNumber;
 
     @ColumnInfo(name = "ip")
-    private String ipAddress;
+    public String ipAddress;
 
     @ColumnInfo(name = "name")
-    private String name;
+    public String name;
 
     @ColumnInfo(name = "code")
-    private String code;
+    public String code;
 
     @ColumnInfo(name = "date_given")
-    private Long givenAt;
+    public Long givenAt;
 
     @ColumnInfo(name = "delivery_note")
-    private String deliveryNote;
+    public String deliveryNote;
 
     @ColumnInfo(name = "last_sync")
-    private Long lastSync;
+    public Long lastSync;
 
   /*  @OneToMany(mappedBy = "reader", fetch = FetchType.LAZY)
-    private List<Inventory> inventories;*/
+    public List<Inventory> inventories;*/
 }

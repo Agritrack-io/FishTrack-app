@@ -8,18 +8,18 @@ import androidx.room.PrimaryKey;
 public class HarvestLoad {
 
     @PrimaryKey
-    private Long id;
+    public Long id;
 
     @ColumnInfo(name = "status")
-    private String status;
+    public String status;
 
     @ColumnInfo(name = "fish_type")
-    private String fishType;
+    public String fishType;
 
     @ColumnInfo(name = "fish_size")
-    private String fishSize;
+    public String fishSize;
 
   /*  @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "harvest_request_id", foreignKey = @ForeignKey(name="FK_HarvestLoad_Harvest_Request"))
-    private HarvestRequest harvestRequest;*/
+    public HarvestRequest harvestRequest;*/
 }
