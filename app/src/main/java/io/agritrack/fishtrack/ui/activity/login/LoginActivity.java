@@ -43,8 +43,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
     private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private MobileDB db;
-    private ProgressBar loadingProgressBar;
-    private TextView loadingText;
     private ImageButton ibLocale;
 
 
@@ -52,6 +50,18 @@ public class LoginActivity extends AppCompatActivity {
 //    protected void attachBaseContext(Context newBase) {
 //        super.attachBaseContext(LocaleHelper.onAttach(newBase));
 //    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,20 +96,20 @@ public class LoginActivity extends AppCompatActivity {
             final TextView tvForgotYourPassword = findViewById(R.id.tvForgotPasswordText);
             final Button btLogin = findViewById(R.id.btnLogin);
 
-            loadingProgressBar = findViewById(R.id.loading);
-            loadingText = findViewById(R.id.loading_text);
+//            loadingProgressBar = findViewById(R.id.loading);
+//            loadingText = findViewById(R.id.loading_text);
             loginResult.observe(this, response -> {
                 if (response == null) {
-                    loadingProgressBar.setVisibility(View.GONE);
-                    loadingText.setVisibility(View.GONE);
-                    loadingText.setText(null);
+//                    loadingProgressBar.setVisibility(View.GONE);
+//                    loadingText.setVisibility(View.GONE);
+//                    loadingText.setText(null);
                     return;
                 }
                 if (response.getError() != null) {
                     showLoginFailed(response.getError());
-                    loadingProgressBar.setVisibility(View.GONE);
-                    loadingText.setVisibility(View.GONE);
-                    loadingText.setText(null);
+//                    loadingProgressBar.setVisibility(View.GONE);
+//                    loadingText.setVisibility(View.GONE);
+//                    loadingText.setText(null);
                 }
                 if (response.getSuccess() != null) {
                     updateUiWithUser(response.getSuccess());
@@ -185,24 +195,24 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showAuthProgress() {
         runOnUiThread(() -> {
-            loadingProgressBar.setVisibility(View.VISIBLE);
-            loadingText.setText(R.string.authenticating);
-            loadingText.setVisibility(View.VISIBLE);
+//            loadingProgressBar.setVisibility(View.VISIBLE);
+//            loadingText.setText(R.string.authenticating);
+//            loadingText.setVisibility(View.VISIBLE);
         });
     }
 
     private void showSyncProgress() {
         runOnUiThread(() -> {
-            loadingProgressBar.setVisibility(View.VISIBLE);
-            loadingText.setText(R.string.syncing);
-            loadingText.setVisibility(View.VISIBLE);
+//            loadingProgressBar.setVisibility(View.VISIBLE);
+//            loadingText.setText(R.string.syncing);
+//            loadingText.setVisibility(View.VISIBLE);
         });
     }
 
     private void hideSyncProgress() {
         runOnUiThread(() -> {
-            loadingProgressBar.setVisibility(View.GONE);
-            loadingText.setVisibility(View.GONE);
+//            loadingProgressBar.setVisibility(View.GONE);
+//            loadingText.setVisibility(View.GONE);
         });
     }
 

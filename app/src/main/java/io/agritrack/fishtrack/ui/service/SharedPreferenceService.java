@@ -18,7 +18,6 @@ public class SharedPreferenceService {
     public static final String Locale_Key = "localeCode";
 
 
-
     private static SharedPreferenceService mInstance;
     private static Context mContext;
     private static SharedPreferences pref;
@@ -49,6 +48,10 @@ public class SharedPreferenceService {
 
     public static String getToken() {
         return getInstance().pref.getString(Token_Key, null);
+    }
+
+    public static Boolean locationExists() {
+        return getInstance().pref.getString(Longitude_Key, null) != null;
     }
 
     public static String getLongitude() {

@@ -15,7 +15,7 @@ import java.util.Map;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.ui.activity.login.api.SiteInfo;
 
-public class ExpandableClusterListAdapter extends BaseExpandableListAdapter {
+public class ClusterListViewAdapter extends BaseExpandableListAdapter {
 
     private final Context mCtx;
     //private final List<String> mClusters; // Cluster titles
@@ -23,7 +23,7 @@ public class ExpandableClusterListAdapter extends BaseExpandableListAdapter {
     private final Map<String, List<SiteInfo>> mSites;
     private final List<String> keys;
 
-    public ExpandableClusterListAdapter(Context context, Map<String, List<SiteInfo>> listSitesData) {
+    public ClusterListViewAdapter(Context context, Map<String, List<SiteInfo>> listSitesData) {
         this.mCtx = context;
         this.mSites = listSitesData;
         this.keys = new ArrayList<String>(this.mSites.keySet());
