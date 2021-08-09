@@ -124,6 +124,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvLat" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -145,6 +146,7 @@
                 android:layout_alignParentRight="true"
                 android:background="@drawable/border_all"
                 app:srcCompat="@android:drawable/ic_popup_sync" />
+
         </RelativeLayout>
 
         <RelativeLayout

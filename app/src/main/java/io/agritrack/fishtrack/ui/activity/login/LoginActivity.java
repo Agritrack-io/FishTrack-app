@@ -1,5 +1,6 @@
 package io.agritrack.fishtrack.ui.activity.login;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,6 +8,7 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,22 +23,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.List;
 import java.util.Locale;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.api.FishTrackAPIServiceGenerator;
 import io.agritrack.fishtrack.data.MobileDB;
 import io.agritrack.fishtrack.data.service.AppUserService;
 import io.agritrack.fishtrack.ui.activity.ConfigActivity;
 import io.agritrack.fishtrack.ui.activity.HomeActivity;
 import io.agritrack.fishtrack.ui.activity.api.APICommService;
 import io.agritrack.fishtrack.ui.activity.login.LoggedInUserView;
+import io.agritrack.fishtrack.ui.activity.login.api.AuthApi;
 import io.agritrack.fishtrack.ui.activity.login.api.AuthInfo;
 import io.agritrack.fishtrack.ui.activity.login.api.LoginRQ;
+import io.agritrack.fishtrack.ui.activity.login.api.SiteInfo;
+import io.agritrack.fishtrack.ui.activity.login.api.SitesRequest;
 import io.agritrack.fishtrack.ui.service.SharedPreferenceService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class LoginActivity extends AppCompatActivity {
@@ -44,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private MobileDB db;
     private ImageButton ibLocale;
-
+    private AlertDialog dialog;
 
 //    @Override
 //    protected void attachBaseContext(Context newBase) {
@@ -121,9 +129,6 @@ public class LoginActivity extends AppCompatActivity {
                 final String username = etUserName.getText().toString().trim();
                 final String pin = etPassword.getText().toString().trim();
 
-                Intent ii = new Intent(getApplicationContext(), HomeActivity.class);
-                startActivity(ii);
-
                 if (username.isEmpty() || pin.isEmpty()) {
                     noCredentialsEnteredAlert();
                 } else if ("config".equals(username) && "8888".equals(pin)) {
@@ -162,6 +167,18 @@ public class LoginActivity extends AppCompatActivity {
             applyLocale(code);
             LoginActivity.this.recreate();
         });
+
+        //************************************************************************
+        // instantiate an AlertDialog with countdown functionality
+        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogView = inflater.inflate(R.layout.progress_indicator, null);
+        TextView tvProgressMessage = dialogView.findViewById(R.id.progressMsg);
+        tvProgressMessage.setTextSize(24.0f);
+        tvProgressMessage.setText(R.string.syncing);
+        dlgBuilder.setView(dialogView);
+        dlgBuilder.setCancelable(false);
+        dialog = dlgBuilder.create();
     }
 
     private void noCredentialsEnteredAlert() {
@@ -172,7 +189,6 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferenceService.writeValue("token", model.getToken());
         SharedPreferenceService.writeValue("username", model.getUsername());
         SharedPreferenceService.writeValue("loginTime", (System.currentTimeMillis() / 1000L));
-        //editor.apply();
 
         boolean shouldSync = SharedPreferenceService.shouldSync(Boolean.TRUE);
         if (!shouldSync) {
@@ -185,7 +201,6 @@ public class LoginActivity extends AppCompatActivity {
             syncAllTask.execute();
 
             SharedPreferenceService.writeValue("shouldSync", false);
-            //editor.apply();
         }
     }
 
@@ -195,24 +210,19 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showAuthProgress() {
         runOnUiThread(() -> {
-//            loadingProgressBar.setVisibility(View.VISIBLE);
-//            loadingText.setText(R.string.authenticating);
-//            loadingText.setVisibility(View.VISIBLE);
+            dialog.show();
         });
     }
 
     private void showSyncProgress() {
         runOnUiThread(() -> {
-//            loadingProgressBar.setVisibility(View.VISIBLE);
-//            loadingText.setText(R.string.syncing);
-//            loadingText.setVisibility(View.VISIBLE);
+            dialog.show();
         });
     }
 
     private void hideSyncProgress() {
         runOnUiThread(() -> {
-//            loadingProgressBar.setVisibility(View.GONE);
-//            loadingText.setVisibility(View.GONE);
+            dialog.dismiss();
         });
     }
 
@@ -225,14 +235,32 @@ public class LoginActivity extends AppCompatActivity {
 
             // query local db for previous User authentications...
             AppUserService userService = new AppUserService();
-            boolean userIsAlreadyAuthenticated = true; //userService.authenticateUser(db, username, pin);
+            boolean userIsAlreadyAuthenticated = userService.authenticateUser(db, username, pin);
 
             if (diffInDays == 0 && userIsAlreadyAuthenticated) {
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(username, SharedPreferenceService.getToken()))));
             } else {
-                APICommService restService = new APICommService();
-                LoginRQ rq = new LoginRQ(username, pin);
-                restService.authenticate(rq, new AuthLoginCallBack(username, pin));
+                AuthApi authService = FishTrackAPIServiceGenerator.createService(AuthApi.class);
+                LoginRQ loginRQ = new LoginRQ(username, pin);
+                Call<AuthInfo> authAsyncCall = authService.login(loginRQ);
+
+                authAsyncCall.enqueue(new Callback<AuthInfo>() {
+                    @Override
+                    public void onResponse(Call<AuthInfo> call, Response<AuthInfo> response) {
+                        AuthInfo rs = response.body();
+                        loginResult.setValue(new LoginResult(new LoggedInUserView(username, rs.getToken())));
+
+                        // if successfully logged-
+                        // -in, then enable sync flag
+                        SharedPreferenceService.writeValue(SharedPreferenceService.ShouldSync_Key, true);
+                    }
+
+                    @Override
+                    public void onFailure(Call<AuthInfo> call, Throwable t) {
+                        System.out.println(t);
+                        Toast.makeText(getAppContext(), "Plz Check WIFI connection..", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
