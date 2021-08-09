@@ -38,9 +38,9 @@ public class CorrelationMenuActivity extends AppCompatActivity {
         gvCorrelationMenu = findViewById(R.id.gvCorrelationMenu);
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem("Cage", "", R.drawable.ic_incoming));
-        menuItemsList.add(new MenuItem("Net", "", R.drawable.transport));
-        menuItemsList.add(new MenuItem("Bin", "", R.drawable.ic_barang_masuk));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_cage), "", R.drawable.ic_incoming));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_net), "", R.drawable.transport));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_bin), "", R.drawable.ic_barang_masuk));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvCorrelationMenu.setAdapter(adapter);

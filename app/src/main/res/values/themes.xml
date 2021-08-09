@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="FishTrack" parent="@style/Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="FishTrack" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
     </style>
 </resources>

@@ -29,6 +29,18 @@
     <string name="menu_title_warehouse">Warehouse</string>
     <string name="menu_title_maintenance">Maintenance</string>
 
+    <string name="menu_title_incoming">Incoming</string>
+    <string name="menu_title_outgoing">Outgoing</string>
+    <string name="menu_title_inventory">Inventory</string>
+    <string name="menu_title_correlation">Correlation</string>
+    <string name="menu_title_search">Search</string>
+
+    <string name="menu_title_internal">Internal</string>
+    <string name="menu_title_external">External</string>
+    <string name="menu_title_cage">Cage</string>
+    <string name="menu_title_net">Net</string>
+    <string name="menu_title_bin">Bin</string>
+
     <string name="title_config">Configure app</string>
 
     <string name="title_user_date">USER NAME / DATE</string>
@@ -77,7 +89,7 @@
 
     <string name="back_button">BACK</string>
     <string name="next_bin_button">NEXT BIN</string>
-    <string name="end_bin__button">END BIN</string>
+    <string name="end_bin_button">END BIN</string>
     <string name="weight_bin">Weight of Bin:</string>
     <string name="fishing_batches">Fishing Batches</string>
     <string name="fishing_summary">Fishing Summary</string>

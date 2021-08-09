@@ -23,6 +23,24 @@
     <string name="main_menu_title_fishing">Αλίευση</string>
     <string name="item_home_adapter_menu_item">Στοιχείο μενού</string>
 
+    <string name="menu_title_fishing">Αλίευση</string>
+    <string name="menu_title_transport">Μεταφορά</string>
+    <string name="menu_title_processing">Παραλαβή</string>
+    <string name="menu_title_warehouse">Αποθήκη</string>
+    <string name="menu_title_maintenance">Συντήρηση</string>
+
+    <string name="menu_title_incoming">Εισερχόμενα</string>
+    <string name="menu_title_outgoing">Εξερχόμενα</string>
+    <string name="menu_title_inventory">Απογραφή</string>
+    <string name="menu_title_correlation">Συσχέτιση</string>
+    <string name="menu_title_search">Αναζήτηση</string>
+
+    <string name="menu_title_internal">Εσωτερική</string>
+    <string name="menu_title_external">Εξωτερική</string>
+    <string name="menu_title_cage">Κλωβός</string>
+    <string name="menu_title_net">Δίχτυ</string>
+    <string name="menu_title_bin">Βούτα</string>
+
     <string name="title_config">Διαμόρφωση εφαρμογής</string>
 
     <string name="title_user_date">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ</string>
@@ -71,7 +89,7 @@
 
     <string name="back_button">ΠΙΣΩ</string>
     <string name="next_bin_button">ΕΠΟΜΕΝΗ ΒΟΥΤΑ</string>
-    <string name="end_bin__button">ΛΗΞΗ ΒΟΥΤΑΣ</string>
+    <string name="end_bin_button">ΤΕΛΟΣ ΒΟΥΤΑΣ</string>
     <string name="weight_bin">Βάρος βούτας:</string>
     <string name="fishing_batches">Ψαριές</string>
     <string name="fishing_summary">Σύνολα αλίευσης</string>

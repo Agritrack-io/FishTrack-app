@@ -37,11 +37,11 @@ public class HomeActivity extends AppCompatActivity {
         gvMainMenu = findViewById(R.id.gvMainMenu);
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.main_menu_title_fishing), "", R.drawable.fishing));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_fishing), "", R.drawable.fishing));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_transport), "", R.drawable.transport));
-        menuItemsList.add(new MenuItem("Processing", "", R.drawable.ic_barang_masuk));
-        menuItemsList.add(new MenuItem("Warehouse", "", R.drawable.ic_product_assets));
-        menuItemsList.add(new MenuItem("Maintenance", "", R.drawable.repair));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_processing), "", R.drawable.ic_barang_masuk));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_warehouse), "", R.drawable.ic_product_assets));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_maintenance), "", R.drawable.repair));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvMainMenu.setAdapter(adapter);

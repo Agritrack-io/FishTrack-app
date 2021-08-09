@@ -38,11 +38,11 @@ public class WhMenuActivity extends AppCompatActivity {
         gvWhMainMenu = findViewById(R.id.gvWhMainMenu);
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem("Incoming", "", R.drawable.ic_incoming));
-        menuItemsList.add(new MenuItem("Outgoing", "", R.drawable.transport));
-        menuItemsList.add(new MenuItem("Inventory", "", R.drawable.ic_barang_masuk));
-        menuItemsList.add(new MenuItem("Correlation", "", R.drawable.ic_product_assets));
-        menuItemsList.add(new MenuItem("Search", "", R.drawable.ic_product_assets));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), "", R.drawable.ic_incoming));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_outgoing), "", R.drawable.transport));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), "", R.drawable.ic_barang_masuk));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), "", R.drawable.ic_product_assets));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), "", R.drawable.ic_product_assets));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvWhMainMenu.setAdapter(adapter);

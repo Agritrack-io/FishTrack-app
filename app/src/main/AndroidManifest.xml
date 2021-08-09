@@ -77,9 +77,12 @@
             android:name=".ui.activity.wh.incoming.IncomingProcessActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.wh.incoming.IncomingStartActivity"/>
-        <activity android:name=".ui.activity.wh.OutgoingProcessActivity"/>
-        <activity android:name=".ui.activity.wh.OutgoingStartActivity" />
+            android:name=".ui.activity.wh.incoming.IncomingStartActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.wh.OutgoingProcessActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.wh.OutgoingStartActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.wh.IncomingProcessActivity"
             android:screenOrientation="portrait" />

@@ -39,8 +39,8 @@ public class MaintenanceMenuActivity extends AppCompatActivity {
         gvMaintenanceMenu = findViewById(R.id.gvMaintenanceMenu);
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem("Internal", "", R.drawable.ic_incoming));
-        menuItemsList.add(new MenuItem("External", "", R.drawable.transport));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_internal), "", R.drawable.ic_incoming));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_external), "", R.drawable.transport));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvMaintenanceMenu.setAdapter(adapter);
