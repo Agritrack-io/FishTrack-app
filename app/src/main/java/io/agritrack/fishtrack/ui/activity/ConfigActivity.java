@@ -43,7 +43,7 @@ import io.agritrack.fishtrack.ui.activity.login.LoginActivity;
 import io.agritrack.fishtrack.ui.activity.login.api.AuthApi;
 import io.agritrack.fishtrack.ui.activity.login.api.SiteInfo;
 import io.agritrack.fishtrack.ui.activity.login.api.SitesRequest;
-import io.agritrack.fishtrack.ui.service.SharedPreferenceService;
+import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -155,8 +155,8 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
             return;
         }
 
-        AuthApi authService = FishTrackAPIServiceGenerator.createService(AuthApi.class);
-        SitesRequest siteRQ = new SitesRequest(SharedPreferenceService.getLatitude(), SharedPreferenceService.getLongitude());
+        AuthApi authService = FishTrackAPIServiceGenerator.createAPI(AuthApi.class);
+        SitesRequest siteRQ = new SitesRequest(LocalPreferences.getLatitude(), LocalPreferences.getLongitude());
         Call<List<SiteInfo>> getSitesAsyncCall = authService.getSites(siteRQ.toMap());
 
         getSitesAsyncCall.enqueue(new Callback<List<SiteInfo>>() {
@@ -261,14 +261,14 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
 
     private void writeCurrentLocationToSharedPreferences() {
         if (this.currentLocation != null) {
-            SharedPreferenceService.writeValue("lon", String.valueOf(this.currentLocation.getLongitude()));
-            SharedPreferenceService.writeValue("lat", String.valueOf(this.currentLocation.getLatitude()));
+            LocalPreferences.writeValue("lon", String.valueOf(this.currentLocation.getLongitude()));
+            LocalPreferences.writeValue("lat", String.valueOf(this.currentLocation.getLatitude()));
         }
     }
 
     private void readCurrentLocationFromSharedPreferences() {
-        String _lon = SharedPreferenceService.getLongitude();
-        String _lat = SharedPreferenceService.getLatitude();
+        String _lon = LocalPreferences.getLongitude();
+        String _lat = LocalPreferences.getLatitude();
 
         if (_lon != null && _lat != null) {
             runOnUiThread(() -> {
@@ -329,7 +329,8 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
             builder.setMessage(getText(R.string.accept_selected_site) + mSite.getName())
                     .setPositiveButton(R.string.dialog_accept, (dialog, id) -> {
                         // persist selected Site to local Preferences.
-                        SharedPreferenceService.writeValue(SharedPreferenceService.SelectedSite_Key, mSite.getName());
+                        LocalPreferences.writeValue(LocalPreferences.SelectedSiteName_Key, mSite.getName());
+                        LocalPreferences.writeValue(LocalPreferences.SelectedSiteId_Key, mSite.getId());
                         // move to Login Screen
                         Intent i = new Intent(getAppContext(), LoginActivity.class);
                         i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...

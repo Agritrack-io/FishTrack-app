@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -18,9 +19,9 @@ public interface EmployeeDAO {
     LiveData<List<Employee>> getAll();
 
     @Query("SELECT * from employee where id=:employeeId LIMIT 1")
-    EmployeeDAO getById(Long employeeId);
+    Employee getById(Long employeeId);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Employee... employees);
 
     @Delete

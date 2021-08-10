@@ -256,5 +256,10 @@
     <string name="number_of_assets"># of assets:</string>
     <string name="outgoing_assets">Outgoing assets</string>
     <string name="acquire_cluster_info">Plz wait, fetching cluster/site data...</string>
+    <string name="no_sites_found_alert">No Sites Info found!!!</string>
+    <string name="synch_failed">Synchronization failed. Plz check your Internet connection!!!</string>
+    <string name="no_users_found_alert">No User Info found!!!</string>
+    <string name="no_employees_found_alert">No Employees Info found!!!</string>
+    <string name="no_species_found_alert">No Fish Species Info found!!!</string>
 
 </resources>

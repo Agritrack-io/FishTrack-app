@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -20,7 +21,7 @@ public interface FishSpeciesDAO {
     @Query("SELECT * from species where id=:fishSpeciesId LIMIT 1")
     FishSpecies getById(Long fishSpeciesId);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(FishSpecies... fishSpeciess);
 
     @Delete

@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class APICommService {
-    private static String BASE_URL = "http://192.168.150.4:5000";
+    private static String BASE_URL = "http://192.168.150.6:5000";
     private AuthApi api;
 
     public APICommService() {

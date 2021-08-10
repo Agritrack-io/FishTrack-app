@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -20,7 +21,7 @@ public interface FishingHarvestBinDAO {
     @Query("SELECT * from fishing_harvest_bin where id=:fishingHarvestBinId LIMIT 1")
     FishingHarvestBin getById(Long fishingHarvestBinId);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(FishingHarvestBin... fishingHarvestBins);
 
     @Delete

@@ -3,9 +3,7 @@ package io.agritrack.fishtrack.ui.activity.login;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,22 +26,23 @@ import java.util.Locale;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.api.FishTrackAPIServiceGenerator;
 import io.agritrack.fishtrack.data.MobileDB;
+import io.agritrack.fishtrack.data.dto.AppUserDTO;
+import io.agritrack.fishtrack.data.dto.SiteDTO;
+import io.agritrack.fishtrack.data.dto.common.EmployeeDTO;
+import io.agritrack.fishtrack.data.dto.common.FishSpeciesDTO;
+import io.agritrack.fishtrack.data.dto.wh.AssetDTO;
 import io.agritrack.fishtrack.data.service.AppUserService;
 import io.agritrack.fishtrack.ui.activity.ConfigActivity;
 import io.agritrack.fishtrack.ui.activity.HomeActivity;
-import io.agritrack.fishtrack.ui.activity.api.APICommService;
-import io.agritrack.fishtrack.ui.activity.login.LoggedInUserView;
 import io.agritrack.fishtrack.ui.activity.login.api.AuthApi;
 import io.agritrack.fishtrack.ui.activity.login.api.AuthInfo;
 import io.agritrack.fishtrack.ui.activity.login.api.LoginRQ;
-import io.agritrack.fishtrack.ui.activity.login.api.SiteInfo;
-import io.agritrack.fishtrack.ui.activity.login.api.SitesRequest;
-import io.agritrack.fishtrack.ui.service.SharedPreferenceService;
+import io.agritrack.fishtrack.ui.activity.login.api.SyncApi;
+import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class LoginActivity extends AppCompatActivity {
@@ -53,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     private MobileDB db;
     private ImageButton ibLocale;
     private AlertDialog dialog;
+    private TextView tvProgressMessage;
 
 //    @Override
 //    protected void attachBaseContext(Context newBase) {
@@ -91,10 +90,10 @@ public class LoginActivity extends AppCompatActivity {
         final EditText etPassword = findViewById(R.id.etPassword);
 
         // check last login timestamp, to determine whether synch is required.
-        long diffHours = SharedPreferenceService.getLoginDiffInDays();
+        long diffHours = LocalPreferences.getLoginDiffInDays();
 
-        boolean shouldLogin = SharedPreferenceService.shouldLogin(Boolean.TRUE);
-        boolean shouldSync = SharedPreferenceService.shouldSync(Boolean.TRUE);
+        boolean shouldLogin = LocalPreferences.shouldLogin(Boolean.TRUE);
+        boolean shouldSync = LocalPreferences.shouldSync(Boolean.TRUE);
 
         // if last login occurred < 2 hours ?? ago, no further login is required.
         if (diffHours < 2 && !shouldLogin && !shouldSync) {
@@ -104,22 +103,17 @@ public class LoginActivity extends AppCompatActivity {
             final TextView tvForgotYourPassword = findViewById(R.id.tvForgotPasswordText);
             final Button btLogin = findViewById(R.id.btnLogin);
 
-//            loadingProgressBar = findViewById(R.id.loading);
-//            loadingText = findViewById(R.id.loading_text);
             loginResult.observe(this, response -> {
                 if (response == null) {
-//                    loadingProgressBar.setVisibility(View.GONE);
-//                    loadingText.setVisibility(View.GONE);
-//                    loadingText.setText(null);
+                    hideSyncProgress();
                     return;
                 }
                 if (response.getError() != null) {
                     showLoginFailed(response.getError());
-//                    loadingProgressBar.setVisibility(View.GONE);
-//                    loadingText.setVisibility(View.GONE);
-//                    loadingText.setText(null);
+                    hideSyncProgress();
                 }
                 if (response.getSuccess() != null) {
+                    hideSyncProgress();
                     updateUiWithUser(response.getSuccess());
                 }
             });
@@ -154,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
         showCurrentSite();
 
         ibLocale.setOnClickListener(view -> {
-            String _lang = SharedPreferenceService.getLocale();
+            String _lang = LocalPreferences.getLocale();
             String code = _lang;
             if ("EN".equalsIgnoreCase(_lang)) {
                 code = "el";
@@ -173,7 +167,7 @@ public class LoginActivity extends AppCompatActivity {
         AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View dialogView = inflater.inflate(R.layout.progress_indicator, null);
-        TextView tvProgressMessage = dialogView.findViewById(R.id.progressMsg);
+        tvProgressMessage = dialogView.findViewById(R.id.progressMsg);
         tvProgressMessage.setTextSize(24.0f);
         tvProgressMessage.setText(R.string.syncing);
         dlgBuilder.setView(dialogView);
@@ -186,21 +180,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
-        SharedPreferenceService.writeValue("token", model.getToken());
-        SharedPreferenceService.writeValue("username", model.getUsername());
-        SharedPreferenceService.writeValue("loginTime", (System.currentTimeMillis() / 1000L));
+        LocalPreferences.writeValue("token", model.getToken());
+        LocalPreferences.writeValue("username", model.getUsername());
+        LocalPreferences.updateLoginTime();
 
-        boolean shouldSync = SharedPreferenceService.shouldSync(Boolean.TRUE);
+        boolean shouldSync = LocalPreferences.shouldSync(Boolean.TRUE);
         if (!shouldSync) {
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         } else {
             invokeSyncAll();
 
-            SyncAllTask syncAllTask = new SyncAllTask();
-            syncAllTask.execute();
 
-            SharedPreferenceService.writeValue("shouldSync", false);
+            LocalPreferences.writeValue("shouldSync", Boolean.FALSE);
         }
     }
 
@@ -210,12 +202,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showAuthProgress() {
         runOnUiThread(() -> {
+            tvProgressMessage.setText(R.string.authenticating);
             dialog.show();
         });
     }
 
     private void showSyncProgress() {
         runOnUiThread(() -> {
+            tvProgressMessage.setText(R.string.syncing);
             dialog.show();
         });
     }
@@ -231,39 +225,24 @@ public class LoginActivity extends AppCompatActivity {
         showAuthProgress();
 
         try {
-            long diffInDays = SharedPreferenceService.getLoginDiffInDays();
+            long diffInDays = LocalPreferences.getLoginDiffInDays();
 
             // query local db for previous User authentications...
             AppUserService userService = new AppUserService();
             boolean userIsAlreadyAuthenticated = userService.authenticateUser(db, username, pin);
 
             if (diffInDays == 0 && userIsAlreadyAuthenticated) {
-                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(username, SharedPreferenceService.getToken()))));
+                LocalPreferences.updateLoginTime();
+                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(username, LocalPreferences.getToken()))));
             } else {
-                AuthApi authService = FishTrackAPIServiceGenerator.createService(AuthApi.class);
+                AuthApi authService = FishTrackAPIServiceGenerator.createAPI(AuthApi.class);
                 LoginRQ loginRQ = new LoginRQ(username, pin);
                 Call<AuthInfo> authAsyncCall = authService.login(loginRQ);
-
-                authAsyncCall.enqueue(new Callback<AuthInfo>() {
-                    @Override
-                    public void onResponse(Call<AuthInfo> call, Response<AuthInfo> response) {
-                        AuthInfo rs = response.body();
-                        loginResult.setValue(new LoginResult(new LoggedInUserView(username, rs.getToken())));
-
-                        // if successfully logged-
-                        // -in, then enable sync flag
-                        SharedPreferenceService.writeValue(SharedPreferenceService.ShouldSync_Key, true);
-                    }
-
-                    @Override
-                    public void onFailure(Call<AuthInfo> call, Throwable t) {
-                        System.out.println(t);
-                        Toast.makeText(getAppContext(), "Plz Check WIFI connection..", Toast.LENGTH_LONG).show();
-                    }
-                });
+                authAsyncCall.enqueue(new AuthLoginCallBack(loginRQ));
             }
         } catch (Exception e) {
             e.printStackTrace();
+            hideSyncProgress();
         }
     }
 
@@ -272,9 +251,32 @@ public class LoginActivity extends AppCompatActivity {
         showSyncProgress();
 
         try {
-            SharedPreferences pref = getSharedPreferences("agritrack", Context.MODE_PRIVATE);
-            String token = pref.getString("token", null);
+            SyncApi syncService = FishTrackAPIServiceGenerator.createAPI(SyncApi.class);
+            String token = LocalPreferences.getToken();
+            Long siteId = LocalPreferences.getCurrentSiteId();
             boolean syncResult = true;
+
+            // sync sites
+            Call<SiteDTO> syncSitesAsyncCall = syncService.getSiteById(siteId, "Bearer " + token);
+            syncSitesAsyncCall.enqueue(new SyncSitesCallBack());
+
+            // sync users
+            Call<List<AppUserDTO>> syncUsersAsyncCall = syncService.getUsersBySiteId(siteId, "Bearer " + token);
+            syncUsersAsyncCall.enqueue(new SyncUsersCallBack());
+
+            // sync employees
+            Call<List<EmployeeDTO>> syncEmployeesAsyncCall = syncService.getEmployeesBySiteId(siteId, "Bearer " + token);
+            syncEmployeesAsyncCall.enqueue(new SyncEmployeesCallBack());
+
+            // sync assets  (cages, nets, bins, platforms)
+            Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
+            syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack());
+
+            // sync fish species
+            Call<List<FishSpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCode("gr", "Bearer " + token);
+            syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack());
+
+
 
 //            RouteSyncService routeSyncService = new RouteSyncService();
 //            syncResult = routeSyncService.syncRoute(db, token);
@@ -301,7 +303,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showCurrentSite() {
         final TextView tvCurrentSite = findViewById(R.id.tvCurrentSite);
-        tvCurrentSite.setText(SharedPreferenceService.getCurrentSite());
+        tvCurrentSite.setText(LocalPreferences.getCurrentSiteName());
     }
 
     private void drawFlag(String _locale) {
@@ -315,7 +317,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void applyLocale(String lang) {
-        SharedPreferenceService.writeValue(SharedPreferenceService.Locale_Key, lang);
+        LocalPreferences.writeValue(LocalPreferences.Locale_Key, lang);
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
         Configuration config = new Configuration();
@@ -350,7 +352,7 @@ public class LoginActivity extends AppCompatActivity {
                 taps = (now - lastTap > 1500) ? 0 : taps;
                 taps++;
                 if (taps == 6) {
-                    SharedPreferenceService.Reset();
+                    LocalPreferences.Reset();
                     taps = 0;
                     Toast.makeText(getApplicationContext(), "Preferences Reset!!!", Toast.LENGTH_SHORT).show();
                 }
@@ -360,14 +362,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public class AuthLoginCallBack implements Callback<AuthInfo> {
-        private final SharedPreferences pref;
-        private final String username;
-        private final String pin;
+        private final String userName;
 
-        public AuthLoginCallBack(String username, String pin) {
-            pref = getContext().getSharedPreferences("agritrack", Context.MODE_PRIVATE);
-            this.username = username;
-            this.pin = pin;
+        public AuthLoginCallBack(LoginRQ loginRQ) {
+            userName = loginRQ.getUsername();
         }
 
         @Override
@@ -375,9 +373,9 @@ public class LoginActivity extends AppCompatActivity {
             AuthInfo rs = response.body();
 
             if (rs != null) {
-                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(this.username, rs.getToken()))));
-                SharedPreferenceService.writeValue("shouldSync", true);
-                //editor.apply();
+                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(this.userName, rs.getToken()))));
+                LocalPreferences.writeValue("shouldSync", true);
+                LocalPreferences.updateLoginTime();
             } else {
                 // Probably Invalid Credentials
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.login_failed)));
@@ -391,53 +389,117 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    public class SyncSitesCallBack implements Callback<SiteDTO> {
 
-    public class SyncAllCallBack implements Callback<AuthInfo> {
-        private final SharedPreferences pref;
-        private final String username;
-        private final String pin;
+        @Override
+        public void onResponse(Call<SiteDTO> call, Response<SiteDTO> response) {
+            SiteDTO siteDTO = response.body();
 
-        public SyncAllCallBack(String username, String pin) {
-            pref = getContext().getSharedPreferences("agritrack", Context.MODE_PRIVATE);
-            this.username = username;
-            this.pin = pin;
+            if (siteDTO != null) {
+                db.siteDAO().insert(SiteDTO.convert(siteDTO));
+                LocalPreferences.setSelectedSite(siteDTO);
+            } else {
+                // no Sites found
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_sites_found_alert, Toast.LENGTH_LONG).show());
+            }
         }
 
         @Override
-        public void onResponse(Call<AuthInfo> call, Response<AuthInfo> response) {
-
-        }
-
-        @Override
-        public void onFailure(Call<AuthInfo> call, Throwable t) {
-
+        public void onFailure(Call<SiteDTO> call, Throwable t) {
+            // Probably Network Communication Error
+            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
         }
     }
 
-
-    private class SyncAllTask extends AsyncTask<Void, Integer, Void> {
+    public class SyncAssetsCallBack implements Callback<List<AssetDTO>> {
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            SharedPreferences pref = getSharedPreferences("agritrack", Context.MODE_PRIVATE);
-            String token = pref.getString("token", null);
-//            boolean syncResult;
-//            RouteSyncService routeSyncService = new RouteSyncService();
-//            syncResult = routeSyncService.syncRoute(db, token);
-//
-//            DriverAndTrucksSyncService driverAndTrucksSyncService = new DriverAndTrucksSyncService();
-//            syncResult &= driverAndTrucksSyncService.syncDriverAndTrucks(db, token);
-//
-//            DistributorsAndPlantsSyncService distributorsAndPlantsSyncService = new DistributorsAndPlantsSyncService();
-//            syncResult &= distributorsAndPlantsSyncService.syncDistributorsAndPlants(db, token);
-//
-//            TanksAndProducersSyncService tanksAndProducersSyncService = new TanksAndProducersSyncService();
-//            syncResult &= tanksAndProducersSyncService.syncTanksAndProducers(db, token);
-//
-//            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-//            i.putExtra("syncErrors", !syncResult);
-//            startActivity(i);
-            return null;
+        public void onResponse(Call<List<AssetDTO>> call, Response<List<AssetDTO>> response) {
+            List<AssetDTO> rs = response.body();
+
+            if (rs != null) {
+                for (AssetDTO assetDTO : rs) {
+                    db.assetDAO().insert(AssetDTO.convert(assetDTO));
+                }
+            } else {
+                // no Assets found
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_sites_found_alert, Toast.LENGTH_LONG).show());
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<AssetDTO>> call, Throwable t) {
+            // Probably Network Communication Error
+            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
+        }
+    }
+
+    public class SyncUsersCallBack implements Callback<List<AppUserDTO>> {
+
+        @Override
+        public void onResponse(Call<List<AppUserDTO>> call, Response<List<AppUserDTO>> response) {
+            List<AppUserDTO> rs = response.body();
+
+            if (rs != null) {
+                for (AppUserDTO userDTO : rs) {
+                    db.userDAO().insert(AppUserDTO.convert(userDTO));
+                }
+            } else {
+                // no Users found
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_users_found_alert, Toast.LENGTH_LONG).show());
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<AppUserDTO>> call, Throwable t) {
+            // Probably Network Communication Error
+            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
+        }
+    }
+
+    public class SyncEmployeesCallBack implements Callback<List<EmployeeDTO>> {
+
+        @Override
+        public void onResponse(Call<List<EmployeeDTO>> call, Response<List<EmployeeDTO>> response) {
+            List<EmployeeDTO> rs = response.body();
+
+            if (rs != null) {
+                for (EmployeeDTO employeeDTO : rs) {
+                    db.employeeDAO().insert(EmployeeDTO.convert(employeeDTO));
+                }
+            } else {
+                // no Employees found
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_employees_found_alert, Toast.LENGTH_LONG).show());
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<EmployeeDTO>> call, Throwable t) {
+            // Probably Network Communication Error
+            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
+        }
+    }
+
+    public class SyncSpeciesCallBack implements Callback<List<FishSpeciesDTO>> {
+
+        @Override
+        public void onResponse(Call<List<FishSpeciesDTO>> call, Response<List<FishSpeciesDTO>> response) {
+            List<FishSpeciesDTO> rs = response.body();
+
+            if (rs != null) {
+                for (FishSpeciesDTO speciesDTO : rs) {
+                    db.speciesDAO().insert(FishSpeciesDTO.convert(speciesDTO));
+                }
+            } else {
+                // no Fish Species found
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_species_found_alert, Toast.LENGTH_LONG).show());
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<FishSpeciesDTO>> call, Throwable t) {
+            // Probably Network Communication Error
+            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
         }
     }
 }

@@ -21,13 +21,31 @@ public class Site {
     public String code;
 
     @ColumnInfo(name = "site_lvl")
-    public String siteLevel;
+    public Integer siteLevel;
+
+    @ColumnInfo(name = "lvl1")
+    public String lvl1;
+
+    @ColumnInfo(name = "lvl2")
+    public String lvl2;
+
+    @ColumnInfo(name = "lvl3")
+    public String lvl3;
+
+    @ColumnInfo(name = "lvl4")
+    public String lvl4;
+
+    @ColumnInfo(name = "country")
+    public String country;
+
+    @ColumnInfo(name = "region")
+    public String region;
+
+    @ColumnInfo(name = "customer_site_id")
+    public String customer_site_id;
 
     @ColumnInfo(name = "active")
     public Boolean active;
-
-    public Site() {
-    }
 
     @NonNull
     public String toString() {

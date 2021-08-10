@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FishTrackAPIServiceGenerator {
 
-    private static String BASE_URL = "http://fishtrackbackend-env.eba-b2cqygnf.eu-central-1.elasticbeanstalk.com"; //"http://192.168.1.132:5000";
+    private static String BASE_URL = "http://192.168.150.6:5000";// "http://fishtrackbackend-env.eba-b2cqygnf.eu-central-1.elasticbeanstalk.com"; //"http://192.168.1.132:5000";
 
     private static Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
 
@@ -16,7 +16,7 @@ public class FishTrackAPIServiceGenerator {
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
     private static HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC);
 
-    public static <S> S createService(Class<S> serviceClass) {
+    public static <S> S createAPI(Class<S> serviceClass) {
         if (!httpClient.interceptors().contains(logging)) {
             httpClient.addInterceptor(logging);
             builder.client(httpClient.build());
@@ -25,7 +25,7 @@ public class FishTrackAPIServiceGenerator {
         return retrofit.create(serviceClass);
     }
 
-    public static <S> S createService(Class<S> serviceClass, final String token) {
+    public static <S> S createAPI(Class<S> serviceClass, final String token) {
         if (token != null) {
             httpClient.interceptors().clear();
             httpClient.addInterceptor( chain -> {

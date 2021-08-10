@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -20,7 +21,7 @@ public interface RFIDInventoryItemDAO {
     @Query("SELECT * from rfid_inventory_item where id=:rFIDInventoryItemId LIMIT 1")
     RFIDInventoryItem getById(Long rFIDInventoryItemId);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(RFIDInventoryItem... rFIDInventoryItems);
 
     @Delete

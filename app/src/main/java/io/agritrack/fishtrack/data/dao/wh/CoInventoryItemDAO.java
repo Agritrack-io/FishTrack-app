@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -20,7 +21,7 @@ public interface CoInventoryItemDAO {
     @Query("SELECT * from co_inventory_item where id=:coInventoryItemId LIMIT 1")
     CoInventoryItem getById(Long coInventoryItemId);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(CoInventoryItem... coInventoryItems);
 
     @Delete

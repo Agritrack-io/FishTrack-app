@@ -21,4 +21,7 @@ public class FishSpecies {
 
     @ColumnInfo(name="name")
     public String name;
+
+    public FishSpecies() {
+    }
 }

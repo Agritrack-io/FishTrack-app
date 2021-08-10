@@ -3,10 +3,14 @@ package io.agritrack.fishtrack.ui.service;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+
+import io.agritrack.fishtrack.data.dto.SiteDTO;
+
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
-public class SharedPreferenceService {
+public class LocalPreferences {
     public static final String Pref_Name = "agritrack";
     public static final String Token_Key = "token";
     public static final String Longitude_Key = "lon";
@@ -15,15 +19,16 @@ public class SharedPreferenceService {
     public static final String ShouldLogin_Key = "shouldLogin";
     public static final String ShouldSync_Key = "shouldSync";
     public static final String SelectedSite_Key = "selectedSite";
+    public static final String SelectedSiteName_Key = "selectedSiteName";
+    public static final String SelectedSiteId_Key = "selectedSiteId";
     public static final String Locale_Key = "localeCode";
 
-
-    private static SharedPreferenceService mInstance;
+    private static LocalPreferences mInstance;
     private static Context mContext;
     private static SharedPreferences pref;
 
 
-    private SharedPreferenceService(Context context) {
+    private LocalPreferences(Context context) {
         // hold the application context
         mContext = context;
 
@@ -31,15 +36,19 @@ public class SharedPreferenceService {
         pref = getContext().getSharedPreferences(Pref_Name, Context.MODE_PRIVATE);
     }
 
-    public static SharedPreferenceService getInstance() {
+    public static LocalPreferences getInstance() {
         if (mInstance == null) {
-            mInstance = new SharedPreferenceService(getAppContext());
+            mInstance = new LocalPreferences(getAppContext());
         }
         return mInstance;
     }
 
-    public static String getCurrentSite() {
-        return getInstance().pref.getString(SelectedSite_Key, "N/A");
+    public static String getCurrentSiteName() {
+        return getInstance().pref.getString(SelectedSiteName_Key, "N/A");
+    }
+
+    public static Long getCurrentSiteId() {
+        return getInstance().pref.getLong(SelectedSiteId_Key, -1l);
     }
 
     public static String getLocale() {
@@ -66,12 +75,33 @@ public class SharedPreferenceService {
         return getInstance().pref.getLong(LoginTime_Key, Long.MIN_VALUE);
     }
 
+    // stores in Local Preferences current epoch time, as last Login Time.
+    public static void updateLoginTime() {
+        writeValue(LoginTime_Key, System.currentTimeMillis() / 1000L);
+    }
+
     public static Boolean shouldLogin(Boolean defVal) {
         return getInstance().pref.getBoolean(ShouldLogin_Key, defVal);
     }
 
     public static Boolean shouldSync(Boolean defVal) {
         return getInstance().pref.getBoolean(ShouldSync_Key, defVal);
+    }
+
+    public static SiteDTO getSelectedSite() {
+        Gson gson = new Gson();
+        String siteJson = getInstance().pref.getString(SelectedSite_Key, null);
+        if (siteJson != null) {
+            return gson.fromJson(siteJson, SiteDTO.class);
+        }
+        return null;
+    }
+
+    public static void setSelectedSite(SiteDTO siteDTO) {
+        if (siteDTO != null) {
+            Gson gson = new Gson();
+            writeValue(SelectedSite_Key, gson.toJson(siteDTO));
+        }
     }
 
     public static Long getLoginDiffInDays() {
@@ -89,6 +119,9 @@ public class SharedPreferenceService {
                 editor.putString(key, (String) value);
             } else if (value instanceof Long) {
                 editor.putLong(key, (Long) value);
+            } else if (value instanceof Boolean) {
+                editor.putBoolean(key, (Boolean) value);
+
             }
             editor.apply();
 

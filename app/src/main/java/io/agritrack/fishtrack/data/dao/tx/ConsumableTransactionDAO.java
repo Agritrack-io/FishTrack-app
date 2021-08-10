@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -20,7 +21,7 @@ public interface ConsumableTransactionDAO {
     @Query("SELECT * from consumable_transaction where id=:consumableTransactionId LIMIT 1")
     ConsumableTransaction getById(Long consumableTransactionId);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(ConsumableTransaction... consumableTransactions);
 
     @Delete

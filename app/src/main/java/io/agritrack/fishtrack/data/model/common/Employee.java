@@ -2,9 +2,10 @@ package io.agritrack.fishtrack.data.model.common;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "employee")
+@Entity(tableName = "employee", indices = {@Index("supervisor"), @Index(value = {"last_name", "first_name"})})
 public class Employee {
 
     @PrimaryKey
@@ -36,6 +37,12 @@ public class Employee {
 
     @ColumnInfo(name = "supervisor")
     public Long supervisor;
+
+    @ColumnInfo(name = "site")
+    public Long site;
+
+    @ColumnInfo(name = "user")
+    public Long user;
 
    /* @ManyToOne
     @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_Employee_Site"))
