@@ -24,14 +24,12 @@ public class CorrelationNetActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToCorrelationMenu);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Correlation menu!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
             startActivity(i);
         });
 
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Congratulations!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
             startActivity(i);
         });

@@ -24,14 +24,12 @@ public class OutgoingProcessActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Congratulations!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartOutgoing);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Start outgoing!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), OutgoingStartActivity.class);
             startActivity(i);
         });

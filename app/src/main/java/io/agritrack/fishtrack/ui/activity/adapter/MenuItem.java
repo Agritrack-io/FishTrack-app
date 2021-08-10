@@ -4,11 +4,11 @@ package io.agritrack.fishtrack.ui.activity.adapter;
 public class MenuItem {
     private String name;
     private int imgId;
-    private String activity;
+    private Class clazz;
 
-    public MenuItem(String name, String activity, int imgID) {
+    public MenuItem(String name, Class activityClass, int imgID) {
         this.name = name;
-        this.activity = activity;
+        this.clazz = activityClass;
         this.imgId = imgID;
     }
 
@@ -28,11 +28,11 @@ public class MenuItem {
         this.imgId = imgId;
     }
 
-    public String getActivity() {
-        return activity;
+    public Class getActivity() {
+        return clazz;
     }
 
-    public void setActivity(String activity) {
-        this.activity = activity;
+    public void setActivity(Class activity) {
+        this.clazz = activity;
     }
 }

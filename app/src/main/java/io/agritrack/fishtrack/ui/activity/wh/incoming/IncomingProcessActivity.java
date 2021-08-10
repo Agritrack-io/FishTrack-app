@@ -25,14 +25,12 @@ public class IncomingProcessActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Congratulations!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartIncoming);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Start incoming!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), IncomingStartActivity.class);
             startActivity(i);
         });

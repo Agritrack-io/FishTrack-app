@@ -25,14 +25,12 @@ public class MaintenanceExternalConfirmActivity extends AppCompatActivity {
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMaintenanceExternalSupplier);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Fill Bins!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), MaintenanceExternalSupplierActivity.class);
             startActivity(i);
         });
 
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Congratulations!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), MaintenanceMenuActivity.class);
             startActivity(i);
         });

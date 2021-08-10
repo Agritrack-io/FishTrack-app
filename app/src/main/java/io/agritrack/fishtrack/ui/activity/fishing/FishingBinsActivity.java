@@ -37,8 +37,6 @@ public class FishingBinsActivity extends AppCompatActivity {
         rvBins.setAdapter(adapterBins);
         rvBins.setNestedScrollingEnabled(false);
 
-
-
         configFooter();
     }
 
@@ -47,14 +45,12 @@ public class FishingBinsActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToTeam);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Fishing team!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
             startActivity(i);
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMain);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Fishing!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), FishingStartActivity.class);
             startActivity(i);
         });

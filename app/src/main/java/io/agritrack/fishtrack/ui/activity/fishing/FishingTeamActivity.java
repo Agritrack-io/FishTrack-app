@@ -52,14 +52,12 @@ public class FishingTeamActivity extends AppCompatActivity {
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToBins);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Bins!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
             startActivity(i);
         });
 
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCage);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Cage!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), FishingCageActivity.class);
             startActivity(i);
         });

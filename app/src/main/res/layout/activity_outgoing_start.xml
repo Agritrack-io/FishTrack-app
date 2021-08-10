@@ -178,49 +178,107 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <RadioGroup
-                    android:id="@+id/rgoutgoingFrom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                    android:id="@+id/toggleGroup2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="70dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
-                    android:checkedButton="@id/rbAvramar"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toTopOf="@+id/tvoutgoingFrom"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvOutgoingTo"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <RadioButton
-                        android:id="@+id/rbAvramar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:text="AVRAMAR"
-                        android:textColor="@color/agri_blue"
+                    <ToggleButton
+                        android:id="@+id/tbAvramar"
+                        android:layout_width="fill_parent"
+                        android:layout_height="60dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/tooglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="AVRAMAR"
+                        android:textOn="AVRAMAR"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
-                    <RadioButton
-                        android:id="@+id/rbSupplier"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:text="CUSTOMER"
-                        android:textColor="@color/agri_blue"
+                    <ToggleButton
+                        android:id="@+id/tbCustomer"
+                        android:layout_width="fill_parent"
+                        android:layout_height="60dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/tooglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="CUSTOMER"
+                        android:textOn="CUSTOMER"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
-                    <RadioButton
-                        android:id="@+id/rbAsset"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:text="ASSET"
-                        android:textColor="@color/agri_blue"
+
+                    <ToggleButton
+                        android:id="@+id/tbAssetTo"
+                        android:layout_width="fill_parent"
+                        android:layout_height="60dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/tooglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="ASSET"
+                        android:textOn="ASSET"
                         android:textSize="@dimen/text_view_font_size_medium" />
-                </RadioGroup>
+
+
+                </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+
+
+                <!--         <RadioGroup
+                             android:id="@+id/rgoutgoingFrom"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_marginTop="16dp"
+                             android:checkedButton="@id/rbAvramar"
+                             android:gravity="center"
+                             android:orientation="horizontal"
+                             app:layout_constraintBottom_toTopOf="@+id/tvoutgoingFrom"
+                             app:layout_constraintEnd_toEndOf="parent"
+                             app:layout_constraintStart_toStartOf="parent"
+                             app:layout_constraintTop_toTopOf="parent">
+
+                             <RadioButton
+                                 android:id="@+id/rbAvramar"
+                                 android:layout_width="match_parent"
+                                 android:layout_height="wrap_content"
+                                 android:layout_marginEnd="8dp"
+                                 android:text="AVRAMAR"
+                                 android:textColor="@color/agri_blue"
+                                 android:textSize="@dimen/text_view_font_size_medium" />
+
+                             <RadioButton
+                                 android:id="@+id/rbSupplier"
+                                 android:layout_width="match_parent"
+                                 android:layout_height="wrap_content"
+                                 android:layout_marginEnd="8dp"
+                                 android:text="CUSTOMER"
+                                 android:textColor="@color/agri_blue"
+                                 android:textSize="@dimen/text_view_font_size_medium" />
+
+                             <RadioButton
+                                 android:id="@+id/rbAsset"
+                                 android:layout_width="match_parent"
+                                 android:layout_height="wrap_content"
+                                 android:layout_marginEnd="8dp"
+                                 android:text="ASSET"
+                                 android:textColor="@color/agri_blue"
+                                 android:textSize="@dimen/text_view_font_size_medium" />
+                         </RadioGroup>-->
 
                 <TextView
-                    android:id="@+id/tvoutgoingFrom"
+                    android:id="@+id/tvOutgoingTo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
@@ -242,7 +300,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rgoutgoingFrom" />
+                    app:layout_constraintTop_toBottomOf="@+id/toggleGroup2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -280,40 +338,85 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <RadioGroup
-                    android:id="@+id/rgoutgoingTo"
+                <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                    android:id="@+id/toggleGroup1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="70dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
-                    android:checkedButton="@id/rbSubsite"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toTopOf="@+id/tvoutgoingTo"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvOutgoingFrom"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <RadioButton
-                        android:id="@+id/rbSubsite"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:text="SITE"
-                        android:textColor="@color/agri_blue"
+                    <ToggleButton
+                        android:id="@+id/tbSite"
+                        android:layout_width="fill_parent"
+                        android:layout_height="60dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/tooglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="SITE"
+                        android:textOn="SITE"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
-                    <RadioButton
-                        android:id="@+id/rbAssetTo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:text="ASSET"
-                        android:textColor="@color/agri_blue"
+                    <ToggleButton
+                        android:id="@+id/tbAsset"
+                        android:layout_width="fill_parent"
+                        android:layout_height="60dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/tooglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="ASSET"
+                        android:textOn="ASSET"
                         android:textSize="@dimen/text_view_font_size_medium" />
-                </RadioGroup>
+
+                </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+
+
+                <!--
+                                <RadioGroup
+                                    android:id="@+id/rgoutgoingTo"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="16dp"
+                                    android:checkedButton="@id/rbSubsite"
+                                    android:gravity="center"
+                                    android:orientation="horizontal"
+                                    app:layout_constraintBottom_toTopOf="@+id/tvoutgoingTo"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <RadioButton
+                                        android:id="@+id/rbSubsite"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="8dp"
+                                        android:text="SITE"
+                                        android:textColor="@color/agri_blue"
+                                        android:textSize="@dimen/text_view_font_size_medium" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbAssetTo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="8dp"
+                                        android:text="ASSET"
+                                        android:textColor="@color/agri_blue"
+                                        android:textSize="@dimen/text_view_font_size_medium" />
+                                </RadioGroup>
+                -->
 
                 <TextView
-                    android:id="@+id/tvoutgoingTo"
+                    android:id="@+id/tvOutgoingFrom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
@@ -335,7 +438,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rgoutgoingTo" />
+                    app:layout_constraintTop_toBottomOf="@+id/toggleGroup1" />
 
 
 
@@ -385,6 +488,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
             android:scaleX="1.5"
             android:scaleY="1.2"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -397,6 +502,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
             android:scaleX="1.5"
             android:scaleY="1.2"
             app:layout_constraintBottom_toBottomOf="parent"

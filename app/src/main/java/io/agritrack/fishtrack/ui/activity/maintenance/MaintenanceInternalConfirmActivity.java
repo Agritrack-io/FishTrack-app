@@ -27,14 +27,12 @@ public class MaintenanceInternalConfirmActivity extends AppCompatActivity {
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMaintenanceInternalTeam);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Fill Bins!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), MaintenanceInternalTeamActivity.class);
             startActivity(i);
         });
 
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Congratulations!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), MaintenanceMenuActivity.class);
             startActivity(i);
         });

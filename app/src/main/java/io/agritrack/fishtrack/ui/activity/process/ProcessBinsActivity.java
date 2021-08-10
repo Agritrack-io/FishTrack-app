@@ -37,14 +37,12 @@ public class ProcessBinsActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToSupervisorConfirm);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Confirm!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), ProcessConfirmActivity.class);
             startActivity(i);
         });
 
          ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartProcess);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Start process!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), ProcessStartActivity.class);
             startActivity(i);
         });

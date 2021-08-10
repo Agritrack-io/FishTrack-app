@@ -38,11 +38,11 @@ public class WhMenuActivity extends AppCompatActivity {
         gvWhMainMenu = findViewById(R.id.gvWhMainMenu);
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), "", R.drawable.ic_incoming));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_outgoing), "", R.drawable.transport));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), "", R.drawable.ic_barang_masuk));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), "", R.drawable.ic_product_assets));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), "", R.drawable.ic_product_assets));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), IncomingStartActivity.class, R.drawable.incoming));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_outgoing), OutgoingStartActivity.class, R.drawable.outgoing));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), InventoryActivity.class, R.drawable.inventory));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationMenuActivity.class, R.drawable.correlation));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), SearchActivity.class, R.drawable.search));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvWhMainMenu.setAdapter(adapter);
@@ -83,7 +83,6 @@ public class WhMenuActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Main menu!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         });

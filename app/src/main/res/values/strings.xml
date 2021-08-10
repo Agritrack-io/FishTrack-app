@@ -40,6 +40,7 @@
     <string name="menu_title_cage">Cage</string>
     <string name="menu_title_net">Net</string>
     <string name="menu_title_bin">Bin</string>
+    <string name="menu_title_platform">Platform</string>
 
     <string name="title_config">Configure app</string>
 
@@ -49,13 +50,13 @@
     <string name="choose_harvest">Choose Harvest initiator</string>
     <string name="fish_type">Fish Type</string>
     <string name="requested_quantity">Requested Quantity</string>
-    <string name="scan_platform">Scan Platform</string>
-    <string name="name_platform">Name Platform</string>
+    <string name="scan_platform">Scan Platform tag</string>
+    <string name="barcode_platform">Barcode of Platform</string>
 
     <string name="title_user_date_platform">USER NAME / DATE / PLATFORM</string>
     <string name="select_bins">Select bins</string>
     <string name="bins_to_use">Bins for usage</string>
-    <string name="scan_bin">Scan Bin</string>
+    <string name="scan_bin">Scan Bin tag</string>
     <string name="delete_bin">Delete Bin</string>
     <string name="number_of_bins"># of bins:</string>
 
@@ -69,9 +70,9 @@
     <string name="title_platform_quantity_no_bins">PLATFORM / REQUESTED QUANTITY / # BINS</string>
     <string name="scan_cage_nets">Please scan cage and net</string>
     <string name="name_cage">Name Cage</string>
-    <string name="scan_cage">Scan Cage</string>
+    <string name="scan_cage">Scan Cage tag</string>
     <string name="name_net">Name Net</string>
-    <string name="scan_net">Scan Net</string>
+    <string name="scan_net">Scan Net tag</string>
 
     <string name="title_cage_quantity_no_bins">CAGE / REQUESTED QUANTITY / # BINS</string>
     <string name="choose_sea_temp">Please choose sea temp</string>
@@ -197,21 +198,22 @@
     <string name="title_correlate_net">Correlate net</string>
     <string name="title_correlate_bin">Correlate bin</string>
     <string name="type_code_of_bin">Type code of bin</string>
+    <string name="type_code_of_platform">Type code of platform</string>
     <string name="choose_net">Choose net</string>
     <string name="choose_bin">Choose bin</string>
     <string name="barcode_cage">Barcode of Cage</string>
     <string name="title_activity_config">ConfigActivity</string>
     <string name="current_location">Current Location</string>
     <string name="barcode_net">Barcode of Net</string>
-    <string name="initiate_temp_tag">Initiate temp tag</string>
+    <string name="link_temp_tag">Link temp tag</string>
     <string name="barcode_bin">Barcode of Bin</string>
     <string name="barcode_temp_tag">Barcode of Temp tag</string>
 
     <string name="title_search">SEARCH</string>
     <string name="search">Search</string>
     <string name="search_details">Search details</string>
-    <string name="choose_asset_type">Choose asset type</string>
-    <string name="choose_barcode">Choose barcode</string>
+    <string name="choose_asset_type">Asset type:</string>
+    <string name="search_and_select_barcode">Search and select barcode</string>
     <string name="type_barcode">Or type barcode of asset</string>
     <string name="proximity">Proximity</string>
 

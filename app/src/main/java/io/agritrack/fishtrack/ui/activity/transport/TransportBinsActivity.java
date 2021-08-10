@@ -42,14 +42,12 @@ public class TransportBinsActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartTransport);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Start Transport!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), TransportStartActivity.class);
             startActivity(i);
         });
 
         ImageView ivNext = (ImageView) findViewById(R.id.ivToDriverConfirm);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Driver confirms!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), TransportDriverConfirmActivity.class);
             startActivity(i);
         });

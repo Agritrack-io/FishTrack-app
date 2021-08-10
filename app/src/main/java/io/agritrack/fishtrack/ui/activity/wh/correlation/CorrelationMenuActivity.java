@@ -27,7 +27,7 @@ import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class CorrelationMenuActivity extends AppCompatActivity {
 
-    private static final int Cage_Idx = 0, Net_Idx = 1, Bin_Idx = 2;
+    private static final int Cage_Idx = 0, Net_Idx = 1, Bin_Idx = 2, Platform_Idx = 3;
     GridView gvCorrelationMenu;
 
     @Override
@@ -38,9 +38,10 @@ public class CorrelationMenuActivity extends AppCompatActivity {
         gvCorrelationMenu = findViewById(R.id.gvCorrelationMenu);
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_cage), "", R.drawable.ic_incoming));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_net), "", R.drawable.transport));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_bin), "", R.drawable.ic_barang_masuk));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_cage), CorrelationCageActivity.class, R.drawable.cage));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_net), CorrelationNetActivity.class, R.drawable.net));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_bin), CorrelationBinActivity.class, R.drawable.bin));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_platform), CorrelationPlatformActivity.class, R.drawable.platform));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvCorrelationMenu.setAdapter(adapter);
@@ -60,6 +61,9 @@ public class CorrelationMenuActivity extends AppCompatActivity {
                     case Bin_Idx:
                         i = new Intent(appCtx, CorrelationBinActivity.class);
                         break;
+                    case Platform_Idx:
+                        i = new Intent(appCtx, CorrelationPlatformActivity.class);
+                        break;
                     default:
                 }
 
@@ -75,7 +79,6 @@ public class CorrelationMenuActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "WH menu!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });

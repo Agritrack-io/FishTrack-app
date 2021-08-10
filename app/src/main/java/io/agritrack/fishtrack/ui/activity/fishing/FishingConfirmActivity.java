@@ -26,14 +26,12 @@ public class FishingConfirmActivity extends AppCompatActivity {
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToFillBins);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Fill Bins!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
             startActivity(i);
         });
 
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Congratulations!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         });

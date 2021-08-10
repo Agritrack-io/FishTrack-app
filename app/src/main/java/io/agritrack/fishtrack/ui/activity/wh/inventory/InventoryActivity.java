@@ -182,7 +182,6 @@ public class InventoryActivity extends AppCompatActivity {
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "WH Menu!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });

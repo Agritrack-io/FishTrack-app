@@ -24,14 +24,12 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMaintenanceExternalStart);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Main menu!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), MaintenanceExternalStartActivity.class);
             startActivity(i);
         });
 
         ImageView ivNext = (ImageView) findViewById(R.id.ivToConfirmExternal);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Main menu!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), MaintenanceExternalConfirmActivity.class);
             startActivity(i);
         });

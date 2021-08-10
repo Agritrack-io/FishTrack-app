@@ -41,14 +41,12 @@ public class ProcessStartActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToReceiveBins);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Receive bins!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), ProcessBinsActivity.class);
             startActivity(i);
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Main menu!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         });

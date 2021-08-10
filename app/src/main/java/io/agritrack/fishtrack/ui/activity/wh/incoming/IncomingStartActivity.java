@@ -1,17 +1,13 @@
 package io.agritrack.fishtrack.ui.activity.wh.incoming;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.ui.activity.WhMenuActivity;
-import io.agritrack.fishtrack.ui.activity.wh.incoming.IncomingProcessActivity;
-
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class IncomingStartActivity extends AppCompatActivity {
 
@@ -26,14 +22,12 @@ public class IncomingStartActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToIncomingProcess);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Incoming process!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), IncomingProcessActivity.class);
             startActivity(i);
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "WH Menu!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });

@@ -47,14 +47,12 @@ public class TransportStartActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToTransportBins);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Load bins!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), TransportBinsActivity.class);
             startActivity(i);
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Main menu!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         });

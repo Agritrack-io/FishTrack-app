@@ -40,6 +40,7 @@
     <string name="menu_title_cage">Κλωβός</string>
     <string name="menu_title_net">Δίχτυ</string>
     <string name="menu_title_bin">Βούτα</string>
+    <string name="menu_title_platform">Πλατφόρμα</string>
 
     <string name="title_config">Διαμόρφωση εφαρμογής</string>
 
@@ -50,7 +51,7 @@
     <string name="fish_type">Τύπος ψαριού</string>
     <string name="requested_quantity">Ζητούμενη ποσότητα</string>
     <string name="scan_platform">Σκανάρετε πλατφόρμα</string>
-    <string name="name_platform">Πλατφόρμα</string>
+    <string name="barcode_platform">Barcode Πλατφόρμας</string>
 
     <string name="title_user_date_platform">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ / ΠΛΑΤΦΟΡΜΑ</string>
     <string name="select_bins">Επιλέξτε βούτες</string>
@@ -196,21 +197,22 @@
     <string name="title_correlate_net">Συσχέτιση διχτυού</string>
     <string name="title_correlate_bin">Συσχέτιση βούτας</string>
     <string name="type_code_of_bin">Εισάγετε κωδικό βούτας</string>
+    <string name="type_code_of_platform">Εισάγετε κωδικό πλατφόρμας</string>
     <string name="choose_net">Επιλέξτε δίχτυ</string>
     <string name="choose_bin">Επιλέξτε βούτα</string>
     <string name="barcode_cage">Barcode κλωβού</string>
     <string name="title_activity_config">ConfigActivity</string>
     <string name="current_location">Τρέχουσα τοποθεσία</string>
     <string name="barcode_net">Barcode διχτυού</string>
-    <string name="initiate_temp_tag">Προγραμμάτισε ετικέτα θερμοκρασίας</string>
+    <string name="link_temp_tag">Συνέδεσε ετικέτα θερμοκρασίας</string>
     <string name="barcode_bin">Barcode βούτας</string>
     <string name="barcode_temp_tag">Barcode ετικέτας θερμοκρασίας</string>
 
     <string name="title_search">ΑΝΑΖΗΤΗΣΗ</string>
     <string name="search">Αναζήτηση</string>
     <string name="search_details">Πληροφορίες αναζήτησης</string>
-    <string name="choose_asset_type">Επιλέξτε τύπο παγίου</string>
-    <string name="choose_barcode">Επιλέξτε barcode</string>
+    <string name="choose_asset_type">Τύπος παγίου:</string>
+    <string name="search_and_select_barcode">Αναζητήστε και επιλέξτε barcode</string>
     <string name="type_barcode">Ή εισάγετε barcode</string>
     <string name="proximity">Εγγύτητα</string>
 

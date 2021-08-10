@@ -193,41 +193,41 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ToggleButton
-                        android:id="@+id/b1"
+                        android:id="@+id/tbAvramar"
                         android:layout_width="fill_parent"
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/tooglebutton_selector"
                         android:gravity="center"
-                        android:textColor="@color/text_color_selector"
+                        android:textColor="@drawable/button_text_color"
                         android:textOff="AVRAMAR"
                         android:textOn="AVRAMAR"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton
-                        android:id="@+id/b2"
+                        android:id="@+id/tbSupplier"
                         android:layout_width="fill_parent"
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/tooglebutton_selector"
                         android:gravity="center"
-                        android:textColor="@color/text_color_selector"
+                        android:textColor="@drawable/button_text_color"
                         android:textOff="SUPPLIER"
                         android:textOn="SUPPLIER"
                         android:textSize="@dimen/text_view_font_size_medium" />
-                    />
+
 
                     <ToggleButton
-                        android:id="@+id/b3"
+                        android:id="@+id/tbAssetFrom"
                         android:layout_width="fill_parent"
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/tooglebutton_selector"
                         android:gravity="center"
-                        android:textColor="@color/text_color_selector"
+                        android:textColor="@drawable/button_text_color"
                         android:textOff="ASSET"
                         android:textOn="ASSET"
                         android:textSize="@dimen/text_view_font_size_medium" />
@@ -428,31 +428,30 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ToggleButton
-                        android:id="@+id/b4"
+                        android:id="@+id/tbSite"
                         android:layout_width="fill_parent"
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/tooglebutton_selector"
                         android:gravity="center"
-                        android:textColor="@color/text_color_selector"
+                        android:textColor="@drawable/button_text_color"
                         android:textOff="SITE"
                         android:textOn="SITE"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton
-                        android:id="@+id/b5"
+                        android:id="@+id/tbAssetTo"
                         android:layout_width="fill_parent"
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/tooglebutton_selector"
                         android:gravity="center"
-                        android:textColor="@color/text_color_selector"
+                        android:textColor="@drawable/button_text_color"
                         android:textOff="ASSET"
                         android:textOn="ASSET"
                         android:textSize="@dimen/text_view_font_size_medium" />
-                    />
 
 
                 </io.agritrack.fishtrack.ui.custom.ToggleGroup>
@@ -529,6 +528,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
             android:scaleX="1.5"
             android:scaleY="1.2"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -541,6 +542,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
             android:scaleX="1.5"
             android:scaleY="1.2"
             app:layout_constraintBottom_toBottomOf="parent"

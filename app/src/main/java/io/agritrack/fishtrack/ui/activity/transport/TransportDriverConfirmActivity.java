@@ -24,14 +24,12 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToTransportBins);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Load bins!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), TransportBinsActivity.class);
             startActivity(i);
         });
 
         ImageView ivNext = (ImageView) findViewById(R.id.ivToSupervisorconfirm);
         ivNext.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Supervisor confirms!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), TransportSupervisorConfirmActivity.class);
             startActivity(i);
         });

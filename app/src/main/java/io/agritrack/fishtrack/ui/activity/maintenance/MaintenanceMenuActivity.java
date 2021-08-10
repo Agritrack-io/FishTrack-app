@@ -39,8 +39,8 @@ public class MaintenanceMenuActivity extends AppCompatActivity {
         gvMaintenanceMenu = findViewById(R.id.gvMaintenanceMenu);
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_internal), "", R.drawable.ic_incoming));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_external), "", R.drawable.transport));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_internal), MaintenanceInternalStartActivity.class, R.drawable.internal));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_external), MaintenanceExternalStartActivity.class, R.drawable.external));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvMaintenanceMenu.setAdapter(adapter);
@@ -72,7 +72,6 @@ public class MaintenanceMenuActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Main menu!!", Toast.LENGTH_LONG).show();
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         });
