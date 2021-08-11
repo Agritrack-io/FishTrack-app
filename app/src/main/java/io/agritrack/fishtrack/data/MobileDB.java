@@ -23,8 +23,8 @@ import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
 import io.agritrack.fishtrack.data.model.wh.Asset;
 
 
-@Database(entities = {AppUser.class, Site.class, Asset.class, HarvestTransaction.class, Employee.class, FishSpecies.class, Reader.class}, version = 2, exportSchema = false)
-@TypeConverters({DateConverter.class, LongListConverter.class})
+@Database(entities = {AppUser.class, Site.class, Asset.class, HarvestTransaction.class, Employee.class, FishSpecies.class, Reader.class}, version = 3, exportSchema = false)
+@TypeConverters({DateConverter.class, LongListConverter.class, StringListConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
     private static MobileDB INSTANCE;

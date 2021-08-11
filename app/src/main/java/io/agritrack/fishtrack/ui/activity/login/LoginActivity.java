@@ -44,6 +44,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.ui.service.LocalPreferences.Logged_In_User_Key;
+import static io.agritrack.fishtrack.ui.service.LocalPreferences.Token_Key;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -88,6 +90,12 @@ public class LoginActivity extends AppCompatActivity {
         // bind the credentials controls
         final EditText etUserName = findViewById(R.id.etUserName);
         final EditText etPassword = findViewById(R.id.etPassword);
+
+        // show previous loggeding user name
+        String previousLoggedInUser = LocalPreferences.getLoggedInUser(null);
+        if(previousLoggedInUser!=null) {
+            etUserName.setText(previousLoggedInUser);
+        }
 
         // check last login timestamp, to determine whether synch is required.
         long diffHours = LocalPreferences.getLoginDiffInDays();
@@ -180,8 +188,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
-        LocalPreferences.writeValue("token", model.getToken());
-        LocalPreferences.writeValue("username", model.getUsername());
+        LocalPreferences.writeValue(Token_Key, model.getToken());
+        LocalPreferences.writeValue(Logged_In_User_Key, model.getUsername());
         LocalPreferences.updateLoginTime();
 
         boolean shouldSync = LocalPreferences.shouldSync(Boolean.TRUE);
@@ -275,7 +283,6 @@ public class LoginActivity extends AppCompatActivity {
             // sync fish species
             Call<List<FishSpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCode("gr", "Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack());
-
 
 
 //            RouteSyncService routeSyncService = new RouteSyncService();

@@ -1,6 +1,8 @@
 package io.agritrack.fishtrack.data.dto;
 
 import java.util.Date;
+import java.util.List;
+
 import io.agritrack.fishtrack.data.model.AppUser;
 
 public class AppUserDTO {
@@ -13,6 +15,7 @@ public class AppUserDTO {
     public String pin;
     public Date registeredDate;
     public Boolean active;
+    public List<String> roles;
 
     public static AppUser convert(AppUserDTO appUserDTO) {
         AppUser appUser = new AppUser();
@@ -24,6 +27,7 @@ public class AppUserDTO {
         appUser.pin = appUserDTO.pin;
         appUser.registeredDate = appUserDTO.registeredDate;
         appUser.active = appUserDTO.active;
+        appUser.roles = appUserDTO.roles;
         return appUser;
     }
 }

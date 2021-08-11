@@ -14,6 +14,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
     }
 
     buildTypes {
@@ -28,9 +32,8 @@ android {
     }
     sourceSets {
         main {
-            res {
-                srcDirs 'src\\main\\res'
-            }
+            res.srcDirs = ['src/main/res']
+            jniLibs.srcDirs = ['src/main/jniLibs']
         }
     }
 }
@@ -104,6 +107,12 @@ dependencies {
     }
     implementation 'com.facebook.stetho:stetho:1.5.1'
 
+    // RFID libs
+    implementation files('libs/uhfcom13_eu_v15.jar')
+    implementation files('libs/SerialPort.jar')
+    implementation files('libs/CAENRFIDLibrary-release.aar')
+
+    // browse local db
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
 
     testImplementation 'junit:junit:4.+'

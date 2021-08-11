@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,10 +19,10 @@ import io.agritrack.fishtrack.ui.activity.adapter.HomeMenuAdapter;
 import io.agritrack.fishtrack.ui.activity.adapter.MenuItem;
 import io.agritrack.fishtrack.ui.activity.fishing.FishingStartActivity;
 import io.agritrack.fishtrack.ui.activity.login.LoginActivity;
-import io.agritrack.fishtrack.ui.activity.maintenance.MaintenanceInternalStartActivity;
 import io.agritrack.fishtrack.ui.activity.maintenance.MaintenanceMenuActivity;
 import io.agritrack.fishtrack.ui.activity.process.ProcessStartActivity;
 import io.agritrack.fishtrack.ui.activity.transport.TransportStartActivity;
+import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
@@ -35,6 +36,12 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         gvMainMenu = findViewById(R.id.gvMainMenu);
+
+
+        // set Header Info
+        TextView tvHeader = findViewById(R.id.tvHeaderHome);
+        tvHeader.setText(LocalPreferences.HeaderMsg());
+
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));

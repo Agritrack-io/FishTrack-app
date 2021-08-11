@@ -6,6 +6,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity(tableName = "appUser")
 public class AppUser {
@@ -34,8 +35,11 @@ public class AppUser {
     @ColumnInfo(name = "active")
     public Boolean active;
 
+    @ColumnInfo(name = "roles")
+    public List<String> roles;
+
     @NonNull
     public String toString() {
-        return username + " [" + email + "]" ;
+        return username + " [" + email + "]";
     }
 }

@@ -1,6 +1,5 @@
 package io.agritrack.fishtrack.data.dao.common;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -16,7 +15,7 @@ import io.agritrack.fishtrack.data.model.common.FishSpecies;
 public interface FishSpeciesDAO {
 
     @Query("SELECT * from species")
-    LiveData<List<FishSpecies>> getAll();
+    List<FishSpecies> getAll();
 
     @Query("SELECT * from species where id=:fishSpeciesId LIMIT 1")
     FishSpecies getById(Long fishSpeciesId);

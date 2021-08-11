@@ -2,8 +2,15 @@ package io.agritrack.fishtrack.ui.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 
 import io.agritrack.fishtrack.data.dto.SiteDTO;
 
@@ -22,6 +29,7 @@ public class LocalPreferences {
     public static final String SelectedSiteName_Key = "selectedSiteName";
     public static final String SelectedSiteId_Key = "selectedSiteId";
     public static final String Locale_Key = "localeCode";
+    public static final String Logged_In_User_Key = "LoggedinUser";
 
     private static LocalPreferences mInstance;
     private static Context mContext;
@@ -41,6 +49,12 @@ public class LocalPreferences {
             mInstance = new LocalPreferences(getAppContext());
         }
         return mInstance;
+    }
+
+    public static String Today() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+        Date date = new Date(System.currentTimeMillis());
+        return dateFormat.format(date);
     }
 
     public static String getCurrentSiteName() {
@@ -102,6 +116,14 @@ public class LocalPreferences {
             Gson gson = new Gson();
             writeValue(SelectedSite_Key, gson.toJson(siteDTO));
         }
+    }
+
+    public static String HeaderMsg() {
+        return getLoggedInUser("N/A") + " <-> " + Today();
+    }
+
+    public static String getLoggedInUser(String defVal) {
+        return getInstance().pref.getString(Logged_In_User_Key, defVal);
     }
 
     public static Long getLoginDiffInDays() {

@@ -29,4 +29,7 @@ public interface AppUserDAO {
 
     @Query("DELETE from appUser")
     void deleteAll();
+
+    @Query("SELECT * from appUser where roles LIKE :roleName")
+    List<AppUser> getByRole(String roleName);
 }
