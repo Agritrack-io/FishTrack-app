@@ -47,7 +47,6 @@
             android:backgroundTint="@color/agri_blue"
             android:backgroundTintMode="screen"
             android:gravity="center"
-            android:text="@string/title_user_date"
             android:textColor="@color/agri_green"
             android:textSize="@dimen/subtitle_font_size"
             app:layout_constraintBottom_toBottomOf="parent"

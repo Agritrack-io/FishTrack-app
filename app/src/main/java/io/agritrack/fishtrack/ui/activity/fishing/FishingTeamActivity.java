@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
@@ -31,6 +33,10 @@ public class FishingTeamActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_team);
+
+        // set Header Info
+        TextView tvHeader = findViewById(R.id.tvHeaderFishingTeam);
+        tvHeader.setText(LocalPreferences.HeaderMsg());
 
         Spinner fishingTeamSpinner = (Spinner) findViewById(R.id.spFishingTeam);
         ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, fishTeam);

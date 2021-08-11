@@ -3,11 +3,13 @@ package io.agritrack.fishtrack.ui.activity.fishing;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
@@ -17,6 +19,10 @@ public class FishingCageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_cage);
+
+        // set Header Info
+        TextView tvHeader = findViewById(R.id.tvHeaderFishingCage);
+        tvHeader.setText(LocalPreferences.HeaderMsg());
 
         configFooter();
 

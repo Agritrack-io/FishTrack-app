@@ -45,7 +45,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fishing_bins);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderFishingStart);
+        TextView tvHeader = findViewById(R.id.tvHeaderFishingBins);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
 

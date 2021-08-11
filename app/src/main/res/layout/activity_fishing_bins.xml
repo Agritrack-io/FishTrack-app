@@ -41,14 +41,13 @@
             tools:ignore="MissingPrefix" />
 
         <TextView
-            android:id="@+id/tvPlatformQuantityNoBins"
+            android:id="@+id/tvHeaderFishingBins"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/agri_blue"
             android:backgroundTintMode="screen"
             android:gravity="center"
-            android:text="@string/title_user_date_platform"
             android:textColor="@color/agri_green"
             android:textSize="@dimen/subtitle_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
