@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -65,15 +66,6 @@ public class FishingStartActivity extends AppCompatActivity {
             speciesSpinner.setAdapter(spAdapter);
         }
 
-        // fill in Quantities spinner
-        String[] harvestQuantities = new String[]{"500","750","1000","1250","1500","1750","2000"};
-        {
-            Spinner qtySpinner = (Spinner) findViewById(R.id.spRequestedQuantity);
-            ArrayAdapter<String> qtAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, harvestQuantities);
-            qtAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-            qtySpinner.setAdapter(qtAdapter);
-        }
-
         // RFID scanning functionality
         uhfReader = UhfReader.getInstance();
         uhfReader.setOutputPower(33);
@@ -82,7 +74,7 @@ public class FishingStartActivity extends AppCompatActivity {
             TextView tvPlatformName = findViewById(R.id.tvPlatformName);
             scanning = !scanning;
 
-            // Follwing check is required to instantiate a ScanningThread that was stopped previously.
+            // Following check is required to instantiate a ScanningThread that was stopped previously.
             if (inventoryThread.getState() == Thread.State.TERMINATED)
             {
                 inventoryThread = new ScanThread();
@@ -148,8 +140,8 @@ public class FishingStartActivity extends AppCompatActivity {
         }
 
         if(!Strings.isEmptyOrWhitespace(hvst.reqWeight)) {
-            Spinner qtySpinner = findViewById(R.id.spRequestedQuantity);
-            qtySpinner.setSelection(1);
+            EditText etQty = findViewById(R.id.etRequestedQuantity);
+            etQty.setText(hvst.reqWeight);
         }
 
         if(!Strings.isEmptyOrWhitespace(hvst.platformBC)) {
@@ -165,14 +157,14 @@ public class FishingStartActivity extends AppCompatActivity {
 
         Spinner harvestSpinner = findViewById(R.id.spHarvest);
         Spinner speciesSpinner = findViewById(R.id.spFishType);
-        Spinner qtySpinner = findViewById(R.id.spRequestedQuantity);
+        EditText etQty = findViewById(R.id.etRequestedQuantity);
         TextView tvPlatformRFID = findViewById(R.id.tvPlatformName);
 
         harvestRecord.requesterName = harvestSpinner.getSelectedItem().toString();
         harvestRecord.requesterPos = harvestSpinner.getSelectedItemPosition();
         harvestRecord.speciesName = speciesSpinner.getSelectedItem().toString();
         harvestRecord.speciesPos = speciesSpinner.getSelectedItemPosition();
-        harvestRecord.reqWeight = qtySpinner.getSelectedItem().toString();
+        harvestRecord.reqWeight = etQty.getText().toString();
         harvestRecord.platformBC = tvPlatformRFID.getText().toString();
 
         return harvestRecord;

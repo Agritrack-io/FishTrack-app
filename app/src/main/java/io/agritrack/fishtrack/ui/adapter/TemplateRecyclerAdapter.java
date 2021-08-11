@@ -24,6 +24,20 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         this.context = context;
     }
 
+    public void setValues(ArrayList<String> vals) {
+        this.mList = vals;
+    }
+
+    public ArrayList<String> getValues() {
+        return mList;
+    }
+
+    public void addItem(String val){
+        if(!this.mList.contains(val)){
+            this.mList.add(val);
+        }
+    }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
