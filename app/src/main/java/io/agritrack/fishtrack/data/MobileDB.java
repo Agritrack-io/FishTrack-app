@@ -8,22 +8,28 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import io.agritrack.fishtrack.data.dao.AppUserDAO;
+import io.agritrack.fishtrack.data.dao.CageDetailsDAO;
 import io.agritrack.fishtrack.data.dao.SiteDAO;
 import io.agritrack.fishtrack.data.dao.common.EmployeeDAO;
 import io.agritrack.fishtrack.data.dao.common.FishSpeciesDAO;
 import io.agritrack.fishtrack.data.dao.common.ReaderDAO;
+import io.agritrack.fishtrack.data.dao.tx.FishingTransactionDAO;
 import io.agritrack.fishtrack.data.dao.tx.HarvestTransactionDAO;
 import io.agritrack.fishtrack.data.dao.wh.AssetDAO;
 import io.agritrack.fishtrack.data.model.AppUser;
+import io.agritrack.fishtrack.data.model.CageDetails;
 import io.agritrack.fishtrack.data.model.Site;
 import io.agritrack.fishtrack.data.model.common.Employee;
 import io.agritrack.fishtrack.data.model.common.FishSpecies;
 import io.agritrack.fishtrack.data.model.common.Reader;
+import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
 import io.agritrack.fishtrack.data.model.wh.Asset;
 
 
-@Database(entities = {AppUser.class, Site.class, Asset.class, HarvestTransaction.class, Employee.class, FishSpecies.class, Reader.class}, version = 3, exportSchema = false)
+@Database(entities = {AppUser.class, Site.class, Asset.class, CageDetails.class, FishingTransaction.class,
+        HarvestTransaction.class, Employee.class, FishSpecies.class, Reader.class},
+        version = 5, exportSchema = false)
 @TypeConverters({DateConverter.class, LongListConverter.class, StringListConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
@@ -52,13 +58,15 @@ public abstract class MobileDB extends RoomDatabase {
 
     public abstract AssetDAO assetDAO();
 
+    public abstract CageDetailsDAO cageDetailsDAO();
+
+    public abstract FishingTransactionDAO fishingTransactionDAO();
+
     public abstract HarvestTransactionDAO harvestTransactionDAO();
 
     public abstract EmployeeDAO employeeDAO();
 
     public abstract FishSpeciesDAO speciesDAO();
-
-//    public abstract ProducerDAO producerDAO();
 
     public abstract ReaderDAO readerDAO();
 }

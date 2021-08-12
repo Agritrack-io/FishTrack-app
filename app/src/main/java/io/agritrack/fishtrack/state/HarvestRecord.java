@@ -1,5 +1,6 @@
 package io.agritrack.fishtrack.state;
 
+import java.util.Date;
 import java.util.List;
 
 public class HarvestRecord {
@@ -14,6 +15,13 @@ public class HarvestRecord {
     public String netRFID;
     public List<String> availBins;
     public List<String> fishingTeam;
+    public String fishSpecies;
+    public String Pathologist;
+    public Date lastFed;
+    public Boolean adequateIce;
+    public String iceSupplier;
+    public Double totalFishWeight;
+    public Integer totalBinsUsed;
 
     public HarvestRecord() {}
 }

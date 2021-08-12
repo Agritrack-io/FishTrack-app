@@ -3,9 +3,7 @@ package io.agritrack.fishtrack.ui.activity.fishing;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,13 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.hdhe.uhf.reader.UhfReader;
-import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.Set;
 
 import io.agritrack.fishtrack.R;
-import io.agritrack.fishtrack.data.MobileDB;
 import io.agritrack.fishtrack.rfid.ScanThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.HarvestRecord;
@@ -32,7 +28,6 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
 
-    private MobileDB db;
     private UhfReader uhfReader;
     private ScanThread inventoryThread = new ScanThread();
     private boolean scanning = false;
@@ -116,7 +111,6 @@ public class FishingBinsActivity extends AppCompatActivity {
         configFooter();
     }
 
-
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToTeam);
         ivNext.setOnClickListener(view -> {
@@ -133,10 +127,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        if (GlobalState.getInstance().recHarvest == null) {
-            return;
-        }
-        HarvestRecord hvst = GlobalState.getInstance().recHarvest;
+        HarvestRecord hvst = GlobalState.recHarvest;
 
         if (hvst.availBins != null) {
             adapterBins.setValues((ArrayList<String>) hvst.availBins);
@@ -149,5 +140,13 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     private void updateState() {
         GlobalState.recHarvest.availBins = adapterBins.getValues();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (uhfReader != null)
+            uhfReader.close();
+        scanning = false;
+        super.onDestroy();
     }
 }

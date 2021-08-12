@@ -105,17 +105,24 @@ public class FishingStartActivity extends AppCompatActivity {
 
         // create Footer
         configFooter();
+
+        if(db!=null){
+            if(db.isOpen()) {
+                db.close();
+            }
+            db=null;
+        }
     }
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToBins);
+        ImageView ivNext = findViewById(R.id.ivToBins);
         ivNext.setOnClickListener(view -> {
             updateState();
             Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
             startActivity(i);
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
@@ -124,10 +131,7 @@ public class FishingStartActivity extends AppCompatActivity {
 
     private void initControlsFromState() {
 
-        if(GlobalState.getInstance().recHarvest == null) {
-            return;
-        }
-        HarvestRecord hvst = GlobalState.getInstance().recHarvest;
+        HarvestRecord hvst = GlobalState.recHarvest;
 
         if(hvst.requesterPos>-1) {
             Spinner harvestSpinner = findViewById(R.id.spHarvest);
@@ -151,9 +155,8 @@ public class FishingStartActivity extends AppCompatActivity {
         //harvestSpinner.setSelection(arrayAdapter.getPosition("Category 2"));
     }
 
-
     private HarvestRecord updateState() {
-        HarvestRecord harvestRecord = GlobalState.getInstance().initHarvest();
+        HarvestRecord harvestRecord = GlobalState.initHarvest();
 
         Spinner harvestSpinner = findViewById(R.id.spHarvest);
         Spinner speciesSpinner = findViewById(R.id.spFishType);
@@ -169,7 +172,6 @@ public class FishingStartActivity extends AppCompatActivity {
 
         return harvestRecord;
     }
-
 
     @Override
     protected void onDestroy() {

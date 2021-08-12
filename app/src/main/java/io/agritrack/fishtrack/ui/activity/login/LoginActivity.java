@@ -27,6 +27,7 @@ import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.api.FishTrackAPIServiceGenerator;
 import io.agritrack.fishtrack.data.MobileDB;
 import io.agritrack.fishtrack.data.dto.AppUserDTO;
+import io.agritrack.fishtrack.data.dto.CageDetailsDTO;
 import io.agritrack.fishtrack.data.dto.SiteDTO;
 import io.agritrack.fishtrack.data.dto.common.EmployeeDTO;
 import io.agritrack.fishtrack.data.dto.common.FishSpeciesDTO;
@@ -280,6 +281,10 @@ public class LoginActivity extends AppCompatActivity {
             Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
             syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack());
 
+            // sync Cage Details
+            Call<List<CageDetailsDTO>> syncCageDetailsAsyncCall = syncService.getCageDetailsBySiteId(siteId, "Bearer " + token);
+            syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack());
+
             // sync fish species
             Call<List<FishSpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCode("gr", "Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack());
@@ -290,12 +295,6 @@ public class LoginActivity extends AppCompatActivity {
 //
 //            DriverAndTrucksSyncService driverAndTrucksSyncService = new DriverAndTrucksSyncService();
 //            syncResult &= driverAndTrucksSyncService.syncDriverAndTrucks(db, token);
-//
-//            DistributorsAndPlantsSyncService distributorsAndPlantsSyncService = new DistributorsAndPlantsSyncService();
-//            syncResult &= distributorsAndPlantsSyncService.syncDistributorsAndPlants(db, token);
-//
-//            TanksAndProducersSyncService tanksAndProducersSyncService = new TanksAndProducersSyncService();
-//            syncResult &= tanksAndProducersSyncService.syncTanksAndProducers(db, token);
 
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             i.putExtra("syncErrors", !syncResult);
@@ -397,7 +396,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public class SyncSitesCallBack implements Callback<SiteDTO> {
-
         @Override
         public void onResponse(Call<SiteDTO> call, Response<SiteDTO> response) {
             SiteDTO siteDTO = response.body();
@@ -419,7 +417,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public class SyncAssetsCallBack implements Callback<List<AssetDTO>> {
-
         @Override
         public void onResponse(Call<List<AssetDTO>> call, Response<List<AssetDTO>> response) {
             List<AssetDTO> rs = response.body();
@@ -442,7 +439,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public class SyncUsersCallBack implements Callback<List<AppUserDTO>> {
-
         @Override
         public void onResponse(Call<List<AppUserDTO>> call, Response<List<AppUserDTO>> response) {
             List<AppUserDTO> rs = response.body();
@@ -465,7 +461,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public class SyncEmployeesCallBack implements Callback<List<EmployeeDTO>> {
-
         @Override
         public void onResponse(Call<List<EmployeeDTO>> call, Response<List<EmployeeDTO>> response) {
             List<EmployeeDTO> rs = response.body();
@@ -488,7 +483,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public class SyncSpeciesCallBack implements Callback<List<FishSpeciesDTO>> {
-
         @Override
         public void onResponse(Call<List<FishSpeciesDTO>> call, Response<List<FishSpeciesDTO>> response) {
             List<FishSpeciesDTO> rs = response.body();
@@ -505,6 +499,28 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Call<List<FishSpeciesDTO>> call, Throwable t) {
+            // Probably Network Communication Error
+            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
+        }
+    }
+
+    public class SyncCageDetailsCallBack implements Callback<List<CageDetailsDTO>> {
+        @Override
+        public void onResponse(Call<List<CageDetailsDTO>> call, Response<List<CageDetailsDTO>> response) {
+            List<CageDetailsDTO> rs = response.body();
+
+            if (rs != null) {
+                for (CageDetailsDTO detailDTO : rs) {
+                    db.cageDetailsDAO().insert(CageDetailsDTO.convert(detailDTO));
+                }
+            } else {
+                // no Cage Details found for given site.
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_cage_details_found_alert, Toast.LENGTH_LONG).show());
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<CageDetailsDTO>> call, Throwable t) {
             // Probably Network Communication Error
             runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
         }

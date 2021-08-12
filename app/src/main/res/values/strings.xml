@@ -82,7 +82,7 @@
     <string name="last_fed_date">21/7/2021</string>
     <string name="type_of_fish">Pestrofa</string>
     <string name="ice_adequacy">Ice adequacy</string>
-    <string name="choose_ice_supplier">Please choose ice supplier</string>
+    <string name="choose_ice_supplier">Ice supplier</string>
 
 
     <string name="no">NO</string>
@@ -263,5 +263,6 @@
     <string name="no_species_found_alert">No Fish Species Info found!!!</string>
     <string name="stop_scan">STOP Scanning</string>
     <string name="scan_platfom">Scan Platform</string>
+    <string name="no_cage_details_found_alert">No CageDetail data found...</string>
 
 </resources>

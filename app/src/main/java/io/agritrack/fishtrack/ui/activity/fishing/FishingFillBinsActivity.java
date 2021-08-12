@@ -28,18 +28,16 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToDetails);
-        ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
-            startActivity(i);
-        });
-
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToConfirm);
+        ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), FishingConfirmActivity.class);
             startActivity(i);
         });
 
+        ImageView ivBack = findViewById(R.id.ivBackToDetails);
+        ivBack.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
+            startActivity(i);
+        });
     }
 }

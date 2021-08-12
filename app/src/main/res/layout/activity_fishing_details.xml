@@ -92,25 +92,20 @@
             android:orientation="vertical"
             android:padding="1dp">
 
-            <Spinner
-                android:id="@+id/spIceSupplier"
-                style="@style/spinner_style"
+            <EditText
+                android:id="@+id/etIceSupplier"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:dropDownWidth="match_parent"
-                android:focusableInTouchMode="true"
-                android:requiresFadingEdge="horizontal"
-                android:spinnerMode="dropdown"
                 android:textAlignment="textStart"
                 android:visibility="visible"
+                android:background="@drawable/bg_rounded_dialog_input"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvIceSupplier"
                 tools:layout_conversion_absoluteHeight="0dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
@@ -190,7 +185,6 @@
                 android:background="@drawable/bg_rounded_dialog_non_input"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                android:text="@string/ichthyopathologist_name"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvLastNutrition"
@@ -224,7 +218,6 @@
                 android:background="@drawable/bg_rounded_dialog_non_input"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                android:text="@string/last_fed_date"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvFishType2"
@@ -242,7 +235,6 @@
                 android:background="@drawable/bg_rounded_dialog_non_input"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                android:text="@string/type_of_fish"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/switchIceAdequacy"
@@ -281,7 +273,7 @@
                 app:track="@drawable/track" />
 
             <TextView
-                android:id="@+id/tvIceSupplier"
+                android:id="@+id/lbIceSupplier"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -289,7 +281,7 @@
                 android:text="@string/choose_ice_supplier"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/spIceSupplier"
+                app:layout_constraintBottom_toTopOf="@+id/tvIceSupplier"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/switchIceAdequacy" />

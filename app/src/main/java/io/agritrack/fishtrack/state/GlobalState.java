@@ -1,42 +1,20 @@
 package io.agritrack.fishtrack.state;
 
 import io.agritrack.fishtrack.data.MobileDB;
-import io.agritrack.fishtrack.data.dto.AppUserDTO;
-import io.agritrack.fishtrack.data.dto.SiteDTO;
 import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
 
 public class GlobalState {
 
-    private static GlobalState INSTANCE = null;
-    public static HarvestRecord recHarvest;
+    public static HarvestRecord recHarvest = new HarvestRecord();
 
 
     private GlobalState() { }
-
-    public static GlobalState getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new GlobalState();
-        }
-        return(INSTANCE);
-    }
-
-    public static GlobalState getNewInstance() {
-        INSTANCE = new GlobalState();
-        return(INSTANCE);
-    }
 
     public static HarvestRecord initHarvest() {
         recHarvest = new HarvestRecord();
         return recHarvest;
     }
 
-    public static void setHarvest(HarvestRecord rec) {
-        recHarvest = rec;
-    }
-
-    public static HarvestRecord getHarvest() {
-        return recHarvest;
-    }
 
     public static boolean commitHarvest(MobileDB db) {
         try {

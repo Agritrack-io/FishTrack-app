@@ -10,14 +10,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 
-import java.util.ArrayList;
-
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.MobileDB;
+import io.agritrack.fishtrack.data.model.CageDetails;
 import io.agritrack.fishtrack.rfid.ScanThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.HarvestRecord;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
+
+import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class FishingCageActivity extends AppCompatActivity {
     private MobileDB db;
@@ -32,6 +33,9 @@ public class FishingCageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_cage);
+
+        // get an instance of local DB
+        db = MobileDB.getInstance(getContext());
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingCage);
@@ -126,34 +130,53 @@ public class FishingCageActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToTeam);
-        ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
-            startActivity(i);
-        });
-
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToDetails);
+        ImageView ivNext = findViewById(R.id.ivToDetails);
         ivNext.setOnClickListener(view -> {
             updateState();
             Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
             startActivity(i);
         });
+
+        ImageView ivBack = findViewById(R.id.ivBackToTeam);
+        ivBack.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
+            startActivity(i);
+        });
     }
 
-
     private void initControlsFromState() {
-        if (GlobalState.getInstance().recHarvest == null) {
-            return;
-        }
-        HarvestRecord hvst = GlobalState.getInstance().recHarvest;
+        HarvestRecord hvst = GlobalState.recHarvest;
 
         tvCageRFID.setText(hvst.cageRFID);
         tvNetRFID.setText(hvst.netRFID);
     }
 
     private void updateState() {
-        GlobalState.getInstance().recHarvest.cageRFID = tvCageRFID.getText().toString();
-        GlobalState.getInstance().recHarvest.netRFID = tvNetRFID.getText().toString();
+        CharSequence cageRFID = tvCageRFID.getText();
+
+        if(cageRFID != null) {
+            CageDetails cage = db.cageDetailsDAO().getByRFId(cageRFID.toString());
+            GlobalState.recHarvest.fishSpecies = cage.fishType;
+            GlobalState.recHarvest.Pathologist = cage.ichthyopathologist;
+            GlobalState.recHarvest.lastFed = cage.lastFed;
+            GlobalState.recHarvest.cageRFID = cageRFID.toString();
+        }
+
+        GlobalState.recHarvest.netRFID = tvNetRFID.getText().toString();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (uhfReader != null)
+            uhfReader.close();
+        scanning = false;
+
+        if(db!=null){
+            if(db.isOpen()) {
+                db.close();
+            }
+            db=null;
+        }
+        super.onDestroy();
     }
 }

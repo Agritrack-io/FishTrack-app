@@ -1,4 +1,4 @@
-package io.agritrack.fishtrack.data.model;
+package io.agritrack.fishtrack.data.model.tx;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
-@Entity(tableName = "fishing")
-public class Fishing {
+@Entity(tableName = "fishing_transaction")
+public class FishingTransaction {
 
     @PrimaryKey
     public Long id;

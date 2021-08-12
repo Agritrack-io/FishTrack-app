@@ -64,26 +64,24 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
     }
 
     protected void configFooter() {
-
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToBins);
-        ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
-            startActivity(i);
-        });
-
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToCage);
+        ImageView ivNext = findViewById(R.id.ivToCage);
         ivNext.setOnClickListener(view -> {
             updateState();
             Intent i = new Intent(getApplicationContext(), FishingCageActivity.class);
             startActivity(i);
         });
+
+        ImageView ivBack = findViewById(R.id.ivBackToBins);
+        ivBack.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
+            startActivity(i);
+        });
+
     }
 
     private void initControlsFromState() {
-        if (GlobalState.getInstance().recHarvest == null) {
-            return;
-        }
-        HarvestRecord hvst = GlobalState.getInstance().recHarvest;
+
+        HarvestRecord hvst = GlobalState.recHarvest;
 
         if (hvst.fishingTeam != null) {
             this.adapterSelectedTeam.setValues((ArrayList<String>) hvst.fishingTeam);
@@ -96,17 +94,28 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
     }
 
     private void updateState() {
-        long[] aa = lvFishingTeam.getCheckedItemIds();
+        //long[] aa = lvFishingTeam.getCheckedItemIds();
 
-        GlobalState.getInstance().recHarvest.fishingTeam = this.selectedTeam;
+        //GlobalState.getInstance().recHarvest.fishingTeam = this.selectedTeam;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //lvFishingTeam.getCheckedItemPositions();
-        runOnUiThread(() -> {
-            final int cnt = ((ListView)parent).getCheckedItemCount();
-            ((TextView)findViewById(R.id.tvEmployeesCount)).setText(String.valueOf(cnt)); ;
-        });
+//        runOnUiThread(() -> {
+//            final int cnt = ((ListView)parent).getCheckedItemCount();
+//            ((TextView)findViewById(R.id.tvEmployeesCount)).setText(String.valueOf(cnt)); ;
+//        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(db!=null){
+            if(db.isOpen()) {
+                db.close();
+            }
+            db=null;
+        }
+        super.onDestroy();
     }
 }

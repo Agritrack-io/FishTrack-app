@@ -1,7 +1,7 @@
 package io.agritrack.fishtrack.data.dto;
 
 import java.util.Date;
-import io.agritrack.fishtrack.data.model.Fishing;
+import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 
 public class FishingDTO {
 
@@ -20,8 +20,8 @@ public class FishingDTO {
     public Double totalQty;
     public Short harvestBinsCnt;
 
-    public static Fishing convert(FishingDTO fishingDTO) {
-        Fishing fishing = new Fishing();
+    public static FishingTransaction convert(FishingDTO fishingDTO) {
+        FishingTransaction fishing = new FishingTransaction();
         fishing.id = fishingDTO.id;
         fishing.hlot = fishingDTO.hlot;
         fishing.platformRFID = fishingDTO.platformRFID;

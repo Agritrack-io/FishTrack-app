@@ -4,17 +4,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.data.MobileDB;
 import io.agritrack.fishtrack.ui.activity.HomeActivity;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.state.GlobalState.recHarvest;
 
 public class FishingConfirmActivity extends AppCompatActivity {
+    private MobileDB db;
+    private TextView tvTotalQuantityCount, tvReqQuantityCount, tvNumberOfBinsCount, tvNameCage, tvTypeOfFishConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,22 +28,50 @@ public class FishingConfirmActivity extends AppCompatActivity {
         TextView tvHeader = findViewById(R.id.tvHeaderFishingConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
+        // get an instance of local DB
+        db = MobileDB.getInstance(getContext());
+
+        // get references to local TextViews
+        tvTotalQuantityCount = findViewById(R.id.tvTotalQuantityCount);
+        tvReqQuantityCount = findViewById(R.id.tvReqQuantityCount);
+        tvNumberOfBinsCount = findViewById(R.id.tvNumberOfBinsCount);
+        tvNameCage = findViewById(R.id.tvNameCage);
+        tvTypeOfFishConfirm = findViewById(R.id.tvTypeOfFishConfirm);
+
+
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
+
         configFooter();
     }
 
     protected void configFooter() {
+        ImageView ivNext = findViewById(R.id.ivToCongs);
+        ivNext.setOnClickListener(view -> {
+            updateState();
+            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+            startActivity(i);
+        });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToFillBins);
+        ImageView ivBack = findViewById(R.id.ivBackToFillBins);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
             startActivity(i);
         });
+    }
 
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-            startActivity(i);
-        });
+
+    private void initControlsFromState() {
+        tvTotalQuantityCount.setText(recHarvest.totalFishWeight != null ? recHarvest.totalFishWeight.toString() : "N/A");
+        tvReqQuantityCount.setText(recHarvest.reqWeight != null ? recHarvest.reqWeight : "N/A");
+        tvNumberOfBinsCount.setText(recHarvest.totalBinsUsed != null ? recHarvest.totalBinsUsed.toString() : "N/A");
+        tvNameCage.setText(recHarvest.cageRFID != null ? recHarvest.cageRFID : "N/A");
+        tvTypeOfFishConfirm.setText(recHarvest.speciesName != null ? recHarvest.speciesName : "N/A");
+    }
+
+    private void updateState() {
+        db.harvestTransactionDAO();
+
 
     }
 }
