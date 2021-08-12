@@ -8,9 +8,6 @@ import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
 public class GlobalState {
 
     private static GlobalState INSTANCE = null;
-
-    private SiteDTO curSite;
-    private AppUserDTO curUser;
     public static HarvestRecord recHarvest;
 
 
@@ -33,6 +30,14 @@ public class GlobalState {
         return recHarvest;
     }
 
+    public static void setHarvest(HarvestRecord rec) {
+        recHarvest = rec;
+    }
+
+    public static HarvestRecord getHarvest() {
+        return recHarvest;
+    }
+
     public static boolean commitHarvest(MobileDB db) {
         try {
             HarvestTransaction txHarvest = new HarvestTransaction();
@@ -44,13 +49,5 @@ public class GlobalState {
         return Boolean.TRUE;
     }
 
-
-    public SiteDTO getTank() {
-        return curSite;
-    }
-
-    public void setTank(SiteDTO site) {
-        this.curSite = site;
-    }
 
 }

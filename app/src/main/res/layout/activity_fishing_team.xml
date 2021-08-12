@@ -93,25 +93,13 @@
             android:padding="1dp">
 
             <ImageView
-                android:id="@+id/ivDeleteEmployee"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/rvTeam"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvSelectTeam"
-                app:srcCompat="@drawable/ic_delete" />
-
-            <ImageView
                 android:id="@+id/ivAddEmployee"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/rvTeam"
-                app:layout_constraintEnd_toStartOf="@id/tvSelectTeam"
+                app:layout_constraintBottom_toBottomOf="@+id/tvPickMembers"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvPickMembers"
                 app:srcCompat="@drawable/ic_add_stock_opname" />
 
             <TextView
@@ -119,71 +107,29 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/pick_fishing_team"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@id/spFishingTeam"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivAddEmployee"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Spinner
-                android:id="@+id/spFishingTeam"
-                style="@style/spinner_style"
+            <ListView
+                android:id="@+id/lvFishingTeam"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="0dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:dropDownWidth="match_parent"
-                android:focusableInTouchMode="true"
-                android:requiresFadingEdge="horizontal"
-                android:spinnerMode="dropdown"
-                android:textAlignment="textStart"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_rounded_input_spinner"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="@id/tvSelectTeam"
+                app:layout_constraintBottom_toTopOf="@+id/tvNumberEmployees"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.496"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvPickMembers"
-                tools:layout_conversion_absoluteHeight="0dp"
-                tools:layout_conversion_absoluteWidth="0dp" />
-
-            <TextView
-                android:id="@+id/tvSelectTeam"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:gravity="center_horizontal"
-                android:text="@string/fishing_team"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/rvTeam"
-                app:layout_constraintEnd_toStartOf="@+id/ivDeleteEmployee"
-                app:layout_constraintStart_toEndOf="@+id/ivAddEmployee"
-                app:layout_constraintTop_toBottomOf="@id/spFishingTeam" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvTeam"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_rounded_input_spinner"
-            android:padding="5dp"
-            android:paddingStart="10dp"
-            android:scrollbars="vertical"
-            android:verticalScrollbarPosition="right"
-            app:flow_verticalAlign="top"
-            app:layout_constraintBottom_toTopOf="@+id/tvNumberEmployees"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSelectTeam">
-
-        </androidx.recyclerview.widget.RecyclerView>
+                app:layout_constraintTop_toBottomOf="@+id/tvPickMembers" />
 
             <TextView
                 android:id="@+id/tvNumberEmployees"
@@ -191,34 +137,31 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="40dp"
                 android:gravity="center_horizontal"
                 android:text="@string/number_of_employees"
                 android:textColor="@color/label_blue"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvEmployeesCount"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvTeam" />
+                app:layout_constraintStart_toStartOf="parent"/>
 
-        <TextView
-            android:id="@+id/tvEmployeesCount"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="40dp"
-            android:background="@drawable/border_bottom"
-            android:gravity="center"
-            android:inputType="number"
-            android:text="10"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textIsSelectable="false"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvNumberEmployees"
-            app:layout_constraintTop_toBottomOf="@+id/rvTeam" />
+            <TextView
+                android:id="@+id/tvEmployeesCount"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="180dp"
+                android:background="@drawable/border_bottom"
+                android:gravity="center"
+                android:inputType="number"
+                android:text="10"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvNumberEmployees" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -232,7 +175,6 @@
                 android:text="@string/select_fishing_team"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
-
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import io.agritrack.fishtrack.data.model.AppUser;
 import io.agritrack.fishtrack.data.model.common.Employee;
 
 @Dao
@@ -17,6 +18,10 @@ public interface EmployeeDAO {
 
     @Query("SELECT * from employee")
     LiveData<List<Employee>> getAll();
+
+
+    @Query("SELECT * from employee where site=:siteId")
+    List<Employee> getBySite(Long siteId);
 
     @Query("SELECT * from employee where id=:employeeId LIMIT 1")
     Employee getById(Long employeeId);

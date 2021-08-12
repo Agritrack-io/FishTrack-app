@@ -108,21 +108,24 @@ public class FishingBinsActivity extends AppCompatActivity {
             //rvBins.getAdapter().
         });
 
+
+        // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        // create Footer
         configFooter();
     }
 
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToTeam);
+        ImageView ivNext = findViewById(R.id.ivToTeam);
         ivNext.setOnClickListener(view -> {
             updateState();
             Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
             startActivity(i);
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMain);
+        ImageView ivBack = findViewById(R.id.ivBackToMain);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), FishingStartActivity.class);
             startActivity(i);
@@ -130,10 +133,10 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        if (GlobalState.recHarvest == null) {
+        if (GlobalState.getInstance().recHarvest == null) {
             return;
         }
-        HarvestRecord hvst = GlobalState.recHarvest;
+        HarvestRecord hvst = GlobalState.getInstance().recHarvest;
 
         if (hvst.availBins != null) {
             adapterBins.setValues((ArrayList<String>) hvst.availBins);
@@ -144,10 +147,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         }
     }
 
-    private HarvestRecord updateState() {
-        HarvestRecord harvestRecord = GlobalState.initHarvest();
-        harvestRecord.availBins = adapterBins.getValues();
-
-        return harvestRecord;
+    private void updateState() {
+        GlobalState.recHarvest.availBins = adapterBins.getValues();
     }
 }

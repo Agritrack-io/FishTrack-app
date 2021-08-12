@@ -103,6 +103,7 @@ public class FishingStartActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        // create Footer
         configFooter();
     }
 
@@ -121,13 +122,12 @@ public class FishingStartActivity extends AppCompatActivity {
         });
     }
 
-
     private void initControlsFromState() {
 
-        if(GlobalState.recHarvest == null) {
+        if(GlobalState.getInstance().recHarvest == null) {
             return;
         }
-        HarvestRecord hvst = GlobalState.recHarvest;
+        HarvestRecord hvst = GlobalState.getInstance().recHarvest;
 
         if(hvst.requesterPos>-1) {
             Spinner harvestSpinner = findViewById(R.id.spHarvest);
@@ -144,16 +144,16 @@ public class FishingStartActivity extends AppCompatActivity {
             etQty.setText(hvst.reqWeight);
         }
 
-        if(!Strings.isEmptyOrWhitespace(hvst.platformBC)) {
+        if(!Strings.isEmptyOrWhitespace(hvst.platformRFID)) {
             TextView tvPlatformRFID = findViewById(R.id.tvPlatformName);
-            tvPlatformRFID.setText(hvst.platformBC);
+            tvPlatformRFID.setText(hvst.platformRFID);
         }
         //harvestSpinner.setSelection(arrayAdapter.getPosition("Category 2"));
     }
 
 
     private HarvestRecord updateState() {
-        HarvestRecord harvestRecord = GlobalState.initHarvest();
+        HarvestRecord harvestRecord = GlobalState.getInstance().initHarvest();
 
         Spinner harvestSpinner = findViewById(R.id.spHarvest);
         Spinner speciesSpinner = findViewById(R.id.spFishType);
@@ -165,7 +165,7 @@ public class FishingStartActivity extends AppCompatActivity {
         harvestRecord.speciesName = speciesSpinner.getSelectedItem().toString();
         harvestRecord.speciesPos = speciesSpinner.getSelectedItemPosition();
         harvestRecord.reqWeight = etQty.getText().toString();
-        harvestRecord.platformBC = tvPlatformRFID.getText().toString();
+        harvestRecord.platformRFID = tvPlatformRFID.getText().toString();
 
         return harvestRecord;
     }

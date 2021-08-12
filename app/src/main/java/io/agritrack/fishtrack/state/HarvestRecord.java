@@ -9,8 +9,11 @@ public class HarvestRecord {
     public String reqWeight;
     public int speciesPos = -1;
     public String speciesName;
-    public String platformBC;
+    public String platformRFID;
+    public String cageRFID;
+    public String netRFID;
     public List<String> availBins;
+    public List<String> fishingTeam;
 
     public HarvestRecord() {}
 }
