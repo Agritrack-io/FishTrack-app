@@ -3,12 +3,14 @@ package io.agritrack.fishtrack.ui.activity.transport;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.ui.activity.HomeActivity;
+import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
@@ -18,6 +20,10 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transport_supervisor_confirm);
+
+        // set Header Info
+        TextView tvHeader = findViewById(R.id.tvHeaderTransportSupervisorConfirm);
+        tvHeader.setText(LocalPreferences.HeaderMsg());
 
         configFooter();
     }

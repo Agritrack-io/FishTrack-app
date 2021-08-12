@@ -22,19 +22,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- <FrameLayout
-            android:id="@+id/imageButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="13dp"
-            android:background="@color/agri_blue"
-            android:foreground="?selectableItemBackground"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">-->
-
-
         <ImageButton
             android:id="@+id/ivBackToLogin"
             android:layout_width="50dp"
@@ -46,8 +33,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/logout_icon" />
-
-        <!-- </FrameLayout>-->
 
         <TextView
             android:id="@+id/tvTitleToolbar"
@@ -75,7 +60,6 @@
             android:backgroundTint="@color/agri_blue"
             android:backgroundTintMode="screen"
             android:gravity="center"
-            android:text="@string/title_user_date"
             android:textColor="@color/agri_green"
             android:textSize="@dimen/subtitle_font_size"
             app:layout_constraintBottom_toBottomOf="parent"

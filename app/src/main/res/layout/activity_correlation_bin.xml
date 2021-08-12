@@ -1,291 +1,261 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/rootLayout"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@color/agri_green"
-tools:context=".ui.activity.wh.correlation.CorrelationBinActivity">
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/headerLayout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
-    android:background="@drawable/bg_form_screen"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:fadingEdge="horizontal"
-    android:paddingTop="0dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    android:layout_height="match_parent"
+    android:background="@color/agri_green"
+    tools:context=".ui.activity.wh.correlation.CorrelationBinActivity">
 
-
-    <ImageView
-        android:id="@+id/ivBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="14dp"
-        android:contentDescription="back Image"
-        android:src="@drawable/ic_back"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvTitleToolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvTitleToolbar"
-        fontPath="fonts/open_sans_semibold.ttf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:width="250sp"
-        android:gravity="center|top|fill_vertical"
-        android:text="@string/title_correlation"
-        android:textColor="@color/yellow"
-        android:textSize="@dimen/title_font_size"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivNext"
-        app:layout_constraintStart_toEndOf="@+id/ivBack"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingPrefix" />
-
-
-    <ImageView
-        android:id="@+id/ivNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="14dp"
-        android:src="@drawable/ic_next"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvTitleToolbar"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvPlatformQuantityNoBins"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/agri_blue"
-        android:backgroundTintMode="screen"
-        android:gravity="center"
-        android:text="@string/title_user_date_asset_type"
-        android:textColor="@color/agri_green"
-        android:textSize="@dimen/subtitle_font_size"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitleToolbar"
-        tools:layout_conversion_absoluteHeight="0dp"
-        tools:layout_conversion_absoluteWidth="0dp" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/formLayout"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    app:layout_constraintBottom_toTopOf="@+id/footerLayout"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/headerLayout">
-
-    <RelativeLayout
-        android:id="@+id/correlateNetLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@drawable/bg_form_screen"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:fadingEdge="horizontal"
+        android:paddingTop="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:nestedScrollingEnabled="false"
-            android:orientation="vertical"
-            android:padding="1dp">
-
-            <TextView
-                android:id="@+id/tvBinBarcode"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/bg_rounded_dialog_non_input"
-                android:gravity="center|center_vertical"
-                android:padding="5dp"
-                android:text="@string/barcode_bin"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                android:textStyle="normal"
-                app:layout_constraintBottom_toTopOf="@+id/btnInitiateTempTag"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnScanBin" />
-
-            <Button
-                android:id="@+id/btnScanBin"
-                android:layout_width="0dp"
-                android:layout_height="94dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/button_press_effect"
-                android:text="@string/scan_bin"
-                android:textColor="@color/yellow"
-                android:textSize="@dimen/button_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvBinBarcode"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etBinCode" />
-
-            <EditText
-                android:id="@+id/etBinCode"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="32dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:hint="@string/type_code_of_bin"
-                android:inputType="textPersonName"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:scrollbarFadeDuration="0"
-                android:scrollbars="horizontal"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/btnScanBin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/btnInitiateTempTag"
-                android:layout_width="0dp"
-                android:layout_height="94dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/button_press_effect"
-                android:text="@string/link_temp_tag"
-                android:textColor="@color/yellow"
-                android:textSize="@dimen/button_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvBarcodeTempTag"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvBinBarcode" />
-
-            <TextView
-                android:id="@+id/tvBarcodeTempTag"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="40dp"
-                android:background="@drawable/bg_rounded_dialog_non_input"
-                android:gravity="center|center_vertical"
-                android:padding="5dp"
-                android:text="@string/barcode_temp_tag"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                android:textStyle="normal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnInitiateTempTag" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
         <TextView
+            android:id="@+id/tvTitleToolbar"
+            fontPath="fonts/open_sans_semibold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="16dp"
-            android:background="@color/agri_green"
-            android:paddingHorizontal="8dp"
-            android:text="@string/title_correlate_bin"
-            android:textColor="@color/label_blue"
-            android:textSize="18sp" />
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="32dp"
+            android:width="250sp"
+            android:gravity="center|top|fill_vertical"
+            android:text="@string/title_correlation"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/title_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingPrefix" />
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/tvHeaderCorrelationBin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/agri_blue"
+            android:backgroundTintMode="screen"
+            android:gravity="center"
+            android:textColor="@color/agri_green"
+            android:textSize="@dimen/subtitle_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleToolbar"
+            tools:layout_conversion_absoluteHeight="0dp"
+            tools:layout_conversion_absoluteWidth="0dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/footerLayout"
-    android:layout_width="0dp"
-    android:layout_height="68sp"
-    android:background="@drawable/border_top"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/formLayout">
-
-    <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:scaleX="0.7"
-        android:scaleY="0.7"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToCorrelationMenu"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/powered_by_agritrack" />
-
-    <ImageView
-        android:id="@+id/ivBackToCorrelationMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/button_rounded_shape_corners"
-        android:padding="1dp"
-        android:scaleX="1.5"
-        android:scaleY="1.2"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/formLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/footerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_shortcut_arrow_back" />
+        app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
-    <ImageView
-        android:id="@+id/ivToCongs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/button_rounded_shape_corners"
-        android:padding="1dp"
-        android:scaleX="1.5"
-        android:scaleY="1.2"
+        <RelativeLayout
+            android:id="@+id/correlateNetLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:nestedScrollingEnabled="false"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <TextView
+                    android:id="@+id/tvBinBarcode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:gravity="center|center_vertical"
+                    android:padding="5dp"
+                    android:text="@string/barcode_bin"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toTopOf="@+id/btnInitiateTempTag"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnScanBin" />
+
+                <Button
+                    android:id="@+id/btnScanBin"
+                    android:layout_width="0dp"
+                    android:layout_height="94dp"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_press_effect"
+                    android:text="@string/scan_bin"
+                    android:textColor="@color/yellow"
+                    android:textSize="@dimen/button_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvBinBarcode"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etBinCode" />
+
+                <EditText
+                    android:id="@+id/etBinCode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="32dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:ems="10"
+                    android:hint="@string/type_code_of_bin"
+                    android:inputType="textPersonName"
+                    android:padding="5dp"
+                    android:paddingStart="10dp"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"
+                    android:scrollbarFadeDuration="0"
+                    android:scrollbars="horizontal"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/btnScanBin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnInitiateTempTag"
+                    android:layout_width="0dp"
+                    android:layout_height="94dp"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_press_effect"
+                    android:text="@string/link_temp_tag"
+                    android:textColor="@color/yellow"
+                    android:textSize="@dimen/button_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvBarcodeTempTag"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvBinBarcode" />
+
+                <TextView
+                    android:id="@+id/tvBarcodeTempTag"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginBottom="40dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:gravity="center|center_vertical"
+                    android:padding="5dp"
+                    android:text="@string/barcode_temp_tag"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnInitiateTempTag" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_green"
+                android:paddingHorizontal="8dp"
+                android:text="@string/title_correlate_bin"
+                android:textColor="@color/label_blue"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/footerLayout"
+        android:layout_width="0dp"
+        android:layout_height="68sp"
+        android:background="@drawable/border_top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_check_blue" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/formLayout">
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToCorrelationMenu"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/powered_by_agritrack" />
+
+        <ImageView
+            android:id="@+id/ivBackToCorrelationMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
+            android:scaleX="1.5"
+            android:scaleY="1.2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_shortcut_arrow_back" />
+
+        <ImageView
+            android:id="@+id/ivToCongs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
+            android:scaleX="1.5"
+            android:scaleY="1.2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_check_blue" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

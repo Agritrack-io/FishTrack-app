@@ -3,6 +3,7 @@ package io.agritrack.fishtrack.ui.activity.transport;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
@@ -26,6 +28,10 @@ public class TransportBinsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transport_bins);
+
+        // set Header Info
+        TextView tvHeader = findViewById(R.id.tvHeaderTransportBins);
+        tvHeader.setText(LocalPreferences.HeaderMsg());
 
         RecyclerView rvBins = (RecyclerView) findViewById(R.id.rvBinsForTransport);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);

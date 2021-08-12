@@ -80,10 +80,6 @@ public class LoginActivity extends AppCompatActivity {
         // bind the flags button
         ibLocale = findViewById(R.id.ibLocale);
 
-        // Remove focus from children controls...
-        ConstraintLayout rootLayout = findViewById(R.id.loginActivityLayout);
-        rootLayout.requestFocus();
-
         // get an instance of local DB
         db = MobileDB.getInstance(getContext());
 
@@ -181,6 +177,10 @@ public class LoginActivity extends AppCompatActivity {
         dlgBuilder.setView(dialogView);
         dlgBuilder.setCancelable(false);
         dialog = dlgBuilder.create();
+
+        // Remove focus from children controls...
+        ConstraintLayout rootLayout = findViewById(R.id.loginActivityLayout);
+        rootLayout.requestFocus();
     }
 
     private void noCredentialsEnteredAlert() {

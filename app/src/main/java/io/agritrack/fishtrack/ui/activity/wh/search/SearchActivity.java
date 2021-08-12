@@ -21,6 +21,7 @@ import java.util.List;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.ui.activity.WhMenuActivity;
 import io.agritrack.fishtrack.ui.activity.wh.outgoing.OutgoingStartActivity;
+import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
@@ -30,6 +31,10 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        // set Header Info
+        TextView tvHeader = findViewById(R.id.tvHeaderSearch);
+        tvHeader.setText(LocalPreferences.HeaderMsg());
 
         /*// Get reference of widgets from XML layout
         final Spinner spAssetType = (Spinner) findViewById(R.id.spAssetType);

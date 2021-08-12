@@ -58,7 +58,7 @@ public class CheckableListAdapter extends BaseAdapter {
                 } else {
                     // set cheek mark drawable and set checked property to true
                     value = "Checked";
-                    simpleCheckedTextView.setCheckMarkDrawable(R.drawable.ic_check_blue);
+                    simpleCheckedTextView.setCheckMarkDrawable(R.drawable.ic_shortcut_done_outline);
                     simpleCheckedTextView.setChecked(true);
                 }
             }

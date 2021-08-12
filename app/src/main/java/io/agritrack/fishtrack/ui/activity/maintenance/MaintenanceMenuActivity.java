@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import io.agritrack.fishtrack.ui.activity.wh.incoming.IncomingStartActivity;
 import io.agritrack.fishtrack.ui.activity.wh.inventory.InventoryActivity;
 import io.agritrack.fishtrack.ui.activity.wh.outgoing.OutgoingStartActivity;
 import io.agritrack.fishtrack.ui.activity.wh.search.SearchActivity;
+import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
@@ -35,6 +37,10 @@ public class MaintenanceMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintenance_menu);
+
+        // set Header Info
+        TextView tvHeader = findViewById(R.id.tvHeaderMaintenanceMenu);
+        tvHeader.setText(LocalPreferences.HeaderMsg());
 
         gvMaintenanceMenu = findViewById(R.id.gvMaintenanceMenu);
 
