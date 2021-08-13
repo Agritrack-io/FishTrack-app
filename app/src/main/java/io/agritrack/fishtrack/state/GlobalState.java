@@ -7,12 +7,19 @@ public class GlobalState {
 
     public static HarvestRecord recHarvest = new HarvestRecord();
 
+    public static TransportationRecord recTransport = new TransportationRecord();
+
 
     private GlobalState() { }
 
     public static HarvestRecord initHarvest() {
         recHarvest = new HarvestRecord();
         return recHarvest;
+    }
+
+    public static TransportationRecord initTransport() {
+        recTransport = new TransportationRecord();
+        return recTransport;
     }
 
 
