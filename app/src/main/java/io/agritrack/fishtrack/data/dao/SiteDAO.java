@@ -16,7 +16,7 @@ import io.agritrack.fishtrack.data.model.Site;
 public interface SiteDAO {
 
     @Query("SELECT * from site")
-    LiveData<List<Site>> getAll();
+    List<Site> getAll();
 
 //    @Query("SELECT * from plant where distributor_ids LIKE '%,' || :distributorId || ',%'")
 //    List<Site> getAllByDistributorId(Long distributorId);
