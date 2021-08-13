@@ -43,8 +43,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         TextView tvHeader = findViewById(R.id.tvHeaderFishingBins);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
-
-        RecyclerView rvBins = (RecyclerView) findViewById(R.id.rvBins);
+        RecyclerView rvBins = findViewById(R.id.rvBins);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBins.setLayoutManager(layoutManager);
         rvBins.setItemAnimator(new DefaultItemAnimator());
@@ -64,10 +63,27 @@ public class FishingBinsActivity extends AppCompatActivity {
             adapterBins.notifyDataSetChanged();
         });
 
+        // initialize scanning threads
+        prepareScanAvailableBinsButton();
 
+        //Get reference of delete bin item button
+        ImageView ivDeleteBin = findViewById(R.id.ivDeleteBin);
+        ivDeleteBin.setOnClickListener(view -> {
+            //rvBins.getAdapter().
+        });
+
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
+
+        // create Footer
+        configFooter();
+    }
+
+    private void prepareScanAvailableBinsButton() {
         // RFID scanning functionality
         uhfReader = UhfReader.getInstance();
         uhfReader.setOutputPower(33);
+
         final Button scanButton = findViewById(R.id.btnScanBin);
         scanButton.setOnClickListener(view -> {
             scanning = !scanning;
@@ -96,19 +112,6 @@ public class FishingBinsActivity extends AppCompatActivity {
                 }
             }
         });
-
-        //Get reference of delete bin item button
-        ImageView ivDeleteBin = findViewById(R.id.ivDeleteBin);
-        ivDeleteBin.setOnClickListener(view -> {
-            //rvBins.getAdapter().
-        });
-
-
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
-
-        // create Footer
-        configFooter();
     }
 
     protected void configFooter() {

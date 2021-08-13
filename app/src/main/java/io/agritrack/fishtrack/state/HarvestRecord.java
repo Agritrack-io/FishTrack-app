@@ -18,10 +18,11 @@ public class HarvestRecord {
     public String fishSpecies;
     public String Pathologist;
     public Date lastFed;
-    public Boolean adequateIce;
+    public Boolean adequateIce = Boolean.FALSE;
     public String iceSupplier;
     public Double totalFishWeight;
     public Integer totalBinsUsed;
+    public Double seaTemperature;
 
     public HarvestRecord() {}
 }

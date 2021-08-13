@@ -94,7 +94,7 @@
     <string name="weight_bin">Weight of Bin:</string>
     <string name="fishing_batches">Fishing Batches</string>
     <string name="fishing_summary">Fishing Summary</string>
-    <string name="total_weight">TOTAL WEIGHT:</string>
+    <string name="total_weight">TOTAL WEIGHT (Kg):</string>
     <string name="used_bins">USED BINS:</string>
     <string name="available_bins">AVAILABLE BINS:</string>
     <string name="total_quantity">Total quantity:</string>
