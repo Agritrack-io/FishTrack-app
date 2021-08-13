@@ -2,6 +2,7 @@ package io.agritrack.fishtrack.ui.activity.fishing;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,7 +18,7 @@ import static io.agritrack.fishtrack.state.GlobalState.recHarvest;
 
 public class FishingConfirmActivity extends AppCompatActivity {
     private MobileDB db;
-    private TextView tvTotalQuantityCount, tvReqQuantityCount, tvNumberOfBinsCount, tvNameCage, tvTypeOfFishConfirm;
+    private TextView tvTotalQuantityCount, tvReqQuantityCount, tvNumberOfBinsCount, tvNameCage, tvTypeOfFishConfirm, tvUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,9 @@ public class FishingConfirmActivity extends AppCompatActivity {
 
         // get an instance of local DB
         db = MobileDB.getInstance(getContext());
+
+        // get reference to Login
+        tvUsername = findViewById(R.id.tvUsername);
 
         // get references to local TextViews
         tvTotalQuantityCount = findViewById(R.id.tvTotalQuantityCount);
@@ -62,6 +66,8 @@ public class FishingConfirmActivity extends AppCompatActivity {
 
 
     private void initControlsFromState() {
+        tvUsername.setText(LocalPreferences.getLoggedInUser(""));
+
         tvTotalQuantityCount.setText(recHarvest.totalFishWeight != null ? recHarvest.totalFishWeight.toString() : "N/A");
         tvReqQuantityCount.setText(recHarvest.reqWeight != null ? recHarvest.reqWeight : "N/A");
         tvNumberOfBinsCount.setText(recHarvest.totalBinsUsed != null ? recHarvest.totalBinsUsed.toString() : "N/A");
@@ -70,6 +76,13 @@ public class FishingConfirmActivity extends AppCompatActivity {
     }
 
     private void updateState() {
+        TextView tvUsername = findViewById(R.id.tvUsername);
+        EditText etPasswordFishing = findViewById(R.id.etPasswordFishing);
+
+
+
+        ImageView ivBack = findViewById(R.id.ivBackToFillBins);
+
         db.harvestTransactionDAO();
 
 

@@ -156,10 +156,14 @@ public class FishingCageActivity extends AppCompatActivity {
 
         if(cageRFID != null) {
             CageDetails cage = db.cageDetailsDAO().getByRFId(cageRFID.toString());
-            GlobalState.recHarvest.fishSpecies = cage.fishType;
-            GlobalState.recHarvest.Pathologist = cage.ichthyopathologist;
-            GlobalState.recHarvest.lastFed = cage.lastFed;
-            GlobalState.recHarvest.cageRFID = cageRFID.toString();
+            if(cage!=null) {
+                GlobalState.recHarvest.fishSpecies = cage.fishType;
+                GlobalState.recHarvest.Pathologist = cage.ichthyopathologist;
+                GlobalState.recHarvest.lastFed = cage.lastFed;
+                GlobalState.recHarvest.cageRFID = cageRFID.toString();
+            } else {
+                // TODO:: add alert, no cage corresponding to RFID found in local DB!!
+            }
         }
 
         GlobalState.recHarvest.netRFID = tvNetRFID.getText().toString();

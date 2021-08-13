@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FishTrackAPIServiceGenerator {
 
-    private static String BASE_URL = "http://192.168.150.42:5000"; // "http://fishtrackbackend-env.eba-b2cqygnf.eu-central-1.elasticbeanstalk.com"; //"http://192.168.150.42:5000";
+    private static String BASE_URL = "http://fishtrackbackend-env.eba-b2cqygnf.eu-central-1.elasticbeanstalk.com"; //"http://192.168.150.42:5000";
     private static Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
 
     private static Retrofit retrofit = builder.build();
