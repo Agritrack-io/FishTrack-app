@@ -5,7 +5,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.util.Date;
 import java.util.List;
 
 @Entity(tableName = "appUser")
@@ -30,7 +29,7 @@ public class AppUser {
     public String pin;
 
     @ColumnInfo(name = "registered_date")
-    public Date registeredDate;
+    public String registeredDate;
 
     @ColumnInfo(name = "active")
     public Boolean active;

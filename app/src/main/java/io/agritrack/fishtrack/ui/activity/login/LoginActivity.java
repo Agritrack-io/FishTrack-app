@@ -32,13 +32,13 @@ import io.agritrack.fishtrack.data.dto.SiteDTO;
 import io.agritrack.fishtrack.data.dto.common.EmployeeDTO;
 import io.agritrack.fishtrack.data.dto.common.FishSpeciesDTO;
 import io.agritrack.fishtrack.data.dto.wh.AssetDTO;
-import io.agritrack.fishtrack.data.service.AppUserService;
 import io.agritrack.fishtrack.ui.activity.ConfigActivity;
 import io.agritrack.fishtrack.ui.activity.HomeActivity;
 import io.agritrack.fishtrack.ui.activity.login.api.AuthApi;
 import io.agritrack.fishtrack.ui.activity.login.api.AuthInfo;
 import io.agritrack.fishtrack.ui.activity.login.api.LoginRQ;
 import io.agritrack.fishtrack.ui.activity.login.api.SyncApi;
+import io.agritrack.fishtrack.ui.service.AuthenticationService;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -56,10 +56,6 @@ public class LoginActivity extends AppCompatActivity {
     private AlertDialog dialog;
     private TextView tvProgressMessage;
 
-//    @Override
-//    protected void attachBaseContext(Context newBase) {
-//        super.attachBaseContext(LocaleHelper.onAttach(newBase));
-//    }
 
     @Override
     protected void onPause() {
@@ -199,8 +195,6 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(i);
         } else {
             invokeSyncAll();
-
-
             LocalPreferences.writeValue("shouldSync", Boolean.FALSE);
         }
     }
@@ -237,7 +231,7 @@ public class LoginActivity extends AppCompatActivity {
             long diffInDays = LocalPreferences.getLoginDiffInDays();
 
             // query local db for previous User authentications...
-            AppUserService userService = new AppUserService();
+            AuthenticationService userService = new AuthenticationService();
             boolean userIsAlreadyAuthenticated = userService.authenticateUser(db, username, pin);
 
             if (diffInDays == 0 && userIsAlreadyAuthenticated) {

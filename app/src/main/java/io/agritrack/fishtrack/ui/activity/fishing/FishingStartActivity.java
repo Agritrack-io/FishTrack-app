@@ -22,7 +22,7 @@ import io.agritrack.fishtrack.data.model.AppUser;
 import io.agritrack.fishtrack.data.model.common.FishSpecies;
 import io.agritrack.fishtrack.rfid.ScanThread;
 import io.agritrack.fishtrack.state.GlobalState;
-import io.agritrack.fishtrack.state.HarvestRecord;
+import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.ui.activity.HomeActivity;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
@@ -131,7 +131,7 @@ public class FishingStartActivity extends AppCompatActivity {
 
     private void initControlsFromState() {
 
-        HarvestRecord hvst = GlobalState.recHarvest;
+        FishingRecord hvst = GlobalState.recFishing;
 
         if(hvst.requesterPos>-1) {
             Spinner harvestSpinner = findViewById(R.id.spHarvest);
@@ -155,22 +155,22 @@ public class FishingStartActivity extends AppCompatActivity {
         //harvestSpinner.setSelection(arrayAdapter.getPosition("Category 2"));
     }
 
-    private HarvestRecord updateState() {
-        HarvestRecord harvestRecord = GlobalState.initHarvest();
+    private FishingRecord updateState() {
+        FishingRecord fishingRecord = GlobalState.initFishingTx();
 
         Spinner harvestSpinner = findViewById(R.id.spHarvest);
         Spinner speciesSpinner = findViewById(R.id.spFishType);
         EditText etQty = findViewById(R.id.etRequestedQuantity);
         TextView tvPlatformRFID = findViewById(R.id.tvPlatformName);
 
-        harvestRecord.requesterName = harvestSpinner.getSelectedItem().toString();
-        harvestRecord.requesterPos = harvestSpinner.getSelectedItemPosition();
-        harvestRecord.speciesName = speciesSpinner.getSelectedItem().toString();
-        harvestRecord.speciesPos = speciesSpinner.getSelectedItemPosition();
-        harvestRecord.reqWeight = etQty.getText().toString();
-        harvestRecord.platformRFID = tvPlatformRFID.getText().toString();
+        fishingRecord.requesterName = harvestSpinner.getSelectedItem().toString();
+        fishingRecord.requesterPos = harvestSpinner.getSelectedItemPosition();
+        fishingRecord.speciesName = speciesSpinner.getSelectedItem().toString();
+        fishingRecord.speciesPos = speciesSpinner.getSelectedItemPosition();
+        fishingRecord.reqWeight = etQty.getText().toString();
+        fishingRecord.platformRFID = tvPlatformRFID.getText().toString();
 
-        return harvestRecord;
+        return fishingRecord;
     }
 
     @Override

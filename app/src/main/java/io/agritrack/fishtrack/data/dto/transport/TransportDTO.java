@@ -1,6 +1,6 @@
 package io.agritrack.fishtrack.data.dto.transport;
 
-import io.agritrack.fishtrack.data.model.transport.Transport;
+import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
 
 public class TransportDTO {
 
@@ -14,8 +14,8 @@ public class TransportDTO {
     public String driverName;
     public String driverSignature;
 
-    public static Transport convert(TransportDTO transportDTO) {
-        Transport transport = new Transport();
+    public static TransportTransaction convert(TransportDTO transportDTO) {
+        TransportTransaction transport = new TransportTransaction();
         transport.id = transportDTO.id;
         transport.transportHead = transportDTO.transportHead;
         transport.packagingSiteId = transportDTO.packagingSiteId;

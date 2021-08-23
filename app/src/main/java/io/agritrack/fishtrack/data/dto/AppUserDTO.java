@@ -8,24 +8,25 @@ import io.agritrack.fishtrack.data.model.AppUser;
 public class AppUserDTO {
 
     public Long id;
-    public String legalName;
+    public String full_name;
     public String email;
     public String phone;
-    public String username;
+    public String user_name;
     public String pin;
-    public Date registeredDate;
+    public String registration_tstamp;
+    public String last_login_tstamp;
     public Boolean active;
     public List<String> roles;
 
     public static AppUser convert(AppUserDTO appUserDTO) {
         AppUser appUser = new AppUser();
         appUser.id = appUserDTO.id;
-        appUser.legalName = appUserDTO.legalName;
+        appUser.legalName = appUserDTO.full_name;
         appUser.email = appUserDTO.email;
         appUser.phone = appUserDTO.phone;
-        appUser.username = appUserDTO.username;
+        appUser.username = appUserDTO.user_name;
         appUser.pin = appUserDTO.pin;
-        appUser.registeredDate = appUserDTO.registeredDate;
+        appUser.registeredDate = appUserDTO.registration_tstamp;
         appUser.active = appUserDTO.active;
         appUser.roles = appUserDTO.roles;
         return appUser;

@@ -20,7 +20,7 @@ import java.util.Set;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.rfid.ScanThread;
 import io.agritrack.fishtrack.state.GlobalState;
-import io.agritrack.fishtrack.state.HarvestRecord;
+import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
@@ -130,7 +130,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        HarvestRecord hvst = GlobalState.recHarvest;
+        FishingRecord hvst = GlobalState.recFishing;
 
         if (hvst.availBins != null) {
             adapterBins.setValues((ArrayList<String>) hvst.availBins);
@@ -142,7 +142,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     private void updateState() {
-        GlobalState.recHarvest.availBins = adapterBins.getValues();
+        GlobalState.recFishing.availBins = adapterBins.getValues();
     }
 
     @Override

@@ -127,17 +127,17 @@ public class TransportBinsActivity extends AppCompatActivity {
     private void initControlsFromState() {
         TransportationRecord trns = GlobalState.recTransport;
 
-        if (trns.availBins != null) {
-            adapterBins.setValues((ArrayList<String>) trns.availBins);
-            adapterBins.notifyDataSetChanged();
-            //Get reference of binsCount textView
-            TextView tvBinsCount = findViewById(R.id.tvBinsCount);
-            tvBinsCount.setText(String.valueOf(trns.availBins.size()));
-        }
+//        if (trns.availBins != null) {
+//            adapterBins.setValues((ArrayList<String>) trns.availBins);
+//            adapterBins.notifyDataSetChanged();
+//            //Get reference of binsCount textView
+//            TextView tvBinsCount = findViewById(R.id.tvBinsCount);
+//            tvBinsCount.setText(String.valueOf(trns.availBins.size()));
+//        }
     }
 
     private void updateState() {
-        GlobalState.recTransport.availBins = adapterBins.getValues();
+        //GlobalState.recTransport.availBins = adapterBins.getValues();
     }
 
     @Override

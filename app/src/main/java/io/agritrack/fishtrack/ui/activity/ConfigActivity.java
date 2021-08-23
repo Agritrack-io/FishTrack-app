@@ -50,6 +50,10 @@ import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.ui.service.LocalPreferences.Latitude_Key;
+import static io.agritrack.fishtrack.ui.service.LocalPreferences.Longitude_Key;
+import static io.agritrack.fishtrack.ui.service.LocalPreferences.SelectedSiteId_Key;
+import static io.agritrack.fishtrack.ui.service.LocalPreferences.SelectedSiteName_Key;
 
 public class ConfigActivity extends AppCompatActivity implements LocationListener {
     private final int REQUEST_FINE_LOCATION = 1234;
@@ -73,9 +77,6 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config);
 
-        // Clears the Local Shared Preferences file. For Testing...
-        //SharedPreferenceService.Reset();
-
         // get references to coordinate text views.
         tvLongitude = findViewById(R.id.tvLongitude);
         tvLatitude = findViewById(R.id.tvLatitude);
@@ -89,9 +90,9 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
                 String clusterKey = clusterIDs.get(groupPosition);
                 SiteInfo selectedSite = mapOfSitesPerCluster.get(clusterKey).get(childPosition);
 
-                YesNoDialogFragment ys = new YesNoDialogFragment(selectedSite);
+                YesNoDialogFragment confirmSiteSelectionDialog = new YesNoDialogFragment(selectedSite);
                 FragmentManager fm = getSupportFragmentManager();
-                ys.showNow(fm, getString(R.string.confirm_selection));
+                confirmSiteSelectionDialog.showNow(fm, getString(R.string.confirm_selection));
 
                 return false;
             }
@@ -202,6 +203,7 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
     private void toggleProgress(boolean show, @StringRes int info) {
         if (show) {
             runOnUiThread(() -> {
+                dialog.setMessage(getString(info));
                 dialog.show();
                 timeoutService.start();
             });
@@ -261,8 +263,8 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
 
     private void writeCurrentLocationToSharedPreferences() {
         if (this.currentLocation != null) {
-            LocalPreferences.writeValue("lon", String.valueOf(this.currentLocation.getLongitude()));
-            LocalPreferences.writeValue("lat", String.valueOf(this.currentLocation.getLatitude()));
+            LocalPreferences.writeValue(Longitude_Key, String.valueOf(this.currentLocation.getLongitude()));
+            LocalPreferences.writeValue(Latitude_Key, String.valueOf(this.currentLocation.getLatitude()));
         }
     }
 
@@ -329,8 +331,8 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
             builder.setMessage(getText(R.string.accept_selected_site) + mSite.getName())
                     .setPositiveButton(R.string.dialog_accept, (dialog, id) -> {
                         // persist selected Site to local Preferences.
-                        LocalPreferences.writeValue(LocalPreferences.SelectedSiteName_Key, mSite.getName());
-                        LocalPreferences.writeValue(LocalPreferences.SelectedSiteId_Key, mSite.getId());
+                        LocalPreferences.writeValue(SelectedSiteName_Key, mSite.getName());
+                        LocalPreferences.writeValue(SelectedSiteId_Key, mSite.getId());
                         // move to Login Screen
                         Intent i = new Intent(getAppContext(), LoginActivity.class);
                         i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...

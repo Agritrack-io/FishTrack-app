@@ -12,8 +12,6 @@ import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 public class FishingFillBinsActivity extends AppCompatActivity {
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +20,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingFillBins);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        //tvAvailableBinsCount
 
         configFooter();
     }

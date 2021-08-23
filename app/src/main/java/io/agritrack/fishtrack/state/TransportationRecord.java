@@ -1,13 +1,15 @@
 package io.agritrack.fishtrack.state;
 
-import java.util.List;
-
 public class TransportationRecord {
-    public List<String> availBins;
-    public int sitePos = -1;
-    public int companyPos = -1;
+    public String packagingSite;
+    public String destinationCompany;
     public String driverName;
     public String licensePlate;
+    public Boolean refrigeratedTruck;
+    public Boolean parallelTransport;
+    public String clipNumber;
+    public int sitePos = -1;
+    public int companyPos = -1;
 
     public TransportationRecord() {}
 }

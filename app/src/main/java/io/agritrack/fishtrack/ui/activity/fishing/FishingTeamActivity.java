@@ -2,8 +2,11 @@ package io.agritrack.fishtrack.ui.activity.fishing;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,9 +20,6 @@ import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.MobileDB;
 import io.agritrack.fishtrack.data.model.common.Employee;
 import io.agritrack.fishtrack.state.GlobalState;
-import io.agritrack.fishtrack.state.HarvestRecord;
-import io.agritrack.fishtrack.ui.adapter.CheckableListAdapter;
-import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.bo.GenericListModel;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
@@ -29,8 +29,9 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
     private MobileDB db;
     private ListView lvFishingTeam;
-    private TemplateRecyclerAdapter adapterSelectedTeam;
+    private ArrayAdapter adapterSelectedTeam;
     private ArrayList<String> selectedTeam;
+    private GenericListModel[] candidates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +47,14 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         // get main controls references
         this.lvFishingTeam = findViewById(R.id.lvFishingTeam);
 
+        // define if single or multiple choice mode will be used to display the checkboxes.
+        this.lvFishingTeam.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
         // load employees belonging to current Site and fill in the spFishingTeam Spinner.
         List<Employee> teamCandidates = db.employeeDAO().getBySite(LocalPreferences.getCurrentSiteId());
-        if(teamCandidates!=null && !teamCandidates.isEmpty()) {
-            GenericListModel[] candidates = teamCandidates.stream().map(x->new GenericListModel(x.id, x.lastName + " " + x.firstName)).toArray(GenericListModel[]::new);
-            CheckableListAdapter candidatesAdapter = new CheckableListAdapter(this, candidates);
+        if (teamCandidates != null && !teamCandidates.isEmpty()) {
+            this.candidates = teamCandidates.stream().map(x -> new GenericListModel(x.id, x.fullName())).toArray(GenericListModel[]::new);
+            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_checked, candidates);
 
             this.lvFishingTeam.setAdapter(candidatesAdapter);
             this.lvFishingTeam.setOnItemClickListener(this);
@@ -81,40 +85,49 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
     private void initControlsFromState() {
 
-        HarvestRecord hvst = GlobalState.recHarvest;
-
-        if (hvst.fishingTeam != null) {
-            this.adapterSelectedTeam.setValues((ArrayList<String>) hvst.fishingTeam);
-            this.adapterSelectedTeam.notifyDataSetChanged();
+        if (GlobalState.recFishing.fishingTeam != null) {
+            int sz = GlobalState.recFishing.fishingTeam.size();
+            // Since coming from <back> button, retain the previously checked items.
+            for (int i = 0; i < sz; i++) {
+                this.lvFishingTeam.setItemChecked(GlobalState.recFishing.fishingTeam.get(i).intValue(), Boolean.TRUE);
+            }
 
             //Get reference of selected Team Count textView
             TextView tvEmployeesCount = findViewById(R.id.tvEmployeesCount);
-            tvEmployeesCount.setText(String.valueOf(this.selectedTeam.size()));
+            tvEmployeesCount.setText(String.valueOf(sz));
         }
     }
 
     private void updateState() {
-        //long[] aa = lvFishingTeam.getCheckedItemIds();
-
-        //GlobalState.getInstance().recHarvest.fishingTeam = this.selectedTeam;
+        // reset the list of selected Indexes.
+        GlobalState.recFishing.fishingTeam = new ArrayList<>();
+        SparseBooleanArray sp = this.lvFishingTeam.getCheckedItemPositions();
+        for (int idx = 0; idx < sp.size(); idx++) {
+            if (sp.valueAt(idx)) {
+                GlobalState.recFishing.fishingTeam.add(Long.valueOf(sp.keyAt(idx)));
+            }
+        }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //lvFishingTeam.getCheckedItemPositions();
-//        runOnUiThread(() -> {
-//            final int cnt = ((ListView)parent).getCheckedItemCount();
-//            ((TextView)findViewById(R.id.tvEmployeesCount)).setText(String.valueOf(cnt)); ;
-//        });
+        CheckedTextView v = (CheckedTextView) view;
+        boolean currentCheck = v.isChecked();
+        GenericListModel member = (GenericListModel) this.lvFishingTeam.getItemAtPosition(position);
+        member.setChecked(!currentCheck);
+
+        //Get reference of selected Team Count textView
+        TextView tvEmployeesCount = findViewById(R.id.tvEmployeesCount);
+        tvEmployeesCount.setText(String.valueOf(this.lvFishingTeam.getCheckedItemCount()));
     }
 
     @Override
     protected void onDestroy() {
-        if(db!=null){
-            if(db.isOpen()) {
+        if (db != null) {
+            if (db.isOpen()) {
                 db.close();
             }
-            db=null;
+            db = null;
         }
         super.onDestroy();
     }

@@ -17,13 +17,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.state.GlobalState;
-import io.agritrack.fishtrack.state.HarvestRecord;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 public class FishingDetailsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private List<Double> temperatures = Arrays.asList(15.0d, 16.0d, 17.0d, 18.0d, 19.0d, 20.0d, 21.0d, 22.0d, 23.0d, 24.0d, 25.0d, 26.0d);
+    private final List<Double> temperatures = Arrays.asList(15.0d, 16.0d, 17.0d, 18.0d, 19.0d, 20.0d, 21.0d, 22.0d, 23.0d, 24.0d, 25.0d, 26.0d);
     private SwitchCompat bIceAdequacy;
     private EditText etIceSupplier;
     private Spinner spSeaTemp;
@@ -42,13 +42,13 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         TextView tvPathologist = findViewById(R.id.tvNameOfIchthyopathologist);
-        tvPathologist.setText(GlobalState.recHarvest.Pathologist);
+        tvPathologist.setText(GlobalState.recFishing.pathologist);
 
         TextView tvLastFed = findViewById(R.id.tvDateOfLastNutrition);
-        tvLastFed.setText(GlobalState.recHarvest.lastFed.toString());
+        tvLastFed.setText(GlobalState.recFishing.lastFed != null ? GlobalState.recFishing.lastFed.toString() : "");
 
         TextView tvSpecies = findViewById(R.id.tvTypeOfFish);
-        tvSpecies.setText(GlobalState.recHarvest.speciesName);
+        tvSpecies.setText(GlobalState.recFishing.speciesName);
 
         // fill the Temperatures spinner with data
         spSeaTemp = findViewById(R.id.spSeaTemp);
@@ -63,13 +63,11 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        GlobalState.recHarvest.seaTemperature = this.temperatures.get(position);
+        GlobalState.recFishing.seaTemperature = this.temperatures.get(position);
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
+    public void onNothingSelected(AdapterView<?> parent) {}
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToFillBins);
@@ -87,17 +85,17 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
     }
 
     private void initControlsFromState() {
-        HarvestRecord hvst = GlobalState.recHarvest;
+        FishingRecord hvst = GlobalState.recFishing;
         if (hvst != null) {
-            spSeaTemp.setSelection(this.temperatures.indexOf(GlobalState.recHarvest.seaTemperature));
+            spSeaTemp.setSelection(this.temperatures.indexOf(GlobalState.recFishing.seaTemperature));
             etIceSupplier.setText(hvst.iceSupplier);
             bIceAdequacy.setChecked(hvst.adequateIce);
         }
     }
 
     private void updateState() {
-        GlobalState.recHarvest.adequateIce = bIceAdequacy.isChecked();
-        GlobalState.recHarvest.iceSupplier = etIceSupplier.getText().toString();
-        GlobalState.recHarvest.seaTemperature = Double.valueOf(spSeaTemp.getSelectedItem().toString());
+        GlobalState.recFishing.adequateIce = bIceAdequacy.isChecked();
+        GlobalState.recFishing.iceSupplier = etIceSupplier.getText().toString();
+        GlobalState.recFishing.seaTemperature = Double.valueOf(spSeaTemp.getSelectedItem().toString());
     }
 }

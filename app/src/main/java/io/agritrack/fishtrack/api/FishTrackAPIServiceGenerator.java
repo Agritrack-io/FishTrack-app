@@ -1,5 +1,7 @@
 package io.agritrack.fishtrack.api;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -8,18 +10,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FishTrackAPIServiceGenerator {
 
-    private static String BASE_URL = "http://fishtrackbackend-env.eba-b2cqygnf.eu-central-1.elasticbeanstalk.com"; //"http://192.168.150.42:5000";
-    private static Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
+    private static final String BASE_URL = "http://192.168.150.2:5000"; //"http://fishtrackbackend-env.eba-b2cqygnf.eu-central-1.elasticbeanstalk.com"; //"http://192.168.150.2:5000";
+    private static final Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
 
-    private static Retrofit retrofit = builder.build();
-    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-    private static HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC);
+    private static Retrofit retrofit = retrofitBuilder.build();
+    private static final OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
+                                                                    .connectTimeout(20, TimeUnit.SECONDS)
+                                                                    .readTimeout(30, TimeUnit.SECONDS)
+                                                                    .writeTimeout(30, TimeUnit.SECONDS);
+    private static final HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC);
 
     public static <S> S createAPI(Class<S> serviceClass) {
         if (!httpClient.interceptors().contains(logging)) {
             httpClient.addInterceptor(logging);
-            builder.client(httpClient.build());
-            retrofit = builder.build();
+            retrofitBuilder.client(httpClient.build());
+            retrofit = retrofitBuilder.build();
         }
         return retrofit.create(serviceClass);
     }
@@ -27,14 +32,14 @@ public class FishTrackAPIServiceGenerator {
     public static <S> S createAPI(Class<S> serviceClass, final String token) {
         if (token != null) {
             httpClient.interceptors().clear();
-            httpClient.addInterceptor( chain -> {
+            httpClient.addInterceptor(chain -> {
                 Request original = chain.request();
                 Request.Builder builder1 = original.newBuilder().header("Authorization", token);
                 Request request = builder1.build();
                 return chain.proceed(request);
             });
-            builder.client(httpClient.build());
-            retrofit = builder.build();
+            retrofitBuilder.client(httpClient.build());
+            retrofit = retrofitBuilder.build();
         }
         return retrofit.create(serviceClass);
     }

@@ -15,7 +15,7 @@ import io.agritrack.fishtrack.data.MobileDB;
 import io.agritrack.fishtrack.data.model.CageDetails;
 import io.agritrack.fishtrack.rfid.ScanThread;
 import io.agritrack.fishtrack.state.GlobalState;
-import io.agritrack.fishtrack.state.HarvestRecord;
+import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
@@ -145,7 +145,7 @@ public class FishingCageActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        HarvestRecord hvst = GlobalState.recHarvest;
+        FishingRecord hvst = GlobalState.recFishing;
 
         tvCageRFID.setText(hvst.cageRFID);
         tvNetRFID.setText(hvst.netRFID);
@@ -157,16 +157,16 @@ public class FishingCageActivity extends AppCompatActivity {
         if(cageRFID != null) {
             CageDetails cage = db.cageDetailsDAO().getByRFId(cageRFID.toString());
             if(cage!=null) {
-                GlobalState.recHarvest.fishSpecies = cage.fishType;
-                GlobalState.recHarvest.Pathologist = cage.ichthyopathologist;
-                GlobalState.recHarvest.lastFed = cage.lastFed;
-                GlobalState.recHarvest.cageRFID = cageRFID.toString();
+                GlobalState.recFishing.speciesName = cage.fishType;
+                GlobalState.recFishing.pathologist = cage.ichthyopathologist;
+                GlobalState.recFishing.lastFed = cage.lastFed;
+                GlobalState.recFishing.cageRFID = cageRFID.toString();
             } else {
                 // TODO:: add alert, no cage corresponding to RFID found in local DB!!
             }
         }
 
-        GlobalState.recHarvest.netRFID = tvNetRFID.getText().toString();
+        GlobalState.recFishing.netRFID = tvNetRFID.getText().toString();
     }
 
     @Override

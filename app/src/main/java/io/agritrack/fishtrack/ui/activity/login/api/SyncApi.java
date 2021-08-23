@@ -46,5 +46,4 @@ public interface SyncApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/cage-detail/{siteId}")
     Call<List<CageDetailsDTO>> getCageDetailsBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
-
 }

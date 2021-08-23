@@ -9,12 +9,12 @@ public class GenericListModel {
 
     private Long id;
     private String label;
-    private Boolean selected;
+    private Boolean checked;
 
     public GenericListModel(Long id, String label) {
         this.id = id;
         this.label = label;
-        this.selected = Boolean.FALSE;
+        this.checked = Boolean.FALSE;
     }
 
     public Long getId() {
@@ -33,11 +33,16 @@ public class GenericListModel {
         this.label = label;
     }
 
-    public Boolean getSelected() {
-        return selected;
+    public Boolean isChecked() {
+        return checked;
     }
 
-    public void setSelected(Boolean selected) {
-        this.selected = selected;
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
+    }
+
+    @Override
+    public String toString() {
+        return label;
     }
 }

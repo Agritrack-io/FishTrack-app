@@ -51,4 +51,8 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="FK_Employee_User"))
     public User user;*/
+
+    public String fullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }

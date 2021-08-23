@@ -91,15 +91,15 @@
     <string name="back_button">BACK</string>
     <string name="next_bin_button">NEXT BIN</string>
     <string name="end_bin_button">END BIN</string>
-    <string name="weight_bin">Weight of Bin:</string>
+    <string name="weight_bin">Weight of Bin (Kg):</string>
     <string name="fishing_batches">Fishing Batches</string>
     <string name="fishing_summary">Fishing Summary</string>
     <string name="total_weight">TOTAL WEIGHT (Kg):</string>
     <string name="used_bins">USED BINS:</string>
     <string name="available_bins">AVAILABLE BINS:</string>
-    <string name="total_quantity">Total quantity:</string>
-    <string name="confirm_requested_quantity">Req Quantity:</string>
-    <string name="confirm_name_cage">Name Cage:</string>
+    <string name="total_quantity">Total quantity (Kg):</string>
+    <string name="confirm_requested_quantity">Req Quantity(Kg):</string>
+    <string name="confirm_name_cage">Cage Name:</string>
     <string name="confirm_fish_type">Fish Type:</string>
     <string name="fishing_confirm">Confirm details</string>
     <string name="fishing_enter_pin">Enter PIN</string>
@@ -264,5 +264,11 @@
     <string name="stop_scan">STOP Scanning</string>
     <string name="scan_platfom">Scan Platform</string>
     <string name="no_cage_details_found_alert">No CageDetail data found...</string>
+    <string name="missing_pin">Please type in the PIN!!</string>
+    <string name="invalid_password">Wrong PIN!!!</string>
+    <string name="error_connection_timeout">Connection Timeout!!!</string>
+    <string name="error_timeout">General Timeout!!!</string>
+    <string name="error_cancelled_call">Call was cancelled forcefully!!!</string>
+    <string name="error_fishing_tx_update_failure">Fishing transaction update failure!!!</string>
 
 </resources>

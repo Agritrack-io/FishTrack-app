@@ -66,4 +66,5 @@ public class FishingTransaction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="FK_Fishing_User"))
     public User user;*/
+    
 }

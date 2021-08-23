@@ -1,11 +1,11 @@
-package io.agritrack.fishtrack.data.model.transport;
+package io.agritrack.fishtrack.data.model.tx;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "transport")
-public class Transport {
+@Entity(tableName = "transport_transaction")
+public class TransportTransaction {
 
     @PrimaryKey
     public Long id;
