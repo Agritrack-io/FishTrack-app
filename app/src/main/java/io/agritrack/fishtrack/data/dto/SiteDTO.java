@@ -5,6 +5,7 @@ import io.agritrack.fishtrack.data.model.Site;
 public class SiteDTO {
     public Long id;
     public String code;
+    public String site_type;
     public String name;
     public String description;
     public Integer site_lvl;
@@ -21,6 +22,7 @@ public class SiteDTO {
         Site site = new Site();
         site.id = siteDTO.id;
         site.code = siteDTO.code;
+        site.siteType = siteDTO.site_type;
         site.name = siteDTO.name;
         site.description = siteDTO.description;
         site.siteLevel = siteDTO.site_lvl;

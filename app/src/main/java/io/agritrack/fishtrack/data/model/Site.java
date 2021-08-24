@@ -20,6 +20,9 @@ public class Site {
     @ColumnInfo(name = "code")
     public String code;
 
+    @ColumnInfo(name = "site_type")
+    public String siteType;
+
     @ColumnInfo(name = "site_lvl")
     public Integer siteLevel;
 

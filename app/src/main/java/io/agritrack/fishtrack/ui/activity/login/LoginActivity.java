@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // show previous loggeding user name
         String previousLoggedInUser = LocalPreferences.getLoggedInUser(null);
-        if(previousLoggedInUser!=null) {
+        if (previousLoggedInUser != null) {
             etUserName.setText(previousLoggedInUser);
         }
 
@@ -257,11 +257,16 @@ public class LoginActivity extends AppCompatActivity {
             SyncApi syncService = FishTrackAPIServiceGenerator.createAPI(SyncApi.class);
             String token = LocalPreferences.getToken();
             Long siteId = LocalPreferences.getCurrentSiteId();
+            String clusterId = LocalPreferences.getCurrentClusterId();
             boolean syncResult = true;
 
+            // sync sites for current cluster
+            Call<List<SiteDTO>> syncSitesAsyncCall = syncService.getSitesByCluster(clusterId, "Bearer " + token);
+            syncSitesAsyncCall.enqueue(new SyncClusterSitesCallBack());
+
             // sync sites
-            Call<SiteDTO> syncSitesAsyncCall = syncService.getSiteById(siteId, "Bearer " + token);
-            syncSitesAsyncCall.enqueue(new SyncSitesCallBack());
+//            Call<SiteDTO> syncSiteAsyncCall = syncService.getSiteById(siteId, "Bearer " + token);
+//            syncSiteAsyncCall.enqueue(new SyncSitesCallBack());
 
             // sync users
             Call<List<AppUserDTO>> syncUsersAsyncCall = syncService.getUsersBySiteId(siteId, "Bearer " + token);
@@ -282,13 +287,6 @@ public class LoginActivity extends AppCompatActivity {
             // sync fish species
             Call<List<FishSpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCode("gr", "Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack());
-
-
-//            RouteSyncService routeSyncService = new RouteSyncService();
-//            syncResult = routeSyncService.syncRoute(db, token);
-//
-//            DriverAndTrucksSyncService driverAndTrucksSyncService = new DriverAndTrucksSyncService();
-//            syncResult &= driverAndTrucksSyncService.syncDriverAndTrucks(db, token);
 
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             i.putExtra("syncErrors", !syncResult);
@@ -389,7 +387,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public class SyncSitesCallBack implements Callback<SiteDTO> {
+    public class SyncSiteCallBack implements Callback<SiteDTO> {
         @Override
         public void onResponse(Call<SiteDTO> call, Response<SiteDTO> response) {
             SiteDTO siteDTO = response.body();
@@ -405,6 +403,28 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Call<SiteDTO> call, Throwable t) {
+            // Probably Network Communication Error
+            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
+        }
+    }
+
+    public class SyncClusterSitesCallBack implements Callback<List<SiteDTO>> {
+        @Override
+        public void onResponse(Call<List<SiteDTO>> call, Response<List<SiteDTO>> response) {
+            List<SiteDTO> siteDTOs = response.body();
+
+            if (siteDTOs != null) {
+                for(SiteDTO siteDTO:siteDTOs) {
+                    db.siteDAO().insert(SiteDTO.convert(siteDTO));
+                }
+            } else {
+                // no Sites found
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_sites_found_alert, Toast.LENGTH_LONG).show());
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<SiteDTO>> call, Throwable t) {
             // Probably Network Communication Error
             runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
         }

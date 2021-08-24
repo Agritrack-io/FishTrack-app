@@ -127,12 +127,11 @@ tools:context=".ui.activity.process.ProcessConfirmActivity">
 
             <TextView
                 android:id="@+id/tvDispatchNote"
-                android:layout_width="136dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
-                android:text="ΔΑ67890"
-                android:textAlignment="viewStart"
+                android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvPackagingLot"
@@ -142,12 +141,11 @@ tools:context=".ui.activity.process.ProcessConfirmActivity">
 
             <TextView
                 android:id="@+id/tvPackagingLot"
-                android:layout_width="136dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
-                android:text="V34944"
-                android:textAlignment="viewStart"
+                android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvSecurityClipNumber"
@@ -169,12 +167,11 @@ tools:context=".ui.activity.process.ProcessConfirmActivity">
 
             <TextView
                 android:id="@+id/tvNumberOfBinsCount"
-                android:layout_width="136dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
-                android:text="10"
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
@@ -185,12 +182,11 @@ tools:context=".ui.activity.process.ProcessConfirmActivity">
 
             <TextView
                 android:id="@+id/tvSecurityClipNumber"
-                android:layout_width="136dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
-                android:text="12345"
-                android:textAlignment="viewStart"
+                android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvFishCondition"
@@ -212,14 +208,13 @@ tools:context=".ui.activity.process.ProcessConfirmActivity">
 
             <TextView
                 android:id="@+id/tvFishCondition"
-                android:layout_width="136dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
                 android:paddingStart="3dp"
-                android:text="good"
-                android:textAlignment="viewStart"
+                android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -274,14 +269,14 @@ tools:context=".ui.activity.process.ProcessConfirmActivity">
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/etPasswordFishing"
+                app:layout_constraintBottom_toTopOf="@+id/etPasswordProcessing"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/etPasswordFishing"
+                android:id="@+id/etPasswordProcessing"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="70dp"

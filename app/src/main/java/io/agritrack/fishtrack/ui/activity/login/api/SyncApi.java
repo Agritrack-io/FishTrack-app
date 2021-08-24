@@ -13,8 +13,14 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface SyncApi {
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/site")
+    Call<List<SiteDTO>> getSitesByCluster(@Query("clusterId") String clusterId, @Header("Authorization") String token);
+
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/site/{siteId}")
     Call<SiteDTO> getSiteById(@Path("siteId") Long siteId, @Header("Authorization") String token);

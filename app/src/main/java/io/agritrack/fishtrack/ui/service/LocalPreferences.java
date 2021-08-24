@@ -2,13 +2,10 @@ package io.agritrack.fishtrack.ui.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
@@ -28,6 +25,7 @@ public class LocalPreferences {
     public static final String SelectedSite_Key = "selectedSite";
     public static final String SelectedSiteName_Key = "selectedSiteName";
     public static final String SelectedSiteId_Key = "selectedSiteId";
+    public static final String SelectedCluster_Key = "selectedClusterId";
     public static final String Locale_Key = "localeCode";
     public static final String Logged_In_User_Key = "LoggedinUser";
 
@@ -63,6 +61,10 @@ public class LocalPreferences {
 
     public static Long getCurrentSiteId() {
         return getInstance().pref.getLong(SelectedSiteId_Key, -1l);
+    }
+
+    public static String getCurrentClusterId() {
+        return getInstance().pref.getString(SelectedCluster_Key, null);
     }
 
     public static String getLocale() {

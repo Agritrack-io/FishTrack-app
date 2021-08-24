@@ -52,6 +52,7 @@ import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Latitude_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Longitude_Key;
+import static io.agritrack.fishtrack.ui.service.LocalPreferences.SelectedCluster_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.SelectedSiteId_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.SelectedSiteName_Key;
 
@@ -249,6 +250,7 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
                 Toast.makeText(getAppContext(), "No site info received...", Toast.LENGTH_LONG).show();
             }
             if (response.size() > 0) {
+                // Site coordinates may be close to >1 cluster. These sites will be displayed grouped by cluster.
                 mapOfSitesPerCluster = response.stream().collect(Collectors.groupingBy(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
                 clusterIDs = new LinkedList<>(mapOfSitesPerCluster.keySet());
                 clustersAdapter = new ClusterListViewAdapter(this, mapOfSitesPerCluster);
@@ -333,6 +335,7 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
                         // persist selected Site to local Preferences.
                         LocalPreferences.writeValue(SelectedSiteName_Key, mSite.getName());
                         LocalPreferences.writeValue(SelectedSiteId_Key, mSite.getId());
+                        LocalPreferences.writeValue(SelectedCluster_Key, mSite.getLevel2());
                         // move to Login Screen
                         Intent i = new Intent(getAppContext(), LoginActivity.class);
                         i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...

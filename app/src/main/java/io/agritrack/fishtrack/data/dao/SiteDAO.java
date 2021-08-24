@@ -1,6 +1,5 @@
 package io.agritrack.fishtrack.data.dao;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -20,6 +19,12 @@ public interface SiteDAO {
 
 //    @Query("SELECT * from plant where distributor_ids LIKE '%,' || :distributorId || ',%'")
 //    List<Site> getAllByDistributorId(Long distributorId);
+
+    @Query("SELECT * from site where site_type='PLANT'")
+    List<Site> getAllProcessingPlants();
+
+    @Query("SELECT * from site where site_type='SEAFARM'")
+    List<Site> getAllSeaFarms();
 
     @Query("SELECT * from site where id=:siteId LIMIT 1")
     Site getById(Long siteId);

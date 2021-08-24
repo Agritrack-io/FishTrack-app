@@ -32,36 +32,27 @@ public class TransportStartActivity extends AppCompatActivity {
     private EditText etDriverName, etLicensePlate, etSecurityClip;
     private Spinner spPackagingSite, spCompany;
 
-    private String[] company = {"nireas","andromeda","selonda"};
-
-    Spinner companySpinner;
+    private String[] company = {"nireas", "andromeda", "selonda"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transport_start);
 
-        // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
-
-        // get  references of the controls
-        spPackagingSite = findViewById(R.id.spPackagingSite);
-        spCompany = findViewById(R.id.spCompany);
-        etDriverName = findViewById(R.id.etDriverName);
-        etLicensePlate = findViewById(R.id.etLicensePlate);
-        swRefrigeratedTruck = findViewById(R.id.swRefrigeratedTruck);
-        swParallelTransport = findViewById(R.id.swParallelTransport);
-        etSecurityClip = findViewById(R.id.etSecurityClip);
-
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderTransportStart);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
+        // get an instance of local DB
+        db = MobileDB.getInstance(getContext());
+
+        // get  references of the controls
+        assignCtrlVars();
+
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
-        List<Site> packagingSites = db.siteDAO().getAll();
-        if(packagingSites!=null && !packagingSites.isEmpty()) {
-            String[] packagingSite = packagingSites.stream().map(x->x.name).toArray(String[]::new);
+        List<Site> packagingSites = db.siteDAO().getAllProcessingPlants();
+        if (packagingSites != null && !packagingSites.isEmpty()) {
+            String[] packagingSite = packagingSites.stream().map(x -> x.name).toArray(String[]::new);
             ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, packagingSite);
             hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
             spPackagingSite.setAdapter(hrAdapter);
@@ -75,13 +66,16 @@ public class TransportStartActivity extends AppCompatActivity {
         initControlsFromState();
 
         configFooter();
+    }
 
-        if(db!=null){
-            if(db.isOpen()) {
-                db.close();
-            }
-            db=null;
-        }
+    private void assignCtrlVars() {
+        spPackagingSite = findViewById(R.id.spPackagingSite);
+        spCompany = findViewById(R.id.spCompany);
+        etDriverName = findViewById(R.id.etDriverName);
+        etLicensePlate = findViewById(R.id.etLicensePlate);
+        swRefrigeratedTruck = findViewById(R.id.swRefrigeratedTruck);
+        swParallelTransport = findViewById(R.id.swParallelTransport);
+        etSecurityClip = findViewById(R.id.etSecurityClip);
     }
 
     protected void configFooter() {
@@ -100,28 +94,30 @@ public class TransportStartActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-
         TransportationRecord trns = GlobalState.recTransport;
 
-        if(trns.sitePos>-1) {
-            Spinner siteSpinner = findViewById(R.id.spPackagingSite);
-            siteSpinner.setSelection(trns.sitePos);
+        if (trns.sitePos > -1) {
+            spPackagingSite.setSelection(trns.sitePos);
         }
 
-        if(trns.companyPos>-1) {
-            Spinner companySpinner = findViewById(R.id.spCompany);
-            companySpinner.setSelection(trns.companyPos);
+        if (trns.companyPos > -1) {
+            spCompany.setSelection(trns.companyPos);
         }
 
-        if(!Strings.isEmptyOrWhitespace(trns.driverName)) {
-            EditText etDrNm = findViewById(R.id.etDriverName);
-            etDrNm.setText(trns.driverName);
+        if (!Strings.isEmptyOrWhitespace(trns.driverName)) {
+            etDriverName.setText(trns.driverName);
         }
 
-        if(!Strings.isEmptyOrWhitespace(trns.licensePlate)) {
-            EditText etDrNm = findViewById(R.id.etDriverName);
-            etDrNm.setText(trns.driverName);
+        if (!Strings.isEmptyOrWhitespace(trns.licensePlate)) {
+            etLicensePlate.setText(trns.licensePlate);
         }
+
+        if (!Strings.isEmptyOrWhitespace(trns.clipNumber)) {
+            etSecurityClip.setText(trns.clipNumber);
+        }
+
+        swRefrigeratedTruck.setChecked(trns.refrigeratedTruck);
+        swParallelTransport.setChecked(trns.parallelTransport);
     }
 
     private TransportationRecord updateState() {
@@ -136,7 +132,6 @@ public class TransportStartActivity extends AppCompatActivity {
         transportationRecord.clipNumber = etSecurityClip.getText().toString();
         transportationRecord.refrigeratedTruck = swRefrigeratedTruck.isChecked();
         transportationRecord.parallelTransport = swParallelTransport.isChecked();
-
 
         return transportationRecord;
     }

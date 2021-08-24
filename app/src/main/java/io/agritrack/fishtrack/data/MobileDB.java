@@ -15,6 +15,7 @@ import io.agritrack.fishtrack.data.dao.common.FishSpeciesDAO;
 import io.agritrack.fishtrack.data.dao.common.ReaderDAO;
 import io.agritrack.fishtrack.data.dao.tx.FishingTransactionDAO;
 import io.agritrack.fishtrack.data.dao.tx.HarvestTransactionDAO;
+import io.agritrack.fishtrack.data.dao.tx.ProcessingTransactionDAO;
 import io.agritrack.fishtrack.data.dao.tx.TransportTransactionDAO;
 import io.agritrack.fishtrack.data.dao.wh.AssetDAO;
 import io.agritrack.fishtrack.data.model.AppUser;
@@ -25,13 +26,14 @@ import io.agritrack.fishtrack.data.model.common.FishSpecies;
 import io.agritrack.fishtrack.data.model.common.Reader;
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
+import io.agritrack.fishtrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
 import io.agritrack.fishtrack.data.model.wh.Asset;
 
 
-@Database(entities = {AppUser.class, Site.class, Asset.class, CageDetails.class, FishingTransaction.class,
-        TransportTransaction.class, HarvestTransaction.class, Employee.class, FishSpecies.class, Reader.class},
-        version = 9, exportSchema = false)
+@Database(entities = {AppUser.class, Site.class, Asset.class, CageDetails.class, Employee.class, FishSpecies.class, Reader.class,
+        FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class, HarvestTransaction.class},
+        version = 12, exportSchema = false)
 @TypeConverters({DateConverter.class, LongListConverter.class, StringListConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
@@ -65,6 +67,8 @@ public abstract class MobileDB extends RoomDatabase {
     public abstract FishingTransactionDAO fishingTransactionDAO();
 
     public abstract TransportTransactionDAO transportTransactionDAO();
+
+    public abstract ProcessingTransactionDAO processingTransactionDAO();
 
     public abstract HarvestTransactionDAO harvestTransactionDAO();
 

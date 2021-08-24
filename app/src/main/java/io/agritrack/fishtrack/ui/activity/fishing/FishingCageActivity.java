@@ -174,13 +174,6 @@ public class FishingCageActivity extends AppCompatActivity {
         if (uhfReader != null)
             uhfReader.close();
         scanning = false;
-
-        if(db!=null){
-            if(db.isOpen()) {
-                db.close();
-            }
-            db=null;
-        }
         super.onDestroy();
     }
 }

@@ -96,7 +96,7 @@ public class FishingConfirmActivity extends AppCompatActivity {
 
             // use typed-in PIN to compare credentials with those stored in the Local DB.
             AuthenticationService authSvc = new AuthenticationService();
-            boolean authentication = true; // authSvc.authenticateUser(this.db, login, pin);
+            boolean authentication = authSvc.authenticateUser(this.db, login, pin);
 
             // credentials do NOT match
             if (!authentication) {

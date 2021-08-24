@@ -123,12 +123,6 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
     @Override
     protected void onDestroy() {
-        if (db != null) {
-            if (db.isOpen()) {
-                db.close();
-            }
-            db = null;
-        }
         super.onDestroy();
     }
 }

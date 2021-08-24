@@ -1,14 +1,18 @@
 package io.agritrack.fishtrack.state;
 
+import java.nio.charset.Charset;
+
 import io.agritrack.fishtrack.data.MobileDB;
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
+import io.agritrack.fishtrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
 
 public class GlobalState {
 
     public static FishingRecord recFishing = new FishingRecord();
     public static TransportationRecord recTransport = new TransportationRecord();
+    public static ProcessingRecord recProcessing = new ProcessingRecord();
     public static HarvestRecord recHarvest = new HarvestRecord();
 
 
@@ -24,6 +28,11 @@ public class GlobalState {
         return recTransport;
     }
 
+    public static ProcessingRecord initProcessingTx() {
+        recProcessing = new ProcessingRecord();
+        return recProcessing;
+    }
+
     public static HarvestRecord initHarvestTx() {
         recHarvest = new HarvestRecord();
         return recHarvest;
@@ -32,6 +41,7 @@ public class GlobalState {
     public static FishingTransaction commitFishing(MobileDB db) {
         try {
             FishingTransaction txFishing = new FishingTransaction();
+
             txFishing.platformRFID = recFishing.platformRFID;
             txFishing.cageRFID = recFishing.cageRFID;
             txFishing.netRFID = recFishing.netRFID;
@@ -59,10 +69,37 @@ public class GlobalState {
         try {
             TransportTransaction txTransport = new TransportTransaction();
 
+            txTransport.packagingSiteId = recTransport.packagingSite;
+            txTransport.driverName = recTransport.driverName;
+            txTransport.truckLicensePlate = recTransport.licensePlate;
+            txTransport.securityClipNo = recTransport.clipNumber;
+            txTransport.driverSignature = new String(recTransport.signatureBytes, Charset.forName("UTF8"));
+            txTransport.isTruckRefrigerated = recTransport.refrigeratedTruck;
+            txTransport.isParallelTransport = recTransport.parallelTransport;
+            txTransport.transportHead = "N/A";
 
             db.transportTransactionDAO().insert(txTransport);
-
             return txTransport;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ProcessingTransaction commitProcessing(MobileDB db) {
+        try {
+            ProcessingTransaction txProcess = new ProcessingTransaction();
+            txProcess.dispatchNote = recProcessing.dispatchNote;
+            txProcess.fishCondition = recProcessing.fishCondition;
+            txProcess.plot = recProcessing.packagingLot;
+            txProcess.site = recProcessing.packagingSite;
+            //txProcess.remarks = recProcessing.remarks;
+            txProcess.securityClipNumber = recProcessing.securityClip;
+            //txProcess.dispatchNote = recProcessing.dispatchNote;
+
+            db.processingTransactionDAO().insert(txProcess);
+
+            return txProcess;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

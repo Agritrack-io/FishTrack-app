@@ -105,13 +105,6 @@ public class FishingStartActivity extends AppCompatActivity {
 
         // create Footer
         configFooter();
-
-        if(db!=null){
-            if(db.isOpen()) {
-                db.close();
-            }
-            db=null;
-        }
     }
 
     protected void configFooter() {
