@@ -5,15 +5,20 @@ import java.nio.charset.Charset;
 import io.agritrack.fishtrack.data.MobileDB;
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
+import io.agritrack.fishtrack.data.model.tx.IncomingWHTransaction;
 import io.agritrack.fishtrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
 
 public class GlobalState {
 
+    public static HarvestRecord recHarvest = new HarvestRecord();
     public static FishingRecord recFishing = new FishingRecord();
     public static TransportationRecord recTransport = new TransportationRecord();
     public static ProcessingRecord recProcessing = new ProcessingRecord();
-    public static HarvestRecord recHarvest = new HarvestRecord();
+
+    public static IncomingWHRecord recWHIncoming = new IncomingWHRecord();
+    public static OutgoingWHRecord recWHOutgoing = new OutgoingWHRecord();
+    public static InventoryWHRecord recWHInventory = new InventoryWHRecord();
 
 
     private GlobalState() { }
@@ -31,6 +36,21 @@ public class GlobalState {
     public static ProcessingRecord initProcessingTx() {
         recProcessing = new ProcessingRecord();
         return recProcessing;
+    }
+
+    public static IncomingWHRecord initWHIncomingTx() {
+        recWHIncoming = new IncomingWHRecord();
+        return recWHIncoming;
+    }
+
+    public static OutgoingWHRecord initWHOutgoingTx() {
+        recWHOutgoing = new OutgoingWHRecord();
+        return recWHOutgoing;
+    }
+
+    public static InventoryWHRecord initWHInventoryTx() {
+        recWHInventory = new InventoryWHRecord();
+        return recWHInventory;
     }
 
     public static HarvestRecord initHarvestTx() {
@@ -106,6 +126,19 @@ public class GlobalState {
         }
     }
 
+    public static IncomingWHTransaction commitWHIncoming(MobileDB db) {
+        try {
+            IncomingWHTransaction txWHIncoming = new IncomingWHTransaction();
+
+            db.whIncomingTransactionDAO().insert(txWHIncoming);
+
+            return txWHIncoming;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     public static HarvestTransaction commitHarvest(MobileDB db) {
         try {
             HarvestTransaction txHarvest = new HarvestTransaction();
@@ -119,6 +152,4 @@ public class GlobalState {
             return null;
         }
     }
-
-
 }

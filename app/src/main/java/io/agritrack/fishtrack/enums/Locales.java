@@ -3,7 +3,7 @@ package io.agritrack.fishtrack.enums;
 public enum Locales {
     ENGLISH(0), GREEK(1), SPANISH(2);
 
-    public final int lng;
+    private final int lng;
 
     Locales(int lang) {
         this.lng = lang;

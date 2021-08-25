@@ -29,7 +29,6 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
     private MobileDB db;
     private ListView lvFishingTeam;
-    private ArrayAdapter adapterSelectedTeam;
     private ArrayList<String> selectedTeam;
     private GenericListModel[] candidates;
 

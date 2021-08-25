@@ -17,6 +17,7 @@ import io.agritrack.fishtrack.data.dao.tx.FishingTransactionDAO;
 import io.agritrack.fishtrack.data.dao.tx.HarvestTransactionDAO;
 import io.agritrack.fishtrack.data.dao.tx.ProcessingTransactionDAO;
 import io.agritrack.fishtrack.data.dao.tx.TransportTransactionDAO;
+import io.agritrack.fishtrack.data.dao.tx.WHIncomingDAO;
 import io.agritrack.fishtrack.data.dao.wh.AssetDAO;
 import io.agritrack.fishtrack.data.model.AppUser;
 import io.agritrack.fishtrack.data.model.CageDetails;
@@ -26,14 +27,15 @@ import io.agritrack.fishtrack.data.model.common.FishSpecies;
 import io.agritrack.fishtrack.data.model.common.Reader;
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
+import io.agritrack.fishtrack.data.model.tx.IncomingWHTransaction;
 import io.agritrack.fishtrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
 import io.agritrack.fishtrack.data.model.wh.Asset;
 
 
 @Database(entities = {AppUser.class, Site.class, Asset.class, CageDetails.class, Employee.class, FishSpecies.class, Reader.class,
-        FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class, HarvestTransaction.class},
-        version = 12, exportSchema = false)
+        FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class, IncomingWHTransaction.class, HarvestTransaction.class},
+        version = 13, exportSchema = false)
 @TypeConverters({DateConverter.class, LongListConverter.class, StringListConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
@@ -71,6 +73,8 @@ public abstract class MobileDB extends RoomDatabase {
     public abstract ProcessingTransactionDAO processingTransactionDAO();
 
     public abstract HarvestTransactionDAO harvestTransactionDAO();
+
+    public abstract WHIncomingDAO whIncomingTransactionDAO();
 
     public abstract EmployeeDAO employeeDAO();
 

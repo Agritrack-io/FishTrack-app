@@ -1,7 +1,5 @@
 package io.agritrack.fishtrack.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,11 +8,13 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.activity.adapter.HomeMenuAdapter;
 import io.agritrack.fishtrack.ui.activity.adapter.MenuItem;
 import io.agritrack.fishtrack.ui.activity.login.LoginActivity;
@@ -24,8 +24,6 @@ import io.agritrack.fishtrack.ui.activity.wh.inventory.InventoryActivity;
 import io.agritrack.fishtrack.ui.activity.wh.outgoing.OutgoingStartActivity;
 import io.agritrack.fishtrack.ui.activity.wh.search.SearchActivity;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
-
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class WhMenuActivity extends AppCompatActivity {
 
@@ -60,6 +58,7 @@ public class WhMenuActivity extends AppCompatActivity {
 
                 switch (position) {
                     case Incoming_Idx:
+                        GlobalState.initWHIncomingTx();
                         i = new Intent(appCtx, IncomingStartActivity.class);
                         break;
                     case Outgoing_Idx:

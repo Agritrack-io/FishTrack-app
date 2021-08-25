@@ -1,7 +1,5 @@
 package io.agritrack.fishtrack.ui.activity.wh.inventory;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,31 +7,83 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.hdhe.uhf.reader.UhfReader;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.common.FishTrackUtils;
+import io.agritrack.fishtrack.rfid.ScanThread;
+import io.agritrack.fishtrack.state.GlobalState;
+import io.agritrack.fishtrack.state.InventoryWHRecord;
 import io.agritrack.fishtrack.ui.activity.WhMenuActivity;
+import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class InventoryActivity extends AppCompatActivity {
 
+    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
+    private Spinner spSite, spAssetType;
+    private RecyclerView rvInventoryItems;
+    private TextView tvInventoryItemsCount;
+    private InventoryWHRecord whInventoryRecord;
+    private UhfReader uhfReader;
+    private ScanThread transportationBinsThread = new ScanThread();
+    private boolean scanning = false;
+
+    private TemplateRecyclerAdapter adapterInventoryItems;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory);
 
+        // instantiate an inventory Record
+        whInventoryRecord = GlobalState.recWHInventory;
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderInventory);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // get  references of the controls
+        assignCtrlVars();
+
+        // initiate RFID scanner behaviour
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvInventoryItems.setLayoutManager(layoutManager);
+        rvInventoryItems.setItemAnimator(new DefaultItemAnimator());
+        adapterInventoryItems = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        rvInventoryItems.setAdapter(adapterInventoryItems);
+        rvInventoryItems.setNestedScrollingEnabled(false);
+
+        scanResult.observe(this, response -> {
+            if (response == null) {
+                return;
+            }
+            tvInventoryItemsCount.setText(String.valueOf(response.size()));
+            adapterInventoryItems.setValues(new ArrayList<>(response));
+            adapterInventoryItems.notifyDataSetChanged();
+        });
+
+        // initialize scanning threads
+        prepareScanAvailableBinsButton();
 
         // Get reference of widgets from XML layout
         final Spinner spSite = (Spinner) findViewById(R.id.spSite);
@@ -51,30 +101,27 @@ public class InventoryActivity extends AppCompatActivity {
 
         // Initializing an ArrayAdapter
         final ArrayAdapter<String> spSiteArrayAdapter = new ArrayAdapter<String>(
-                this,R.layout.simple_spinner_item,siteList){
+                this, R.layout.simple_spinner_item, siteList) {
             @Override
-            public boolean isEnabled(int position){
-                if(position == 0)
-                {
+            public boolean isEnabled(int position) {
+                if (position == 0) {
                     // Disable the first item from Spinner
                     // First item will be use for hint
                     return false;
-                }
-                else
-                {
+                } else {
                     return true;
                 }
             }
+
             @Override
             public View getDropDownView(int position, View convertView,
                                         ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
-                if(position == 0){
+                if (position == 0) {
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
-                }
-                else {
+                } else {
                     tv.setTextColor(Color.BLACK);
                 }
                 return view;
@@ -89,7 +136,7 @@ public class InventoryActivity extends AppCompatActivity {
                 String selectedItemText = (String) parent.getItemAtPosition(position);
                 // If user change the default selection
                 // First item is disable and it is used for hint
-                if(position > 0){
+                if (position > 0) {
                     // Notify the selected item text
                     Toast.makeText
                             (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
@@ -103,48 +150,29 @@ public class InventoryActivity extends AppCompatActivity {
             }
         });
 
-        // Get reference of widgets from XML layout
-        final Spinner spAssetType = (Spinner) findViewById(R.id.spAssetType);
-
-        // Initializing a String Array
-        String[] assetType = new String[]{
-                "Select asset type...",
-                "Cage",
-                "Net",
-                "Bin",
-                "Feed",
-                "Vaccine",
-                "Antibiotics"
-        };
-
-        final List<String> assetTypeList = new ArrayList<>(Arrays.asList(assetType));
+        // Handle Assets spinner behaviour.
+        // ---------------------------------
+        // load all Asset Types and fill in the spAssetType Spinner.
+        String[] assetTypeArray = FishTrackUtils.assetTypes("Select asset type...");
 
         // Initializing an ArrayAdapter
-        final ArrayAdapter<String> spAssetTypeArrayAdapter = new ArrayAdapter<String>(
-                this,R.layout.simple_spinner_item,assetTypeList){
+        final ArrayAdapter<String> spAssetTypeArrayAdapter = new ArrayAdapter<String>(this, R.layout.simple_spinner_item, assetTypeArray) {
             @Override
-            public boolean isEnabled(int position){
-                if(position == 0)
-                {
-                    // Disable the first item from Spinner
-                    // First item will be use for hint
+            public boolean isEnabled(int position) {
+                if (position == 0) {
                     return false;
-                }
-                else
-                {
+                } else {
                     return true;
                 }
             }
+
             @Override
-            public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent) {
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
-                if(position == 0){
-                    // Set the hint text color gray
+                if (position == 0) {
                     tv.setTextColor(Color.GRAY);
-                }
-                else {
+                } else {
                     tv.setTextColor(Color.BLACK);
                 }
                 return view;
@@ -159,7 +187,7 @@ public class InventoryActivity extends AppCompatActivity {
                 String selectedItemText = (String) parent.getItemAtPosition(position);
                 // If user change the default selection
                 // First item is disable and it is used for hint
-                if(position > 0){
+                if (position > 0) {
                     // Notify the selected item text
                     Toast.makeText
                             (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
@@ -169,12 +197,17 @@ public class InventoryActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
-
         configFooter();
+    }
+
+    private void assignCtrlVars() {
+        spSite = findViewById(R.id.spSite);
+        spAssetType = findViewById(R.id.spAssetType);
+        rvInventoryItems = findViewById(R.id.rvInventoryItems);
+        tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
     }
 
     protected void configFooter() {
@@ -189,6 +222,41 @@ public class InventoryActivity extends AppCompatActivity {
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
+        });
+    }
+
+    private void prepareScanAvailableBinsButton() {
+        // RFID scanning functionality
+        uhfReader = UhfReader.getInstance();
+        uhfReader.setOutputPower(33);
+
+        final Button scanButton = findViewById(R.id.btnScanAsset);
+        scanButton.setOnClickListener(view -> {
+            scanning = !scanning;
+
+            // Following check is required to instantiate a ScanningThread that was stopped previously.
+            if (transportationBinsThread.getState() == Thread.State.TERMINATED) {
+                transportationBinsThread = new ScanThread();
+            }
+            //update scanning, uhfReader, tvPlatformName values in thread
+            transportationBinsThread.setScanInProgress(scanning);
+            transportationBinsThread.setUhfReader(uhfReader);
+            transportationBinsThread.setAdapter(adapterInventoryItems);
+            transportationBinsThread.setScanResult(scanResult);
+
+            if (scanning) {
+                scanButton.setText(R.string.stop_scan);
+                if (transportationBinsThread.getState() == Thread.State.NEW) {
+                    transportationBinsThread.start();
+                }
+            } else {
+                scanButton.setText(R.string.scan_assets);
+                try {
+                    transportationBinsThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         });
     }
 }

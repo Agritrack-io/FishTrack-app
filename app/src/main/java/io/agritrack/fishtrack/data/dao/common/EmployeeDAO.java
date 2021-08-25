@@ -1,6 +1,5 @@
 package io.agritrack.fishtrack.data.dao.common;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -10,14 +9,13 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import io.agritrack.fishtrack.data.model.AppUser;
 import io.agritrack.fishtrack.data.model.common.Employee;
 
 @Dao
 public interface EmployeeDAO {
 
     @Query("SELECT * from employee")
-    LiveData<List<Employee>> getAll();
+    List<Employee> getAll();
 
 
     @Query("SELECT * from employee where site=:siteId")

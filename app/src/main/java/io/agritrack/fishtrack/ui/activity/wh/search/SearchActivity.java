@@ -1,117 +1,104 @@
 package io.agritrack.fishtrack.ui.activity.wh.search;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.common.Constants;
+import io.agritrack.fishtrack.data.MobileDB;
+import io.agritrack.fishtrack.data.model.wh.Asset;
 import io.agritrack.fishtrack.ui.activity.WhMenuActivity;
-import io.agritrack.fishtrack.ui.activity.wh.outgoing.OutgoingStartActivity;
+import io.agritrack.fishtrack.ui.activity.adapter.FilterableAdapter;
+import io.agritrack.fishtrack.ui.bo.GenericListModel;
+import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+    private MobileDB db;
+    private FilterableAdapter adapterAssets;
+    private ToggleGroup tgSearchAssetType;
+    private EditText etSearchAsset, etAssetBarcode;
+    private RecyclerView rvAssets;
+    private Button btnSearchAsset;
+
+    private String selectedAssetType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        // get an instance of local DB
+        db = MobileDB.getInstance(getContext());
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderSearch);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
-        /*// Get reference of widgets from XML layout
-        final Spinner spAssetType = (Spinner) findViewById(R.id.spAssetType);
+        // get  references of the controls
+        assignCtrlVars();
 
-        // Initializing a String Array
-        String[] assetType = new String[]{
-                "Select asset type...",
-                "Cage",
-                "Net",
-                "Bin"
-        };
-
-        final List<String> assetTypeList = new ArrayList<>(Arrays.asList(assetType));
-
-        // Initializing an ArrayAdapter
-        final ArrayAdapter<String> spAssetTypeArrayAdapter = new ArrayAdapter<String>(
-                this,R.layout.simple_spinner_item,assetTypeList){
-            @Override
-            public boolean isEnabled(int position){
-                if(position == 0)
-                {
-                    // Disable the first item from Spinner
-                    // First item will be use for hint
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            @Override
-            public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if(position == 0){
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.GRAY);
-                }
-                else {
-                    tv.setTextColor(Color.BLACK);
-                }
-                return view;
-            }
-        };
-        spAssetTypeArrayAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-        spAssetType.setAdapter(spAssetTypeArrayAdapter);
-
-        spAssetType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItemText = (String) parent.getItemAtPosition(position);
-                // If user change the default selection
-                // First item is disable and it is used for hint
-                if(position > 0){
-                    // Notify the selected item text
-                    Toast.makeText
-                            (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
-                            .show();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });*/
 
         configFooter();
     }
 
-    protected void configFooter() {
+    @Override
+    public void onCheckedChanged(ToggleGroup group, int checkedId) {
+        if (checkedId == R.id.tbCage) {
+            selectedAssetType = Constants.ftCage;
+        } else if (checkedId == R.id.tbNet) {
+            selectedAssetType = Constants.ftNet;
+        } else if (checkedId == R.id.tbBin) {
+            selectedAssetType = Constants.ftBin;
+        }
+        loadAssetsFromLocalDB();
+    }
 
+    protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });
+    }
+
+    private void assignCtrlVars() {
+        tgSearchAssetType = findViewById(R.id.tgSearchAssetType);
+        etSearchAsset = findViewById(R.id.etSearchAsset);
+        etAssetBarcode = findViewById(R.id.etAssetBarcode);
+        rvAssets = findViewById(R.id.rvAssets);
+        btnSearchAsset = findViewById(R.id.btnSearchAsset);
+
+        tgSearchAssetType.setOnCheckedChangeListener(this);
+        rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rvAssets.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    private void loadAssetsFromLocalDB() {
+
+        // load assets for current Site and filter by asset type (if selected).
+        List<Asset> assetsList = db.assetDAO().getAll(); //getAssetsForType(selectedAssetType);
+        if (assetsList != null && !assetsList.isEmpty()) {
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.barcode)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
+
+            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
+            adapterAssets.getFilter().filter("");
+            this.rvAssets.setAdapter(adapterAssets);
+        }
     }
 }
