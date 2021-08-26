@@ -190,7 +190,7 @@
 
 
                     <ToggleButton
-                        android:id="@+id/tbAssetTo"
+                        android:id="@+id/tbOutAssetTo"
                         android:layout_width="fill_parent"
                         android:layout_height="60dp"
                         android:layout_margin="5dp"

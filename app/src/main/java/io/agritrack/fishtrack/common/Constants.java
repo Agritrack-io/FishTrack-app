@@ -10,4 +10,6 @@ public class Constants {
     public static final String ftCage = "CAGE";
     public static final String ftNet = "NET";
     public static final String ftBin = "BIN";
+
+    public static final String ftLogger = "LOGGER";
 }

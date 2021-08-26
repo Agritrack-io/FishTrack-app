@@ -13,7 +13,7 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.MobileDB;
 import io.agritrack.fishtrack.data.model.CageDetails;
-import io.agritrack.fishtrack.rfid.ScanThread;
+import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
@@ -23,8 +23,8 @@ import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 public class FishingCageActivity extends AppCompatActivity {
     private MobileDB db;
     private UhfReader uhfReader;
-    private ScanThread cageScanningThread = new ScanThread();
-    private ScanThread netScanningThread = new ScanThread();
+    private ScanInventoryThread cageScanningThread = new ScanInventoryThread();
+    private ScanInventoryThread netScanningThread = new ScanInventoryThread();
     private boolean scanning = false;
 
     private TextView tvCageRFID, tvNetRFID;
@@ -68,7 +68,7 @@ public class FishingCageActivity extends AppCompatActivity {
             // Following check is required to instantiate a ScanningThread that was stopped previously.
             if (cageScanningThread.getState() == Thread.State.TERMINATED)
             {
-                cageScanningThread = new ScanThread();
+                cageScanningThread = new ScanInventoryThread();
             }
             //update scanning, uhfReader, tvPlatformName values in thread
             cageScanningThread.setScanInProgress(scanning);
@@ -105,7 +105,7 @@ public class FishingCageActivity extends AppCompatActivity {
             // Following check is required to instantiate a ScanningThread that was stopped previously.
             if (cageScanningThread.getState() == Thread.State.TERMINATED)
             {
-                cageScanningThread = new ScanThread();
+                cageScanningThread = new ScanInventoryThread();
             }
             //update scanning, uhfReader, tvPlatformName values in thread
             cageScanningThread.setScanInProgress(scanning);

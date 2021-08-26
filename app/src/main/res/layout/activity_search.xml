@@ -100,7 +100,7 @@
                     android:text="@string/choose_asset_type"
                     android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/etSearchAsset"
+                    app:layout_constraintBottom_toTopOf="@+id/svSearchAsset"
                     app:layout_constraintEnd_toStartOf="@+id/tgSearchAssetType"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -116,7 +116,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@+id/etSearchAsset"
+                    app:layout_constraintBottom_toTopOf="@+id/svSearchAsset"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvAssetType"
                     app:layout_constraintTop_toTopOf="parent">
@@ -161,28 +161,21 @@
                         android:textSize="@dimen/text_view_font_size_medium" />
                 </io.agritrack.fishtrack.ui.custom.ToggleGroup>
 
-                <EditText
-                    android:id="@+id/etSearchAsset"
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/svSearchAsset"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
                     android:background="@drawable/bg_rounded_dialog_input"
-                    android:ems="10"
-                    android:hint="@string/search_and_select_barcode"
-                    android:inputType="textPersonName"
                     android:padding="5dp"
                     android:paddingStart="10dp"
-                    android:scrollbarAlwaysDrawVerticalTrack="true"
-                    android:scrollbarFadeDuration="0"
-                    android:scrollbars="horizontal"
-                    android:textColorHint="@color/black"
-                    android:textSize="@dimen/text_view_font_size"
+                    android:queryHint="Search Here"
                     app:layout_constraintBottom_toTopOf="@+id/rvAssets"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView9"
-                    app:layout_constraintHorizontal_bias="0.6"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tgSearchAssetType" />
+                    app:layout_constraintTop_toBottomOf="@+id/tgSearchAssetType"
+                    app:searchHintIcon="@null" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvAssets"
@@ -197,20 +190,8 @@
                     app:layout_constraintBottom_toTopOf="@+id/etAssetBarcode"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/etSearchAsset">
+                    app:layout_constraintTop_toBottomOf="@+id/svSearchAsset">
                 </androidx.recyclerview.widget.RecyclerView>
-
-                <ImageView
-                    android:id="@+id/imageView9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@+id/rvAssets"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/etSearchAsset"
-                    app:srcCompat="@drawable/ic_shortcut_search" />
 
                 <EditText
                     android:id="@+id/etAssetBarcode"
@@ -292,6 +273,7 @@
                         android:layout_height="match_parent">
 
                         <TextView
+                            android:id="@+id/tvProximity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
@@ -305,16 +287,6 @@
                             android:textSize="@dimen/text_view_font_size" />
                     </RelativeLayout>
                 </FrameLayout>
-
-                <ImageView
-                    android:id="@+id/imageView11"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginTop="52dp"
-                    android:layout_marginEnd="48dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@android:drawable/ic_popup_sync" />
 
                 <Button
                     android:id="@+id/btnSearchAsset"

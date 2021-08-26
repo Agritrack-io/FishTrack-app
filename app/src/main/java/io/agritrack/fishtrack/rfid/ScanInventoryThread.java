@@ -5,7 +5,6 @@ import android.os.Looper;
 import android.widget.TextView;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.android.hdhe.uhf.readerInterface.TagModel;
@@ -17,7 +16,7 @@ import java.util.Set;
 import cn.pda.serialport.Tools;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 
-public class ScanThread extends Thread {
+public class ScanInventoryThread extends Thread {
     private boolean scanInProgress;
     private UhfReader uhfReader;
     private TextView rfidTag;
@@ -25,7 +24,7 @@ public class ScanThread extends Thread {
     private MutableLiveData<Set<String>> scanResult;
     private Set<String> epcValues;
 
-    public ScanThread() {
+    public ScanInventoryThread() {
         this.epcValues = new HashSet<>();
     }
 

@@ -28,7 +28,7 @@ import java.util.Set;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.FishTrackUtils;
-import io.agritrack.fishtrack.rfid.ScanThread;
+import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.InventoryWHRecord;
 import io.agritrack.fishtrack.ui.activity.WhMenuActivity;
@@ -45,7 +45,7 @@ public class InventoryActivity extends AppCompatActivity {
     private TextView tvInventoryItemsCount;
     private InventoryWHRecord whInventoryRecord;
     private UhfReader uhfReader;
-    private ScanThread transportationBinsThread = new ScanThread();
+    private ScanInventoryThread transportationBinsThread = new ScanInventoryThread();
     private boolean scanning = false;
 
     private TemplateRecyclerAdapter adapterInventoryItems;
@@ -236,7 +236,7 @@ public class InventoryActivity extends AppCompatActivity {
 
             // Following check is required to instantiate a ScanningThread that was stopped previously.
             if (transportationBinsThread.getState() == Thread.State.TERMINATED) {
-                transportationBinsThread = new ScanThread();
+                transportationBinsThread = new ScanInventoryThread();
             }
             //update scanning, uhfReader, tvPlatformName values in thread
             transportationBinsThread.setScanInProgress(scanning);

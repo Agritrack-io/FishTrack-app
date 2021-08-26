@@ -94,7 +94,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         } else if (checkedId == R.id.tbCustomer) {
             GlobalState.recWHOutgoing.outgoingTo = Constants.ftCustomer;
             tvOutgoingTo.setText(Constants.ftCustomer);
-        } else if (checkedId == R.id.tbAssetTo) {
+        } else if (checkedId == R.id.tbOutAssetTo) {
             GlobalState.recWHOutgoing.outgoingTo = Constants.ftAsset;
             tvOutgoingTo.setText(Constants.ftAsset);
         }
@@ -126,8 +126,8 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
             tgOutgoingDestination.check(R.id.tbAvramar);
         } else if (Constants.ftCustomer.equalsIgnoreCase(GlobalState.recWHOutgoing.outgoingTo)) {
             tgOutgoingDestination.check(R.id.tbCustomer);
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.outgoingFrom)) {
-            tgOutgoingSource.check(R.id.tbAssetTo);
+        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.outgoingTo)) {
+            tgOutgoingDestination.check(R.id.tbOutAssetTo);
         }
     }
 }

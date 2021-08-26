@@ -272,5 +272,10 @@
     <string name="error_fishing_tx_update_failure">Fishing transaction update failure!!!</string>
     <string name="error_transport_tx_update_failure">Failed to update Transport transaction!!!</string>
     <string name="error_processing_tx_update_failure">Failed to update Processing transaction!!!</string>
+    <string name="no_epc_filter_selected">Please enter the tag to search for...</string>
+    <string name="scan_asset_tag">Scan Asset Tag</string>
+    <string name="title_correlate_asset">Correlate Asset</string>
+    <string name="scan_rfid_rag">Asset RFID</string>
+    <string name="title_select_asset_barcode">Asset BARCODE</string>
 
 </resources>

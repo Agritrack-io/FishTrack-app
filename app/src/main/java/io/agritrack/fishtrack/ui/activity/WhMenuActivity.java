@@ -18,7 +18,7 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.activity.adapter.HomeMenuAdapter;
 import io.agritrack.fishtrack.ui.activity.adapter.MenuItem;
 import io.agritrack.fishtrack.ui.activity.login.LoginActivity;
-import io.agritrack.fishtrack.ui.activity.wh.correlation.CorrelationMenuActivity;
+import io.agritrack.fishtrack.ui.activity.wh.correlation.CorrelationActivity;
 import io.agritrack.fishtrack.ui.activity.wh.incoming.IncomingStartActivity;
 import io.agritrack.fishtrack.ui.activity.wh.inventory.InventoryActivity;
 import io.agritrack.fishtrack.ui.activity.wh.outgoing.OutgoingStartActivity;
@@ -45,7 +45,7 @@ public class WhMenuActivity extends AppCompatActivity {
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), IncomingStartActivity.class, R.drawable.incoming));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_outgoing), OutgoingStartActivity.class, R.drawable.outgoing));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), InventoryActivity.class, R.drawable.inventory));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationMenuActivity.class, R.drawable.correlation));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationActivity.class, R.drawable.correlation));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), SearchActivity.class, R.drawable.search));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
@@ -68,7 +68,7 @@ public class WhMenuActivity extends AppCompatActivity {
                         i = new Intent(appCtx, InventoryActivity.class);
                         break;
                     case Correlation_Idx:
-                        i = new Intent(appCtx, CorrelationMenuActivity.class);
+                        i = new Intent(appCtx, CorrelationActivity.class);
                         break;
                     case Search_Idx:
                         i = new Intent(appCtx, SearchActivity.class);

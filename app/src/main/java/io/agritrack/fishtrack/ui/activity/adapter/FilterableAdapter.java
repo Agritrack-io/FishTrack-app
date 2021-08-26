@@ -19,19 +19,21 @@ import io.agritrack.fishtrack.ui.bo.GenericListModel;
 public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.viewHolder> implements Filterable {
 
     private final Context context;
+    private View.OnClickListener itemsClickListener;
     private final ArrayList<GenericListModel> arrayList;
     private ArrayList<GenericListModel> arrayListFiltered;
 
-    public FilterableAdapter(Context context, ArrayList<GenericListModel> arrayList) {
+    public FilterableAdapter(Context context, ArrayList<GenericListModel> arrayList, View.OnClickListener clickListener) {
         this.context = context;
         this.arrayList = arrayList;
         this.arrayListFiltered = arrayList;
+        this.itemsClickListener = clickListener;
     }
 
     @Override
     public viewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(context).inflate(R.layout.simple_recycler_view_item, viewGroup, false);
-        return new viewHolder(view);
+        return new viewHolder(view, this.itemsClickListener);
     }
 
     @Override
@@ -84,15 +86,10 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
     public class viewHolder extends RecyclerView.ViewHolder {
         TextView label;
 
-        public viewHolder(View itemView) {
+        public viewHolder(View itemView, View.OnClickListener itemsClickListener) {
             super(itemView);
             label = (TextView) itemView.findViewById(R.id.tvRecyclerItem);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(context, arrayListFiltered.get(getAdapterPosition()).getLabel(), Toast.LENGTH_LONG).show();
-                }
-            });
+            itemView.setOnClickListener(itemsClickListener);
         }
     }
 }
