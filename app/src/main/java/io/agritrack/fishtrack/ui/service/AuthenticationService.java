@@ -1,7 +1,7 @@
 package io.agritrack.fishtrack.ui.service;
 
 import io.agritrack.fishtrack.crypto.Crypto;
-import io.agritrack.fishtrack.data.MobileDB;
+import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.AppUser;
 
 public class AuthenticationService {

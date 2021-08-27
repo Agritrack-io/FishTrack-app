@@ -228,7 +228,7 @@
     <string name="dates">Dates</string>
     <string name="next_maintenance">Next maintenance</string>
     <string name="estimated_withdrawal">Estimated withdrawal</string>
-    <string name="maintenance_remarks">Describe your work</string>
+    <string name="maintenance_remarks">Describe work.</string>
     <string name="maintenance_details">Maintenance details</string>
     <string name="details">Details</string>
     <string name="remarks">Remarks</string>
@@ -241,8 +241,8 @@
     <string name="date_next_maintenance">Next date:</string>
 
     <string name="choose_supplier">Choose supplier</string>
-    <string name="maintenance_manager">Type maintenance manager</string>
-    <string name="maintenance_cost">Type maintenance cost</string>
+    <string name="maintenance_manager">Maintenance manager</string>
+    <string name="maintenance_cost">Maintenance cost</string>
 
     <string name="supplier_label">Supplier:</string>
     <string name="maintenance_manager_label">Manager:</string>

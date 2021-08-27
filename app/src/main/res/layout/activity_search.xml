@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
-    tools:context=".ui.activity.wh.search.SearchActivity">
+    tools:context=".ui.wh.search.SearchActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"

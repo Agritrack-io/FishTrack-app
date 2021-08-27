@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
-    tools:context=".ui.activity.maintenance.MaintenanceInternalTeamActivity">
+    tools:context=".ui.maintenance.MaintenanceInternalTeamActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -92,11 +92,13 @@
                     android:id="@+id/ivDeleteEmployee"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@+id/rvTeam"
+                    app:layout_constraintBottom_toTopOf="@+id/lvTeam"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvSelectTeam"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_delete" />
 
                 <ImageView
@@ -104,65 +106,32 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@+id/rvTeam"
+                    app:layout_constraintBottom_toTopOf="@+id/lvTeam"
                     app:layout_constraintEnd_toStartOf="@id/tvSelectTeam"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_add_stock_opname" />
-
-                <TextView
-                    android:id="@+id/tvPickMembers"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/pick_fishing_team"
-                    android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@id/spFishingTeam"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Spinner
-                    android:id="@+id/spFishingTeam"
-                    style="@style/spinner_style"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:dropDownWidth="match_parent"
-                    android:focusableInTouchMode="true"
-                    android:requiresFadingEdge="horizontal"
-                    android:spinnerMode="dropdown"
-                    android:textAlignment="textStart"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="@id/tvSelectTeam"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.496"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvPickMembers"
-                    tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
 
                 <TextView
                     android:id="@+id/tvSelectTeam"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="8dp"
                     android:gravity="center_horizontal"
-                    android:text="@string/maintenance_team"
+                    android:text="@string/pick_fishing_team"
                     android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/rvTeam"
+                    app:layout_constraintBottom_toTopOf="@+id/lvTeam"
                     app:layout_constraintEnd_toStartOf="@+id/ivDeleteEmployee"
                     app:layout_constraintStart_toEndOf="@+id/ivAddEmployee"
-                    app:layout_constraintTop_toBottomOf="@id/spFishingTeam" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvTeam"
+                <ListView
+                    android:id="@+id/lvTeam"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="8dp"
@@ -172,14 +141,12 @@
                     android:paddingStart="10dp"
                     android:scrollbars="vertical"
                     android:verticalScrollbarPosition="right"
-                    app:flow_verticalAlign="top"
                     app:layout_constraintBottom_toTopOf="@+id/tvNumberEmployees"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvSelectTeam">
-
-                </androidx.recyclerview.widget.RecyclerView>
+                </ListView>
 
                 <TextView
                     android:id="@+id/tvNumberEmployees"
@@ -193,20 +160,20 @@
                     android:textColor="@color/label_blue"
                     android:textSize="24sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/tvEmployeesCount"
+                    app:layout_constraintEnd_toStartOf="@+id/tvInMtTeamCount"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rvTeam" />
+                    app:layout_constraintTop_toBottomOf="@+id/lvTeam" />
 
                 <TextView
-                    android:id="@+id/tvEmployeesCount"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvInMtTeamCount"
+                    android:layout_width="50dp"
                     android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/border_bottom"
                     android:gravity="center"
                     android:inputType="number"
-                    android:text="10"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textIsSelectable="false"
@@ -214,7 +181,7 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvNumberEmployees"
-                    app:layout_constraintTop_toBottomOf="@+id/rvTeam" />
+                    app:layout_constraintTop_toBottomOf="@+id/lvTeam" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -251,13 +218,15 @@
                 android:padding="1dp">
 
                 <MultiAutoCompleteTextView
-                    android:id="@+id/multiAutoCompleteTextView"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/atvInMtWorkDescription"
+                    android:layout_width="330dp"
+                    android:layout_height="0dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"
                     android:background="@drawable/bg_rounded_dialog_input"
                     android:fadeScrollbars="false"
+                    android:gravity="top"
                     android:hint="@string/maintenance_remarks"
                     android:padding="5dp"
                     android:paddingStart="10dp"
@@ -266,6 +235,7 @@
                     android:scrollbarFadeDuration="0"
                     android:textColorHint="@color/black"
                     android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

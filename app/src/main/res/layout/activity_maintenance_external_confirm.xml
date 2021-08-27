@@ -6,7 +6,7 @@ android:id="@+id/rootLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
-tools:context=".ui.activity.maintenance.MaintenanceExternalConfirmActivity">
+tools:context=".ui.maintenance.MaintenanceExternalConfirmActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -335,14 +335,14 @@ tools:context=".ui.activity.maintenance.MaintenanceExternalConfirmActivity">
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/etPasswordFishing"
+                app:layout_constraintBottom_toTopOf="@+id/etPasswordExtMaintenance"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/etPasswordFishing"
+                android:id="@+id/etPasswordExtMaintenance"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="70dp"

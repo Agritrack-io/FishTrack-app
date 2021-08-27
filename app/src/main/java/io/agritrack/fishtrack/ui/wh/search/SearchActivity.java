@@ -1,0 +1,242 @@
+package io.agritrack.fishtrack.ui.wh.search;
+
+import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.hdhe.uhf.reader.UhfReader;
+import com.google.android.gms.common.util.Strings;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.common.Constants;
+import io.agritrack.fishtrack.data.db.MobileDB;
+import io.agritrack.fishtrack.data.model.wh.Asset;
+import io.agritrack.fishtrack.rfid.ScanFilterThread;
+import io.agritrack.fishtrack.ui.WhMenuActivity;
+import io.agritrack.fishtrack.ui.adapter.FilterableAdapter;
+import io.agritrack.fishtrack.ui.bo.GenericListModel;
+import io.agritrack.fishtrack.ui.custom.ToggleGroup;
+import io.agritrack.fishtrack.ui.service.LocalPreferences;
+
+import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+
+public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+
+    private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+    private UhfReader uhfReader;
+    private ScanFilterThread assetSearchThread = new ScanFilterThread();
+    private boolean scanning = false;
+    private ProgressBar pbProximity;
+    private MobileDB db;
+    private FilterableAdapter adapterAssets;
+    private ToggleGroup tgSearchAssetType;
+    private EditText etAssetBarcode;
+    private SearchView svSearchAsset;
+    private TextView tvProximity;
+    private RecyclerView rvAssets;
+    private Button btnSearchAsset;
+    private String selectedAssetType;
+    private String selectedBarcode = "";
+
+    // Instantiate a clickListener to be passed to adapterAssets.
+    // It will be used to set the selectedBarcode var to the selected item barcode.
+    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            selectedBarcode = ((AppCompatTextView) v).getText().toString();
+            etAssetBarcode.setText(selectedBarcode);
+        }
+    };
+
+    private final Handler handler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1: {
+                    String epc_from_tag = msg.getData().getString("epc");
+                    int rssi_from_tag = msg.getData().getInt("rssi");
+                    System.out.println("RSSI:" + rssi_from_tag);
+                    int rssi_norm = normalize(rssi_from_tag);
+
+                    if (rssi_norm > 20 && rssi_norm < 95) {
+                        tvProximity.setText(String.valueOf(rssi_norm));
+                        pbProximity.setProgress(rssi_norm);
+                        if (rssi_norm < 95 && rssi_norm >= 80) {
+                            toneG.startTone(ToneGenerator.TONE_DTMF_D, 200);
+                        } else if (rssi_norm < 80 && rssi_norm >= 60) {
+                            toneG.startTone(ToneGenerator.TONE_DTMF_9, 130);
+                        } else if (rssi_norm < 60 && rssi_norm >= 40) {
+                            toneG.startTone(ToneGenerator.TONE_DTMF_5, 100);
+                        } else {
+                            toneG.startTone(ToneGenerator.TONE_DTMF_1, 50);
+                        }
+                    } else if (rssi_norm >= 95) {
+                        toneG.startTone(ToneGenerator.TONE_DTMF_D, 300);
+                        tvProximity.setText(">= 95%");
+                        pbProximity.setProgress(100);
+                    } else {
+                        toneG.startTone(ToneGenerator.TONE_DTMF_1, 10);
+                        tvProximity.setText("<= 5%");
+                        pbProximity.setProgress(0);
+                    }
+                }
+            }
+        }
+
+        private int normalize(int rssi) {
+            final double MAX_RSSI = -50;
+            final double MIN_RSSI = -75d;
+            rssi = rssi > -22 ? -22 : rssi;
+            rssi = rssi < -71 ? -71 : rssi;
+            return (int) ((rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI) * 100);
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search);
+
+        // get an instance of local DB
+        db = MobileDB.getInstance(getContext());
+
+        // set Header Info
+        TextView tvHeader = findViewById(R.id.tvHeaderSearch);
+        tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // get  references of the controls
+        assignCtrlVars();
+
+        // initialize scanning threads
+        prepareScanAvailableBinsButton();
+
+        configFooter();
+    }
+
+    @Override
+    public void onCheckedChanged(ToggleGroup group, int checkedId) {
+        if (checkedId == R.id.tbCage) {
+            selectedAssetType = Constants.ftCage;
+        } else if (checkedId == R.id.tbNet) {
+            selectedAssetType = Constants.ftNet;
+        } else if (checkedId == R.id.tbBin) {
+            selectedAssetType = Constants.ftBin;
+        }
+        loadAssetsFromLocalDB();
+    }
+
+    protected void configFooter() {
+        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
+        ivBack.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+            startActivity(i);
+        });
+    }
+
+    private void assignCtrlVars() {
+        tgSearchAssetType = findViewById(R.id.tgSearchAssetType);
+        svSearchAsset = findViewById(R.id.svSearchAsset);
+        etAssetBarcode = findViewById(R.id.etAssetBarcode);
+        rvAssets = findViewById(R.id.rvAssets);
+        btnSearchAsset = findViewById(R.id.btnSearchAsset);
+        pbProximity = findViewById(R.id.pbProximity);
+        tvProximity = findViewById(R.id.tvProximity);
+
+        tgSearchAssetType.setOnCheckedChangeListener(this);
+        rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rvAssets.setItemAnimator(new DefaultItemAnimator());
+
+        svSearchAsset.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapterAssets.getFilter().filter(newText);
+                return false;
+            }
+        });
+        svSearchAsset.setOnClickListener(view -> {
+            pbProximity.setProgress(0);
+            tvProximity.setText(null);
+        });
+    }
+
+    private void loadAssetsFromLocalDB() {
+        // load assets for current Site and filter by asset type (if selected).
+        List<Asset> assetsList = db.assetDAO().getAll(); //getAssetsForType(selectedAssetType);
+        if (assetsList != null && !assetsList.isEmpty()) {
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.barcode)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
+            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets.getFilter().filter("");
+            this.rvAssets.setAdapter(adapterAssets);
+        }
+    }
+
+    private void prepareScanAvailableBinsButton() {
+        assetSearchThread.setHandler(this.handler);
+
+        // RFID scanning functionality
+        uhfReader = UhfReader.getInstance();
+        uhfReader.setOutputPower(33);
+
+        final Button scanButton = findViewById(R.id.btnSearchAsset);
+        scanButton.setOnClickListener(view -> {
+            scanning = !scanning;
+
+            selectedBarcode = etAssetBarcode.getText().toString();
+            if (Strings.isEmptyOrWhitespace(selectedBarcode)) {
+                runOnUiThread(() -> Toast.makeText(getContext(), R.string.no_epc_filter_selected, Toast.LENGTH_LONG).show());
+            }
+
+            // Following check is required to instantiate a ScanningThread that was stopped previously.
+            if (assetSearchThread.getState() == Thread.State.TERMINATED) {
+                assetSearchThread = new ScanFilterThread();
+            }
+
+            //update scanning, uhfReader, tvPlatformName values in thread
+            assetSearchThread.setScanInProgress(scanning);
+            assetSearchThread.setUhfReader(uhfReader);
+            assetSearchThread.setHandler(this.handler);
+            assetSearchThread.setFilterEPC(selectedBarcode);
+
+            if (scanning) {
+                scanButton.setText(R.string.stop_scan);
+                if (assetSearchThread.getState() == Thread.State.NEW) {
+                    assetSearchThread.start();
+                }
+            } else {
+                scanButton.setText(R.string.title_search);
+                try {
+                    assetSearchThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+}

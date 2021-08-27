@@ -1,12 +1,13 @@
 package io.agritrack.fishtrack.state;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
-import io.agritrack.fishtrack.data.MobileDB;
+import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
 import io.agritrack.fishtrack.data.model.tx.IncomingWHTransaction;
 import io.agritrack.fishtrack.data.model.tx.ProcessingTransaction;
+import io.agritrack.fishtrack.data.model.tx.RepairTransaction;
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
 
 public class GlobalState {
@@ -20,8 +21,11 @@ public class GlobalState {
     public static OutgoingWHRecord recWHOutgoing = new OutgoingWHRecord();
     public static InventoryWHRecord recWHInventory = new InventoryWHRecord();
 
+    public static RepairRecord recInternalRepair = new RepairRecord();
+    public static RepairRecord recExternalRepair = new RepairRecord();
 
-    private GlobalState() { }
+    private GlobalState() {
+    }
 
     public static FishingRecord initFishingTx() {
         recFishing = new FishingRecord();
@@ -56,6 +60,16 @@ public class GlobalState {
     public static HarvestRecord initHarvestTx() {
         recHarvest = new HarvestRecord();
         return recHarvest;
+    }
+
+    public static RepairRecord initInternalRepairTx() {
+        recInternalRepair = new RepairRecord();
+        return recInternalRepair;
+    }
+
+    public static RepairRecord initExternalRepairTx() {
+        recExternalRepair = new RepairRecord();
+        return recExternalRepair;
     }
 
     public static FishingTransaction commitFishing(MobileDB db) {
@@ -93,7 +107,7 @@ public class GlobalState {
             txTransport.driverName = recTransport.driverName;
             txTransport.truckLicensePlate = recTransport.licensePlate;
             txTransport.securityClipNo = recTransport.clipNumber;
-            txTransport.driverSignature = new String(recTransport.signatureBytes, Charset.forName("UTF8"));
+            txTransport.driverSignature = new String(recTransport.signatureBytes, StandardCharsets.UTF_8);
             txTransport.isTruckRefrigerated = recTransport.refrigeratedTruck;
             txTransport.isParallelTransport = recTransport.parallelTransport;
             txTransport.transportHead = "N/A";
@@ -133,6 +147,32 @@ public class GlobalState {
             db.whIncomingTransactionDAO().insert(txWHIncoming);
 
             return txWHIncoming;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static RepairTransaction commitInternalRepair(MobileDB db) {
+        try {
+            RepairTransaction txIndoorsRepair = new RepairTransaction();
+
+            db.repairTransactionDAO().insert(txIndoorsRepair);
+
+            return txIndoorsRepair;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static RepairTransaction commitExternalRepair(MobileDB db) {
+        try {
+            RepairTransaction txOutdoorsRepair = new RepairTransaction();
+
+            db.repairTransactionDAO().insert(txOutdoorsRepair);
+
+            return txOutdoorsRepair;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
