@@ -40,8 +40,8 @@ public class FishingCageActivity extends AppCompatActivity {
         TextView tvHeader = findViewById(R.id.tvHeaderFishingCage);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
-        tvNetRFID = findViewById(R.id.tvNetName);
-        tvCageRFID = findViewById(R.id.tvCageName);
+        // get  references of the controls
+        assignCtrlVars();
 
         // initialize scanning threads
         prepareScanCageButton();
@@ -137,6 +137,11 @@ public class FishingCageActivity extends AppCompatActivity {
             Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
             startActivity(i);
         });
+    }
+
+    private void assignCtrlVars() {
+        tvNetRFID = findViewById(R.id.tvNetName);
+        tvCageRFID = findViewById(R.id.tvCageName);
     }
 
     private void initControlsFromState() {
