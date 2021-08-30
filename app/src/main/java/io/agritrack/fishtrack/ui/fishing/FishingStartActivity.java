@@ -34,6 +34,10 @@ public class FishingStartActivity extends AppCompatActivity {
     private ScanInventoryThread inventoryThread = new ScanInventoryThread();
     private boolean scanning = false;
 
+    private TextView tvPlatformName;
+    private Spinner harvestSpinner, speciesSpinner;
+    private EditText etQty;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,11 +50,13 @@ public class FishingStartActivity extends AppCompatActivity {
         TextView tvHeader = findViewById(R.id.tvHeaderFishingStart);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
+        // get  references of the controls
+        assignCtrlVars();
+
         // load users with Harvest role and fill in the spHarvest Spinner.
         List<AppUser> harvestRequestUsers = db.userDAO().getByRole("ROLE_HARVEST");
         if(harvestRequestUsers!=null && !harvestRequestUsers.isEmpty()) {
             String[] harvestRequester = harvestRequestUsers.stream().map(x->x.email).toArray(String[]::new);
-            Spinner harvestSpinner = findViewById(R.id.spHarvest);
             ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, harvestRequester);
             hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
             harvestSpinner.setAdapter(hrAdapter);
@@ -60,7 +66,6 @@ public class FishingStartActivity extends AppCompatActivity {
         List<FishSpecies> fishSpecies = db.speciesDAO().getAll();
         if(fishSpecies!=null && !fishSpecies.isEmpty()) {
             String[] species = fishSpecies.stream().map(x->x.localName).toArray(String[]::new);
-            Spinner speciesSpinner = (Spinner) findViewById(R.id.spFishType);
             ArrayAdapter<String> spAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, species);
             spAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
             speciesSpinner.setAdapter(spAdapter);
@@ -71,7 +76,6 @@ public class FishingStartActivity extends AppCompatActivity {
         uhfReader.setOutputPower(33);
         final Button scanButton = findViewById(R.id.btnScanPlatform);
         scanButton.setOnClickListener(view -> {
-            TextView tvPlatformName = findViewById(R.id.tvPlatformName);
             scanning = !scanning;
 
             // Following check is required to instantiate a ScanningThread that was stopped previously.
@@ -122,28 +126,31 @@ public class FishingStartActivity extends AppCompatActivity {
         });
     }
 
+    private void assignCtrlVars() {
+        harvestSpinner = findViewById(R.id.spHarvest);
+        speciesSpinner = findViewById(R.id.spFishType);
+        tvPlatformName = findViewById(R.id.tvPlatformName);
+        etQty = findViewById(R.id.etRequestedQuantity);
+    }
+
     private void initControlsFromState() {
 
         FishingRecord hvst = GlobalState.recFishing;
 
         if(hvst.requesterPos>-1) {
-            Spinner harvestSpinner = findViewById(R.id.spHarvest);
             harvestSpinner.setSelection(hvst.requesterPos);
         }
 
         if(hvst.speciesPos>-1) {
-            Spinner speciesSpinner = findViewById(R.id.spFishType);
             speciesSpinner.setSelection(hvst.speciesPos);
         }
 
         if(!Strings.isEmptyOrWhitespace(hvst.reqWeight)) {
-            EditText etQty = findViewById(R.id.etRequestedQuantity);
             etQty.setText(hvst.reqWeight);
         }
 
         if(!Strings.isEmptyOrWhitespace(hvst.platformRFID)) {
-            TextView tvPlatformRFID = findViewById(R.id.tvPlatformName);
-            tvPlatformRFID.setText(hvst.platformRFID);
+            tvPlatformName.setText(hvst.platformRFID);
         }
         //harvestSpinner.setSelection(arrayAdapter.getPosition("Category 2"));
     }
@@ -151,17 +158,12 @@ public class FishingStartActivity extends AppCompatActivity {
     private FishingRecord updateState() {
         FishingRecord fishingRecord = GlobalState.initFishingTx();
 
-        Spinner harvestSpinner = findViewById(R.id.spHarvest);
-        Spinner speciesSpinner = findViewById(R.id.spFishType);
-        EditText etQty = findViewById(R.id.etRequestedQuantity);
-        TextView tvPlatformRFID = findViewById(R.id.tvPlatformName);
-
         fishingRecord.requesterName = harvestSpinner.getSelectedItem().toString();
         fishingRecord.requesterPos = harvestSpinner.getSelectedItemPosition();
         fishingRecord.speciesName = speciesSpinner.getSelectedItem().toString();
         fishingRecord.speciesPos = speciesSpinner.getSelectedItemPosition();
         fishingRecord.reqWeight = etQty.getText().toString();
-        fishingRecord.platformRFID = tvPlatformRFID.getText().toString();
+        fishingRecord.platformRFID = tvPlatformName.getText().toString();
 
         return fishingRecord;
     }

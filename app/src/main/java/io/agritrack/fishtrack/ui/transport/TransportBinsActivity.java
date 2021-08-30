@@ -34,6 +34,9 @@ public class TransportBinsActivity extends AppCompatActivity {
 
     private TemplateRecyclerAdapter adapterBins;
 
+    private RecyclerView rvBinsForTransport;
+    private TextView tvBinsCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,16 +46,15 @@ public class TransportBinsActivity extends AppCompatActivity {
         TextView tvHeader = findViewById(R.id.tvHeaderTransportBins);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
-        RecyclerView rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
+        // get  references of the controls
+        assignCtrlVars();
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBinsForTransport.setLayoutManager(layoutManager);
         rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
         adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>());
         rvBinsForTransport.setAdapter(adapterBins);
         rvBinsForTransport.setNestedScrollingEnabled(false);
-
-        //Get reference of binsCount textView
-        TextView tvBinsCount = findViewById(R.id.tvBinsCount);
 
         scanResult.observe(this, response -> {
             if (response == null) {
@@ -71,6 +73,11 @@ public class TransportBinsActivity extends AppCompatActivity {
 
         // create Footer
         configFooter();
+    }
+
+    private void assignCtrlVars() {
+        rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
+        tvBinsCount = findViewById(R.id.tvBinsCount);
     }
 
     private void prepareScanAvailableBinsButton() {

@@ -146,16 +146,16 @@
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton
-                        android:id="@+id/tbLogger"
-                        android:layout_width="0dp"
+                        android:id="@+id/tbPlatform"
+                        android:layout_width="60dp"
                         android:layout_height="30dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/tooglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="LOGGER"
-                        android:textOn="LOGGER"
+                        android:textOff="PLATFORM"
+                        android:textOn="PLATFORM"
                         android:textSize="@dimen/text_view_font_size_medium" />
                 </io.agritrack.fishtrack.ui.custom.ToggleGroup>
 

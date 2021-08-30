@@ -11,7 +11,7 @@ public class Constants {
     public static final String ftNet = "NET";
     public static final String ftBin = "BIN";
 
-    public static final String ftLogger = "LOGGER";
+    public static final String ftPlatform = "PLATFORM";
 
     public static final String ftCleaning = "CLEANING";
     public static final String ftRepair = "REPAIR";

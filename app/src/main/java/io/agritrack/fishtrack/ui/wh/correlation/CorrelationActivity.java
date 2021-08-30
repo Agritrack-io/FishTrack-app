@@ -175,8 +175,8 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
             selectedAssetType = Constants.ftNet;
         } else if (checkedId == R.id.tbBin) {
             selectedAssetType = Constants.ftBin;
-        } else if (checkedId == R.id.tbLogger) {
-            selectedAssetType = Constants.ftLogger;
+        } else if (checkedId == R.id.tbPlatform) {
+            selectedAssetType = Constants.ftPlatform;
         }
 
         loadAssetsFromLocalDB();

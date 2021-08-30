@@ -43,16 +43,8 @@ public class FishingConfirmActivity extends AppCompatActivity {
         TextView tvHeader = findViewById(R.id.tvHeaderFishingConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
-        // get reference to Login
-        tvUsername = findViewById(R.id.tvUsername);
-
-        // get references to local TextViews
-        tvTotalQuantityCount = findViewById(R.id.tvTotalQuantityCount);
-        tvReqQuantityCount = findViewById(R.id.tvReqQuantityCount);
-        tvNumberOfBinsCount = findViewById(R.id.tvNumberOfBinsCount);
-        tvNameCage = findViewById(R.id.tvNameCage);
-        tvTypeOfFishConfirm = findViewById(R.id.tvTypeOfFishConfirm);
-
+        // get  references of the controls
+        assignCtrlVars();
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -73,6 +65,15 @@ public class FishingConfirmActivity extends AppCompatActivity {
             Intent i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
             startActivity(i);
         });
+    }
+
+    private void assignCtrlVars() {
+        tvTotalQuantityCount = findViewById(R.id.tvTotalQuantityCount);
+        tvReqQuantityCount = findViewById(R.id.tvReqQuantityCount);
+        tvNumberOfBinsCount = findViewById(R.id.tvNumberOfBinsCount);
+        tvNameCage = findViewById(R.id.tvNameCage);
+        tvTypeOfFishConfirm = findViewById(R.id.tvTypeOfFishConfirm);
+        tvUsername = findViewById(R.id.tvUsername);
     }
 
     private void initControlsFromState() {

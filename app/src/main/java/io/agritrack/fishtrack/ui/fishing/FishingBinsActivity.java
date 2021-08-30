@@ -34,6 +34,9 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     private TemplateRecyclerAdapter adapterBins;
 
+    private RecyclerView rvBins;
+    private TextView tvBinsCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,16 +46,15 @@ public class FishingBinsActivity extends AppCompatActivity {
         TextView tvHeader = findViewById(R.id.tvHeaderFishingBins);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
-        RecyclerView rvBins = findViewById(R.id.rvBins);
+        // get  references of the controls
+        assignCtrlVars();
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBins.setLayoutManager(layoutManager);
         rvBins.setItemAnimator(new DefaultItemAnimator());
         adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>());
         rvBins.setAdapter(adapterBins);
         rvBins.setNestedScrollingEnabled(false);
-
-        //Get reference of binsCount textView
-        TextView tvBinsCount = findViewById(R.id.tvBinsCount);
 
         scanResult.observe(this, response -> {
             if (response == null) {
@@ -129,6 +131,11 @@ public class FishingBinsActivity extends AppCompatActivity {
         });
     }
 
+    private void assignCtrlVars() {
+        rvBins = findViewById(R.id.rvBins);
+        tvBinsCount = findViewById(R.id.tvBinsCount);
+    }
+
     private void initControlsFromState() {
         FishingRecord hvst = GlobalState.recFishing;
 
@@ -136,7 +143,6 @@ public class FishingBinsActivity extends AppCompatActivity {
             adapterBins.setValues((ArrayList<String>) hvst.availBins);
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
-            TextView tvBinsCount = findViewById(R.id.tvBinsCount);
             tvBinsCount.setText(String.valueOf(hvst.availBins.size()));
         }
     }

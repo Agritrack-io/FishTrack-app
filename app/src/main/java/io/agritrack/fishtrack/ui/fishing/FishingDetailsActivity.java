@@ -27,31 +27,27 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
     private SwitchCompat bIceAdequacy;
     private EditText etIceSupplier;
     private Spinner spSeaTemp;
+    private TextView tvPathologist, tvLastFed, tvSpecies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_details);
 
-        // get references to input controls
-        bIceAdequacy = findViewById(R.id.switchIceAdequacy);
-        etIceSupplier = findViewById(R.id.etIceSupplier);
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingDetails);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
-        TextView tvPathologist = findViewById(R.id.tvNameOfIchthyopathologist);
+        // get  references of the controls
+        assignCtrlVars();
+
         tvPathologist.setText(GlobalState.recFishing.pathologist);
 
-        TextView tvLastFed = findViewById(R.id.tvDateOfLastNutrition);
         tvLastFed.setText(GlobalState.recFishing.lastFed != null ? GlobalState.recFishing.lastFed.toString() : "");
 
-        TextView tvSpecies = findViewById(R.id.tvTypeOfFish);
         tvSpecies.setText(GlobalState.recFishing.speciesName);
 
         // fill the Temperatures spinner with data
-        spSeaTemp = findViewById(R.id.spSeaTemp);
         ArrayAdapter<Double> temperaturesAdapter = new ArrayAdapter<Double>(this, R.layout.simple_spinner_item, this.temperatures);
         spSeaTemp.setAdapter(temperaturesAdapter);
 
@@ -82,6 +78,15 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
             Intent i = new Intent(getApplicationContext(), FishingCageActivity.class);
             startActivity(i);
         });
+    }
+
+    private void assignCtrlVars() {
+        spSeaTemp = findViewById(R.id.spSeaTemp);
+        tvPathologist = findViewById(R.id.tvNameOfIchthyopathologist);
+        tvLastFed = findViewById(R.id.tvDateOfLastNutrition);
+        tvSpecies = findViewById(R.id.tvTypeOfFish);
+        bIceAdequacy = findViewById(R.id.switchIceAdequacy);
+        etIceSupplier = findViewById(R.id.etIceSupplier);
     }
 
     private void initControlsFromState() {
