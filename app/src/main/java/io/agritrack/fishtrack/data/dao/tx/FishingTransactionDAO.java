@@ -21,6 +21,9 @@ public interface FishingTransactionDAO {
     @Query("SELECT * from fishing_transaction where id=:fishingTransactionId LIMIT 1")
     FishingTransaction getById(Long fishingTransactionId);
 
+    @Query("SELECT * from fishing_transaction where status='NONE' or status='PENDING' LIMIT 1")
+    FishingTransaction getMostRecentOpenTx();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(FishingTransaction... fishingTransactions);
 

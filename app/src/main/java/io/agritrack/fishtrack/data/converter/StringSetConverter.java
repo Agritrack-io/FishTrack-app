@@ -13,7 +13,7 @@ public class StringSetConverter {
     }
 
     @TypeConverter
-    public static String fromArrayList(Set<String> list) {
+    public static String fromSet(Set<String> list) {
         return list.stream().map(String::valueOf).collect(Collectors.joining(","));
     }
 }

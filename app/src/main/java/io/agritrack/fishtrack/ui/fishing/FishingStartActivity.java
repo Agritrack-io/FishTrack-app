@@ -149,7 +149,7 @@ public class FishingStartActivity extends AppCompatActivity {
     }
 
     private FishingRecord updateState() {
-        FishingRecord fishingRecord = GlobalState.initFishingTx();
+        FishingRecord fishingRecord = GlobalState.recFishing;
 
         Spinner harvestSpinner = findViewById(R.id.spHarvest);
         Spinner speciesSpinner = findViewById(R.id.spFishType);

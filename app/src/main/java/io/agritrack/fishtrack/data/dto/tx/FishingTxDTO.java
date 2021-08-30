@@ -18,6 +18,8 @@ public class FishingTxDTO {
     public Double sea_temperature;
     public Double total_quantity;
     public Short number_harvest_bins;
+    public String harvest_bins;
+    public String status;
 
     public static FishingTxDTO convert(FishingTransaction fishing) {
         FishingTxDTO fishingTxDTO = new FishingTxDTO();
@@ -35,6 +37,9 @@ public class FishingTxDTO {
         fishingTxDTO.sea_temperature = fishing.seaTemperature;
         fishingTxDTO.total_quantity = fishing.totalQty;
         fishingTxDTO.number_harvest_bins = fishing.harvestBinsCnt;
+        fishingTxDTO.harvest_bins = fishing.harvestBins;
+        fishingTxDTO.status = fishing.txStatus.name();
+
         return fishingTxDTO;
     }
 }
