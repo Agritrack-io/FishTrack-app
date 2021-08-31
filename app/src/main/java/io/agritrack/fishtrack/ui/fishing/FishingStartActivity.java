@@ -156,7 +156,7 @@ public class FishingStartActivity extends AppCompatActivity {
     }
 
     private FishingRecord updateState() {
-        FishingRecord fishingRecord = GlobalState.initFishingTx();
+        FishingRecord fishingRecord = GlobalState.recFishing;
 
         fishingRecord.requesterName = harvestSpinner.getSelectedItem().toString();
         fishingRecord.requesterPos = harvestSpinner.getSelectedItemPosition();

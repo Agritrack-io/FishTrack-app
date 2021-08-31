@@ -1,5 +1,7 @@
 package io.agritrack.fishtrack.state;
 
+import android.text.TextUtils;
+
 import java.nio.charset.StandardCharsets;
 
 import io.agritrack.fishtrack.data.db.MobileDB;
@@ -88,7 +90,7 @@ public class GlobalState {
             txFishing.harvestBinsCnt = recFishing.totalBinsUsed;
             txFishing.orderedQuantity = Double.valueOf(recFishing.reqWeight);
             txFishing.totalQty = recFishing.totalFishWeight;
-            //txFishing.totalQty = recFishing.requesterName;
+            txFishing.harvestBins = TextUtils.join(",", recFishing.availBins);
 
             db.fishingTransactionDAO().insert(txFishing);
 

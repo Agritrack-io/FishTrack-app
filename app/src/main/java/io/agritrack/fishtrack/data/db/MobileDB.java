@@ -10,6 +10,7 @@ import androidx.room.TypeConverters;
 import io.agritrack.fishtrack.data.converter.DateConverter;
 import io.agritrack.fishtrack.data.converter.LongListConverter;
 import io.agritrack.fishtrack.data.converter.StringListConverter;
+import io.agritrack.fishtrack.data.converter.TxStatusEnumConverter;
 import io.agritrack.fishtrack.data.dao.AppUserDAO;
 import io.agritrack.fishtrack.data.dao.CageDetailsDAO;
 import io.agritrack.fishtrack.data.dao.SiteDAO;
@@ -43,8 +44,8 @@ import io.agritrack.fishtrack.data.model.wh.Asset;
         CageDetails.class, Employee.class, FishSpecies.class, Reader.class,
         FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class,
         IncomingWHTransaction.class, RepairTransaction.class, HarvestTransaction.class},
-        version = 16, exportSchema = false)
-@TypeConverters({DateConverter.class, LongListConverter.class, StringListConverter.class})
+        version = 1, exportSchema = false)
+@TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringListConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
     private static MobileDB INSTANCE;

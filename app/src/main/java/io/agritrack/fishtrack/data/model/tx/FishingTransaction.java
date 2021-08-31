@@ -3,8 +3,12 @@ package io.agritrack.fishtrack.data.model.tx;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 import java.util.Date;
+
+import io.agritrack.fishtrack.data.converter.TxStatusEnumConverter;
+import io.agritrack.fishtrack.enums.TxStatus;
 
 @Entity(tableName = "fishing_transaction")
 public class FishingTransaction {
@@ -50,6 +54,13 @@ public class FishingTransaction {
 
     @ColumnInfo(name = "number_harvest_bins")
     public Short harvestBinsCnt;
+
+    @ColumnInfo(name = "harvest_bins")
+    public String harvestBins;
+
+    @TypeConverters(TxStatusEnumConverter.class)
+    @ColumnInfo(name = "status")
+    public TxStatus txStatus = TxStatus.NONE;
 
    /* @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "harvest_load_id", foreignKey = @ForeignKey(name="FK_Fishing_Harvest_Load"))
