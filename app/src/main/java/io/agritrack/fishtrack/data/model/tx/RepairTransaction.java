@@ -21,6 +21,9 @@ public class RepairTransaction {
     @ColumnInfo(name = "repair_type")
     public String repairType;
 
+    @ColumnInfo(name = "repair_time")
+    public String repairTime;
+
     @ColumnInfo(name = "on_field")
     public Boolean onField;
 

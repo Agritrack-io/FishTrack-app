@@ -19,4 +19,5 @@ public class RepairRecord {
     public int supplierPos = -1;
     public String manager;
     public String cost;
+    public String repairTime;
 }

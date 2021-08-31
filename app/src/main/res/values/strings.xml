@@ -243,6 +243,7 @@
     <string name="choose_supplier">Choose supplier</string>
     <string name="maintenance_manager">Maintenance manager</string>
     <string name="maintenance_cost">Maintenance cost</string>
+    <string name="maintenance_time">Maintenance time (hours)</string>
 
     <string name="supplier_label">Supplier:</string>
     <string name="maintenance_manager_label">Manager:</string>

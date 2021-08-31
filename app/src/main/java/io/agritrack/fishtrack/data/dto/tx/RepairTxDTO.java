@@ -9,6 +9,7 @@ public class RepairTxDTO {
     public String assetRFID;
     public String assetType;
     public String repairType;
+    public String repairTime;
     public Boolean onField;
     public Boolean internalRepair;
     public String repairFTEs;
@@ -25,6 +26,7 @@ public class RepairTxDTO {
         repairTransaction.assetRFID = repairTxDTO.assetRFID;
         repairTransaction.assetType = repairTxDTO.assetType;
         repairTransaction.repairType = repairTxDTO.repairType;
+        repairTransaction.repairTime = repairTxDTO.repairTime;
         repairTransaction.onField = repairTxDTO.onField;
         repairTransaction.internalRepair = repairTxDTO.internalRepair;
         repairTransaction.repairFTEs = repairTxDTO.repairFTEs;

@@ -31,7 +31,7 @@ import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 public class MaintenanceExternalSupplierActivity extends AppCompatActivity implements OnItemClickListener {
 
     private ListView lvSupplier;
-    private EditText etMaintenanceManager, etMaintenanceCost;
+    private EditText etMaintenanceManager, etMaintenanceCost, etMaintenanceTime;
     private MultiAutoCompleteTextView mtvExtRemarks;
 
     private MobileDB db;
@@ -90,6 +90,7 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
         lvSupplier = findViewById(R.id.lvSupplier);
         etMaintenanceManager = findViewById(R.id.etMaintenanceManager);
         etMaintenanceCost = findViewById(R.id.etMaintenanceCost);
+        etMaintenanceTime = findViewById(R.id.etMaintenanceTime);
         mtvExtRemarks = findViewById(R.id.mtvExtRemarks);
     }
 
@@ -108,7 +109,9 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
         if (!Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.cost)) {
             etMaintenanceCost.setText(GlobalState.recExternalRepair.cost);
         }
-
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.repairTime)) {
+            etMaintenanceTime.setText(GlobalState.recExternalRepair.repairTime);
+        }
         if (!Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.remarks)) {
             mtvExtRemarks.setText(GlobalState.recExternalRepair.remarks);
         }
@@ -119,6 +122,7 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
         GlobalState.recExternalRepair.supplierPos = supLoc;
         GlobalState.recExternalRepair.manager = etMaintenanceManager.getText().toString();
         GlobalState.recExternalRepair.cost = etMaintenanceCost.getText().toString();
+        GlobalState.recExternalRepair.repairTime = etMaintenanceTime.getText().toString();
         GlobalState.recExternalRepair.remarks = mtvExtRemarks.getText().toString();
     }
 

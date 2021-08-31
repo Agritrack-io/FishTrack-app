@@ -242,6 +242,7 @@
     <string name="choose_supplier">Επιλέξτε προμηθευτή</string>
     <string name="maintenance_manager">Εισάγετε υπέυθυνο</string>
     <string name="maintenance_cost">Εισάγετε κόστος</string>
+    <string name="maintenance_time">Εισάγετε χρόνο (ώρες)</string>
 
     <string name="supplier_label">Προμηθευτής:</string>
     <string name="maintenance_manager_label">Υπεύθυνος:</string>
