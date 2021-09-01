@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -42,8 +43,13 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToSupervisorconfirm);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), TransportSupervisorConfirmActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), TransportSupervisorConfirmActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToTransportBins);
@@ -102,5 +108,15 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
     private void updateState() {
         GlobalState.recTransport.signature = signatureView.getBitmap();
         GlobalState.recTransport.signatureBytes = signatureView.getBytes();
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(!signatureView.isSigned()){
+            sb.append(String.format("\n%s is missing", "'Signature'"));
+        }
+
+        return sb.toString();
     }
 }

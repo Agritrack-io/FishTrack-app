@@ -175,10 +175,6 @@ public class LoginActivity extends AppCompatActivity {
         dlgBuilder.setView(dialogView);
         dlgBuilder.setCancelable(false);
         dialog = dlgBuilder.create();
-
-        // Remove focus from children controls...
-        ConstraintLayout rootLayout = findViewById(R.id.loginActivityLayout);
-        rootLayout.requestFocus();
     }
 
     private void noCredentialsEnteredAlert() {

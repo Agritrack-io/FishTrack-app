@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.hdhe.uhf.reader.UhfReader;
+import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -120,8 +122,13 @@ public class FishingBinsActivity extends AppCompatActivity {
         ImageView ivNext = findViewById(R.id.ivToTeam);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToMain);
@@ -149,6 +156,16 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     private void updateState() {
         GlobalState.recFishing.availBins = adapterBins.getValues();
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(GlobalState.recFishing.availBins==null || GlobalState.recFishing.availBins.isEmpty()){
+            sb.append(String.format("\n%s is missing", "'Bins for usage'"));
+        }
+
+        return sb.toString();
     }
 
     @Override

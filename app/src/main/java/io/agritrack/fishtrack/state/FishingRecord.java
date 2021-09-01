@@ -21,7 +21,7 @@ public class FishingRecord {
     public List<Long> fishingTeam;
     public String pathologist;
     public Date lastFed;
-    public Boolean adequateIce = Boolean.FALSE;
+    public Boolean adequateIce = Boolean.TRUE;
     public String iceSupplier;
     public Double totalFishWeight;
     public Short totalBinsUsed;

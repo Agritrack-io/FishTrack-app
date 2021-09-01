@@ -9,7 +9,7 @@ public class TransportationRecord {
     public String destinationCompany;
     public String driverName;
     public String licensePlate;
-    public Boolean refrigeratedTruck = Boolean.FALSE;
+    public Boolean refrigeratedTruck = Boolean.TRUE;
     public Boolean parallelTransport = Boolean.FALSE;
     public String clipNumber;
     public int sitePos = -1;

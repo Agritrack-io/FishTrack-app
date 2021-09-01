@@ -10,8 +10,11 @@ import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,8 +69,13 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         ImageView ivNext = findViewById(R.id.ivToCage);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), FishingCageActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), FishingCageActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToBins);
@@ -102,6 +110,16 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
                 GlobalState.recFishing.fishingTeam.add(Long.valueOf(sp.keyAt(idx)));
             }
         }
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(GlobalState.recFishing.fishingTeam==null || GlobalState.recFishing.fishingTeam.isEmpty()){
+            sb.append(String.format("\n%s is missing", "'Team members'"));
+        }
+
+        return sb.toString();
     }
 
     @Override

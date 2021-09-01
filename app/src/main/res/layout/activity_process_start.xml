@@ -2,10 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootLayout"
+    android:id="@+id/fishingStartActivityLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     tools:context=".ui.process.ProcessStartActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -99,6 +101,7 @@
                     android:background="@drawable/bg_rounded_dialog_input"
                     android:ems="10"
                     android:hint="@string/dispatch_note"
+                    android:inputType="text"
                     android:padding="5dp"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"

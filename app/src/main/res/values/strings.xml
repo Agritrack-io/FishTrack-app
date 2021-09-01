@@ -75,7 +75,7 @@
     <string name="scan_net">Scan Net tag</string>
 
     <string name="title_cage_quantity_no_bins">CAGE / REQUESTED QUANTITY / # BINS</string>
-    <string name="choose_sea_temp">Please choose sea temp</string>
+    <string name="choose_sea_temp">Choose sea temp</string>
     <string name="ichthyopathologist">Ichthyopathologist</string>
     <string name="ichthyopathologist_name">Nikos Papagiannakis</string>
     <string name="last_fed">Date of last nutrition</string>

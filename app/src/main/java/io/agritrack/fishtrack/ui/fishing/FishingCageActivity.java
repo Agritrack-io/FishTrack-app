@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.hdhe.uhf.reader.UhfReader;
+import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.db.MobileDB;
@@ -128,8 +130,13 @@ public class FishingCageActivity extends AppCompatActivity {
         ImageView ivNext = findViewById(R.id.ivToDetails);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToTeam);
@@ -155,18 +162,32 @@ public class FishingCageActivity extends AppCompatActivity {
         CharSequence cageRFID = tvCageRFID.getText();
 
         if (cageRFID != null) {
-            CageDetails cage = db.cageDetailsDAO().getByRFId(cageRFID.toString());
+            GlobalState.recFishing.cageRFID = cageRFID.toString();
+            CageDetails cage = db.cageDetailsDAO().getByRFId(GlobalState.recFishing.cageRFID);
             if (cage != null) {
                 GlobalState.recFishing.speciesName = cage.fishType; //TODO: compare with Requested Species
                 GlobalState.recFishing.pathologist = cage.ichthyopathologist;
                 GlobalState.recFishing.lastFed = cage.lastFed;
-                GlobalState.recFishing.cageRFID = cageRFID.toString();
             } else {
                 // TODO:: add alert, no cage corresponding to RFID found in local DB!!
             }
         }
 
         GlobalState.recFishing.netRFID = tvNetRFID.getText().toString();
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recFishing.cageRFID)){
+            sb.append(String.format("\n%s is missing", "'Cage tag'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recFishing.netRFID)){
+            sb.append(String.format("\n%s is missing", "'Net tag'"));
+        }
+
+        return sb.toString();
     }
 
     @Override

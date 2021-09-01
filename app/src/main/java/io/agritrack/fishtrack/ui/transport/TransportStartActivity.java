@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -82,8 +83,13 @@ public class TransportStartActivity extends AppCompatActivity {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToTransportBins);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), TransportBinsActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), TransportBinsActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
@@ -134,5 +140,31 @@ public class TransportStartActivity extends AppCompatActivity {
         transportationRecord.parallelTransport = swParallelTransport.isChecked();
 
         return transportationRecord;
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.packagingSite)){
+            sb.append(String.format("\n%s is missing", "'Packaging site'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.destinationCompany)){
+            sb.append(String.format("\n%s is missing", "'Company'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverName)){
+            sb.append(String.format("\n%s is missing", "'Driver name'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.licensePlate)){
+            sb.append(String.format("\n%s is missing", "'License plate'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.clipNumber)){
+            sb.append(String.format("\n%s is missing", "'Security clip number'"));
+        }
+
+        return sb.toString();
     }
 }
