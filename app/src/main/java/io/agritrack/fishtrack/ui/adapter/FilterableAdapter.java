@@ -22,6 +22,7 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
     private View.OnClickListener itemsClickListener;
     private final ArrayList<GenericListModel> arrayList;
     private ArrayList<GenericListModel> arrayListFiltered;
+    private int selectedPos = RecyclerView.NO_POSITION;
 
     public FilterableAdapter(Context context, ArrayList<GenericListModel> arrayList, View.OnClickListener clickListener) {
         this.context = context;
@@ -39,6 +40,8 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
     @Override
     public void onBindViewHolder(viewHolder viewHolder, int position) {
         viewHolder.label.setText(arrayListFiltered.get(position).getLabel());
+        viewHolder.itemView.setSelected(selectedPos == position);
+
     }
 
     @Override

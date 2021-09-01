@@ -15,7 +15,7 @@ import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.enums.AssetType;
 import io.agritrack.fishtrack.state.GlobalState;
-import io.agritrack.fishtrack.state.IncomingWHRecord;
+import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
@@ -83,25 +83,25 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
         if (checkedId == R.id.tbAvramar) {
-            GlobalState.recWHIncoming.incomingFrom = Constants.ftAvramar;
+            GlobalState.recWHIncoming.from = Constants.ftAvramar;
             tvIncomingFrom.setText(Constants.ftAvramar);
         } else if (checkedId == R.id.tbSupplier) {
-            GlobalState.recWHIncoming.incomingFrom = Constants.ftSupplier;
+            GlobalState.recWHIncoming.from = Constants.ftSupplier;
             tvIncomingFrom.setText(Constants.ftSupplier);
         } else if (checkedId == R.id.tbAssetFrom) {
-            GlobalState.recWHIncoming.incomingFrom = Constants.ftAsset;
+            GlobalState.recWHIncoming.from = Constants.ftAsset;
             tvIncomingFrom.setText(Constants.ftAsset);
         } else if (checkedId == R.id.tbSite) {
-            GlobalState.recWHIncoming.incomingTo = Constants.ftSite;
+            GlobalState.recWHIncoming.to = Constants.ftSite;
             tvIncomingTo.setText(Constants.ftSite);
         } else if (checkedId == R.id.tbAssetTo) {
-            GlobalState.recWHIncoming.incomingTo = Constants.ftAsset;
+            GlobalState.recWHIncoming.to = Constants.ftAsset;
             tvIncomingTo.setText(Constants.ftAsset);
         }
     }
 
-    private IncomingWHRecord updateState() {
-        IncomingWHRecord whIncomingRecord = GlobalState.recWHIncoming;
+    private WHTxRecord updateState() {
+        WHTxRecord whIncomingRecord = GlobalState.recWHIncoming;
 
         if (spAssetType.getSelectedItem() != null) {
             whIncomingRecord.assetType = AssetType.valueOf(spAssetType.getSelectedItem().toString());
@@ -116,17 +116,17 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
             spAssetType.setSelection(GlobalState.recWHIncoming.assetTypePos);
         }
 
-        if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHIncoming.incomingFrom)) {
+        if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHIncoming.from)) {
             tgIncomingSource.check(R.id.tbAvramar);
-        } else if (Constants.ftSupplier.equalsIgnoreCase(GlobalState.recWHIncoming.incomingFrom)) {
+        } else if (Constants.ftSupplier.equalsIgnoreCase(GlobalState.recWHIncoming.from)) {
             tgIncomingSource.check(R.id.tbSupplier);
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.incomingFrom)) {
+        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.from)) {
             tgIncomingSource.check(R.id.tbAssetFrom);
         }
 
-        if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHIncoming.incomingTo)) {
+        if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHIncoming.to)) {
             tgIncomingDestination.check(R.id.tbSite);
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.incomingTo)) {
+        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.to)) {
             tgIncomingDestination.check(R.id.tbAssetTo);
         }
     }

@@ -5,12 +5,14 @@ import android.text.TextUtils;
 import java.nio.charset.StandardCharsets;
 
 import io.agritrack.fishtrack.data.db.MobileDB;
+import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
+import io.agritrack.fishtrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
-import io.agritrack.fishtrack.data.model.tx.IncomingWHTransaction;
 import io.agritrack.fishtrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.fishtrack.data.model.tx.RepairTransaction;
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
+import io.agritrack.fishtrack.enums.TxStatus;
 
 public class GlobalState {
 
@@ -19,8 +21,9 @@ public class GlobalState {
     public static TransportationRecord recTransport = new TransportationRecord();
     public static ProcessingRecord recProcessing = new ProcessingRecord();
 
-    public static IncomingWHRecord recWHIncoming = new IncomingWHRecord();
-    public static OutgoingWHRecord recWHOutgoing = new OutgoingWHRecord();
+    public static WHTxRecord recWHIncoming = new WHTxRecord();
+    public static WHTxRecord recWHOutgoing = new WHTxRecord();
+    public static WHCorrelationRecord recWHCorrelation = new WHCorrelationRecord();
     public static InventoryWHRecord recWHInventory = new InventoryWHRecord();
 
     public static RepairRecord recInternalRepair = new RepairRecord();
@@ -44,14 +47,19 @@ public class GlobalState {
         return recProcessing;
     }
 
-    public static IncomingWHRecord initWHIncomingTx() {
-        recWHIncoming = new IncomingWHRecord();
+    public static WHTxRecord initWHIncomingTx() {
+        recWHIncoming = new WHTxRecord();
         return recWHIncoming;
     }
 
-    public static OutgoingWHRecord initWHOutgoingTx() {
-        recWHOutgoing = new OutgoingWHRecord();
+    public static WHTxRecord initWHOutgoingTx() {
+        recWHOutgoing = new WHTxRecord();
         return recWHOutgoing;
+    }
+
+    public static WHCorrelationRecord initWHCorrelationTx() {
+        recWHCorrelation = new WHCorrelationRecord();
+        return recWHCorrelation;
     }
 
     public static InventoryWHRecord initWHInventoryTx() {
@@ -74,10 +82,11 @@ public class GlobalState {
         return recExternalRepair;
     }
 
-    public static FishingTransaction commitFishing(MobileDB db) {
+    public static FishingTransaction commitFishing(MobileDB db, Boolean finalCommit) {
         try {
             FishingTransaction txFishing = new FishingTransaction();
 
+            txFishing.id = recFishing.txKey;
             txFishing.platformRFID = recFishing.platformRFID;
             txFishing.cageRFID = recFishing.cageRFID;
             txFishing.netRFID = recFishing.netRFID;
@@ -88,11 +97,13 @@ public class GlobalState {
             txFishing.iceSupplier = recFishing.iceSupplier;
             txFishing.seaTemperature = recFishing.seaTemperature;
             txFishing.harvestBinsCnt = recFishing.totalBinsUsed;
-            txFishing.orderedQuantity = Double.valueOf(recFishing.reqWeight);
+            txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight) : null;
+            txFishing.requester = recFishing.requesterName;
             txFishing.totalQty = recFishing.totalFishWeight;
-            txFishing.harvestBins = TextUtils.join(",", recFishing.availBins);
+            txFishing.harvestBins = recFishing.availBins!=null ? TextUtils.join(",", recFishing.availBins) : null;
+            txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
 
-            db.fishingTransactionDAO().insert(txFishing);
+            db.fishingTransactionDAO().update(txFishing);
 
             return txFishing;
         } catch (Exception ex) {
@@ -142,13 +153,49 @@ public class GlobalState {
         }
     }
 
-    public static IncomingWHTransaction commitWHIncoming(MobileDB db) {
+    public static AssetTransaction commitWHIncoming(MobileDB db) {
         try {
-            IncomingWHTransaction txWHIncoming = new IncomingWHTransaction();
-
-            db.whIncomingTransactionDAO().insert(txWHIncoming);
+            AssetTransaction txWHIncoming = new AssetTransaction();
+            txWHIncoming.state = recWHIncoming.state.name();
+            txWHIncoming.assetType = recWHIncoming.assetType.name();
+            txWHIncoming.itemRFIDs = recWHIncoming.items;
+            txWHIncoming.from = recWHIncoming.from;
+            txWHIncoming.to = recWHIncoming.to;
+            db.assetTransactionDAO().insert(txWHIncoming);
 
             return txWHIncoming;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static AssetTransaction commitWHOutgoing(MobileDB db) {
+        try {
+            AssetTransaction txWHOutgoing = new AssetTransaction();
+            txWHOutgoing.state = recWHOutgoing.state.name();
+            txWHOutgoing.assetType = recWHOutgoing.assetType.name();
+            txWHOutgoing.itemRFIDs = recWHOutgoing.items;
+            txWHOutgoing.from = recWHOutgoing.from;
+            txWHOutgoing.to = recWHOutgoing.to;
+            db.assetTransactionDAO().insert(txWHOutgoing);
+
+            return txWHOutgoing;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static CorrelationTransaction commitWHCorrelation(MobileDB db) {
+        try {
+            CorrelationTransaction txCorrelation = new CorrelationTransaction();
+            txCorrelation.assetType = recWHCorrelation.assetType.name();
+            txCorrelation.barcode = recWHCorrelation.barcode;
+            txCorrelation.rfid = recWHCorrelation.rfid;
+            db.correlationTransactionDAO().insert(txCorrelation);
+
+            return txCorrelation;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

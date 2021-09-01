@@ -3,6 +3,12 @@ package io.agritrack.fishtrack.data.model.tx;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import java.util.List;
+
+import io.agritrack.fishtrack.data.converter.AssetTypeConverter;
+import io.agritrack.fishtrack.data.converter.StringListConverter;
 
 @Entity(tableName = "asset_transaction")
 public class AssetTransaction {
@@ -10,25 +16,20 @@ public class AssetTransaction {
     @PrimaryKey
     public Long id;
 
-    @ColumnInfo(name = "rfid")
-    public String rfid;
+    @TypeConverters(StringListConverter.class)
+    @ColumnInfo(name = "rfids")
+    public List<String> itemRFIDs;
+
+    @TypeConverters(AssetTypeConverter.class)
+    @ColumnInfo(name = "asset_type")
+    public String assetType;
 
     @ColumnInfo(name = "state")
     public String state;
 
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    public User user;
+    @ColumnInfo(name = "source")
+    public String from;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "asset_rfid", referencedColumnName = "rfid", nullable = false, foreignKey = @ForeignKey(name="FK_AssetTX_Asset"))
-    public Asset asset;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "source_site", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name="FK_AssetTX_Source_Site"))
-    public Site sourceSite;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "target_site", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name="FK_AssetTX_Target_Site"))
-    public Site targetSite;*/
+    @ColumnInfo(name = "dest")
+    public String to;
 }

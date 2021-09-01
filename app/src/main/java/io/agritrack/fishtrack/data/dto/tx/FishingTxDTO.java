@@ -14,6 +14,7 @@ public class FishingTxDTO {
     public String ice_adequacy;
     public String ice_supplier;
     //public Date last_feed;
+    public String requester;
     public Double ordered_quantity;
     public Double sea_temperature;
     public Double total_quantity;
@@ -33,6 +34,7 @@ public class FishingTxDTO {
         fishingTxDTO.ice_adequacy = fishing.iceAdequacy;
         fishingTxDTO.ice_supplier = fishing.iceSupplier;
         //fishingTxDTO.last_feed = fishing.lastFeed;
+        fishingTxDTO.requester = fishing.requester;
         fishingTxDTO.ordered_quantity = fishing.orderedQuantity;
         fishingTxDTO.sea_temperature = fishing.seaTemperature;
         fishingTxDTO.total_quantity = fishing.totalQty;

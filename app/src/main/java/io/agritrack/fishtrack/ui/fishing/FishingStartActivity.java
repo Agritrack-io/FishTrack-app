@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.util.Arrays;
 import java.util.List;
 
 import io.agritrack.fishtrack.R;
@@ -21,12 +22,13 @@ import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.AppUser;
 import io.agritrack.fishtrack.data.model.common.FishSpecies;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
-import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.FishingRecord;
+import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.state.GlobalState.recFishing;
 
 public class FishingStartActivity extends AppCompatActivity {
     private MobileDB db;
@@ -69,6 +71,10 @@ public class FishingStartActivity extends AppCompatActivity {
             ArrayAdapter<String> spAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, species);
             spAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
             speciesSpinner.setAdapter(spAdapter);
+
+            if(!Strings.isEmptyOrWhitespace(recFishing.speciesName)) {
+                recFishing.speciesPos = Arrays.asList(species).indexOf(recFishing.speciesName);
+            }
         }
 
         // RFID scanning functionality
@@ -135,7 +141,7 @@ public class FishingStartActivity extends AppCompatActivity {
 
     private void initControlsFromState() {
 
-        FishingRecord hvst = GlobalState.recFishing;
+        FishingRecord hvst = recFishing;
 
         if(hvst.requesterPos>-1) {
             harvestSpinner.setSelection(hvst.requesterPos);
@@ -156,7 +162,7 @@ public class FishingStartActivity extends AppCompatActivity {
     }
 
     private FishingRecord updateState() {
-        FishingRecord fishingRecord = GlobalState.recFishing;
+        FishingRecord fishingRecord = recFishing;
 
         fishingRecord.requesterName = harvestSpinner.getSelectedItem().toString();
         fishingRecord.requesterPos = harvestSpinner.getSelectedItemPosition();
@@ -164,6 +170,8 @@ public class FishingStartActivity extends AppCompatActivity {
         fishingRecord.speciesPos = speciesSpinner.getSelectedItemPosition();
         fishingRecord.reqWeight = etQty.getText().toString();
         fishingRecord.platformRFID = tvPlatformName.getText().toString();
+
+        GlobalState.commitFishing(db, Boolean.FALSE);
 
         return fishingRecord;
     }

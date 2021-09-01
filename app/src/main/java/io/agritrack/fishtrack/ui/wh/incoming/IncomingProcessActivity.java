@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
@@ -15,25 +16,34 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Set;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.api.APIServiceGenerator;
 import io.agritrack.fishtrack.data.db.MobileDB;
-import io.agritrack.fishtrack.data.model.tx.IncomingWHTransaction;
+import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
+import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
+import io.agritrack.fishtrack.enums.WarehouseTxState;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
-import io.agritrack.fishtrack.state.IncomingWHRecord;
+import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class IncomingProcessActivity extends AppCompatActivity {
-    private MobileDB db;
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-
+    private MobileDB db;
     private UhfReader uhfReader;
     private ScanInventoryThread processingBinsThread = new ScanInventoryThread();
     private boolean scanning = false;
@@ -104,31 +114,45 @@ public class IncomingProcessActivity extends AppCompatActivity {
     }
 
     private void updateState() {
-        GlobalState.recWHIncoming.incomingItems = adapterIncomingItems.getValues();
+        GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
+        GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
 
         // get an instance of local DB
         this.db = MobileDB.getInstance(getContext());
 
-        // persist Transportation Record data to local DB.
-        IncomingWHTransaction tx = GlobalState.commitWHIncoming(db);
+        try {
+            String token = LocalPreferences.getToken();
+
+            // persist WHIncomingAssetTX Record data to local DB.
+            AssetTransaction tx = GlobalState.commitWHIncoming(db);
+
+            // sync WH Incoming Tx
+            Call<AssetTxDTO> syncTxAsyncCall = updService.syncIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
+            syncTxAsyncCall.enqueue(new SyncTxCallBack());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // hideSyncProgress();
+        }
     }
 
+
     private void initControlsFromState() {
-        IncomingWHRecord incomingWHRecord = GlobalState.recWHIncoming;
+        WHTxRecord WHTxRecord = GlobalState.recWHIncoming;
 
-        if(!Strings.isEmptyOrWhitespace(incomingWHRecord.incomingFrom)) {
-            tvIncomingProcessFrom.setText(incomingWHRecord.incomingFrom);
+        if (!Strings.isEmptyOrWhitespace(WHTxRecord.from)) {
+            tvIncomingProcessFrom.setText(WHTxRecord.from);
         }
 
-        if(!Strings.isEmptyOrWhitespace(incomingWHRecord.incomingTo)) {
-            tvIncomingProcessTo.setText(incomingWHRecord.incomingTo);
+        if (!Strings.isEmptyOrWhitespace(WHTxRecord.to)) {
+            tvIncomingProcessTo.setText(WHTxRecord.to);
         }
 
-        if (incomingWHRecord.incomingItems != null) {
-            adapterIncomingItems.setValues((ArrayList<String>) incomingWHRecord.incomingItems);
+        if (WHTxRecord.items != null) {
+            adapterIncomingItems.setValues((ArrayList<String>) WHTxRecord.items);
             adapterIncomingItems.notifyDataSetChanged();
 
-            tvBinsCount.setText(String.valueOf(incomingWHRecord.incomingItems.size()));
+            tvBinsCount.setText(String.valueOf(WHTxRecord.items.size()));
         }
     }
 
@@ -165,5 +189,36 @@ public class IncomingProcessActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public class SyncTxCallBack implements Callback<AssetTxDTO> {
+        @Override
+        public void onResponse(Call<AssetTxDTO> call, Response<AssetTxDTO> response) {
+            AssetTxDTO rs = response.body();
+
+            if (rs != null) {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Tx successfully updated!!!", Toast.LENGTH_LONG).show());
+            } else {
+                // could not update Fishing TX on backend!!!
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_AssetTx_tx_update_failure, Toast.LENGTH_LONG).show());
+            }
+        }
+
+        @Override
+        public void onFailure(Call<AssetTxDTO> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_connection_timeout, Toast.LENGTH_LONG).show());
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_timeout, Toast.LENGTH_LONG).show());
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_cancelled_call, Toast.LENGTH_LONG).show());
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Network Error :: " + error.getLocalizedMessage(), Toast.LENGTH_LONG).show());
+                }
+            }
+        }
     }
 }

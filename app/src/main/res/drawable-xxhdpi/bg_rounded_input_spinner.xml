@@ -5,8 +5,7 @@
 
     <solid android:color="@color/white"/>
 
-    <stroke android:width="@dimen/margin2"
-            android:color="@color/color_gray_border_dialog"/>
+    <stroke android:width="@dimen/margin2" android:color="@color/color_gray_border_dialog"/>
     <!-- this one is ths color of the Rounded Button -->
     <corners android:radius="10dp" />
 </shape>

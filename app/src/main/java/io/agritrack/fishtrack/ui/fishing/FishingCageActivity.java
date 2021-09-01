@@ -157,7 +157,7 @@ public class FishingCageActivity extends AppCompatActivity {
         if (cageRFID != null) {
             CageDetails cage = db.cageDetailsDAO().getByRFId(cageRFID.toString());
             if (cage != null) {
-                GlobalState.recFishing.speciesName = cage.fishType;
+                GlobalState.recFishing.speciesName = cage.fishType; //TODO: compare with Requested Species
                 GlobalState.recFishing.pathologist = cage.ichthyopathologist;
                 GlobalState.recFishing.lastFed = cage.lastFed;
                 GlobalState.recFishing.cageRFID = cageRFID.toString();

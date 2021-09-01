@@ -43,6 +43,9 @@ public class FishingTransaction {
     @ColumnInfo(name = "last_feed")
     public Date lastFeed;
 
+    @ColumnInfo(name = "ordered_by")
+    public String requester;
+
     @ColumnInfo(name = "ordered_quantity")
     public Double orderedQuantity;
 

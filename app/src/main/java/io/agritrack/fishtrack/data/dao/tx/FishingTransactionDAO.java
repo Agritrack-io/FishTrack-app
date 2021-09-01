@@ -27,6 +27,9 @@ public interface FishingTransactionDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(FishingTransaction... fishingTransactions);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insert(FishingTransaction fishingTransaction);
+
     @Delete
     void delete(FishingTransaction fishingTransaction);
 

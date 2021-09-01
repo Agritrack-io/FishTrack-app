@@ -108,7 +108,7 @@ public class FishingConfirmActivity extends AppCompatActivity {
                     //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
                     // persist Fishing Record data to local DB.
-                    FishingTransaction tx = GlobalState.commitFishing(db);
+                    FishingTransaction tx = GlobalState.commitFishing(db, Boolean.TRUE);
 
                     // sync fish species
                     Call<FishingTxDTO> syncTxAsyncCall = updService.syncFishingTx(FishingTxDTO.convert(tx), "Bearer " + token);

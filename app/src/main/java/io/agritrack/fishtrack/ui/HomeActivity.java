@@ -12,11 +12,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
+import io.agritrack.fishtrack.enums.TxStatus;
 import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.adapter.HomeMenuAdapter;
@@ -67,19 +67,16 @@ public class HomeActivity extends AppCompatActivity {
 
                 switch (position) {
                     case Fishing_Idx:
-                        FishingRecord fishingRecord = GlobalState.initFishingTx();
                         FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx();
+                        FishingRecord fishingRecord;
                         if (openTx != null) {
-                            fishingRecord.availBins = Arrays.asList(openTx.harvestBins.split(","));
-                            fishingRecord.adequateIce = "True".equalsIgnoreCase(openTx.iceAdequacy) ? Boolean.TRUE : Boolean.FALSE;
-                            fishingRecord.speciesName = openTx.fishType;
-                            fishingRecord.cageRFID = openTx.cageRFID;
-                            fishingRecord.lastFed = openTx.lastFeed;
-                            fishingRecord.iceSupplier = openTx.iceSupplier;
-                            fishingRecord.totalFishWeight = openTx.totalQty;
-                            fishingRecord.totalBinsUsed = openTx.harvestBinsCnt;
-                            fishingRecord.seaTemperature = openTx.seaTemperature;
-                            fishingRecord.reqWeight = openTx.orderedQuantity.toString();
+                            fishingRecord = FishingRecord.convert(openTx);
+                            GlobalState.recFishing = fishingRecord;
+                        } else {
+                            openTx = new FishingTransaction();
+                            fishingRecord = GlobalState.initFishingTx();
+                            openTx.txStatus = TxStatus.PENDING;
+                            fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
                         }
 
                         i = new Intent(appCtx, FishingStartActivity.class);
