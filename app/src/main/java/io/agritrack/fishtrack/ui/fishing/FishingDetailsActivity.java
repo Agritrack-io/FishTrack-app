@@ -9,9 +9,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+
+import com.google.android.gms.common.util.Strings;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,8 +72,8 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
         ImageView ivNext = findViewById(R.id.ivToFillBins);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
-            startActivity(i);
+                Intent i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
+                startActivity(i);
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToCage);

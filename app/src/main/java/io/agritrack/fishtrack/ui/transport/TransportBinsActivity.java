@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.hdhe.uhf.reader.UhfReader;
+import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -125,8 +127,13 @@ public class TransportBinsActivity extends AppCompatActivity {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToDriverConfirm);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), TransportDriverConfirmActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), TransportDriverConfirmActivity.class);
+                startActivity(i);
+            }
         });
     }
 
@@ -144,6 +151,16 @@ public class TransportBinsActivity extends AppCompatActivity {
 
     private void updateState() {
         GlobalState.recTransport.availBins = adapterBins.getValues();
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(GlobalState.recTransport.availBins==null || GlobalState.recTransport.availBins.isEmpty()){
+            sb.append(String.format("\n%s is missing", "'Bins for transport'"));
+        }
+
+        return sb.toString();
     }
 
     @Override

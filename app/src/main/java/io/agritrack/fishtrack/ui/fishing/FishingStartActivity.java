@@ -8,8 +8,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
@@ -121,8 +123,13 @@ public class FishingStartActivity extends AppCompatActivity {
         ImageView ivNext = findViewById(R.id.ivToBins);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
@@ -174,6 +181,28 @@ public class FishingStartActivity extends AppCompatActivity {
         GlobalState.commitFishing(db, Boolean.FALSE);
 
         return fishingRecord;
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recFishing.requesterName)){
+            sb.append(String.format("\n%s is missing", "'Harvest initiator'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recFishing.speciesName)){
+            sb.append(String.format("\n%s is missing", "'Fish type'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recFishing.reqWeight)){
+            sb.append(String.format("\n%s is missing", "'Requested quantity'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recFishing.platformRFID)){
+            sb.append(String.format("\n%s is missing", "'Platform tag'"));
+        }
+
+        return sb.toString();
     }
 
     @Override

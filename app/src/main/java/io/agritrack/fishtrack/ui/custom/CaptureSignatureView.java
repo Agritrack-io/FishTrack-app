@@ -22,6 +22,8 @@ public class CaptureSignatureView extends View {
     private float _mY;
     private float TouchTolerance = 4;
     private float LineThickness = 4;
+    private boolean signed = false;
+
 
     public CaptureSignatureView(Context context, AttributeSet attr) {
         super(context, attr);
@@ -68,6 +70,8 @@ public class CaptureSignatureView extends View {
             _mX = x;
             _mY = y;
         }
+
+        this.signed = true;
     }
 
     private void TouchUp() {
@@ -106,6 +110,7 @@ public class CaptureSignatureView extends View {
     }
 
     public void ClearCanvas() {
+        this.signed = false;
         _Canvas.drawColor(Color.WHITE);
         invalidate();
     }
@@ -126,5 +131,9 @@ public class CaptureSignatureView extends View {
         v.draw(c);
 
         return b;
+    }
+
+    public  boolean isSigned(){
+        return  this.signed;
     }
 }
