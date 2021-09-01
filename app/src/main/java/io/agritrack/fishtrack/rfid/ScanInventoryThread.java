@@ -85,8 +85,7 @@ public class ScanInventoryThread extends Thread {
                             });
                         }
                     }
-                } catch (NullPointerException ignored) {
-                }
+                } catch (NullPointerException ignored) { }
             } else {
                 break;
             }

@@ -263,7 +263,6 @@
     <string name="no_employees_found_alert">No Employees Info found!!!</string>
     <string name="no_species_found_alert">No Fish Species Info found!!!</string>
     <string name="stop_scan">STOP Scanning</string>
-    <string name="scan_platfom">Scan Platform</string>
     <string name="no_cage_details_found_alert">No CageDetail data found...</string>
     <string name="missing_pin">Please type in the PIN!!</string>
     <string name="invalid_password">Wrong PIN!!!</string>
