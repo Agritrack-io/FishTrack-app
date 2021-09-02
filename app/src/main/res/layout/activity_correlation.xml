@@ -254,7 +254,6 @@
                     android:background="@drawable/bg_rounded_dialog_non_input"
                     android:gravity="center|center_vertical"
                     android:padding="5dp"
-                    android:text="@string/barcode_asset"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_view_font_size"
                     android:textStyle="normal"

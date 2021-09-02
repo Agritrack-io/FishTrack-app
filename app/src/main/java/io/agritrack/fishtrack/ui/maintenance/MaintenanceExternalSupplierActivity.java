@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -81,8 +82,13 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
         ImageView ivNext = (ImageView) findViewById(R.id.ivToConfirmExternal);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), MaintenanceExternalConfirmActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), MaintenanceExternalConfirmActivity.class);
+                startActivity(i);
+            }
         });
     }
 
@@ -125,6 +131,29 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
         GlobalState.recExternalRepair.repairTime = etMaintenanceTime.getText().toString();
         GlobalState.recExternalRepair.remarks = mtvExtRemarks.getText().toString();
     }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.supplier)){
+            sb.append(String.format("\n%s is missing", "'Supplier'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.manager)){
+            sb.append(String.format("\n%s is missing", "'Maintenance manager'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.cost)){
+            sb.append(String.format("\n%s is missing", "'Maintenance cost'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.repairTime)){
+            sb.append(String.format("\n%s is missing", "'Maintenance time'"));
+        }
+
+        return sb.toString();
+    }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

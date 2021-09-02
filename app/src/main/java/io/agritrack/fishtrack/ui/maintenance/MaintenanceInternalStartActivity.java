@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -92,8 +93,13 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
         ImageView ivNext = (ImageView) findViewById(R.id.ivToMaintenanceTeam);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), MaintenanceInternalTeamActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), MaintenanceInternalTeamActivity.class);
+                startActivity(i);
+            }
         });
 
     }
@@ -125,6 +131,24 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
             indoorsRepairRecord.maintenanceType = selectedOperation;
         }
         return indoorsRepairRecord;
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.assetBC)){
+            sb.append(String.format("\n%s is missing", "'Scan barcode'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.maintenanceType)){
+            sb.append(String.format("\n%s is missing", "'Maintenance type'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.maintenanceType)){
+            sb.append(String.format("\n%s is missing", "'Next maintenance date'"));
+        }
+
+        return sb.toString();
     }
 
     private void initControlsFromState() {

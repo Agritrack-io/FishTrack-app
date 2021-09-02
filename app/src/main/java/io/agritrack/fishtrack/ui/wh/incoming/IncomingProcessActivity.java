@@ -95,8 +95,13 @@ public class IncomingProcessActivity extends AppCompatActivity {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartIncoming);
@@ -136,6 +141,15 @@ public class IncomingProcessActivity extends AppCompatActivity {
         }
     }
 
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(GlobalState.recWHIncoming.items==null || GlobalState.recWHIncoming.items.isEmpty()){
+            sb.append(String.format("\n%s is missing", "'Incoming items'"));
+        }
+
+        return sb.toString();
+    }
 
     private void initControlsFromState() {
         WHTxRecord WHTxRecord = GlobalState.recWHIncoming;

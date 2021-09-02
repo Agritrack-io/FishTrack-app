@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -73,8 +74,13 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
         ImageView ivNext = (ImageView) findViewById(R.id.ivToConfirmInternal);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), MaintenanceInternalConfirmActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), MaintenanceInternalConfirmActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMaintenanceInternalStartMenu);
@@ -118,6 +124,16 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
         }
 
         GlobalState.recInternalRepair.remarks = atvInMtWorkDescription.getText().toString();
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(GlobalState.recInternalRepair.repairTeam==null || GlobalState.recInternalRepair.repairTeam.isEmpty()){
+            sb.append(String.format("\n%s is missing", "'Team members'"));
+        }
+
+        return sb.toString();
     }
 
     @Override

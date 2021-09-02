@@ -16,6 +16,7 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -149,6 +150,16 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
         dialog = dlgBuilder.create();
 
         timeoutService = new TimeoutService(10000l, 500l, dialog);
+
+        configFooter();
+    }
+
+    protected void configFooter() {
+        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToLogin);
+        ivBack.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(i);
+        });
     }
 
     private void loadClusterInfo() {
