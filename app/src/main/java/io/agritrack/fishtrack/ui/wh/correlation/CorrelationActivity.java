@@ -137,8 +137,13 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWareHouseMenu);
@@ -198,6 +203,20 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         } finally {
             // hideSyncProgress();
         }
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recWHCorrelation.barcode)){
+            sb.append(String.format("\n%s is missing", "'Asset BARCODE'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recWHCorrelation.rfid)){
+            sb.append(String.format("\n%s is missing", "'Asset RFID'"));
+        }
+
+        return sb.toString();
     }
 
     @Override

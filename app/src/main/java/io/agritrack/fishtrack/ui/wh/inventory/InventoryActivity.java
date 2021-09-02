@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.hdhe.uhf.reader.UhfReader;
+import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -211,10 +212,13 @@ public class InventoryActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-
-
-            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
@@ -257,5 +261,15 @@ public class InventoryActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+     /*If(GlobalState.recWHInventory.items==null || GlobalState.recWHIncoming.items.isEmpty()){
+            sb.append(String.format("\n%s is missing", "'Incoming items'"));
+        }*/
+
+        return sb.toString();
     }
 }

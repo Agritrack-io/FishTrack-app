@@ -6,6 +6,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -47,8 +48,13 @@ public class ProcessStartActivity extends AppCompatActivity {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToReceiveBins);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), ProcessBinsActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), ProcessBinsActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
@@ -79,8 +85,8 @@ public class ProcessStartActivity extends AppCompatActivity {
             etSecurityClip.setText(prcTx.securityClip);
         }
 
-        if (prcTx.packagingSitePos > -1) {
-            spLot.setSelection(prcTx.packagingSitePos);
+        if (prcTx.packagingLotPos > -1) {
+            spLot.setSelection(prcTx.packagingLotPos);
         }
 
         if (prcTx.fishConditionPos > -1) {
@@ -105,9 +111,9 @@ public class ProcessStartActivity extends AppCompatActivity {
             processingRecord.securityClip = etSecurityClip.getText().toString();
         }
         if (spLot.getSelectedItem() != null) {
-            processingRecord.packagingSite = spLot.getSelectedItem().toString();
+            processingRecord.packagingLot = spLot.getSelectedItem().toString();
         }
-        processingRecord.packagingSitePos = spLot.getSelectedItemPosition();
+        processingRecord.packagingLotPos = spLot.getSelectedItemPosition();
 
         if (spFishCondition.getSelectedItem() != null) {
             processingRecord.fishCondition = spFishCondition.getSelectedItem().toString();
@@ -122,5 +128,27 @@ public class ProcessStartActivity extends AppCompatActivity {
         processingRecord.smellyTruck = swSmell.isChecked();
 
         return processingRecord;
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.dispatchNote)){
+            sb.append(String.format("\n%s is missing", "'Dispatch note'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.securityClip)){
+            sb.append(String.format("\n%s is missing", "'Security clip number'"));
+        }
+
+        /*if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.packagingLot)){
+            sb.append(String.format("\n%s is missing", "'LOT'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)){
+            sb.append(String.format("\n%s is missing", "'Fish condition'"));
+        }*/
+
+        return sb.toString();
     }
 }

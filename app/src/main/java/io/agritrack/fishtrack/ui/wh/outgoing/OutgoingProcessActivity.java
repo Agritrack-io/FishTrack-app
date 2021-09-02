@@ -97,8 +97,13 @@ public class OutgoingProcessActivity extends AppCompatActivity {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartOutgoing);
@@ -137,6 +142,16 @@ public class OutgoingProcessActivity extends AppCompatActivity {
             // hideSyncProgress();
         }
 
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(GlobalState.recWHOutgoing.items==null || GlobalState.recWHOutgoing.items.isEmpty()){
+            sb.append(String.format("\n%s is missing", "'Outgoing items'"));
+        }
+
+        return sb.toString();
     }
 
     private void initControlsFromState() {

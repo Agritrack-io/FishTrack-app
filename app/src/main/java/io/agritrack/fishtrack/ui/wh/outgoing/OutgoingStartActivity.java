@@ -6,8 +6,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.common.util.Strings;
 
 import java.util.Arrays;
 
@@ -57,8 +60,13 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         ImageView ivNext = (ImageView) findViewById(R.id.ivToOutgoingProcess);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), OutgoingProcessActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), OutgoingProcessActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
@@ -109,6 +117,20 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         whOutgoingRecord.assetTypePos = spAssetType.getSelectedItemPosition();
 
         return whOutgoingRecord;
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.to)){
+            sb.append(String.format("\n%s is missing", "'Target site'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.from)){
+            sb.append(String.format("\n%s is missing", "'Source site'"));
+        }
+
+        return sb.toString();
     }
 
     private void initControlsFromState()    {

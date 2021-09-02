@@ -1,12 +1,14 @@
 package io.agritrack.fishtrack.ui.process;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.hdhe.uhf.reader.UhfReader;
+import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +109,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
         // RFID scanning functionality
         uhfReader = UhfReader.getInstance();
         if(uhfReader!=null)
-            uhfReader.setOutputPower(33);
+        uhfReader.setOutputPower(33);
 
         final Button scanButton = findViewById(R.id.btnScanBin);
         scanButton.setOnClickListener(view -> {
@@ -142,8 +145,13 @@ public class ProcessBinsActivity extends AppCompatActivity {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToSupervisorConfirm);
         ivNext.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), ProcessConfirmActivity.class);
-            startActivity(i);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), ProcessConfirmActivity.class);
+                startActivity(i);
+            }
         });
 
          ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartProcess);
@@ -164,15 +172,25 @@ public class ProcessBinsActivity extends AppCompatActivity {
             tvBinsCount.setText(String.valueOf(prcRecord.availBins.size()));
         }
 
-        if (prcRecord.seaFarmPos > -1) {
-            spFishFarmSite.setSelection(prcRecord.seaFarmPos);
+        if (prcRecord.fishFarmPos > -1) {
+            spFishFarmSite.setSelection(prcRecord.fishFarmPos);
         }
     }
 
     private void updateState() {
         GlobalState.recProcessing.availBins = adapterBins.getValues();
-        GlobalState.recProcessing.seaFarmPos = spFishFarmSite.getSelectedItemPosition();
-        GlobalState.recProcessing.seaFarm = spFishFarmSite.getSelectedItem().toString();
+        GlobalState.recProcessing.fishFarmPos = spFishFarmSite.getSelectedItemPosition();
+        GlobalState.recProcessing.fishFarm = spFishFarmSite.getSelectedItem().toString();
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+
+        if(GlobalState.recProcessing.availBins==null || GlobalState.recProcessing.availBins.isEmpty()){
+            sb.append(String.format("\n%s is missing", "'Received bins'"));
+        }
+
+        return sb.toString();
     }
 
     @Override
