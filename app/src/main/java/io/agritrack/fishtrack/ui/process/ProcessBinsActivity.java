@@ -105,7 +105,8 @@ public class ProcessBinsActivity extends AppCompatActivity {
     private void prepareScanAvailableBinsButton() {
         // RFID scanning functionality
         uhfReader = UhfReader.getInstance();
-        uhfReader.setOutputPower(33);
+        if(uhfReader!=null)
+            uhfReader.setOutputPower(33);
 
         final Button scanButton = findViewById(R.id.btnScanBin);
         scanButton.setOnClickListener(view -> {

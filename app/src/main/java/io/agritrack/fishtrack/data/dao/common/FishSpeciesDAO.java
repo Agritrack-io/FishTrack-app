@@ -14,7 +14,7 @@ import io.agritrack.fishtrack.data.model.common.FishSpecies;
 @Dao
 public interface FishSpeciesDAO {
 
-    @Query("SELECT * from species")
+    @Query("SELECT * from species order by id")
     List<FishSpecies> getAll();
 
     @Query("SELECT * from species where id=:fishSpeciesId LIMIT 1")

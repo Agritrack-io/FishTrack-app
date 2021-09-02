@@ -4,8 +4,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.util.Date;
-
 @Entity(tableName = "cage_details")
 public class CageDetails {
 
@@ -28,5 +26,5 @@ public class CageDetails {
     public Long site;
 
     @ColumnInfo(name = "last_fed")
-    public Date lastFed;
+    public String lastFed;
 }

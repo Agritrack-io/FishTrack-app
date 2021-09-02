@@ -1,8 +1,10 @@
 package io.agritrack.fishtrack.state;
 
-import android.text.TextUtils;
+import com.google.android.gms.common.util.Strings;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
@@ -15,6 +17,7 @@ import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
 import io.agritrack.fishtrack.enums.TxStatus;
 
 public class GlobalState {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
 
     public static HarvestRecord recHarvest = new HarvestRecord();
     public static FishingRecord recFishing = new FishingRecord();
@@ -87,12 +90,19 @@ public class GlobalState {
             FishingTransaction txFishing = new FishingTransaction();
 
             txFishing.id = recFishing.txKey;
+            txFishing.harvestRq = recFishing.harvestRq;
             txFishing.platformRFID = recFishing.platformRFID;
             txFishing.cageRFID = recFishing.cageRFID;
             txFishing.netRFID = recFishing.netRFID;
             txFishing.fishType = recFishing.speciesName;
             txFishing.ichthyopathologist = recFishing.pathologist;
-            txFishing.lastFeed = recFishing.lastFed;
+            if(!Strings.isEmptyOrWhitespace(recFishing.lastFed)) {
+                try {
+                    Date lf = sdf.parse(recFishing.lastFed);
+                    txFishing.lastFeed = lf.getTime();
+                } catch (Exception ignored) {
+                }
+            }
             txFishing.iceAdequacy = recFishing.adequateIce.toString();
             txFishing.iceSupplier = recFishing.iceSupplier;
             txFishing.seaTemperature = recFishing.seaTemperature;
@@ -100,7 +110,7 @@ public class GlobalState {
             txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight) : null;
             txFishing.requester = recFishing.requesterName;
             txFishing.totalQty = recFishing.totalFishWeight;
-            txFishing.harvestBins = recFishing.availBins!=null ? TextUtils.join(",", recFishing.availBins) : null;
+            txFishing.harvestBins = recFishing.availBins;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
 
             db.fishingTransactionDAO().update(txFishing);
@@ -124,6 +134,7 @@ public class GlobalState {
             txTransport.isTruckRefrigerated = recTransport.refrigeratedTruck;
             txTransport.isParallelTransport = recTransport.parallelTransport;
             txTransport.transportHead = "N/A";
+            txTransport.loadedBins = recTransport.loadedBins;
 
             db.transportTransactionDAO().insert(txTransport);
             return txTransport;

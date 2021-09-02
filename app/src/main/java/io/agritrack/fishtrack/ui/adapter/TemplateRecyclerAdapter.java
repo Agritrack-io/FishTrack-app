@@ -10,13 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.agritrack.fishtrack.R;
 
 public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecyclerAdapter.MyViewHolder> {
-    private ArrayList<String> mList;
-    private LayoutInflater mLayoutInflater;
-    private Context context;
+    private List<String> mList;
+    private final LayoutInflater mLayoutInflater;
+    private final Context context;
 
     public TemplateRecyclerAdapter(Context context, ArrayList<String> values) {
         mList = values;
@@ -24,16 +25,16 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         this.context = context;
     }
 
-    public void setValues(ArrayList<String> vals) {
-        this.mList = vals;
-    }
-
-    public ArrayList<String> getValues() {
+    public List<String> getValues() {
         return mList;
     }
 
-    public void addItem(String val){
-        if(!this.mList.contains(val)){
+    public void setValues(List<String> vals) {
+        this.mList = vals;
+    }
+
+    public void addItem(String val) {
+        if (!this.mList.contains(val)) {
             this.mList.add(val);
         }
     }
@@ -57,11 +58,11 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvItemName;
+        private final TextView tvItemName;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvItemName = (TextView) itemView.findViewById(R.id.tvRecyclerItem);
+            tvItemName = itemView.findViewById(R.id.tvRecyclerItem);
         }
     }
 //public class TextAdapter extends ArrayAdapter<String> {

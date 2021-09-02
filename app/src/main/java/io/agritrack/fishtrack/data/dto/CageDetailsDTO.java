@@ -1,9 +1,6 @@
 package io.agritrack.fishtrack.data.dto;
 
-import java.util.Date;
-
 import io.agritrack.fishtrack.data.model.CageDetails;
-import io.agritrack.fishtrack.data.model.Site;
 
 public class CageDetailsDTO {
 
@@ -13,7 +10,7 @@ public class CageDetailsDTO {
     public String hlot;
     public String fish_type;
     public Long site;
-    public Date last_fed;
+    public String last_fed;
 
     public static CageDetails convert(CageDetailsDTO detailsDTO) {
         CageDetails cageDetails = new CageDetails();

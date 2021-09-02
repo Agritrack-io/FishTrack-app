@@ -1,5 +1,8 @@
 package io.agritrack.fishtrack.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -19,12 +22,13 @@ public class APIServiceGenerator {
                                                                     .readTimeout(30, TimeUnit.SECONDS)
                                                                     .writeTimeout(30, TimeUnit.SECONDS);
     private static final HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC);
+    private static final Gson gson = new GsonBuilder().setLenient().create();
 
     public static <S> S createAPI(Class<S> serviceClass) {
         if (!httpClient.interceptors().contains(logging)) {
             httpClient.addInterceptor(logging);
             retrofitBuilder.client(httpClient.build());
-            retrofit = retrofitBuilder.build();
+            retrofit = retrofitBuilder.addConverterFactory(GsonConverterFactory.create(gson)).build();
         }
         return retrofit.create(serviceClass);
     }

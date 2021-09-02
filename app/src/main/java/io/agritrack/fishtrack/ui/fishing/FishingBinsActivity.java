@@ -17,12 +17,13 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Set;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
-import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.FishingRecord;
+import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
@@ -147,7 +148,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         FishingRecord hvst = GlobalState.recFishing;
 
         if (hvst.availBins != null) {
-            adapterBins.setValues((ArrayList<String>) hvst.availBins);
+            adapterBins.setValues((LinkedList<String>) hvst.availBins);
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             tvBinsCount.setText(String.valueOf(hvst.availBins.size()));
@@ -155,7 +156,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     private void updateState() {
-        GlobalState.recFishing.availBins = adapterBins.getValues();
+        GlobalState.recFishing.availBins = new LinkedList<>(adapterBins.getValues());
     }
 
     private String validate(){

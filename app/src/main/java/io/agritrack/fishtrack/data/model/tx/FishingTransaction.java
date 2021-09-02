@@ -5,8 +5,9 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import java.util.Date;
+import java.util.List;
 
+import io.agritrack.fishtrack.data.converter.StringSetConverter;
 import io.agritrack.fishtrack.data.converter.TxStatusEnumConverter;
 import io.agritrack.fishtrack.enums.TxStatus;
 
@@ -15,6 +16,9 @@ public class FishingTransaction {
 
     @PrimaryKey
     public Long id;
+
+    @ColumnInfo(name = "harvest_request")
+    public String harvestRq;
 
     @ColumnInfo(name = "hlot")
     public String hlot;
@@ -41,7 +45,7 @@ public class FishingTransaction {
     public String iceSupplier;
 
     @ColumnInfo(name = "last_feed")
-    public Date lastFeed;
+    public Long lastFeed;
 
     @ColumnInfo(name = "ordered_by")
     public String requester;
@@ -58,8 +62,9 @@ public class FishingTransaction {
     @ColumnInfo(name = "number_harvest_bins")
     public Short harvestBinsCnt;
 
+    @TypeConverters(StringSetConverter.class)
     @ColumnInfo(name = "harvest_bins")
-    public String harvestBins;
+    public List<String> harvestBins;
 
     @TypeConverters(TxStatusEnumConverter.class)
     @ColumnInfo(name = "status")
@@ -80,5 +85,5 @@ public class FishingTransaction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="FK_Fishing_User"))
     public User user;*/
-    
+
 }

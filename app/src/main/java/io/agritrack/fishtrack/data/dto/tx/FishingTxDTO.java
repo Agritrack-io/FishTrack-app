@@ -1,11 +1,14 @@
 package io.agritrack.fishtrack.data.dto.tx;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 
 public class FishingTxDTO {
 
-    //public Long id;
-    //public String hlot;
+    public String hlot;
+    public String harvest_request;
     public String platform_rfid;
     public String cage_rfid;
     public String net_rfid;
@@ -13,19 +16,19 @@ public class FishingTxDTO {
     public String fish_type;
     public String ice_adequacy;
     public String ice_supplier;
-    //public Date last_feed;
+    public Long last_feed;
     public String requester;
     public Double ordered_quantity;
     public Double sea_temperature;
     public Double total_quantity;
     public Short number_harvest_bins;
-    public String harvest_bins;
+    public List<String> harvest_bins = new LinkedList<String>();
     public String status;
 
     public static FishingTxDTO convert(FishingTransaction fishing) {
         FishingTxDTO fishingTxDTO = new FishingTxDTO();
-        //fishingTxDTO.id = fishing.id;
-        //fishingTxDTO.hlot = fishing.hlot;
+        fishingTxDTO.hlot = fishing.hlot;
+        fishingTxDTO.harvest_request = fishing.harvestRq;
         fishingTxDTO.platform_rfid = fishing.platformRFID;
         fishingTxDTO.cage_rfid = fishing.cageRFID;
         fishingTxDTO.net_rfid = fishing.netRFID;
@@ -33,7 +36,7 @@ public class FishingTxDTO {
         fishingTxDTO.fish_type = fishing.fishType;
         fishingTxDTO.ice_adequacy = fishing.iceAdequacy;
         fishingTxDTO.ice_supplier = fishing.iceSupplier;
-        //fishingTxDTO.last_feed = fishing.lastFeed;
+        fishingTxDTO.last_feed = fishing.lastFeed;
         fishingTxDTO.requester = fishing.requester;
         fishingTxDTO.ordered_quantity = fishing.orderedQuantity;
         fishingTxDTO.sea_temperature = fishing.seaTemperature;

@@ -17,6 +17,7 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 import io.agritrack.fishtrack.R;
@@ -150,7 +151,7 @@ public class TransportBinsActivity extends AppCompatActivity {
     }
 
     private void updateState() {
-        GlobalState.recTransport.availBins = adapterBins.getValues();
+        GlobalState.recTransport.availBins = new HashSet<>(adapterBins.getValues());
     }
 
     private String validate(){

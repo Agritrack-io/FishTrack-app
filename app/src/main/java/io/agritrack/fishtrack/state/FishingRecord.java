@@ -1,15 +1,17 @@
 package io.agritrack.fishtrack.state;
 
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 
 public class FishingRecord {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
 
     public long txKey;
     public int requesterPos = -1;
+    public String harvestRq;
     public String requesterName;
     public String reqWeight;
     public int speciesPos = -1;
@@ -20,33 +22,37 @@ public class FishingRecord {
     public List<String> availBins;
     public List<Long> fishingTeam;
     public String pathologist;
-    public Date lastFed;
+    public String lastFed;
     public Boolean adequateIce = Boolean.TRUE;
     public String iceSupplier;
     public Double totalFishWeight;
     public Short totalBinsUsed;
     public Double seaTemperature;
 
-    public FishingRecord() {}
+    public FishingRecord() {
+    }
 
     public static FishingRecord convert(FishingTransaction tx) {
         FishingRecord fishingRecord = new FishingRecord();
 
         fishingRecord.txKey = tx.id;
+        fishingRecord.harvestRq = tx.harvestRq;
         fishingRecord.requesterName = tx.requester;
         fishingRecord.reqWeight = tx.orderedQuantity != null ? tx.orderedQuantity.toString() : null;
         fishingRecord.speciesName = tx.fishType;
         fishingRecord.platformRFID = tx.platformRFID;
         fishingRecord.cageRFID = tx.cageRFID;
         fishingRecord.netRFID = tx.netRFID;
-        fishingRecord.availBins = tx.harvestBins!=null ? Arrays.asList(tx.harvestBins.split(",")) : null;
+        fishingRecord.availBins = tx.harvestBins;
         fishingRecord.pathologist = tx.ichthyopathologist;
-        fishingRecord.lastFed = tx.lastFeed;
         fishingRecord.adequateIce = "True".equalsIgnoreCase(tx.iceAdequacy) ? Boolean.TRUE : Boolean.FALSE;
         fishingRecord.iceSupplier = tx.iceSupplier;
         fishingRecord.totalFishWeight = tx.totalQty;
         fishingRecord.totalBinsUsed = tx.harvestBinsCnt;
         fishingRecord.seaTemperature = tx.seaTemperature;
+        if(tx.lastFeed!=null) {
+            fishingRecord.lastFed = sdf.format(new Date(tx.lastFeed));
+        }
 
         return fishingRecord;
     }

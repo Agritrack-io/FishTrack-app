@@ -11,6 +11,7 @@ import io.agritrack.fishtrack.data.converter.AssetTypeConverter;
 import io.agritrack.fishtrack.data.converter.DateConverter;
 import io.agritrack.fishtrack.data.converter.LongListConverter;
 import io.agritrack.fishtrack.data.converter.StringListConverter;
+import io.agritrack.fishtrack.data.converter.StringSetConverter;
 import io.agritrack.fishtrack.data.converter.TxStatusEnumConverter;
 import io.agritrack.fishtrack.data.dao.AppUserDAO;
 import io.agritrack.fishtrack.data.dao.CageDetailsDAO;
@@ -47,8 +48,8 @@ import io.agritrack.fishtrack.data.model.wh.Asset;
         CageDetails.class, Employee.class, FishSpecies.class, Reader.class,
         FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class,
         AssetTransaction.class, CorrelationTransaction.class, RepairTransaction.class, HarvestTransaction.class},
-        version = 2, exportSchema = false)
-@TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringListConverter.class, AssetTypeConverter.class})
+        version = 4, exportSchema = false)
+@TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
     private static MobileDB INSTANCE;

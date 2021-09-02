@@ -3,6 +3,11 @@ package io.agritrack.fishtrack.data.model.tx;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import java.util.Set;
+
+import io.agritrack.fishtrack.data.converter.StringSetConverter;
 
 @Entity(tableName = "transport_transaction")
 public class TransportTransaction {
@@ -33,6 +38,10 @@ public class TransportTransaction {
 
     @ColumnInfo(name = "driver_signature")
     public String driverSignature;
+
+    @TypeConverters(StringSetConverter.class)
+    @ColumnInfo(name = "bins_loaded")
+    public Set<String> loadedBins;
 
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "harvest_load_id", foreignKey = @ForeignKey(name="FK_Transport_Harvest_Load"))
