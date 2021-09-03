@@ -2,6 +2,8 @@ package io.agritrack.fishtrack.ui.fishing;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,10 +14,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.CageDetails;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
+import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
@@ -23,11 +31,11 @@ import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class FishingCageActivity extends AppCompatActivity {
-    private MobileDB db;
-    private UhfReader uhfReader;
-    private ScanInventoryThread scanningThread = new ScanInventoryThread();
-    private boolean scanning = false;
 
+    private final SingleShotScanner scanner = new SingleShotScanner();
+    private MobileDB db;
+    private Button scanCageButton, scanNetButton;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private TextView tvCageRFID, tvNetRFID;
 
     @Override
@@ -45,85 +53,54 @@ public class FishingCageActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        // initialize scanning threads
-        prepareScanCageButton();
-        prepareScanNetButton();
+        // =================================
+        // RFID scanning functionality
+        scanCageButton.setOnClickListener(view -> {
+            //update scanning, uhfReader, tvPlatformName values in thread
+            scanner.setUhfReader(UhfReader.getInstance());
+
+            Future<?> future = executor.submit(scanner);
+            try {
+                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
+                if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            tvCageRFID.setText(epcStr);
+                        }
+                    });
+                    //tvCageName.setText(result);
+                }
+            } catch (Exception e) {
+                future.cancel(true);
+            }
+        });
+
+        scanNetButton.setOnClickListener(view -> {
+            //update scanning, uhfReader, tvPlatformName values in thread
+            scanner.setUhfReader(UhfReader.getInstance());
+
+            Future<?> future = executor.submit(scanner);
+            try {
+                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
+                if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            tvNetRFID.setText(epcStr);
+                        }
+                    });
+                    //tvCageName.setText(result);
+                }
+            } catch (Exception e) {
+                future.cancel(true);
+            }
+        });
+        // =================================
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
         // create Footer
         configFooter();
-    }
-
-    private void prepareScanCageButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setOutputPower(33);
-
-        final Button scanCageButton = findViewById(R.id.btnScanCage);
-
-        scanCageButton.setOnClickListener(view -> {
-            scanning = !scanning;
-
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (scanningThread.getState() == Thread.State.TERMINATED) {
-                scanningThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            scanningThread.setScanInProgress(scanning);
-            scanningThread.setUhfReader(uhfReader);
-            scanningThread.setRfidTag(tvCageRFID);
-
-            if (scanning) {
-                scanCageButton.setText(R.string.stop_scan);
-                if (scanningThread.getState() == Thread.State.NEW) {
-                    scanningThread.start();
-                }
-            } else {
-                scanCageButton.setText(R.string.scan_cage);
-                try {
-                    scanningThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    private void prepareScanNetButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setOutputPower(33);
-
-        final Button scanNetButton = findViewById(R.id.btnScanNet);
-
-        scanNetButton.setOnClickListener(view -> {
-            scanning = !scanning;
-
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (scanningThread.getState() == Thread.State.TERMINATED) {
-                scanningThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            scanningThread.setScanInProgress(scanning);
-            scanningThread.setUhfReader(uhfReader);
-            scanningThread.setRfidTag(tvNetRFID);
-
-            if (scanning) {
-                scanNetButton.setText(R.string.stop_scan);
-                if (scanningThread.getState() == Thread.State.NEW) {
-                    scanningThread.start();
-                }
-            } else {
-                scanNetButton.setText(R.string.scan_net);
-                try {
-                    scanningThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     protected void configFooter() {
@@ -147,6 +124,8 @@ public class FishingCageActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
+        scanCageButton = findViewById(R.id.btnScanCage);
+        scanNetButton = findViewById(R.id.btnScanNet);
         tvNetRFID = findViewById(R.id.tvNetName);
         tvCageRFID = findViewById(R.id.tvCageName);
     }
@@ -192,9 +171,20 @@ public class FishingCageActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (uhfReader != null)
-            uhfReader.close();
-        scanning = false;
+        if (executor != null)
+            executor.shutdown();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (executor != null)
+            executor.shutdown();
     }
 }

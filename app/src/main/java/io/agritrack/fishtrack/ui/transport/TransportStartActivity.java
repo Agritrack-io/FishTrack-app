@@ -129,13 +129,23 @@ public class TransportStartActivity extends AppCompatActivity {
     private TransportationRecord updateState() {
         TransportationRecord transportationRecord = GlobalState.initTransportationTx();
 
-        transportationRecord.packagingSite = spPackagingSite.getSelectedItem().toString();
+        if(spPackagingSite.getSelectedItem()!=null) {
+            transportationRecord.packagingSite = spPackagingSite.getSelectedItem().toString();
+        }
         transportationRecord.sitePos = spPackagingSite.getSelectedItemPosition();
-        transportationRecord.destinationCompany = spCompany.getSelectedItem().toString();
+        if(spCompany.getSelectedItem()!=null) {
+            transportationRecord.destinationCompany = spCompany.getSelectedItem().toString();
+        }
         transportationRecord.companyPos = spCompany.getSelectedItemPosition();
-        transportationRecord.driverName = etDriverName.getText().toString();
-        transportationRecord.licensePlate = etLicensePlate.getText().toString();
-        transportationRecord.clipNumber = etSecurityClip.getText().toString();
+        if(etDriverName.getText()!=null) {
+            transportationRecord.driverName = etDriverName.getText().toString();
+        }
+        if(etLicensePlate.getText()!=null) {
+            transportationRecord.licensePlate = etLicensePlate.getText().toString();
+        }
+        if(etSecurityClip.getText()!=null) {
+            transportationRecord.clipNumber = etSecurityClip.getText().toString();
+        }
         transportationRecord.refrigeratedTruck = swRefrigeratedTruck.isChecked();
         transportationRecord.parallelTransport = swParallelTransport.isChecked();
 

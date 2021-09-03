@@ -135,9 +135,9 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
     private String validate(){
         StringBuilder sb = new StringBuilder();
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.supplier)){
+        /*if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.supplier)){
             sb.append(String.format("\n%s is missing", "'Supplier'"));
-        }
+        }*/
 
         if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.manager)){
             sb.append(String.format("\n%s is missing", "'Maintenance manager'"));

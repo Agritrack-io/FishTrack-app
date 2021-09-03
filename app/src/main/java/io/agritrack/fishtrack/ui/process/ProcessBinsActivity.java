@@ -65,7 +65,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
         assignCtrlVars();
 
         // load all SeaFarms and fill in the spFishFarmSite Spinner.
-        List<Site> seaFarms = db.siteDAO().getAllSeaFarms();
+        List<Site> seaFarms = db.siteDAO().getAllFishFarms();
         if (seaFarms != null && !seaFarms.isEmpty()) {
             String[] seaFarmsArray = seaFarms.stream().map(x -> x.name).toArray(String[]::new);
             ArrayAdapter<String> sfAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, seaFarmsArray);

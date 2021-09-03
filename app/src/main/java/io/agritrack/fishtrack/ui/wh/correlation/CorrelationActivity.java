@@ -3,6 +3,8 @@ package io.agritrack.fishtrack.ui.wh.correlation;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,6 +25,10 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import io.agritrack.fishtrack.R;
@@ -34,6 +40,7 @@ import io.agritrack.fishtrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.fishtrack.data.model.wh.Asset;
 import io.agritrack.fishtrack.enums.AssetType;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
+import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.FilterableAdapter;
@@ -81,9 +88,9 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
             //adapterAssets.notifyDataSetChanged();
         }
     };
-    private UhfReader uhfReader;
-    private ScanInventoryThread correlateAssetThread = new ScanInventoryThread();
-    private boolean scanning = false;
+
+    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,35 +107,28 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         // get an instance of local DB
         db = MobileDB.getInstance(getContext());
 
+        // =================================
         // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setOutputPower(33);
         btnScanAssetTag.setOnClickListener(view -> {
-            scanning = !scanning;
-
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (correlateAssetThread.getState() == Thread.State.TERMINATED) {
-                correlateAssetThread = new ScanInventoryThread();
-            }
             //update scanning, uhfReader, tvPlatformName values in thread
-            correlateAssetThread.setScanInProgress(scanning);
-            correlateAssetThread.setUhfReader(uhfReader);
-            correlateAssetThread.setRfidTag(tvCorrAssetBarcode);
+            scanner.setUhfReader(UhfReader.getInstance());
 
-            if (scanning) {
-                btnScanAssetTag.setText(R.string.stop_scan);
-                if (correlateAssetThread.getState() == Thread.State.NEW) {
-                    correlateAssetThread.start();
+            Future<?> future = executor.submit(scanner);
+            try {
+                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
+                if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            tvCorrAssetBarcode.setText(epcStr);
+                        }
+                    });
+                    //tvCageName.setText(result);
                 }
-            } else {
-                btnScanAssetTag.setText(R.string.scan_asset_tag);
-                try {
-                    correlateAssetThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                future.cancel(true);
             }
         });
+        // =================================
 
         configFooter();
     }
@@ -274,5 +274,24 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
                 }
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (executor != null)
+            executor.shutdown();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (executor != null)
+            executor.shutdown();
     }
 }

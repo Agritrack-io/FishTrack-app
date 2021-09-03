@@ -2,6 +2,8 @@ package io.agritrack.fishtrack.ui.maintenance;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,11 +18,16 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.enums.AssetType;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
+import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.RepairRecord;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
@@ -34,9 +41,8 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
     private ToggleGroup tgInMtRepairTypes;
     private EditText etIMtNextMaintenance, etIMtEstWithdrawal;
 
-    private UhfReader uhfReader;
-    private ScanInventoryThread assetScanningThread = new ScanInventoryThread();
-    private boolean scanning = false;
+    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private String selectedOperation;
 
@@ -62,8 +68,28 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
             spAssetType.setAdapter(atAdapter);
         }
 
-        // initialize scanning threads
-        prepareScanAssetButton();
+        // =================================
+        // RFID scanning functionality
+        btnScanAsset.setOnClickListener(view -> {
+            //update scanning, uhfReader, tvPlatformName values in thread
+            scanner.setUhfReader(UhfReader.getInstance());
+
+            Future<?> future = executor.submit(scanner);
+            try {
+                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
+                if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            tvAssetBarcode.setText(epcStr);
+                        }
+                    });
+                    //tvCageName.setText(result);
+                }
+            } catch (Exception e) {
+                future.cancel(true);
+            }
+        });
+        // =================================
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -167,36 +193,22 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
         }
     }
 
-    private void prepareScanAssetButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setOutputPower(33);
+    @Override
+    protected void onDestroy() {
+        if (executor != null)
+            executor.shutdown();
+        super.onDestroy();
+    }
 
-        btnScanAsset.setOnClickListener(view -> {
-            scanning = !scanning;
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (assetScanningThread.getState() == Thread.State.TERMINATED) {
-                assetScanningThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            assetScanningThread.setScanInProgress(scanning);
-            assetScanningThread.setUhfReader(uhfReader);
-            assetScanningThread.setRfidTag(tvAssetBarcode);
-
-            if (scanning) {
-                btnScanAsset.setText(R.string.stop_scan);
-                if (assetScanningThread.getState() == Thread.State.NEW) {
-                    assetScanningThread.start();
-                }
-            } else {
-                btnScanAsset.setText(R.string.scan_net);
-                try {
-                    assetScanningThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (executor != null)
+            executor.shutdown();
     }
 }

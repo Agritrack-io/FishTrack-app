@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/fishingStartActivityLayout"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@color/agri_green"
-tools:context=".ui.maintenance.MaintenanceExternalConfirmActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fishingStartActivityLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/agri_green"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    tools:context=".ui.maintenance.MaintenanceExternalConfirmActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -59,376 +61,376 @@ tools:context=".ui.maintenance.MaintenanceExternalConfirmActivity">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/formLayout"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    app:layout_constraintBottom_toTopOf="@+id/footerLayout"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.0"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/headerLayout">
-
-    <RelativeLayout
-        android:id="@+id/fishConfirmLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/formLayout"
         android:layout_width="0dp"
-        android:layout_height="320dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@id/fishEnterPinLayout"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/footerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
+
+        <RelativeLayout
+            android:id="@+id/fishConfirmLayout"
+            android:layout_width="0dp"
+            android:layout_height="320dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toTopOf="@id/fishEnterPinLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/formLayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <TextView
+                    android:id="@+id/tvSiteLabel"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/site_label"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvAssetBarcodeLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/tvSite"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvAssetBarcodeLabel"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/asset_code_label"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceTypeLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/tvAssetBarcode"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSiteLabel" />
+
+                <TextView
+                    android:id="@+id/tvMaintenanceTypeLabel"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/job_type_label"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSupplierLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/tvMaintenanceType"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvAssetBarcodeLabel" />
+
+                <TextView
+                    android:id="@+id/tvAssetBarcode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:paddingStart="3dp"
+                    android:text="1234567890123"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceType"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvAssetBarcodeLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSite" />
+
+                <TextView
+                    android:id="@+id/tvMaintenanceType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:paddingStart="3dp"
+                    android:text="repair"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSupplier"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvMaintenanceTypeLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvAssetBarcode" />
+
+                <TextView
+                    android:id="@+id/tvSupplierLabel"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/supplier_label"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceManagerLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/tvSupplier"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceTypeLabel" />
+
+                <TextView
+                    android:id="@+id/tvSite"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:paddingStart="3dp"
+                    android:text="Sagiada"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvAssetBarcode"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvSiteLabel"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvSupplier"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:paddingStart="3dp"
+                    android:text="Diopas"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvSupplierLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceType" />
+
+                <TextView
+                    android:id="@+id/tvNextDateMaintenanceLabel"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/date_next_maintenance"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tvNextDateMaintenance"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceCostLabel" />
+
+                <TextView
+                    android:id="@+id/tvNextDateMaintenance"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:paddingStart="3dp"
+                    android:text="30/08/2022"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvNextDateMaintenanceLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceCost" />
+
+                <TextView
+                    android:id="@+id/tvMaintenanceCostLabel"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/maintenance_cost_label"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvNextDateMaintenanceLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/tvMaintenanceCost"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceManagerLabel" />
+
+                <TextView
+                    android:id="@+id/tvMaintenanceCost"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:paddingStart="3dp"
+                    android:text="100€"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvNextDateMaintenance"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvMaintenanceCostLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceManager" />
+
+                <TextView
+                    android:id="@+id/tvMaintenanceManagerLabel"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/maintenance_manager_label"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceCostLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/tvMaintenanceManager"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSupplierLabel" />
+
+                <TextView
+                    android:id="@+id/tvMaintenanceManager"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:paddingStart="3dp"
+                    android:text="George Scrimpas"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceCost"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvMaintenanceManagerLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSupplier" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_green"
+                android:paddingHorizontal="8dp"
+                android:text="@string/fishing_confirm"
+                android:textColor="@color/label_blue"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/fishEnterPinLayout"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/formLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fishConfirmLayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <TextView
+                    android:id="@+id/tvUsername"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="70dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:text="@string/username"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/etPasswordExtMaintenance"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/etPasswordExtMaintenance"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="70dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:ems="10"
+                    android:hint="@string/label_password_hint"
+                    android:inputType="numberPassword"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_green"
+                android:paddingHorizontal="8dp"
+                android:text="@string/fishing_enter_pin"
+                android:textColor="@color/label_blue"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/footerLayout"
+        android:layout_width="0dp"
+        android:layout_height="68sp"
+        android:background="@drawable/border_top"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/formLayout">
+        app:layout_constraintTop_toBottomOf="@+id/formLayout">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="vertical"
-            android:padding="15dp">
-
-            <TextView
-                android:id="@+id/tvSiteLabel"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/site_label"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvAssetBarcodeLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvSite"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvAssetBarcodeLabel"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:text="@string/asset_code_label"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceTypeLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvAssetBarcode"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSiteLabel" />
-
-            <TextView
-                android:id="@+id/tvMaintenanceTypeLabel"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:text="@string/job_type_label"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvSupplierLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvMaintenanceType"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvAssetBarcodeLabel" />
-
-            <TextView
-                android:id="@+id/tvAssetBarcode"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:paddingStart="3dp"
-                android:text="1234567890123"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceType"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvAssetBarcodeLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvSite" />
-
-            <TextView
-                android:id="@+id/tvMaintenanceType"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:paddingStart="3dp"
-                android:text="repair"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvSupplier"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvMaintenanceTypeLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvAssetBarcode" />
-
-            <TextView
-                android:id="@+id/tvSupplierLabel"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:text="@string/supplier_label"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceManagerLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvSupplier"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceTypeLabel" />
-
-            <TextView
-                android:id="@+id/tvSite"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:paddingStart="3dp"
-                android:text="Sagiada"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvAssetBarcode"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvSiteLabel"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvSupplier"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:paddingStart="3dp"
-                android:text="Diopas"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvSupplierLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceType" />
-
-            <TextView
-                android:id="@+id/tvNextDateMaintenanceLabel"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/date_next_maintenance"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvNextDateMaintenance"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceCostLabel" />
-
-            <TextView
-                android:id="@+id/tvNextDateMaintenance"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/border_bottom"
-                android:paddingStart="3dp"
-                android:text="30/08/2022"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvNextDateMaintenanceLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceCost" />
-
-            <TextView
-                android:id="@+id/tvMaintenanceCostLabel"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:text="@string/maintenance_cost_label"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvNextDateMaintenanceLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvMaintenanceCost"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceManagerLabel" />
-
-            <TextView
-                android:id="@+id/tvMaintenanceCost"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:paddingStart="3dp"
-                android:text="100€"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvNextDateMaintenance"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvMaintenanceCostLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceManager" />
-
-            <TextView
-                android:id="@+id/tvMaintenanceManagerLabel"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:text="@string/maintenance_manager_label"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceCostLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvMaintenanceManager"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSupplierLabel" />
-
-            <TextView
-                android:id="@+id/tvMaintenanceManager"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:paddingStart="3dp"
-                android:text="George Scrimpas"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceCost"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvMaintenanceManagerLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvSupplier" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
+        <ImageView
+            android:id="@+id/imageView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="16dp"
-            android:background="@color/agri_green"
-            android:paddingHorizontal="8dp"
-            android:text="@string/fishing_confirm"
-            android:textColor="@color/label_blue"
-            android:textSize="18sp" />
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToMaintenanceExternalSupplier"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/powered_by_agritrack" />
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/fishEnterPinLayout"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/formLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fishConfirmLayout">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="vertical"
-            android:padding="15dp">
-
-            <TextView
-                android:id="@+id/tvUsername"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="70dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="70dp"
-                android:background="@drawable/bg_rounded_dialog_non_input"
-                android:text="@string/username"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/etPasswordExtMaintenance"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/etPasswordExtMaintenance"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="70dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="70dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:hint="@string/label_password_hint"
-                android:inputType="numberPassword"
-                android:textAlignment="center"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
+        <ImageView
+            android:id="@+id/ivBackToMaintenanceExternalSupplier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
-            android:background="@color/agri_green"
-            android:paddingHorizontal="8dp"
-            android:text="@string/fishing_enter_pin"
-            android:textColor="@color/label_blue"
-            android:textSize="18sp" />
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
+            android:scaleX="1.5"
+            android:scaleY="1.2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
-    </RelativeLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/footerLayout"
-    android:layout_width="0dp"
-    android:layout_height="68sp"
-    android:background="@drawable/border_top"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/formLayout">
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:scaleX="0.7"
-        android:scaleY="0.7"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToMaintenanceExternalSupplier"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/powered_by_agritrack" />
-
-    <ImageView
-        android:id="@+id/ivBackToMaintenanceExternalSupplier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/button_rounded_shape_corners"
-        android:padding="1dp"
-        android:scaleX="1.5"
-        android:scaleY="1.2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_shortcut_arrow_back" />
-
-    <ImageView
-        android:id="@+id/ivToCongs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/button_rounded_shape_corners"
-        android:padding="1dp"
-        android:scaleX="1.5"
-        android:scaleY="1.2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_check_blue" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/ivToCongs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
+            android:scaleX="1.5"
+            android:scaleY="1.2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_check_blue" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

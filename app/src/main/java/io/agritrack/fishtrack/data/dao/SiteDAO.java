@@ -23,8 +23,8 @@ public interface SiteDAO {
     @Query("SELECT * from site where site_type='PLANT'")
     List<Site> getAllProcessingPlants();
 
-    @Query("SELECT * from site where site_type='SEAFARM'")
-    List<Site> getAllSeaFarms();
+    @Query("SELECT * from site where site_type='FISHFARM'")
+    List<Site> getAllFishFarms();
 
     @Query("SELECT * from site where id=:siteId LIMIT 1")
     Site getById(Long siteId);

@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     tools:context=".ui.maintenance.MaintenanceInternalConfirmActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
