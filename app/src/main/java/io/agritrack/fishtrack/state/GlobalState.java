@@ -15,6 +15,7 @@ import io.agritrack.fishtrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.fishtrack.data.model.tx.RepairTransaction;
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
 import io.agritrack.fishtrack.enums.TxStatus;
+import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 public class GlobalState {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
@@ -112,6 +113,8 @@ public class GlobalState {
             txFishing.totalQty = recFishing.totalFishWeight;
             txFishing.harvestBins = recFishing.availBins;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
+            txFishing.user = LocalPreferences.getLoggedInUser("N/A");
+            txFishing.site = LocalPreferences.getCurrentSiteId().toString();
 
             db.fishingTransactionDAO().update(txFishing);
 

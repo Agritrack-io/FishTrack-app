@@ -24,6 +24,8 @@ public class FishingTxDTO {
     public Short number_harvest_bins;
     public List<String> harvest_bins = new LinkedList<String>();
     public String status;
+    public String user;
+    public String site;
 
     public static FishingTxDTO convert(FishingTransaction fishing) {
         FishingTxDTO fishingTxDTO = new FishingTxDTO();
@@ -44,6 +46,9 @@ public class FishingTxDTO {
         fishingTxDTO.number_harvest_bins = fishing.harvestBinsCnt;
         fishingTxDTO.harvest_bins = fishing.harvestBins;
         fishingTxDTO.status = fishing.txStatus.name();
+
+        fishingTxDTO.user = fishing.user;
+        fishingTxDTO.site = fishing.site;
 
         return fishingTxDTO;
     }

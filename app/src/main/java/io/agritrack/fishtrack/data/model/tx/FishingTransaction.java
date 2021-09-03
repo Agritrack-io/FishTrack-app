@@ -70,20 +70,9 @@ public class FishingTransaction {
     @ColumnInfo(name = "status")
     public TxStatus txStatus = TxStatus.NONE;
 
-   /* @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "harvest_load_id", foreignKey = @ForeignKey(name="FK_Fishing_Harvest_Load"))
-    public HarvestLoad harvestLoad;
+    @ColumnInfo(name = "site_code")
+    public String site;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flot_id", foreignKey = @ForeignKey(name="FK_Fishing_FLOT"))
-    public Flot flot;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_Fishing_Site"))
-    public Site site;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="FK_Fishing_User"))
-    public User user;*/
-
+    @ColumnInfo(name = "user_name")
+    public String user;
 }
