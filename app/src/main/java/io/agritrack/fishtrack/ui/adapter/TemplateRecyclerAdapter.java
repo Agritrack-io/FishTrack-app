@@ -19,10 +19,19 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     private final LayoutInflater mLayoutInflater;
     private final Context context;
 
+    private View.OnClickListener itemsClickListener;
+
     public TemplateRecyclerAdapter(Context context, ArrayList<String> values) {
         mList = values;
         this.mLayoutInflater = LayoutInflater.from(context);
         this.context = context;
+    }
+
+    public TemplateRecyclerAdapter(Context context, ArrayList<String> values, View.OnClickListener clickListener) {
+        mList = values;
+        this.mLayoutInflater = LayoutInflater.from(context);
+        this.context = context;
+        this.itemsClickListener = clickListener;
     }
 
     public List<String> getValues() {
@@ -39,11 +48,15 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         }
     }
 
+    public void removeItem(String val) {
+        this.mList.remove(val);
+    }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mLayoutInflater.inflate(R.layout.simple_recycler_view_item, parent, false);
-        return new MyViewHolder(view);
+        return new MyViewHolder(view, this.itemsClickListener);
     }
 
     @Override
@@ -60,9 +73,12 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvItemName;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull View itemView, View.OnClickListener itemsClickListener) {
             super(itemView);
             tvItemName = itemView.findViewById(R.id.tvRecyclerItem);
+            if (itemsClickListener != null) {
+                itemView.setOnClickListener(itemsClickListener);
+            }
         }
     }
 //public class TextAdapter extends ArrayAdapter<String> {

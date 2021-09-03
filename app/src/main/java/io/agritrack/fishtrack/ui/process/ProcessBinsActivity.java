@@ -3,14 +3,19 @@ package io.agritrack.fishtrack.ui.process;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -49,6 +54,29 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
     private TemplateRecyclerAdapter adapterBins;
 
+    private ImageButton ivAddBin, ivDeleteBin;
+    private  String selectedBarcode;
+    private AppCompatTextView selectedItem;
+
+    // Instantiate a clickListener to be passed to adapterBins.
+    // It will be used to set the selectedBarcode var to the selected item barcode.
+    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            selectedBarcode = ((AppCompatTextView) v).getText().toString();
+
+            if(selectedItem!=null) {
+                selectedItem.setTextColor(Color.GRAY);
+                selectedItem.setBackgroundColor(Color.WHITE);
+            }
+            v.setSelected(true);
+            ((AppCompatTextView) v).setTextColor(Color.BLUE);
+            ((AppCompatTextView) v).setBackgroundColor(Color.GRAY);
+            selectedItem = (AppCompatTextView) v;
+            //adapterAssets.notifyDataSetChanged();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +104,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBinsForTransport.setLayoutManager(layoutManager);
         rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
-        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
         rvBinsForTransport.setAdapter(adapterBins);
         rvBinsForTransport.setNestedScrollingEnabled(false);
 
@@ -96,6 +124,18 @@ public class ProcessBinsActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        ivDeleteBin.setOnClickListener(view -> {
+            if(selectedBarcode != null){
+                adapterBins.removeItem(selectedBarcode);
+                adapterBins.notifyDataSetChanged();
+                tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+            }
+        });
+
+        ivAddBin.setOnClickListener(view -> {
+
+        });
+
         configFooter();
     }
 
@@ -103,6 +143,8 @@ public class ProcessBinsActivity extends AppCompatActivity {
         tvBinsCount = findViewById(R.id.tvBinsCount);
         spFishFarmSite = findViewById(R.id.spFishFarmSite);
         rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
+        ivDeleteBin = (ImageButton) findViewById(R.id.ivDeleteBin);
+        ivAddBin = (ImageButton) findViewById(R.id.ivAddBin);
     }
 
     private void prepareScanAvailableBinsButton() {
@@ -127,11 +169,21 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                    }
+                });
                 if (processingBinsThread.getState() == Thread.State.NEW) {
                     processingBinsThread.start();
                 }
             } else {
                 scanButton.setText(R.string.scan_bin);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+                    }
+                });
                 try {
                     processingBinsThread.join();
                 } catch (InterruptedException e) {
@@ -144,6 +196,11 @@ public class ProcessBinsActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToSupervisorConfirm);
         ivNext.setOnClickListener(view -> {
+
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            processingBinsThread.setScanInProgress(scanning);
+
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
