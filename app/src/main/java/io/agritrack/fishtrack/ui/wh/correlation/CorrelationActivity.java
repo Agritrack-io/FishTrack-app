@@ -39,7 +39,6 @@ import io.agritrack.fishtrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.fishtrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.fishtrack.data.model.wh.Asset;
 import io.agritrack.fishtrack.enums.AssetType;
-import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
@@ -75,7 +74,6 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         @Override
         public void onClick(View v) {
             selectedBarcode = ((AppCompatTextView) v).getText().toString();
-            //svSearchAsset.setQuery(selectedBarcode, false);
 
             if(selectedItem!=null) {
                 selectedItem.setTextColor(Color.GRAY);
@@ -83,7 +81,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
             }
             v.setSelected(true);
             ((AppCompatTextView) v).setTextColor(Color.BLUE);
-            ((AppCompatTextView) v).setBackgroundColor(Color.GRAY);
+            v.setBackgroundColor(Color.GRAY);
             selectedItem = (AppCompatTextView) v;
             //adapterAssets.notifyDataSetChanged();
         }

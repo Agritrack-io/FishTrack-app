@@ -1,6 +1,6 @@
 package io.agritrack.fishtrack.ui.login.api;
 
-import io.agritrack.fishtrack.data.dto.transport.TransportTxDTO;
+import io.agritrack.fishtrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.fishtrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.fishtrack.data.dto.tx.FishingTxDTO;

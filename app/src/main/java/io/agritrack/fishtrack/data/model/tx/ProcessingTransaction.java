@@ -3,6 +3,11 @@ package io.agritrack.fishtrack.data.model.tx;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import java.util.List;
+
+import io.agritrack.fishtrack.data.converter.StringListConverter;
 
 @Entity(tableName = "process_transaction")
 public class ProcessingTransaction {
@@ -12,6 +17,9 @@ public class ProcessingTransaction {
 
     @ColumnInfo(name = "clean_truck")
     public String cleanTruck;
+
+    @ColumnInfo(name = "smells")
+    public String smells;
 
     @ColumnInfo(name = "plot")
     public String plot;
@@ -24,6 +32,10 @@ public class ProcessingTransaction {
 
     @ColumnInfo(name = "fish_condition")
     public String fishCondition;
+
+    @TypeConverters(StringListConverter.class)
+    @ColumnInfo(name = "bins_received")
+    public List<String> receivedBins;
 
     @ColumnInfo(name = "security_clip_number")
     public String securityClipNumber;

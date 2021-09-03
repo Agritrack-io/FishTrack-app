@@ -7,7 +7,7 @@ import androidx.room.TypeConverters;
 
 import java.util.List;
 
-import io.agritrack.fishtrack.data.converter.StringSetConverter;
+import io.agritrack.fishtrack.data.converter.StringListConverter;
 import io.agritrack.fishtrack.data.converter.TxStatusEnumConverter;
 import io.agritrack.fishtrack.enums.TxStatus;
 
@@ -62,7 +62,7 @@ public class FishingTransaction {
     @ColumnInfo(name = "number_harvest_bins")
     public Short harvestBinsCnt;
 
-    @TypeConverters(StringSetConverter.class)
+    @TypeConverters(StringListConverter.class)
     @ColumnInfo(name = "harvest_bins")
     public List<String> harvestBins;
 

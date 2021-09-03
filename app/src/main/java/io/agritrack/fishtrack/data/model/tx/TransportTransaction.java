@@ -5,9 +5,9 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import java.util.Set;
+import java.util.List;
 
-import io.agritrack.fishtrack.data.converter.StringSetConverter;
+import io.agritrack.fishtrack.data.converter.StringListConverter;
 
 @Entity(tableName = "transport_transaction")
 public class TransportTransaction {
@@ -39,9 +39,15 @@ public class TransportTransaction {
     @ColumnInfo(name = "driver_signature")
     public String driverSignature;
 
-    @TypeConverters(StringSetConverter.class)
+    @TypeConverters(StringListConverter.class)
     @ColumnInfo(name = "bins_loaded")
-    public Set<String> loadedBins;
+    public List<String> loadedBins;
+
+    @ColumnInfo(name = "site_code")
+    public String site;
+
+    @ColumnInfo(name = "user_name")
+    public String user;
 
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "harvest_load_id", foreignKey = @ForeignKey(name="FK_Transport_Harvest_Load"))
@@ -49,13 +55,5 @@ public class TransportTransaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flot_id", foreignKey = @ForeignKey(name="FK_Transport_FLOT"))
-    public Flot flot;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_Transport_Site"))
-    public Site site;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="FK_Transport_User"))
-    public User user;*/
+    public Flot flot;*/
 }

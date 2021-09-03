@@ -1,5 +1,8 @@
 package io.agritrack.fishtrack.data.dto.tx;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import io.agritrack.fishtrack.data.model.tx.ProcessingTransaction;
 
 public class ProcessingTxDTO {
@@ -11,9 +14,10 @@ public class ProcessingTxDTO {
     public String dispatch_note;
     public String fish_condition;
     public String security_clip_number;
+    public List<String> bins_received = new LinkedList<String>();
     public String flot;
-    public String site;
     public String harvest_load;
+    public String site;
     public String user;
 
     public static ProcessingTxDTO convert(ProcessingTransaction processing) {
@@ -28,6 +32,7 @@ public class ProcessingTxDTO {
         processingTxDto.flot = processing.flot;
         processingTxDto.site = processing.site;
         processingTxDto.harvest_load = processing.harvestLoad;
+        processingTxDto.bins_received = processing.receivedBins;
         processingTxDto.user = processing.user;
 
         return processingTxDto;

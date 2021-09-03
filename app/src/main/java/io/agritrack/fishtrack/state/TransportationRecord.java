@@ -2,7 +2,7 @@ package io.agritrack.fishtrack.state;
 
 import android.graphics.Bitmap;
 
-import java.util.Set;
+import java.util.List;
 
 public class TransportationRecord {
     public String packagingSite;
@@ -11,13 +11,13 @@ public class TransportationRecord {
     public String licensePlate;
     public Boolean refrigeratedTruck = Boolean.TRUE;
     public Boolean parallelTransport = Boolean.FALSE;
-    public Set<String> loadedBins;
     public String clipNumber;
     public int sitePos = -1;
     public int companyPos = -1;
-    public Set<String> availBins;
+    public List<String> availBins;
     public byte[] signatureBytes;
     public Bitmap signature;
 
-    public TransportationRecord() {}
+    public TransportationRecord() {
+    }
 }

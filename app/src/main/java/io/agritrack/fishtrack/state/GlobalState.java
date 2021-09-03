@@ -137,7 +137,9 @@ public class GlobalState {
             txTransport.isTruckRefrigerated = recTransport.refrigeratedTruck;
             txTransport.isParallelTransport = recTransport.parallelTransport;
             txTransport.transportHead = "N/A";
-            txTransport.loadedBins = recTransport.loadedBins;
+            txTransport.loadedBins = recTransport.availBins;
+            txTransport.user = LocalPreferences.getLoggedInUser("N/A");
+            txTransport.site = LocalPreferences.getCurrentSiteId().toString();
 
             db.transportTransactionDAO().insert(txTransport);
             return txTransport;
@@ -152,11 +154,15 @@ public class GlobalState {
             ProcessingTransaction txProcess = new ProcessingTransaction();
             txProcess.dispatchNote = recProcessing.dispatchNote;
             txProcess.fishCondition = recProcessing.fishCondition;
+            txProcess.cleanTruck = Boolean.toString(recProcessing.cleanTruck);
+            txProcess.smells = Boolean.toString(recProcessing.smellyTruck);
             txProcess.plot = recProcessing.packagingLot;
             txProcess.site = recProcessing.packagingSite;
             //txProcess.remarks = recProcessing.remarks;
+            txProcess.receivedBins = recProcessing.availBins;
             txProcess.securityClipNumber = recProcessing.securityClip;
-            //txProcess.dispatchNote = recProcessing.dispatchNote;
+            txProcess.user = LocalPreferences.getLoggedInUser("N/A");
+            txProcess.site = LocalPreferences.getCurrentSiteId().toString();
 
             db.processingTransactionDAO().insert(txProcess);
 

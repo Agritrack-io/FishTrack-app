@@ -17,7 +17,7 @@ import java.net.SocketTimeoutException;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.api.APIServiceGenerator;
 import io.agritrack.fishtrack.data.db.MobileDB;
-import io.agritrack.fishtrack.data.dto.transport.TransportTxDTO;
+import io.agritrack.fishtrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.TransportationRecord;

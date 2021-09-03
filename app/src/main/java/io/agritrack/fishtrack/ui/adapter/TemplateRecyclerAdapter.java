@@ -54,7 +54,6 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     @Override
     public int getItemCount() {
         return mList.size();
-
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

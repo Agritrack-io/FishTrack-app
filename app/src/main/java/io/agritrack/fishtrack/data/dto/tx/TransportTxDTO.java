@@ -1,4 +1,7 @@
-package io.agritrack.fishtrack.data.dto.transport;
+package io.agritrack.fishtrack.data.dto.tx;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
 
@@ -13,6 +16,9 @@ public class TransportTxDTO {
     public String security_clip_number;
     public String driver_name;
     public String driver_signature;
+    public List<String> bins_loaded = new LinkedList<String>();
+    public String site;
+    public String user;
 
     public static TransportTxDTO convert(TransportTransaction transport) {
         TransportTxDTO transportTxDto = new TransportTxDTO();
@@ -25,6 +31,9 @@ public class TransportTxDTO {
         transportTxDto.security_clip_number = transport.securityClipNo;
         transportTxDto.driver_name = transport.driverName;
         transportTxDto.driver_signature = transport.driverSignature;
+        transportTxDto.bins_loaded = transport.loadedBins;
+        transportTxDto.user = transport.user;
+        transportTxDto.site = transport.site;
 
         return transportTxDto;
     }
