@@ -3,17 +3,21 @@ package io.agritrack.fishtrack.ui.wh.inventory;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -49,6 +53,29 @@ public class InventoryActivity extends AppCompatActivity {
 
     private TemplateRecyclerAdapter adapterInventoryItems;
 
+    private ImageButton ivAddItem, ivDeleteItem;
+    private String selectedBarcode;
+    private AppCompatTextView selectedItem;
+
+    // Instantiate a clickListener to be passed to adapterIncomingItems.
+    // It will be used to set the selectedBarcode var to the selected item barcode.
+    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            selectedBarcode = ((AppCompatTextView) v).getText().toString();
+
+            if(selectedItem!=null) {
+                selectedItem.setTextColor(Color.GRAY);
+                selectedItem.setBackgroundColor(Color.WHITE);
+            }
+            v.setSelected(true);
+            ((AppCompatTextView) v).setTextColor(Color.BLUE);
+            ((AppCompatTextView) v).setBackgroundColor(Color.GRAY);
+            selectedItem = (AppCompatTextView) v;
+            //adapterAssets.notifyDataSetChanged();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +95,7 @@ public class InventoryActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvInventoryItems.setLayoutManager(layoutManager);
         rvInventoryItems.setItemAnimator(new DefaultItemAnimator());
-        adapterInventoryItems = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterInventoryItems = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
         rvInventoryItems.setAdapter(adapterInventoryItems);
         rvInventoryItems.setNestedScrollingEnabled(false);
 
@@ -199,6 +226,18 @@ public class InventoryActivity extends AppCompatActivity {
             }
         });
 
+        ivDeleteItem.setOnClickListener(view -> {
+            if(selectedBarcode != null){
+                adapterInventoryItems.removeItem(selectedBarcode);
+                adapterInventoryItems.notifyDataSetChanged();
+                tvInventoryItemsCount.setText(String.valueOf(adapterInventoryItems.getItemCount()));
+            }
+        });
+
+        ivAddItem.setOnClickListener(view -> {
+
+        });
+
         configFooter();
     }
 
@@ -207,11 +246,18 @@ public class InventoryActivity extends AppCompatActivity {
         spAssetType = findViewById(R.id.spAssetType);
         rvInventoryItems = findViewById(R.id.rvInventoryItems);
         tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
+        ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
+        ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
     }
 
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
+
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            transportationBinsThread.setScanInProgress(scanning);
+
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
@@ -249,11 +295,21 @@ public class InventoryActivity extends AppCompatActivity {
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                    }
+                });
                 if (transportationBinsThread.getState() == Thread.State.NEW) {
                     transportationBinsThread.start();
                 }
             } else {
                 scanButton.setText(R.string.scan_assets);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+                    }
+                });
                 try {
                     transportationBinsThread.join();
                 } catch (InterruptedException e) {

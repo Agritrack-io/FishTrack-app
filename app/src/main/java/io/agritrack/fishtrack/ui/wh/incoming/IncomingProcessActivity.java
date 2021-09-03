@@ -1,13 +1,19 @@
 package io.agritrack.fishtrack.ui.wh.incoming;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,8 +56,31 @@ public class IncomingProcessActivity extends AppCompatActivity {
 
     private TemplateRecyclerAdapter adapterIncomingItems;
 
-    private TextView tvIncomingProcessFrom, tvIncomingProcessTo, tvBinsCount;
+    private TextView tvIncomingProcessFrom, tvIncomingProcessTo, tvItemsCount;
     private RecyclerView rvIncomingItems;
+
+    private ImageButton ivAddItem, ivDeleteItem;
+    private String selectedBarcode;
+    private AppCompatTextView selectedItem;
+
+    // Instantiate a clickListener to be passed to adapterIncomingItems.
+    // It will be used to set the selectedBarcode var to the selected item barcode.
+    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            selectedBarcode = ((AppCompatTextView) v).getText().toString();
+
+            if(selectedItem!=null) {
+                selectedItem.setTextColor(Color.GRAY);
+                selectedItem.setBackgroundColor(Color.WHITE);
+            }
+            v.setSelected(true);
+            ((AppCompatTextView) v).setTextColor(Color.BLUE);
+            ((AppCompatTextView) v).setBackgroundColor(Color.GRAY);
+            selectedItem = (AppCompatTextView) v;
+            //adapterAssets.notifyDataSetChanged();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +97,7 @@ public class IncomingProcessActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvIncomingItems.setLayoutManager(layoutManager);
         rvIncomingItems.setItemAnimator(new DefaultItemAnimator());
-        adapterIncomingItems = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterIncomingItems = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
         rvIncomingItems.setAdapter(adapterIncomingItems);
         rvIncomingItems.setNestedScrollingEnabled(false);
 
@@ -77,7 +106,7 @@ public class IncomingProcessActivity extends AppCompatActivity {
             if (response == null) {
                 return;
             }
-            tvBinsCount.setText(String.valueOf(response.size()));
+            tvItemsCount.setText(String.valueOf(response.size()));
             adapterIncomingItems.setValues(new ArrayList<>(response));
             adapterIncomingItems.notifyDataSetChanged();
         });
@@ -88,12 +117,29 @@ public class IncomingProcessActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        ivDeleteItem.setOnClickListener(view -> {
+            if(selectedBarcode != null){
+                adapterIncomingItems.removeItem(selectedBarcode);
+                adapterIncomingItems.notifyDataSetChanged();
+                tvItemsCount.setText(String.valueOf(adapterIncomingItems.getItemCount()));
+            }
+        });
+
+        ivAddItem.setOnClickListener(view -> {
+
+        });
+
         configFooter();
     }
 
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
+
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            processingBinsThread.setScanInProgress(scanning);
+
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -115,7 +161,9 @@ public class IncomingProcessActivity extends AppCompatActivity {
         rvIncomingItems = findViewById(R.id.rvIncomingItems);
         tvIncomingProcessFrom = findViewById(R.id.tvIncomingProcessFrom);
         tvIncomingProcessTo = findViewById(R.id.tvIncomingProcessTo);
-        tvBinsCount = findViewById(R.id.tvBinsCount);
+        tvItemsCount = findViewById(R.id.tvItemsCount);
+        ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
+        ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
     }
 
     private void updateState() {
@@ -166,7 +214,7 @@ public class IncomingProcessActivity extends AppCompatActivity {
             adapterIncomingItems.setValues((ArrayList<String>) WHTxRecord.items);
             adapterIncomingItems.notifyDataSetChanged();
 
-            tvBinsCount.setText(String.valueOf(WHTxRecord.items.size()));
+            tvItemsCount.setText(String.valueOf(WHTxRecord.items.size()));
         }
     }
 
@@ -191,11 +239,21 @@ public class IncomingProcessActivity extends AppCompatActivity {
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                    }
+                });
                 if (processingBinsThread.getState() == Thread.State.NEW) {
                     processingBinsThread.start();
                 }
             } else {
                 scanButton.setText(R.string.scan_assets);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+                    }
+                });
                 try {
                     processingBinsThread.join();
                 } catch (InterruptedException e) {

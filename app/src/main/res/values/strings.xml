@@ -56,7 +56,7 @@
     <string name="title_user_date_platform">USER NAME / DATE / PLATFORM</string>
     <string name="select_bins">Select bins</string>
     <string name="bins_to_use">Bins for usage</string>
-    <string name="scan_bin">Scan Bin tag</string>
+    <string name="scan_bin">Scan Bin</string>
     <string name="delete_bin">Delete Bin</string>
     <string name="number_of_bins"># of bins:</string>
 
@@ -89,8 +89,8 @@
     <string name="yes">YES</string>
 
     <string name="back_button">BACK</string>
-    <string name="next_bin_button">NEXT BIN</string>
-    <string name="end_bin_button">END BIN</string>
+    <string name="add_batch_button">ADD BATCH</string>
+    <string name="end_bin_button">BIN FILLED</string>
     <string name="weight_bin">Weight of Bin (Kg):</string>
     <string name="fishing_batches">Fishing Batches</string>
     <string name="fishing_summary">Fishing Summary</string>

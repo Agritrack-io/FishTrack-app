@@ -17,9 +17,6 @@ public interface SiteDAO {
     @Query("SELECT * from site")
     List<Site> getAll();
 
-//    @Query("SELECT * from plant where distributor_ids LIKE '%,' || :distributorId || ',%'")
-//    List<Site> getAllByDistributorId(Long distributorId);
-
     @Query("SELECT * from site where site_type='PLANT'")
     List<Site> getAllProcessingPlants();
 

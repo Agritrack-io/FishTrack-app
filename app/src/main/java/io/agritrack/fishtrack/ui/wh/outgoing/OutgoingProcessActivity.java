@@ -1,13 +1,19 @@
 package io.agritrack.fishtrack.ui.wh.outgoing;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -54,6 +60,29 @@ public class OutgoingProcessActivity extends AppCompatActivity {
     private TextView tvOutgoingProcessFrom, tvOutgoingProcessTo, tvOutAssetsCount;
     private RecyclerView rvOutgoingAssets;
 
+    private ImageButton ivAddItem, ivDeleteItem;
+    private String selectedBarcode;
+    private AppCompatTextView selectedItem;
+
+    // Instantiate a clickListener to be passed to adapterIncomingItems.
+    // It will be used to set the selectedBarcode var to the selected item barcode.
+    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            selectedBarcode = ((AppCompatTextView) v).getText().toString();
+
+            if(selectedItem!=null) {
+                selectedItem.setTextColor(Color.GRAY);
+                selectedItem.setBackgroundColor(Color.WHITE);
+            }
+            v.setSelected(true);
+            ((AppCompatTextView) v).setTextColor(Color.BLUE);
+            ((AppCompatTextView) v).setBackgroundColor(Color.GRAY);
+            selectedItem = (AppCompatTextView) v;
+            //adapterAssets.notifyDataSetChanged();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +98,7 @@ public class OutgoingProcessActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvOutgoingAssets.setLayoutManager(layoutManager);
         rvOutgoingAssets.setItemAnimator(new DefaultItemAnimator());
-        adapterOutgoingItems = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterOutgoingItems = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
         rvOutgoingAssets.setAdapter(adapterOutgoingItems);
         rvOutgoingAssets.setNestedScrollingEnabled(false);
 
@@ -89,6 +118,17 @@ public class OutgoingProcessActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        ivDeleteItem.setOnClickListener(view -> {
+            if(selectedBarcode != null){
+                adapterOutgoingItems.removeItem(selectedBarcode);
+                adapterOutgoingItems.notifyDataSetChanged();
+                tvOutAssetsCount.setText(String.valueOf(adapterOutgoingItems.getItemCount()));
+            }
+        });
+
+        ivAddItem.setOnClickListener(view -> {
+
+        });
 
         configFooter();
     }
@@ -96,6 +136,11 @@ public class OutgoingProcessActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
+
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            processingBinsThread.setScanInProgress(scanning);
+
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -118,6 +163,8 @@ public class OutgoingProcessActivity extends AppCompatActivity {
         tvOutgoingProcessFrom = findViewById(R.id.tvOutgoingProcessFrom);
         tvOutgoingProcessTo = findViewById(R.id.tvOutgoingProcessTo);
         tvOutAssetsCount = findViewById(R.id.tvOutAssetsCount);
+        ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
+        ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
     }
 
     private void updateState() {
@@ -193,11 +240,21 @@ public class OutgoingProcessActivity extends AppCompatActivity {
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                    }
+                });
                 if (processingBinsThread.getState() == Thread.State.NEW) {
                     processingBinsThread.start();
                 }
             } else {
                 scanButton.setText(R.string.scan_assets);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+                    }
+                });
                 try {
                     processingBinsThread.join();
                 } catch (InterruptedException e) {
