@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.Site;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
@@ -42,7 +43,6 @@ import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 public class ProcessBinsActivity extends AppCompatActivity {
     private MobileDB db;
 
-    private Spinner spFishFarmSite;
     private RecyclerView rvBinsForTransport;
     private TextView tvBinsCount;
 
@@ -92,15 +92,6 @@ public class ProcessBinsActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        // load all SeaFarms and fill in the spFishFarmSite Spinner.
-        List<Site> seaFarms = db.siteDAO().getAllFishFarms();
-        if (seaFarms != null && !seaFarms.isEmpty()) {
-            String[] seaFarmsArray = seaFarms.stream().map(x -> x.name).toArray(String[]::new);
-            ArrayAdapter<String> sfAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, seaFarmsArray);
-            sfAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-            spFishFarmSite.setAdapter(sfAdapter);
-        }
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBinsForTransport.setLayoutManager(layoutManager);
         rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
@@ -141,7 +132,6 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
     private void assignCtrlVars() {
         tvBinsCount = findViewById(R.id.tvBinsCount);
-        spFishFarmSite = findViewById(R.id.spFishFarmSite);
         rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
         ivDeleteBin = (ImageButton) findViewById(R.id.ivDeleteBin);
         ivAddBin = (ImageButton) findViewById(R.id.ivAddBin);
@@ -166,6 +156,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
             processingBinsThread.setUhfReader(uhfReader);
             processingBinsThread.setAdapter(adapterBins);
             processingBinsThread.setScanResult(scanResult);
+            processingBinsThread.setFilter(Filters.RFID_BIN);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
@@ -233,16 +224,10 @@ public class ProcessBinsActivity extends AppCompatActivity {
             TextView tvBinsCount = findViewById(R.id.tvBinsCount);
             tvBinsCount.setText(String.valueOf(prcRecord.availBins.size()));
         }
-
-        if (prcRecord.fishFarmPos > -1) {
-            spFishFarmSite.setSelection(prcRecord.fishFarmPos);
-        }
     }
 
     private void updateState() {
         GlobalState.recProcessing.availBins = adapterBins.getValues();
-        GlobalState.recProcessing.fishFarmPos = spFishFarmSite.getSelectedItemPosition();
-        GlobalState.recProcessing.fishFarm = spFishFarmSite.getSelectedItem().toString();
     }
 
     private String validate(){

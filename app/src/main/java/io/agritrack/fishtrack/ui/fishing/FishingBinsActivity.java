@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.state.GlobalState;
@@ -138,6 +139,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             inventoryThread.setUhfReader(uhfReader);
             inventoryThread.setAdapter(adapterBins);
             inventoryThread.setScanResult(scanResult);
+            inventoryThread.setFilter(Filters.RFID_BIN);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);

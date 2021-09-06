@@ -45,6 +45,7 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private String selectedOperation;
+    private String activeFilter = null;
 
 
     @Override

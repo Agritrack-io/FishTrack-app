@@ -4,6 +4,7 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.android.hdhe.uhf.readerInterface.TagModel;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -33,12 +34,13 @@ public class SingleShotScanner implements Callable {
                 final List<TagModel> tagList = uhfReader.inventoryRealTime();
                 if (tagList != null && !tagList.isEmpty()) {
                     Stream<TagModel> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || (TagToString.apply(f)).indexOf(this.RFID_FILTER) == 11);
-                    TagModel tag = filteredStream.sorted((y, x) -> Byte.compare(x.getmRssi(), y.getmRssi())).findFirst().get();
-                    if (tag != null) {
-                        String tagStr = TagToString.apply(tag);
+                    Optional<TagModel> tag = filteredStream.sorted((y, x) -> Byte.compare(x.getmRssi(), y.getmRssi())).findFirst();
+
+                    if (tag.isPresent()) {
+                        String tagStr = TagToString.apply(tag.get());
                         return (tagStr.length() > 15) ? tagStr.substring(15) : "N/A";
                     } else {
-                        return null;
+                        return "";
                     }
                 }
             }

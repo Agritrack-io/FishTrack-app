@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.api.APIServiceGenerator;
 import io.agritrack.fishtrack.common.Constants;
+import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.fishtrack.data.model.tx.CorrelationTransaction;
@@ -66,6 +67,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
     private FilterableAdapter adapterAssets;
     private String selectedAssetType;
     private String selectedBarcode = "";
+    private String activeFilter = null;
 
     private AppCompatTextView selectedItem;
     // Instantiate a clickListener to be passed to adapterAssets.
@@ -75,7 +77,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         public void onClick(View v) {
             selectedBarcode = ((AppCompatTextView) v).getText().toString();
 
-            if(selectedItem!=null) {
+            if (selectedItem != null) {
                 selectedItem.setTextColor(Color.GRAY);
                 selectedItem.setBackgroundColor(Color.WHITE);
             }
@@ -110,6 +112,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         btnScanAssetTag.setOnClickListener(view -> {
             //update scanning, uhfReader, tvPlatformName values in thread
             scanner.setUhfReader(UhfReader.getInstance());
+            scanner.setFilter(activeFilter);
 
             Future<?> future = executor.submit(scanner);
             try {
@@ -121,6 +124,8 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
                         }
                     });
                     //tvCageName.setText(result);
+                } else {
+                    Toast.makeText(getApplicationContext(), String.format("No item of type %s was found!", selectedAssetType), Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
                 future.cancel(true);
@@ -203,14 +208,14 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         }
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recWHCorrelation.barcode)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recWHCorrelation.barcode)) {
             sb.append(String.format("\n%s is missing", "'Asset BARCODE'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recWHCorrelation.rfid)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recWHCorrelation.rfid)) {
             sb.append(String.format("\n%s is missing", "'Asset RFID'"));
         }
 
@@ -221,12 +226,16 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
         if (checkedId == R.id.tbCage) {
             selectedAssetType = Constants.ftCage;
+            activeFilter = Filters.RFID_CAGE;
         } else if (checkedId == R.id.tbNet) {
             selectedAssetType = Constants.ftNet;
+            activeFilter = Filters.RFID_NET;
         } else if (checkedId == R.id.tbBin) {
             selectedAssetType = Constants.ftBin;
+            activeFilter = Filters.RFID_BIN;
         } else if (checkedId == R.id.tbPlatform) {
             selectedAssetType = Constants.ftPlatform;
+            activeFilter = Filters.RFID_PLATFORM;
         }
 
         loadAssetsFromLocalDB();

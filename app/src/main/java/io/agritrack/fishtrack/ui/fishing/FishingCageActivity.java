@@ -20,6 +20,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.CageDetails;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
@@ -58,6 +59,7 @@ public class FishingCageActivity extends AppCompatActivity {
         scanCageButton.setOnClickListener(view -> {
             //update scanning, uhfReader, tvPlatformName values in thread
             scanner.setUhfReader(UhfReader.getInstance());
+            scanner.setFilter(Filters.RFID_CAGE);
 
             Future<?> future = executor.submit(scanner);
             try {
@@ -78,6 +80,7 @@ public class FishingCageActivity extends AppCompatActivity {
         scanNetButton.setOnClickListener(view -> {
             //update scanning, uhfReader, tvPlatformName values in thread
             scanner.setUhfReader(UhfReader.getInstance());
+            scanner.setFilter(Filters.RFID_NET);
 
             Future<?> future = executor.submit(scanner);
             try {
