@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
@@ -26,6 +25,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.AppUser;
 import io.agritrack.fishtrack.data.model.common.FishSpecies;
@@ -91,6 +91,7 @@ public class FishingStartActivity extends AppCompatActivity {
         scanButton.setOnClickListener(view -> {
             //update scanning, uhfReader, tvPlatformName values in thread
             scanner.setUhfReader(UhfReader.getInstance());
+            scanner.setFilter(Filters.RFID_PLATFORM);
 
             Future<?> future = executor.submit(scanner);
             try {
