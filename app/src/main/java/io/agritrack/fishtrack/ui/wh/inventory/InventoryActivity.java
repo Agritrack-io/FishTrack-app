@@ -269,6 +269,11 @@ public class InventoryActivity extends AppCompatActivity {
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
+
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            transportationBinsThread.setScanInProgress(scanning);
+
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });

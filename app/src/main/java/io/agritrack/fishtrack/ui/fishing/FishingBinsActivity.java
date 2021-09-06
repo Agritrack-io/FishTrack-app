@@ -185,6 +185,11 @@ public class FishingBinsActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToMain);
         ivBack.setOnClickListener(view -> {
+
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            inventoryThread.setScanInProgress(scanning);
+
             Intent i = new Intent(getApplicationContext(), FishingStartActivity.class);
             startActivity(i);
         });
