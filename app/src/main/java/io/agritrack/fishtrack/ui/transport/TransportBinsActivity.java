@@ -174,6 +174,11 @@ public class TransportBinsActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartTransport);
         ivBack.setOnClickListener(view -> {
+
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            transportationBinsThread.setScanInProgress(scanning);
+
             Intent i = new Intent(getApplicationContext(), TransportStartActivity.class);
             startActivity(i);
         });
@@ -200,7 +205,7 @@ public class TransportBinsActivity extends AppCompatActivity {
         TransportationRecord trns = GlobalState.recTransport;
 
         if (trns.availBins != null) {
-            adapterBins.setValues((ArrayList<String>) trns.availBins);
+            adapterBins.setValues(new LinkedList<>(trns.availBins));
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             TextView tvBinsCount = findViewById(R.id.tvBinsCount);

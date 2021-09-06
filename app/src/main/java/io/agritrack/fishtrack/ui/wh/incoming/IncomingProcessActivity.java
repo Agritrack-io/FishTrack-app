@@ -152,6 +152,11 @@ public class IncomingProcessActivity extends AppCompatActivity {
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartIncoming);
         ivBack.setOnClickListener(view -> {
+
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            processingBinsThread.setScanInProgress(scanning);
+
             Intent i = new Intent(getApplicationContext(), IncomingStartActivity.class);
             startActivity(i);
         });
