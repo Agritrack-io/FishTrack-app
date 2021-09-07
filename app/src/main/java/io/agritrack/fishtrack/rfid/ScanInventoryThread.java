@@ -9,9 +9,9 @@ import androidx.lifecycle.MutableLiveData;
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.android.hdhe.uhf.readerInterface.TagModel;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,7 +31,7 @@ public class ScanInventoryThread extends Thread {
     private String RFID_FILTER;
 
     public ScanInventoryThread() {
-        this.epcValues = new HashSet<>();
+        this.epcValues = new TreeSet<>();
     }
 
     public void setUhfReader(UhfReader uhfReader) {
@@ -68,10 +68,10 @@ public class ScanInventoryThread extends Thread {
                         for (TagModel tag : filteredStream.collect(Collectors.toList())) {
                             if (tag != null) {
                                 final String epcStr = TagToString.apply(tag);
-                                if (epcStr.length() <= 15) {
+                                if (epcStr.length() <= 12) {
                                     continue;
                                 }
-                                epcValues.add(epcStr.substring(15));
+                                epcValues.add(epcStr.substring(11));
 
                                 if (this.adapter != null) {
                                     new Handler(Looper.getMainLooper()).post(new Runnable() {

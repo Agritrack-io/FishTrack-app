@@ -62,6 +62,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.tvItemName.setText(mList.get(position));
+        holder.tvItemSNo.setText(String.valueOf(position+1)+".");
     }
 
     @Override
@@ -70,11 +71,13 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvItemName;
+        private final TextView tvItemName, tvItemSNo;
 
         public MyViewHolder(@NonNull View itemView, View.OnClickListener itemsClickListener) {
             super(itemView);
             tvItemName = itemView.findViewById(R.id.tvRecyclerItem);
+            tvItemSNo = itemView.findViewById(R.id.tvRecyclerItemSNo);
+
             if (itemsClickListener != null) {
                 itemView.setOnClickListener(itemsClickListener);
             }

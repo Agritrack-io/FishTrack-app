@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
@@ -52,7 +53,15 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         List<Employee> teamCandidates = db.employeeDAO().getBySite(LocalPreferences.getCurrentSiteId());
         if (teamCandidates != null && !teamCandidates.isEmpty()) {
             this.candidates = teamCandidates.stream().map(x -> new GenericListModel(x.id, x.fullName())).toArray(GenericListModel[]::new);
-            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_checked, candidates);
+            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, android.R.layout.simple_list_item_checked, candidates) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    TextView text = view.findViewById(android.R.id.text1);
+                    text.setTextSize(25);
+                    return view;
+                }
+            };
 
             this.lvFishingTeam.setAdapter(candidatesAdapter);
             this.lvFishingTeam.setOnItemClickListener(this);
@@ -112,10 +121,10 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         }
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if(GlobalState.recFishing.fishingTeam==null || GlobalState.recFishing.fishingTeam.isEmpty()){
+        if (GlobalState.recFishing.fishingTeam == null || GlobalState.recFishing.fishingTeam.isEmpty()) {
             sb.append(String.format("\n%s is missing", "'Team members'"));
         }
 

@@ -38,7 +38,7 @@ public class SingleShotScanner implements Callable {
 
                     if (tag.isPresent()) {
                         String tagStr = TagToString.apply(tag.get());
-                        return (tagStr.length() > 15) ? tagStr.substring(15) : "N/A";
+                        return (tagStr.length() > 12) ? tagStr.substring(11) : "N/A";
                     } else {
                         return "";
                     }
