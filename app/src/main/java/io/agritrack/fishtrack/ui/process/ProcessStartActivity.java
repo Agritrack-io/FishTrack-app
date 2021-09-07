@@ -21,8 +21,8 @@ import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 public class ProcessStartActivity extends AppCompatActivity {
 
-    private TextView etDispatchNote, etSecurityClip;
-    private Spinner spLot, spFishCondition;
+    private TextView etDispatchNote, etSecurityClip, etPlot;
+    private Spinner spFishCondition;
     private SwitchCompat swCleanTruck, swSmell;
     private EditText mtvRemarks;
 
@@ -67,7 +67,7 @@ public class ProcessStartActivity extends AppCompatActivity {
     private void assignCtrlVars() {
         etDispatchNote = findViewById(R.id.etDispatchNote);
         etSecurityClip = findViewById(R.id.etSecurityClipNum);
-        spLot = findViewById(R.id.spLOT);
+        etPlot = findViewById(R.id.etPlot);
         spFishCondition = findViewById(R.id.spFishCondition);
         swCleanTruck = findViewById(R.id.swCleanTruck);
         swSmell = findViewById(R.id.swSmell);
@@ -85,8 +85,8 @@ public class ProcessStartActivity extends AppCompatActivity {
             etSecurityClip.setText(prcTx.securityClip);
         }
 
-        if (prcTx.packagingLotPos > -1) {
-            spLot.setSelection(prcTx.packagingLotPos);
+        if (!Strings.isEmptyOrWhitespace(prcTx.pLot)) {
+            etPlot.setText(prcTx.pLot);
         }
 
         if (prcTx.fishConditionPos > -1) {
@@ -110,11 +110,9 @@ public class ProcessStartActivity extends AppCompatActivity {
         if (etSecurityClip.getText() != null) {
             processingRecord.securityClip = etSecurityClip.getText().toString();
         }
-        if (spLot.getSelectedItem() != null) {
-            processingRecord.packagingLot = spLot.getSelectedItem().toString();
+        if (etPlot.getText() != null) {
+            processingRecord.pLot = etPlot.getText().toString();
         }
-        processingRecord.packagingLotPos = spLot.getSelectedItemPosition();
-
         if (spFishCondition.getSelectedItem() != null) {
             processingRecord.fishCondition = spFishCondition.getSelectedItem().toString();
         }
@@ -137,15 +135,15 @@ public class ProcessStartActivity extends AppCompatActivity {
             sb.append(String.format("\n%s is missing", "'Dispatch note'"));
         }
 
+        if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.pLot)){
+            sb.append(String.format("\n%s is missing", "'LOT'"));
+        }
+
         if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.securityClip)){
             sb.append(String.format("\n%s is missing", "'Security clip number'"));
         }
 
-        /*if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.packagingLot)){
-            sb.append(String.format("\n%s is missing", "'LOT'"));
-        }
-
-        if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)){
+        /*if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)){
             sb.append(String.format("\n%s is missing", "'Fish condition'"));
         }*/
 

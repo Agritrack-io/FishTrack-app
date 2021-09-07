@@ -85,8 +85,8 @@ public class ProcessConfirmActivity extends AppCompatActivity {
             tvDispatchNote.setText(prcRecord.dispatchNote);
         }
 
-        if (!Strings.isEmptyOrWhitespace(prcRecord.packagingLot)) {
-            tvPackagingLot.setText(prcRecord.packagingLot);
+        if (!Strings.isEmptyOrWhitespace(prcRecord.pLot)) {
+            tvPackagingLot.setText(prcRecord.pLot);
         }
 
         if (prcRecord.availBins != null) {

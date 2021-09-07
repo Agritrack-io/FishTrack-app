@@ -36,6 +36,9 @@ public class TransportTransaction {
     @ColumnInfo(name = "driver_name")
     public String driverName;
 
+    @ColumnInfo(name = "driver_phone")
+    public String driverPhone;
+
     @ColumnInfo(name = "driver_signature")
     public String driverSignature;
 

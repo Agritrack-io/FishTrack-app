@@ -111,6 +111,7 @@
     <string name="packaging_details">Packaging details</string>
 
     <string name="driver_name">Type driver name</string>
+    <string name="driver_phone">Type driver phone</string>
     <string name="license_plate">Type license plate</string>
     <string name="choose_company">Choose company</string>
     <string name="truck_refrigerated">Refrigerated truck</string>
@@ -141,7 +142,7 @@
     <string name="processing_details">Processing details</string>
 
     <string name="dispatch_note">Type dispatch note</string>
-    <string name="choose_package_lot">Choose LOT</string>
+    <string name="enter_lot">Type LOT</string>
     <string name="enter_security_clip">Type security clip number</string>
     <string name="clean_truck">Clean truck:  </string>
     <string name="smell_truck">Smells:  </string>

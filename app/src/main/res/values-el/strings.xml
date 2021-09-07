@@ -111,6 +111,7 @@
     <string name="packaging_details">Πληροφορίες μεταφοράς</string>
 
     <string name="driver_name">Εισάγετε όνομα οδηγού</string>
+    <string name="driver_phone">Εισάγετε τηλέφωνο οδηγού</string>
     <string name="license_plate">Εισάγετε αριθμό κυκλοφορίας</string>
     <string name="choose_company">Επιλέξτε εταιρεία</string>
     <string name="truck_refrigerated">Φορτηγό ψυγείο</string>
@@ -144,7 +145,7 @@
     <string name="title_date_lot_dispatch_note">ΗΜΕΡΟΜΗΝΙΑ / LOT / ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ</string>
 
     <string name="dispatch_note">Εισάγετε δελτίο αποστολής</string>
-    <string name="choose_package_lot">Επιλέξτε LOT</string>
+    <string name="enter_lot">Εισάγετε LOT</string>
     <string name="enter_security_clip">Εισάγετε αριθμό ασφαλείας</string>
     <string name="clean_truck">Καθαριότητα οχήματος:</string>
     <string name="smell_truck">Δυσάρεστες οσμές:</string>

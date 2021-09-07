@@ -15,6 +15,7 @@ public class TransportTxDTO {
     public String truck_license_plate;
     public String security_clip_number;
     public String driver_name;
+    public String driver_phone;
     public String driver_signature;
     public List<String> bins_loaded = new LinkedList<String>();
     public String site;
@@ -30,6 +31,7 @@ public class TransportTxDTO {
         transportTxDto.truck_license_plate = transport.truckLicensePlate;
         transportTxDto.security_clip_number = transport.securityClipNo;
         transportTxDto.driver_name = transport.driverName;
+        transportTxDto.driver_phone = transport.driverPhone;
         transportTxDto.driver_signature = transport.driverSignature;
         transportTxDto.bins_loaded = transport.loadedBins;
         transportTxDto.user = transport.user;

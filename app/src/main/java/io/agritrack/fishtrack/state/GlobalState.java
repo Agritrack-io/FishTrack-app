@@ -156,7 +156,7 @@ public class GlobalState {
             txProcess.fishCondition = recProcessing.fishCondition;
             txProcess.cleanTruck = Boolean.toString(recProcessing.cleanTruck);
             txProcess.smells = Boolean.toString(recProcessing.smellyTruck);
-            txProcess.plot = recProcessing.packagingLot;
+            txProcess.plot = recProcessing.pLot;
             txProcess.site = recProcessing.packagingSite;
             //txProcess.remarks = recProcessing.remarks;
             txProcess.receivedBins = recProcessing.availBins;

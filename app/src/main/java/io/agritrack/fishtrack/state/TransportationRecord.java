@@ -8,6 +8,7 @@ public class TransportationRecord {
     public String packagingSite;
     public String destinationCompany;
     public String driverName;
+    public String driverPhone;
     public String licensePlate;
     public Boolean refrigeratedTruck = Boolean.TRUE;
     public Boolean parallelTransport = Boolean.FALSE;

@@ -30,7 +30,7 @@ public class TransportStartActivity extends AppCompatActivity {
 
     private MobileDB db;
     private SwitchCompat swRefrigeratedTruck, swParallelTransport;
-    private EditText etDriverName, etLicensePlate, etSecurityClip;
+    private EditText etDriverName, etLicensePlate, etDriverPhone, etSecurityClip;
     private Spinner spPackagingSite, spCompany;
 
     private String[] company = {"nireas", "andromeda", "selonda"};
@@ -73,6 +73,7 @@ public class TransportStartActivity extends AppCompatActivity {
         spPackagingSite = findViewById(R.id.spPackagingSite);
         spCompany = findViewById(R.id.spCompany);
         etDriverName = findViewById(R.id.etDriverName);
+        etDriverPhone  = findViewById(R.id.etDriverPhone);
         etLicensePlate = findViewById(R.id.etLicensePlate);
         swRefrigeratedTruck = findViewById(R.id.swRefrigeratedTruck);
         swParallelTransport = findViewById(R.id.swParallelTransport);
@@ -114,6 +115,10 @@ public class TransportStartActivity extends AppCompatActivity {
             etDriverName.setText(trns.driverName);
         }
 
+        if (!Strings.isEmptyOrWhitespace(trns.driverPhone)) {
+            etDriverPhone.setText(trns.driverPhone);
+        }
+
         if (!Strings.isEmptyOrWhitespace(trns.licensePlate)) {
             etLicensePlate.setText(trns.licensePlate);
         }
@@ -140,6 +145,9 @@ public class TransportStartActivity extends AppCompatActivity {
         if(etDriverName.getText()!=null) {
             transportationRecord.driverName = etDriverName.getText().toString();
         }
+        if(etDriverPhone.getText()!=null) {
+            transportationRecord.driverPhone = etDriverPhone.getText().toString();
+        }
         if(etLicensePlate.getText()!=null) {
             transportationRecord.licensePlate = etLicensePlate.getText().toString();
         }
@@ -165,6 +173,10 @@ public class TransportStartActivity extends AppCompatActivity {
 
         if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverName)){
             sb.append(String.format("\n%s is missing", "'Driver name'"));
+        }
+
+        if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverPhone)){
+            sb.append(String.format("\n%s is missing", "'Driver phone'"));
         }
 
         if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.licensePlate)){
