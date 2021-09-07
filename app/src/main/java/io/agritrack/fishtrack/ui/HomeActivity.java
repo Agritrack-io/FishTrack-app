@@ -22,6 +22,7 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.fishtrack.ui.adapter.MenuItem;
 import io.agritrack.fishtrack.ui.fishing.FishingStartActivity;
+import io.agritrack.fishtrack.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fishtrack.ui.login.LoginActivity;
 import io.agritrack.fishtrack.ui.maintenance.MaintenanceMenuActivity;
 import io.agritrack.fishtrack.ui.process.ProcessStartActivity;
@@ -79,7 +80,8 @@ public class HomeActivity extends AppCompatActivity {
                             fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
                         }
 
-                        i = new Intent(appCtx, FishingStartActivity.class);
+                        //i = new Intent(appCtx, FishingStartActivity.class);
+                        i = new Intent(appCtx, HarvestRequestsActivity.class);
                         break;
                     case Transport_Idx:
                         i = new Intent(appCtx, TransportStartActivity.class);

@@ -280,5 +280,8 @@
     <string name="title_select_asset_barcode">Asset BARCODE</string>
     <string name="error_AssetTx_tx_update_failure">Failed to update asset transaction!!!</string>
     <string name="error_CorrelationTx_update_failure">Failed to update Correlation Transaction!!!</string>
+    <string name="title_harvest_requests">HARVEST REQUESTS</string>
+    <string name="select_open_harvest_request">Currently Open Harvest Requests</string>
+    <string name="pick_harvest_request">Please select One...</string>
 
 </resources>
