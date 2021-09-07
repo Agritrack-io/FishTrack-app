@@ -113,6 +113,8 @@ public class FishingBinsActivity extends AppCompatActivity {
         initControlsFromState();
 
         ivDeleteBin.setOnClickListener(view -> {
+            clearSelectedItem();
+
             if(selectedBarcode != null){
                 adapterBins.removeItem(selectedBarcode);
                 adapterBins.notifyDataSetChanged();
@@ -128,6 +130,12 @@ public class FishingBinsActivity extends AppCompatActivity {
         configFooter();
     }
 
+    private void clearSelectedItem(){
+        if(selectedItem!=null) {
+            selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
+        }
+    }
+
     private void prepareScanAvailableBinsButton() {
         // RFID scanning functionality
         uhfReader = UhfReader.getInstance();
@@ -135,6 +143,7 @@ public class FishingBinsActivity extends AppCompatActivity {
 
         final Button scanButton = findViewById(R.id.btnScanBin);
         scanButton.setOnClickListener(view -> {
+            clearSelectedItem();
             scanning = !scanning;
 
             // Following check is required to instantiate a ScanningThread that was stopped previously.
