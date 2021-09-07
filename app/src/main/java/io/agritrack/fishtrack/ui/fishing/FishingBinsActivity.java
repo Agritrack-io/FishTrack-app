@@ -28,13 +28,17 @@ import java.util.Set;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Filters;
+import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
+import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+
 public class FishingBinsActivity extends AppCompatActivity {
+    private MobileDB db;
 
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
 
@@ -75,6 +79,9 @@ public class FishingBinsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_bins);
+
+        // get an instance of local DB
+        db = MobileDB.getInstance(getContext());
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingBins);
@@ -137,7 +144,6 @@ public class FishingBinsActivity extends AppCompatActivity {
             //update scanning, uhfReader, tvPlatformName values in thread
             inventoryThread.setScanInProgress(scanning);
             inventoryThread.setUhfReader(uhfReader);
-            inventoryThread.setAdapter(adapterBins);
             inventoryThread.setScanResult(scanResult);
             inventoryThread.setFilter(Filters.RFID_BIN);
 
@@ -217,6 +223,8 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     private void updateState() {
         GlobalState.recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+
+        GlobalState.commitFishing(db, Boolean.FALSE);
     }
 
     private String validate(){

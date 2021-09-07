@@ -143,7 +143,6 @@ public class TransportBinsActivity extends AppCompatActivity {
             //update scanning, uhfReader, tvPlatformName values in thread
             transportationBinsThread.setScanInProgress(scanning);
             transportationBinsThread.setUhfReader(uhfReader);
-            transportationBinsThread.setAdapter(adapterBins);
             transportationBinsThread.setScanResult(scanResult);
             transportationBinsThread.setFilter(Filters.RFID_BIN);
 

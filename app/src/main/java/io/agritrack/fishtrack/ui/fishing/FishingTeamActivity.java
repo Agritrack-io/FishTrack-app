@@ -119,6 +119,8 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
                 GlobalState.recFishing.fishingTeam.add(Long.valueOf(sp.keyAt(idx)));
             }
         }
+
+        GlobalState.commitFishing(db, Boolean.FALSE);
     }
 
     private String validate() {

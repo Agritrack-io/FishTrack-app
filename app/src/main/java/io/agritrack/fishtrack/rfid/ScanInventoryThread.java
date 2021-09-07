@@ -2,7 +2,6 @@ package io.agritrack.fishtrack.rfid;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.TextView;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -17,17 +16,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import cn.pda.serialport.Tools;
-import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 
 public class ScanInventoryThread extends Thread {
     private final Function<TagModel, String> TagToString = t -> Tools.Bytes2HexString(t.getmEpcBytes(), t.getmEpcBytes().length);
 
     private boolean scanInProgress;
     private UhfReader uhfReader;
-    private TextView rfidTag;
-    private TemplateRecyclerAdapter adapter;
     private MutableLiveData<Set<String>> scanResult;
-    private Set<String> epcValues;
+    private final Set<String> epcValues;
     private String RFID_FILTER;
 
     public ScanInventoryThread() {
@@ -38,18 +34,12 @@ public class ScanInventoryThread extends Thread {
         this.uhfReader = uhfReader;
     }
 
-    public void setRfidTag(TextView rfidTag) {
-        this.rfidTag = rfidTag;
+    public void setFilter(String rfidFilter) {
+        this.RFID_FILTER = rfidFilter;
     }
-
-    public void setFilter(String rfidFilter) { this.RFID_FILTER = rfidFilter; }
 
     public void setScanInProgress(Boolean val) {
         this.scanInProgress = val;
-    }
-
-    public void setAdapter(TemplateRecyclerAdapter adapter) {
-        this.adapter = adapter;
     }
 
     public void setScanResult(MutableLiveData<Set<String>> scanResult) {
@@ -72,23 +62,9 @@ public class ScanInventoryThread extends Thread {
                                     continue;
                                 }
                                 epcValues.add(epcStr.substring(11));
-
-                                if (this.adapter != null) {
-                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                        public void run() {
-                                            adapter.addItem(epcStr);
-                                            adapter.notifyDataSetChanged();
-                                        }
-                                    });
-                                } else if (this.rfidTag != null) {
-                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                        public void run() {
-                                            rfidTag.setText(epcStr);
-                                        }
-                                    });
-                                }
                             }
                         }
+
                         if (scanResult != null) {
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 public void run() {
@@ -104,5 +80,4 @@ public class ScanInventoryThread extends Thread {
             }
         }
     }
-
 }

@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,13 +23,12 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Set;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
-import io.agritrack.fishtrack.data.model.Site;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.ProcessingRecord;
@@ -105,7 +102,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
                 return;
             }
             tvBinsCount.setText(String.valueOf(response.size()));
-            adapterBins.setValues(new ArrayList<>(response));
+            adapterBins.setValues(new LinkedList<>(response));
             adapterBins.notifyDataSetChanged();
         });
 
@@ -154,7 +151,6 @@ public class ProcessBinsActivity extends AppCompatActivity {
             //update scanning, uhfReader, tvPlatformName values in thread
             processingBinsThread.setScanInProgress(scanning);
             processingBinsThread.setUhfReader(uhfReader);
-            processingBinsThread.setAdapter(adapterBins);
             processingBinsThread.setScanResult(scanResult);
             processingBinsThread.setFilter(Filters.RFID_BIN);
 

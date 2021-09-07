@@ -240,7 +240,6 @@ public class OutgoingProcessActivity extends AppCompatActivity {
             //update scanning, uhfReader, tvPlatformName values in thread
             processingBinsThread.setScanInProgress(scanning);
             processingBinsThread.setUhfReader(uhfReader);
-            processingBinsThread.setAdapter(adapterOutgoingItems);
             processingBinsThread.setScanResult(scanResult);
 
             if (scanning) {

@@ -295,7 +295,6 @@ public class InventoryActivity extends AppCompatActivity {
             //update scanning, uhfReader, tvPlatformName values in thread
             transportationBinsThread.setScanInProgress(scanning);
             transportationBinsThread.setUhfReader(uhfReader);
-            transportationBinsThread.setAdapter(adapterInventoryItems);
             transportationBinsThread.setScanResult(scanResult);
 
             if (scanning) {
