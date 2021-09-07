@@ -67,7 +67,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 switch (position) {
                     case Fishing_Idx:
-                        FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx();
+                        FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
                         FishingRecord fishingRecord;
                         if (openTx != null) {
                             fishingRecord = FishingRecord.convert(openTx);

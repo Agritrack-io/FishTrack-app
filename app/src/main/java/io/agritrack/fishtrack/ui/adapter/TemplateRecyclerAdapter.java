@@ -38,8 +38,8 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         return mList;
     }
 
-    public void setValues(List<String> vals) {
-        this.mList = vals;
+    public void setValues(List<String> values) {
+        this.mList = values;
     }
 
     public void addItem(String val) {
@@ -83,7 +83,4 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
             }
         }
     }
-//public class TextAdapter extends ArrayAdapter<String> {
-
-
 }
