@@ -131,6 +131,7 @@
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
+            android:padding="4dp"
             android:background="@drawable/bg_rounded_input_spinner"
             app:layout_constraintBottom_toTopOf="@+id/tvNumberBins"
             app:layout_constraintEnd_toEndOf="parent"
@@ -172,10 +173,11 @@
 
             <ImageButton
                 android:id="@+id/ivDeleteBin1"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
+                android:background="@color/transparent"
                 app:layout_constraintBottom_toTopOf="@+id/rvBins"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvSelectBins"
@@ -183,10 +185,11 @@
 
             <ImageButton
                 android:id="@+id/ivAddBin"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="8dp"
+                android:background="@color/transparent"
                 app:layout_constraintBottom_toTopOf="@+id/rvBins"
                 app:layout_constraintEnd_toStartOf="@+id/tvSelectBins"
                 app:layout_constraintStart_toStartOf="parent"
