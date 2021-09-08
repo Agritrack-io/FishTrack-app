@@ -71,6 +71,10 @@ public class FishingStartActivity extends AppCompatActivity {
             ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, harvestRequester);
             hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
             harvestSpinner.setAdapter(hrAdapter);
+
+            if (!Strings.isEmptyOrWhitespace(recFishing.requesterName)) {
+                recFishing.requesterPos = Arrays.asList(harvestRequester).indexOf(recFishing.requesterName);
+            }
         }
 
         // load fish species and fill in the spFishType Spinner.

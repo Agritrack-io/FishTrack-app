@@ -5,8 +5,11 @@ import com.google.android.gms.common.util.Strings;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import io.agritrack.fishtrack.data.db.MobileDB;
+import io.agritrack.fishtrack.data.model.HarvestRequest;
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
 import io.agritrack.fishtrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
@@ -22,6 +25,7 @@ public class GlobalState {
 
     public static HarvestRecord recHarvest = new HarvestRecord();
     public static FishingRecord recFishing = new FishingRecord();
+    public static List<HarvestRequest> recHarvestRequests = new LinkedList<>();
     public static TransportationRecord recTransport = new TransportationRecord();
     public static ProcessingRecord recProcessing = new ProcessingRecord();
 
@@ -34,6 +38,11 @@ public class GlobalState {
     public static RepairRecord recExternalRepair = new RepairRecord();
 
     private GlobalState() {
+    }
+
+    public static List<HarvestRequest> initHarvestReq() {
+        recHarvestRequests = new LinkedList<>();
+        return recHarvestRequests;
     }
 
     public static FishingRecord initFishingTx() {

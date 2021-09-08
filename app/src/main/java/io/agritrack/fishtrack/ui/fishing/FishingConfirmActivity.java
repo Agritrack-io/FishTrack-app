@@ -16,6 +16,7 @@ import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.api.APIServiceGenerator;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.FishingTxDTO;
+import io.agritrack.fishtrack.data.model.HarvestRequest;
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.HomeActivity;
@@ -30,8 +31,8 @@ import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 import static io.agritrack.fishtrack.state.GlobalState.recFishing;
 
 public class FishingConfirmActivity extends AppCompatActivity {
-    private MobileDB db;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    private MobileDB db;
     private TextView tvTotalQuantityCount, tvReqQuantityCount, tvNumberOfBinsCount, tvNameCage, tvTypeOfFishConfirm, tvUsername;
 
     @Override
@@ -152,6 +153,11 @@ public class FishingConfirmActivity extends AppCompatActivity {
             FishingTxDTO rs = response.body();
 
             if (rs != null) {
+                if (recFishing.harvestRqPkId != null) {
+                    HarvestRequest delObj = new HarvestRequest();
+                    delObj.id = recFishing.harvestRqPkId;
+                    db.harvestRequestsDAO().delete(delObj);
+                }
                 runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Tx successfully updated!!!", Toast.LENGTH_LONG).show());
             } else {
                 // could not update Fishing TX on backend!!!

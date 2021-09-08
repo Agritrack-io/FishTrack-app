@@ -75,10 +75,6 @@ public class LocalPreferences {
         return getInstance().pref.getString(Token_Key, null);
     }
 
-    public static Boolean locationExists() {
-        return getInstance().pref.getString(Longitude_Key, null) != null;
-    }
-
     public static String getLongitude() {
         return getInstance().pref.getString(Longitude_Key, null);
     }
@@ -89,6 +85,10 @@ public class LocalPreferences {
 
     public static Long getLoginTime() {
         return getInstance().pref.getLong(LoginTime_Key, Long.MIN_VALUE);
+    }
+
+    public static Boolean locationExists() {
+        return getLongitude()!=null && getLatitude()!=null;
     }
 
     // stores in Local Preferences current epoch time, as last Login Time.

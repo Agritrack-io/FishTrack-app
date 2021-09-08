@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.agritrack.fishtrack.data.dto.AppUserDTO;
 import io.agritrack.fishtrack.data.dto.CageDetailsDTO;
+import io.agritrack.fishtrack.data.dto.HarvestRequestDTO;
 import io.agritrack.fishtrack.data.dto.SiteDTO;
 import io.agritrack.fishtrack.data.dto.common.EmployeeDTO;
 import io.agritrack.fishtrack.data.dto.common.FishSpeciesDTO;
@@ -24,6 +25,10 @@ public interface SyncApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/site/{siteId}")
     Call<SiteDTO> getSiteById(@Path("siteId") Long siteId, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/harvest-request/{siteId}")
+    Call<List<HarvestRequestDTO>> getHarvestRequestsBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/asset/item/{assetId}")

@@ -158,7 +158,7 @@
 
     <string name="welcome">Welcome</string>
     <string name="authenticating">Please wait, authenticating user</string>
-    <string name="syncing">Please wait, syncing routes</string>
+    <string name="syncing">Please wait, syncing data...</string>
 
     <string name="title_date_type_of_asset">DATE / TYPE OF ASSET</string>
     <string name="title_outgoing">OUTGOING</string>
@@ -286,5 +286,13 @@
     <string name="title_harvest_requests">HARVEST REQUESTS</string>
     <string name="select_open_harvest_request">Currently Open Harvest Requests</string>
     <string name="pick_harvest_request">Please select One...</string>
+    <string name="no_harvest_requests_found_alert">No Harvest Request returned from backend!!!</string>
+    <string name="harvest_requests_sync_completed">Harvest Request sync completed!</string>
+    <string name="sites_sync_completed">Sites sync completed!</string>
+    <string name="species_sync_completed">Fish types sync completed!</string>
+    <string name="cage_details_sync_completed">Cage details sync completed!</string>
+    <string name="assets_sync_completed">Assets sync completed!</string>
+    <string name="employees_sync_completed">Employees sync completed!</string>
+    <string name="users_sync_completed">Users sync completed!</string>
 
 </resources>

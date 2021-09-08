@@ -28,6 +28,7 @@ public class FishingRecord {
     public Double totalFishWeight;
     public Short totalBinsUsed;
     public Double seaTemperature;
+    public Long harvestRqPkId;
 
     public FishingRecord() {
     }

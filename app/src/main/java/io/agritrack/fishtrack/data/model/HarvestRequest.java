@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey;
 public class HarvestRequest {
 
     @PrimaryKey
+    @ColumnInfo
     public Long id;
 
     @ColumnInfo(name = "request_id")
@@ -16,13 +17,18 @@ public class HarvestRequest {
     @ColumnInfo(name = "request_quantity")
     public String reqQty;
 
-    @ColumnInfo(name = "requestor")
-    public String requestor;
+    @ColumnInfo(name = "requester")
+    public String requester;
+
+    @ColumnInfo(name = "species")
+    public String fishName;
+
+    @ColumnInfo(name = "user_name")
+    public String user;
+
+    @ColumnInfo(name = "site_name")
+    public String site;
 
    /* @OneToMany(mappedBy = "harvestRequest", fetch = FetchType.LAZY)
-    public List<HarvestLoad> harvestLoads;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_HarvestRequest_Site"))
-    public Site site;*/
+    public List<HarvestLoad> harvestLoads;*/
 }

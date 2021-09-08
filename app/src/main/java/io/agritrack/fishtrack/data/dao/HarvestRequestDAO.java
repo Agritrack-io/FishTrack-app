@@ -1,6 +1,5 @@
 package io.agritrack.fishtrack.data.dao;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -16,13 +15,16 @@ import io.agritrack.fishtrack.data.model.HarvestRequest;
 public interface HarvestRequestDAO {
 
     @Query("SELECT * from harvest_request")
-    LiveData<List<HarvestRequest>> getAll();
+    List<HarvestRequest> getAll();
 
     @Query("SELECT * from harvest_request where id=:harvestRequestId LIMIT 1")
-    HarvestRequest getById(Long harvestRequestId);
+    HarvestRequest getById(String harvestRequestId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(HarvestRequest... harvestRequests);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insert(HarvestRequest harvestRequest);
 
     @Delete
     void delete(HarvestRequest harvestRequest);

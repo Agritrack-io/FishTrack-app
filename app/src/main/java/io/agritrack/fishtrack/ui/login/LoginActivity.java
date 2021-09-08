@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 
 import java.io.IOException;
@@ -29,6 +28,7 @@ import io.agritrack.fishtrack.api.APIServiceGenerator;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.AppUserDTO;
 import io.agritrack.fishtrack.data.dto.CageDetailsDTO;
+import io.agritrack.fishtrack.data.dto.HarvestRequestDTO;
 import io.agritrack.fishtrack.data.dto.SiteDTO;
 import io.agritrack.fishtrack.data.dto.common.EmployeeDTO;
 import io.agritrack.fishtrack.data.dto.common.FishSpeciesDTO;
@@ -186,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
         LocalPreferences.writeValue(Logged_In_User_Key, model.getUsername());
         LocalPreferences.updateLoginTime();
 
-        boolean shouldSync = LocalPreferences.shouldSync(Boolean.TRUE);
+        boolean shouldSync = true; //LocalPreferences.shouldSync(Boolean.TRUE);
         if (!shouldSync) {
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
@@ -261,9 +261,9 @@ public class LoginActivity extends AppCompatActivity {
             Call<List<SiteDTO>> syncSitesAsyncCall = syncService.getSitesByCluster(clusterId, "Bearer " + token);
             syncSitesAsyncCall.enqueue(new SyncClusterSitesCallBack());
 
-            // sync sites
-//            Call<SiteDTO> syncSiteAsyncCall = syncService.getSiteById(siteId, "Bearer " + token);
-//            syncSiteAsyncCall.enqueue(new SyncSitesCallBack());
+            // sync harvestRequests for current Site
+            Call<List<HarvestRequestDTO>> syncHarvestResAsyncCall = syncService.getHarvestRequestsBySiteId(siteId, "Bearer " + token);
+            syncHarvestResAsyncCall.enqueue(new SyncHarvestRequestCallBack());
 
             // sync users
             Call<List<AppUserDTO>> syncUsersAsyncCall = syncService.getUsersBySiteId(siteId, "Bearer " + token);
@@ -390,22 +390,23 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public class SyncSiteCallBack implements Callback<SiteDTO> {
+    public class SyncHarvestRequestCallBack implements Callback<List<HarvestRequestDTO>> {
         @Override
-        public void onResponse(Call<SiteDTO> call, Response<SiteDTO> response) {
-            SiteDTO siteDTO = response.body();
+        public void onResponse(Call<List<HarvestRequestDTO>> call, Response<List<HarvestRequestDTO>> response) {
+            List<HarvestRequestDTO> harvestReqDTOs = response.body();
 
-            if (siteDTO != null) {
-                db.siteDAO().insert(SiteDTO.convert(siteDTO));
-                LocalPreferences.setSelectedSite(siteDTO);
+            if (harvestReqDTOs != null) {
+                for (HarvestRequestDTO harvestRequestDTO : harvestReqDTOs) {
+                    db.harvestRequestsDAO().insert(HarvestRequestDTO.convert(harvestRequestDTO));
+                }
             } else {
-                // no Sites found
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_sites_found_alert, Toast.LENGTH_LONG).show());
+                // no Harvest Requests found
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_harvest_requests_found_alert, Toast.LENGTH_LONG).show());
             }
         }
 
         @Override
-        public void onFailure(Call<SiteDTO> call, Throwable t) {
+        public void onFailure(Call<List<HarvestRequestDTO>> call, Throwable t) {
             // Probably Network Communication Error
             runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
         }
@@ -417,7 +418,7 @@ public class LoginActivity extends AppCompatActivity {
             List<SiteDTO> siteDTOs = response.body();
 
             if (siteDTOs != null) {
-                for(SiteDTO siteDTO:siteDTOs) {
+                for (SiteDTO siteDTO : siteDTOs) {
                     db.siteDAO().insert(SiteDTO.convert(siteDTO));
                 }
             } else {

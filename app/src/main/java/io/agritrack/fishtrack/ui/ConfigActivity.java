@@ -16,7 +16,6 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -163,8 +162,23 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
     }
 
     private void loadClusterInfo() {
-        if (currentLocation == null) {
-            Toast.makeText(getAppContext(), "No location is currently stored!", Toast.LENGTH_SHORT).show();
+        loadClusterInfo(Boolean.TRUE);
+    }
+
+    private void loadClusterInfo(Boolean useGPSoutcome) {
+        if (currentLocation == null && useGPSoutcome) {
+            // hide progress Dialog
+            dialog.dismiss();
+
+            // show error cause message
+            Toast.makeText(getAppContext(), "No location returned by GPS!", Toast.LENGTH_LONG).show();
+            return;
+        } else if(!useGPSoutcome && !LocalPreferences.locationExists()) {
+            // hide progress Dialog
+            dialog.dismiss();
+
+            // show error cause message
+            Toast.makeText(getAppContext(), "No location found!", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -177,10 +191,16 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
             public void onResponse(Call<List<SiteInfo>> call, Response<List<SiteInfo>> response) {
                 List<SiteInfo> rs = response.body();
                 siteInfoResults.setValue(rs);
+
+                // hide progress Dialog
+                dialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<List<SiteInfo>> call, Throwable t) {
+                // hide progress Dialog
+                dialog.dismiss();
+
                 System.out.println(t);
                 Toast.makeText(getAppContext(), "Plz Check WIFI connection..", Toast.LENGTH_LONG).show();
             }
@@ -325,9 +345,9 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
         @Override
         public void onFinish() {
             locationManager.removeUpdates(ConfigActivity.this);
-            alertDlg.dismiss();
+//            alertDlg.dismiss();
             // if No GPS info was fetched, the currently stored Location will be used.
-            //loadClusterInfo();
+            loadClusterInfo(Boolean.FALSE);
         }
     }
 

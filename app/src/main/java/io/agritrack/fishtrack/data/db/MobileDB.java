@@ -15,6 +15,7 @@ import io.agritrack.fishtrack.data.converter.StringSetConverter;
 import io.agritrack.fishtrack.data.converter.TxStatusEnumConverter;
 import io.agritrack.fishtrack.data.dao.AppUserDAO;
 import io.agritrack.fishtrack.data.dao.CageDetailsDAO;
+import io.agritrack.fishtrack.data.dao.HarvestRequestDAO;
 import io.agritrack.fishtrack.data.dao.SiteDAO;
 import io.agritrack.fishtrack.data.dao.common.EmployeeDAO;
 import io.agritrack.fishtrack.data.dao.common.FishSpeciesDAO;
@@ -30,6 +31,7 @@ import io.agritrack.fishtrack.data.dao.tx.TransportTransactionDAO;
 import io.agritrack.fishtrack.data.dao.wh.AssetDAO;
 import io.agritrack.fishtrack.data.model.AppUser;
 import io.agritrack.fishtrack.data.model.CageDetails;
+import io.agritrack.fishtrack.data.model.HarvestRequest;
 import io.agritrack.fishtrack.data.model.Site;
 import io.agritrack.fishtrack.data.model.common.Employee;
 import io.agritrack.fishtrack.data.model.common.FishSpecies;
@@ -44,11 +46,11 @@ import io.agritrack.fishtrack.data.model.tx.RepairTransaction;
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
 import io.agritrack.fishtrack.data.model.wh.Asset;
 
-@Database(entities = {AppUser.class, Site.class, Asset.class, Supplier.class,
+@Database(entities = {AppUser.class, Site.class, Asset.class, Supplier.class, HarvestRequest.class,
         CageDetails.class, Employee.class, FishSpecies.class, Reader.class,
         FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class,
         AssetTransaction.class, CorrelationTransaction.class, RepairTransaction.class, HarvestTransaction.class},
-        version = 2, exportSchema = false)
+        version = 4, exportSchema = false)
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
@@ -80,6 +82,8 @@ public abstract class MobileDB extends RoomDatabase {
     public abstract SupplierDAO supplierDAO();
 
     public abstract CageDetailsDAO cageDetailsDAO();
+
+    public abstract HarvestRequestDAO harvestRequestsDAO();
 
     public abstract FishingTransactionDAO fishingTransactionDAO();
 
