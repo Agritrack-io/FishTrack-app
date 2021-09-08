@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
@@ -34,7 +35,7 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
     private GenericListModel[] selectedTeam;
     private ListView lvTeam;
     private TextView tvInMtTeamCount;
-    private MultiAutoCompleteTextView atvInMtWorkDescription;
+    private EditText atvInMtWorkDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

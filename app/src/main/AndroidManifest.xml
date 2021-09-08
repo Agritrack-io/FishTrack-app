@@ -21,7 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.fishing.HarvestRequestsActivity"></activity>
+        <activity android:name=".ui.wh.inventory.InventoryStartActivity"></activity>
+        <activity android:name=".ui.fishing.HarvestRequestsActivity" />
         <activity
             android:name=".ui.maintenance.MaintenanceExternalConfirmActivity"
             android:screenOrientation="portrait" />

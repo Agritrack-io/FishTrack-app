@@ -88,17 +88,15 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/ivAddEmployee"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
+                    android:background="@color/transparent"
                     app:layout_constraintBottom_toTopOf="@+id/lvTeam"
                     app:layout_constraintEnd_toStartOf="@id/tvSelectTeam"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_add_stock_opname" />
 
                 <TextView
@@ -108,10 +106,12 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="50dp"
+                    android:layout_marginBottom="8dp"
                     android:gravity="center_horizontal"
                     android:text="@string/pick_fishing_team"
                     android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/lvTeam"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/ivAddEmployee"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -203,7 +203,7 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <MultiAutoCompleteTextView
+                <EditText
                     android:id="@+id/atvInMtWorkDescription"
                     android:layout_width="330dp"
                     android:layout_height="0dp"
@@ -214,6 +214,7 @@
                     android:fadeScrollbars="false"
                     android:gravity="top"
                     android:hint="@string/maintenance_remarks"
+                    android:inputType="textPersonName"
                     android:padding="5dp"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"

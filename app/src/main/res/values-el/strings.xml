@@ -184,10 +184,12 @@
     <string name="inventory_details">Πληροφορίες απογραφής</string>
     <string name="inventory">Απογραφή</string>
     <string name="inventory_item_label">Είδη απογραφής</string>
+    <string name="choose_inventory_type">Επιλέξτε τύπο αντικειμένου:</string>
 
     <string name="choose_site">Επιλέξτε χώρο</string>
     <string name="acquire_coordinates">Παρακαλώ περιμένετε, ανάκτηση συντεταγμένων GPS...</string>
     <string name="sync_sites">Παρακαλώ περιμένετε, συγχρονισμός χώρων...</string>
+
 
     <string name="title_correlation">ΣΥΣΧΕΤΙΣΗ</string>
     <string name="title_user_date_asset_type">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ / ΤΥΠΟΣ ΠΑΓΙΟΥ</string>

@@ -1,6 +1,7 @@
 package io.agritrack.fishtrack.ui.wh.search;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -59,15 +61,30 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
     private Button btnSearchAsset;
     private String selectedAssetType;
     private String selectedBarcode = "";
+    private ConstraintLayout selectedItem;
 
     // Instantiate a clickListener to be passed to adapterAssets.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            ConstraintLayout view = (ConstraintLayout) v;
+            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
+            selectedBarcode = tvRecyclerItem.getText().toString();
+            etAssetBarcode.setText(selectedBarcode);
+
+            if(selectedItem!=null) {
+                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
+            }
+
+            v.setSelected(true);
+            view.setBackgroundColor(Color.GRAY);
+            selectedItem = view;
+        }
+        /*public void onClick(View v) {
             selectedBarcode = ((AppCompatTextView) v).getText().toString();
             etAssetBarcode.setText(selectedBarcode);
-        }
+        }*/
     };
 
     private final Handler handler = new Handler(Looper.getMainLooper()) {
@@ -225,12 +242,22 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
             assetSearchThread.setFilterEPC(selectedBarcode);
 
             if (scanning) {
-                scanButton.setText(R.string.stop_scan);
+                scanButton.setText(R.string.stop_search);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                    }
+                });
                 if (assetSearchThread.getState() == Thread.State.NEW) {
                     assetSearchThread.start();
                 }
             } else {
                 scanButton.setText(R.string.title_search);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+                    }
+                });
                 try {
                     assetSearchThread.join();
                 } catch (InterruptedException e) {

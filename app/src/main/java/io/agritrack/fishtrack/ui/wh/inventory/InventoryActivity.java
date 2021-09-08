@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -55,24 +56,24 @@ public class InventoryActivity extends AppCompatActivity {
 
     private ImageButton ivAddItem, ivDeleteItem;
     private String selectedBarcode;
-    private AppCompatTextView selectedItem;
+    private ConstraintLayout selectedItem;
 
     // Instantiate a clickListener to be passed to adapterIncomingItems.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            selectedBarcode = ((AppCompatTextView) v).getText().toString();
+            ConstraintLayout view = (ConstraintLayout) v;
+            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
+            selectedBarcode = tvRecyclerItem.getText().toString();
 
             if(selectedItem!=null) {
-                selectedItem.setTextColor(Color.GRAY);
-                selectedItem.setBackgroundColor(Color.WHITE);
+                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
+
             v.setSelected(true);
-            ((AppCompatTextView) v).setTextColor(Color.BLUE);
-            ((AppCompatTextView) v).setBackgroundColor(Color.GRAY);
-            selectedItem = (AppCompatTextView) v;
-            //adapterAssets.notifyDataSetChanged();
+            view.setBackgroundColor(Color.GRAY);
+            selectedItem = view;
         }
     };
 
@@ -227,6 +228,8 @@ public class InventoryActivity extends AppCompatActivity {
         });
 
         ivDeleteItem.setOnClickListener(view -> {
+            clearSelectedItem();
+
             if(selectedBarcode != null){
                 adapterInventoryItems.removeItem(selectedBarcode);
                 adapterInventoryItems.notifyDataSetChanged();
@@ -239,6 +242,12 @@ public class InventoryActivity extends AppCompatActivity {
         });
 
         configFooter();
+    }
+
+    private void clearSelectedItem(){
+        if(selectedItem!=null) {
+            selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
+        }
     }
 
     private void assignCtrlVars() {
@@ -274,7 +283,7 @@ public class InventoryActivity extends AppCompatActivity {
             scanning = false;
             transportationBinsThread.setScanInProgress(scanning);
 
-            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+            Intent i = new Intent(getApplicationContext(), InventoryStartActivity.class);
             startActivity(i);
         });
     }
@@ -286,6 +295,7 @@ public class InventoryActivity extends AppCompatActivity {
 
         final Button scanButton = findViewById(R.id.btnScanAsset);
         scanButton.setOnClickListener(view -> {
+            clearSelectedItem();
             scanning = !scanning;
 
             // Following check is required to instantiate a ScanningThread that was stopped previously.

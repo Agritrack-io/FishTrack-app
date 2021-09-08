@@ -32,8 +32,7 @@ import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 public class MaintenanceExternalSupplierActivity extends AppCompatActivity implements OnItemClickListener {
 
     private ListView lvSupplier;
-    private EditText etMaintenanceManager, etMaintenanceCost, etMaintenanceTime;
-    private MultiAutoCompleteTextView mtvExtRemarks;
+    private EditText etMaintenanceManager, etMaintenanceCost, etMaintenanceTime, mtvExtRemarks;
 
     private MobileDB db;
     private GenericListModel[] availableSuppliers;

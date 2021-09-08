@@ -52,7 +52,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     private TextView tvBinsCount;
 
     private ImageButton ivAddBin, ivDeleteBin;
-    private  String selectedBarcode;
+    private String selectedBarcode;
     private ConstraintLayout selectedItem;
 
     // Instantiate a clickListener to be passed to adapterBins.

@@ -96,6 +96,7 @@ tools:context=".ui.process.ProcessBinsActivity">
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
+                android:layout_marginBottom="8dp"
                 android:gravity="center_horizontal"
                 android:text="@string/received_bins"
                 android:textColor="@color/label_blue"
@@ -175,10 +176,10 @@ tools:context=".ui.process.ProcessBinsActivity">
 
             <ImageButton
                 android:id="@+id/ivDeleteBin"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
+                android:background="@color/transparent"
                 app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvSelectBins"
@@ -186,10 +187,10 @@ tools:context=".ui.process.ProcessBinsActivity">
 
             <ImageButton
                 android:id="@+id/ivAddBin"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"
+                android:background="@color/transparent"
                 app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
                 app:layout_constraintEnd_toStartOf="@+id/tvSelectBins"
                 app:layout_constraintStart_toStartOf="parent"

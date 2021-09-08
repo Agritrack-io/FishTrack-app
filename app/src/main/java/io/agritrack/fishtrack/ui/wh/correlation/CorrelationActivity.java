@@ -12,8 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,7 +60,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
     private ToggleGroup tgSearchAssetType;
     private SearchView svSearchAsset;
     private RecyclerView rvAssets;
-    private Button btnScanAssetTag;
+    private Button btnScanAssetTag, btnCorrelate;
     private TextView tvCorrAssetBarcode;
 
     private MobileDB db;
@@ -69,23 +69,23 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
     private String selectedBarcode = "";
     private String activeFilter = null;
 
-    private AppCompatTextView selectedItem;
+    private ConstraintLayout selectedItem;
     // Instantiate a clickListener to be passed to adapterAssets.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            selectedBarcode = ((AppCompatTextView) v).getText().toString();
+            ConstraintLayout view = (ConstraintLayout) v;
+            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
+            selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if (selectedItem != null) {
-                selectedItem.setTextColor(Color.GRAY);
-                selectedItem.setBackgroundColor(Color.WHITE);
+            if(selectedItem!=null) {
+                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
+
             v.setSelected(true);
-            ((AppCompatTextView) v).setTextColor(Color.BLUE);
-            v.setBackgroundColor(Color.GRAY);
-            selectedItem = (AppCompatTextView) v;
-            //adapterAssets.notifyDataSetChanged();
+            view.setBackgroundColor(Color.GRAY);
+            selectedItem = view;
         }
     };
 
@@ -131,6 +131,19 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
                 future.cancel(true);
             }
         });
+
+        btnCorrelate.setOnClickListener(view -> {
+            GlobalState.recWHCorrelation.assetType = !Strings.isEmptyOrWhitespace(selectedAssetType) ?AssetType.valueOf(selectedAssetType) : null;
+            GlobalState.recWHCorrelation.barcode = !Strings.isEmptyOrWhitespace(selectedBarcode) ? selectedBarcode : null; //tvCorrAssetBarcode.getText() != null ? tvCorrAssetBarcode.getText().toString() : null;
+            GlobalState.recWHCorrelation.rfid = tvCorrAssetBarcode.getText() != null ? tvCorrAssetBarcode.getText().toString() : null;
+
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                return;
+            };
+            correlate();
+        });
         // =================================
 
         configFooter();
@@ -139,14 +152,8 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            updateState();
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
-            } else {
                 Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
                 startActivity(i);
-            }
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWareHouseMenu);
@@ -162,6 +169,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         svSearchAsset = findViewById(R.id.svSearchAsset);
         rvAssets = findViewById(R.id.rvAssets);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
+        btnCorrelate = findViewById(R.id.btnCorrelate);
 
         tgSearchAssetType.setOnCheckedChangeListener(this);
         rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -184,11 +192,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         });
     }
 
-    private void updateState() {
-        GlobalState.recWHCorrelation.assetType = AssetType.valueOf(selectedAssetType);
-        GlobalState.recWHCorrelation.barcode = !Strings.isEmptyOrWhitespace(selectedBarcode) ? selectedBarcode : null; //tvCorrAssetBarcode.getText() != null ? tvCorrAssetBarcode.getText().toString() : null;
-        GlobalState.recWHCorrelation.rfid = tvCorrAssetBarcode.getText() != null ? tvCorrAssetBarcode.getText().toString() : null;
-
+    private void correlate() {
         // get an instance of local DB
         this.db = MobileDB.getInstance(getContext());
 
@@ -259,6 +263,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
 
             if (rs != null) {
                 runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Tx successfully updated!!!", Toast.LENGTH_LONG).show());
+                tvCorrAssetBarcode.setText("");
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_CorrelationTx_update_failure, Toast.LENGTH_LONG).show());

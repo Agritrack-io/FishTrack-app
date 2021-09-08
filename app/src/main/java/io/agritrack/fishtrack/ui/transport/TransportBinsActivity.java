@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ import java.util.Set;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Filters;
+import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.TransportationRecord;
@@ -49,24 +51,24 @@ public class TransportBinsActivity extends AppCompatActivity {
 
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
-    private AppCompatTextView selectedItem;
+    private ConstraintLayout selectedItem;
 
     // Instantiate a clickListener to be passed to adapterBins.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            selectedBarcode = ((AppCompatTextView) v).getText().toString();
+            ConstraintLayout view = (ConstraintLayout) v;
+            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
+            selectedBarcode = tvRecyclerItem.getText().toString();
 
             if(selectedItem!=null) {
-                selectedItem.setTextColor(Color.GRAY);
-                selectedItem.setBackgroundColor(Color.WHITE);
+                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
+
             v.setSelected(true);
-            ((AppCompatTextView) v).setTextColor(Color.BLUE);
-            ((AppCompatTextView) v).setBackgroundColor(Color.GRAY);
-            selectedItem = (AppCompatTextView) v;
-            //adapterAssets.notifyDataSetChanged();
+            view.setBackgroundColor(Color.GRAY);
+            selectedItem = view;
         }
     };
 
@@ -105,6 +107,8 @@ public class TransportBinsActivity extends AppCompatActivity {
         initControlsFromState();
 
         ivDeleteBin.setOnClickListener(view -> {
+            clearSelectedItem();
+
             if(selectedBarcode != null){
                 adapterBins.removeItem(selectedBarcode);
                 adapterBins.notifyDataSetChanged();
@@ -118,6 +122,12 @@ public class TransportBinsActivity extends AppCompatActivity {
 
         // create Footer
         configFooter();
+    }
+
+    private void clearSelectedItem(){
+        if(selectedItem!=null) {
+            selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
+        }
     }
 
     private void assignCtrlVars() {
@@ -134,6 +144,7 @@ public class TransportBinsActivity extends AppCompatActivity {
 
         final Button scanButton = findViewById(R.id.btnScanBin);
         scanButton.setOnClickListener(view -> {
+            clearSelectedItem();
             scanning = !scanning;
 
             // Following check is required to instantiate a ScanningThread that was stopped previously.

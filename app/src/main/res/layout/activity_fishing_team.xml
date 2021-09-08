@@ -92,25 +92,29 @@
             android:orientation="vertical"
             android:padding="1dp">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/ivAddEmployee"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginStart="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tvPickMembers"
+                android:background="@color/transparent"
+                app:layout_constraintBottom_toTopOf="@+id/lvFishingTeam"
+                app:layout_constraintEnd_toStartOf="@+id/tvPickMembers"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tvPickMembers"
                 app:srcCompat="@drawable/ic_add_stock_opname" />
 
             <TextView
                 android:id="@+id/tvPickMembers"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="50dp"
+                android:gravity="center_horizontal"
                 android:text="@string/pick_fishing_team"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/lvFishingTeam"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivAddEmployee"
                 app:layout_constraintTop_toTopOf="parent" />
