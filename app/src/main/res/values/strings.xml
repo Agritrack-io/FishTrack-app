@@ -185,9 +185,12 @@
     <string name="inventory_details">Inventory details</string>
     <string name="inventory">Inventory</string>
     <string name="inventory_item_label">Items</string>
-    <string name="choose_inventory_type">Select item type:</string>
+    <string name="choose_inventory_type">Select item type</string>
+    <string name="asset_type">Continue to scan asset RFID</string>
+    <string name="consumable_type">Continue to scan consumable BARCODE</string>
 
     <string name="choose_site">Choose site</string>
+    <string name="select_asset_type">Asset type</string>
     <string name="acquire_coordinates">Please wait, acquiring GPS coordinates...</string>
     <string name="sync_sites">Please wait, syncing sites...</string>
 

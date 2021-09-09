@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -33,18 +32,22 @@ import java.util.List;
 import java.util.Set;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.common.Constants;
+import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.common.FishTrackUtils;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.InventoryWHRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
-public class InventoryActivity extends AppCompatActivity {
+public class InventoryAssetActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+
+    private  ToggleGroup tgChooseAssetType;
 
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-    private Spinner spSite, spAssetType;
     private RecyclerView rvInventoryItems;
     private TextView tvInventoryItemsCount;
     private InventoryWHRecord whInventoryRecord;
@@ -53,7 +56,9 @@ public class InventoryActivity extends AppCompatActivity {
     private boolean scanning = false;
 
     private TemplateRecyclerAdapter adapterInventoryItems;
-
+    private String selectedAssetType;
+    private String activeFilter = null;
+    private  int selectedToggleButton = -1;
     private ImageButton ivAddItem, ivDeleteItem;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
@@ -80,7 +85,7 @@ public class InventoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inventory);
+        setContentView(R.layout.activity_inventory_asset);
 
         // instantiate an inventory Record
         whInventoryRecord = GlobalState.recWHInventory;
@@ -112,121 +117,6 @@ public class InventoryActivity extends AppCompatActivity {
         // initialize scanning threads
         prepareScanAvailableBinsButton();
 
-        // Get reference of widgets from XML layout
-        final Spinner spSite = (Spinner) findViewById(R.id.spSite);
-
-        // Initializing a String Array
-        String[] sites = new String[]{
-                "Select site...",
-                "Warehouse",
-                "platform",
-                "else",
-                "else"
-        };
-
-        final List<String> siteList = new ArrayList<>(Arrays.asList(sites));
-
-        // Initializing an ArrayAdapter
-        final ArrayAdapter<String> spSiteArrayAdapter = new ArrayAdapter<String>(
-                this, R.layout.simple_spinner_item, siteList) {
-            @Override
-            public boolean isEnabled(int position) {
-                if (position == 0) {
-                    // Disable the first item from Spinner
-                    // First item will be use for hint
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0) {
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.GRAY);
-                } else {
-                    tv.setTextColor(Color.BLACK);
-                }
-                return view;
-            }
-        };
-        spSiteArrayAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-        spSite.setAdapter(spSiteArrayAdapter);
-
-        spSite.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItemText = (String) parent.getItemAtPosition(position);
-                // If user change the default selection
-                // First item is disable and it is used for hint
-                if (position > 0) {
-                    // Notify the selected item text
-                    Toast.makeText
-                            (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
-                            .show();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        // Handle Assets spinner behaviour.
-        // ---------------------------------
-        // load all Asset Types and fill in the spAssetType Spinner.
-        String[] assetTypeArray = FishTrackUtils.assetTypes("Select asset type...");
-
-        // Initializing an ArrayAdapter
-        final ArrayAdapter<String> spAssetTypeArrayAdapter = new ArrayAdapter<String>(this, R.layout.simple_spinner_item, assetTypeArray) {
-            @Override
-            public boolean isEnabled(int position) {
-                if (position == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                if (position == 0) {
-                    tv.setTextColor(Color.GRAY);
-                } else {
-                    tv.setTextColor(Color.BLACK);
-                }
-                return view;
-            }
-        };
-        spAssetTypeArrayAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-        spAssetType.setAdapter(spAssetTypeArrayAdapter);
-
-        spAssetType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItemText = (String) parent.getItemAtPosition(position);
-                // If user change the default selection
-                // First item is disable and it is used for hint
-                if (position > 0) {
-                    // Notify the selected item text
-                    Toast.makeText
-                            (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
-                            .show();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
         ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
@@ -251,12 +141,13 @@ public class InventoryActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
-        spSite = findViewById(R.id.spSite);
-        spAssetType = findViewById(R.id.spAssetType);
+        tgChooseAssetType = findViewById(R.id.tgChooseAssetType);
         rvInventoryItems = findViewById(R.id.rvInventoryItems);
         tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
         ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
         ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
+
+        tgChooseAssetType.setOnCheckedChangeListener(this);
     }
 
     protected void configFooter() {
@@ -306,6 +197,7 @@ public class InventoryActivity extends AppCompatActivity {
             transportationBinsThread.setScanInProgress(scanning);
             transportationBinsThread.setUhfReader(uhfReader);
             transportationBinsThread.setScanResult(scanResult);
+            transportationBinsThread.setFilter(activeFilter);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
@@ -331,6 +223,39 @@ public class InventoryActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onCheckedChanged(ToggleGroup group, int checkedId) {
+
+        if( selectedToggleButton == checkedId){
+            group.clearCheck();
+            return;
+        }
+        selectedToggleButton = checkedId;
+        switch(checkedId){
+            case R.id.tbCage:
+                selectedAssetType = Constants.ftCage;
+                activeFilter = Filters.RFID_CAGE;
+                break;
+            case R.id.tbNet:
+                selectedAssetType = Constants.ftNet;
+                activeFilter = Filters.RFID_NET;
+                break;
+            case R.id.tbBin:
+                selectedAssetType = Constants.ftBin;
+                activeFilter = Filters.RFID_BIN;
+                break;
+            case R.id.tbPlatform:
+                selectedAssetType = Constants.ftPlatform;
+                activeFilter = Filters.RFID_PLATFORM;
+                break;
+            default:
+                selectedAssetType = null;
+                activeFilter = null;
+                selectedToggleButton = -1;
+                break;
+        }
     }
 
     private String validate(){

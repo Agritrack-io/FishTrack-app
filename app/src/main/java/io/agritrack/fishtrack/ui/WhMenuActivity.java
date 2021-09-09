@@ -20,7 +20,6 @@ import io.agritrack.fishtrack.ui.adapter.MenuItem;
 import io.agritrack.fishtrack.ui.login.LoginActivity;
 import io.agritrack.fishtrack.ui.wh.correlation.CorrelationActivity;
 import io.agritrack.fishtrack.ui.wh.incoming.IncomingStartActivity;
-import io.agritrack.fishtrack.ui.wh.inventory.InventoryActivity;
 import io.agritrack.fishtrack.ui.wh.inventory.InventoryStartActivity;
 import io.agritrack.fishtrack.ui.wh.outgoing.OutgoingStartActivity;
 import io.agritrack.fishtrack.ui.wh.search.SearchActivity;

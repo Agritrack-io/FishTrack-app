@@ -184,9 +184,12 @@
     <string name="inventory_details">Πληροφορίες απογραφής</string>
     <string name="inventory">Απογραφή</string>
     <string name="inventory_item_label">Είδη απογραφής</string>
-    <string name="choose_inventory_type">Επιλέξτε τύπο αντικειμένου:</string>
+    <string name="choose_inventory_type">Επιλέξτε τύπο αντικειμένου</string>
+    <string name="asset_type">Συνεχίστε για να σκανάρετε RFID</string>
+    <string name="consumable_type">Συνεχίστε για να σκανάρετε BARCODE</string>
 
     <string name="choose_site">Επιλέξτε χώρο</string>
+    <string name="select_asset_type">Επιλέξτε τύπο παγίου</string>
     <string name="acquire_coordinates">Παρακαλώ περιμένετε, ανάκτηση συντεταγμένων GPS...</string>
     <string name="sync_sites">Παρακαλώ περιμένετε, συγχρονισμός χώρων...</string>
 

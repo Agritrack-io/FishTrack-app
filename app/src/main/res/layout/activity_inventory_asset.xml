@@ -6,7 +6,7 @@ android:id="@+id/fishingBinsLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
-tools:context=".ui.wh.inventory.InventoryActivity">
+tools:context=".ui.wh.inventory.InventoryAssetActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -71,7 +71,7 @@ tools:context=".ui.wh.inventory.InventoryActivity">
     <RelativeLayout
         android:id="@+id/inventoryALayout"
         android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_height="80dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -89,46 +89,72 @@ tools:context=".ui.wh.inventory.InventoryActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <Spinner
-                android:id="@+id/spAssetType"
-                style="@style/spinner_style"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:dropDownWidth="match_parent"
-                android:focusableInTouchMode="true"
-                android:requiresFadingEdge="horizontal"
-                android:spinnerMode="dropdown"
-                android:textAlignment="textStart"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.496"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_conversion_absoluteHeight="0dp"
-                tools:layout_conversion_absoluteWidth="0dp" />
-
-            <Spinner
-                android:id="@+id/spSite"
-                style="@style/spinner_style"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="8dp"
+            <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                android:id="@+id/tgChooseAssetType"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:dropDownWidth="match_parent"
-                android:focusableInTouchMode="true"
-                android:requiresFadingEdge="horizontal"
-                android:textAlignment="textStart"
-                android:visibility="visible"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toTopOf="@+id/svSearchAsset"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_conversion_absoluteHeight="0dp"
-                tools:layout_conversion_absoluteWidth="0dp" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ToggleButton
+                    android:id="@+id/tbCage"
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/tooglebutton_selector"
+                    android:gravity="center"
+                    android:textColor="@drawable/button_text_color"
+                    android:textOff="CAGE"
+                    android:textOn="CAGE"
+                    android:textSize="@dimen/text_view_font_size_medium" />
+
+                <ToggleButton
+                    android:id="@+id/tbNet"
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/tooglebutton_selector"
+                    android:gravity="center"
+                    android:textColor="@drawable/button_text_color"
+                    android:textOff="NET"
+                    android:textOn="NET"
+                    android:textSize="@dimen/text_view_font_size_medium" />
+
+                <ToggleButton
+                    android:id="@+id/tbBin"
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/tooglebutton_selector"
+                    android:gravity="center"
+                    android:textColor="@drawable/button_text_color"
+                    android:textOff="BIN"
+                    android:textOn="BIN"
+                    android:textSize="@dimen/text_view_font_size_medium" />
+
+                <ToggleButton
+                    android:id="@+id/tbPlatform"
+                    android:layout_width="60dp"
+                    android:layout_height="34dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/tooglebutton_selector"
+                    android:gravity="center"
+                    android:textColor="@drawable/button_text_color"
+                    android:textOff="PLATFORM"
+                    android:textOn="PLATFORM"
+                    android:textSize="@dimen/text_view_font_size_medium" />
+            </io.agritrack.fishtrack.ui.custom.ToggleGroup>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -140,7 +166,7 @@ tools:context=".ui.wh.inventory.InventoryActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_green"
             android:paddingHorizontal="8dp"
-            android:text="@string/inventory_details"
+            android:text="@string/select_asset_type"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 

@@ -7,6 +7,9 @@ import io.agritrack.fishtrack.enums.AssetType;
 public class InventoryWHRecord {
     public String selectedSite = null;
     public AssetType assetType;
+    public String inventoryItemType;
+    public String site;
+    public String selectedItemType;
 
     public int assetTypePos = -1;
     public int selectedSitePos = -1;

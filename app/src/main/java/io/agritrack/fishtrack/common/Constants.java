@@ -4,6 +4,7 @@ public class Constants {
     public static final String ftAvramar = "AVRAMAR";
     public static final String ftSupplier = "SUPPLIER";
     public static final String ftAsset = "ASSET";
+    public static final String ftConsumable = "CONSUMABLE";
     public static final String ftSite = "SITE";
     public static final String ftCustomer = "CUSTOMER";
 
