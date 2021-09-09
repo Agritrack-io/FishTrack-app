@@ -25,7 +25,7 @@ import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.bo.GenericListModel;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.state.GlobalState.recFishing;
 
 public class HarvestRequestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -45,7 +45,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         this.lvHarvestRequests.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderHarvestReq);

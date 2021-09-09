@@ -45,7 +45,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Logged_In_User_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Token_Key;
 
@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
         ibLocale = findViewById(R.id.ibLocale);
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         // bind the credentials controls
         final EditText etUserName = findViewById(R.id.etUserName);

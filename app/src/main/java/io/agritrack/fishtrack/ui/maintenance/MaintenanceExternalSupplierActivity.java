@@ -10,7 +10,6 @@ import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +26,7 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.bo.GenericListModel;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class MaintenanceExternalSupplierActivity extends AppCompatActivity implements OnItemClickListener {
 
@@ -50,7 +49,7 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         // define if single or multiple choice mode will be used to display the checkboxes.
         this.lvSupplier.setChoiceMode(ListView.CHOICE_MODE_SINGLE);

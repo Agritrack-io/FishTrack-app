@@ -35,14 +35,14 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.state.GlobalState.recFishing;
 
 public class FishingStartActivity extends AppCompatActivity {
 
     private final SingleShotScanner scanner = new SingleShotScanner();
-    private MobileDB db;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private MobileDB db;
     private TextView tvPlatformName;
     private Spinner harvestSpinner, speciesSpinner;
     private EditText etQty;
@@ -55,7 +55,7 @@ public class FishingStartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fishing_start);
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingStart);
@@ -174,16 +174,16 @@ public class FishingStartActivity extends AppCompatActivity {
     private FishingRecord updateState() {
         FishingRecord fishingRecord = recFishing;
 
-        if(harvestSpinner.getSelectedItem()!=null) {
+        if (harvestSpinner.getSelectedItem() != null) {
             fishingRecord.requesterName = harvestSpinner.getSelectedItem().toString();
         }
         fishingRecord.requesterPos = harvestSpinner.getSelectedItemPosition();
-        if(speciesSpinner.getSelectedItem()!=null) {
+        if (speciesSpinner.getSelectedItem() != null) {
             fishingRecord.speciesName = speciesSpinner.getSelectedItem().toString();
         }
         fishingRecord.speciesPos = speciesSpinner.getSelectedItemPosition();
         fishingRecord.reqWeight = etQty.getText().toString();
-        if(tvPlatformName.getText()!=null) {
+        if (tvPlatformName.getText() != null) {
             fishingRecord.platformRFID = tvPlatformName.getText().toString();
         }
 
@@ -192,22 +192,22 @@ public class FishingStartActivity extends AppCompatActivity {
         return fishingRecord;
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recFishing.requesterName)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.requesterName)) {
             sb.append(String.format("\n%s is missing", "'Harvest initiator'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recFishing.speciesName)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.speciesName)) {
             sb.append(String.format("\n%s is missing", "'Fish type'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recFishing.reqWeight)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.reqWeight)) {
             sb.append(String.format("\n%s is missing", "'Requested quantity'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recFishing.platformRFID)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.platformRFID)) {
             sb.append(String.format("\n%s is missing", "'Platform tag'"));
         }
 

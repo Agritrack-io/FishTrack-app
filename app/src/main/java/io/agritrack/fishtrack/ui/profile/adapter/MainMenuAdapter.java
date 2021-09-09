@@ -15,42 +15,10 @@ import java.util.List;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.ui.bo.MenuItemData;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class MainMenuAdapter extends RecyclerView.Adapter<MainMenuAdapter.ViewHolder> {
-    private List<MenuItemData> mData;
-
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-        private final TextView txtTitle;
-        //private final TextView txtDesc1;
-        //private final TextView txtDesc2;
-        private final ImageView ivImage;
-
-        public ViewHolder(View view) {
-            super(view);
-
-            txtTitle = (TextView) view.findViewById(R.id.tvMenuCaption);
-            // txtDesc1 = (TextView) view.findViewById(R.id.tvDesc1);
-            // txtDesc2 = (TextView) view.findViewById(R.id.tvDesc2);
-            ivImage = (ImageView) view.findViewById(R.id.ivMenuThumb);
-        }
-
-        public TextView getTitle() {
-            return txtTitle;
-        }
-
-        //public TextView getDesc1() { return txtDesc1; }
-
-       // public TextView getDesc2() { return txtDesc2; }
-
-        public ImageView getImage() {
-            return ivImage;
-        }
-    }
+    private final List<MenuItemData> mData;
 
     public MainMenuAdapter(@NonNull List<MenuItemData> objects) {
         this.mData = objects;
@@ -69,15 +37,15 @@ public class MainMenuAdapter extends RecyclerView.Adapter<MainMenuAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MenuItemData menuItem = mData.get(position);
         holder.getTitle().setText(menuItem.getTitle());
-       // holder.getDesc1().setText(menuItem.getDescription1());
-       // holder.getDesc2().setText(menuItem.getDescription2());
+        // holder.getDesc1().setText(menuItem.getDescription1());
+        // holder.getDesc2().setText(menuItem.getDescription2());
         holder.getImage().setImageResource(menuItem.getImage());
 
 
         holder.getTitle().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "clicked on " +position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getAppContext(), "clicked on " + position, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -85,5 +53,37 @@ public class MainMenuAdapter extends RecyclerView.Adapter<MainMenuAdapter.ViewHo
     @Override
     public int getItemCount() {
         return mData.size();
+    }
+
+    /**
+     * Provide a reference to the type of views that you are using
+     * (custom ViewHolder).
+     */
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView txtTitle;
+        //private final TextView txtDesc1;
+        //private final TextView txtDesc2;
+        private final ImageView ivImage;
+
+        public ViewHolder(View view) {
+            super(view);
+
+            txtTitle = view.findViewById(R.id.tvMenuCaption);
+            // txtDesc1 = (TextView) view.findViewById(R.id.tvDesc1);
+            // txtDesc2 = (TextView) view.findViewById(R.id.tvDesc2);
+            ivImage = view.findViewById(R.id.ivMenuThumb);
+        }
+
+        public TextView getTitle() {
+            return txtTitle;
+        }
+
+        //public TextView getDesc1() { return txtDesc1; }
+
+        // public TextView getDesc2() { return txtDesc2; }
+
+        public ImageView getImage() {
+            return ivImage;
+        }
     }
 }

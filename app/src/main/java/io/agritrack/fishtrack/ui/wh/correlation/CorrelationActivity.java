@@ -52,23 +52,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class CorrelationActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-
+    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private ToggleGroup tgSearchAssetType;
     private SearchView svSearchAsset;
     private RecyclerView rvAssets;
     private Button btnScanAssetTag, btnCorrelate;
     private TextView tvCorrAssetBarcode;
-
     private MobileDB db;
     private FilterableAdapter adapterAssets;
     private String selectedAssetType;
     private String selectedBarcode = "";
     private String activeFilter = null;
-
     private ConstraintLayout selectedItem;
     // Instantiate a clickListener to be passed to adapterAssets.
     // It will be used to set the selectedBarcode var to the selected item barcode.
@@ -79,7 +78,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
             TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if(selectedItem!=null) {
+            if (selectedItem != null) {
                 selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
 
@@ -88,9 +87,6 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
             selectedItem = view;
         }
     };
-
-    private final SingleShotScanner scanner = new SingleShotScanner();
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +101,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         assignCtrlVars();
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         // =================================
         // RFID scanning functionality
@@ -133,7 +129,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         });
 
         btnCorrelate.setOnClickListener(view -> {
-            GlobalState.recWHCorrelation.assetType = !Strings.isEmptyOrWhitespace(selectedAssetType) ?AssetType.valueOf(selectedAssetType) : null;
+            GlobalState.recWHCorrelation.assetType = !Strings.isEmptyOrWhitespace(selectedAssetType) ? AssetType.valueOf(selectedAssetType) : null;
             GlobalState.recWHCorrelation.barcode = !Strings.isEmptyOrWhitespace(selectedBarcode) ? selectedBarcode : null; //tvCorrAssetBarcode.getText() != null ? tvCorrAssetBarcode.getText().toString() : null;
             GlobalState.recWHCorrelation.rfid = tvCorrAssetBarcode.getText() != null ? tvCorrAssetBarcode.getText().toString() : null;
 
@@ -141,7 +137,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
             if (!Strings.isEmptyOrWhitespace(v)) {
                 Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
                 return;
-            };
+            }
             correlate();
         });
         // =================================
@@ -150,13 +146,13 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
     }
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
+        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                startActivity(i);
+            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+            startActivity(i);
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWareHouseMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToWareHouseMenu);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
@@ -194,7 +190,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
 
     private void correlate() {
         // get an instance of local DB
-        this.db = MobileDB.getInstance(getContext());
+        this.db = MobileDB.getInstance(getAppContext());
 
         try {
             String token = LocalPreferences.getToken();
@@ -256,6 +252,25 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        if (executor != null)
+            executor.shutdown();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (executor != null)
+            executor.shutdown();
+    }
+
     public class SyncTxCallBack implements Callback<CorrelationTxDTO> {
         @Override
         public void onResponse(Call<CorrelationTxDTO> call, Response<CorrelationTxDTO> response) {
@@ -286,24 +301,5 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
                 }
             }
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (executor != null)
-            executor.shutdown();
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (executor != null)
-            executor.shutdown();
     }
 }

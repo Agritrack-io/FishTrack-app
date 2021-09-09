@@ -11,7 +11,6 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class SyncSpeciesCallBack extends BaseSyncCallBack<List<FishSpeciesDTO>> {
 
@@ -25,7 +24,7 @@ public class SyncSpeciesCallBack extends BaseSyncCallBack<List<FishSpeciesDTO>> 
 
         if (rs != null) {
             // get an instance of local DB
-            db = MobileDB.getInstance(getContext());
+            db = MobileDB.getInstance(getAppContext());
 
             for (FishSpeciesDTO speciesDTO : rs) {
                 db.speciesDAO().insert(FishSpeciesDTO.convert(speciesDTO));

@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -45,7 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class IncomingProcessActivity extends AppCompatActivity {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
@@ -73,7 +72,7 @@ public class IncomingProcessActivity extends AppCompatActivity {
             TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if(selectedItem!=null) {
+            if (selectedItem != null) {
                 selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
 
@@ -121,7 +120,7 @@ public class IncomingProcessActivity extends AppCompatActivity {
         ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if(selectedBarcode != null){
+            if (selectedBarcode != null) {
                 adapterIncomingItems.removeItem(selectedBarcode);
                 adapterIncomingItems.notifyDataSetChanged();
                 tvItemsCount.setText(String.valueOf(adapterIncomingItems.getItemCount()));
@@ -135,14 +134,14 @@ public class IncomingProcessActivity extends AppCompatActivity {
         configFooter();
     }
 
-    private void clearSelectedItem(){
-        if(selectedItem!=null) {
+    private void clearSelectedItem() {
+        if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
         }
     }
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
+        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
 
             //Set scanning to false to stop running scan thread
@@ -159,7 +158,7 @@ public class IncomingProcessActivity extends AppCompatActivity {
             }
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartIncoming);
+        ImageView ivBack = findViewById(R.id.ivBackToStartIncoming);
         ivBack.setOnClickListener(view -> {
 
             //Set scanning to false to stop running scan thread
@@ -176,8 +175,8 @@ public class IncomingProcessActivity extends AppCompatActivity {
         tvIncomingProcessFrom = findViewById(R.id.tvIncomingProcessFrom);
         tvIncomingProcessTo = findViewById(R.id.tvIncomingProcessTo);
         tvItemsCount = findViewById(R.id.tvItemsCount);
-        ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
-        ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
+        ivDeleteItem = findViewById(R.id.ivDeleteItem);
+        ivAddItem = findViewById(R.id.ivAddItem);
     }
 
     private void updateState() {
@@ -185,7 +184,7 @@ public class IncomingProcessActivity extends AppCompatActivity {
         GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
 
         // get an instance of local DB
-        this.db = MobileDB.getInstance(getContext());
+        this.db = MobileDB.getInstance(getAppContext());
 
         try {
             String token = LocalPreferences.getToken();
@@ -203,10 +202,10 @@ public class IncomingProcessActivity extends AppCompatActivity {
         }
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if(GlobalState.recWHIncoming.items==null || GlobalState.recWHIncoming.items.isEmpty()){
+        if (GlobalState.recWHIncoming.items == null || GlobalState.recWHIncoming.items.isEmpty()) {
             sb.append(String.format("\n%s is missing", "'Incoming items'"));
         }
 
@@ -225,7 +224,7 @@ public class IncomingProcessActivity extends AppCompatActivity {
         }
 
         if (WHTxRecord.items != null) {
-            adapterIncomingItems.setValues((ArrayList<String>) WHTxRecord.items);
+            adapterIncomingItems.setValues(WHTxRecord.items);
             adapterIncomingItems.notifyDataSetChanged();
 
             tvItemsCount.setText(String.valueOf(WHTxRecord.items.size()));

@@ -2,7 +2,9 @@ package io.agritrack.fishtrack.ui.login.api;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SiteInfo {
+import java.io.Serializable;
+
+public class SiteInfo implements Serializable {
 
     @SerializedName("id")
     private Long id;

@@ -24,7 +24,7 @@ import io.agritrack.fishtrack.state.TransportationRecord;
 import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class TransportStartActivity extends AppCompatActivity {
 
@@ -33,7 +33,7 @@ public class TransportStartActivity extends AppCompatActivity {
     private EditText etDriverName, etLicensePlate, etDriverPhone, etSecurityClip;
     private Spinner spPackagingSite, spCompany;
 
-    private String[] company = {"nireas", "andromeda", "selonda"};
+    private final String[] company = {"nireas", "andromeda", "selonda"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class TransportStartActivity extends AppCompatActivity {
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         // get  references of the controls
         assignCtrlVars();
@@ -73,7 +73,7 @@ public class TransportStartActivity extends AppCompatActivity {
         spPackagingSite = findViewById(R.id.spPackagingSite);
         spCompany = findViewById(R.id.spCompany);
         etDriverName = findViewById(R.id.etDriverName);
-        etDriverPhone  = findViewById(R.id.etDriverPhone);
+        etDriverPhone = findViewById(R.id.etDriverPhone);
         etLicensePlate = findViewById(R.id.etLicensePlate);
         swRefrigeratedTruck = findViewById(R.id.swRefrigeratedTruck);
         swParallelTransport = findViewById(R.id.swParallelTransport);
@@ -81,7 +81,7 @@ public class TransportStartActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToTransportBins);
+        ImageView ivNext = findViewById(R.id.ivToTransportBins);
         ivNext.setOnClickListener(view -> {
             updateState();
             String v = validate();
@@ -93,7 +93,7 @@ public class TransportStartActivity extends AppCompatActivity {
             }
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
@@ -134,24 +134,24 @@ public class TransportStartActivity extends AppCompatActivity {
     private TransportationRecord updateState() {
         TransportationRecord transportationRecord = GlobalState.initTransportationTx();
 
-        if(spPackagingSite.getSelectedItem()!=null) {
+        if (spPackagingSite.getSelectedItem() != null) {
             transportationRecord.packagingSite = spPackagingSite.getSelectedItem().toString();
         }
         transportationRecord.sitePos = spPackagingSite.getSelectedItemPosition();
-        if(spCompany.getSelectedItem()!=null) {
+        if (spCompany.getSelectedItem() != null) {
             transportationRecord.destinationCompany = spCompany.getSelectedItem().toString();
         }
         transportationRecord.companyPos = spCompany.getSelectedItemPosition();
-        if(etDriverName.getText()!=null) {
+        if (etDriverName.getText() != null) {
             transportationRecord.driverName = etDriverName.getText().toString();
         }
-        if(etDriverPhone.getText()!=null) {
+        if (etDriverPhone.getText() != null) {
             transportationRecord.driverPhone = etDriverPhone.getText().toString();
         }
-        if(etLicensePlate.getText()!=null) {
+        if (etLicensePlate.getText() != null) {
             transportationRecord.licensePlate = etLicensePlate.getText().toString();
         }
-        if(etSecurityClip.getText()!=null) {
+        if (etSecurityClip.getText() != null) {
             transportationRecord.clipNumber = etSecurityClip.getText().toString();
         }
         transportationRecord.refrigeratedTruck = swRefrigeratedTruck.isChecked();
@@ -160,30 +160,30 @@ public class TransportStartActivity extends AppCompatActivity {
         return transportationRecord;
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.packagingSite)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.packagingSite)) {
             sb.append(String.format("\n%s is missing", "'Packaging site'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.destinationCompany)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.destinationCompany)) {
             sb.append(String.format("\n%s is missing", "'Company'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverName)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverName)) {
             sb.append(String.format("\n%s is missing", "'Driver name'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverPhone)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverPhone)) {
             sb.append(String.format("\n%s is missing", "'Driver phone'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.licensePlate)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.licensePlate)) {
             sb.append(String.format("\n%s is missing", "'License plate'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recTransport.clipNumber)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.clipNumber)) {
             sb.append(String.format("\n%s is missing", "'Security clip number'"));
         }
 

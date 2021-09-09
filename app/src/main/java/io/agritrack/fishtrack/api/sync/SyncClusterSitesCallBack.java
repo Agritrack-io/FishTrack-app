@@ -11,7 +11,6 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class SyncClusterSitesCallBack extends BaseSyncCallBack<List<SiteDTO>> {
 
@@ -25,7 +24,7 @@ public class SyncClusterSitesCallBack extends BaseSyncCallBack<List<SiteDTO>> {
 
         if (siteDTOs != null) {
             // get an instance of local DB
-            db = MobileDB.getInstance(getContext());
+            db = MobileDB.getInstance(getAppContext());
 
             for (SiteDTO siteDTO : siteDTOs) {
                 db.siteDAO().insert(SiteDTO.convert(siteDTO));

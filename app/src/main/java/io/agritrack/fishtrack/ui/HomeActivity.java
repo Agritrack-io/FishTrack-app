@@ -50,7 +50,7 @@ import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import io.agritrack.fishtrack.ui.transport.TransportStartActivity;
 import retrofit2.Call;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class HomeActivity extends AppCompatActivity {
     private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4;
@@ -71,7 +71,7 @@ public class HomeActivity extends AppCompatActivity {
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
@@ -151,7 +151,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        ivRefresh = (ImageButton) findViewById(R.id.ivRefresh);
+        ivRefresh = findViewById(R.id.ivRefresh);
         ivRefresh.setOnClickListener(view -> {
             syncCounter = 1;
             showProgressDialog(getString(R.string.syncing));
@@ -162,7 +162,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     protected void configHeader() {
-        ImageButton ivBack = (ImageButton) findViewById(R.id.ivBackToLogin);
+        ImageButton ivBack = findViewById(R.id.ivBackToLogin);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(i);

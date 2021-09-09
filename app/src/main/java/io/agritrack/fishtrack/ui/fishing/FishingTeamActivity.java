@@ -27,7 +27,7 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.bo.GenericListModel;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class FishingTeamActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -41,7 +41,7 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         setContentView(R.layout.activity_fishing_team);
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         // get main controls references
         this.lvFishingTeam = findViewById(R.id.lvFishingTeam);

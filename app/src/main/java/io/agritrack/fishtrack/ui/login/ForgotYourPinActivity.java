@@ -18,10 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import io.agritrack.fishtrack.FishTrackApplication;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.service.RestfulCommunicationSingleton;
 import io.agritrack.fishtrack.ui.state.ForgotYourPinState;
+
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class ForgotYourPinActivity extends AppCompatActivity {
     EditText phoneNumberText;
@@ -48,7 +49,7 @@ public class ForgotYourPinActivity extends AppCompatActivity {
     public void sendPasswordReminder() {
         String mUrlString;
         try {
-            InputStream is = FishTrackApplication.getContext().getAssets().open("connection.properties");
+            InputStream is = getAppContext().getAssets().open("connection.properties");
             Properties props = new Properties();
             props.load(is);
             mUrlString = props.getProperty("url", null) + "/users/password.remind";
@@ -80,7 +81,7 @@ public class ForgotYourPinActivity extends AppCompatActivity {
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             ar.setShouldCache(false);
-            RestfulCommunicationSingleton.getInstance(FishTrackApplication.getContext()).addToRequestQueue(ar);
+            RestfulCommunicationSingleton.getInstance(getAppContext()).addToRequestQueue(ar);
         } catch (IOException e) {
             e.printStackTrace();
         }

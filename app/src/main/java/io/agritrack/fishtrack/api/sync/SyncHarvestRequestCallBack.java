@@ -11,7 +11,6 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class SyncHarvestRequestCallBack extends BaseSyncCallBack<List<HarvestRequestDTO>> {
 
@@ -25,7 +24,7 @@ public class SyncHarvestRequestCallBack extends BaseSyncCallBack<List<HarvestReq
 
         if (harvestReqDTOs != null) {
             // get an instance of local DB
-            db = MobileDB.getInstance(getContext());
+            db = MobileDB.getInstance(getAppContext());
 
             for (HarvestRequestDTO harvestRequestDTO : harvestReqDTOs) {
                 db.harvestRequestsDAO().insert(HarvestRequestDTO.convert(harvestRequestDTO));

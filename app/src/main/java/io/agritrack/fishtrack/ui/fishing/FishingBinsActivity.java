@@ -35,13 +35,11 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class FishingBinsActivity extends AppCompatActivity {
-    private MobileDB db;
-
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-
+    private MobileDB db;
     private UhfReader uhfReader;
     private ScanInventoryThread inventoryThread = new ScanInventoryThread();
     private boolean scanning = false;
@@ -64,7 +62,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if(selectedItem!=null) {
+            if (selectedItem != null) {
                 selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
 
@@ -81,7 +79,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fishing_bins);
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingBins);
@@ -115,7 +113,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         ivDeleteBin.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if(selectedBarcode != null){
+            if (selectedBarcode != null) {
                 adapterBins.removeItem(selectedBarcode);
                 adapterBins.notifyDataSetChanged();
                 tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
@@ -130,8 +128,8 @@ public class FishingBinsActivity extends AppCompatActivity {
         configFooter();
     }
 
-    private void clearSelectedItem(){
-        if(selectedItem!=null) {
+    private void clearSelectedItem() {
+        if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
         }
     }
@@ -158,11 +156,11 @@ public class FishingBinsActivity extends AppCompatActivity {
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                        }
-                    });
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                    }
+                });
                 if (inventoryThread.getState() == Thread.State.NEW) {
                     inventoryThread.start();
                 }
@@ -215,8 +213,8 @@ public class FishingBinsActivity extends AppCompatActivity {
     private void assignCtrlVars() {
         rvBins = findViewById(R.id.rvBins);
         tvBinsCount = findViewById(R.id.tvBinsCount);
-        ivDeleteBin = (ImageButton) findViewById(R.id.ivDeleteBin1);
-        ivAddBin = (ImageButton) findViewById(R.id.ivAddBin);
+        ivDeleteBin = findViewById(R.id.ivDeleteBin1);
+        ivAddBin = findViewById(R.id.ivAddBin);
     }
 
     private void initControlsFromState() {
@@ -236,10 +234,10 @@ public class FishingBinsActivity extends AppCompatActivity {
         GlobalState.commitFishing(db, Boolean.FALSE);
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if(GlobalState.recFishing.availBins==null || GlobalState.recFishing.availBins.isEmpty()){
+        if (GlobalState.recFishing.availBins == null || GlobalState.recFishing.availBins.isEmpty()) {
             sb.append(String.format("\n%s is missing", "'Bins for usage'"));
         }
 

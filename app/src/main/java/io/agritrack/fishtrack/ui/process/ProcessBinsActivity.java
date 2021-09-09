@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -36,7 +35,7 @@ import io.agritrack.fishtrack.state.ProcessingRecord;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class ProcessBinsActivity extends AppCompatActivity {
     private MobileDB db;
@@ -85,7 +84,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         // get  references of the controls
         assignCtrlVars();

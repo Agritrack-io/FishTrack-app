@@ -16,7 +16,7 @@ import io.agritrack.fishtrack.data.model.tx.RepairTransaction;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.state.GlobalState.recExternalRepair;
 
 public class MaintenanceExternalConfirmActivity extends AppCompatActivity {
@@ -84,7 +84,7 @@ public class MaintenanceExternalConfirmActivity extends AppCompatActivity {
 
     private void updateState() {
         // get an instance of local DB
-        this.db = MobileDB.getInstance(getContext());
+        this.db = MobileDB.getInstance(getAppContext());
 
         // persist Transportation Record data to local DB.
         RepairTransaction tx = GlobalState.commitExternalRepair(db);

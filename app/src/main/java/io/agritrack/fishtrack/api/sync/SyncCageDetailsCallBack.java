@@ -11,7 +11,6 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class SyncCageDetailsCallBack extends BaseSyncCallBack<List<CageDetailsDTO>> {
 
@@ -25,7 +24,7 @@ public class SyncCageDetailsCallBack extends BaseSyncCallBack<List<CageDetailsDT
 
         if (rs != null) {
             // get an instance of local DB
-            db = MobileDB.getInstance(getContext());
+            db = MobileDB.getInstance(getAppContext());
 
             for (CageDetailsDTO detailDTO : rs) {
                 db.cageDetailsDAO().insert(CageDetailsDTO.convert(detailDTO));

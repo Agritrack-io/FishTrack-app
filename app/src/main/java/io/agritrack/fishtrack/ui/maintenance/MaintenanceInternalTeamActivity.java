@@ -10,7 +10,6 @@ import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +27,7 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.bo.GenericListModel;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class MaintenanceInternalTeamActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private MobileDB db;
@@ -50,7 +49,7 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         // define if single or multiple choice mode will be used to display the checkboxes.
         this.lvTeam.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -72,7 +71,7 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
     }
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToConfirmInternal);
+        ImageView ivNext = findViewById(R.id.ivToConfirmInternal);
         ivNext.setOnClickListener(view -> {
             updateState();
             String v = validate();
@@ -84,7 +83,7 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
             }
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMaintenanceInternalStartMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToMaintenanceInternalStartMenu);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), MaintenanceInternalStartActivity.class);
             startActivity(i);
@@ -108,7 +107,7 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
             tvInMtTeamCount.setText(String.valueOf(sz));
         }
 
-        if(!Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.remarks)) {
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.remarks)) {
             atvInMtWorkDescription.setText(GlobalState.recInternalRepair.remarks);
         }
     }
@@ -127,10 +126,10 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
         GlobalState.recInternalRepair.remarks = atvInMtWorkDescription.getText().toString();
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if(GlobalState.recInternalRepair.repairTeam==null || GlobalState.recInternalRepair.repairTeam.isEmpty()){
+        if (GlobalState.recInternalRepair.repairTeam == null || GlobalState.recInternalRepair.repairTeam.isEmpty()) {
             sb.append(String.format("\n%s is missing", "'Team members'"));
         }
 

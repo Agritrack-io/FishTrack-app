@@ -27,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.state.GlobalState.recFishing;
 
 public class FishingConfirmActivity extends AppCompatActivity {
@@ -89,7 +89,7 @@ public class FishingConfirmActivity extends AppCompatActivity {
 
     private void updateState() {
         // get an instance of local DB
-        this.db = MobileDB.getInstance(getContext());
+        this.db = MobileDB.getInstance(getAppContext());
 
         EditText etPIN = findViewById(R.id.etPasswordFishing);
         if (etPIN.getText() != null) {
@@ -102,7 +102,7 @@ public class FishingConfirmActivity extends AppCompatActivity {
 
             // credentials do NOT match
             if (!authentication) {
-                runOnUiThread(() -> Toast.makeText(getContext(), R.string.invalid_password, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getAppContext(), R.string.invalid_password, Toast.LENGTH_LONG).show());
             } else {
                 try {
                     String token = LocalPreferences.getToken();
@@ -143,7 +143,7 @@ public class FishingConfirmActivity extends AppCompatActivity {
 //                return true;
             }
         } else {
-            runOnUiThread(() -> Toast.makeText(getContext(), R.string.missing_pin, Toast.LENGTH_LONG).show());
+            runOnUiThread(() -> Toast.makeText(getAppContext(), R.string.missing_pin, Toast.LENGTH_LONG).show());
         }
     }
 

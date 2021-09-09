@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -45,13 +44,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class OutgoingProcessActivity extends AppCompatActivity {
-    private MobileDB db;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-
+    private MobileDB db;
     private UhfReader uhfReader;
     private ScanInventoryThread processingBinsThread = new ScanInventoryThread();
     private boolean scanning = false;
@@ -74,7 +72,7 @@ public class OutgoingProcessActivity extends AppCompatActivity {
             TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if(selectedItem!=null) {
+            if (selectedItem != null) {
                 selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
 
@@ -122,7 +120,7 @@ public class OutgoingProcessActivity extends AppCompatActivity {
         ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if(selectedBarcode != null){
+            if (selectedBarcode != null) {
                 adapterOutgoingItems.removeItem(selectedBarcode);
                 adapterOutgoingItems.notifyDataSetChanged();
                 tvOutAssetsCount.setText(String.valueOf(adapterOutgoingItems.getItemCount()));
@@ -136,14 +134,14 @@ public class OutgoingProcessActivity extends AppCompatActivity {
         configFooter();
     }
 
-    private void clearSelectedItem(){
-        if(selectedItem!=null) {
+    private void clearSelectedItem() {
+        if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
         }
     }
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
+        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
 
             //Set scanning to false to stop running scan thread
@@ -160,7 +158,7 @@ public class OutgoingProcessActivity extends AppCompatActivity {
             }
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartOutgoing);
+        ImageView ivBack = findViewById(R.id.ivBackToStartOutgoing);
         ivBack.setOnClickListener(view -> {
 
             //Set scanning to false to stop running scan thread
@@ -177,8 +175,8 @@ public class OutgoingProcessActivity extends AppCompatActivity {
         tvOutgoingProcessFrom = findViewById(R.id.tvOutgoingProcessFrom);
         tvOutgoingProcessTo = findViewById(R.id.tvOutgoingProcessTo);
         tvOutAssetsCount = findViewById(R.id.tvOutAssetsCount);
-        ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
-        ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
+        ivDeleteItem = findViewById(R.id.ivDeleteItem);
+        ivAddItem = findViewById(R.id.ivAddItem);
     }
 
     private void updateState() {
@@ -186,7 +184,7 @@ public class OutgoingProcessActivity extends AppCompatActivity {
         GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
 
         // get an instance of local DB
-        this.db = MobileDB.getInstance(getContext());
+        this.db = MobileDB.getInstance(getAppContext());
 
         try {
             String token = LocalPreferences.getToken();
@@ -205,10 +203,10 @@ public class OutgoingProcessActivity extends AppCompatActivity {
 
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if(GlobalState.recWHOutgoing.items==null || GlobalState.recWHOutgoing.items.isEmpty()){
+        if (GlobalState.recWHOutgoing.items == null || GlobalState.recWHOutgoing.items.isEmpty()) {
             sb.append(String.format("\n%s is missing", "'Outgoing items'"));
         }
 
@@ -218,16 +216,16 @@ public class OutgoingProcessActivity extends AppCompatActivity {
     private void initControlsFromState() {
         WHTxRecord outgoingWHRecord = GlobalState.recWHOutgoing;
 
-        if(!Strings.isEmptyOrWhitespace(outgoingWHRecord.from)) {
+        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.from)) {
             tvOutgoingProcessFrom.setText(outgoingWHRecord.from);
         }
 
-        if(!Strings.isEmptyOrWhitespace(outgoingWHRecord.to)) {
+        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.to)) {
             tvOutgoingProcessTo.setText(outgoingWHRecord.to);
         }
 
         if (outgoingWHRecord.items != null) {
-            adapterOutgoingItems.setValues((ArrayList<String>) outgoingWHRecord.items);
+            adapterOutgoingItems.setValues(outgoingWHRecord.items);
             adapterOutgoingItems.notifyDataSetChanged();
             tvOutAssetsCount.setText(String.valueOf(outgoingWHRecord.items.size()));
         }

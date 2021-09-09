@@ -29,7 +29,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class ProcessConfirmActivity extends AppCompatActivity {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
@@ -55,14 +55,14 @@ public class ProcessConfirmActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
+        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
             updateState();
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToReceiveBins);
+        ImageView ivBack = findViewById(R.id.ivBackToReceiveBins);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), ProcessBinsActivity.class);
             startActivity(i);
@@ -106,7 +106,7 @@ public class ProcessConfirmActivity extends AppCompatActivity {
 
     private void updateState() {
         // get an instance of local DB
-        this.db = MobileDB.getInstance(getContext());
+        this.db = MobileDB.getInstance(getAppContext());
 
         EditText etPIN = findViewById(R.id.etPasswordProcessing);
         if (etPIN.getText() != null) {
@@ -119,7 +119,7 @@ public class ProcessConfirmActivity extends AppCompatActivity {
 
             // credentials do NOT match
             if (!authentication) {
-                runOnUiThread(() -> Toast.makeText(getContext(), R.string.invalid_password, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getAppContext(), R.string.invalid_password, Toast.LENGTH_LONG).show());
             } else {
                 try {
                     String token = LocalPreferences.getToken();
@@ -138,7 +138,7 @@ public class ProcessConfirmActivity extends AppCompatActivity {
                 }
             }
         } else {
-            runOnUiThread(() -> Toast.makeText(getContext(), R.string.missing_pin, Toast.LENGTH_LONG).show());
+            runOnUiThread(() -> Toast.makeText(getAppContext(), R.string.missing_pin, Toast.LENGTH_LONG).show());
         }
     }
 

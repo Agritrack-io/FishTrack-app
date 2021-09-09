@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -42,7 +41,7 @@ import io.agritrack.fishtrack.ui.bo.GenericListModel;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -57,36 +56,6 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
     private EditText etAssetBarcode;
     private SearchView svSearchAsset;
     private TextView tvProximity;
-    private RecyclerView rvAssets;
-    private Button btnSearchAsset;
-    private String selectedAssetType;
-    private String selectedBarcode = "";
-    private ConstraintLayout selectedItem;
-
-    // Instantiate a clickListener to be passed to adapterAssets.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-            etAssetBarcode.setText(selectedBarcode);
-
-            if(selectedItem!=null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-        /*public void onClick(View v) {
-            selectedBarcode = ((AppCompatTextView) v).getText().toString();
-            etAssetBarcode.setText(selectedBarcode);
-        }*/
-    };
-
     private final Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -130,6 +99,34 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
             return (int) ((rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI) * 100);
         }
     };
+    private RecyclerView rvAssets;
+    private Button btnSearchAsset;
+    private String selectedAssetType;
+    private String selectedBarcode = "";
+    private ConstraintLayout selectedItem;
+    // Instantiate a clickListener to be passed to adapterAssets.
+    // It will be used to set the selectedBarcode var to the selected item barcode.
+    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ConstraintLayout view = (ConstraintLayout) v;
+            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
+            selectedBarcode = tvRecyclerItem.getText().toString();
+            etAssetBarcode.setText(selectedBarcode);
+
+            if (selectedItem != null) {
+                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
+            }
+
+            v.setSelected(true);
+            view.setBackgroundColor(Color.GRAY);
+            selectedItem = view;
+        }
+        /*public void onClick(View v) {
+            selectedBarcode = ((AppCompatTextView) v).getText().toString();
+            etAssetBarcode.setText(selectedBarcode);
+        }*/
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +134,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
         setContentView(R.layout.activity_search);
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderSearch);
@@ -165,7 +162,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
     }
 
     protected void configFooter() {
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
@@ -227,7 +224,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
 
             selectedBarcode = etAssetBarcode.getText().toString();
             if (Strings.isEmptyOrWhitespace(selectedBarcode)) {
-                runOnUiThread(() -> Toast.makeText(getContext(), R.string.no_epc_filter_selected, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getAppContext(), R.string.no_epc_filter_selected, Toast.LENGTH_LONG).show());
             }
 
             // Following check is required to instantiate a ScanningThread that was stopped previously.

@@ -23,20 +23,19 @@ import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.CageDetails;
-import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
 public class FishingCageActivity extends AppCompatActivity {
 
     private final SingleShotScanner scanner = new SingleShotScanner();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private MobileDB db;
     private Button scanCageButton, scanNetButton;
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private TextView tvCageRFID, tvNetRFID;
 
     @Override
@@ -45,7 +44,7 @@ public class FishingCageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fishing_cage);
 
         // get an instance of local DB
-        db = MobileDB.getInstance(getContext());
+        db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingCage);
@@ -158,14 +157,14 @@ public class FishingCageActivity extends AppCompatActivity {
         GlobalState.recFishing.netRFID = tvNetRFID.getText().toString();
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recFishing.cageRFID)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.cageRFID)) {
             sb.append(String.format("\n%s is missing", "'Cage tag'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recFishing.netRFID)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.netRFID)) {
             sb.append(String.format("\n%s is missing", "'Net tag'"));
         }
 

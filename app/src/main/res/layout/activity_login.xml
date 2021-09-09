@@ -88,7 +88,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="220dp"
+            android:layout_marginBottom="24dp"
             android:background="@drawable/bg_rounded_login_edit_text"
             android:ems="9"
             android:hint="@string/label_password_hint"
@@ -99,10 +99,10 @@
             android:textColorHint="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btnLogin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/loading"
+            app:layout_constraintTop_toBottomOf="@+id/etUserName"
             tools:ignore="LabelFor,RelativeOverlap" />
 
         <Button
@@ -133,37 +133,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
-
-
-        <ProgressBar
-            android:id="@+id/loading"
-            android:layout_width="331dp"
-            android:layout_height="140dp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/loading_text"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_below="@+id/loading"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:layout_marginTop="71dp"
-            android:background="@color/colorPrimary"
-            android:textAlignment="center"
-            android:textColor="#8DC63F"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/loading"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivLogoLogin" />
 
         <TextView
             android:id="@+id/textView2"

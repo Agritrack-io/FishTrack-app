@@ -12,7 +12,6 @@ import java.util.Locale;
 import io.agritrack.fishtrack.data.dto.SiteDTO;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
-import static io.agritrack.fishtrack.FishTrackApplication.getContext;
 
 public class LocalPreferences {
     public static final String Pref_Name = "agritrack";
@@ -39,7 +38,7 @@ public class LocalPreferences {
         mContext = context;
 
         // hold the shared Preferences instance
-        pref = getContext().getSharedPreferences(Pref_Name, Context.MODE_PRIVATE);
+        pref = getAppContext().getSharedPreferences(Pref_Name, Context.MODE_PRIVATE);
     }
 
     public static LocalPreferences getInstance() {
@@ -88,7 +87,7 @@ public class LocalPreferences {
     }
 
     public static Boolean locationExists() {
-        return getLongitude()!=null && getLatitude()!=null;
+        return getLongitude() != null && getLatitude() != null;
     }
 
     // stores in Local Preferences current epoch time, as last Login Time.
