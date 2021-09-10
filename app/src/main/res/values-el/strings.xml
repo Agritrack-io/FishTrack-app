@@ -191,6 +191,7 @@
 
     <string name="choose_site">Επιλέξτε χώρο</string>
     <string name="select_asset_type">Επιλέξτε τύπο παγίου</string>
+    <string name="select_consumable_type">Επιλέξτε τύπο αναλώσιμου</string>
     <string name="acquire_coordinates">Παρακαλώ περιμένετε, ανάκτηση συντεταγμένων GPS...</string>
     <string name="sync_sites">Παρακαλώ περιμένετε, συγχρονισμός χώρων...</string>
 

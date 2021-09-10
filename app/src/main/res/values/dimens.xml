@@ -55,6 +55,7 @@
     <dimen name="button_font_size">24sp</dimen>
     <dimen name="text_view_font_size_small">16sp</dimen>
     <dimen name="text_view_font_size_medium">20sp</dimen>
+    <dimen name="text_view_font_size_medium_to_normal">22sp</dimen>
     <dimen name="text_view_font_size">24sp</dimen>
 
 

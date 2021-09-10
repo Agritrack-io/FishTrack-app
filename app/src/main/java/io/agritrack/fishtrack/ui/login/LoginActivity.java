@@ -339,7 +339,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (taps == 6) {
                     LocalPreferences.Reset();
                     taps = 0;
-                    Toast.makeText(getApplicationContext(), "Preferences Reset!!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), render("Preferences Reset!!!"), Toast.LENGTH_SHORT).show();
                 }
                 lastTap = now;
             }

@@ -8,4 +8,8 @@ public class Filters {
     public static final String RFID_CRANE = "1413";
     public static final String RFID_PLATFORM = "1414";
     public static final String RFID_BOAT = "1415";
+
+    public static final String BARCODE_FOOD = "";
+    public static final String BARCODE_VACCINE = "";
+    public static final String BARCODE_ANTIBIOTIC = "";
 }

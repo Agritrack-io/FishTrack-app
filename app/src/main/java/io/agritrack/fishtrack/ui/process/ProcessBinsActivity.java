@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +30,7 @@ import java.util.Set;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
+import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.ProcessingRecord;
@@ -36,6 +38,7 @@ import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class ProcessBinsActivity extends AppCompatActivity {
     private MobileDB db;
@@ -115,10 +118,27 @@ public class ProcessBinsActivity extends AppCompatActivity {
         ivDeleteBin.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if(selectedBarcode != null){
-                adapterBins.removeItem(selectedBarcode);
-                adapterBins.notifyDataSetChanged();
-                tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+            if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
+                // instantiate Site selection confirm dialog
+                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
+                confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + selectedBarcode);
+
+                confirmSiteSelectionDlg.onConfirm(bundle -> {
+                    String barcode = bundle.getString("selectedBarcode");
+                    if (barcode != null) {
+                        adapterBins.removeItem(barcode);
+                        adapterBins.notifyDataSetChanged();
+                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+                        selectedBarcode = null;
+                    }
+                });
+
+                FragmentManager fm = getSupportFragmentManager();
+                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            } else {
+                // <delete> Button was pressed without selecting a Bin first.
+                Toast.makeText(getApplicationContext(), render("Plz select a Bin to delete!!"), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -200,7 +220,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
             } else {
                 Intent i = new Intent(getApplicationContext(), ProcessConfirmActivity.class);
                 startActivity(i);

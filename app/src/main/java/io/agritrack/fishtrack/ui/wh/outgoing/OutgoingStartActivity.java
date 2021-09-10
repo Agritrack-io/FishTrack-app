@@ -2,9 +2,7 @@ package io.agritrack.fishtrack.ui.wh.outgoing;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,21 +10,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.util.Arrays;
-
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Constants;
-import io.agritrack.fishtrack.enums.AssetType;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
+import io.agritrack.fishtrack.ui.wh.incoming.IncomingAssetActivity;
+import io.agritrack.fishtrack.ui.wh.incoming.IncomingConsumableActivity;
+
+import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class OutgoingStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
-    private Spinner spAssetType;
     private TextView tvOutgoingFrom, tvOutgoingTo;
-    private ToggleGroup tgOutgoingSource, tgOutgoingDestination;
+    private ToggleGroup tgOutgoingSource, tgOutgoingDestination, tgOutgoingItemType;
+    private String selectedOutgoingItemType;
 
 
     @Override
@@ -41,15 +40,6 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         // get  references of the controls
         assignCtrlVars();
 
-        // load all Asset Types and fill in the spAssetType Spinner.
-        AssetType[] assetTypes = AssetType.values();
-        if (assetTypes != null) {
-            String[] assetTypeArray = Arrays.stream(assetTypes).map(x -> x.name()).toArray(String[]::new);
-            ArrayAdapter<String> atAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, assetTypeArray);
-            atAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-            spAssetType.setAdapter(atAdapter);
-        }
-
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
@@ -62,9 +52,12 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
+            } else if (selectedOutgoingItemType == Constants.ftAsset){
+                Intent i = new Intent(getApplicationContext(), OutgoingAssetActivity.class);
+                startActivity(i);
             } else {
-                Intent i = new Intent(getApplicationContext(), OutgoingProcessActivity.class);
+                Intent i = new Intent(getApplicationContext(), OutgoingConsumableActivity.class);
                 startActivity(i);
             }
         });
@@ -77,12 +70,15 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
     }
 
     private void assignCtrlVars() {
-        spAssetType = findViewById(R.id.spAssetType);
         tvOutgoingFrom = findViewById(R.id.tvOutgoingFrom);
         tvOutgoingTo = findViewById(R.id.tvOutgoingTo);
 
         tgOutgoingSource = findViewById(R.id.tgOutgoingSource);
         tgOutgoingDestination = findViewById(R.id.tgOutgoingDestination);
+
+        tgOutgoingItemType = findViewById(R.id.tgOutgoingItemType);
+
+        tgOutgoingItemType.setOnCheckedChangeListener(this);
 
         tgOutgoingSource.setOnCheckedChangeListener(this);
         tgOutgoingDestination.setOnCheckedChangeListener(this);
@@ -93,7 +89,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         if (checkedId == R.id.tbSite) {
             GlobalState.recWHOutgoing.from = Constants.ftSite;
             tvOutgoingFrom.setText(Constants.ftSite);
-        } else if (checkedId == R.id.tbAsset) {
+        } else if (checkedId == R.id.tbAssetFrom) {
             GlobalState.recWHOutgoing.from = Constants.ftAsset;
             tvOutgoingFrom.setText(Constants.ftAsset);
         } else if (checkedId == R.id.tbAvramar) {
@@ -106,21 +102,28 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
             GlobalState.recWHOutgoing.to = Constants.ftAsset;
             tvOutgoingTo.setText(Constants.ftAsset);
         }
+        if (checkedId == R.id.tbAsset) {
+            selectedOutgoingItemType = Constants.ftAsset;
+        } else if (checkedId == R.id.tbConsumable) {
+            selectedOutgoingItemType = Constants.ftConsumable;
+        }
     }
 
     private WHTxRecord updateState() {
         WHTxRecord whOutgoingRecord = GlobalState.recWHOutgoing;
 
-        if (spAssetType.getSelectedItem() != null) {
-            whOutgoingRecord.assetType = AssetType.valueOf(spAssetType.getSelectedItem().toString());
+        if (!Strings.isEmptyOrWhitespace(selectedOutgoingItemType)) {
+            whOutgoingRecord.outgoingItemType = selectedOutgoingItemType;
         }
-        whOutgoingRecord.assetTypePos = spAssetType.getSelectedItemPosition();
-
         return whOutgoingRecord;
     }
 
     private String validate(){
         StringBuilder sb = new StringBuilder();
+
+        if (Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.outgoingItemType)) {
+            sb.append(String.format("\n%s is missing", "'Item type'"));
+        }
 
         if(Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.to)){
             sb.append(String.format("\n%s is missing", "'Target site'"));
@@ -134,14 +137,11 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
     }
 
     private void initControlsFromState()    {
-        if (GlobalState.recWHOutgoing.assetTypePos > -1) {
-            spAssetType.setSelection(GlobalState.recWHOutgoing.assetTypePos);
-        }
 
         if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHOutgoing.from)) {
             tgOutgoingSource.check(R.id.tbSite);
         } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.from)) {
-            tgOutgoingSource.check(R.id.tbAsset);
+            tgOutgoingSource.check(R.id.tbAssetFrom);
         }
 
         if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHOutgoing.to)) {
@@ -150,6 +150,12 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
             tgOutgoingDestination.check(R.id.tbCustomer);
         } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.to)) {
             tgOutgoingDestination.check(R.id.tbOutAssetTo);
+        }
+
+        if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.outgoingItemType)) {
+            tgOutgoingItemType.check(R.id.tbAsset);
+        } else if (Constants.ftConsumable.equalsIgnoreCase(GlobalState.recWHOutgoing.outgoingItemType)) {
+            tgOutgoingItemType.check(R.id.tbConsumable);
         }
     }
 }

@@ -42,6 +42,7 @@ import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -224,7 +225,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
 
             selectedBarcode = etAssetBarcode.getText().toString();
             if (Strings.isEmptyOrWhitespace(selectedBarcode)) {
-                runOnUiThread(() -> Toast.makeText(getAppContext(), R.string.no_epc_filter_selected, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getAppContext(), render(R.string.no_epc_filter_selected), Toast.LENGTH_LONG).show());
             }
 
             // Following check is required to instantiate a ScanningThread that was stopped previously.

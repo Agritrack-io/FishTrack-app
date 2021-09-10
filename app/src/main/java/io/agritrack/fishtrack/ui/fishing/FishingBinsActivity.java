@@ -38,6 +38,7 @@ import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class FishingBinsActivity extends AppCompatActivity {
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
@@ -127,6 +128,7 @@ public class FishingBinsActivity extends AppCompatActivity {
                         adapterBins.removeItem(barcode);
                         adapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+                        selectedBarcode = null;
                     }
                 });
 
@@ -134,7 +136,7 @@ public class FishingBinsActivity extends AppCompatActivity {
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
                 // <delete> Button was pressed without selecting a Bin first.
-                Toast.makeText(getApplicationContext(), "Plz select a Bin to delete!!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Plz select a Bin to delete!!"), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -209,7 +211,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
             } else {
                 Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
                 startActivity(i);

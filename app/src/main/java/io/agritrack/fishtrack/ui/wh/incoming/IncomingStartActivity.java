@@ -2,9 +2,7 @@ package io.agritrack.fishtrack.ui.wh.incoming;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,22 +10,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.util.Arrays;
-
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Constants;
-import io.agritrack.fishtrack.enums.AssetType;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
+import static io.agritrack.fishtrack.common.LargeString.render;
+
 public class IncomingStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
-    private Spinner spAssetType;
     private TextView tvIncomingFrom, tvIncomingTo;
-    private ToggleGroup tgIncomingSource, tgIncomingDestination;
+    private ToggleGroup tgIncomingSource, tgIncomingDestination, tgIncomingItemType;
+    private String selectedIncomingItemType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +38,6 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
         // get  references of the controls
         assignCtrlVars();
 
-        // load all Asset Types and fill in the spAssetType Spinner.
-        AssetType[] assetTypes = AssetType.values();
-        if (assetTypes != null) {
-            String[] assetTypeArray = Arrays.stream(assetTypes).map(x -> x.name()).toArray(String[]::new);
-            ArrayAdapter<String> atAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, assetTypeArray);
-            atAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-            spAssetType.setAdapter(atAdapter);
-        }
-
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
@@ -57,12 +45,14 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
     }
 
     private void assignCtrlVars() {
-        spAssetType = findViewById(R.id.spAssetType);
         tvIncomingFrom = findViewById(R.id.tvIncomingFrom);
         tvIncomingTo = findViewById(R.id.tvIncomingTo);
 
         tgIncomingSource = findViewById(R.id.tgIncomingSource);
         tgIncomingDestination = findViewById(R.id.tgIncomingDestination);
+        tgIncomingItemType = findViewById(R.id.tgIncomingItemType);
+
+        tgIncomingItemType.setOnCheckedChangeListener(this);
 
         tgIncomingSource.setOnCheckedChangeListener(this);
         tgIncomingDestination.setOnCheckedChangeListener(this);
@@ -74,9 +64,12 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
+            } else if (selectedIncomingItemType == Constants.ftAsset){
+                Intent i = new Intent(getApplicationContext(), IncomingAssetActivity.class);
+                startActivity(i);
             } else {
-                Intent i = new Intent(getApplicationContext(), IncomingProcessActivity.class);
+                Intent i = new Intent(getApplicationContext(), IncomingConsumableActivity.class);
                 startActivity(i);
             }
         });
@@ -106,21 +99,29 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
             GlobalState.recWHIncoming.to = Constants.ftAsset;
             tvIncomingTo.setText(Constants.ftAsset);
         }
+        if (checkedId == R.id.tbAsset) {
+            selectedIncomingItemType = Constants.ftAsset;
+        } else if (checkedId == R.id.tbConsumable) {
+            selectedIncomingItemType = Constants.ftConsumable;
+        }
     }
 
     private WHTxRecord updateState() {
         WHTxRecord whIncomingRecord = GlobalState.recWHIncoming;
 
-        if (spAssetType.getSelectedItem() != null) {
-            whIncomingRecord.assetType = AssetType.valueOf(spAssetType.getSelectedItem().toString());
+        if (!Strings.isEmptyOrWhitespace(selectedIncomingItemType)) {
+            whIncomingRecord.incomingItemType = selectedIncomingItemType;
         }
-        whIncomingRecord.assetTypePos = spAssetType.getSelectedItemPosition();
 
         return whIncomingRecord;
     }
 
     private String validate(){
         StringBuilder sb = new StringBuilder();
+
+        if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.incomingItemType)) {
+            sb.append(String.format("\n%s is missing", "'Item type'"));
+        }
 
         if(Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.from)){
             sb.append(String.format("\n%s is missing", "'Source site'"));
@@ -134,9 +135,6 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
     }
 
     private void initControlsFromState()    {
-        if (GlobalState.recWHIncoming.assetTypePos > -1) {
-            spAssetType.setSelection(GlobalState.recWHIncoming.assetTypePos);
-        }
 
         if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHIncoming.from)) {
             tgIncomingSource.check(R.id.tbAvramar);
@@ -150,6 +148,12 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
             tgIncomingDestination.check(R.id.tbSite);
         } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.to)) {
             tgIncomingDestination.check(R.id.tbAssetTo);
+        }
+
+        if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.incomingItemType)) {
+            tgIncomingItemType.check(R.id.tbAsset);
+        } else if (Constants.ftConsumable.equalsIgnoreCase(GlobalState.recWHIncoming.incomingItemType)) {
+            tgIncomingItemType.check(R.id.tbConsumable);
         }
     }
 }

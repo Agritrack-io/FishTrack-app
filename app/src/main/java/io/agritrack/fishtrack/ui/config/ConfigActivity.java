@@ -45,6 +45,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.common.LargeString.render;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Latitude_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Longitude_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.SelectedCluster_Key;
@@ -183,14 +184,14 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
             syncProgressDialog.hide();
 
             // show error cause message
-            Toast.makeText(getAppContext(), "No location returned by GPS!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getAppContext(), render("No location returned by GPS!"), Toast.LENGTH_LONG).show();
             return;
         } else if (!useGPSoutcome && !LocalPreferences.locationExists()) {
             // hide progress Dialog
             syncProgressDialog.hide();
 
             // show error cause message
-            Toast.makeText(getAppContext(), "No location found locally!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getAppContext(), render("No location found locally!"), Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -218,7 +219,7 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
                 syncProgressDialog.hide();
 
                 System.out.println(t);
-                Toast.makeText(getAppContext(), "Plz Check WIFI connection..", Toast.LENGTH_LONG).show();
+                Toast.makeText(getAppContext(), render("Plz Check WIFI connection.."), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -232,7 +233,7 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
                     toggleProgress(true, R.string.acquire_coordinates);
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
                 } catch (SecurityException ex) {
-                    Toast.makeText(getAppContext(), "Location Access Permission was not granted!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getAppContext(), render("Location Access Permission was not granted!"), Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -285,12 +286,12 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
     private void initiateSiteInfoObserver() {
         siteInfoResults.observe(this, response -> {
             if (response == null) {
-                Toast.makeText(getAppContext(), "No site info received...", Toast.LENGTH_LONG).show();
+                Toast.makeText(getAppContext(), render("No site info received..."), Toast.LENGTH_LONG).show();
                 return;
             }
             if (response.size() == 0) {
                 xvClusters.setVisibility(View.VISIBLE);
-                Toast.makeText(getAppContext(), "No site info received...", Toast.LENGTH_LONG).show();
+                Toast.makeText(getAppContext(), render("No site info received..."), Toast.LENGTH_LONG).show();
             }
             if (response.size() > 0) {
                 // Site coordinates may be close to >1 cluster. These sites will be displayed grouped by cluster.

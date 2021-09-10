@@ -19,6 +19,8 @@ import io.agritrack.fishtrack.state.ProcessingRecord;
 import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
+import static io.agritrack.fishtrack.common.LargeString.render;
+
 public class ProcessStartActivity extends AppCompatActivity {
 
     private TextView etDispatchNote, etSecurityClip, etPlot;
@@ -50,7 +52,7 @@ public class ProcessStartActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
             } else {
                 Intent i = new Intent(getApplicationContext(), ProcessBinsActivity.class);
                 startActivity(i);

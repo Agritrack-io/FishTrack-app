@@ -53,6 +53,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class CorrelationActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
@@ -121,7 +122,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
                     });
                     //tvCageName.setText(result);
                 } else {
-                    Toast.makeText(getApplicationContext(), String.format("No item of type %s was found!", selectedAssetType), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), render(String.format("No item of type %s was found!", selectedAssetType)), Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
                 future.cancel(true);
@@ -135,7 +136,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
 
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
                 return;
             }
             correlate();
@@ -277,27 +278,27 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
             CorrelationTxDTO rs = response.body();
 
             if (rs != null) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Tx successfully updated!!!", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG).show());
                 tvCorrAssetBarcode.setText("");
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_CorrelationTx_update_failure, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_CorrelationTx_update_failure), Toast.LENGTH_LONG).show());
             }
         }
 
         @Override
         public void onFailure(Call<CorrelationTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_connection_timeout, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG).show());
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_timeout, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG).show());
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_cancelled_call, Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG).show());
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Network Error :: " + error.getLocalizedMessage(), Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG).show());
                 }
             }
         }

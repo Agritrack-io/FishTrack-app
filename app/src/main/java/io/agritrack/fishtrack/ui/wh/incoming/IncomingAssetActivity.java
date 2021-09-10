@@ -1,4 +1,4 @@
-package io.agritrack.fishtrack.ui.wh.inventory;
+package io.agritrack.fishtrack.ui.wh.incoming;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -23,39 +23,54 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Set;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.api.APIServiceGenerator;
 import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.common.Filters;
+import io.agritrack.fishtrack.data.db.MobileDB;
+import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
+import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
 import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
+import io.agritrack.fishtrack.enums.WarehouseTxState;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
-import io.agritrack.fishtrack.state.InventoryWHRecord;
+import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
+import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
 
-public class InventoryAssetActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class IncomingAssetActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
-    private  ToggleGroup tgChooseAssetType;
-
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-    private RecyclerView rvInventoryItems;
-    private TextView tvInventoryItemsCount;
-    private InventoryWHRecord whInventoryRecord;
-    private UhfReader uhfReader;
-    private ScanInventoryThread transportationBinsThread = new ScanInventoryThread();
-    private boolean scanning = false;
-
-    private TemplateRecyclerAdapter adapterInventoryItems;
+    private ToggleGroup tgChooseAssetType;
     private String selectedAssetType;
     private String activeFilter = null;
     private  int selectedToggleButton = -1;
+
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
+    private MobileDB db;
+    private UhfReader uhfReader;
+    private ScanInventoryThread processingBinsThread = new ScanInventoryThread();
+    private boolean scanning = false;
+
+    private TemplateRecyclerAdapter adapterIncomingItems;
+
+    private TextView tvIncomingProcessFrom, tvIncomingProcessTo;
+    private RecyclerView rvIncomingItems;
+
     private ImageButton ivAddItem, ivDeleteItem;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
@@ -69,7 +84,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
             TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if(selectedItem!=null) {
+            if (selectedItem != null) {
                 selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
 
@@ -82,37 +97,36 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inventory_asset);
-
-        // instantiate an inventory Record
-        whInventoryRecord = GlobalState.recWHInventory;
+        setContentView(R.layout.activity_incoming_asset);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderInventory);
+        TextView tvHeader = findViewById(R.id.tvHeaderIncomingProcess);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
 
-        // initiate RFID scanner behaviour
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvInventoryItems.setLayoutManager(layoutManager);
-        rvInventoryItems.setItemAnimator(new DefaultItemAnimator());
-        adapterInventoryItems = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
-        rvInventoryItems.setAdapter(adapterInventoryItems);
-        rvInventoryItems.setNestedScrollingEnabled(false);
+        rvIncomingItems.setLayoutManager(layoutManager);
+        rvIncomingItems.setItemAnimator(new DefaultItemAnimator());
+        adapterIncomingItems = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
+        rvIncomingItems.setAdapter(adapterIncomingItems);
+        rvIncomingItems.setNestedScrollingEnabled(false);
 
+        //Get reference of binsCount textView
         scanResult.observe(this, response -> {
             if (response == null) {
                 return;
             }
-            tvInventoryItemsCount.setText(String.valueOf(response.size()));
-            adapterInventoryItems.setValues(new ArrayList<>(response));
-            adapterInventoryItems.notifyDataSetChanged();
+            adapterIncomingItems.setValues(new ArrayList<>(response));
+            adapterIncomingItems.notifyDataSetChanged();
         });
 
         // initialize scanning threads
         prepareScanAvailableBinsButton();
+
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
 
         ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
@@ -126,9 +140,8 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
                     if (barcode != null) {
-                        adapterInventoryItems.removeItem(barcode);
-                        adapterInventoryItems.notifyDataSetChanged();
-                        tvInventoryItemsCount.setText(String.valueOf(adapterInventoryItems.getItemCount()));
+                        adapterIncomingItems.removeItem(barcode);
+                        adapterIncomingItems.notifyDataSetChanged();
                         selectedBarcode = null;
                     }
                 });
@@ -148,30 +161,21 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
         configFooter();
     }
 
-    private void clearSelectedItem(){
-        if(selectedItem!=null) {
+    private void clearSelectedItem() {
+        if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
         }
     }
 
-    private void assignCtrlVars() {
-        tgChooseAssetType = findViewById(R.id.tgChooseAssetType);
-        rvInventoryItems = findViewById(R.id.rvInventoryItems);
-        tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
-        ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
-        ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
-
-        tgChooseAssetType.setOnCheckedChangeListener(this);
-    }
-
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
+        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
 
             //Set scanning to false to stop running scan thread
             scanning = false;
-            transportationBinsThread.setScanInProgress(scanning);
+            processingBinsThread.setScanInProgress(scanning);
 
+            updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
@@ -181,16 +185,77 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
             }
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToStartIncoming);
         ivBack.setOnClickListener(view -> {
 
             //Set scanning to false to stop running scan thread
             scanning = false;
-            transportationBinsThread.setScanInProgress(scanning);
+            processingBinsThread.setScanInProgress(scanning);
 
-            Intent i = new Intent(getApplicationContext(), InventoryStartActivity.class);
+            Intent i = new Intent(getApplicationContext(), IncomingStartActivity.class);
             startActivity(i);
         });
+    }
+
+    private void assignCtrlVars() {
+        tgChooseAssetType = findViewById(R.id.tgChooseAssetType);
+        rvIncomingItems = findViewById(R.id.rvIncomingItems);
+        tvIncomingProcessFrom = findViewById(R.id.tvIncomingProcessFrom);
+        tvIncomingProcessTo = findViewById(R.id.tvIncomingProcessTo);
+        ivDeleteItem = findViewById(R.id.ivDeleteItem);
+        ivAddItem = findViewById(R.id.ivAddItem);
+
+        tgChooseAssetType.setOnCheckedChangeListener(this);
+    }
+
+    private void updateState() {
+        GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
+        GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
+
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
+
+        try {
+            String token = LocalPreferences.getToken();
+
+            // persist WHIncomingAssetTX Record data to local DB.
+            AssetTransaction tx = GlobalState.commitWHIncoming(db);
+
+            // sync WH Incoming Tx
+            Call<AssetTxDTO> syncTxAsyncCall = updService.syncIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
+            syncTxAsyncCall.enqueue(new SyncTxCallBack());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // hideSyncProgress();
+        }
+    }
+
+    private String validate() {
+        StringBuilder sb = new StringBuilder();
+
+        if (GlobalState.recWHIncoming.items == null || GlobalState.recWHIncoming.items.isEmpty()) {
+            sb.append(String.format("\n%s is missing", "'Incoming items'"));
+        }
+
+        return sb.toString();
+    }
+
+    private void initControlsFromState() {
+        WHTxRecord WHTxRecord = GlobalState.recWHIncoming;
+
+        if (!Strings.isEmptyOrWhitespace(WHTxRecord.from)) {
+            tvIncomingProcessFrom.setText(WHTxRecord.from);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(WHTxRecord.to)) {
+            tvIncomingProcessTo.setText(WHTxRecord.to);
+        }
+
+        if (WHTxRecord.items != null) {
+            adapterIncomingItems.setValues(WHTxRecord.items);
+            adapterIncomingItems.notifyDataSetChanged();
+        }
     }
 
     private void prepareScanAvailableBinsButton() {
@@ -204,14 +269,14 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
             scanning = !scanning;
 
             // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (transportationBinsThread.getState() == Thread.State.TERMINATED) {
-                transportationBinsThread = new ScanInventoryThread();
+            if (processingBinsThread.getState() == Thread.State.TERMINATED) {
+                processingBinsThread = new ScanInventoryThread();
             }
             //update scanning, uhfReader, tvPlatformName values in thread
-            transportationBinsThread.setScanInProgress(scanning);
-            transportationBinsThread.setUhfReader(uhfReader);
-            transportationBinsThread.setScanResult(scanResult);
-            transportationBinsThread.setFilter(activeFilter);
+            processingBinsThread.setScanInProgress(scanning);
+            processingBinsThread.setUhfReader(uhfReader);
+            processingBinsThread.setScanResult(scanResult);
+            processingBinsThread.setFilter(activeFilter);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
@@ -220,8 +285,8 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
                     }
                 });
-                if (transportationBinsThread.getState() == Thread.State.NEW) {
-                    transportationBinsThread.start();
+                if (processingBinsThread.getState() == Thread.State.NEW) {
+                    processingBinsThread.start();
                 }
             } else {
                 scanButton.setText(R.string.scan_assets);
@@ -231,7 +296,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
                     }
                 });
                 try {
-                    transportationBinsThread.join();
+                    processingBinsThread.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -272,13 +337,34 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
         }
     }
 
-    private String validate(){
-        StringBuilder sb = new StringBuilder();
+    public class SyncTxCallBack implements Callback<AssetTxDTO> {
+        @Override
+        public void onResponse(Call<AssetTxDTO> call, Response<AssetTxDTO> response) {
+            AssetTxDTO rs = response.body();
 
-     /*If(GlobalState.recWHInventory.items==null || GlobalState.recWHIncoming.items.isEmpty()){
-            sb.append(String.format("\n%s is missing", "'Incoming items'"));
-        }*/
+            if (rs != null) {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG).show());
+            } else {
+                // could not update Fishing TX on backend!!!
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_AssetTx_tx_update_failure), Toast.LENGTH_LONG).show());
+            }
+        }
 
-        return sb.toString();
+        @Override
+        public void onFailure(Call<AssetTxDTO> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG).show());
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG).show());
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG).show());
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG).show());
+                }
+            }
+        }
     }
 }

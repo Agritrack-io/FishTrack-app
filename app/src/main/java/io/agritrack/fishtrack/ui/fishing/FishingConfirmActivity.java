@@ -28,6 +28,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.common.LargeString.render;
 import static io.agritrack.fishtrack.state.GlobalState.recFishing;
 
 public class FishingConfirmActivity extends AppCompatActivity {
@@ -102,7 +103,7 @@ public class FishingConfirmActivity extends AppCompatActivity {
 
             // credentials do NOT match
             if (!authentication) {
-                runOnUiThread(() -> Toast.makeText(getAppContext(), R.string.invalid_password, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG).show());
             } else {
                 try {
                     String token = LocalPreferences.getToken();
@@ -143,7 +144,7 @@ public class FishingConfirmActivity extends AppCompatActivity {
 //                return true;
             }
         } else {
-            runOnUiThread(() -> Toast.makeText(getAppContext(), R.string.missing_pin, Toast.LENGTH_LONG).show());
+            runOnUiThread(() -> Toast.makeText(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG).show());
         }
     }
 
@@ -158,26 +159,26 @@ public class FishingConfirmActivity extends AppCompatActivity {
                     delObj.id = recFishing.harvestRqPkId;
                     db.harvestRequestsDAO().delete(delObj);
                 }
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Tx successfully updated!!!", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG).show());
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_fishing_tx_update_failure, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_fishing_tx_update_failure), Toast.LENGTH_LONG).show());
             }
         }
 
         @Override
         public void onFailure(Call<FishingTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_connection_timeout, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG).show());
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_timeout, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG).show());
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_cancelled_call, Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG).show());
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Network Error :: " + error.getLocalizedMessage(), Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG).show());
                 }
             }
         }

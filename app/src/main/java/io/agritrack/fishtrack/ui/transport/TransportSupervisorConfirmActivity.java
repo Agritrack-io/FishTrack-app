@@ -30,6 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class TransportSupervisorConfirmActivity extends AppCompatActivity {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
@@ -125,7 +126,7 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
 
             // credentials do NOT match
             if (!authentication) {
-                runOnUiThread(() -> Toast.makeText(getAppContext(), R.string.invalid_password, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG).show());
             } else {
                 try {
                     String token = LocalPreferences.getToken();
@@ -144,7 +145,7 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
                 }
             }
         } else {
-            runOnUiThread(() -> Toast.makeText(getAppContext(), R.string.missing_pin, Toast.LENGTH_LONG).show());
+            runOnUiThread(() -> Toast.makeText(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG).show());
         }
     }
 
@@ -154,26 +155,26 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
             TransportTxDTO rs = response.body();
 
             if (rs != null) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Tx successfully updated!!!", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG).show());
             } else {
                 // could not update Transport TX on backend!!!
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_transport_tx_update_failure, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_transport_tx_update_failure), Toast.LENGTH_LONG).show());
             }
         }
 
         @Override
         public void onFailure(Call<TransportTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_connection_timeout, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG).show());
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_timeout, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG).show());
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_cancelled_call, Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG).show());
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Network Error :: " + error.getLocalizedMessage(), Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG).show());
                 }
             }
         }
