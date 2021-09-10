@@ -51,13 +51,14 @@ import io.agritrack.fishtrack.ui.transport.TransportStartActivity;
 import retrofit2.Call;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class HomeActivity extends AppCompatActivity {
     private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4;
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
-    GridView gvMainMenu;
-    ImageButton ivRefresh;
-    ProgressDialog progressDialog;
+    private GridView gvMainMenu;
+    private ImageButton ivRefresh;
+    private ProgressDialog progressDialog;
     private MobileDB db;
     private int syncCounter = 1;
 
@@ -80,7 +81,9 @@ public class HomeActivity extends AppCompatActivity {
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
 
+        // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         syncResult.observe(this, response -> {
             syncCounter++;
@@ -89,7 +92,7 @@ public class HomeActivity extends AppCompatActivity {
                 return;
             }
             if (response != null) {
-                progressDialog.setMessage(response);
+                progressDialog.setMessage(render(response));
                 if (syncCounter > 6) {
                     hideProgressDialog();
                 }
@@ -117,16 +120,18 @@ public class HomeActivity extends AppCompatActivity {
                             fishingRecord = FishingRecord.convert(openTx);
                             GlobalState.recFishing = fishingRecord;
                         } else {
-                            // NO FishingTx in progress
-                            openTx = new FishingTransaction();
-                            fishingRecord = GlobalState.initFishingTx();
-                            openTx.txStatus = TxStatus.PENDING;
-                            fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
+                            // instantiate a new Fishing Record.
+                            fishingRecord = GlobalState.initFishingRecord();
 
                             // load Harvest Request fetched via Synch op.
                             List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getAll();
                             if (harvestRequests != null && !harvestRequests.isEmpty()) {
                                 i = new Intent(appCtx, HarvestRequestsActivity.class);
+                            } else {
+                                // NO FishingTx in progress
+                                openTx = new FishingTransaction();
+                                openTx.txStatus = TxStatus.PENDING;
+                                fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
                             }
                         }
                         break;
@@ -214,16 +219,14 @@ public class HomeActivity extends AppCompatActivity {
 
     // show Progress bar
     private void showProgressDialog(String substring) {
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         //Without this user can hide loader by tapping outside screen
         progressDialog.setCancelable(false);
-        progressDialog.setMessage(substring);
+        progressDialog.setMessage(render(substring));
         progressDialog.show();
     }
 
     // hide/dismiss Progress bar
     private void hideProgressDialog() {
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.dismiss();
     }
 }

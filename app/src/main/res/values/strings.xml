@@ -1,4 +1,5 @@
 <resources>
+    <string name="empty"/>
     <string name="app_name">FishTrack</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
 
@@ -297,5 +298,6 @@
     <string name="assets_sync_completed">Assets sync completed!</string>
     <string name="employees_sync_completed">Employees sync completed!</string>
     <string name="users_sync_completed">Users sync completed!</string>
+    <string name="delete_selected_item">"About to delete: "</string>
 
 </resources>

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
-    tools:context=".ui.ConfigActivity">
+    tools:context=".ui.config.ConfigActivity">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout

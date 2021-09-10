@@ -21,12 +21,14 @@ import java.util.List;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.HarvestRequest;
+import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
+import io.agritrack.fishtrack.enums.TxStatus;
+import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.bo.GenericListModel;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
-import static io.agritrack.fishtrack.state.GlobalState.recFishing;
 
 public class HarvestRequestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private MobileDB db;
@@ -73,15 +75,22 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         configFooter();
     }
 
-
+    // Define 'back' / 'next' Buttons functionality
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToStartFishing);
         ivNext.setOnClickListener(view -> {
-            //updateState();
-            String v = null; //validate();
+            String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
             } else {
+                // NO open FishingTx exists, instantiate a new.
+                FishingTransaction openTx = new FishingTransaction();
+                openTx.txStatus = TxStatus.PENDING;
+                GlobalState.recFishing.txKey = db.fishingTransactionDAO().insert(openTx);
+
+                // transfer existing Record Data to Entity and persist to db.
+                GlobalState.commitFishing(this.db, false);
+
                 Intent i = new Intent(getApplicationContext(), FishingStartActivity.class);
                 startActivity(i);
             }
@@ -103,12 +112,22 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
 
         HarvestRequest harvestRq = db.harvestRequestsDAO().getById(member.getId().toString());
         if (harvestRq != null) {
-            recFishing.harvestRqPkId = harvestRq.id;
-            recFishing.harvestRq = harvestRq.requestId;
-            recFishing.speciesName = harvestRq.fishName;
-            recFishing.requesterName = harvestRq.requester;
-            recFishing.reqWeight = harvestRq.reqQty;
+            GlobalState.recFishing.harvestRqPkId = harvestRq.id;
+            GlobalState.recFishing.harvestRq = harvestRq.requestId;
+            GlobalState.recFishing.speciesName = harvestRq.fishName;
+            GlobalState.recFishing.requesterName = harvestRq.requester;
+            GlobalState.recFishing.reqWeight = harvestRq.reqQty;
         }
+    }
+
+    private String validate() {
+        StringBuilder sb = new StringBuilder();
+
+        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.speciesName)) {
+            sb.append(String.format("Please Select a Harvest Request to proceed", ""));
+        }
+
+        return sb.toString();
     }
 
     @Override

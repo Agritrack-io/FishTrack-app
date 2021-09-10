@@ -26,6 +26,7 @@ public abstract class TimeOutProgressDlg extends CountDownTimer {
         LayoutInflater inflater = (LayoutInflater) getAppContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View dialogView = inflater.inflate(R.layout.progress_indicator, null);
         this.tvProgressMessage = dialogView.findViewById(R.id.progressMsg);
+        this.tvProgressMessage.setText(R.string.empty);
         dlgBuilder.setView(dialogView);
         dlgBuilder.setCancelable(false);
         dialog = dlgBuilder.create();

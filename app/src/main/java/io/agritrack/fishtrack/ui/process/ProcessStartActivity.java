@@ -102,7 +102,7 @@ public class ProcessStartActivity extends AppCompatActivity {
     }
 
     private ProcessingRecord updateState() {
-        ProcessingRecord processingRecord = GlobalState.initProcessingTx();
+        ProcessingRecord processingRecord = GlobalState.initProcessingRecord();
 
         if (etDispatchNote.getText() != null) {
             processingRecord.dispatchNote = etDispatchNote.getText().toString();

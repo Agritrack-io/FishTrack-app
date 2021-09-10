@@ -45,52 +45,52 @@ public class GlobalState {
         return recHarvestRequests;
     }
 
-    public static FishingRecord initFishingTx() {
+    public static FishingRecord initFishingRecord() {
         recFishing = new FishingRecord();
         return recFishing;
     }
 
-    public static TransportationRecord initTransportationTx() {
+    public static TransportationRecord initTransportationRecord() {
         recTransport = new TransportationRecord();
         return recTransport;
     }
 
-    public static ProcessingRecord initProcessingTx() {
+    public static ProcessingRecord initProcessingRecord() {
         recProcessing = new ProcessingRecord();
         return recProcessing;
     }
 
-    public static WHTxRecord initWHIncomingTx() {
+    public static WHTxRecord initWHIncomingRecord() {
         recWHIncoming = new WHTxRecord();
         return recWHIncoming;
     }
 
-    public static WHTxRecord initWHOutgoingTx() {
+    public static WHTxRecord initWHOutgoingRecord() {
         recWHOutgoing = new WHTxRecord();
         return recWHOutgoing;
     }
 
-    public static WHCorrelationRecord initWHCorrelationTx() {
+    public static WHCorrelationRecord initWHCorrelationRecord() {
         recWHCorrelation = new WHCorrelationRecord();
         return recWHCorrelation;
     }
 
-    public static InventoryWHRecord initWHInventoryTx() {
+    public static InventoryWHRecord initWHInventoryRecord() {
         recWHInventory = new InventoryWHRecord();
         return recWHInventory;
     }
 
-    public static HarvestRecord initHarvestTx() {
+    public static HarvestRecord initHarvestRecord() {
         recHarvest = new HarvestRecord();
         return recHarvest;
     }
 
-    public static RepairRecord initInternalRepairTx() {
+    public static RepairRecord initInternalRepairRecord() {
         recInternalRepair = new RepairRecord();
         return recInternalRepair;
     }
 
-    public static RepairRecord initExternalRepairTx() {
+    public static RepairRecord initExternalRepairRecord() {
         recExternalRepair = new RepairRecord();
         return recExternalRepair;
     }

@@ -4,21 +4,27 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 
 import androidx.fragment.app.DialogFragment;
+
+import java.util.function.Function;
 
 import io.agritrack.fishtrack.R;
 
 public class YesNoDialogFragment extends DialogFragment {
-    private Bundle args;
+    private Bundle args = new Bundle();
     private CharSequence msg;
     private ConfirmationDialogCommand confirmationCmd;
+    private Function<Object, String> confirmationFn;
 
-    public static YesNoDialogFragment newInstance(Bundle args) {
+    public static YesNoDialogFragment instance() {
         YesNoDialogFragment fragment = new YesNoDialogFragment();
-        // Supply inputs as bundle arguments.
-        fragment.setArguments(args);
         return fragment;
+    }
+
+    public Bundle args() {
+        return this.args;
     }
 
     @Override
@@ -26,33 +32,21 @@ public class YesNoDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, 0);
 
-        this.args = getArguments();
+        setArguments(this.args);
     }
-
-
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        View v = inflater.inflate(R.layout.hello_world, container, false);
-//        View tv = v.findViewById(R.id.text);
-//
-//        return v;
-//    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.AlertDialogCustom));
 
         //mBuilder.setTitle(title);
         this.msg = (this.msg == null) ? getText(R.string.confirm_selection) : this.msg;
         mBuilder.setMessage(this.msg);
-        mBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (confirmationCmd != null) {
-                    confirmationCmd.execute(args);
-                }
+        mBuilder.setPositiveButton("Yes", (dialog, which) -> {
+            if (confirmationCmd != null) {
+                confirmationCmd.execute(args);
             }
         });
 

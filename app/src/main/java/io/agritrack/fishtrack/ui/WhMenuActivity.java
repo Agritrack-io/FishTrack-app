@@ -58,11 +58,11 @@ public class WhMenuActivity extends AppCompatActivity {
 
                 switch (position) {
                     case Incoming_Idx:
-                        GlobalState.initWHIncomingTx();
+                        GlobalState.initWHIncomingRecord();
                         i = new Intent(appCtx, IncomingStartActivity.class);
                         break;
                     case Outgoing_Idx:
-                        GlobalState.initWHOutgoingTx();
+                        GlobalState.initWHOutgoingRecord();
                         i = new Intent(appCtx, OutgoingStartActivity.class);
                         break;
                     case Inventory_Idx:

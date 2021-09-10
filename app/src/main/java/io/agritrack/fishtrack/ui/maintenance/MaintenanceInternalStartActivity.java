@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.enums.AssetType;
-import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.RepairRecord;
@@ -141,7 +140,7 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
     }
 
     private RepairRecord updateState() {
-        RepairRecord indoorsRepairRecord = GlobalState.initInternalRepairTx();
+        RepairRecord indoorsRepairRecord = GlobalState.initInternalRepairRecord();
 
         indoorsRepairRecord.site = LocalPreferences.getCurrentSiteName();
 

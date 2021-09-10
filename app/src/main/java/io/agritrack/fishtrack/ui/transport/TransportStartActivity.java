@@ -132,7 +132,7 @@ public class TransportStartActivity extends AppCompatActivity {
     }
 
     private TransportationRecord updateState() {
-        TransportationRecord transportationRecord = GlobalState.initTransportationTx();
+        TransportationRecord transportationRecord = GlobalState.initTransportationRecord();
 
         if (spPackagingSite.getSelectedItem() != null) {
             transportationRecord.packagingSite = spPackagingSite.getSelectedItem().toString();

@@ -1,12 +1,9 @@
 package io.agritrack.fishtrack.ui.login;
 
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,8 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
+
+import com.aseem.versatileprogressbar.ProgBar;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -25,6 +25,14 @@ import java.util.Locale;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.api.APIServiceGenerator;
+import io.agritrack.fishtrack.api.sync.SyncAssetsCallBack;
+import io.agritrack.fishtrack.api.sync.SyncCageDetailsCallBack;
+import io.agritrack.fishtrack.api.sync.SyncClusterSitesCallBack;
+import io.agritrack.fishtrack.api.sync.SyncEmployeesCallBack;
+import io.agritrack.fishtrack.api.sync.SyncHarvestRequestCallBack;
+import io.agritrack.fishtrack.api.sync.SyncSpeciesCallBack;
+import io.agritrack.fishtrack.api.sync.SyncUsersCallBack;
+import io.agritrack.fishtrack.common.LargeString;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.AppUserDTO;
 import io.agritrack.fishtrack.data.dto.CageDetailsDTO;
@@ -33,8 +41,8 @@ import io.agritrack.fishtrack.data.dto.SiteDTO;
 import io.agritrack.fishtrack.data.dto.common.EmployeeDTO;
 import io.agritrack.fishtrack.data.dto.common.FishSpeciesDTO;
 import io.agritrack.fishtrack.data.dto.wh.AssetDTO;
-import io.agritrack.fishtrack.ui.ConfigActivity;
 import io.agritrack.fishtrack.ui.HomeActivity;
+import io.agritrack.fishtrack.ui.config.ConfigActivity;
 import io.agritrack.fishtrack.ui.login.api.AuthApi;
 import io.agritrack.fishtrack.ui.login.api.AuthInfo;
 import io.agritrack.fishtrack.ui.login.api.LoginRQ;
@@ -46,29 +54,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.common.LargeString.render;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Logged_In_User_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Token_Key;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
     private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
+    private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private MobileDB db;
     private ImageButton ibLocale;
-    private AlertDialog dialog;
-    private TextView tvProgressMessage;
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finish();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        finish();
-    }
+    private ProgBar mProgressDialog;
+    private int syncCounter = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +81,9 @@ public class LoginActivity extends AppCompatActivity {
         // bind the credentials controls
         final EditText etUserName = findViewById(R.id.etUserName);
         final EditText etPassword = findViewById(R.id.etPassword);
+
+        mProgressDialog = findViewById(R.id.myProgBar);
+        mProgressDialog.setVisibility(View.GONE);
 
         // show previous loggeding user name
         String previousLoggedInUser = LocalPreferences.getLoggedInUser(null);
@@ -107,16 +107,29 @@ public class LoginActivity extends AppCompatActivity {
 
             loginResult.observe(this, response -> {
                 if (response == null) {
-                    hideSyncProgress();
+                    toggleProgress(Boolean.FALSE, R.string.empty);
                     return;
                 }
                 if (response.getError() != null) {
                     showLoginFailed(response.getError());
-                    hideSyncProgress();
+                    toggleProgress(Boolean.FALSE, R.string.empty);
                 }
                 if (response.getSuccess() != null) {
-                    hideSyncProgress();
+                    toggleProgress(Boolean.FALSE, R.string.empty);
                     updateUiWithUser(response.getSuccess());
+                }
+            });
+
+            syncResult.observe(this, response -> {
+                syncCounter++;
+                if (response == null) {
+                    toggleProgress(Boolean.FALSE, R.string.empty);
+                    return;
+                }
+                if (response != null) {
+                    if (syncCounter > 6) {
+                        toggleProgress(Boolean.FALSE, R.string.empty);
+                    }
                 }
             });
 
@@ -133,6 +146,10 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(i);
                     finish();
                 } else {
+                    // display spinning progress bar
+                    toggleProgress(Boolean.TRUE, R.string.authenticating);
+
+                    // invoke login
                     invokeLogin(username, pin);
                 }
             });
@@ -163,22 +180,10 @@ public class LoginActivity extends AppCompatActivity {
             applyLocale(code);
             LoginActivity.this.recreate();
         });
-
-        //************************************************************************
-        // instantiate an AlertDialog with countdown functionality
-        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View dialogView = inflater.inflate(R.layout.progress_indicator, null);
-        tvProgressMessage = dialogView.findViewById(R.id.progressMsg);
-        tvProgressMessage.setTextSize(24.0f);
-        tvProgressMessage.setText(R.string.syncing);
-        dlgBuilder.setView(dialogView);
-        dlgBuilder.setCancelable(false);
-        dialog = dlgBuilder.create();
     }
 
     private void noCredentialsEnteredAlert() {
-        Toast.makeText(getApplicationContext(), R.string.empty_credentials_alert, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), LargeString.render(R.string.empty_credentials_alert), Toast.LENGTH_LONG).show();
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
@@ -191,39 +196,30 @@ public class LoginActivity extends AppCompatActivity {
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         } else {
+            // display spinning progress bar
+            toggleProgress(Boolean.TRUE, R.string.syncing);
+
+            // invoke sync all.
             invokeSyncAll();
             LocalPreferences.writeValue("shouldSync", Boolean.FALSE);
         }
     }
 
     private void showLoginFailed(String errorString) {
-        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), render(errorString), Toast.LENGTH_SHORT).show();
     }
 
-    private void showAuthProgress() {
-        runOnUiThread(() -> {
-            tvProgressMessage.setText(R.string.authenticating);
-            dialog.show();
-        });
-    }
-
-    private void showSyncProgress() {
-        runOnUiThread(() -> {
-            tvProgressMessage.setText(R.string.syncing);
-            dialog.show();
-        });
-    }
-
-    private void hideSyncProgress() {
-        runOnUiThread(() -> {
-            dialog.dismiss();
-        });
+    // show Progress bar
+    private void toggleProgress(boolean show, @StringRes int info) {
+        if (show) {
+            this.mProgressDialog.setTextMsg(getText(info).toString());
+            this.mProgressDialog.setVisibility(View.VISIBLE);
+        } else {
+            this.mProgressDialog.setVisibility(View.GONE);
+        }
     }
 
     private void invokeLogin(String username, String pin) {
-        // display spinning progress bar
-        showAuthProgress();
-
         try {
             long diffInDays = LocalPreferences.getLoginDiffInDays();
 
@@ -242,57 +238,51 @@ public class LoginActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            hideSyncProgress();
+            toggleProgress(Boolean.FALSE, R.string.empty);
         }
     }
 
     private void invokeSyncAll() {
-        // display spinning progress bar
-        showSyncProgress();
-
         try {
             SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
             String token = LocalPreferences.getToken();
             Long siteId = LocalPreferences.getCurrentSiteId();
             String clusterId = LocalPreferences.getCurrentClusterId();
-            boolean syncResult = true;
 
             // sync sites for current cluster
             Call<List<SiteDTO>> syncSitesAsyncCall = syncService.getSitesByCluster(clusterId, "Bearer " + token);
-            syncSitesAsyncCall.enqueue(new SyncClusterSitesCallBack());
+            syncSitesAsyncCall.enqueue(new SyncClusterSitesCallBack(this.syncResult));
 
             // sync harvestRequests for current Site
             Call<List<HarvestRequestDTO>> syncHarvestResAsyncCall = syncService.getHarvestRequestsBySiteId(siteId, "Bearer " + token);
-            syncHarvestResAsyncCall.enqueue(new SyncHarvestRequestCallBack());
+            syncHarvestResAsyncCall.enqueue(new SyncHarvestRequestCallBack(this.syncResult));
 
             // sync users
             Call<List<AppUserDTO>> syncUsersAsyncCall = syncService.getUsersBySiteId(siteId, "Bearer " + token);
-            syncUsersAsyncCall.enqueue(new SyncUsersCallBack());
+            syncUsersAsyncCall.enqueue(new SyncUsersCallBack(this.syncResult));
 
             // sync employees
             Call<List<EmployeeDTO>> syncEmployeesAsyncCall = syncService.getEmployeesBySiteId(siteId, "Bearer " + token);
-            syncEmployeesAsyncCall.enqueue(new SyncEmployeesCallBack());
+            syncEmployeesAsyncCall.enqueue(new SyncEmployeesCallBack(this.syncResult));
 
             // sync assets  (cages, nets, bins, platforms)
             Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
-            syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack());
+            syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
 
             // sync Cage Details
             Call<List<CageDetailsDTO>> syncCageDetailsAsyncCall = syncService.getCageDetailsBySiteId(siteId, "Bearer " + token);
-            syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack());
+            syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
 
             // sync fish species
             Call<List<FishSpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCode("gr", "Bearer " + token);
-            syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack());
+            syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
 
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-            i.putExtra("syncErrors", !syncResult);
+            i.putExtra("syncErrors", this.syncResult.toString());
             startActivity(i);
 
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            hideSyncProgress();
         }
     }
 
@@ -325,6 +315,18 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
+
     /**
      * Tap 6 times on PoweredByLogo to clear LocalSharedPreferences
      */
@@ -349,6 +351,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // ##########################
     public class AuthLoginCallBack implements Callback<AuthInfo> {
         private final String userName;
 
@@ -387,160 +390,6 @@ public class LoginActivity extends AppCompatActivity {
                     runOnUiThread(() -> loginResult.setValue(new LoginResult("Network Error :: " + error.getLocalizedMessage())));
                 }
             }
-        }
-    }
-
-    public class SyncHarvestRequestCallBack implements Callback<List<HarvestRequestDTO>> {
-        @Override
-        public void onResponse(Call<List<HarvestRequestDTO>> call, Response<List<HarvestRequestDTO>> response) {
-            List<HarvestRequestDTO> harvestReqDTOs = response.body();
-
-            if (harvestReqDTOs != null) {
-                for (HarvestRequestDTO harvestRequestDTO : harvestReqDTOs) {
-                    db.harvestRequestsDAO().insert(HarvestRequestDTO.convert(harvestRequestDTO));
-                }
-            } else {
-                // no Harvest Requests found
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_harvest_requests_found_alert, Toast.LENGTH_LONG).show());
-            }
-        }
-
-        @Override
-        public void onFailure(Call<List<HarvestRequestDTO>> call, Throwable t) {
-            // Probably Network Communication Error
-            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
-        }
-    }
-
-    public class SyncClusterSitesCallBack implements Callback<List<SiteDTO>> {
-        @Override
-        public void onResponse(Call<List<SiteDTO>> call, Response<List<SiteDTO>> response) {
-            List<SiteDTO> siteDTOs = response.body();
-
-            if (siteDTOs != null) {
-                for (SiteDTO siteDTO : siteDTOs) {
-                    db.siteDAO().insert(SiteDTO.convert(siteDTO));
-                }
-            } else {
-                // no Sites found
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_sites_found_alert, Toast.LENGTH_LONG).show());
-            }
-        }
-
-        @Override
-        public void onFailure(Call<List<SiteDTO>> call, Throwable t) {
-            // Probably Network Communication Error
-            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
-        }
-    }
-
-    public class SyncAssetsCallBack implements Callback<List<AssetDTO>> {
-        @Override
-        public void onResponse(Call<List<AssetDTO>> call, Response<List<AssetDTO>> response) {
-            List<AssetDTO> rs = response.body();
-
-            if (rs != null) {
-                for (AssetDTO assetDTO : rs) {
-                    db.assetDAO().insert(AssetDTO.convert(assetDTO));
-                }
-            } else {
-                // no Assets found
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_sites_found_alert, Toast.LENGTH_LONG).show());
-            }
-        }
-
-        @Override
-        public void onFailure(Call<List<AssetDTO>> call, Throwable t) {
-            // Probably Network Communication Error
-            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
-        }
-    }
-
-    public class SyncUsersCallBack implements Callback<List<AppUserDTO>> {
-        @Override
-        public void onResponse(Call<List<AppUserDTO>> call, Response<List<AppUserDTO>> response) {
-            List<AppUserDTO> rs = response.body();
-
-            if (rs != null) {
-                for (AppUserDTO userDTO : rs) {
-                    db.userDAO().insert(AppUserDTO.convert(userDTO));
-                }
-            } else {
-                // no Users found
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_users_found_alert, Toast.LENGTH_LONG).show());
-            }
-        }
-
-        @Override
-        public void onFailure(Call<List<AppUserDTO>> call, Throwable t) {
-            // Probably Network Communication Error
-            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
-        }
-    }
-
-    public class SyncEmployeesCallBack implements Callback<List<EmployeeDTO>> {
-        @Override
-        public void onResponse(Call<List<EmployeeDTO>> call, Response<List<EmployeeDTO>> response) {
-            List<EmployeeDTO> rs = response.body();
-
-            if (rs != null) {
-                for (EmployeeDTO employeeDTO : rs) {
-                    db.employeeDAO().insert(EmployeeDTO.convert(employeeDTO));
-                }
-            } else {
-                // no Employees found
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_employees_found_alert, Toast.LENGTH_LONG).show());
-            }
-        }
-
-        @Override
-        public void onFailure(Call<List<EmployeeDTO>> call, Throwable t) {
-            // Probably Network Communication Error
-            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
-        }
-    }
-
-    public class SyncSpeciesCallBack implements Callback<List<FishSpeciesDTO>> {
-        @Override
-        public void onResponse(Call<List<FishSpeciesDTO>> call, Response<List<FishSpeciesDTO>> response) {
-            List<FishSpeciesDTO> rs = response.body();
-
-            if (rs != null) {
-                for (FishSpeciesDTO speciesDTO : rs) {
-                    db.speciesDAO().insert(FishSpeciesDTO.convert(speciesDTO));
-                }
-            } else {
-                // no Fish Species found
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_species_found_alert, Toast.LENGTH_LONG).show());
-            }
-        }
-
-        @Override
-        public void onFailure(Call<List<FishSpeciesDTO>> call, Throwable t) {
-            // Probably Network Communication Error
-            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
-        }
-    }
-
-    public class SyncCageDetailsCallBack implements Callback<List<CageDetailsDTO>> {
-        @Override
-        public void onResponse(Call<List<CageDetailsDTO>> call, Response<List<CageDetailsDTO>> response) {
-            List<CageDetailsDTO> rs = response.body();
-
-            if (rs != null) {
-                for (CageDetailsDTO detailDTO : rs) {
-                    db.cageDetailsDAO().insert(CageDetailsDTO.convert(detailDTO));
-                }
-            } else {
-                // no Cage Details found for given site.
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.no_cage_details_found_alert, Toast.LENGTH_LONG).show());
-            }
-        }
-
-        @Override
-        public void onFailure(Call<List<CageDetailsDTO>> call, Throwable t) {
-            // Probably Network Communication Error
-            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.synch_failed)));
         }
     }
 }

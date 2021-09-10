@@ -1,9 +1,8 @@
-package io.agritrack.fishtrack.ui;
+package io.agritrack.fishtrack.ui.config;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -36,7 +35,6 @@ import io.agritrack.fishtrack.dialog.ConfirmationDialogCommand;
 import io.agritrack.fishtrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
 import io.agritrack.fishtrack.enums.Coordinates;
-import io.agritrack.fishtrack.ui.config.ClusterListViewAdapter;
 import io.agritrack.fishtrack.ui.login.LoginActivity;
 import io.agritrack.fishtrack.ui.login.api.AuthApi;
 import io.agritrack.fishtrack.ui.login.api.SiteInfo;
@@ -56,18 +54,16 @@ import static io.agritrack.fishtrack.ui.service.LocalPreferences.SelectedSiteNam
 public class ConfigActivity extends AppCompatActivity implements LocationListener {
     private final int REQUEST_FINE_LOCATION = 1234;
     private final MutableLiveData<List<SiteInfo>> siteInfoResults = new MutableLiveData<>();
+    volatile Location currentLocation;
     private MobileDB db;
     private TextView tvLongitude, tvLatitude;
     private ImageView btGPS;
     private ExpandableListView xvClusters;
     private ClusterListViewAdapter clustersAdapter;
-    volatile Location currentLocation;
     private Map<String, List<SiteInfo>> mapOfSitesPerCluster;
     private List<String> clusterIDs;
     private LocationManager locationManager;
-    private SharedPreferences pref;
-    private TimeOutProgressDlg alertDialog;
-    private YesNoDialogFragment confirmSiteSelectionDialog;
+    private TimeOutProgressDlg syncProgressDialog;
     private SiteInfo selectedSite;
 
     @Override
@@ -91,19 +87,18 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
                 selectedSite = mapOfSitesPerCluster.get(clusterKey).get(childPosition);
 
                 // instantiate Site selection confirm dialog
-                Bundle args = new Bundle();
-                args.putSerializable("selectedSite", selectedSite);
-                YesNoDialogFragment confirmSiteSelectionDialog = YesNoDialogFragment.newInstance(args);
+                YesNoDialogFragment confirmSiteSelectionDialog = YesNoDialogFragment.instance();
+                confirmSiteSelectionDialog.args().putSerializable("selectedSite", selectedSite);
                 confirmSiteSelectionDialog.setMessage(getText(R.string.accept_selected_site) + selectedSite.getName());
                 confirmSiteSelectionDialog.onConfirm(new ConfirmationDialogCommand() {
                     @Override
                     public void execute(Bundle args) {
-                        SiteInfo selSite = (SiteInfo) args.getSerializable("selectedSite");
+                        SiteInfo siteInfo = (SiteInfo) args.getSerializable("selectedSite");
 
                         // persist selected Site to local Preferences.
-                        LocalPreferences.writeValue(SelectedSiteName_Key, selSite.getName());
-                        LocalPreferences.writeValue(SelectedSiteId_Key, selSite.getId());
-                        LocalPreferences.writeValue(SelectedCluster_Key, selSite.getLevel2());
+                        LocalPreferences.writeValue(SelectedSiteName_Key, siteInfo.getName());
+                        LocalPreferences.writeValue(SelectedSiteId_Key, siteInfo.getId());
+                        LocalPreferences.writeValue(SelectedCluster_Key, siteInfo.getLevel2());
 
                         // move to Login Screen
                         Intent i = new Intent(getAppContext(), LoginActivity.class);
@@ -127,9 +122,6 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
 
         // get references to localDB instance
         db = MobileDB.getInstance(getAppContext());
-
-        // get SharedPreferences instance
-        pref = getAppContext().getSharedPreferences("agritrack", Context.MODE_PRIVATE);
 
         // request permission to use GPS
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
@@ -158,7 +150,7 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
 
         //************************************************************************
         // instantiate an AlertDialog with countdown functionality
-        alertDialog = new TimeOutProgressDlg(10000l, 500l, this) {
+        syncProgressDialog = new TimeOutProgressDlg(10000l, 500l, this) {
             @Override
             protected void doTasks() {
                 locationManager.removeUpdates(ConfigActivity.this);
@@ -167,7 +159,7 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
                 loadClusterInfo(Boolean.FALSE);
             }
         };
-        alertDialog.setMessage(R.string.acquire_coordinates);
+        syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
         // instantiate Footer controls
         configFooter();
@@ -188,22 +180,22 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
     private void loadClusterInfo(Boolean useGPSoutcome) {
         if (currentLocation == null && useGPSoutcome) {
             // hide progress Dialog
-            alertDialog.hide();
+            syncProgressDialog.hide();
 
             // show error cause message
             Toast.makeText(getAppContext(), "No location returned by GPS!", Toast.LENGTH_LONG).show();
             return;
         } else if (!useGPSoutcome && !LocalPreferences.locationExists()) {
             // hide progress Dialog
-            alertDialog.hide();
+            syncProgressDialog.hide();
 
             // show error cause message
             Toast.makeText(getAppContext(), "No location found locally!", Toast.LENGTH_LONG).show();
             return;
         }
 
-        if (alertDialog != null) {
-            alertDialog.setMessage(R.string.acquire_cluster_info);
+        if (syncProgressDialog != null) {
+            syncProgressDialog.setMessage(R.string.acquire_cluster_info);
         }
 
         AuthApi authService = APIServiceGenerator.createAPI(AuthApi.class);
@@ -217,13 +209,13 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
                 siteInfoResults.setValue(rs);
 
                 // hide progress Dialog
-                alertDialog.hide();
+                syncProgressDialog.hide();
             }
 
             @Override
             public void onFailure(Call<List<SiteInfo>> call, Throwable t) {
                 // hide progress Dialog
-                alertDialog.hide();
+                syncProgressDialog.hide();
 
                 System.out.println(t);
                 Toast.makeText(getAppContext(), "Plz Check WIFI connection..", Toast.LENGTH_LONG).show();
@@ -258,11 +250,11 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
     private void toggleProgress(boolean show, @StringRes int info) {
         if (show) {
             runOnUiThread(() -> {
-                alertDialog.show();
+                syncProgressDialog.show();
             });
         } else {
             runOnUiThread(() -> {
-                alertDialog.hide();
+                syncProgressDialog.hide();
             });
         }
     }

@@ -70,7 +70,7 @@ public class InventoryStartActivity extends AppCompatActivity implements ToggleG
     }
 
     private InventoryWHRecord updateState() {
-        InventoryWHRecord inventoryRecord = GlobalState.initWHInventoryTx();
+        InventoryWHRecord inventoryRecord = GlobalState.initWHInventoryRecord();
 
         inventoryRecord.site = LocalPreferences.getCurrentSiteName();
 

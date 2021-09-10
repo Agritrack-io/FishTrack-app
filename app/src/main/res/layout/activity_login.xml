@@ -203,5 +203,22 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.aseem.versatileprogressbar.ProgBar
+        android:id="@+id/myProgBar"
+        android:layout_width="250dp"
+        android:layout_height="300dp"
+        android:background="@color/white"
+        android:elevation="10dp"
+        app:androidtextColor="@color/colorPrimary"
+        app:barType="@drawable/gear_duo"
+        app:enlarge="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:text="@string/syncing"
+        app:textSize="14sp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +30,7 @@ import java.util.Set;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
+import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.state.GlobalState;
@@ -54,7 +56,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     private ConstraintLayout selectedItem;
 
     // Instantiate a clickListener to be passed to adapterBins.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
+    // It will be used to point the selectedBarcode variable to the selected item barcode value.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -113,10 +115,26 @@ public class FishingBinsActivity extends AppCompatActivity {
         ivDeleteBin.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if (selectedBarcode != null) {
-                adapterBins.removeItem(selectedBarcode);
-                adapterBins.notifyDataSetChanged();
-                tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+            if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
+                // instantiate Site selection confirm dialog
+                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
+                confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + selectedBarcode);
+
+                confirmSiteSelectionDlg.onConfirm(bundle -> {
+                    String barcode = bundle.getString("selectedBarcode");
+                    if (barcode != null) {
+                        adapterBins.removeItem(barcode);
+                        adapterBins.notifyDataSetChanged();
+                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+                    }
+                });
+
+                FragmentManager fm = getSupportFragmentManager();
+                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            } else {
+                // <delete> Button was pressed without selecting a Bin first.
+                Toast.makeText(getApplicationContext(), "Plz select a Bin to delete!!", Toast.LENGTH_LONG).show();
             }
         });
 
