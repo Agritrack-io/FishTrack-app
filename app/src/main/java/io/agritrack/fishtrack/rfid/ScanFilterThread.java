@@ -6,8 +6,11 @@ import android.os.Message;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.android.hdhe.uhf.readerInterface.TagModel;
+import com.google.android.gms.common.util.Strings;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import cn.pda.serialport.Tools;
 
@@ -47,13 +50,20 @@ public class ScanFilterThread extends Thread {
         while (scanInProgress) {
             if (uhfReader != null) {
                 try {
-                    uhfReader.unSelect();
+                    uhfReader.unSelectEPC();
+                    uhfReader.setOutputPower(23);
                     uhfReader.selectEPC(Tools.HexString2Bytes(filterEPC));
                     tagList = uhfReader.inventoryRealTime();
 
                     if (tagList != null && !tagList.isEmpty()) {
-                        TagModel tag = tagList.get(0);
-                        if (tag != null) {
+                        Stream<TagModel> filteredTags = tagList.stream();
+                        if(!Strings.isEmptyOrWhitespace(filterEPC)) {
+                            filteredTags = filteredTags.filter(f -> Tools.Bytes2HexString(f.getmEpcBytes(), f.getmEpcBytes().length).indexOf(filterEPC) > 0);
+                        }
+                        Optional<TagModel> foundTag = filteredTags.sorted((y, x) -> Byte.compare(x.getmRssi(), y.getmRssi())).findFirst();
+
+                        if (foundTag.isPresent()) {
+                            TagModel tag = foundTag.get();
                             final String epcStr = Tools.Bytes2HexString(tag.getmEpcBytes(), tag.getmEpcBytes().length);
                             final byte rssi = tag.getmRssi();
                             Message msg = new Message();

@@ -19,8 +19,6 @@ public class LocalPreferences {
     public static final String Longitude_Key = "lon";
     public static final String Latitude_Key = "lat";
     public static final String LoginTime_Key = "loginTime";
-    public static final String ShouldLogin_Key = "shouldLogin";
-    public static final String ShouldSync_Key = "shouldSync";
     public static final String SelectedSite_Key = "selectedSite";
     public static final String SelectedSiteName_Key = "selectedSiteName";
     public static final String SelectedSiteId_Key = "selectedSiteId";
@@ -32,21 +30,26 @@ public class LocalPreferences {
     private static Context mContext;
     private static SharedPreferences pref;
 
-
-    private LocalPreferences(Context context) {
-        // hold the application context
-        mContext = context;
-
-        // hold the shared Preferences instance
-        pref = getAppContext().getSharedPreferences(Pref_Name, Context.MODE_PRIVATE);
-    }
-
-    public static LocalPreferences getInstance() {
-        if (mInstance == null) {
-            mInstance = new LocalPreferences(getAppContext());
+    static {
+        if (pref == null) {
+            pref = getAppContext().getSharedPreferences(Pref_Name, Context.MODE_PRIVATE);
         }
-        return mInstance;
     }
+
+//    private LocalPreferences(Context context) {
+//        // hold the application context
+//        mContext = context;
+//
+//        // hold the shared Preferences instance
+//        pref = getAppContext().getSharedPreferences(Pref_Name, Context.MODE_PRIVATE);
+//    }
+//
+//    public static LocalPreferences getInstance() {
+//        if (mInstance == null) {
+//            mInstance = new LocalPreferences(getAppContext());
+//        }
+//        return mInstance;
+//    }
 
     public static String Today() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
@@ -55,35 +58,35 @@ public class LocalPreferences {
     }
 
     public static String getCurrentSiteName() {
-        return getInstance().pref.getString(SelectedSiteName_Key, "N/A");
+        return pref.getString(SelectedSiteName_Key, "N/A");
     }
 
     public static Long getCurrentSiteId() {
-        return getInstance().pref.getLong(SelectedSiteId_Key, -1l);
+        return pref.getLong(SelectedSiteId_Key, -1l);
     }
 
     public static String getCurrentClusterId() {
-        return getInstance().pref.getString(SelectedCluster_Key, null);
+        return pref.getString(SelectedCluster_Key, null);
     }
 
     public static String getLocale() {
-        return getInstance().pref.getString(Locale_Key, "en");
+        return pref.getString(Locale_Key, "en");
     }
 
     public static String getToken() {
-        return getInstance().pref.getString(Token_Key, null);
+        return pref.getString(Token_Key, null);
     }
 
     public static String getLongitude() {
-        return getInstance().pref.getString(Longitude_Key, null);
+        return pref.getString(Longitude_Key, null);
     }
 
     public static String getLatitude() {
-        return getInstance().pref.getString(Latitude_Key, null);
+        return pref.getString(Latitude_Key, null);
     }
 
     public static Long getLoginTime() {
-        return getInstance().pref.getLong(LoginTime_Key, Long.MIN_VALUE);
+        return pref.getLong(LoginTime_Key, Long.MIN_VALUE);
     }
 
     public static Boolean locationExists() {
@@ -95,17 +98,9 @@ public class LocalPreferences {
         writeValue(LoginTime_Key, System.currentTimeMillis() / 1000L);
     }
 
-    public static Boolean shouldLogin(Boolean defVal) {
-        return getInstance().pref.getBoolean(ShouldLogin_Key, defVal);
-    }
-
-    public static Boolean shouldSync(Boolean defVal) {
-        return getInstance().pref.getBoolean(ShouldSync_Key, defVal);
-    }
-
     public static SiteDTO getSelectedSite() {
         Gson gson = new Gson();
-        String siteJson = getInstance().pref.getString(SelectedSite_Key, null);
+        String siteJson = pref.getString(SelectedSite_Key, null);
         if (siteJson != null) {
             return gson.fromJson(siteJson, SiteDTO.class);
         }
@@ -124,14 +119,14 @@ public class LocalPreferences {
     }
 
     public static String getLoggedInUser(String defVal) {
-        return getInstance().pref.getString(Logged_In_User_Key, defVal);
+        return pref.getString(Logged_In_User_Key, defVal);
     }
 
-    public static Long getLoginDiffInDays() {
+    public static Long getLoginDiffInHours() {
         long loginUnixTime = getLoginTime();
         long unixTime = System.currentTimeMillis() / 1000L;
 
-        return Math.abs(unixTime - loginUnixTime) / 3600L / 24L;
+        return Math.abs(unixTime - loginUnixTime) / 3600L;
     }
 
     public static boolean writeValue(String key, Object value) {
@@ -154,6 +149,13 @@ public class LocalPreferences {
         }
 
         return false;
+    }
+
+    public static void resetLogin() {
+        SharedPreferences.Editor editor = pref.edit();
+        //editor.remove(Token_Key);
+        editor.remove(LoginTime_Key);
+        editor.apply();
     }
 
     public static boolean Reset() {

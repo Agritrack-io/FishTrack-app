@@ -32,7 +32,6 @@ import io.agritrack.fishtrack.api.sync.SyncEmployeesCallBack;
 import io.agritrack.fishtrack.api.sync.SyncHarvestRequestCallBack;
 import io.agritrack.fishtrack.api.sync.SyncSpeciesCallBack;
 import io.agritrack.fishtrack.api.sync.SyncUsersCallBack;
-import io.agritrack.fishtrack.common.LargeString;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.AppUserDTO;
 import io.agritrack.fishtrack.data.dto.CageDetailsDTO;
@@ -92,13 +91,10 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // check last login timestamp, to determine whether synch is required.
-        long diffHours = LocalPreferences.getLoginDiffInDays();
-
-        boolean shouldLogin = LocalPreferences.shouldLogin(Boolean.TRUE);
-        boolean shouldSync = LocalPreferences.shouldSync(Boolean.TRUE);
+        long diffHours = LocalPreferences.getLoginDiffInHours();
 
         // if last login occurred < 2 hours ?? ago, no further login is required.
-        if (diffHours < 2 && !shouldLogin && !shouldSync) {
+        if (diffHours < 2) {
             Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         } else {
@@ -183,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void noCredentialsEnteredAlert() {
-        Toast.makeText(getApplicationContext(), LargeString.render(R.string.empty_credentials_alert), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), render(R.string.empty_credentials_alert), Toast.LENGTH_LONG).show();
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
@@ -201,7 +197,6 @@ public class LoginActivity extends AppCompatActivity {
 
             // invoke sync all.
             invokeSyncAll();
-            LocalPreferences.writeValue("shouldSync", Boolean.FALSE);
         }
     }
 
@@ -221,13 +216,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private void invokeLogin(String username, String pin) {
         try {
-            long diffInDays = LocalPreferences.getLoginDiffInDays();
+            long hoursSinceLastLogin = LocalPreferences.getLoginDiffInHours();
 
             // query local db for previous User authentications...
             AuthenticationService userService = new AuthenticationService();
-            boolean userIsAlreadyAuthenticated = userService.authenticateUser(db, username, pin);
+            boolean authenticatedUser = userService.authenticateUser(db, username, pin);
 
-            if (diffInDays == 0 && userIsAlreadyAuthenticated) {
+            if (hoursSinceLastLogin <= 2 && authenticatedUser) {
                 LocalPreferences.updateLoginTime();
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(username, LocalPreferences.getToken()))));
             } else {
@@ -365,7 +360,6 @@ public class LoginActivity extends AppCompatActivity {
 
             if (rs != null) {
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(this.userName, rs.getToken()))));
-                LocalPreferences.writeValue("shouldSync", true);
                 LocalPreferences.updateLoginTime();
             } else {
                 // Probably Invalid Credentials
@@ -376,7 +370,6 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onFailure(Call<AuthInfo> call, Throwable error) {
             // Probably Network Communication Error
-            //runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.login_failed)));
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.error_connection_timeout)));
             } else if (error instanceof IOException) {

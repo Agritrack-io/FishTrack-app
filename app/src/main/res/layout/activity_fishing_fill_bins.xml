@@ -72,7 +72,7 @@
 
 
         <Button
-            android:id="@+id/btnScanBin2"
+            android:id="@+id/btnScanCurrentBin"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_marginStart="8dp"
@@ -98,7 +98,7 @@
             android:textColor="@color/black"
             android:textSize="@dimen/text_view_font_size"
             android:textStyle="normal"
-            app:layout_constraintEnd_toStartOf="@+id/btnScanBin2"
+            app:layout_constraintEnd_toStartOf="@+id/btnScanCurrentBin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -111,7 +111,7 @@
             app:layout_constraintBottom_toTopOf="@+id/fishSummaryLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnScanBin2">
+            app:layout_constraintTop_toBottomOf="@id/btnScanCurrentBin">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

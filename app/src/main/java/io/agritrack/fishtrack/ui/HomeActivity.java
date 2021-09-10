@@ -169,6 +169,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void configHeader() {
         ImageButton ivBack = findViewById(R.id.ivBackToLogin);
         ivBack.setOnClickListener(view -> {
+            LocalPreferences.resetLogin();
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(i);
         });
@@ -180,7 +181,6 @@ public class HomeActivity extends AppCompatActivity {
             String token = LocalPreferences.getToken();
             Long siteId = LocalPreferences.getCurrentSiteId();
             String clusterId = LocalPreferences.getCurrentClusterId();
-            boolean syncResult = true;
 
             // sync sites for current cluster
             Call<List<SiteDTO>> syncSitesAsyncCall = syncService.getSitesByCluster(clusterId, "Bearer " + token);

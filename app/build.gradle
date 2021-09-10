@@ -118,7 +118,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     // RFID libs
-    implementation files('libs/uhfcom13_eu_v15.jar')
+    implementation files('libs/uhfcom13_v20.jar')
     implementation files('libs/SerialPort.jar')
     implementation files('libs/CAENRFIDLibrary-release.aar')
 
