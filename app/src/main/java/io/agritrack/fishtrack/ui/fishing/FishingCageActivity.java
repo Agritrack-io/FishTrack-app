@@ -29,6 +29,7 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class FishingCageActivity extends AppCompatActivity {
 
@@ -111,7 +112,7 @@ public class FishingCageActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
             } else {
                 Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
                 startActivity(i);

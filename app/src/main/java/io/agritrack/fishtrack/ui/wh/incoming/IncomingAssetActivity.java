@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +35,7 @@ import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
+import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
 import io.agritrack.fishtrack.enums.WarehouseTxState;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
@@ -48,6 +50,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class IncomingAssetActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -128,9 +131,26 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
         ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if (selectedBarcode != null) {
-                adapterIncomingItems.removeItem(selectedBarcode);
-                adapterIncomingItems.notifyDataSetChanged();
+            if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
+                // instantiate Site selection confirm dialog
+                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
+                confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + selectedBarcode);
+
+                confirmSiteSelectionDlg.onConfirm(bundle -> {
+                    String barcode = bundle.getString("selectedBarcode");
+                    if (barcode != null) {
+                        adapterIncomingItems.removeItem(barcode);
+                        adapterIncomingItems.notifyDataSetChanged();
+                        selectedBarcode = null;
+                    }
+                });
+
+                FragmentManager fm = getSupportFragmentManager();
+                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            } else {
+                // <delete> Button was pressed without selecting a Bin first.
+                Toast.makeText(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -158,7 +178,7 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
             } else {
                 Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
                 startActivity(i);
@@ -323,26 +343,26 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
             AssetTxDTO rs = response.body();
 
             if (rs != null) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Tx successfully updated!!!", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG).show());
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_AssetTx_tx_update_failure, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_AssetTx_tx_update_failure), Toast.LENGTH_LONG).show());
             }
         }
 
         @Override
         public void onFailure(Call<AssetTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_connection_timeout, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG).show());
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_timeout, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG).show());
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), R.string.error_cancelled_call, Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG).show());
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Network Error :: " + error.getLocalizedMessage(), Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG).show());
                 }
             }
         }

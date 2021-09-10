@@ -32,6 +32,8 @@ import io.agritrack.fishtrack.state.RepairRecord;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
+import static io.agritrack.fishtrack.common.LargeString.render;
+
 public class MaintenanceInternalStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private Spinner spAssetType;
@@ -121,7 +123,7 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
             } else {
                 Intent i = new Intent(getApplicationContext(), MaintenanceInternalTeamActivity.class);
                 startActivity(i);

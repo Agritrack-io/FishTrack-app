@@ -2,6 +2,7 @@ package io.agritrack.fishtrack.ui.wh.inventory;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ import java.util.Set;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.common.Filters;
+import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.InventoryWHRecord;
@@ -35,6 +37,8 @@ import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
+
+import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class InventoryConsumableActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -113,10 +117,27 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
         ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if(selectedBarcode != null){
-                adapterInventoryItems.removeItem(selectedBarcode);
-                adapterInventoryItems.notifyDataSetChanged();
-                tvInventoryItemsCount.setText(String.valueOf(adapterInventoryItems.getItemCount()));
+            if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
+                // instantiate Site selection confirm dialog
+                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
+                confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + selectedBarcode);
+
+                confirmSiteSelectionDlg.onConfirm(bundle -> {
+                    String barcode = bundle.getString("selectedBarcode");
+                    if (barcode != null) {
+                        adapterInventoryItems.removeItem(barcode);
+                        adapterInventoryItems.notifyDataSetChanged();
+                        tvInventoryItemsCount.setText(String.valueOf(adapterInventoryItems.getItemCount()));
+                        selectedBarcode = null;
+                    }
+                });
+
+                FragmentManager fm = getSupportFragmentManager();
+                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            } else {
+                // <delete> Button was pressed without selecting a Bin first.
+                Toast.makeText(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -153,7 +174,7 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
 
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
             } else {
                 Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
                 startActivity(i);

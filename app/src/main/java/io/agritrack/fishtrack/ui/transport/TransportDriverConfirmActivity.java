@@ -16,6 +16,8 @@ import io.agritrack.fishtrack.state.TransportationRecord;
 import io.agritrack.fishtrack.ui.custom.CaptureSignatureView;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
+import static io.agritrack.fishtrack.common.LargeString.render;
+
 public class TransportDriverConfirmActivity extends AppCompatActivity {
 
     private TextView tvSitePackaging, tvCompany, tvNumberOfBinsCount, tvDriverName, tvLicensePlate, tvSecurityClipNumber;
@@ -45,7 +47,7 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
             } else {
                 Intent i = new Intent(getApplicationContext(), TransportSupervisorConfirmActivity.class);
                 startActivity(i);

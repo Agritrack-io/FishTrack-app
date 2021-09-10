@@ -29,6 +29,7 @@ import io.agritrack.fishtrack.ui.bo.GenericListModel;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class HarvestRequestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private MobileDB db;
@@ -81,7 +82,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         ivNext.setOnClickListener(view -> {
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
             } else {
                 // NO open FishingTx exists, instantiate a new.
                 FishingTransaction openTx = new FishingTransaction();

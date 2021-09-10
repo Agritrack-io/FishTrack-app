@@ -18,6 +18,8 @@ import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
+import static io.agritrack.fishtrack.common.LargeString.render;
+
 public class InventoryStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private TextView tvSelectedItemType;
@@ -45,7 +47,7 @@ public class InventoryStartActivity extends AppCompatActivity implements ToggleG
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), "Invalid inputs : " + v, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
             } else if (selectedInventoryItemType == Constants.ftAsset){
                 Intent i = new Intent(getApplicationContext(), InventoryAssetActivity.class);
                 startActivity(i);
