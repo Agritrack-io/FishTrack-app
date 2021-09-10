@@ -71,7 +71,7 @@
         <RelativeLayout
             android:id="@+id/incomingALayout"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="120dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
@@ -89,28 +89,49 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <Spinner
-                    android:id="@+id/spAssetType"
-                    style="@style/spinner_style"
+                <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                    android:id="@+id/tgIncomingItemType"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="70dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
-                    android:dropDownWidth="match_parent"
-                    android:focusableInTouchMode="true"
-                    android:requiresFadingEdge="horizontal"
-                    android:spinnerMode="dropdown"
-                    android:textAlignment="textStart"
-                    android:visibility="visible"
+                    android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.496"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
+                    app:singleSelection="true">
 
+                    <ToggleButton
+                        android:id="@+id/tbAsset"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/tooglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="ASSET"
+                        android:textOn="ASSET"
+                        android:textSize="@dimen/text_view_font_size_medium" />
+
+                    <ToggleButton
+                        android:id="@+id/tbConsumable"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/tooglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="CONSUMABLE"
+                        android:textOn="CONSUMABLE"
+                        android:textSize="@dimen/text_view_font_size_medium" />
+
+                </io.agritrack.fishtrack.ui.custom.ToggleGroup>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -121,7 +142,7 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_green"
                 android:paddingHorizontal="8dp"
-                android:text="@string/choose_asset_type"
+                android:text="@string/choose_inventory_type"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 
@@ -166,7 +187,7 @@
 
                     <ToggleButton
                         android:id="@+id/tbAvramar"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
@@ -179,7 +200,7 @@
 
                     <ToggleButton
                         android:id="@+id/tbSupplier"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"

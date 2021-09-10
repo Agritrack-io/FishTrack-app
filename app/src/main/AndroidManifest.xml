@@ -21,9 +21,19 @@
         android:supportsRtl="true"
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.wh.inventory.InventoryConsumableActivity"></activity>
-        <activity android:name=".ui.wh.inventory.InventoryStartActivity" />
-        <activity android:name=".ui.fishing.HarvestRequestsActivity" />
+        <activity android:name=".ui.wh.outgoing.OutgoingConsumableActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".ui.wh.incoming.IncomingConsumableActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.wh.inventory.InventoryConsumableActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.wh.inventory.InventoryStartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.fishing.HarvestRequestsActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.maintenance.MaintenanceExternalConfirmActivity"
             android:screenOrientation="portrait" />
@@ -65,13 +75,13 @@
             android:name=".ui.WhMenuActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.wh.outgoing.OutgoingProcessActivity"
+            android:name=".ui.wh.outgoing.OutgoingAssetActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.wh.outgoing.OutgoingStartActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.wh.incoming.IncomingProcessActivity"
+            android:name=".ui.wh.incoming.IncomingAssetActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.wh.incoming.IncomingStartActivity"

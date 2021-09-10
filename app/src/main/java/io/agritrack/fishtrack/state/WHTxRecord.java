@@ -7,6 +7,8 @@ import io.agritrack.fishtrack.enums.WarehouseTxState;
 
 public class WHTxRecord {
     public AssetType assetType;
+    public String incomingItemType;
+    public String outgoingItemType;
     public String from = null;
     public String to = null;
 

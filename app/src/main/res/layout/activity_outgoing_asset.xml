@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
-    tools:context=".ui.wh.incoming.IncomingProcessActivity">
+    tools:context=".ui.wh.outgoing.OutgoingAssetActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -31,7 +31,7 @@
             android:layout_marginBottom="32dp"
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
-            android:text="@string/title_incoming"
+            android:text="@string/title_outgoing"
             android:textColor="@color/yellow"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -41,7 +41,7 @@
             tools:ignore="MissingPrefix" />
 
         <TextView
-            android:id="@+id/tvHeaderIncomingProcess"
+            android:id="@+id/tvHeaderOutgoingProcess"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -69,14 +69,14 @@
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
         <RelativeLayout
-            android:id="@+id/incomingProcessALayout"
+            android:id="@+id/outgoingAssetALayout"
             android:layout_width="0dp"
-            android:layout_height="120dp"
+            android:layout_height="40dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toTopOf="@+id/incomingProcessBLayout"
+            app:layout_constraintBottom_toTopOf="@+id/outgoingAssetBLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -84,102 +84,170 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="12dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:padding="1dp">
 
                 <TextView
                     android:id="@+id/tvFrom"
-                    android:layout_width="70dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:inputType="text"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/details_from"
                     android:textColor="@color/agri_blue"
                     android:textIsSelectable="false"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/tvTo"
-                    app:layout_constraintEnd_toStartOf="@+id/tvIncomingProcessFrom"
+                    android:textSize="@dimen/title_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tvOutgoingProcessFrom"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/tvIncomingProcessFrom"
-                    android:layout_width="0dp"
+                    android:id="@+id/tvOutgoingProcessFrom"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:background="@drawable/border_bottom"
-                    android:gravity="center"
-                    android:inputType="text"
-                    android:textAlignment="center"
+                    android:textAlignment="viewStart"
                     android:textColor="@color/black"
                     android:textIsSelectable="false"
-                    android:textSize="@dimen/text_view_font_size"
+                    android:textSize="@dimen/text_view_font_size_medium_to_normal"
                     android:textStyle="normal"
-                    app:layout_constraintBottom_toTopOf="@+id/tvIncomingProcessTo"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvFrom"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tvTo"
-                    android:layout_width="70dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="6dp"
                     android:layout_marginBottom="8dp"
-                    android:inputType="text"
                     android:text="@string/details_to"
                     android:textColor="@color/agri_blue"
                     android:textIsSelectable="false"
-                    android:textSize="@dimen/text_view_font_size"
+                    android:textSize="@dimen/title_font_size"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/tvIncomingProcessTo"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvFrom" />
+                    app:layout_constraintEnd_toStartOf="@+id/tvOutgoingProcessTo"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/tvIncomingProcessTo"
-                    android:layout_width="0dp"
+                    android:id="@+id/tvOutgoingProcessTo"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/border_bottom"
-                    android:gravity="center"
-                    android:inputType="text"
-                    android:textAlignment="center"
+                    android:textAlignment="viewEnd"
                     android:textColor="@color/black"
                     android:textIsSelectable="false"
-                    android:textSize="@dimen/text_view_font_size"
+                    android:textSize="@dimen/text_view_font_size_medium_to_normal"
                     android:textStyle="normal"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tvTo"
-                    app:layout_constraintTop_toBottomOf="@+id/tvIncomingProcessFrom" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="16dp"
-                android:background="@color/agri_green"
-                android:paddingHorizontal="8dp"
-                android:text="@string/incoming_details"
-                android:textColor="@color/label_blue"
-                android:textSize="18sp" />
 
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/incomingProcessBLayout"
+            android:id="@+id/outgoingAssetBLayout"
+            android:layout_width="0dp"
+            android:layout_height="53dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/outgoingAssetCLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/outgoingAssetALayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="horizontal"
+                android:padding="1dp">
+
+                <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                    android:id="@+id/tgChooseAssetType"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ToggleButton
+                        android:id="@+id/tbCage"
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/tooglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="CAGE"
+                        android:textOn="CAGE"
+                        android:textSize="@dimen/text_view_font_size_medium" />
+
+                    <ToggleButton
+                        android:id="@+id/tbNet"
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/tooglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="NET"
+                        android:textOn="NET"
+                        android:textSize="@dimen/text_view_font_size_medium" />
+
+                    <ToggleButton
+                        android:id="@+id/tbBin"
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/tooglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="BIN"
+                        android:textOn="BIN"
+                        android:textSize="@dimen/text_view_font_size_medium" />
+
+                    <ToggleButton
+                        android:id="@+id/tbPlatform"
+                        android:layout_width="60dp"
+                        android:layout_height="34dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/tooglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="PLATFORM"
+                        android:textOn="PLATFORM"
+                        android:textSize="@dimen/text_view_font_size_medium" />
+                </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/outgoingAssetCLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="4dp"
@@ -189,135 +257,71 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/incomingProcessALayout">
+            app:layout_constraintTop_toBottomOf="@+id/outgoingAssetBLayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="12dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <TextView
-                    android:id="@+id/tvSelectBins"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center_horizontal"
-                    android:text="@string/incoming_items"
-                    android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/rvIncomingItems"
-                    app:layout_constraintEnd_toStartOf="@+id/ivDeleteItem"
-                    app:layout_constraintStart_toEndOf="@+id/ivAddItem"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <Button
                     android:id="@+id/btnScanAsset"
-                    android:layout_width="0dp"
-                    android:layout_height="78dp"
-                    android:layout_marginStart="50dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="50dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp"
                     android:background="@drawable/button_press_effect"
                     android:text="@string/scan_assets"
                     android:textColor="@color/yellow"
                     android:textSize="@dimen/button_font_size"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvNumberBins"
+                    app:layout_constraintTop_toBottomOf="@+id/rvOutgoingItems"
                     tools:layout_conversion_absoluteHeight="120dp"
                     tools:layout_conversion_absoluteWidth="0dp" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvIncomingItems"
+                    android:id="@+id/rvOutgoingItems"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
                     android:background="@drawable/bg_rounded_input_spinner"
                     android:padding="5dp"
                     android:paddingStart="10dp"
-                    app:layout_constraintBottom_toTopOf="@+id/tvNumberBins"
+                    app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSelectBins">
+                    app:layout_constraintTop_toTopOf="parent">
 
                 </androidx.recyclerview.widget.RecyclerView>
-
-                <TextView
-                    android:id="@+id/tvNumberBins"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center_horizontal"
-                    android:text="@string/number_of_items"
-                    android:textColor="@color/label_blue"
-                    android:textSize="24sp"
-                    app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
-                    app:layout_constraintEnd_toStartOf="@+id/tvItemsCount"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rvIncomingItems" />
-
-                <TextView
-                    android:id="@+id/tvItemsCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/border_bottom"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textIsSelectable="false"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/tvNumberBins"
-                    app:layout_constraintTop_toBottomOf="@+id/rvIncomingItems" />
 
                 <ImageButton
                     android:id="@+id/ivDeleteItem"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="8dp"
                     android:background="@color/transparent"
-                    app:layout_constraintBottom_toTopOf="@+id/rvIncomingItems"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tvSelectBins"
+                    app:layout_constraintTop_toBottomOf="@+id/rvOutgoingItems"
                     app:srcCompat="@drawable/ic_delete" />
 
                 <ImageButton
                     android:id="@+id/ivAddItem"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="8dp"
                     android:background="@color/transparent"
-                    app:layout_constraintBottom_toTopOf="@+id/rvIncomingItems"
-                    app:layout_constraintEnd_toStartOf="@+id/tvSelectBins"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rvOutgoingItems"
                     app:srcCompat="@drawable/ic_add_stock_opname" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="16dp"
-                android:background="@color/agri_green"
-                android:paddingHorizontal="8dp"
-                android:text="@string/incoming"
-                android:textColor="@color/label_blue"
-                android:textSize="18sp" />
 
         </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -342,12 +346,12 @@
             android:scaleY="0.7"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
-            app:layout_constraintStart_toEndOf="@+id/ivBackToStartIncoming"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToStartOutgoing"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
         <ImageView
-            android:id="@+id/ivBackToStartIncoming"
+            android:id="@+id/ivBackToStartOutgoing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

@@ -29,6 +29,8 @@ import java.util.Set;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.api.APIServiceGenerator;
+import io.agritrack.fishtrack.common.Constants;
+import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
@@ -38,6 +40,7 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -46,7 +49,13 @@ import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 
-public class OutgoingProcessActivity extends AppCompatActivity {
+public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+
+    private ToggleGroup tgChooseAssetType;
+    private String selectedAssetType;
+    private String activeFilter = null;
+    private  int selectedToggleButton = -1;
+
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private MobileDB db;
@@ -56,7 +65,7 @@ public class OutgoingProcessActivity extends AppCompatActivity {
 
     private TemplateRecyclerAdapter adapterOutgoingItems;
 
-    private TextView tvOutgoingProcessFrom, tvOutgoingProcessTo, tvOutAssetsCount;
+    private TextView tvOutgoingProcessFrom, tvOutgoingProcessTo;
     private RecyclerView rvOutgoingAssets;
 
     private ImageButton ivAddItem, ivDeleteItem;
@@ -85,7 +94,7 @@ public class OutgoingProcessActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_outgoing_process);
+        setContentView(R.layout.activity_outgoing_asset);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderOutgoingProcess);
@@ -106,7 +115,6 @@ public class OutgoingProcessActivity extends AppCompatActivity {
             if (response == null) {
                 return;
             }
-            tvOutAssetsCount.setText(String.valueOf(response.size()));
             adapterOutgoingItems.setValues(new ArrayList<>(response));
             adapterOutgoingItems.notifyDataSetChanged();
         });
@@ -123,7 +131,6 @@ public class OutgoingProcessActivity extends AppCompatActivity {
             if (selectedBarcode != null) {
                 adapterOutgoingItems.removeItem(selectedBarcode);
                 adapterOutgoingItems.notifyDataSetChanged();
-                tvOutAssetsCount.setText(String.valueOf(adapterOutgoingItems.getItemCount()));
             }
         });
 
@@ -171,12 +178,14 @@ public class OutgoingProcessActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
-        rvOutgoingAssets = findViewById(R.id.rvOutgoingAssets);
+        tgChooseAssetType = findViewById(R.id.tgChooseAssetType);
+        rvOutgoingAssets = findViewById(R.id.rvOutgoingItems);
         tvOutgoingProcessFrom = findViewById(R.id.tvOutgoingProcessFrom);
         tvOutgoingProcessTo = findViewById(R.id.tvOutgoingProcessTo);
-        tvOutAssetsCount = findViewById(R.id.tvOutAssetsCount);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
         ivAddItem = findViewById(R.id.ivAddItem);
+
+        tgChooseAssetType.setOnCheckedChangeListener(this);
     }
 
     private void updateState() {
@@ -227,7 +236,6 @@ public class OutgoingProcessActivity extends AppCompatActivity {
         if (outgoingWHRecord.items != null) {
             adapterOutgoingItems.setValues(outgoingWHRecord.items);
             adapterOutgoingItems.notifyDataSetChanged();
-            tvOutAssetsCount.setText(String.valueOf(outgoingWHRecord.items.size()));
         }
     }
 
@@ -249,6 +257,7 @@ public class OutgoingProcessActivity extends AppCompatActivity {
             processingBinsThread.setScanInProgress(scanning);
             processingBinsThread.setUhfReader(uhfReader);
             processingBinsThread.setScanResult(scanResult);
+            processingBinsThread.setFilter(activeFilter);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
@@ -274,6 +283,39 @@ public class OutgoingProcessActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onCheckedChanged(ToggleGroup group, int checkedId) {
+
+        if( selectedToggleButton == checkedId){
+            group.clearCheck();
+            return;
+        }
+        selectedToggleButton = checkedId;
+        switch(checkedId){
+            case R.id.tbCage:
+                selectedAssetType = Constants.ftCage;
+                activeFilter = Filters.RFID_CAGE;
+                break;
+            case R.id.tbNet:
+                selectedAssetType = Constants.ftNet;
+                activeFilter = Filters.RFID_NET;
+                break;
+            case R.id.tbBin:
+                selectedAssetType = Constants.ftBin;
+                activeFilter = Filters.RFID_BIN;
+                break;
+            case R.id.tbPlatform:
+                selectedAssetType = Constants.ftPlatform;
+                activeFilter = Filters.RFID_PLATFORM;
+                break;
+            default:
+                selectedAssetType = null;
+                activeFilter = null;
+                selectedToggleButton = -1;
+                break;
+        }
     }
 
     public class SyncTxCallBack implements Callback<AssetTxDTO> {

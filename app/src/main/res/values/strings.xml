@@ -192,6 +192,7 @@
 
     <string name="choose_site">Choose site</string>
     <string name="select_asset_type">Asset type</string>
+    <string name="select_consumable_type">Consumable type</string>
     <string name="acquire_coordinates">Please wait, acquiring GPS coordinates...</string>
     <string name="sync_sites">Please wait, syncing sites...</string>
 
