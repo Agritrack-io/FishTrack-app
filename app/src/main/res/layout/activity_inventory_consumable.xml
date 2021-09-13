@@ -199,7 +199,7 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/btnScanAsset"
+                android:id="@+id/btnScanConsumable"
                 android:layout_width="0dp"
                 android:layout_height="78dp"
                 android:layout_marginStart="50dp"
@@ -245,7 +245,7 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
                 android:text="@string/number_of_items"
                 android:textColor="@color/label_blue"
                 android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
+                app:layout_constraintBottom_toTopOf="@+id/btnScanConsumable"
                 app:layout_constraintEnd_toStartOf="@+id/tvInventoryItemsCount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />

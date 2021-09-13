@@ -1,12 +1,16 @@
 package io.agritrack.fishtrack.ui.fishing;
 
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
@@ -31,9 +35,12 @@ import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
 import static io.agritrack.fishtrack.state.GlobalState.recFishing;
 
-public class FishingConfirmActivity extends AppCompatActivity {
+public class FishingConfirmActivity extends AppCompatActivity implements LocationListener {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
+    private LocationManager locationManager;
+    private volatile Location location;
+    private final int REQUEST_FINE_LOCATION = 1234;
     private TextView tvTotalQuantityCount, tvReqQuantityCount, tvNumberOfBinsCount, tvNameCage, tvTypeOfFishConfirm, tvUsername;
 
     @Override
@@ -182,5 +189,21 @@ public class FishingConfirmActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+
+    // GPS Location-Related functionality
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        this.location = location;
+        locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
     }
 }

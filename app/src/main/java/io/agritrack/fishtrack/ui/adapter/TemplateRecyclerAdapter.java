@@ -17,20 +17,17 @@ import io.agritrack.fishtrack.R;
 public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecyclerAdapter.MyViewHolder> {
     private List<String> mList;
     private final LayoutInflater mLayoutInflater;
-    private final Context context;
 
     private View.OnClickListener itemsClickListener;
 
     public TemplateRecyclerAdapter(Context context, ArrayList<String> values) {
-        mList = values;
+        this.mList = values;
         this.mLayoutInflater = LayoutInflater.from(context);
-        this.context = context;
     }
 
     public TemplateRecyclerAdapter(Context context, ArrayList<String> values, View.OnClickListener clickListener) {
-        mList = values;
+        this.mList = values;
         this.mLayoutInflater = LayoutInflater.from(context);
-        this.context = context;
         this.itemsClickListener = clickListener;
     }
 

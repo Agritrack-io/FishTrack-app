@@ -1,47 +1,32 @@
 package io.agritrack.fishtrack.ui.wh.inventory;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.hdhe.uhf.reader.UhfReader;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.android.gms.common.util.Strings;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.barcode.ScanUtility;
+import io.agritrack.fishtrack.barcode.SoundUtil;
 import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.common.Filters;
-import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
-import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.InventoryWHRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
-import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
@@ -49,26 +34,27 @@ import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class InventoryConsumableActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
-
+    private String TAG = "InventoryConsumableActivity";
     private  ToggleGroup tgChooseConsumableType;
 
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private ExpandableListView xvInventoryItems;
     private TextView tvInventoryItemsCount;
     private InventoryWHRecord whInventoryRecord;
-    private UhfReader uhfReader;
-    private ScanInventoryThread transportationBinsThread = new ScanInventoryThread();
+
     private boolean scanning = false;
+    private ScanUtility scanUtil;
 
     private TreelikeAdapter adapterInventoryItems;
     private String selectedConsumableType;
     private String activeFilter = null;
-    private  int selectedToggleButton = -1;
+    private int selectedToggleButton = -1;
     private ImageButton ivAddItem, ivDeleteItem;
+    private Button btnScanConsumable;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
 
     private String itemBarcode;
+
 
     // Instantiate a clickListener to be passed to adapterIncomingItems.
     // It will be used to set the selectedBarcode var to the selected item barcode.
@@ -104,23 +90,29 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
         // get  references of the controls
         assignCtrlVars();
 
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
+
+        //Register receiver to receive the result of scan
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.rfid.SCAN");
+        registerReceiver(receiver, filter);
+
         // initiate RFID scanner behaviour
-
-        scanResult.observe(this, response -> {
-            if (response == null) {
-                return;
-            }
-            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));;//(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
-
-            adapterInventoryItems = new TreelikeAdapter(this, values);
-            xvInventoryItems.setAdapter(adapterInventoryItems);
-
-            tvInventoryItemsCount.setText(String.valueOf(response.size()));
-            adapterInventoryItems.notifyDataSetChanged();
-        });
+//        scanResult.observe(this, response -> {
+//            if (response == null) {
+//                return;
+//            }
+//            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));;//(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
+//
+//            adapterInventoryItems = new TreelikeAdapter(this, values);
+//            xvInventoryItems.setAdapter(adapterInventoryItems);
+//
+//            tvInventoryItemsCount.setText(String.valueOf(response.size()));
+//            adapterInventoryItems.notifyDataSetChanged();
+//        });
 
         // initialize scanning threads
-        prepareScanAvailableBinsButton();
 
   /*      ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
@@ -153,7 +145,29 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
             showAddDialog();
         });*/
 
+        btnScanConsumable.setOnClickListener(view ->{
+            scanning = !scanning;
+
+            if(scanning) {
+                startScanning();
+            } else {
+                stopScanning();
+            }
+        });
+
         configFooter();
+    }
+
+    private void startScanning() {
+        if (scanUtil != null) {
+            scanUtil.scan();
+        }
+    }
+
+    private void stopScanning() {
+        if (scanUtil != null) {
+            scanUtil.stopScan();
+        }
     }
 
     private void clearSelectedItem(){
@@ -166,8 +180,9 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
         tgChooseConsumableType = findViewById(R.id.tgChooseConsumableType);
         xvInventoryItems = findViewById(R.id.xvInventoryItems);
         tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
-        ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
-        ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
+        ivDeleteItem = findViewById(R.id.ivDeleteItem);
+        ivAddItem = findViewById(R.id.ivAddItem);
+        btnScanConsumable = findViewById(R.id.btnScanConsumable);
 
         tgChooseConsumableType.setOnCheckedChangeListener(this);
     }
@@ -178,7 +193,7 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
 
             //Set scanning to false to stop running scan thread
             scanning = false;
-            transportationBinsThread.setScanInProgress(scanning);
+            stopScanning();
 
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -194,7 +209,7 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
 
             //Set scanning to false to stop running scan thread
             scanning = false;
-            transportationBinsThread.setScanInProgress(scanning);
+            stopScanning();
 
             Intent i = new Intent(getApplicationContext(), InventoryStartActivity.class);
             startActivity(i);
@@ -230,52 +245,6 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
         builder.show();
 
     }*/
-
-    private void prepareScanAvailableBinsButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setOutputPower(33);
-
-        final Button scanButton = findViewById(R.id.btnScanAsset);
-        scanButton.setOnClickListener(view -> {
-            clearSelectedItem();
-            scanning = !scanning;
-
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (transportationBinsThread.getState() == Thread.State.TERMINATED) {
-                transportationBinsThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            transportationBinsThread.setScanInProgress(scanning);
-            transportationBinsThread.setUhfReader(uhfReader);
-            transportationBinsThread.setScanResult(scanResult);
-            transportationBinsThread.setFilter(activeFilter);
-
-            if (scanning) {
-                scanButton.setText(R.string.stop_scan);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                    }
-                });
-                if (transportationBinsThread.getState() == Thread.State.NEW) {
-                    transportationBinsThread.start();
-                }
-            } else {
-                scanButton.setText(R.string.scan_assets);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-                    }
-                });
-                try {
-                    transportationBinsThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
@@ -314,5 +283,78 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
         }*/
 
         return sb.toString();
+    }
+
+
+    // BroadcastReceiver to receiver scan data
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            byte[] data = intent.getByteArrayExtra("data");
+            if (data != null) {
+                String barcode = new String(data);
+//                adapterInventoryItems.addItem( barcode);
+
+                //first add
+//                if (setBarcode.isEmpty()) {
+//                    setBarcode.add(barcode);
+//                    listBarcode = new ArrayList<>();
+//                    BarcodeTag b = new BarcodeTag();
+//                    b.sn = 1;
+//                    b.barcode = barcode;
+//                    b.count = 1;
+//                    listBarcode.add(b);
+//                    //list index
+//                    mapBarcode.put(barcode, 0);
+////                    adapter = new MAdapter();
+////                    lv.setAdapter(adapter);
+//                } else {
+//                    if (setBarcode.contains(barcode)) {
+//                        BarcodeTag b = listBarcode.get(mapBarcode.get(barcode));
+//                        b.count += 1;
+//                        listBarcode.set(mapBarcode.get(barcode), b);
+//
+//                    } else {
+//                        BarcodeTag b = new BarcodeTag();
+//                        b.sn = listBarcode.size();
+//                        b.barcode = barcode;
+//                        b.count = 1;
+//                        listBarcode.add(b);
+//                        setBarcode.add(barcode);
+//                        //list index
+//                        mapBarcode.put(barcode, listBarcode.size() - 1);
+//                    }
+//                }
+
+//                adapterInventoryItems.notifyDataSetChanged();
+//                scanning = false;
+            }
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (scanUtil == null) {
+            scanUtil = new ScanUtility(this);
+            //we must set mode to 0 : BroadcastReceiver mode
+            scanUtil.setScanMode(0);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (scanUtil != null) {
+            scanUtil.setScanMode(1);
+            scanUtil.close();
+            scanUtil = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }
