@@ -54,6 +54,7 @@ public class FishingRecord {
         if(tx.lastFeed!=null) {
             fishingRecord.lastFed = sdf.format(new Date(tx.lastFeed));
         }
+        fishingRecord.fishingTeam = tx.team;
 
         return fishingRecord;
     }

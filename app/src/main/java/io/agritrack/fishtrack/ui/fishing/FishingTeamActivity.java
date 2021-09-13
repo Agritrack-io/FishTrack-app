@@ -80,7 +80,6 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         }
 
         ivAddEmployee = (ImageButton) findViewById(R.id.ivAddEmployee);
-
         ivAddEmployee.setOnClickListener(view -> {
             showAddDialog();
         });
@@ -110,7 +109,6 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
             Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
             startActivity(i);
         });
-
     }
 
     private void initControlsFromState() {
@@ -130,6 +128,28 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
             TextView tvEmployeesCount = findViewById(R.id.tvEmployeesCount);
             tvEmployeesCount.setText(String.valueOf(sz));
         }
+    }
+
+    private void updateState() {
+        // reset the list of selected Indexes.
+        GlobalState.recFishing.fishingTeam = new ArrayList<>();
+        SparseBooleanArray sp = this.lvFishingTeam.getCheckedItemPositions();
+        for (int idx = 0; idx < sp.size(); idx++) {
+            if (sp.valueAt(idx)) {
+                GlobalState.recFishing.fishingTeam.add(((GenericListModel) this.lvFishingTeam.getAdapter().getItem(sp.keyAt(idx))).toString());
+            }
+        }
+        GlobalState.commitFishing(db, Boolean.FALSE);
+    }
+
+    private String validate() {
+        StringBuilder sb = new StringBuilder();
+
+        if (GlobalState.recFishing.fishingTeam == null || GlobalState.recFishing.fishingTeam.isEmpty()) {
+            sb.append(String.format("\n%s is missing", "'Team members'"));
+        }
+
+        return sb.toString();
     }
 
     private void showAddDialog() {
@@ -159,29 +179,11 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         });
 
         builder.show();
-
     }
 
-    private void updateState() {
-        // reset the list of selected Indexes.
-        GlobalState.recFishing.fishingTeam = new ArrayList<>();
-        SparseBooleanArray sp = this.lvFishingTeam.getCheckedItemPositions();
-        for (int idx = 0; idx < sp.size(); idx++) {
-            if (sp.valueAt(idx)) {
-                GlobalState.recFishing.fishingTeam.add(((GenericListModel) this.lvFishingTeam.getAdapter().getItem(sp.keyAt(idx))).toString());
-            }
-        }
-        GlobalState.commitFishing(db, Boolean.FALSE);
-    }
-
-    private String validate() {
-        StringBuilder sb = new StringBuilder();
-
-        if (GlobalState.recFishing.fishingTeam == null || GlobalState.recFishing.fishingTeam.isEmpty()) {
-            sb.append(String.format("\n%s is missing", "'Team members'"));
-        }
-
-        return sb.toString();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -194,10 +196,5 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         //Get reference of selected Team Count textView
         TextView tvEmployeesCount = findViewById(R.id.tvEmployeesCount);
         tvEmployeesCount.setText(String.valueOf(this.lvFishingTeam.getCheckedItemCount()));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }
