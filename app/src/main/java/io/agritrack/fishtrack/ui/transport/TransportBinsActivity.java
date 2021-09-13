@@ -1,12 +1,16 @@
 package io.agritrack.fishtrack.ui.transport;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,6 +60,8 @@ public class TransportBinsActivity extends AppCompatActivity {
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
+
+    private String binBarcode;
 
     // Instantiate a clickListener to be passed to adapterBins.
     // It will be used to set the selectedBarcode var to the selected item barcode.
@@ -138,7 +144,7 @@ public class TransportBinsActivity extends AppCompatActivity {
         });
 
         ivAddBin.setOnClickListener(view -> {
-
+            showAddDialog();
         });
 
         // create Footer
@@ -244,6 +250,36 @@ public class TransportBinsActivity extends AppCompatActivity {
             TextView tvBinsCount = findViewById(R.id.tvBinsCount);
             tvBinsCount.setText(String.valueOf(trns.availBins.size()));
         }
+    }
+
+    private void showAddDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Type bin BARCODE");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                binBarcode = input.getText().toString();
+                adapterBins.addItem(binBarcode);
+                adapterBins.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
     }
 
     private void updateState() {

@@ -1,13 +1,18 @@
 package io.agritrack.fishtrack.ui.fishing;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,11 +24,13 @@ import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.common.Employee;
 import io.agritrack.fishtrack.state.GlobalState;
+import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.bo.GenericListModel;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
@@ -34,7 +41,11 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
     private MobileDB db;
     private ListView lvFishingTeam;
-    private GenericListModel[] candidates;
+    private List<GenericListModel> candidates;
+
+    private ArrayAdapter<GenericListModel> candidatesAdapter;
+    private ImageButton ivAddEmployee;
+    private String memberName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +64,8 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         // load employees belonging to current Site and fill in the spFishingTeam Spinner.
         List<Employee> teamCandidates = db.employeeDAO().getBySite(LocalPreferences.getCurrentSiteId());
         if (teamCandidates != null && !teamCandidates.isEmpty()) {
-            this.candidates = teamCandidates.stream().map(x -> new GenericListModel(x.id, x.fullName())).toArray(GenericListModel[]::new);
-            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, android.R.layout.simple_list_item_checked, candidates) {
+            this.candidates = teamCandidates.stream().map(x -> new GenericListModel(x.id, x.fullName())).collect(Collectors.toList());
+            candidatesAdapter = new ArrayAdapter<GenericListModel>(this, android.R.layout.simple_list_item_checked, candidates) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);
@@ -67,6 +78,12 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
             this.lvFishingTeam.setAdapter(candidatesAdapter);
             this.lvFishingTeam.setOnItemClickListener(this);
         }
+
+        ivAddEmployee = (ImageButton) findViewById(R.id.ivAddEmployee);
+
+        ivAddEmployee.setOnClickListener(view -> {
+            showAddDialog();
+        });
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -109,6 +126,36 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
             TextView tvEmployeesCount = findViewById(R.id.tvEmployeesCount);
             tvEmployeesCount.setText(String.valueOf(sz));
         }
+    }
+
+    private void showAddDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Type member's name");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                memberName = input.getText().toString();
+                candidatesAdapter.add(new GenericListModel(null, memberName, Boolean.TRUE));
+                candidatesAdapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
     }
 
     private void updateState() {

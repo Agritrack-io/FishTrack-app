@@ -94,8 +94,8 @@ public class TransportStartActivity extends AppCompatActivity {
         spPackagingSite = findViewById(R.id.spPackagingSite);
         spCompany = findViewById(R.id.spCompany);
         etDriverName = (AutoCompleteTextView) findViewById(R.id.etDriverName);
-        etDriverPhone = findViewById(R.id.etDriverPhone);
-        etLicensePlate = findViewById(R.id.etLicensePlate);
+        etDriverPhone = (AutoCompleteTextView) findViewById(R.id.etDriverPhone);
+        etLicensePlate = (AutoCompleteTextView) findViewById(R.id.etLicensePlate);
         swRefrigeratedTruck = findViewById(R.id.swRefrigeratedTruck);
         swParallelTransport = findViewById(R.id.swParallelTransport);
         etSecurityClip = findViewById(R.id.etSecurityClip);
@@ -169,9 +169,11 @@ public class TransportStartActivity extends AppCompatActivity {
         }
         if (etDriverPhone.getText() != null) {
             transportationRecord.driverPhone = etDriverPhone.getText().toString();
+            LocalPreferences.addDriverPhone(transportationRecord.driverPhone);
         }
         if (etLicensePlate.getText() != null) {
             transportationRecord.licensePlate = etLicensePlate.getText().toString();
+            LocalPreferences.addLicensePlate(transportationRecord.licensePlate);
         }
         if (etSecurityClip.getText() != null) {
             transportationRecord.clipNumber = etSecurityClip.getText().toString();

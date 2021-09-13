@@ -17,6 +17,12 @@ public class GenericListModel {
         this.checked = Boolean.FALSE;
     }
 
+    public GenericListModel(Long id, String label, Boolean isChecked) {
+        this.id = id;
+        this.label = label;
+        this.checked = isChecked;
+    }
+
     public Long getId() {
         return id;
     }

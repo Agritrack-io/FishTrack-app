@@ -1,13 +1,17 @@
 package io.agritrack.fishtrack.ui.maintenance;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +23,7 @@ import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.db.MobileDB;
@@ -31,11 +36,15 @@ import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class MaintenanceInternalTeamActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+
     private MobileDB db;
-    private GenericListModel[] selectedTeam;
+    private List<GenericListModel> selectedTeam;
     private ListView lvTeam;
+    private ArrayAdapter<GenericListModel> candidatesAdapter;
     private TextView tvInMtTeamCount;
     private EditText atvInMtWorkDescription;
+    private ImageButton ivAddEmployee;
+    private String memberName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +67,16 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
         // load employees belonging to current Site and fill in the spFishingTeam Spinner.
         List<Employee> teamCandidates = db.employeeDAO().getBySite(LocalPreferences.getCurrentSiteId());
         if (teamCandidates != null && !teamCandidates.isEmpty()) {
-            this.selectedTeam = teamCandidates.stream().map(x -> new GenericListModel(x.id, x.fullName())).toArray(GenericListModel[]::new);
-            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_checked, selectedTeam);
+            this.selectedTeam = teamCandidates.stream().map(x -> new GenericListModel(x.id, x.fullName())).collect(Collectors.toList());
+            candidatesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_checked, selectedTeam);
 
             this.lvTeam.setAdapter(candidatesAdapter);
             this.lvTeam.setOnItemClickListener(this);
         }
+
+        ivAddEmployee.setOnClickListener(view -> {
+            showAddDialog();
+        });
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -95,6 +108,7 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
         lvTeam = findViewById(R.id.lvTeam);
         tvInMtTeamCount = findViewById(R.id.tvInMtTeamCount);
         atvInMtWorkDescription = findViewById(R.id.atvInMtWorkDescription);
+        ivAddEmployee = (ImageButton) findViewById(R.id.ivAddEmployee);
     }
 
     private void initControlsFromState() {
@@ -111,6 +125,36 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
         if (!Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.remarks)) {
             atvInMtWorkDescription.setText(GlobalState.recInternalRepair.remarks);
         }
+    }
+
+    private void showAddDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Type member's name");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                memberName = input.getText().toString();
+                candidatesAdapter.add(new GenericListModel(null, memberName, Boolean.TRUE));
+                candidatesAdapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
     }
 
     private void updateState() {

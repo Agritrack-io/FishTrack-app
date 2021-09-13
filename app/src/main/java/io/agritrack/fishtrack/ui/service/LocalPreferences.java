@@ -120,7 +120,7 @@ public class LocalPreferences {
     public static void addDriverPhone(String phone) {
         Set<String> phonesSet = getDriverPhones();
         phonesSet.add(phone);
-        pref.getStringSet(Driver_Phones_Key, phonesSet);
+        writeValue(Driver_Phones_Key, phonesSet);
     }
 
     public static Set<String> getLicensePlates() {
@@ -130,7 +130,7 @@ public class LocalPreferences {
     public static void addLicensePlate(String plate) {
         Set<String> platesSet = getLicensePlates();
         platesSet.add(plate);
-        pref.getStringSet(License_Plates_Key, platesSet);
+        writeValue(License_Plates_Key, platesSet);
     }
 
     public static String HeaderMsg() {
