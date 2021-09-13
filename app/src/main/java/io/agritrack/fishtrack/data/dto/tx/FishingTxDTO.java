@@ -23,6 +23,7 @@ public class FishingTxDTO {
     public Double total_quantity;
     public Short number_harvest_bins;
     public List<String> harvest_bins = new LinkedList<String>();
+    public List<String> team_members = new LinkedList<String>();
     public String status;
     public String user;
     public String site;
@@ -45,8 +46,8 @@ public class FishingTxDTO {
         fishingTxDTO.total_quantity = fishing.totalQty;
         fishingTxDTO.number_harvest_bins = fishing.harvestBinsCnt;
         fishingTxDTO.harvest_bins = fishing.harvestBins;
+        fishingTxDTO.team_members = fishing.team;
         fishingTxDTO.status = fishing.txStatus.name();
-
         fishingTxDTO.user = fishing.user;
         fishingTxDTO.site = fishing.site;
 

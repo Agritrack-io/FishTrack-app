@@ -66,6 +66,10 @@ public class FishingTransaction {
     @ColumnInfo(name = "harvest_bins")
     public List<String> harvestBins;
 
+    @TypeConverters(StringListConverter.class)
+    @ColumnInfo(name = "team_members")
+    public List<String> team;
+
     @TypeConverters(TxStatusEnumConverter.class)
     @ColumnInfo(name = "status")
     public TxStatus txStatus = TxStatus.NONE;

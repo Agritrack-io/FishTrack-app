@@ -20,7 +20,7 @@ public class FishingRecord {
     public String cageRFID;
     public String netRFID;
     public List<String> availBins;
-    public List<Long> fishingTeam;
+    public List<String> fishingTeam;
     public String pathologist;
     public String lastFed;
     public Boolean adequateIce = Boolean.TRUE;

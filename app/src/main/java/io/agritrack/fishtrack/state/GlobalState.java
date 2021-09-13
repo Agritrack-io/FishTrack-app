@@ -121,6 +121,7 @@ public class GlobalState {
             txFishing.requester = recFishing.requesterName;
             txFishing.totalQty = recFishing.totalFishWeight;
             txFishing.harvestBins = recFishing.availBins;
+            txFishing.team = recFishing.fishingTeam;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
             txFishing.user = LocalPreferences.getLoggedInUser("N/A");
             txFishing.site = LocalPreferences.getCurrentSiteId().toString();

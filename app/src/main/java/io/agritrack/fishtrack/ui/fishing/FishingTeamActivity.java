@@ -25,12 +25,12 @@ import com.google.android.gms.common.util.Strings;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.common.Employee;
 import io.agritrack.fishtrack.state.GlobalState;
-import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.bo.GenericListModel;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
@@ -116,10 +116,14 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
     private void initControlsFromState() {
 
         if (GlobalState.recFishing.fishingTeam != null) {
+            int[] matchingIndices = IntStream.range(0, this.candidates.size())
+                    .filter(i -> GlobalState.recFishing.fishingTeam.contains(this.candidates.get(i).toString()))
+                    .toArray();
+
             int sz = GlobalState.recFishing.fishingTeam.size();
             // Since coming from <back> button, retain the previously checked items.
-            for (int i = 0; i < sz; i++) {
-                this.lvFishingTeam.setItemChecked(GlobalState.recFishing.fishingTeam.get(i).intValue(), Boolean.TRUE);
+            for (int i : matchingIndices) {
+                this.lvFishingTeam.setItemChecked(i, Boolean.TRUE);
             }
 
             //Get reference of selected Team Count textView
@@ -164,10 +168,9 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         SparseBooleanArray sp = this.lvFishingTeam.getCheckedItemPositions();
         for (int idx = 0; idx < sp.size(); idx++) {
             if (sp.valueAt(idx)) {
-                GlobalState.recFishing.fishingTeam.add(Long.valueOf(sp.keyAt(idx)));
+                GlobalState.recFishing.fishingTeam.add(((GenericListModel) this.lvFishingTeam.getAdapter().getItem(sp.keyAt(idx))).toString());
             }
         }
-
         GlobalState.commitFishing(db, Boolean.FALSE);
     }
 
