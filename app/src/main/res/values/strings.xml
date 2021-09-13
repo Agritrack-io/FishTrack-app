@@ -163,6 +163,8 @@
 
     <string name="title_date_type_of_asset">DATE / TYPE OF ASSET</string>
     <string name="title_outgoing">OUTGOING</string>
+    <string name="title_outgoing_asset">OUTGOING ASSET</string>
+    <string name="title_outgoing_consumable">OUTGOING CONSUMABLE</string>
     <string name="outgoing_details">Outgoing details</string>
     <string name="outgoing">Outgoing</string>
 
@@ -174,6 +176,8 @@
 
     <string name="title_main_menu">MAIN MENU</string>
     <string name="title_incoming">INCOMING</string>
+    <string name="title_incoming_asset">INCOMING ASSET</string>
+    <string name="title_incoming_consumable">INCOMING CONSUMABLE</string>
     <string name="incoming_details">Incoming details</string>
     <string name="from">From</string>
     <string name="to">To</string>
@@ -183,6 +187,8 @@
     <string name="title_wh_menu">WH MENU</string>
 
     <string name="title_inventory">INVENTORY</string>
+    <string name="title_inventory_asset">INVENTORY ASSET</string>
+    <string name="title_inventory_consumable">INVENTORY CONSUMABLE</string>
     <string name="inventory_details">Inventory details</string>
     <string name="inventory">Inventory</string>
     <string name="inventory_item_label">Items</string>

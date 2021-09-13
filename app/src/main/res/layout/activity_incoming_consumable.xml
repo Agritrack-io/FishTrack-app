@@ -31,7 +31,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
         android:layout_marginBottom="32dp"
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
-        android:text="@string/title_incoming"
+        android:text="@string/title_incoming_consumable"
         android:textColor="@color/yellow"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -266,12 +266,12 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvIncomingItems"
+                app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems"
                 tools:layout_conversion_absoluteHeight="120dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvIncomingItems"
+            <ExpandableListView
+                android:id="@+id/xvIncomingItems"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -286,7 +286,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-            </androidx.recyclerview.widget.RecyclerView>
+            </ExpandableListView>
 
             <ImageButton
                 android:id="@+id/ivDeleteItem"
@@ -295,7 +295,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                 android:layout_marginEnd="8dp"
                 android:background="@color/transparent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvIncomingItems"
+                app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems"
                 app:srcCompat="@drawable/ic_delete" />
 
             <ImageButton
@@ -305,7 +305,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                 android:layout_marginStart="8dp"
                 android:background="@color/transparent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvIncomingItems"
+                app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems"
                 app:srcCompat="@drawable/ic_add_stock_opname" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -454,7 +454,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                        android:text="@string/incoming_items"
                        android:textColor="@color/label_blue"
                        android:textSize="@dimen/text_view_font_size"
-                       app:layout_constraintBottom_toTopOf="@+id/rvIncomingItems"
+                       app:layout_constraintBottom_toTopOf="@+id/xvIncomingItems"
                        app:layout_constraintEnd_toStartOf="@+id/ivDeleteItem"
                        app:layout_constraintStart_toEndOf="@+id/ivAddItem"
                        app:layout_constraintTop_toTopOf="parent" />
@@ -480,7 +480,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                        tools:layout_conversion_absoluteWidth="0dp" />
 
                    <androidx.recyclerview.widget.RecyclerView
-                       android:id="@+id/rvIncomingItems"
+                       android:id="@+id/xvIncomingItems"
                        android:layout_width="0dp"
                        android:layout_height="0dp"
                        android:layout_marginStart="8dp"
@@ -509,7 +509,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                        app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
                        app:layout_constraintEnd_toStartOf="@+id/tvItemsCount"
                        app:layout_constraintStart_toStartOf="parent"
-                       app:layout_constraintTop_toBottomOf="@+id/rvIncomingItems" />
+                       app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems" />
 
                    <TextView
                        android:id="@+id/tvItemsCount"
@@ -525,7 +525,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                        android:textSize="24sp"
                        android:textStyle="bold"
                        app:layout_constraintStart_toEndOf="@+id/tvNumberBins"
-                       app:layout_constraintTop_toBottomOf="@+id/rvIncomingItems" />
+                       app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems" />
 
                    <ImageButton
                        android:id="@+id/ivDeleteItem"
@@ -533,7 +533,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                        android:layout_height="48dp"
                        android:layout_marginEnd="16dp"
                        android:background="@color/transparent"
-                       app:layout_constraintBottom_toTopOf="@+id/rvIncomingItems"
+                       app:layout_constraintBottom_toTopOf="@+id/xvIncomingItems"
                        app:layout_constraintEnd_toEndOf="parent"
                        app:layout_constraintStart_toEndOf="@+id/tvSelectBins"
                        app:srcCompat="@drawable/ic_delete" />
@@ -544,7 +544,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                        android:layout_height="48dp"
                        android:layout_marginStart="16dp"
                        android:background="@color/transparent"
-                       app:layout_constraintBottom_toTopOf="@+id/rvIncomingItems"
+                       app:layout_constraintBottom_toTopOf="@+id/xvIncomingItems"
                        app:layout_constraintEnd_toStartOf="@+id/tvSelectBins"
                        app:layout_constraintStart_toStartOf="parent"
                        app:srcCompat="@drawable/ic_add_stock_opname" />

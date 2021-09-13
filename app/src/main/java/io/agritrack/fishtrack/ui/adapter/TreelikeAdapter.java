@@ -84,13 +84,13 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        final SiteInfo child = (SiteInfo) getChild(groupPosition, childPosition);
+        final String child = (String) getChild(groupPosition, childPosition);
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this.mCtx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.site_layout, null);
         }
         TextView txtListChild = convertView.findViewById(R.id.tvSiteName);
-        txtListChild.setText(child.getName());
+        txtListChild.setText(child);
         return convertView;
     }
 

@@ -31,7 +31,7 @@ tools:context=".ui.wh.outgoing.OutgoingConsumableActivity">
         android:layout_marginBottom="32dp"
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
-        android:text="@string/title_outgoing"
+        android:text="@string/title_outgoing_consumable"
         android:textColor="@color/yellow"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -266,12 +266,12 @@ tools:context=".ui.wh.outgoing.OutgoingConsumableActivity">
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvOutgoingItems"
+                app:layout_constraintTop_toBottomOf="@+id/xvOutgoingItems"
                 tools:layout_conversion_absoluteHeight="120dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvOutgoingItems"
+            <ExpandableListView
+                android:id="@+id/xvOutgoingItems"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -286,7 +286,7 @@ tools:context=".ui.wh.outgoing.OutgoingConsumableActivity">
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-            </androidx.recyclerview.widget.RecyclerView>
+            </ExpandableListView>
 
             <ImageButton
                 android:id="@+id/ivDeleteItem"
@@ -295,7 +295,7 @@ tools:context=".ui.wh.outgoing.OutgoingConsumableActivity">
                 android:layout_marginEnd="8dp"
                 android:background="@color/transparent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvOutgoingItems"
+                app:layout_constraintTop_toBottomOf="@+id/xvOutgoingItems"
                 app:srcCompat="@drawable/ic_delete" />
 
             <ImageButton
@@ -305,7 +305,7 @@ tools:context=".ui.wh.outgoing.OutgoingConsumableActivity">
                 android:layout_marginStart="8dp"
                 android:background="@color/transparent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvOutgoingItems"
+                app:layout_constraintTop_toBottomOf="@+id/xvOutgoingItems"
                 app:srcCompat="@drawable/ic_add_stock_opname" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

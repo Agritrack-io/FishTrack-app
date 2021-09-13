@@ -11,6 +11,7 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,7 +23,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
@@ -30,7 +30,10 @@ import com.google.android.gms.common.util.Strings;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.api.APIServiceGenerator;
@@ -46,6 +49,7 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.fishtrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
@@ -70,10 +74,10 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
     private ScanInventoryThread processingBinsThread = new ScanInventoryThread();
     private boolean scanning = false;
 
-    private TemplateRecyclerAdapter adapterIncomingItems;
+    private TreelikeAdapter adapterIncomingItems;
 
     private TextView tvIncomingProcessFrom, tvIncomingProcessTo;
-    private RecyclerView rvIncomingItems;
+    private ExpandableListView xvIncomingItems;
 
     private ImageButton ivAddItem, ivDeleteItem;
     private String selectedBarcode;
@@ -112,19 +116,18 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
         // get  references of the controls
         assignCtrlVars();
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvIncomingItems.setLayoutManager(layoutManager);
-        rvIncomingItems.setItemAnimator(new DefaultItemAnimator());
-        adapterIncomingItems = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
-        rvIncomingItems.setAdapter(adapterIncomingItems);
-        rvIncomingItems.setNestedScrollingEnabled(false);
+
 
         //Get reference of binsCount textView
         scanResult.observe(this, response -> {
             if (response == null) {
                 return;
             }
-            adapterIncomingItems.setValues(new ArrayList<>(response));
+            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));;//(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
+
+            adapterIncomingItems = new TreelikeAdapter(this, values);
+            xvIncomingItems.setAdapter(adapterIncomingItems);
+
             adapterIncomingItems.notifyDataSetChanged();
         });
 
@@ -134,7 +137,7 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-        ivDeleteItem.setOnClickListener(view -> {
+   /*     ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
             if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
@@ -158,11 +161,11 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
                 // <delete> Button was pressed without selecting a Bin first.
                 Toast.makeText(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG).show();
             }
-        });
+        });*/
 
-        ivAddItem.setOnClickListener(view -> {
+     /*   ivAddItem.setOnClickListener(view -> {
             showAddDialog();
-        });
+        });*/
 
         configFooter();
     }
@@ -205,7 +208,7 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
 
     private void assignCtrlVars() {
         tgChooseAssetType = findViewById(R.id.tgChooseAssetType);
-        rvIncomingItems = findViewById(R.id.rvIncomingItems);
+        xvIncomingItems = findViewById(R.id.xvIncomingItems);
         tvIncomingProcessFrom = findViewById(R.id.tvIncomingProcessFrom);
         tvIncomingProcessTo = findViewById(R.id.tvIncomingProcessTo);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
@@ -215,7 +218,7 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
     }
 
     private void updateState() {
-        GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
+        //GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
         GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
 
         // get an instance of local DB
@@ -259,12 +262,12 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
         }
 
         if (WHTxRecord.items != null) {
-            adapterIncomingItems.setValues(WHTxRecord.items);
+            //adapterIncomingItems.setValues(WHTxRecord.items);
             adapterIncomingItems.notifyDataSetChanged();
         }
     }
 
-    private void showAddDialog() {
+ /*   private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Type item BARCODE");
 
@@ -292,7 +295,7 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
 
         builder.show();
 
-    }
+    }*/
 
     private void prepareScanAvailableBinsButton() {
         // RFID scanning functionality

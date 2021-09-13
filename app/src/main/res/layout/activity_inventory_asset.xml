@@ -31,7 +31,7 @@ tools:context=".ui.wh.inventory.InventoryAssetActivity">
             android:layout_marginBottom="32dp"
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
-            android:text="@string/title_inventory"
+            android:text="@string/title_inventory_asset"
             android:textColor="@color/yellow"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -205,7 +205,7 @@ tools:context=".ui.wh.inventory.InventoryAssetActivity">
                 android:text="@string/inventory_item_label"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/rvInventoryItems"
+                app:layout_constraintBottom_toTopOf="@+id/xvInventoryItems"
                 app:layout_constraintEnd_toStartOf="@+id/ivDeleteItem"
                 app:layout_constraintStart_toEndOf="@+id/ivAddItem"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -230,8 +230,8 @@ tools:context=".ui.wh.inventory.InventoryAssetActivity">
                 tools:layout_conversion_absoluteHeight="120dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvInventoryItems"
+            <ExpandableListView
+                android:id="@+id/xvInventoryItems"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -243,8 +243,7 @@ tools:context=".ui.wh.inventory.InventoryAssetActivity">
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvSelectBins">
-
-            </androidx.recyclerview.widget.RecyclerView>
+            </ExpandableListView>
 
             <TextView
                 android:id="@+id/tvNumberBins"
@@ -260,7 +259,7 @@ tools:context=".ui.wh.inventory.InventoryAssetActivity">
                 app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
                 app:layout_constraintEnd_toStartOf="@+id/tvInventoryItemsCount"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvInventoryItems" />
+                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
 
             <TextView
                 android:id="@+id/tvInventoryItemsCount"
@@ -276,7 +275,7 @@ tools:context=".ui.wh.inventory.InventoryAssetActivity">
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/tvNumberBins"
-                app:layout_constraintTop_toBottomOf="@+id/rvInventoryItems" />
+                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
 
             <ImageButton
                 android:id="@+id/ivDeleteItem"
@@ -284,7 +283,7 @@ tools:context=".ui.wh.inventory.InventoryAssetActivity">
                 android:layout_height="48dp"
                 android:layout_marginEnd="16dp"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toTopOf="@+id/rvInventoryItems"
+                app:layout_constraintBottom_toTopOf="@+id/xvInventoryItems"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvSelectBins"
                 app:srcCompat="@drawable/ic_delete" />
@@ -295,7 +294,7 @@ tools:context=".ui.wh.inventory.InventoryAssetActivity">
                 android:layout_height="48dp"
                 android:layout_marginStart="16dp"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toTopOf="@+id/rvInventoryItems"
+                app:layout_constraintBottom_toTopOf="@+id/xvInventoryItems"
                 app:layout_constraintEnd_toStartOf="@+id/tvSelectBins"
                 app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/ic_add_stock_opname" />

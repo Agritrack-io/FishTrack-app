@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -19,6 +18,7 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,7 +28,10 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Constants;
@@ -39,6 +42,7 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.InventoryWHRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.fishtrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
@@ -49,14 +53,14 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
     private  ToggleGroup tgChooseConsumableType;
 
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-    private RecyclerView rvInventoryItems;
+    private ExpandableListView xvInventoryItems;
     private TextView tvInventoryItemsCount;
     private InventoryWHRecord whInventoryRecord;
     private UhfReader uhfReader;
     private ScanInventoryThread transportationBinsThread = new ScanInventoryThread();
     private boolean scanning = false;
 
-    private TemplateRecyclerAdapter adapterInventoryItems;
+    private TreelikeAdapter adapterInventoryItems;
     private String selectedConsumableType;
     private String activeFilter = null;
     private  int selectedToggleButton = -1;
@@ -101,26 +105,24 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
         assignCtrlVars();
 
         // initiate RFID scanner behaviour
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvInventoryItems.setLayoutManager(layoutManager);
-        rvInventoryItems.setItemAnimator(new DefaultItemAnimator());
-        adapterInventoryItems = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
-        rvInventoryItems.setAdapter(adapterInventoryItems);
-        rvInventoryItems.setNestedScrollingEnabled(false);
 
         scanResult.observe(this, response -> {
             if (response == null) {
                 return;
             }
+            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));;//(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
+
+            adapterInventoryItems = new TreelikeAdapter(this, values);
+            xvInventoryItems.setAdapter(adapterInventoryItems);
+
             tvInventoryItemsCount.setText(String.valueOf(response.size()));
-            adapterInventoryItems.setValues(new ArrayList<>(response));
             adapterInventoryItems.notifyDataSetChanged();
         });
 
         // initialize scanning threads
         prepareScanAvailableBinsButton();
 
-        ivDeleteItem.setOnClickListener(view -> {
+  /*      ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
             if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
@@ -145,11 +147,11 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
                 // <delete> Button was pressed without selecting a Bin first.
                 Toast.makeText(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG).show();
             }
-        });
+        });*/
 
-        ivAddItem.setOnClickListener(view -> {
+       /* ivAddItem.setOnClickListener(view -> {
             showAddDialog();
-        });
+        });*/
 
         configFooter();
     }
@@ -162,7 +164,7 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
 
     private void assignCtrlVars() {
         tgChooseConsumableType = findViewById(R.id.tgChooseConsumableType);
-        rvInventoryItems = findViewById(R.id.rvInventoryItems);
+        xvInventoryItems = findViewById(R.id.xvInventoryItems);
         tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
         ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
         ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
@@ -199,7 +201,7 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
         });
     }
 
-    private void showAddDialog() {
+ /*   private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Type item BARCODE");
 
@@ -227,7 +229,7 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
 
         builder.show();
 
-    }
+    }*/
 
     private void prepareScanAvailableBinsButton() {
         // RFID scanning functionality
