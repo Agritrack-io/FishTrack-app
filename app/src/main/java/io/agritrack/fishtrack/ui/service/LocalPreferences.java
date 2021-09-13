@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
@@ -111,7 +110,7 @@ public class LocalPreferences {
     public static void addDriverName(String name) {
         Set<String> namesSet = getDriverNames();
         namesSet.add(name);
-        pref.getStringSet(Driver_Names_Key, namesSet);
+        writeValue(Driver_Names_Key, namesSet);
     }
 
     public static Set<String> getDriverPhones() {
@@ -159,7 +158,8 @@ public class LocalPreferences {
                 editor.putLong(key, (Long) value);
             } else if (value instanceof Boolean) {
                 editor.putBoolean(key, (Boolean) value);
-
+            } else if (value instanceof HashSet) {
+                editor.putStringSet(key, (Set<String>) value);
             }
             editor.apply();
 
