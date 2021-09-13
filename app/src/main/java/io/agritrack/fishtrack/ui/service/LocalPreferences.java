@@ -6,8 +6,10 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Set;
 
 import io.agritrack.fishtrack.data.dto.SiteDTO;
 
@@ -26,8 +28,10 @@ public class LocalPreferences {
     public static final String Locale_Key = "localeCode";
     public static final String Logged_In_User_Key = "LoggedinUser";
 
-    private static LocalPreferences mInstance;
-    private static Context mContext;
+    public static final String Driver_Names_Key = "DriverNames";
+    public static final String Driver_Phones_Key = "DriverPhones";
+    public static final String License_Plates_Key = "LicensePlates";
+
     private static SharedPreferences pref;
 
     static {
@@ -35,21 +39,6 @@ public class LocalPreferences {
             pref = getAppContext().getSharedPreferences(Pref_Name, Context.MODE_PRIVATE);
         }
     }
-
-//    private LocalPreferences(Context context) {
-//        // hold the application context
-//        mContext = context;
-//
-//        // hold the shared Preferences instance
-//        pref = getAppContext().getSharedPreferences(Pref_Name, Context.MODE_PRIVATE);
-//    }
-//
-//    public static LocalPreferences getInstance() {
-//        if (mInstance == null) {
-//            mInstance = new LocalPreferences(getAppContext());
-//        }
-//        return mInstance;
-//    }
 
     public static String Today() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
@@ -112,6 +101,36 @@ public class LocalPreferences {
             Gson gson = new Gson();
             writeValue(SelectedSite_Key, gson.toJson(siteDTO));
         }
+    }
+
+    public static Set<String> getDriverNames() {
+        return pref.getStringSet(Driver_Names_Key, Collections.<String>emptySet());
+    }
+
+    public static void addDriverName(String name) {
+        Set<String> namesSet = getDriverNames();
+        namesSet.add(name);
+        pref.getStringSet(Driver_Names_Key, namesSet);
+    }
+
+    public static Set<String> getDriverPhones() {
+        return pref.getStringSet(Driver_Phones_Key, Collections.<String>emptySet());
+    }
+
+    public static void addDriverPhone(String phone) {
+        Set<String> phonesSet = getDriverPhones();
+        phonesSet.add(phone);
+        pref.getStringSet(Driver_Phones_Key, phonesSet);
+    }
+
+    public static Set<String> getLicensePlates() {
+        return pref.getStringSet(License_Plates_Key, Collections.<String>emptySet());
+    }
+
+    public static void addLicensePlate(String plate) {
+        Set<String> platesSet = getLicensePlates();
+        platesSet.add(plate);
+        pref.getStringSet(License_Plates_Key, platesSet);
     }
 
     public static String HeaderMsg() {
