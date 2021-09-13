@@ -3,6 +3,7 @@ package io.agritrack.fishtrack.ui.transport;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -15,6 +16,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.List;
+import java.util.Set;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.data.db.MobileDB;
@@ -31,7 +33,8 @@ public class TransportStartActivity extends AppCompatActivity {
 
     private MobileDB db;
     private SwitchCompat swRefrigeratedTruck, swParallelTransport;
-    private EditText etDriverName, etLicensePlate, etDriverPhone, etSecurityClip;
+    private AutoCompleteTextView etDriverName, etLicensePlate, etDriverPhone;
+    private EditText etSecurityClip;
     private Spinner spPackagingSite, spCompany;
 
     private final String[] company = {"nireas", "andromeda", "selonda"};
@@ -64,6 +67,23 @@ public class TransportStartActivity extends AppCompatActivity {
         cAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
         spCompany.setAdapter(cAdapter);
 
+        // AutoCompleteTextView driverNames, driverPhones, licensePlates
+
+        Set<String> driverNames = LocalPreferences.getDriverNames();
+        ArrayAdapter<String> driverNamesAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, driverNames.toArray(new String[driverNames.size()]));
+        etDriverName.setThreshold(3);
+        etDriverName.setAdapter(driverNamesAdapter);
+
+        Set<String> driverPhones = LocalPreferences.getDriverPhones();
+        ArrayAdapter<String> driverPhonesAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, driverPhones.toArray(new String[driverPhones.size()]));
+        etDriverPhone.setThreshold(3);
+        etDriverPhone.setAdapter(driverPhonesAdapter);
+
+        Set<String> licensePlates = LocalPreferences.getDriverPhones();
+        ArrayAdapter<String> licensePlatesAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, licensePlates.toArray(new String[licensePlates.size()]));
+        etLicensePlate.setThreshold(3);
+        etLicensePlate.setAdapter(licensePlatesAdapter);
+
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
@@ -73,7 +93,7 @@ public class TransportStartActivity extends AppCompatActivity {
     private void assignCtrlVars() {
         spPackagingSite = findViewById(R.id.spPackagingSite);
         spCompany = findViewById(R.id.spCompany);
-        etDriverName = findViewById(R.id.etDriverName);
+        etDriverName = (AutoCompleteTextView) findViewById(R.id.etDriverName);
         etDriverPhone = findViewById(R.id.etDriverPhone);
         etLicensePlate = findViewById(R.id.etLicensePlate);
         swRefrigeratedTruck = findViewById(R.id.swRefrigeratedTruck);
@@ -145,6 +165,7 @@ public class TransportStartActivity extends AppCompatActivity {
         transportationRecord.companyPos = spCompany.getSelectedItemPosition();
         if (etDriverName.getText() != null) {
             transportationRecord.driverName = etDriverName.getText().toString();
+            LocalPreferences.addDriverName(transportationRecord.driverName);
         }
         if (etDriverPhone.getText() != null) {
             transportationRecord.driverPhone = etDriverPhone.getText().toString();

@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -104,7 +105,7 @@ public class LocalPreferences {
     }
 
     public static Set<String> getDriverNames() {
-        return pref.getStringSet(Driver_Names_Key, Collections.<String>emptySet());
+        return pref.getStringSet(Driver_Names_Key, new HashSet<>());
     }
 
     public static void addDriverName(String name) {
@@ -114,7 +115,7 @@ public class LocalPreferences {
     }
 
     public static Set<String> getDriverPhones() {
-        return pref.getStringSet(Driver_Phones_Key, Collections.<String>emptySet());
+        return pref.getStringSet(Driver_Phones_Key, new HashSet<>());
     }
 
     public static void addDriverPhone(String phone) {
@@ -124,7 +125,7 @@ public class LocalPreferences {
     }
 
     public static Set<String> getLicensePlates() {
-        return pref.getStringSet(License_Plates_Key, Collections.<String>emptySet());
+        return pref.getStringSet(License_Plates_Key, new HashSet<>());
     }
 
     public static void addLicensePlate(String plate) {

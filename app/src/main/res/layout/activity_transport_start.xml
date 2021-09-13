@@ -204,7 +204,7 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/etDriverName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -223,7 +223,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/etDriverPhone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -242,7 +242,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/etDriverName" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/etLicensePlate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
