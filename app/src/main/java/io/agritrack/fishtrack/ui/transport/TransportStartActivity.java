@@ -79,7 +79,7 @@ public class TransportStartActivity extends AppCompatActivity {
         etDriverPhone.setThreshold(3);
         etDriverPhone.setAdapter(driverPhonesAdapter);
 
-        Set<String> licensePlates = LocalPreferences.getDriverPhones();
+        Set<String> licensePlates = LocalPreferences.getLicensePlates();
         ArrayAdapter<String> licensePlatesAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, licensePlates.toArray(new String[licensePlates.size()]));
         etLicensePlate.setThreshold(3);
         etLicensePlate.setAdapter(licensePlatesAdapter);
