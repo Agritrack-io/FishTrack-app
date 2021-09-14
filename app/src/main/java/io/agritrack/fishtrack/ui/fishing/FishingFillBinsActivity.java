@@ -34,6 +34,7 @@ import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.fishtrack.ui.bo.BinLoadsMap;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 
@@ -50,6 +51,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private TemplateRecyclerAdapter adapterCatches;
 
     private String mCatchWeight = "";
+    private String currentBin;
+    private BinLoadsMap loadsMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        // initialize the map for each bin's loads.
+        loadsMap = new BinLoadsMap();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvWeightBatchesBin.setLayoutManager(layoutManager);
@@ -94,6 +100,13 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             tvCurrentBin.setText(epcStr);
                             btnNextCatch.setEnabled(true);
                             btnNextCatch.setTextColor(getColor(R.color.aqua));
+                            currentBin = epcStr;
+
+                            adapterCatches.setValues(loadsMap.getLoads(currentBin));
+                            adapterCatches.notifyDataSetChanged();
+
+                            tvUsedBinsCount.setText(loadsMap.loadsCnt());
+                            tvBinWeight.setText("0.0");
                         }
                     });
                 }
@@ -121,7 +134,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             btnCurrentBinScan.setTextColor(getColor(R.color.aqua));
             btnNextCatch.setEnabled(false);
             btnNextCatch.setTextColor(Color.DKGRAY);
-            ((Button) view).setEnabled(false);
+            view.setEnabled(false);
             ((Button) view).setTextColor(Color.DKGRAY);
 
         });
@@ -183,6 +196,10 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                 mCatchWeight = input.getText().toString();
                 adapterCatches.addItem(mCatchWeight);
                 adapterCatches.notifyDataSetChanged();
+                //loadsMap.addLoad(currentBin, mCatchWeight);
+
+                tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
+                tvTotalWeightCount.setText(loadsMap.totalWeight().toString());
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
