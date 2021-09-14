@@ -90,7 +90,7 @@
     <string name="yes">YES</string>
 
     <string name="back_button">BACK</string>
-    <string name="add_batch_button">ADD BATCH</string>
+    <string name="add_catch_button">ADD CATCH</string>
     <string name="end_bin_button">BIN FILLED</string>
     <string name="weight_bin">Weight of Bin (Kg):</string>
     <string name="fishing_batches">Fishing Batches</string>

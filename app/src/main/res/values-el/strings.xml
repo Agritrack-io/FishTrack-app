@@ -90,7 +90,7 @@
     <string name="yes">ΝΑΙ</string>
 
     <string name="back_button">ΠΙΣΩ</string>
-    <string name="add_batch_button">ΠΡΟΣΘΕΣΕ ΨΑΡΙΑ</string>
+    <string name="add_catch_button">ΠΡΟΣΘΕΣΕ ΨΑΡΙΑ</string>
     <string name="end_bin_button">ΤΕΛΟΣ ΒΟΥΤΑΣ</string>
     <string name="weight_bin">Βάρος βούτας:</string>
     <string name="fishing_batches">Ψαριές</string>

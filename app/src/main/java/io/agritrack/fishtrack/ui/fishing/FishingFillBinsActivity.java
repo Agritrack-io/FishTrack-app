@@ -136,7 +136,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     private void assignCtrlVars() {
         btnCurrentBinScan = findViewById(R.id.btnScanCurrentBin);
-        btnNextCatch = findViewById(R.id.btnAddBatch);
+        btnNextCatch = findViewById(R.id.btnAddCatch);
         btnFillBin = findViewById(R.id.btnEndBin);
         tvCurrentBin = findViewById(R.id.tvBinName);
         tvBinWeight = findViewById(R.id.tvBinWeight);
@@ -181,7 +181,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mCatchWeight = input.getText().toString();
-                adapterCatches.addItem(mCatchWeight );
+                adapterCatches.addItem(mCatchWeight);
                 adapterCatches.notifyDataSetChanged();
             }
         });
