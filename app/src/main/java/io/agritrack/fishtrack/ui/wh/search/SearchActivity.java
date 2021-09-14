@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.barcode.SoundUtil;
 import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.wh.Asset;
@@ -57,33 +58,40 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
     private EditText etAssetBarcode;
     private SearchView svSearchAsset;
     private TextView tvProximity;
+
     private final Handler handler = new Handler(Looper.getMainLooper()) {
+
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1: {
-                    String epc_from_tag = msg.getData().getString("epc");
                     int rssi_from_tag = msg.getData().getInt("rssi");
                     System.out.println("RSSI:" + rssi_from_tag);
                     int rssi_norm = normalize(rssi_from_tag);
 
-                    if (rssi_norm > 20 && rssi_norm < 95) {
+                    if (rssi_norm > 5 && rssi_norm < 95) {
                         tvProximity.setText(String.valueOf(rssi_norm));
                         pbProximity.setProgress(rssi_norm);
                         if (rssi_norm < 95 && rssi_norm >= 80) {
+//                            SoundUtil.play(5, 5, 0, 2.0f);
                             toneG.startTone(ToneGenerator.TONE_DTMF_D, 200);
                         } else if (rssi_norm < 80 && rssi_norm >= 60) {
+//                            SoundUtil.play(4, 4, 0, 1.5f);
                             toneG.startTone(ToneGenerator.TONE_DTMF_9, 130);
                         } else if (rssi_norm < 60 && rssi_norm >= 40) {
+//                            SoundUtil.play(3, 3, 0, 1.0f);
                             toneG.startTone(ToneGenerator.TONE_DTMF_5, 100);
                         } else {
+//                            SoundUtil.play(3, 2, 0, 0.5f);
                             toneG.startTone(ToneGenerator.TONE_DTMF_1, 50);
                         }
                     } else if (rssi_norm >= 95) {
+//                        SoundUtil.play(5, 6, 0, 2.5f);
                         toneG.startTone(ToneGenerator.TONE_DTMF_D, 300);
                         tvProximity.setText(">= 95%");
                         pbProximity.setProgress(100);
                     } else {
+//                        SoundUtil.play(3, 2, 0, 0.5f);
                         toneG.startTone(ToneGenerator.TONE_DTMF_1, 10);
                         tvProximity.setText("<= 5%");
                         pbProximity.setProgress(0);
@@ -92,19 +100,21 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
             }
         }
 
-        private int normalize(int rssi) {
-            final double MAX_RSSI = -50;
-            final double MIN_RSSI = -75d;
-            rssi = rssi > -22 ? -22 : rssi;
-            rssi = rssi < -71 ? -71 : rssi;
-            return (int) ((rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI) * 100);
+        private int normalize(double rssi) {
+            final double MAX_RSSI = -35d;
+            final double MIN_RSSI = -70;
+            rssi = rssi > MAX_RSSI ? MAX_RSSI : rssi;
+            rssi = rssi < MIN_RSSI ? MIN_RSSI : rssi;
+            return (int) (Math.abs(rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI) * 100);
         }
     };
+
     private RecyclerView rvAssets;
     private Button btnSearchAsset;
     private String selectedAssetType;
     private String selectedBarcode = "";
     private ConstraintLayout selectedItem;
+
     // Instantiate a clickListener to be passed to adapterAssets.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
@@ -123,10 +133,6 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
             view.setBackgroundColor(Color.GRAY);
             selectedItem = view;
         }
-        /*public void onClick(View v) {
-            selectedBarcode = ((AppCompatTextView) v).getText().toString();
-            etAssetBarcode.setText(selectedBarcode);
-        }*/
     };
 
     @Override
@@ -136,6 +142,8 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
+
+        SoundUtil.initSoundPool(SearchActivity.this);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderSearch);
@@ -217,7 +225,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
 
         // RFID scanning functionality
         uhfReader = UhfReader.getInstance();
-        uhfReader.setOutputPower(33);
+        uhfReader.setWorkArea(3);
 
         final Button scanButton = findViewById(R.id.btnSearchAsset);
         scanButton.setOnClickListener(view -> {

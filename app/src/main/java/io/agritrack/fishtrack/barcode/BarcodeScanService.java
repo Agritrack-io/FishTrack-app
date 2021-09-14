@@ -3,7 +3,7 @@ package io.agritrack.fishtrack.barcode;
 import android.content.Context;
 import android.content.Intent;
 
-public class ScanUtility {
+public class BarcodeScanService {
     /**
      * Stop Scanning
      */
@@ -36,7 +36,7 @@ public class ScanUtility {
      *
      * @param context Context
      */
-    public ScanUtility(Context context) {
+    public BarcodeScanService(Context context) {
         this.context = context;
         Intent intent = new Intent();
         intent.setAction(ACTION_SCAN_INIT);

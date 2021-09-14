@@ -69,98 +69,6 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
     app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
     <RelativeLayout
-        android:id="@+id/inventoryConsumableALayout"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/inventoryConsumableBLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="vertical"
-            android:padding="1dp">
-
-            <io.agritrack.fishtrack.ui.custom.ToggleGroup
-                android:id="@+id/tgChooseConsumableType"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ToggleButton
-                    android:id="@+id/tbFood"
-                    android:layout_width="0dp"
-                    android:layout_height="34dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/tooglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="FOOD"
-                    android:textOn="FOOD"
-                    android:textSize="@dimen/text_view_font_size_medium" />
-
-                <ToggleButton
-                    android:id="@+id/tbVaccine"
-                    android:layout_width="35dp"
-                    android:layout_height="34dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/tooglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="VACCINE"
-                    android:textOn="VACCINE"
-                    android:textSize="@dimen/text_view_font_size_medium" />
-
-                <ToggleButton
-                    android:id="@+id/tbAntibiotic"
-                    android:layout_width="45dp"
-                    android:layout_height="34dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/tooglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="ANTIBIOTIC"
-                    android:textOn="ANTIBIOTIC"
-                    android:textSize="@dimen/text_view_font_size_medium" />
-
-            </io.agritrack.fishtrack.ui.custom.ToggleGroup>
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="16dp"
-            android:background="@color/agri_green"
-            android:paddingHorizontal="8dp"
-            android:text="@string/select_consumable_type"
-            android:textColor="@color/label_blue"
-            android:textSize="18sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/inventoryConsumableBLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -171,7 +79,7 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inventoryConsumableALayout">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -193,7 +101,7 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
                 android:text="@string/inventory_item_label"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/xvInventoryItems"
+                app:layout_constraintBottom_toTopOf="@+id/rvInventoryItems"
                 app:layout_constraintEnd_toStartOf="@+id/ivDeleteItem"
                 app:layout_constraintStart_toEndOf="@+id/ivAddItem"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -218,8 +126,8 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
                 tools:layout_conversion_absoluteHeight="120dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
-            <ExpandableListView
-                android:id="@+id/xvInventoryItems"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvInventoryItems"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -232,7 +140,7 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvSelectBins">
 
-            </ExpandableListView>
+            </androidx.recyclerview.widget.RecyclerView>
 
             <TextView
                 android:id="@+id/tvNumberBins"
@@ -248,7 +156,7 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
                 app:layout_constraintBottom_toTopOf="@+id/btnScanConsumable"
                 app:layout_constraintEnd_toStartOf="@+id/tvInventoryItemsCount"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
+                app:layout_constraintTop_toBottomOf="@+id/rvInventoryItems" />
 
             <TextView
                 android:id="@+id/tvInventoryItemsCount"
@@ -264,7 +172,7 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/tvNumberBins"
-                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
+                app:layout_constraintTop_toBottomOf="@+id/rvInventoryItems" />
 
             <ImageButton
                 android:id="@+id/ivDeleteItem"
@@ -272,7 +180,7 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
                 android:layout_height="48dp"
                 android:layout_marginEnd="16dp"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toTopOf="@+id/xvInventoryItems"
+                app:layout_constraintBottom_toTopOf="@+id/rvInventoryItems"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvSelectBins"
                 app:srcCompat="@drawable/ic_delete" />
@@ -283,7 +191,7 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
                 android:layout_height="48dp"
                 android:layout_marginStart="16dp"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toTopOf="@+id/xvInventoryItems"
+                app:layout_constraintBottom_toTopOf="@+id/rvInventoryItems"
                 app:layout_constraintEnd_toStartOf="@+id/tvSelectBins"
                 app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/ic_add_stock_opname" />

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_item_bottom"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvItemSNo"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp"
+        android:paddingEnd="15dp"
+        android:textAlignment="viewEnd"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvItemDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvItemDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp"
+        android:paddingRight="5dp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toStartOf="@+id/tvItemCount"
+        app:layout_constraintStart_toEndOf="@id/tvItemSNo"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvItemCount"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp"
+        android:paddingRight="5dp"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvItemDescription"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

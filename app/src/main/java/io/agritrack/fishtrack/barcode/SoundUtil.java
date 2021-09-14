@@ -25,21 +25,19 @@ public class SoundUtil {
         sp = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(audioAttributes).build();
         soundMap = new HashMap<Integer, Integer>();
         soundMap.put(1, sp.load(context, R.raw.msg, 1));
+        soundMap.put(2, sp.load(context, R.raw.beep, 1));
+        soundMap.put(3, sp.load(context, R.raw.geiger2, 1));
+        soundMap.put(4, sp.load(context, R.raw.geiger4, 1));
+        soundMap.put(5, sp.load(context, R.raw.geiger6, 1));
     }
 
     //
-    public static void play(int sound, int number) {
+    public static void play(int soundID, float volume, int loop, float rate) {
         AudioManager am = (AudioManager) SoundUtil.context.getSystemService(Context.AUDIO_SERVICE);
         float audioMaxVolume = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-
         float audioCurrentVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+
         float volumnRatio = audioCurrentVolume / audioMaxVolume;
-        sp.play(
-                soundMap.get(sound), //
-                audioCurrentVolume, //
-                audioCurrentVolume, //
-                1, //
-                number, //
-                1);//
+        sp.play(soundMap.get(soundID),volume * volumnRatio,0,1, loop, rate);
     }
 }
