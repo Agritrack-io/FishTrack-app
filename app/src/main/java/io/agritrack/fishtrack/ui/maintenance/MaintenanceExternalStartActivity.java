@@ -72,7 +72,9 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
         // RFID scanning functionality
         btnScanAsset.setOnClickListener(view -> {
             //update scanning, uhfReader, tvPlatformName values in thread
-            scanner.setUhfReader(UhfReader.getInstance());
+            UhfReader _uhfReader = UhfReader.getInstance();
+            _uhfReader.setWorkArea(3);
+            scanner.setUhfReader(_uhfReader);
 
             Future<?> future = executor.submit(scanner);
             try {

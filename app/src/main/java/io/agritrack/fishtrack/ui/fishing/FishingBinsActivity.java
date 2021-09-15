@@ -163,6 +163,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     private void prepareScanAvailableBinsButton() {
         // RFID scanning functionality
         uhfReader = UhfReader.getInstance();
+        uhfReader.setWorkArea(3);
         uhfReader.setOutputPower(33);
 
         final Button scanButton = findViewById(R.id.btnScanBin);

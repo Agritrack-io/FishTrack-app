@@ -108,7 +108,9 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(view -> {
             //update scanning, uhfReader, tvPlatformName values in thread
-            scanner.setUhfReader(UhfReader.getInstance());
+            UhfReader _uhfReader = UhfReader.getInstance();
+            _uhfReader.setWorkArea(3);
+            scanner.setUhfReader(_uhfReader);
             scanner.setFilter(activeFilter);
 
             Future<?> future = executor.submit(scanner);

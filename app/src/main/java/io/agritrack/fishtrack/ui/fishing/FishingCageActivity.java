@@ -58,7 +58,9 @@ public class FishingCageActivity extends AppCompatActivity {
         // RFID scanning functionality
         scanCageButton.setOnClickListener(view -> {
             //update scanning, uhfReader, tvPlatformName values in thread
-            scanner.setUhfReader(UhfReader.getInstance());
+            UhfReader _uhfReader = UhfReader.getInstance();
+            _uhfReader.setWorkArea(3);
+            scanner.setUhfReader(_uhfReader);
             scanner.setFilter(Filters.RFID_CAGE);
 
             Future<?> future = executor.submit(scanner);
@@ -79,7 +81,9 @@ public class FishingCageActivity extends AppCompatActivity {
 
         scanNetButton.setOnClickListener(view -> {
             //update scanning, uhfReader, tvPlatformName values in thread
-            scanner.setUhfReader(UhfReader.getInstance());
+            UhfReader _uhfReader = UhfReader.getInstance();
+            _uhfReader.setWorkArea(3);
+            scanner.setUhfReader(_uhfReader);
             scanner.setFilter(Filters.RFID_NET);
 
             Future<?> future = executor.submit(scanner);

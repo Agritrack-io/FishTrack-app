@@ -95,7 +95,9 @@ public class FishingStartActivity extends AppCompatActivity {
         // RFID scanning functionality
         scanButton.setOnClickListener(view -> {
             //update scanning, uhfReader, tvPlatformName values in thread
-            scanner.setUhfReader(UhfReader.getInstance());
+            UhfReader _uhfReader = UhfReader.getInstance();
+            _uhfReader.setWorkArea(3);
+            scanner.setUhfReader(_uhfReader);
             scanner.setFilter(Filters.RFID_PLATFORM);
 
             Future<?> future = executor.submit(scanner);
