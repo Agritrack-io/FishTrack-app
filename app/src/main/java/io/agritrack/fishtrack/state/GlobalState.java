@@ -117,7 +117,7 @@ public class GlobalState {
             txFishing.iceSupplier = recFishing.iceSupplier;
             txFishing.seaTemperature = recFishing.seaTemperature;
             txFishing.harvestBinsCnt = recFishing.totalBinsUsed;
-            txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight) : null;
+            txFishing.orderedQuantity = recFishing.reqWeight != null ? Integer.valueOf(recFishing.reqWeight) : null;
             txFishing.requester = recFishing.requesterName;
             txFishing.totalQty = recFishing.totalFishWeight;
             txFishing.harvestBins = recFishing.availBins;

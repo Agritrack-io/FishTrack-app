@@ -7,7 +7,7 @@ public class FishingHarvestBinDTO {
     public Long id;
     public String fishingId;
     public String harvestBinRFId;
-    public Double quantity;
+    public Integer quantity;
     public String temperature;
 
     public static FishingHarvestBin convert(FishingHarvestBinDTO fishingHarvestBinDTO) {

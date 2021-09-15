@@ -17,7 +17,7 @@ public class FishingHarvestBin {
     public String harvestBinRFId;
 
     @ColumnInfo(name = "quantity")
-    public Double quantity;
+    public Integer quantity;
 
     @ColumnInfo(name = "temperature")
     public String temperature;

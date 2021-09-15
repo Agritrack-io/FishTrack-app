@@ -25,7 +25,7 @@ public class FishingRecord {
     public String lastFed;
     public Boolean adequateIce = Boolean.TRUE;
     public String iceSupplier;
-    public Double totalFishWeight;
+    public Integer totalFishWeight;
     public Short totalBinsUsed;
     public Double seaTemperature;
     public Long harvestRqPkId;

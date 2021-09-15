@@ -7,7 +7,7 @@ public class ConsumableTxDTO {
 
     public Long id;
     public Date timestamp;
-    public Double quantity;
+    public Integer quantity;
     public String barcode;
     public String ftes;
     public String dispatchNote;

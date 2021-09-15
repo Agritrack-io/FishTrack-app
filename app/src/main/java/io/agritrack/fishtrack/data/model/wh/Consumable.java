@@ -23,10 +23,10 @@ public class Consumable {
     public String consumableType;
 
     @ColumnInfo(name = "quantity")
-    public Double qty;
+    public Integer qty;
 
     @ColumnInfo(name = "packaging_quantity")
-    public Double packagingQty;
+    public Integer packagingQty;
 
     @ColumnInfo(name = "description")
     public String description;

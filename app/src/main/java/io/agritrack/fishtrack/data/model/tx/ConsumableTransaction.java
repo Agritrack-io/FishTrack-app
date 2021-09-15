@@ -16,7 +16,7 @@ public class ConsumableTransaction {
     public Date timestamp;
 
     @ColumnInfo(name = "quantity")
-    public Double quantity;
+    public Integer quantity;
 
     @ColumnInfo(name = "barcode")
     public String barcode;

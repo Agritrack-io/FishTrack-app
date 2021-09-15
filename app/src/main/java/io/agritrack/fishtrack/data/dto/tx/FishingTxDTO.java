@@ -18,9 +18,9 @@ public class FishingTxDTO {
     public String ice_supplier;
     public Long last_feed;
     public String requester;
-    public Double ordered_quantity;
+    public Integer ordered_quantity;
     public Double sea_temperature;
-    public Double total_quantity;
+    public Integer total_quantity;
     public Short number_harvest_bins;
     public List<String> harvest_bins = new LinkedList<String>();
     public List<String> team_members = new LinkedList<String>();

@@ -51,13 +51,13 @@ public class FishingTransaction {
     public String requester;
 
     @ColumnInfo(name = "ordered_quantity")
-    public Double orderedQuantity;
+    public Integer orderedQuantity;
 
     @ColumnInfo(name = "sea_temperature")
     public Double seaTemperature;
 
     @ColumnInfo(name = "total_quantity")
-    public Double totalQty;
+    public Integer totalQty;
 
     @ColumnInfo(name = "number_harvest_bins")
     public Short harvestBinsCnt;

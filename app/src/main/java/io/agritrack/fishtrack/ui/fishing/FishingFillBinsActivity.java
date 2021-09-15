@@ -106,7 +106,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             adapterCatches.notifyDataSetChanged();
 
                             tvUsedBinsCount.setText(loadsMap.loadsCnt());
-                            tvBinWeight.setText("0.0");
+                            tvBinWeight.setText("0");
                         }
                     });
                 }

@@ -9,8 +9,8 @@ public class ConsumableDTO {
     public String code;
     public String lot;
     public String consumableType;
-    public Double qty;
-    public Double packagingQty;
+    public Integer qty;
+    public Integer packagingQty;
     public String description;
     public String details1;
     public String details2;

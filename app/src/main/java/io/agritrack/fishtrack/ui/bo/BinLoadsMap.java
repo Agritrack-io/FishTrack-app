@@ -41,20 +41,20 @@ public class BinLoadsMap {
         return String.valueOf(loads.size());
     }
 
-    public Double weightOf(String bin) {
+    public Integer weightOf(String bin) {
         if(Strings.isEmptyOrWhitespace(bin)) {
-            return 0.0d;
+            return 0;
         }
 
-        Double total = 0.0d;
+        Integer total = 0;
         for(String w : loads.get(bin)) {
-            total += Double.valueOf(w);
+            total += Integer.valueOf(w);
         }
         return total;
     }
 
-    public Double totalWeight() {
-        Double total = 0.0d;
+    public Integer totalWeight() {
+        Integer total = 0;
         for(String bin : loads.keySet()) {
             total += weightOf(bin);
         }
