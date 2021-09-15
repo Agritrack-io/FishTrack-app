@@ -46,10 +46,11 @@ public class ScanFilterThread extends Thread {
     @Override
     public void run() {
         List<TagModel> tagList;
+        uhfReader.setWorkArea(3);
+        uhfReader.setOutputPower(24);
         while (scanInProgress) {
             if (uhfReader != null) {
                 try {
-                    uhfReader.setOutputPower(23);
                     tagList = uhfReader.inventorySingle(RFID_PREFIX + filterEPC);
 
                     if (tagList != null && !tagList.isEmpty()) {

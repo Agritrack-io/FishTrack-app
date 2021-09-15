@@ -17,7 +17,7 @@
     <string name="label_login_header_content">Please login with your credentials</string>
     <string name="label_tv_forgot_pwd">Did you forget your PIN?</string>
 
-    <string name="empty_credentials_alert">Please fill-in Username And PIN.</string>
+    <string name="empty_credentials_alert">Please fill-in Username and PIN.</string>
 
     <string name="label_version_fish_track_profile">FishTrack v1.0.0</string>
 

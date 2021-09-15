@@ -225,7 +225,6 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
 
         // RFID scanning functionality
         uhfReader = UhfReader.getInstance();
-        uhfReader.setWorkArea(3);
 
         final Button scanButton = findViewById(R.id.btnSearchAsset);
         scanButton.setOnClickListener(view -> {

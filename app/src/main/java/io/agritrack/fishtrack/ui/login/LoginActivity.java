@@ -54,6 +54,7 @@ import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Logged_In_User_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Token_Key;
 
@@ -179,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void noCredentialsEnteredAlert() {
-        Toast.makeText(getApplicationContext(), render(R.string.empty_credentials_alert), Toast.LENGTH_LONG).show();
+        CToast(getApplicationContext(), render(R.string.empty_credentials_alert), Toast.LENGTH_LONG);
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
@@ -201,7 +202,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showLoginFailed(String errorString) {
-        Toast.makeText(getApplicationContext(), render(errorString), Toast.LENGTH_SHORT).show();
+        CToast(getApplicationContext(), render(errorString), Toast.LENGTH_SHORT);
     }
 
     // show Progress bar
@@ -339,7 +340,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (taps == 6) {
                     LocalPreferences.Reset();
                     taps = 0;
-                    Toast.makeText(getApplicationContext(), render("Preferences Reset!!!"), Toast.LENGTH_SHORT).show();
+                    CToast(getApplicationContext(), render("Preferences Reset!!!"), Toast.LENGTH_SHORT);
                 }
                 lastTap = now;
             }
