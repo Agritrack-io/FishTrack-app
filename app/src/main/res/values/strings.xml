@@ -92,8 +92,8 @@
     <string name="back_button">BACK</string>
     <string name="add_catch_button">ADD CATCH</string>
     <string name="end_bin_button">BIN FILLED</string>
-    <string name="weight_bin">Weight of Bin (Kg):</string>
-    <string name="fishing_batches">Fishing Batches</string>
+    <string name="weight_bin">Weight of Bin:</string>
+    <string name="fishing_catches">Fishing Catches</string>
     <string name="fishing_summary">Fishing Summary</string>
     <string name="total_weight">TOTAL WEIGHT (Kg):</string>
     <string name="used_bins">USED BINS:</string>
@@ -145,8 +145,9 @@
     <string name="dispatch_note">Type dispatch note</string>
     <string name="enter_lot">Type LOT</string>
     <string name="enter_security_clip">Type security clip number</string>
-    <string name="clean_truck">Clean truck:  </string>
-    <string name="smell_truck">Smells:  </string>
+    <string name="truck">Truck</string>
+    <string name="clean_truck">Clean:</string>
+    <string name="smell_truck">Smells:</string>
     <string name="fish_condition">Fish condition</string>
     <string name="receipt_remarks">Type your remarks</string>
 

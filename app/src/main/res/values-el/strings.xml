@@ -93,7 +93,7 @@
     <string name="add_catch_button">ΠΡΟΣΘΕΣΕ ΨΑΡΙΑ</string>
     <string name="end_bin_button">ΤΕΛΟΣ ΒΟΥΤΑΣ</string>
     <string name="weight_bin">Βάρος βούτας:</string>
-    <string name="fishing_batches">Ψαριές</string>
+    <string name="fishing_catches">Ψαριές</string>
     <string name="fishing_summary">Σύνολα αλίευσης</string>
     <string name="total_weight">ΣΥΝΟΛΙΚΟ ΒΑΡΟΣ:</string>
     <string name="used_bins">ΧΡΗΣΙΜΟΠΟΙΟΥΜΕΝΕΣ ΒΟΥΤΕΣ:</string>
@@ -148,7 +148,8 @@
     <string name="dispatch_note">Εισάγετε δελτίο αποστολής</string>
     <string name="enter_lot">Εισάγετε LOT</string>
     <string name="enter_security_clip">Εισάγετε αριθμό ασφαλείας</string>
-    <string name="clean_truck">Καθαριότητα οχήματος:</string>
+    <string name="truck">Φορτηγό</string>
+    <string name="clean_truck">Καθαρό:</string>
     <string name="smell_truck">Δυσάρεστες οσμές:</string>
     <string name="fish_condition">Κατάσταση ψαριών</string>
     <string name="receipt_remarks">Εισάγετε παρατηρήσεις/σχόλια</string>

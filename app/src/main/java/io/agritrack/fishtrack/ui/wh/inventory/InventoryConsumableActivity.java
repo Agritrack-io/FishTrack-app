@@ -57,7 +57,7 @@ public class InventoryConsumableActivity extends AppCompatActivity {
                 String barcode = new String(data);
                 adapterInventoryItems.addItem(barcode);
                 adapterInventoryItems.notifyDataSetChanged();
-                tvInventoryItemsCount.setText(String.valueOf(adapterInventoryItems.getItemCount()));
+                tvInventoryItemsCount.setText("# "+String.valueOf(adapterInventoryItems.getItemCount()));
                 scanning = false;
             }
         }

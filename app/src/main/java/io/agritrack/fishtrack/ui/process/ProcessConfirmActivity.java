@@ -65,7 +65,7 @@ public class ProcessConfirmActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToReceiveBins);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), ProcessBinsActivity.class);
+            Intent i = new Intent(getApplicationContext(), ProcessInfoActivity.class);
             startActivity(i);
         });
     }

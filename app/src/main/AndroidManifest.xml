@@ -93,7 +93,7 @@
             android:name=".ui.process.ProcessBinsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.process.ProcessStartActivity"
+            android:name=".ui.process.ProcessInfoActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.transport.TransportSupervisorConfirmActivity"

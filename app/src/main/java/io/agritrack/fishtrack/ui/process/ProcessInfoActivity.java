@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,22 +15,22 @@ import com.google.android.gms.common.util.Strings;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.ProcessingRecord;
-import io.agritrack.fishtrack.ui.HomeActivity;
+import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.common.LargeString.render;
 
-public class ProcessStartActivity extends AppCompatActivity {
+public class ProcessInfoActivity extends AppCompatActivity {
 
     private TextView etDispatchNote, etSecurityClip, etPlot;
-    private Spinner spFishCondition;
+    private ToggleGroup tgChooseFishCondition;
     private SwitchCompat swCleanTruck, swSmell;
     private EditText mtvRemarks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_process_start);
+        setContentView(R.layout.activity_process_info);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderProcessStart);
@@ -54,14 +53,14 @@ public class ProcessStartActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
             } else {
-                Intent i = new Intent(getApplicationContext(), ProcessBinsActivity.class);
+                Intent i = new Intent(getApplicationContext(), ProcessConfirmActivity.class);
                 startActivity(i);
             }
         });
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), ProcessBinsActivity.class);
             startActivity(i);
         });
     }
@@ -70,9 +69,9 @@ public class ProcessStartActivity extends AppCompatActivity {
         etDispatchNote = findViewById(R.id.etDispatchNote);
         etSecurityClip = findViewById(R.id.etSecurityClipNum);
         etPlot = findViewById(R.id.etPlot);
-        spFishCondition = findViewById(R.id.spFishCondition);
         swCleanTruck = findViewById(R.id.swCleanTruck);
         swSmell = findViewById(R.id.swSmell);
+        tgChooseFishCondition = findViewById(R.id.tgChooseFishCondition);
         mtvRemarks = findViewById(R.id.mtvRemarks);
     }
 
@@ -89,10 +88,6 @@ public class ProcessStartActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(prcTx.pLot)) {
             etPlot.setText(prcTx.pLot);
-        }
-
-        if (prcTx.fishConditionPos > -1) {
-            spFishCondition.setSelection(prcTx.fishConditionPos);
         }
 
         if (!Strings.isEmptyOrWhitespace(prcTx.remarks)) {
@@ -115,10 +110,6 @@ public class ProcessStartActivity extends AppCompatActivity {
         if (etPlot.getText() != null) {
             processingRecord.pLot = etPlot.getText().toString();
         }
-        if (spFishCondition.getSelectedItem() != null) {
-            processingRecord.fishCondition = spFishCondition.getSelectedItem().toString();
-        }
-        processingRecord.fishConditionPos = spFishCondition.getSelectedItemPosition();
 
         if (mtvRemarks.getText() != null) {
             processingRecord.remarks = mtvRemarks.getText().toString();

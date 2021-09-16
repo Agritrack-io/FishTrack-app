@@ -45,7 +45,7 @@ import io.agritrack.fishtrack.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fishtrack.ui.login.LoginActivity;
 import io.agritrack.fishtrack.ui.login.api.SyncApi;
 import io.agritrack.fishtrack.ui.maintenance.MaintenanceMenuActivity;
-import io.agritrack.fishtrack.ui.process.ProcessStartActivity;
+import io.agritrack.fishtrack.ui.process.ProcessBinsActivity;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import io.agritrack.fishtrack.ui.transport.TransportStartActivity;
 import retrofit2.Call;
@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity {
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_processing), ProcessStartActivity.class, R.drawable.processing));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_processing), ProcessBinsActivity.class, R.drawable.processing));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
 
@@ -139,7 +139,7 @@ public class HomeActivity extends AppCompatActivity {
                         i = new Intent(appCtx, TransportStartActivity.class);
                         break;
                     case Processing_Idx:
-                        i = new Intent(appCtx, ProcessStartActivity.class);
+                        i = new Intent(appCtx, ProcessBinsActivity.class);
                         break;
                     case Warehouse_Idx:
                         i = new Intent(appCtx, WhMenuActivity.class);

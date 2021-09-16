@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -37,6 +38,9 @@ import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.bo.BinLoadsMap;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
+import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.state.GlobalState.recFishing;
+
 
 public class FishingFillBinsActivity extends AppCompatActivity {
 
@@ -54,6 +58,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private String currentBin;
     private BinLoadsMap loadsMap;
 
+    FishingRecord fishingRecord = recFishing;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,7 +113,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             adapterCatches.notifyDataSetChanged();
 
                             tvUsedBinsCount.setText(loadsMap.loadsCnt());
-                            tvBinWeight.setText("0");
+                            tvBinWeight.setText("");
                         }
                     });
                 }
@@ -170,8 +175,14 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FishingConfirmActivity.class);
-            startActivity(i);
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
+            } else {
+                Intent i = new Intent(getApplicationContext(), FishingConfirmActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToDetails);
@@ -179,6 +190,32 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
             startActivity(i);
         });
+    }
+
+    private FishingRecord updateState() {
+        FishingRecord fishingRecord = recFishing;
+
+        if (tvTotalWeightCount.getText() != null) {
+            fishingRecord.totalFishWeight = loadsMap.totalWeight();
+        }
+
+        if (tvUsedBinsCount.getText() != null && !Strings.isEmptyOrWhitespace(tvUsedBinsCount.getText().toString())) {
+            fishingRecord.totalBinsUsed = Short.valueOf(tvUsedBinsCount.getText().toString());
+        }
+
+        GlobalState.commitFishing(db, Boolean.FALSE);
+
+        return fishingRecord;
+    }
+
+    private String validate() {
+        StringBuilder sb = new StringBuilder();
+
+        if (GlobalState.recFishing.totalBinsUsed ==null) {
+            sb.append(String.format("\n%s is missing", "'Harvest bins'"));
+        }
+
+        return sb.toString();
     }
 
     private void showCatchDialog() {
@@ -201,7 +238,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                 //loadsMap.addLoad(currentBin, mCatchWeight);
 
                 tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-                tvTotalWeightCount.setText(loadsMap.totalWeight().toString());
+                tvTotalWeightCount.setText(loadsMap.totalWeight().toString()+ " " + "(" + fishingRecord.reqWeight.toString() + ")");
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

@@ -38,6 +38,7 @@ import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.ProcessingRecord;
+import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
@@ -224,13 +225,13 @@ public class ProcessBinsActivity extends AppCompatActivity {
             processingBinsThread.setScanInProgress(scanning);
 
             updateState();
-            String v = validate();
+           /* String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
-            } else {
-                Intent i = new Intent(getApplicationContext(), ProcessConfirmActivity.class);
+            } else {*/
+                Intent i = new Intent(getApplicationContext(), ProcessInfoActivity.class);
                 startActivity(i);
-            }
+            /*}*/
         });
 
          ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartProcess);
@@ -240,7 +241,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
             scanning = false;
             processingBinsThread.setScanInProgress(scanning);
 
-            Intent i = new Intent(getApplicationContext(), ProcessStartActivity.class);
+            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
             startActivity(i);
         });
     }
