@@ -41,11 +41,10 @@ import static io.agritrack.fishtrack.common.LargeString.render;
 
 public class InventoryAssetActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
-    private  ToggleGroup tgChooseAssetType;
+    private ToggleGroup tgChooseAssetType;
 
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private ExpandableListView xvInventoryItems;
-    private TextView tvInventoryItemsCount;
     private InventoryWHRecord whInventoryRecord;
     private UhfReader uhfReader;
     private ScanInventoryThread transportationBinsThread = new ScanInventoryThread();
@@ -101,12 +100,16 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
             if (response == null) {
                 return;
             }
-            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));;//(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
+            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
 
-            adapterInventoryItems = new TreelikeAdapter(this, values);
-            xvInventoryItems.setAdapter(adapterInventoryItems);
+            if (adapterInventoryItems==null) {
+                adapterInventoryItems = new TreelikeAdapter(this, values);
+                xvInventoryItems.setAdapter(adapterInventoryItems);
+            } else {
+                adapterInventoryItems.appendItems(values);
+            }
 
-            tvInventoryItemsCount.setText(String.valueOf(response.size()));
+            //tvInventoryItemsCount.setText(String.valueOf(response.size()));
             adapterInventoryItems.notifyDataSetChanged();
         });
 
@@ -156,7 +159,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
     private void assignCtrlVars() {
         tgChooseAssetType = findViewById(R.id.tgChooseAssetType);
         xvInventoryItems = findViewById(R.id.xvInventoryItems);
-        tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
+        //tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
         ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
         ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
 

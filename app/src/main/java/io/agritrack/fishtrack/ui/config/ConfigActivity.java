@@ -50,6 +50,7 @@ import static io.agritrack.fishtrack.ui.service.LocalPreferences.Latitude_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Longitude_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.SelectedCluster_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.SelectedSiteId_Key;
+import static io.agritrack.fishtrack.ui.service.LocalPreferences.SelectedSiteLevel_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.SelectedSiteName_Key;
 
 public class ConfigActivity extends AppCompatActivity implements LocationListener {
@@ -100,6 +101,7 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
                         LocalPreferences.writeValue(SelectedSiteName_Key, siteInfo.getName());
                         LocalPreferences.writeValue(SelectedSiteId_Key, siteInfo.getId());
                         LocalPreferences.writeValue(SelectedCluster_Key, siteInfo.getLevel2());
+                        LocalPreferences.writeValue(SelectedSiteLevel_Key, siteInfo.getLevel3());
 
                         // move to Login Screen
                         Intent i = new Intent(getAppContext(), LoginActivity.class);

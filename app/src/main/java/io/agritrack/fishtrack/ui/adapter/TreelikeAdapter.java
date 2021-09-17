@@ -9,10 +9,14 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.ui.login.api.SiteInfo;
 
 public class TreelikeAdapter extends BaseExpandableListAdapter {
@@ -20,7 +24,7 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
     private final Context mCtx;
     // child data in format of: <Type, List of children<Type>>
     private final Map<String, List<String>> mValues;
-    private final List<String> keys;
+    private List<String> keys;
 
     public TreelikeAdapter(Context context, Map<String, List<String>> listData) {
         this.mCtx = context;
@@ -79,6 +83,11 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(clusterName);
 
+        TextView lbClusterDescription = convertView.findViewById(R.id.tvClusterDescription);
+        lbClusterDescription.setText(getAssetTypeName(clusterName));
+        TextView lbClusterSize = convertView.findViewById(R.id.tvClusterSize);
+        lbClusterSize.setText(getChildrenCount(groupPosition)+"");
+
         return convertView;
     }
 
@@ -97,5 +106,33 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    private String getAssetTypeName(String type){
+        switch (type){
+            case Filters.RFID_CAGE:
+                return "CAGE";
+            case Filters.RFID_NET:
+                return "NET";
+            case Filters.RFID_BIN:
+                return "BIN";
+            case Filters.RFID_PLATFORM:
+                return "PLATFORM";
+            default:
+                return "";
+        }
+    }
+
+    public void appendItems(Map<String, List<String>> values) {
+        for (String key: values.keySet()){
+            if(!this.mValues.containsKey((key))){
+                this.mValues.put(key,values.get(key));
+            } else {
+                Set<String> tmp = new TreeSet<>(this.mValues.get(key));
+                tmp.addAll(values.get(key));
+                this.mValues.put(key, new ArrayList<>(tmp));
+            }
+        }
+        this.keys = new ArrayList<>(this.mValues.keySet());
     }
 }

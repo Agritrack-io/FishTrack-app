@@ -25,6 +25,7 @@ public class LocalPreferences {
     public static final String SelectedSiteName_Key = "selectedSiteName";
     public static final String SelectedSiteId_Key = "selectedSiteId";
     public static final String SelectedCluster_Key = "selectedClusterId";
+    public static final String SelectedSiteLevel_Key = "selectedSiteLevel3";
     public static final String Locale_Key = "localeCode";
     public static final String Logged_In_User_Key = "LoggedinUser";
 
@@ -56,6 +57,10 @@ public class LocalPreferences {
 
     public static String getCurrentClusterId() {
         return pref.getString(SelectedCluster_Key, null);
+    }
+
+    public static String getCurrentSiteLevel3() {
+        return pref.getString(SelectedSiteLevel_Key, null);
     }
 
     public static String getLocale() {

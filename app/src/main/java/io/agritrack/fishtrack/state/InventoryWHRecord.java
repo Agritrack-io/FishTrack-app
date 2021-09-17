@@ -9,9 +9,10 @@ public class InventoryWHRecord {
     public AssetType assetType;
     public String inventoryItemType;
     public String site;
+    public String subSite;
     public String selectedItemType;
 
     public int assetTypePos = -1;
-    public int selectedSitePos = -1;
+    public int subSitePos = -1;
     public List<String> inventoryItems;
 }

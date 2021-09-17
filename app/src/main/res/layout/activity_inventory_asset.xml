@@ -185,121 +185,84 @@ tools:context=".ui.wh.inventory.InventoryAssetActivity">
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inventoryAssetALayout">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
             android:background="@drawable/shape_rounded_corner_with_shadow"
             android:orientation="vertical"
             android:padding="1dp">
 
-            <TextView
-                android:id="@+id/tvSelectBins"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_horizontal"
-                android:text="@string/inventory_item_label"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/xvInventoryItems"
-                app:layout_constraintEnd_toStartOf="@+id/ivDeleteItem"
-                app:layout_constraintStart_toEndOf="@+id/ivAddItem"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <Button
                 android:id="@+id/btnScanAsset"
-                android:layout_width="0dp"
-                android:layout_height="78dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="8dp"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
                 android:background="@drawable/button_press_effect"
                 android:text="@string/scan_assets"
                 android:textColor="@color/yellow"
                 android:textSize="@dimen/button_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvNumberBins"
+                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems"
                 tools:layout_conversion_absoluteHeight="120dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
-            <ExpandableListView
-                android:id="@+id/xvInventoryItems"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_rounded_input_spinner"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/tvNumberBins"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSelectBins">
-            </ExpandableListView>
+        <TextView
+            android:id="@+id/tvHeaders"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_vertical"
+            android:paddingStart="22dp"
+            android:text="Type          Description                          #"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/xvInventoryItems"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvNumberBins"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_horizontal"
-                android:text="@string/number_of_items"
-                android:textColor="@color/label_blue"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
-                app:layout_constraintEnd_toStartOf="@+id/tvInventoryItemsCount"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
+        <ExpandableListView
+            android:id="@+id/xvInventoryItems"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_rounded_input_spinner"
+            android:padding="5dp"
+            android:paddingStart="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/tvHeaders"
+            app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/tvInventoryItemsCount"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginTop="4dp"
-                android:background="@drawable/border_bottom"
-                android:gravity="center"
-                android:inputType="number"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textIsSelectable="false"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/tvNumberBins"
-                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
+        </ExpandableListView>
 
             <ImageButton
                 android:id="@+id/ivDeleteItem"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="8dp"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toTopOf="@+id/xvInventoryItems"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvSelectBins"
+                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems"
                 app:srcCompat="@drawable/ic_delete" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageButton
+                android:id="@+id/ivAddItem"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:background="@color/transparent"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems"
+                app:srcCompat="@drawable/ic_add_stock_opname" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="16dp"
-            android:background="@color/agri_green"
-            android:paddingHorizontal="8dp"
-            android:text="@string/inventory"
-            android:textColor="@color/label_blue"
-            android:textSize="18sp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     </RelativeLayout>
 

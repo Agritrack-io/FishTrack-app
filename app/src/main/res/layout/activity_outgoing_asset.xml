@@ -283,12 +283,26 @@
                     tools:layout_conversion_absoluteHeight="120dp"
                     tools:layout_conversion_absoluteWidth="0dp" />
 
+                <TextView
+                    android:id="@+id/tvHeaders"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="22dp"
+                    android:text="Type          Description                          #"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toTopOf="@+id/xvOutgoingItems"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <ExpandableListView
                     android:id="@+id/xvOutgoingItems"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/bg_rounded_input_spinner"
@@ -297,7 +311,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toBottomOf="@+id/tvHeaders">
 
                 </ExpandableListView>
 

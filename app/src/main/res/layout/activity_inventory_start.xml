@@ -111,7 +111,7 @@ tools:context=".ui.wh.inventory.InventoryStartActivity">
 
         <RelativeLayout
             android:id="@+id/inventoryALayout"
-            android:layout_width="200dp"
+            android:layout_width="300dp"
             android:layout_height="400dp"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@+id/spSite"
@@ -152,9 +152,9 @@ tools:context=".ui.wh.inventory.InventoryStartActivity">
                         android:background="@drawable/tooglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="ASSET"
-                        android:textOn="ASSET"
-                        android:textSize="@dimen/text_view_font_size_medium" />
+                        android:textOff="ASSET&#10;&#10;[Scan rfid]"
+                        android:textOn="ASSET&#10;&#10;[Scan rfid]"
+                        android:textSize="@dimen/text_view_font_size" />
 
                     <ToggleButton
                         android:id="@+id/tbConsumable"
@@ -165,9 +165,9 @@ tools:context=".ui.wh.inventory.InventoryStartActivity">
                         android:background="@drawable/tooglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="CONSUMABLE"
-                        android:textOn="CONSUMABLE"
-                        android:textSize="@dimen/text_view_font_size_medium" />
+                        android:textOff="CONSUMABLE&#10;&#10;[Scan barcode]"
+                        android:textOn="CONSUMABLE&#10;&#10;[Scan barcode"
+                        android:textSize="@dimen/text_view_font_size" />
 
                 </io.agritrack.fishtrack.ui.custom.ToggleGroup>
 
@@ -250,6 +250,7 @@ tools:context=".ui.wh.inventory.InventoryStartActivity">
         android:padding="1dp"
         android:scaleX="1.5"
         android:scaleY="1.2"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

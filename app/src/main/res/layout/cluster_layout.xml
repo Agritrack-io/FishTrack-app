@@ -1,18 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="5dp">
+    android:layout_height="wrap_content">
 
 
     <TextView
         android:id="@+id/tvClusterHeader"
-        android:layout_width="match_parent"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:background="@color/agri_blue"
         android:paddingLeft="5dp"
+        android:textAlignment="textStart"
         android:textColor="#f9f93d"
-        android:textSize="32dp" />
+        android:textSize="26dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/tvClusterDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/agri_blue"
+        android:paddingLeft="5dp"
+        android:textAlignment="textStart"
+        android:textColor="#f9f93d"
+        android:textSize="26dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvClusterSize"
+        app:layout_constraintStart_toEndOf="@+id/tvClusterHeader"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvClusterSize"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:background="@color/agri_blue"
+        android:paddingLeft="5dp"
+        android:textAlignment="center"
+        android:textColor="#f9f93d"
+        android:textSize="26dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvClusterDescription"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

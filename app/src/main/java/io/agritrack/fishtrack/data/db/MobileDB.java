@@ -50,7 +50,7 @@ import io.agritrack.fishtrack.data.model.wh.Asset;
         CageDetails.class, Employee.class, FishSpecies.class, Reader.class,
         FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class,
         AssetTransaction.class, CorrelationTransaction.class, RepairTransaction.class, HarvestTransaction.class},
-        version = 2, exportSchema = false)
+        version = 3, exportSchema = false)
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();

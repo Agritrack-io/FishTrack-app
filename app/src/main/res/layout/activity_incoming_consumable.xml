@@ -254,7 +254,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
             android:padding="1dp">
 
             <Button
-                android:id="@+id/btnScanAsset"
+                android:id="@+id/btnScanConsumable"
                 android:layout_width="150dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="4dp"
@@ -266,27 +266,41 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems"
+                app:layout_constraintTop_toBottomOf="@+id/rvIncomingItems"
                 tools:layout_conversion_absoluteHeight="120dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
-            <ExpandableListView
-                android:id="@+id/xvIncomingItems"
+            <TextView
+                android:id="@+id/tvHeaders"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center_vertical"
+                android:paddingStart="42dp"
+                android:text="        Item                                      Count"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/rvIncomingItems"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvIncomingItems"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_rounded_input_spinner"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
+                app:layout_constraintBottom_toTopOf="@+id/btnScanConsumable"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/tvHeaders">
 
-            </ExpandableListView>
+            </androidx.recyclerview.widget.RecyclerView>
 
             <ImageButton
                 android:id="@+id/ivDeleteItem"
@@ -295,7 +309,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                 android:layout_marginEnd="8dp"
                 android:background="@color/transparent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems"
+                app:layout_constraintTop_toBottomOf="@+id/rvIncomingItems"
                 app:srcCompat="@drawable/ic_delete" />
 
             <ImageButton
@@ -305,7 +319,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                 android:layout_marginStart="8dp"
                 android:background="@color/transparent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems"
+                app:layout_constraintTop_toBottomOf="@+id/rvIncomingItems"
                 app:srcCompat="@drawable/ic_add_stock_opname" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,13 +1,15 @@
 package io.agritrack.fishtrack.ui.wh.incoming;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,7 +17,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
@@ -30,16 +36,20 @@ import java.util.stream.Collectors;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.api.APIServiceGenerator;
+import io.agritrack.fishtrack.barcode.BarcodeScanService;
+import io.agritrack.fishtrack.barcode.SoundUtil;
 import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
+import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
 import io.agritrack.fishtrack.enums.WarehouseTxState;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
+import io.agritrack.fishtrack.ui.adapter.BarcodeRecyclerAdapter;
 import io.agritrack.fishtrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
@@ -60,33 +70,38 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
     private  int selectedToggleButton = -1;
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private MobileDB db;
-    private UhfReader uhfReader;
-    private ScanInventoryThread processingBinsThread = new ScanInventoryThread();
     private boolean scanning = false;
-
-    private TreelikeAdapter adapterIncomingItems;
-
-    private TextView tvIncomingProcessFrom, tvIncomingProcessTo;
-    private ExpandableListView xvIncomingItems;
-
-    private ImageButton ivAddItem, ivDeleteItem;
+    private BarcodeScanService scanService;
+    private BarcodeRecyclerAdapter adapterIncomingItems;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
 
-    private String itemBarcode;
+    // BroadcastReceiver to receiver scan data
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            byte[] data = intent.getByteArrayExtra("data");
+            if (data != null) {
+                String barcode = new String(data);
+                adapterIncomingItems.addItem(barcode);
+                adapterIncomingItems.notifyDataSetChanged();
+                //tvInventoryItemsCount.setText("# "+String.valueOf(adapterIncomingItems.getItemCount()));
+                scanning = false;
+            }
+        }
+    };
 
     // Instantiate a clickListener to be passed to adapterIncomingItems.
     // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
+    private final View.OnClickListener itemsOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
+            TextView tvRecyclerItem = view.findViewById(R.id.tvItemDescription);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if (selectedItem != null) {
+            if(selectedItem!=null) {
                 selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
 
@@ -95,6 +110,14 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
             selectedItem = view;
         }
     };
+
+    private TextView tvIncomingProcessFrom, tvIncomingProcessTo;
+    private RecyclerView rvIncomingItems;
+
+    private ImageButton ivAddItem, ivDeleteItem;
+    private Button btnScanConsumable;
+
+    private String itemBarcode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,27 +131,22 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
         // get  references of the controls
         assignCtrlVars();
 
-        //Get reference of binsCount textView
-        scanResult.observe(this, response -> {
-            if (response == null) {
-                return;
-            }
-            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));;//(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvIncomingItems.setLayoutManager(layoutManager);
+        rvIncomingItems.setItemAnimator(new DefaultItemAnimator());
+        adapterIncomingItems = new BarcodeRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
+        rvIncomingItems.setAdapter(adapterIncomingItems);
+        rvIncomingItems.setNestedScrollingEnabled(false);
 
-            adapterIncomingItems = new TreelikeAdapter(this, values);
-            xvIncomingItems.setAdapter(adapterIncomingItems);
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
 
-            adapterIncomingItems.notifyDataSetChanged();
-        });
+        //Register receiver to receive the result of scan
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.rfid.SCAN");
+        registerReceiver(receiver, filter);
 
-        // initialize scanning threads
-        prepareScanAvailableBinsButton();
-
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
-
-        /*ivDeleteItem.setOnClickListener(view -> {
-            clearSelectedItem();
+        ivDeleteItem.setOnClickListener(view -> {
 
             if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
                 // instantiate Site selection confirm dialog
@@ -141,21 +159,31 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
                     if (barcode != null) {
                         adapterIncomingItems.removeItem(barcode);
                         adapterIncomingItems.notifyDataSetChanged();
+                        //tvInventoryItemsCount.setText(String.valueOf(adapterIncomingItems.getItemCount()));
                         selectedBarcode = null;
                     }
                 });
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+                clearSelectedItem();
             } else {
                 // <delete> Button was pressed without selecting a Bin first.
                 Toast.makeText(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG).show();
             }
-        });*/
+        });
 
-        /*ivAddItem.setOnClickListener(view -> {
-            showAddDialog();
-        });*/
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
+
+        btnScanConsumable.setOnClickListener(view -> {
+            clearSelectedItem();
+            if (!scanning) {
+                startScanning();
+            } else {
+                stopScanning();
+            }
+        });
 
         configFooter();
     }
@@ -166,13 +194,27 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
         }
     }
 
+    private void startScanning() {
+        if (scanService != null) {
+            scanning = true;
+            scanService.scan();
+        }
+    }
+
+    private void stopScanning() {
+        if (scanService != null) {
+            scanService.stopScan();
+            scanning = false;
+        }
+    }
+
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
 
             //Set scanning to false to stop running scan thread
             scanning = false;
-            processingBinsThread.setScanInProgress(scanning);
+            stopScanning();
 
             updateState();
             String v = validate();
@@ -189,7 +231,7 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
 
             //Set scanning to false to stop running scan thread
             scanning = false;
-            processingBinsThread.setScanInProgress(scanning);
+            stopScanning();
 
             Intent i = new Intent(getApplicationContext(), IncomingStartActivity.class);
             startActivity(i);
@@ -198,11 +240,12 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
 
     private void assignCtrlVars() {
         tgChooseConsumableType = findViewById(R.id.tgChooseConsumableType);
-        xvIncomingItems = findViewById(R.id.xvIncomingItems);
+        rvIncomingItems = findViewById(R.id.rvIncomingItems);
         tvIncomingProcessFrom = findViewById(R.id.tvIncomingProcessFrom);
         tvIncomingProcessTo = findViewById(R.id.tvIncomingProcessTo);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
         ivAddItem = findViewById(R.id.ivAddItem);
+        btnScanConsumable = findViewById(R.id.btnScanConsumable);
 
         tgChooseConsumableType.setOnCheckedChangeListener(this);
     }
@@ -287,53 +330,6 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
 
     }*/
 
-    private void prepareScanAvailableBinsButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setWorkArea(3);
-        uhfReader.setOutputPower(33);
-
-        final Button scanButton = findViewById(R.id.btnScanAsset);
-        scanButton.setOnClickListener(view -> {
-            clearSelectedItem();
-            scanning = !scanning;
-
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (processingBinsThread.getState() == Thread.State.TERMINATED) {
-                processingBinsThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            processingBinsThread.setScanInProgress(scanning);
-            processingBinsThread.setUhfReader(uhfReader);
-            processingBinsThread.setScanResult(scanResult);
-            processingBinsThread.setFilter(activeFilter);
-
-            if (scanning) {
-                scanButton.setText(R.string.stop_scan);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                    }
-                });
-                if (processingBinsThread.getState() == Thread.State.NEW) {
-                    processingBinsThread.start();
-                }
-            } else {
-                scanButton.setText(R.string.scan_assets);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-                    }
-                });
-                try {
-                    processingBinsThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
 
@@ -361,6 +357,32 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
                 selectedToggleButton = -1;
                 break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (scanService == null) {
+            scanService = new BarcodeScanService(this);
+            //we must set mode to 0 : BroadcastReceiver mode
+            scanService.setScanMode(0);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (scanService != null) {
+            scanService.setScanMode(1);
+            scanService.close();
+            scanService = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 
     public class SyncTxCallBack implements Callback<AssetTxDTO> {
