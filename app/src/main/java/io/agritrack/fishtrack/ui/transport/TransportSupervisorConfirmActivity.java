@@ -22,6 +22,7 @@ import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.TransportationRecord;
 import io.agritrack.fishtrack.ui.HomeActivity;
+import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.AuthenticationService;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
@@ -31,6 +32,7 @@ import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class TransportSupervisorConfirmActivity extends AppCompatActivity {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
@@ -126,7 +128,7 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
 
             // credentials do NOT match
             if (!authentication) {
-                runOnUiThread(() -> Toast.makeText(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG));
             } else {
                 try {
                     String token = LocalPreferences.getToken();
@@ -145,7 +147,7 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
                 }
             }
         } else {
-            runOnUiThread(() -> Toast.makeText(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG).show());
+            runOnUiThread(() -> CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG));
         }
     }
 
@@ -155,26 +157,26 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
             TransportTxDTO rs = response.body();
 
             if (rs != null) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Transport TX on backend!!!
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_transport_tx_update_failure), Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_transport_tx_update_failure), Toast.LENGTH_LONG));
             }
         }
 
         @Override
         public void onFailure(Call<TransportTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
         }

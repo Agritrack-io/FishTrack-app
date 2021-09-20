@@ -24,10 +24,12 @@ import io.agritrack.fishtrack.data.model.Site;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.TransportationRecord;
 import io.agritrack.fishtrack.ui.HomeActivity;
+import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class TransportStartActivity extends AppCompatActivity {
 
@@ -107,7 +109,7 @@ public class TransportStartActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), TransportBinsActivity.class);
                 startActivity(i);

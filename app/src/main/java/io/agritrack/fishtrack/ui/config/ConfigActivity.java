@@ -35,6 +35,7 @@ import io.agritrack.fishtrack.dialog.ConfirmationDialogCommand;
 import io.agritrack.fishtrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
 import io.agritrack.fishtrack.enums.Coordinates;
+import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.login.LoginActivity;
 import io.agritrack.fishtrack.ui.login.api.AuthApi;
 import io.agritrack.fishtrack.ui.login.api.SiteInfo;
@@ -46,6 +47,7 @@ import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Latitude_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.Longitude_Key;
 import static io.agritrack.fishtrack.ui.service.LocalPreferences.SelectedCluster_Key;
@@ -186,14 +188,14 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
             syncProgressDialog.hide();
 
             // show error cause message
-            Toast.makeText(getAppContext(), render("No location returned by GPS!"), Toast.LENGTH_LONG).show();
+            CToast(getAppContext(), render("No location returned by GPS!"), Toast.LENGTH_LONG);
             return;
         } else if (!useGPSoutcome && !LocalPreferences.locationExists()) {
             // hide progress Dialog
             syncProgressDialog.hide();
 
             // show error cause message
-            Toast.makeText(getAppContext(), render("No location found locally!"), Toast.LENGTH_LONG).show();
+            CToast(getAppContext(), render("No location found locally!"), Toast.LENGTH_LONG);
             return;
         }
 

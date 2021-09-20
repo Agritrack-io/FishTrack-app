@@ -82,7 +82,7 @@ public class HomeActivity extends AppCompatActivity {
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
 
         // instantiate ProgressDialog and set style.
-        progressDialog = new ProgressDialog(this);
+        progressDialog = new ProgressDialog(HomeActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         syncResult.observe(this, response -> {

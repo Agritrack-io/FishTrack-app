@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.hdhe.uhf.reader.UhfReader;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.common.Filters;
+import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.InventoryWHRecord;
@@ -38,6 +40,7 @@ import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class InventoryAssetActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -53,31 +56,13 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
     private TreelikeAdapter adapterInventoryItems;
     private String selectedAssetType;
     private String activeFilter = null;
-    private  int selectedToggleButton = -1;
+    private int selectedToggleButton = -1;
     private ImageButton ivAddItem, ivDeleteItem;
-    private String selectedBarcode;
+    private Integer selectedParent, selectedChild;
     private ConstraintLayout selectedItem;
+    private String selectedBarcode;
 
     private String itemBarcode;
-
-    // Instantiate a clickListener to be passed to adapterIncomingItems.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-
-            if(selectedItem!=null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +79,38 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
         // get  references of the controls
         assignCtrlVars();
 
+        xvInventoryItems.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                clearSelectedItem();
+
+                selectedParent = null;
+                selectedChild = null;
+                return false;
+            }
+        });
+
+        xvInventoryItems.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                ConstraintLayout view = (ConstraintLayout) v;
+                TextView tvSiteName = v.findViewById(R.id.tvSiteName);
+                selectedBarcode = tvSiteName.getText().toString();
+
+                clearSelectedItem();
+
+                v.setSelected(true);
+                view.setBackgroundColor(Color.GRAY);
+                selectedItem = view;
+
+                selectedParent = groupPosition;
+                selectedChild = childPosition;
+
+                return true;
+            }
+        });
+
+
         // initiate RFID scanner behaviour
 
         scanResult.observe(this, response -> {
@@ -102,7 +119,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
             }
             Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
 
-            if (adapterInventoryItems==null) {
+            if (adapterInventoryItems == null) {
                 adapterInventoryItems = new TreelikeAdapter(this, values);
                 xvInventoryItems.setAdapter(adapterInventoryItems);
             } else {
@@ -116,10 +133,10 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
         // initialize scanning threads
         prepareScanAvailableBinsButton();
 
-      /*  ivDeleteItem.setOnClickListener(view -> {
+        ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
+            if (selectedParent!=null && selectedChild!=null) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                 confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
@@ -128,9 +145,8 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
                     if (barcode != null) {
-                        adapterInventoryItems.removeItem(barcode);
+                        adapterInventoryItems.removeItem(selectedParent, selectedChild);
                         adapterInventoryItems.notifyDataSetChanged();
-                        tvInventoryItemsCount.setText(String.valueOf(adapterInventoryItems.getItemCount()));
                         selectedBarcode = null;
                     }
                 });
@@ -139,9 +155,9 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
                 // <delete> Button was pressed without selecting a Bin first.
-                Toast.makeText(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG).show();
+                CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
             }
-        });*/
+        });
 
        /* ivAddItem.setOnClickListener(view -> {
             showAddDialog();
@@ -150,8 +166,8 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
         configFooter();
     }
 
-    private void clearSelectedItem(){
-        if(selectedItem!=null) {
+    private void clearSelectedItem() {
+        if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
         }
     }
@@ -176,7 +192,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
 
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
                 startActivity(i);
@@ -195,7 +211,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
         });
     }
 
-  /*  private void showAddDialog() {
+    /*private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Type item BARCODE");
 
@@ -275,12 +291,12 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
 
-        if( selectedToggleButton == checkedId){
+        if (selectedToggleButton == checkedId) {
             group.clearCheck();
             return;
         }
         selectedToggleButton = checkedId;
-        switch(checkedId){
+        switch (checkedId) {
             case R.id.tbCage:
                 selectedAssetType = Constants.ftCage;
                 activeFilter = Filters.RFID_CAGE;
@@ -305,7 +321,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
         }
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
 
      /*If(GlobalState.recWHInventory.items==null || GlobalState.recWHIncoming.items.isEmpty()){

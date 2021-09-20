@@ -29,10 +29,12 @@ import io.agritrack.fishtrack.enums.AssetType;
 import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.RepairRecord;
+import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class MaintenanceInternalStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -125,7 +127,7 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), MaintenanceInternalTeamActivity.class);
                 startActivity(i);

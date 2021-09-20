@@ -190,6 +190,10 @@
     <string name="title_inventory">INVENTORY</string>
     <string name="title_inventory_asset">INVENTORY ASSET</string>
     <string name="title_inventory_consumable">INVENTORY CONSUMABLE</string>
+    <string name="item_inventory_asset">ASSET</string>
+    <string name="item_inventory_consumable">CONSUMABLE</string>
+    <string name="up_item_inventory_asset">[Scan rfid]</string>
+    <string name="down_item_inventory_consumable">[Scan barcode]</string>
     <string name="inventory_details">Inventory details</string>
     <string name="inventory">Inventory</string>
     <string name="inventory_item_label">Items</string>

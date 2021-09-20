@@ -14,8 +14,10 @@ import java.util.List;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.ui.bo.MenuItemData;
+import io.agritrack.fishtrack.ui.custom.CustomToast;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class MainMenuAdapter extends RecyclerView.Adapter<MainMenuAdapter.ViewHolder> {
     private final List<MenuItemData> mData;
@@ -45,7 +47,7 @@ public class MainMenuAdapter extends RecyclerView.Adapter<MainMenuAdapter.ViewHo
         holder.getTitle().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getAppContext(), "clicked on " + position, Toast.LENGTH_SHORT).show();
+                CToast(getAppContext(), "clicked on " + position, Toast.LENGTH_SHORT);
             }
         });
     }

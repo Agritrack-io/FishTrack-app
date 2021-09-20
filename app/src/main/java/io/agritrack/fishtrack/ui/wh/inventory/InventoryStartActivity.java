@@ -2,9 +2,13 @@ package io.agritrack.fishtrack.ui.wh.inventory;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -12,27 +16,43 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.data.db.MobileDB;
+import io.agritrack.fishtrack.data.model.HarvestRequest;
 import io.agritrack.fishtrack.data.model.Site;
+import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
+import io.agritrack.fishtrack.enums.TxStatus;
+import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.InventoryWHRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
+import io.agritrack.fishtrack.ui.adapter.HomeMenuAdapter;
+import io.agritrack.fishtrack.ui.adapter.InventoryMenuAdapter;
+import io.agritrack.fishtrack.ui.adapter.MenuItem;
+import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
+import io.agritrack.fishtrack.ui.fishing.FishingStartActivity;
+import io.agritrack.fishtrack.ui.fishing.HarvestRequestsActivity;
+import io.agritrack.fishtrack.ui.login.LoginActivity;
+import io.agritrack.fishtrack.ui.maintenance.MaintenanceMenuActivity;
+import io.agritrack.fishtrack.ui.process.ProcessBinsActivity;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
+import io.agritrack.fishtrack.ui.transport.TransportStartActivity;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
-public class InventoryStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class InventoryStartActivity extends AppCompatActivity {
 
     private MobileDB db;
-
+    private static final int Asset_Idx = 0, Consumable_Idx = 1;
     private TextView tvSelectedItemType;
-    private ToggleGroup tgInventoryItemType;
+    private GridView gvInventoryMenu;
     private String selectedInventoryItemType;
     private Spinner spSite;
 
@@ -60,25 +80,52 @@ public class InventoryStartActivity extends AppCompatActivity implements ToggleG
             spSite.setAdapter(hrAdapter);
         }
 
+        ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
+        menuItemsList.add(new MenuItem(getString(R.string.item_inventory_asset), getString(R.string.up_item_inventory_asset), InventoryAssetActivity.class));
+        menuItemsList.add(new MenuItem(getString(R.string.item_inventory_consumable), getString(R.string.down_item_inventory_consumable), InventoryConsumableActivity.class));
+
+        InventoryMenuAdapter adapter = new InventoryMenuAdapter(this, menuItemsList);
+
+        gvInventoryMenu.setAdapter(adapter);
+        gvInventoryMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                final Context appCtx = getApplicationContext();
+                Intent i = new Intent(appCtx, LoginActivity.class);
+
+                switch (position) {
+                    case Asset_Idx:
+                        selectedInventoryItemType = Constants.ftAsset;
+                        updateState();
+                        String vl = validate();
+                        if (!Strings.isEmptyOrWhitespace(vl)) {
+                            CToast(getApplicationContext(), render("Invalid inputs : " + vl), Toast.LENGTH_LONG);
+                        } else {
+                            i = new Intent(appCtx, InventoryAssetActivity.class);
+                            break;
+                        }
+                    case Consumable_Idx:
+                        selectedInventoryItemType = Constants.ftConsumable;
+                        updateState();
+                        String vld = validate();
+                        if (!Strings.isEmptyOrWhitespace(vld)) {
+                            CToast(getApplicationContext(), render("Invalid inputs : " + vld), Toast.LENGTH_LONG);
+                        } else {
+                            i = new Intent(appCtx, InventoryConsumableActivity.class);
+                            break;
+                        }
+                    default:
+                }
+
+                // Pass image index
+                i.putExtra("id", position);
+                startActivity(i);
+            }
+        });
+
         configFooter();
     }
 
     protected void configFooter() {
-        /*ImageView ivNext = (ImageView) findViewById(R.id.ivToInventory);
-        ivNext.setOnClickListener(view -> {
-            updateState();
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
-            } else if (selectedInventoryItemType == Constants.ftAsset){
-                Intent i = new Intent(getApplicationContext(), InventoryAssetActivity.class);
-                startActivity(i);
-            } else {
-                Intent i = new Intent(getApplicationContext(), InventoryConsumableActivity.class);
-                startActivity(i);
-            }
-        });*/
-
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
@@ -87,11 +134,9 @@ public class InventoryStartActivity extends AppCompatActivity implements ToggleG
     }
 
     private void assignCtrlVars() {
-        tgInventoryItemType = findViewById(R.id.tgInventoryItemType);
         //tvSelectedItemType = findViewById(R.id.tvSelectedItemType);
         spSite = findViewById(R.id.spSite);
-
-        tgInventoryItemType.setOnCheckedChangeListener(this);
+        gvInventoryMenu = findViewById(R.id.gvInventoryMenu);
     }
 
     private InventoryWHRecord updateState() {
@@ -103,10 +148,8 @@ public class InventoryStartActivity extends AppCompatActivity implements ToggleG
             inventoryRecord.subSite = spSite.getSelectedItem().toString();
         }
         inventoryRecord.subSitePos = spSite.getSelectedItemPosition();
+        inventoryRecord.inventoryItemType = selectedInventoryItemType;
 
-        if (!Strings.isEmptyOrWhitespace(selectedInventoryItemType)) {
-            inventoryRecord.inventoryItemType = selectedInventoryItemType;
-        }
         return inventoryRecord;
     }
 
@@ -118,32 +161,5 @@ public class InventoryStartActivity extends AppCompatActivity implements ToggleG
         }
 
         return sb.toString();
-    }
-
-    @Override
-    public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        if (checkedId == R.id.tbAsset) {
-            updateState();
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
-            } else {
-                selectedInventoryItemType = Constants.ftAsset;
-                Intent i = new Intent(getApplicationContext(), InventoryAssetActivity.class);
-                startActivity(i);
-            }
-            //tvSelectedItemType.setText(R.string.asset_type);
-        } else if (checkedId == R.id.tbConsumable) {
-            updateState();
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
-            } else {
-                selectedInventoryItemType = Constants.ftConsumable;
-                Intent i = new Intent(getApplicationContext(), InventoryConsumableActivity.class);
-                startActivity(i);
-            }
-            //tvSelectedItemType.setText(R.string.consumable_type);
-        }
     }
 }

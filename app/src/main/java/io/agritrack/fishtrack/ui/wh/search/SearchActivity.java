@@ -39,11 +39,13 @@ import io.agritrack.fishtrack.rfid.ScanFilterThread;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.FilterableAdapter;
 import io.agritrack.fishtrack.ui.bo.GenericListModel;
+import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -232,7 +234,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
 
             selectedBarcode = etAssetBarcode.getText().toString();
             if (Strings.isEmptyOrWhitespace(selectedBarcode)) {
-                runOnUiThread(() -> Toast.makeText(getAppContext(), render(R.string.no_epc_filter_selected), Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> CToast(getAppContext(), render(R.string.no_epc_filter_selected), Toast.LENGTH_LONG));
             }
 
             // Following check is required to instantiate a ScanningThread that was stopped previously.

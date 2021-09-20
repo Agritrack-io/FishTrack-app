@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +30,7 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
     public TreelikeAdapter(Context context, Map<String, List<String>> listData) {
         this.mCtx = context;
         this.mValues = listData;
-        this.keys = new ArrayList<>(this.mValues.keySet());
+        this.keys = new LinkedList<>(this.mValues.keySet());
     }
 
     @Override
@@ -86,7 +87,7 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         TextView lbClusterDescription = convertView.findViewById(R.id.tvClusterDescription);
         lbClusterDescription.setText(getAssetTypeName(clusterName));
         TextView lbClusterSize = convertView.findViewById(R.id.tvClusterSize);
-        lbClusterSize.setText(getChildrenCount(groupPosition)+"");
+        lbClusterSize.setText(getChildrenCount(groupPosition) + "");
 
         return convertView;
     }
@@ -108,8 +109,8 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    private String getAssetTypeName(String type){
-        switch (type){
+    private String getAssetTypeName(String type) {
+        switch (type) {
             case Filters.RFID_CAGE:
                 return "CAGE";
             case Filters.RFID_NET:
@@ -124,9 +125,9 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
     }
 
     public void appendItems(Map<String, List<String>> values) {
-        for (String key: values.keySet()){
-            if(!this.mValues.containsKey((key))){
-                this.mValues.put(key,values.get(key));
+        for (String key : values.keySet()) {
+            if (!this.mValues.containsKey((key))) {
+                this.mValues.put(key, values.get(key));
             } else {
                 Set<String> tmp = new TreeSet<>(this.mValues.get(key));
                 tmp.addAll(values.get(key));
@@ -134,5 +135,11 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
             }
         }
         this.keys = new ArrayList<>(this.mValues.keySet());
+    }
+
+    public void removeItem(int parentPosition, int childPosition) {
+        String key = this.keys.get(parentPosition);
+        List<String> children = this.mValues.get(key);
+        children.remove(childPosition);
     }
 }

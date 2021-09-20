@@ -40,10 +40,12 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.ProcessingRecord;
 import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class ProcessBinsActivity extends AppCompatActivity {
     private MobileDB db;
@@ -145,7 +147,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
                 // <delete> Button was pressed without selecting a Bin first.
-                Toast.makeText(getApplicationContext(), render("Plz select a Bin to delete!!"), Toast.LENGTH_LONG).show();
+                CToast(getApplicationContext(), render("Plz select a Bin to delete!!"), Toast.LENGTH_LONG);
             }
         });
 
@@ -225,13 +227,13 @@ public class ProcessBinsActivity extends AppCompatActivity {
             processingBinsThread.setScanInProgress(scanning);
 
             updateState();
-           /* String v = validate();
+            String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
-            } else {*/
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
                 Intent i = new Intent(getApplicationContext(), ProcessInfoActivity.class);
                 startActivity(i);
-            /*}*/
+            }
         });
 
          ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartProcess);

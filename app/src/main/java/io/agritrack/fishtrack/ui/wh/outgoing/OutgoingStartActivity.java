@@ -15,12 +15,14 @@ import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
+import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import io.agritrack.fishtrack.ui.wh.incoming.IncomingAssetActivity;
 import io.agritrack.fishtrack.ui.wh.incoming.IncomingConsumableActivity;
 
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class OutgoingStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
     private TextView tvOutgoingFrom, tvOutgoingTo;
@@ -52,7 +54,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else if (selectedOutgoingItemType == Constants.ftAsset){
                 Intent i = new Intent(getApplicationContext(), OutgoingAssetActivity.class);
                 startActivity(i);

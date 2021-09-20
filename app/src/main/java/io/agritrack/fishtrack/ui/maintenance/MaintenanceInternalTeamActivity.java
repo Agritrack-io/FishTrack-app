@@ -30,10 +30,12 @@ import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.common.Employee;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.bo.GenericListModel;
+import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class MaintenanceInternalTeamActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -90,7 +92,7 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                Toast.makeText(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG).show();
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), MaintenanceInternalConfirmActivity.class);
                 startActivity(i);
