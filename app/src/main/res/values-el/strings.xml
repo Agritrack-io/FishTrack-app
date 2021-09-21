@@ -91,6 +91,7 @@
 
     <string name="back_button">ΠΙΣΩ</string>
     <string name="add_catch_button">ΠΡΟΣΘΕΣΕ ΨΑΡΙΑ</string>
+    <string name="delete_catch_button">ΔΙΕΓΡΑΨΕ ΨΑΡΙΑ</string>
     <string name="end_bin_button">ΤΕΛΟΣ ΒΟΥΤΑΣ</string>
     <string name="weight_bin">Βάρος βούτας:</string>
     <string name="fishing_catches">Ψαριές</string>

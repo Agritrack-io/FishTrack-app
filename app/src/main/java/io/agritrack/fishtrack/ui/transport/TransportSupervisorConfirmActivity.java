@@ -1,5 +1,6 @@
 package io.agritrack.fishtrack.ui.transport;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -24,6 +25,7 @@ import io.agritrack.fishtrack.state.TransportationRecord;
 import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
+import io.agritrack.fishtrack.ui.process.ProcessConfirmActivity;
 import io.agritrack.fishtrack.ui.service.AuthenticationService;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -39,6 +41,7 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
     private MobileDB db;
     private TextView tvSitePackaging, tvCompany, tvNumberOfBinsCount, tvDriverName, tvLicensePlate, tvSecurityClipNumber;
     private TextView tvUsername;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,10 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        // instantiate ProgressDialog and set style.
+        progressDialog = new ProgressDialog(TransportSupervisorConfirmActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -131,6 +138,10 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
                 runOnUiThread(() -> CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG));
             } else {
                 try {
+                    progressDialog.setCancelable(false);
+                    progressDialog.setMessage(render("Synchronizing data..."));
+                    progressDialog.show();
+
                     String token = LocalPreferences.getToken();
                     //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
@@ -142,8 +153,9 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
                     syncTxAsyncCall.enqueue(new SyncTxCallBack());
                 } catch (Exception e) {
                     e.printStackTrace();
+                    CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
                 } finally {
-                    // hideSyncProgress();
+                    progressDialog.dismiss();
                 }
             }
         } else {

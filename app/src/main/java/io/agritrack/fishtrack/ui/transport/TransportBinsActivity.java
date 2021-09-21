@@ -38,7 +38,6 @@ import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.TransportationRecord;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
-import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.common.LargeString.render;
@@ -268,7 +267,7 @@ public class TransportBinsActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 binBarcode = input.getText().toString();
-                adapterBins.addItem(binBarcode);
+                adapterBins.addUniqueItem(binBarcode);
                 adapterBins.notifyDataSetChanged();
             }
         });

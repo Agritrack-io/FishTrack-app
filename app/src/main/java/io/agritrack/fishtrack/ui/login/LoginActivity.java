@@ -1,5 +1,6 @@
 package io.agritrack.fishtrack.ui.login;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -42,6 +43,7 @@ import io.agritrack.fishtrack.data.dto.common.FishSpeciesDTO;
 import io.agritrack.fishtrack.data.dto.wh.AssetDTO;
 import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.config.ConfigActivity;
+import io.agritrack.fishtrack.ui.fishing.FishingConfirmActivity;
 import io.agritrack.fishtrack.ui.login.api.AuthApi;
 import io.agritrack.fishtrack.ui.login.api.AuthInfo;
 import io.agritrack.fishtrack.ui.login.api.LoginRQ;
@@ -64,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private MobileDB db;
     private ImageButton ibLocale;
-    private ProgBar mProgressDialog;
+    private ProgressDialog progressDialog;
     private int syncCounter = 1;
 
     @Override
@@ -82,8 +84,9 @@ public class LoginActivity extends AppCompatActivity {
         final EditText etUserName = findViewById(R.id.etUserName);
         final EditText etPassword = findViewById(R.id.etPassword);
 
-        mProgressDialog = findViewById(R.id.myProgBar);
-        mProgressDialog.setVisibility(View.GONE);
+        // instantiate ProgressDialog and set style.
+        progressDialog = new ProgressDialog(LoginActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // show previous loggeding user name
         String previousLoggedInUser = LocalPreferences.getLoggedInUser(null);
@@ -208,10 +211,10 @@ public class LoginActivity extends AppCompatActivity {
     // show Progress bar
     private void toggleProgress(boolean show, @StringRes int info) {
         if (show) {
-            this.mProgressDialog.setTextMsg(getText(info).toString());
-            this.mProgressDialog.setVisibility(View.VISIBLE);
+            this.progressDialog.setMessage(getText(info).toString());
+            this.progressDialog.show();
         } else {
-            this.mProgressDialog.setVisibility(View.GONE);
+            this.progressDialog.hide();
         }
     }
 
@@ -315,6 +318,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (this.progressDialog != null)
+            this.progressDialog.dismiss();
+        super.onDestroy();
     }
 
     @Override

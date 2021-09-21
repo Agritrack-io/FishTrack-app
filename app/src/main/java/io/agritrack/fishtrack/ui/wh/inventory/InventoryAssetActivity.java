@@ -110,7 +110,6 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
             }
         });
 
-
         // initiate RFID scanner behaviour
 
         scanResult.observe(this, response -> {
@@ -125,8 +124,6 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
             } else {
                 adapterInventoryItems.appendItems(values);
             }
-
-            //tvInventoryItemsCount.setText(String.valueOf(response.size()));
             adapterInventoryItems.notifyDataSetChanged();
         });
 

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,12 +34,12 @@ import java.util.concurrent.TimeUnit;
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
+import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
 import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.fishtrack.ui.bo.BinLoadsMap;
-import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.common.LargeString.render;
@@ -50,7 +53,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private MobileDB db;
 
-    private Button btnCurrentBinScan, btnNextCatch, btnFillBin;
+    private Button btnCurrentBinScan, btnNextCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
 
     private RecyclerView rvWeightBatchesBin;
@@ -59,6 +62,31 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private String mCatchWeight = "";
     private String currentBin;
     private BinLoadsMap loadsMap;
+
+    private String selectedCatch;
+    private ConstraintLayout selectedItem;
+
+    // Instantiate a clickListener to be passed to adapterCatches.
+    // It will be used to set the catch var to the selected catch.
+    private final View.OnClickListener catchesOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ConstraintLayout view = (ConstraintLayout) v;
+            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
+            selectedCatch = tvRecyclerItem.getText().toString();
+
+            if(selectedItem!=null) {
+                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
+            }
+
+            v.setSelected(true);
+            view.setBackgroundColor(Color.GRAY);
+            selectedItem = view;
+
+            btnDeleteCatch.setEnabled(true);
+            btnDeleteCatch.setTextColor(getColor(R.color.aqua));
+        }
+    };
 
     FishingRecord fishingRecord = recFishing;
     @Override
@@ -79,15 +107,16 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvWeightBatchesBin.setLayoutManager(layoutManager);
         rvWeightBatchesBin.setItemAnimator(new DefaultItemAnimator());
-        adapterCatches = new TemplateRecyclerAdapter(this, new ArrayList<>(), null);
+        adapterCatches = new TemplateRecyclerAdapter(this, new ArrayList<>(), catchesOnClickListener);
         rvWeightBatchesBin.setAdapter(adapterCatches);
         rvWeightBatchesBin.setNestedScrollingEnabled(false);
-
 
         // initially only scan button is active.
         btnCurrentBinScan.setEnabled(true);
         btnNextCatch.setEnabled(false);
         btnNextCatch.setTextColor(Color.DKGRAY);
+        btnDeleteCatch.setEnabled(false);
+        btnDeleteCatch.setTextColor(Color.DKGRAY);
         btnFillBin.setEnabled(false);
         btnFillBin.setTextColor(Color.DKGRAY);
 
@@ -127,10 +156,13 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // =================================
         // Adding fish catch functionality
         btnNextCatch.setOnClickListener(view -> {
+            clearSelectedItem();
             btnCurrentBinScan.setEnabled(false);
             btnCurrentBinScan.setTextColor(Color.DKGRAY);
             btnFillBin.setEnabled(true);
             btnFillBin.setTextColor(getColor(R.color.aqua));
+            btnDeleteCatch.setEnabled(true);
+            btnDeleteCatch.setTextColor(getColor(R.color.aqua));
 
             //show Message box
             showCatchDialog();
@@ -139,15 +171,48 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // =================================
         // Adding bin load completion functionality
         btnFillBin.setOnClickListener(view -> {
+            clearSelectedItem();
             btnCurrentBinScan.setEnabled(true);
             btnCurrentBinScan.setTextColor(getColor(R.color.aqua));
             btnNextCatch.setEnabled(false);
             btnNextCatch.setTextColor(Color.DKGRAY);
+            btnDeleteCatch.setEnabled(false);
+            btnDeleteCatch.setTextColor(Color.DKGRAY);
             view.setEnabled(false);
             ((Button) view).setTextColor(Color.DKGRAY);
 
         });
 
+        btnDeleteCatch.setOnClickListener(view -> {
+
+            if (!Strings.isEmptyOrWhitespace(selectedCatch)) {
+                // instantiate Site selection confirm dialog
+                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
+                confirmSiteSelectionDlg.args().putString("selectedCatch", selectedCatch);
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + selectedCatch + " kg");
+
+                confirmSiteSelectionDlg.onConfirm(bundle -> {
+                    String aCatch = bundle.getString("selectedCatch");
+                    if (aCatch != null) {
+                        adapterCatches.removeItem(aCatch);
+                        adapterCatches.notifyDataSetChanged();
+
+                        tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
+                        tvTotalWeightCount.setText(loadsMap.totalWeight().toString()+ " " + "(" + fishingRecord.reqWeight.toString() + ")");
+
+                        //tvInventoryItemsCount.setText(String.valueOf(adapterIncomingItems.getItemCount()));
+                        selectedCatch = null;
+                    }
+                });
+
+                FragmentManager fm = getSupportFragmentManager();
+                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+                clearSelectedItem();
+            } else {
+                // <delete> Button was pressed without selecting a Bin first.
+                CToast(getApplicationContext(), render("Plz select a Catch to delete!!"), Toast.LENGTH_LONG);
+            }
+        });
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -159,6 +224,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private void assignCtrlVars() {
         btnCurrentBinScan = findViewById(R.id.btnScanCurrentBin);
         btnNextCatch = findViewById(R.id.btnAddCatch);
+        btnDeleteCatch = findViewById(R.id.btnDeleteCatch);
         btnFillBin = findViewById(R.id.btnEndBin);
         tvCurrentBin = findViewById(R.id.tvBinName);
         tvBinWeight = findViewById(R.id.tvBinWeight);
@@ -166,6 +232,12 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         tvUsedBinsCount = findViewById(R.id.tvUsedBinsCount);
         tvAvailableBinsCount = findViewById(R.id.tvAvailableBinsCount);
         rvWeightBatchesBin = findViewById(R.id.rvWeightBatchesBin);
+    }
+
+    private void clearSelectedItem() {
+        if (selectedItem != null) {
+            selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
+        }
     }
 
     private void initControlsFromState() {
@@ -241,6 +313,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
                 tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
                 tvTotalWeightCount.setText(loadsMap.totalWeight().toString()+ " " + "(" + fishingRecord.reqWeight.toString() + ")");
+
+                btnDeleteCatch.setEnabled(true);
+                btnDeleteCatch.setTextColor(getColor(R.color.aqua));
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

@@ -1,5 +1,6 @@
 package io.agritrack.fishtrack.ui.wh.incoming;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -79,6 +80,8 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
 
+    private ProgressDialog progressDialog;
+
     // BroadcastReceiver to receiver scan data
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -119,8 +122,6 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
     private ImageButton ivAddItem, ivDeleteItem;
     private Button btnScanConsumable;
 
-    private String itemBarcode;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +133,10 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
 
         // get  references of the controls
         assignCtrlVars();
+
+        // instantiate ProgressDialog and set style.
+        progressDialog = new ProgressDialog(IncomingConsumableActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvIncomingItems.setLayoutManager(layoutManager);
@@ -260,6 +265,10 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
         this.db = MobileDB.getInstance(getAppContext());
 
         try {
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(render("Synchronizing data..."));
+            progressDialog.show();
+
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
@@ -270,8 +279,9 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
             syncTxAsyncCall.enqueue(new IncomingConsumableActivity.SyncTxCallBack());
         } catch (Exception e) {
             e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
         } finally {
-            // hideSyncProgress();
+            progressDialog.dismiss();
         }
     }
 

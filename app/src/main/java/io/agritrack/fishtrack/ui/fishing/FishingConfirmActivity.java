@@ -72,9 +72,11 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            updateState();
-            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-            startActivity(i);
+            Boolean proceed = updateState();
+            if (proceed) {
+                Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToFillBins);
@@ -103,7 +105,7 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
         tvTypeOfFishConfirm.setText(recFishing.speciesName != null ? recFishing.speciesName : "N/A");
     }
 
-    private void updateState() {
+    private boolean updateState() {
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
@@ -119,6 +121,7 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
             // credentials do NOT match
             if (!authentication) {
                 runOnUiThread(() -> CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG));
+                return false;
             } else {
                 try {
                     progressDialog.setCancelable(false);
@@ -134,9 +137,11 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
                     // sync fish species
                     Call<FishingTxDTO> syncTxAsyncCall = updService.syncFishingTx(FishingTxDTO.convert(tx), "Bearer " + token);
                     syncTxAsyncCall.enqueue(new SyncTxCallBack());
+                    return true;
                 } catch (Exception e) {
                     e.printStackTrace();
                     CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+                    return false;
                 } finally {
                     progressDialog.dismiss();
                 }
@@ -165,6 +170,7 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
             }
         } else {
             runOnUiThread(() -> CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG));
+            return false;
         }
     }
 

@@ -91,6 +91,7 @@
 
     <string name="back_button">BACK</string>
     <string name="add_catch_button">ADD CATCH</string>
+    <string name="delete_catch_button">DELETE CATCH</string>
     <string name="end_bin_button">BIN FILLED</string>
     <string name="weight_bin">Weight of Bin:</string>
     <string name="fishing_catches">Fishing Catches</string>

@@ -1,5 +1,6 @@
 package io.agritrack.fishtrack.ui.wh.outgoing;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -83,8 +84,7 @@ public class OutgoingConsumableActivity extends AppCompatActivity implements Tog
 
     private Button btnScanConsumable;
 
-    private String itemBarcode;
-
+    private ProgressDialog progressDialog;
 
     private BarcodeScanService scanService;
     private BarcodeRecyclerAdapter adapterOutgoingItems;
@@ -133,6 +133,10 @@ public class OutgoingConsumableActivity extends AppCompatActivity implements Tog
 
         // get  references of the controls
         assignCtrlVars();
+
+        // instantiate ProgressDialog and set style.
+        progressDialog = new ProgressDialog(OutgoingConsumableActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvOutgoingItems.setLayoutManager(layoutManager);
@@ -261,6 +265,10 @@ public class OutgoingConsumableActivity extends AppCompatActivity implements Tog
         this.db = MobileDB.getInstance(getAppContext());
 
         try {
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(render("Synchronizing data..."));
+            progressDialog.show();
+
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
@@ -271,8 +279,9 @@ public class OutgoingConsumableActivity extends AppCompatActivity implements Tog
             syncTxAsyncCall.enqueue(new OutgoingConsumableActivity.SyncTxCallBack());
         } catch (Exception e) {
             e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
         } finally {
-            // hideSyncProgress();
+            progressDialog.dismiss();
         }
 
     }

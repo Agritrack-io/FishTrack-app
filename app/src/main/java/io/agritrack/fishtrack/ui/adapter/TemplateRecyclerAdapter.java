@@ -39,10 +39,14 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         this.mList = values;
     }
 
-    public void addItem(String val) {
+    public void addUniqueItem(String val) {
         if (!this.mList.contains(val)) {
             this.mList.add(val);
         }
+    }
+
+    public void addItem(String val) {
+        this.mList.add(val);
     }
 
     public void removeItem(String val) {
@@ -59,7 +63,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.tvItemName.setText(mList.get(position));
-        holder.tvItemSNo.setText(String.valueOf(position+1)+".");
+        holder.tvItemSNo.setText(String.valueOf(position + 1) + ".");
     }
 
     @Override

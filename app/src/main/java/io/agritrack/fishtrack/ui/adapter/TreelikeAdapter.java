@@ -141,5 +141,10 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         String key = this.keys.get(parentPosition);
         List<String> children = this.mValues.get(key);
         children.remove(childPosition);
+
+        if(getChildrenCount(parentPosition)==0){
+            this.mValues.remove(key);
+            this.keys.remove(parentPosition);
+        }
     }
 }

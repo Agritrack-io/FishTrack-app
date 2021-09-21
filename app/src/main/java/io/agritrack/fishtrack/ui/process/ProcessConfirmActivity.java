@@ -1,5 +1,6 @@
 package io.agritrack.fishtrack.ui.process;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -23,6 +24,7 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.ProcessingRecord;
 import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.custom.CustomToast;
+import io.agritrack.fishtrack.ui.fishing.FishingConfirmActivity;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.AuthenticationService;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
@@ -37,6 +39,7 @@ import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 public class ProcessConfirmActivity extends AppCompatActivity {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
+    private ProgressDialog progressDialog;
     private TextView tvNumberOfBinsCount, tvDispatchNote, tvPackagingLot, tvSecurityClipNumber, tvFishCondition, tvUsername;
 
     @Override
@@ -50,6 +53,10 @@ public class ProcessConfirmActivity extends AppCompatActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        // instantiate ProgressDialog and set style.
+        progressDialog = new ProgressDialog(ProcessConfirmActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -125,6 +132,10 @@ public class ProcessConfirmActivity extends AppCompatActivity {
                 runOnUiThread(() -> CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG));
             } else {
                 try {
+                    progressDialog.setCancelable(false);
+                    progressDialog.setMessage(render("Synchronizing data..."));
+                    progressDialog.show();
+
                     String token = LocalPreferences.getToken();
                     //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
@@ -136,8 +147,9 @@ public class ProcessConfirmActivity extends AppCompatActivity {
                     syncTxAsyncCall.enqueue(new SyncTxCallBack());
                 } catch (Exception e) {
                     e.printStackTrace();
+                    CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
                 } finally {
-                    // hideSyncProgress();
+                    progressDialog.dismiss();
                 }
             }
         } else {

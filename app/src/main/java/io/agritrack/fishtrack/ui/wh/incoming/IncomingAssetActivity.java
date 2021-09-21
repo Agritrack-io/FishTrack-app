@@ -1,5 +1,6 @@
 package io.agritrack.fishtrack.ui.wh.incoming;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.hdhe.uhf.reader.UhfReader;
@@ -35,6 +37,7 @@ import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
+import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
 import io.agritrack.fishtrack.enums.WarehouseTxState;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
@@ -45,6 +48,7 @@ import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
+import io.agritrack.fishtrack.ui.wh.correlation.CorrelationActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -75,27 +79,9 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
     private ImageButton ivAddItem, ivDeleteItem;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
+    private Integer selectedParent, selectedChild;
 
-    private String itemBarcode;
-
-    // Instantiate a clickListener to be passed to adapterIncomingItems.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +95,40 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
         // get  references of the controls
         assignCtrlVars();
 
+        // instantiate ProgressDialog and set style.
+        progressDialog = new ProgressDialog(IncomingAssetActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
+        xvIncomingItems.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                clearSelectedItem();
+
+                selectedParent = null;
+                selectedChild = null;
+                return false;
+            }
+        });
+
+        xvIncomingItems.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                ConstraintLayout view = (ConstraintLayout) v;
+                TextView tvSiteName = v.findViewById(R.id.tvSiteName);
+                selectedBarcode = tvSiteName.getText().toString();
+
+                clearSelectedItem();
+
+                v.setSelected(true);
+                view.setBackgroundColor(Color.GRAY);
+                selectedItem = view;
+
+                selectedParent = groupPosition;
+                selectedChild = childPosition;
+
+                return true;
+            }
+        });
 
         //Get reference of binsCount textView
         scanResult.observe(this, response -> {
@@ -118,9 +137,12 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
             }
             Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));;//(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
 
+            if (adapterIncomingItems == null) {
             adapterIncomingItems = new TreelikeAdapter(this, values);
             xvIncomingItems.setAdapter(adapterIncomingItems);
-
+            } else {
+                adapterIncomingItems.appendItems(values);
+            }
             adapterIncomingItems.notifyDataSetChanged();
         });
 
@@ -130,10 +152,10 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-   /*     ivDeleteItem.setOnClickListener(view -> {
+        ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
+            if (selectedParent!=null && selectedChild!=null) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                 confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
@@ -142,7 +164,7 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
                     if (barcode != null) {
-                        adapterIncomingItems.removeItem(barcode);
+                        adapterIncomingItems.removeItem(selectedParent, selectedChild);
                         adapterIncomingItems.notifyDataSetChanged();
                         selectedBarcode = null;
                     }
@@ -152,9 +174,10 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG).show();
+                CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
             }
-        });*/
+        });
+
 
      /*   ivAddItem.setOnClickListener(view -> {
             showAddDialog();
@@ -218,6 +241,10 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
         this.db = MobileDB.getInstance(getAppContext());
 
         try {
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(render("Synchronizing data..."));
+            progressDialog.show();
+
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
@@ -228,8 +255,9 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
             syncTxAsyncCall.enqueue(new SyncTxCallBack());
         } catch (Exception e) {
             e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
         } finally {
-            // hideSyncProgress();
+            progressDialog.dismiss();
         }
     }
 

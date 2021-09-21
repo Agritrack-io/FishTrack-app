@@ -1,5 +1,6 @@
 package io.agritrack.fishtrack.ui.transport;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -15,6 +16,7 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.TransportationRecord;
 import io.agritrack.fishtrack.ui.custom.CaptureSignatureView;
 import io.agritrack.fishtrack.ui.custom.CustomToast;
+import io.agritrack.fishtrack.ui.process.ProcessConfirmActivity;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.common.LargeString.render;

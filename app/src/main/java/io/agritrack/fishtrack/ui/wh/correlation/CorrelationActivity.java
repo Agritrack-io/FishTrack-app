@@ -1,5 +1,6 @@
 package io.agritrack.fishtrack.ui.wh.correlation;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -48,6 +49,7 @@ import io.agritrack.fishtrack.ui.bo.GenericListModel;
 import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
+import io.agritrack.fishtrack.ui.process.ProcessConfirmActivity;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,6 +74,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
     private String selectedBarcode = "";
     private String activeFilter = null;
     private ConstraintLayout selectedItem;
+    private ProgressDialog progressDialog;
     // Instantiate a clickListener to be passed to adapterAssets.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
@@ -102,6 +105,10 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
 
         // get  references of the controls
         assignCtrlVars();
+
+        // instantiate ProgressDialog and set style.
+        progressDialog = new ProgressDialog(CorrelationActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
@@ -198,6 +205,10 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         this.db = MobileDB.getInstance(getAppContext());
 
         try {
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(render("Synchronizing data..."));
+            progressDialog.show();
+
             String token = LocalPreferences.getToken();
 
             // persist WHCorrelationTX Record data to local DB.
@@ -208,8 +219,9 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
             syncTxAsyncCall.enqueue(new SyncTxCallBack());
         } catch (Exception e) {
             e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
         } finally {
-            // hideSyncProgress();
+            progressDialog.dismiss();
         }
     }
 
@@ -261,6 +273,8 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
     protected void onDestroy() {
         if (executor != null)
             executor.shutdown();
+        if (this.progressDialog != null)
+            this.progressDialog.dismiss();
         super.onDestroy();
     }
 

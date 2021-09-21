@@ -40,7 +40,6 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.ProcessingRecord;
 import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.adapter.TemplateRecyclerAdapter;
-import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
@@ -275,7 +274,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 binBarcode = input.getText().toString();
-                adapterBins.addItem(binBarcode);
+                adapterBins.addUniqueItem(binBarcode);
                 adapterBins.notifyDataSetChanged();
             }
         });

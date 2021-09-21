@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -170,6 +171,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
             selectedAssetType = Constants.ftBin;
         }
         loadAssetsFromLocalDB();
+        svSearchAsset.setVisibility(View.VISIBLE);
     }
 
     protected void configFooter() {
@@ -193,6 +195,9 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
         rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvAssets.setItemAnimator(new DefaultItemAnimator());
 
+        if (adapterAssets == null) {
+            svSearchAsset.setVisibility(View.GONE);
+        }
         svSearchAsset.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -209,6 +214,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
             pbProximity.setProgress(0);
             tvProximity.setText(null);
         });
+
     }
 
     private void loadAssetsFromLocalDB() {
