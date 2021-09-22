@@ -14,6 +14,6 @@ public class AssetTypeConverter {
 
     @TypeConverter
     public static String fromEnum(AssetType assetTp) {
-        return assetTp == null ? "NONE" : assetTp.name();
+        return assetTp == null ? "ALL" : assetTp.name();
     }
 }

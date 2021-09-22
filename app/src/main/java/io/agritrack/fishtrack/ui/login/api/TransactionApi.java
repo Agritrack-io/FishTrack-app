@@ -1,10 +1,15 @@
 package io.agritrack.fishtrack.ui.login.api;
 
+import java.util.List;
+
 import io.agritrack.fishtrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.fishtrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.fishtrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.fishtrack.data.dto.tx.ProcessingTxDTO;
+import io.agritrack.fishtrack.data.dto.wh.RFIDInventoryDTO;
+import io.agritrack.fishtrack.data.dto.wh.RFIDInventoryItemDTO;
+import io.agritrack.fishtrack.data.model.wh.RFIDInventory;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
@@ -32,5 +37,13 @@ public interface TransactionApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/asset/correlate")
     Call<CorrelationTxDTO> syncCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/inventory/asset")
+    Call<RFIDInventoryDTO> syncRFIDInventoryTx(@Body RFIDInventoryDTO rFIDInventory, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/inventory/asset/items")
+    Call<List<RFIDInventoryItemDTO>> syncRFIDInventoryItemTx(@Body List<RFIDInventoryItemDTO> rFIDInventoryItems, @Header("Authorization") String token);
 
 }

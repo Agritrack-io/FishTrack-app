@@ -3,6 +3,7 @@ package io.agritrack.fishtrack.ui.transport;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -68,9 +69,11 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            updateState();
-            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-            startActivity(i);
+            Boolean proceed = updateState();
+            if (proceed) {
+                Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToDriverConfirm);
@@ -120,12 +123,12 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }
 
-    private void updateState() {
+    private boolean updateState() {
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
         EditText etPIN = findViewById(R.id.etPasswordTransport);
-        if (etPIN.getText() != null) {
+        if (!TextUtils.isEmpty(etPIN.getText().toString())) {
             String login = LocalPreferences.getLoggedInUser("").trim();
             String pin = etPIN.getText().toString().trim();
 
@@ -136,6 +139,7 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
             // credentials do NOT match
             if (!authentication) {
                 runOnUiThread(() -> CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG));
+                return false;
             } else {
                 try {
                     progressDialog.setCancelable(false);
@@ -151,15 +155,18 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
                     // sync fish species
                     Call<TransportTxDTO> syncTxAsyncCall = updService.syncTransportTx(TransportTxDTO.convert(tx), "Bearer " + token);
                     syncTxAsyncCall.enqueue(new SyncTxCallBack());
+                    return true;
                 } catch (Exception e) {
                     e.printStackTrace();
                     CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+                    return false;
                 } finally {
                     progressDialog.dismiss();
                 }
             }
         } else {
             runOnUiThread(() -> CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG));
+            return false;
         }
     }
 

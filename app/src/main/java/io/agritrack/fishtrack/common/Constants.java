@@ -11,12 +11,13 @@ public class Constants {
     public static final String ftCage = "CAGE";
     public static final String ftNet = "NET";
     public static final String ftBin = "BIN";
+    public static final String ftPlatform = "PLATFORM";
 
     public static final String ftFood = "FOOD";
     public static final String ftVaccine = "VACCINE";
     public static final String ftAntibiotic = "ANTIBIOTIC";
 
-    public static final String ftPlatform = "PLATFORM";
+    public static final String ftAll = "ALL";
 
     public static final String ftCleaning = "CLEANING";
     public static final String ftRepair = "REPAIR";

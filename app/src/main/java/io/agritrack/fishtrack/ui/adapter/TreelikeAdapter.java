@@ -24,7 +24,7 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
 
     private final Context mCtx;
     // child data in format of: <Type, List of children<Type>>
-    private final Map<String, List<String>> mValues;
+    private Map<String, List<String>> mValues;
     private List<String> keys;
 
     public TreelikeAdapter(Context context, Map<String, List<String>> listData) {
@@ -102,6 +102,14 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         TextView txtListChild = convertView.findViewById(R.id.tvSiteName);
         txtListChild.setText(child);
         return convertView;
+    }
+
+    public Map<String, List<String>> getValues() {
+        return mValues;
+    }
+
+    public void setValues(Map<String, List<String>> items) {
+        this.mValues = items;
     }
 
     @Override

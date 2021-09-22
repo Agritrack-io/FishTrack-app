@@ -38,6 +38,7 @@ import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
 import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
+import io.agritrack.fishtrack.enums.AssetType;
 import io.agritrack.fishtrack.enums.WarehouseTxState;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
@@ -234,8 +235,9 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
     }
 
     private void updateState() {
-        //GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
+        GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
         GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
+        GlobalState.recWHIncoming.assetType = AssetType.valueOf(this.selectedAssetType);
 
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
@@ -283,7 +285,7 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
         }
 
         if (WHTxRecord.items != null) {
-            //adapterIncomingItems.setValues(WHTxRecord.items);
+            adapterIncomingItems.setValues(WHTxRecord.items);
             adapterIncomingItems.notifyDataSetChanged();
         }
     }
@@ -391,7 +393,7 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
                 activeFilter = Filters.RFID_PLATFORM;
                 break;
             default:
-                selectedAssetType = null;
+                selectedAssetType = Constants.ftAll;
                 activeFilter = null;
                 selectedToggleButton = -1;
                 break;

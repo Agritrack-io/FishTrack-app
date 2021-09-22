@@ -1,5 +1,6 @@
 package io.agritrack.fishtrack.ui.wh.inventory;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,17 +31,33 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.api.APIServiceGenerator;
 import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.common.Filters;
+import io.agritrack.fishtrack.data.db.MobileDB;
+import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
+import io.agritrack.fishtrack.data.dto.wh.RFIDInventoryDTO;
+import io.agritrack.fishtrack.data.dto.wh.RFIDInventoryItemDTO;
+import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
+import io.agritrack.fishtrack.data.model.wh.RFIDInventory;
+import io.agritrack.fishtrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
+import io.agritrack.fishtrack.enums.AssetType;
+import io.agritrack.fishtrack.enums.WarehouseTxState;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.InventoryWHRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
+import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
+import io.agritrack.fishtrack.ui.wh.incoming.IncomingAssetActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
 import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
@@ -46,6 +65,8 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
 
     private ToggleGroup tgChooseAssetType;
 
+    private MobileDB db;
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private ExpandableListView xvInventoryItems;
     private InventoryWHRecord whInventoryRecord;
@@ -54,7 +75,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
     private boolean scanning = false;
 
     private TreelikeAdapter adapterInventoryItems;
-    private String selectedAssetType;
+    private String selectedAssetType = "ALL";
     private String activeFilter = null;
     private int selectedToggleButton = -1;
     private ImageButton ivAddItem, ivDeleteItem;
@@ -62,7 +83,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
     private ConstraintLayout selectedItem;
     private String selectedBarcode;
 
-    private String itemBarcode;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +99,10 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
 
         // get  references of the controls
         assignCtrlVars();
+
+        // instantiate ProgressDialog and set style.
+        progressDialog = new ProgressDialog(InventoryAssetActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         xvInventoryItems.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -133,7 +158,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
         ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if (selectedParent!=null && selectedChild!=null) {
+            if (selectedParent != null && selectedChild != null) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                 confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
@@ -187,6 +212,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
             scanning = false;
             transportationBinsThread.setScanInProgress(scanning);
 
+            updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
@@ -237,6 +263,37 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
         builder.show();
 
     }*/
+
+    private void updateState() {
+        GlobalState.recWHInventory.assetType = AssetType.valueOf(this.selectedAssetType);
+        GlobalState.recWHInventory.items = adapterInventoryItems.getValues();
+
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
+
+        try {
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(render("Synchronizing data..."));
+            progressDialog.show();
+
+            String token = LocalPreferences.getToken();
+
+            // persist WHIncomingAssetTX Record data to local DB.
+            RFIDInventory invtx = GlobalState.commitWHRFIDInventory(db);
+            List<RFIDInventoryItem> invItemtxs = GlobalState.commitWHRFIDInventoryItem(db, invtx);
+
+            // sync WH Inventory Tx
+            Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(RFIDInventoryDTO.convert(invtx), "Bearer " + token);
+            Call<List<RFIDInventoryItemDTO>> syncInvItemTxCallBack = updService.syncRFIDInventoryItemTx(RFIDInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
+            syncInvTxCallBack.enqueue(new SyncInvTxCallBack());
+            syncInvItemTxCallBack.enqueue(new SyncInvItemTxCallBack());
+        } catch (Exception e) {
+            e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+        } finally {
+            progressDialog.dismiss();
+        }
+    }
 
     private void prepareScanAvailableBinsButton() {
         // RFID scanning functionality
@@ -311,7 +368,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
                 activeFilter = Filters.RFID_PLATFORM;
                 break;
             default:
-                selectedAssetType = null;
+                selectedAssetType = Constants.ftAll;
                 activeFilter = null;
                 selectedToggleButton = -1;
                 break;
@@ -321,10 +378,71 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
     private String validate() {
         StringBuilder sb = new StringBuilder();
 
-     /*If(GlobalState.recWHInventory.items==null || GlobalState.recWHIncoming.items.isEmpty()){
-            sb.append(String.format("\n%s is missing", "'Incoming items'"));
-        }*/
+        if(GlobalState.recWHInventory.items == null || GlobalState.recWHInventory.items.isEmpty()) {
+            sb.append(String.format("\n%s is missing", "'Inventory items'"));
+        }
 
         return sb.toString();
+    }
+
+    public class SyncInvTxCallBack implements Callback<RFIDInventoryDTO> {
+        @Override
+        public void onResponse(Call<RFIDInventoryDTO> call, Response<RFIDInventoryDTO> response) {
+            RFIDInventoryDTO rs = response.body();
+
+            if (rs != null) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+            } else {
+                // could not update Fishing TX on backend!!!
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_AssetTx_tx_update_failure), Toast.LENGTH_LONG));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<RFIDInventoryDTO> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
+            }
+        }
+    }
+    public class SyncInvItemTxCallBack implements Callback<List<RFIDInventoryItemDTO>> {
+        @Override
+        public void onResponse(Call<List<RFIDInventoryItemDTO>> call, Response<List<RFIDInventoryItemDTO>> response) {
+            List<RFIDInventoryItemDTO> rs = response.body();
+
+            if (rs != null) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+            } else {
+                // could not update Fishing TX on backend!!!
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_AssetTx_tx_update_failure), Toast.LENGTH_LONG));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<RFIDInventoryItemDTO>> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
+            }
+        }
     }
 }

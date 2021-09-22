@@ -1,6 +1,7 @@
 package io.agritrack.fishtrack.data.dto.tx;
 
-import android.text.TextUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
 
@@ -13,12 +14,14 @@ public class AssetTxDTO {
     public String rfid;
     public String state;
 
-    public static AssetTxDTO convert(AssetTransaction assetTx) {
+    public static AssetTxDTO convert(AssetTransaction assetTx) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
         AssetTxDTO assetTxDTO = new AssetTxDTO();
         assetTxDTO.id = assetTx.id;
         assetTxDTO.assetType = assetTx.assetType;
         assetTxDTO.state = assetTx.state;
-        assetTxDTO.rfid = TextUtils.join(",", assetTx.itemRFIDs);
+        assetTxDTO.rfid = objectMapper.writeValueAsString(assetTx.itemRFIDs);
         assetTxDTO.from = assetTx.from;
         assetTxDTO.to = assetTx.to;
 

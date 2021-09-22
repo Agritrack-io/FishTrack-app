@@ -18,7 +18,7 @@ public interface RFIDInventoryItemDAO {
     @Query("SELECT * from rfid_inventory_item")
     LiveData<List<RFIDInventoryItem>> getAll();
 
-    @Query("SELECT * from rfid_inventory_item where id=:rFIDInventoryItemId LIMIT 1")
+    @Query("SELECT * from rfid_inventory_item where itmId=:rFIDInventoryItemId LIMIT 1")
     RFIDInventoryItem getById(Long rFIDInventoryItemId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

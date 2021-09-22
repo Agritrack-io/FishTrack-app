@@ -51,9 +51,7 @@ public class InventoryStartActivity extends AppCompatActivity {
 
     private MobileDB db;
     private static final int Asset_Idx = 0, Consumable_Idx = 1;
-    private TextView tvSelectedItemType;
     private GridView gvInventoryMenu;
-    private String selectedInventoryItemType;
     private Spinner spSite;
 
     @Override
@@ -94,7 +92,6 @@ public class InventoryStartActivity extends AppCompatActivity {
 
                 switch (position) {
                     case Asset_Idx:
-                        selectedInventoryItemType = Constants.ftAsset;
                         updateState();
                         String vl = validate();
                         if (!Strings.isEmptyOrWhitespace(vl)) {
@@ -104,7 +101,6 @@ public class InventoryStartActivity extends AppCompatActivity {
                             break;
                         }
                     case Consumable_Idx:
-                        selectedInventoryItemType = Constants.ftConsumable;
                         updateState();
                         String vld = validate();
                         if (!Strings.isEmptyOrWhitespace(vld)) {
@@ -142,13 +138,12 @@ public class InventoryStartActivity extends AppCompatActivity {
     private InventoryWHRecord updateState() {
         InventoryWHRecord inventoryRecord = GlobalState.initWHInventoryRecord();
 
-        inventoryRecord.site = LocalPreferences.getCurrentSiteName();
+        inventoryRecord.selectedSite = LocalPreferences.getCurrentSiteName();
 
         if (spSite.getSelectedItem() != null) {
             inventoryRecord.subSite = spSite.getSelectedItem().toString();
         }
         inventoryRecord.subSitePos = spSite.getSelectedItemPosition();
-        inventoryRecord.inventoryItemType = selectedInventoryItemType;
 
         return inventoryRecord;
     }

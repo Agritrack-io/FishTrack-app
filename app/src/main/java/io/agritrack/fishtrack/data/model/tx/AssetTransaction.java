@@ -6,9 +6,11 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import java.util.List;
+import java.util.Map;
 
 import io.agritrack.fishtrack.data.converter.AssetTypeConverter;
 import io.agritrack.fishtrack.data.converter.StringListConverter;
+import io.agritrack.fishtrack.data.converter.StringMapConverter;
 
 @Entity(tableName = "asset_transaction")
 public class AssetTransaction {
@@ -16,9 +18,9 @@ public class AssetTransaction {
     @PrimaryKey
     public Long id;
 
-    @TypeConverters(StringListConverter.class)
+    @TypeConverters(StringMapConverter.class)
     @ColumnInfo(name = "rfids")
-    public List<String> itemRFIDs;
+    public Map<String, List<String>> itemRFIDs;
 
     @TypeConverters(AssetTypeConverter.class)
     @ColumnInfo(name = "asset_type")

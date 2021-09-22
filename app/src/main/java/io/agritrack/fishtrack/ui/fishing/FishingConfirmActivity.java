@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
 import static io.agritrack.fishtrack.state.GlobalState.recFishing;
 import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
+import static java.lang.Thread.sleep;
 
 public class FishingConfirmActivity extends AppCompatActivity implements LocationListener {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
@@ -110,7 +112,7 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
         this.db = MobileDB.getInstance(getAppContext());
 
         EditText etPIN = findViewById(R.id.etPasswordFishing);
-        if (etPIN.getText() != null) {
+        if (!TextUtils.isEmpty(etPIN.getText().toString())) {
             String login = LocalPreferences.getLoggedInUser("").trim();
             String pin = etPIN.getText().toString().trim();
 
@@ -124,9 +126,9 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
                 return false;
             } else {
                 try {
-                    progressDialog.setCancelable(false);
+                    /*progressDialog.setCancelable(false);
                     progressDialog.setMessage(render("Synchronizing data..."));
-                    progressDialog.show();
+                    progressDialog.show();*/
 
                     String token = LocalPreferences.getToken();
                     //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
@@ -137,36 +139,15 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
                     // sync fish species
                     Call<FishingTxDTO> syncTxAsyncCall = updService.syncFishingTx(FishingTxDTO.convert(tx), "Bearer " + token);
                     syncTxAsyncCall.enqueue(new SyncTxCallBack());
+
                     return true;
                 } catch (Exception e) {
                     e.printStackTrace();
                     CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
                     return false;
                 } finally {
-                    progressDialog.dismiss();
+                    //progressDialog.dismiss();
                 }
-//                RouteService routeService = new RouteService();
-//                NewRouteState newRouteState = NewRouteState.getInstance();
-//                Route savedRoute = routeService.saveNewRoute(db, usernameText.getText().toString(), newRouteState);
-//                RouteSyncService routeSyncService = new RouteSyncService();
-//                routeSyncService.uploadRoute(db, token, savedRoute);
-//                routeSyncService.syncRoute(db, token);
-//                runOnUiThread(() -> loadingText.setText(R.string.getting_location));
-//                while (true) {
-//                    if (location != null || (System.currentTimeMillis() - startLocationSearchTime > 60000)) {
-//                        break;
-//                    }
-//                }
-//                runOnUiThread(() -> loadingText.setText(R.string.saving_transaction));
-//                TransactionService transactionService = new TransactionService();
-//                transactionService.saveNewRouteTransaction(db, location);
-//
-//                TransactionSyncService transactionSyncService = new TransactionSyncService();
-//                transactionSyncService.syncUpTransactions(db, token);
-//                mCountDown.cancel();
-//                Intent i = new Intent(getApplicationContext(), SuccessfulTransactionActivity.class);
-//                startActivity(i);
-//                return true;
             }
         } else {
             runOnUiThread(() -> CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG));

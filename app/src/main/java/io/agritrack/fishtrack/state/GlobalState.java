@@ -4,9 +4,12 @@ import com.google.android.gms.common.util.Strings;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.HarvestRequest;
@@ -17,8 +20,12 @@ import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
 import io.agritrack.fishtrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.fishtrack.data.model.tx.RepairTransaction;
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
+import io.agritrack.fishtrack.data.model.wh.RFIDInventory;
+import io.agritrack.fishtrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.fishtrack.enums.TxStatus;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
+
+import static io.agritrack.fishtrack.enums.AssetType.ALL;
 
 public class GlobalState {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
@@ -106,7 +113,7 @@ public class GlobalState {
             txFishing.netRFID = recFishing.netRFID;
             txFishing.fishType = recFishing.speciesName;
             txFishing.ichthyopathologist = recFishing.pathologist;
-            if(!Strings.isEmptyOrWhitespace(recFishing.lastFed)) {
+            if (!Strings.isEmptyOrWhitespace(recFishing.lastFed)) {
                 try {
                     Date lf = sdf.parse(recFishing.lastFed);
                     txFishing.lastFeed = lf.getTime();
@@ -187,7 +194,7 @@ public class GlobalState {
         try {
             AssetTransaction txWHIncoming = new AssetTransaction();
             txWHIncoming.state = recWHIncoming.state.name();
-            txWHIncoming.assetType = recWHIncoming.assetType.name();
+            txWHIncoming.assetType = (recWHIncoming.assetType != null) ? recWHIncoming.assetType.name() : ALL.name();
             txWHIncoming.itemRFIDs = recWHIncoming.items;
             txWHIncoming.from = recWHIncoming.from;
             txWHIncoming.to = recWHIncoming.to;
@@ -204,13 +211,52 @@ public class GlobalState {
         try {
             AssetTransaction txWHOutgoing = new AssetTransaction();
             txWHOutgoing.state = recWHOutgoing.state.name();
-            txWHOutgoing.assetType = recWHOutgoing.assetType.name();
+            txWHOutgoing.assetType = (recWHOutgoing.assetType != null) ? recWHOutgoing.assetType.name() : ALL.name();
             txWHOutgoing.itemRFIDs = recWHOutgoing.items;
             txWHOutgoing.from = recWHOutgoing.from;
             txWHOutgoing.to = recWHOutgoing.to;
             db.assetTransactionDAO().insert(txWHOutgoing);
 
             return txWHOutgoing;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static RFIDInventory commitWHRFIDInventory(MobileDB db) {
+        try {
+            RFIDInventory txWHRFIDInventory = new RFIDInventory();
+            txWHRFIDInventory.site = recWHInventory.subSite;
+            txWHRFIDInventory.performedAt = System.currentTimeMillis();
+            long _id = db.rFIDInventoryDAO().insert(txWHRFIDInventory);
+            txWHRFIDInventory.id = _id;
+
+            return txWHRFIDInventory;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<RFIDInventoryItem> commitWHRFIDInventoryItem(MobileDB db, RFIDInventory inventory) {
+        try {
+            List<RFIDInventoryItem> items = new ArrayList<>();
+            Set<Map.Entry<String, List<String>>> inventoryData = recWHInventory.items.entrySet();
+
+            for(Map.Entry<String, List<String>> entry: inventoryData){
+                List<String> epcs = entry.getValue();
+                for(String epc:epcs) {
+                    RFIDInventoryItem newItem = new RFIDInventoryItem();
+                    newItem.assetType = entry.getKey();
+                    newItem.itemRFID = epc;
+                    newItem.inventory = inventory.id;
+                    items.add(newItem);
+                }
+            }
+
+            db.rFIDInventoryItemDAO().insert(items.toArray(new RFIDInventoryItem[items.size()]));
+            return items;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

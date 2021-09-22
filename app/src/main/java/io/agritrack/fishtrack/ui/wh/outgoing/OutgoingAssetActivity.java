@@ -233,7 +233,7 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
     }
 
     private void updateState() {
-        //GlobalState.recWHOutgoing.items = adapterOutgoingItems.getValues();
+        GlobalState.recWHOutgoing.items = adapterOutgoingItems.getValues();
         GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
 
         // get an instance of local DB
@@ -283,7 +283,7 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
         }
 
         if (outgoingWHRecord.items != null) {
-            //adapterOutgoingItems.setValues(outgoingWHRecord.items);
+            adapterOutgoingItems.setValues(outgoingWHRecord.items);
             adapterOutgoingItems.notifyDataSetChanged();
         }
     }
