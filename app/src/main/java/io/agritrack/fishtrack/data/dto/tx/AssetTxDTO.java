@@ -13,6 +13,7 @@ public class AssetTxDTO {
     public String to;
     public String rfid;
     public String state;
+    public String site;
 
     public static AssetTxDTO convert(AssetTransaction assetTx) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -24,6 +25,7 @@ public class AssetTxDTO {
         assetTxDTO.rfid = objectMapper.writeValueAsString(assetTx.itemRFIDs);
         assetTxDTO.from = assetTx.from;
         assetTxDTO.to = assetTx.to;
+        assetTxDTO.site = assetTx.site;
 
         return assetTxDTO;
     }

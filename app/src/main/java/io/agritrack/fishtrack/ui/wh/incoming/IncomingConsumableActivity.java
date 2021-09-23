@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -19,21 +17,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.api.APIServiceGenerator;
@@ -43,16 +36,17 @@ import io.agritrack.fishtrack.common.Constants;
 import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
+import io.agritrack.fishtrack.data.dto.tx.ConsumableTxDTO;
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
+import io.agritrack.fishtrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
+import io.agritrack.fishtrack.enums.AssetType;
+import io.agritrack.fishtrack.enums.ConsumableType;
 import io.agritrack.fishtrack.enums.WarehouseTxState;
-import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.BarcodeRecyclerAdapter;
-import io.agritrack.fishtrack.ui.adapter.TreelikeAdapter;
-import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
@@ -68,7 +62,7 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
 
     private ToggleGroup tgChooseConsumableType;
 
-    private String selectedConsumableType;
+    private String selectedConsumableType = ConsumableType.ALL.name();
     private String activeFilter = null;
     private  int selectedToggleButton = -1;
 
@@ -258,8 +252,10 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
     }
 
     private void updateState() {
-        //GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
+        GlobalState.recWHIncoming.barcodeItems = adapterIncomingItems.getValues();
         GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
+        GlobalState.recWHIncoming.assetType = AssetType.valueOf(this.selectedConsumableType);
+        GlobalState.recWHIncoming.site = LocalPreferences.getCurrentSiteName();
 
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
@@ -272,10 +268,10 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
-            AssetTransaction tx = GlobalState.commitWHIncoming(db);
+            List<ConsumableTransaction> tx = GlobalState.commitWHBarcodeIncoming(db);
 
             // sync WH Incoming Tx
-            Call<AssetTxDTO> syncTxAsyncCall = updService.syncIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
+            Call<List<ConsumableTxDTO>> syncTxAsyncCall = updService.syncBarcodeIOTx(ConsumableTxDTO.convert(tx), "Bearer " + token);
             syncTxAsyncCall.enqueue(new IncomingConsumableActivity.SyncTxCallBack());
         } catch (Exception e) {
             e.printStackTrace();
@@ -288,7 +284,7 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
     private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if (GlobalState.recWHIncoming.items == null || GlobalState.recWHIncoming.items.isEmpty()) {
+        if (GlobalState.recWHIncoming.barcodeItems == null || GlobalState.recWHIncoming.barcodeItems.isEmpty()) {
             sb.append(String.format("\n%s is missing", "'Incoming items'"));
         }
 
@@ -304,11 +300,6 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
 
         if (!Strings.isEmptyOrWhitespace(WHTxRecord.to)) {
             tvIncomingProcessTo.setText(WHTxRecord.to);
-        }
-
-        if (WHTxRecord.items != null) {
-            //adapterIncomingItems.setValues(WHTxRecord.items);
-            adapterIncomingItems.notifyDataSetChanged();
         }
     }
 
@@ -364,7 +355,7 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
                 activeFilter = Filters.BARCODE_ANTIBIOTIC;
                 break;
             default:
-                selectedConsumableType = null;
+                selectedConsumableType = Constants.ftAll;
                 activeFilter = null;
                 selectedToggleButton = -1;
                 break;
@@ -397,10 +388,10 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
         unregisterReceiver(receiver);
     }
 
-    public class SyncTxCallBack implements Callback<AssetTxDTO> {
+    public class SyncTxCallBack implements Callback<List<ConsumableTxDTO>> {
         @Override
-        public void onResponse(Call<AssetTxDTO> call, Response<AssetTxDTO> response) {
-            AssetTxDTO rs = response.body();
+        public void onResponse(Call<List<ConsumableTxDTO>> call, Response<List<ConsumableTxDTO>> response) {
+            List<ConsumableTxDTO> rs = response.body();
 
             if (rs != null) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
@@ -411,7 +402,7 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
         }
 
         @Override
-        public void onFailure(Call<AssetTxDTO> call, Throwable error) {
+        public void onFailure(Call<List<ConsumableTxDTO>> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

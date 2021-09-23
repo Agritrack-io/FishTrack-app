@@ -26,6 +26,9 @@ public class AssetTransaction {
     @ColumnInfo(name = "asset_type")
     public String assetType;
 
+    @ColumnInfo(name = "current_site")
+    public String site;
+
     @ColumnInfo(name = "state")
     public String state;
 

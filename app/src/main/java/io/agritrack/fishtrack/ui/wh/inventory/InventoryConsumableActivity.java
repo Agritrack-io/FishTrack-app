@@ -1,5 +1,6 @@
 package io.agritrack.fishtrack.ui.wh.inventory;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,24 +23,60 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.agritrack.fishtrack.R;
+import io.agritrack.fishtrack.api.APIServiceGenerator;
 import io.agritrack.fishtrack.barcode.BarcodeScanService;
 import io.agritrack.fishtrack.barcode.SoundUtil;
+import io.agritrack.fishtrack.common.Constants;
+import io.agritrack.fishtrack.common.Filters;
+import io.agritrack.fishtrack.data.db.MobileDB;
+import io.agritrack.fishtrack.data.dto.tx.ConsumableTxDTO;
+import io.agritrack.fishtrack.data.dto.wh.CoInventoryDTO;
+import io.agritrack.fishtrack.data.dto.wh.CoInventoryItemDTO;
+import io.agritrack.fishtrack.data.dto.wh.RFIDInventoryDTO;
+import io.agritrack.fishtrack.data.dto.wh.RFIDInventoryItemDTO;
+import io.agritrack.fishtrack.data.model.tx.ConsumableTransaction;
+import io.agritrack.fishtrack.data.model.wh.CoInventory;
+import io.agritrack.fishtrack.data.model.wh.CoInventoryItem;
+import io.agritrack.fishtrack.data.model.wh.RFIDInventory;
+import io.agritrack.fishtrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
+import io.agritrack.fishtrack.enums.AssetType;
+import io.agritrack.fishtrack.enums.ConsumableType;
+import io.agritrack.fishtrack.enums.WarehouseTxState;
+import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.InventoryWHRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.BarcodeRecyclerAdapter;
-import io.agritrack.fishtrack.ui.custom.CustomToast;
+import io.agritrack.fishtrack.ui.custom.ToggleGroup;
+import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
+import io.agritrack.fishtrack.ui.wh.incoming.IncomingConsumableActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
 import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
-public class InventoryConsumableActivity extends AppCompatActivity {
+public class InventoryConsumableActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private final String TAG = "InventoryConsumableActivity";
+
+    private ToggleGroup tgChooseConsumableType;
+
+    private String selectedConsumableType = ConsumableType.ALL.name();
+    private String activeFilter = null;
+    private int selectedToggleButton = -1;
+
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    private MobileDB db;
 
     private RecyclerView rvInventoryItems;
     private TextView tvInventoryItemsCount;
@@ -50,6 +87,8 @@ public class InventoryConsumableActivity extends AppCompatActivity {
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
 
+    private ProgressDialog progressDialog;
+
     // BroadcastReceiver to receiver scan data
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -59,7 +98,7 @@ public class InventoryConsumableActivity extends AppCompatActivity {
                 String barcode = new String(data);
                 adapterInventoryItems.addItem(barcode);
                 adapterInventoryItems.notifyDataSetChanged();
-                tvInventoryItemsCount.setText("# "+String.valueOf(adapterInventoryItems.getItemCount()));
+                tvInventoryItemsCount.setText("# " + String.valueOf(adapterInventoryItems.getItemCount()));
                 scanning = false;
             }
         }
@@ -74,7 +113,7 @@ public class InventoryConsumableActivity extends AppCompatActivity {
             TextView tvRecyclerItem = view.findViewById(R.id.tvItemDescription);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if(selectedItem!=null) {
+            if (selectedItem != null) {
                 selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
 
@@ -98,6 +137,10 @@ public class InventoryConsumableActivity extends AppCompatActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        // instantiate ProgressDialog and set style.
+        progressDialog = new ProgressDialog(InventoryConsumableActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvInventoryItems.setLayoutManager(layoutManager);
@@ -157,8 +200,8 @@ public class InventoryConsumableActivity extends AppCompatActivity {
         configFooter();
     }
 
-    private void clearSelectedItem(){
-        if(selectedItem!=null) {
+    private void clearSelectedItem() {
+        if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
         }
     }
@@ -177,12 +220,44 @@ public class InventoryConsumableActivity extends AppCompatActivity {
         }
     }
 
+    protected void configFooter() {
+        ImageView ivNext = findViewById(R.id.ivToCongs);
+        ivNext.setOnClickListener(view -> {
+
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            stopScanning();
+
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
+            }
+        });
+
+        ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
+        ivBack.setOnClickListener(view -> {
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            stopScanning();
+
+            Intent i = new Intent(getApplicationContext(), InventoryStartActivity.class);
+            startActivity(i);
+        });
+    }
+
     private void assignCtrlVars() {
+        tgChooseConsumableType = findViewById(R.id.tgChooseConsumableType);
         rvInventoryItems = findViewById(R.id.rvInventoryItems);
         tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
         ivAddItem = findViewById(R.id.ivAddItem);
         btnScanConsumable = findViewById(R.id.btnScanConsumable);
+
+        tgChooseConsumableType.setOnCheckedChangeListener(this);
     }
 
  /*   private void showAddDialog() {
@@ -215,42 +290,75 @@ public class InventoryConsumableActivity extends AppCompatActivity {
 
     }*/
 
-    protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(view -> {
+    private void updateState() {
+        GlobalState.recWHInventory.barcodeItems = adapterInventoryItems.getValues();
+        GlobalState.recWHInventory.consumableType = ConsumableType.valueOf(this.selectedConsumableType);
+        GlobalState.recWHInventory.site = LocalPreferences.getCurrentSiteName();
 
-            //Set scanning to false to stop running scan thread
-            scanning = false;
-            stopScanning();
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
 
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            } else {
-                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                startActivity(i);
-            }
-        });
+        try {
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(render("Synchronizing data..."));
+            progressDialog.show();
 
-        ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
-        ivBack.setOnClickListener(view -> {
-            //Set scanning to false to stop running scan thread
-            scanning = false;
-            stopScanning();
+            String token = LocalPreferences.getToken();
 
-            Intent i = new Intent(getApplicationContext(), InventoryStartActivity.class);
-            startActivity(i);
-        });
+            // persist WHIncomingAssetTX Record data to local DB.
+            CoInventory invtx = GlobalState.commitWHCoInventory(db);
+            List<CoInventoryItem> invItemtxs = GlobalState.commitWHCoInventoryItem(db, invtx);
+
+            // sync WH Inventory Tx
+            Call<CoInventoryDTO> syncInvTxCallBack = updService.syncCoInventoryTx(CoInventoryDTO.convert(invtx), "Bearer " + token);
+            Call<List<CoInventoryItemDTO>> syncInvItemTxCallBack = updService.syncCoInventoryItemTx(CoInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
+            syncInvTxCallBack.enqueue(new InventoryConsumableActivity.SyncInvTxCallBack());
+            syncInvItemTxCallBack.enqueue(new InventoryConsumableActivity.SyncInvItemTxCallBack());
+        } catch (Exception e) {
+            e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+        } finally {
+            progressDialog.dismiss();
+        }
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
 
-     /*If(GlobalState.recWHInventory.items==null || GlobalState.recWHIncoming.items.isEmpty()){
-            sb.append(String.format("\n%s is missing", "'Incoming items'"));
-        }*/
+        if (GlobalState.recWHInventory.barcodeItems == null || GlobalState.recWHInventory.barcodeItems.isEmpty()) {
+            sb.append(String.format("\n%s is missing", "'Inventory items'"));
+        }
 
         return sb.toString();
+    }
+
+    @Override
+    public void onCheckedChanged(ToggleGroup group, int checkedId) {
+
+        if (selectedToggleButton == checkedId) {
+            group.clearCheck();
+            return;
+        }
+        selectedToggleButton = checkedId;
+        switch (checkedId) {
+            case R.id.tbFood:
+                selectedConsumableType = Constants.ftFood;
+                activeFilter = Filters.BARCODE_FOOD;
+                break;
+            case R.id.tbVaccine:
+                selectedConsumableType = Constants.ftVaccine;
+                activeFilter = Filters.BARCODE_VACCINE;
+                break;
+            case R.id.tbAntibiotic:
+                selectedConsumableType = Constants.ftAntibiotic;
+                activeFilter = Filters.BARCODE_ANTIBIOTIC;
+                break;
+            default:
+                selectedConsumableType = Constants.ftAll;
+                activeFilter = null;
+                selectedToggleButton = -1;
+                break;
+        }
     }
 
     @Override
@@ -277,5 +385,67 @@ public class InventoryConsumableActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+    }
+
+    public class SyncInvTxCallBack implements Callback<CoInventoryDTO> {
+        @Override
+        public void onResponse(Call<CoInventoryDTO> call, Response<CoInventoryDTO> response) {
+            CoInventoryDTO rs = response.body();
+
+            if (rs != null) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+            } else {
+                // could not update Fishing TX on backend!!!
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_AssetTx_tx_update_failure), Toast.LENGTH_LONG));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<CoInventoryDTO> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
+            }
+        }
+    }
+
+    public class SyncInvItemTxCallBack implements Callback<List<CoInventoryItemDTO>> {
+        @Override
+        public void onResponse(Call<List<CoInventoryItemDTO>> call, Response<List<CoInventoryItemDTO>> response) {
+            List<CoInventoryItemDTO> rs = response.body();
+
+            if (rs != null) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+            } else {
+                // could not update Fishing TX on backend!!!
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_AssetTx_tx_update_failure), Toast.LENGTH_LONG));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<CoInventoryItemDTO>> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
+            }
+        }
     }
 }

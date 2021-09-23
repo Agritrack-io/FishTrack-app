@@ -14,12 +14,15 @@ import java.util.Set;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.model.HarvestRequest;
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
+import io.agritrack.fishtrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.fishtrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
 import io.agritrack.fishtrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.fishtrack.data.model.tx.RepairTransaction;
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
+import io.agritrack.fishtrack.data.model.wh.CoInventory;
+import io.agritrack.fishtrack.data.model.wh.CoInventoryItem;
 import io.agritrack.fishtrack.data.model.wh.RFIDInventory;
 import io.agritrack.fishtrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.fishtrack.enums.TxStatus;
@@ -190,7 +193,7 @@ public class GlobalState {
         }
     }
 
-    public static AssetTransaction commitWHIncoming(MobileDB db) {
+    public static AssetTransaction commitWHRFIDIncoming(MobileDB db) {
         try {
             AssetTransaction txWHIncoming = new AssetTransaction();
             txWHIncoming.state = recWHIncoming.state.name();
@@ -198,6 +201,7 @@ public class GlobalState {
             txWHIncoming.itemRFIDs = recWHIncoming.items;
             txWHIncoming.from = recWHIncoming.from;
             txWHIncoming.to = recWHIncoming.to;
+            txWHIncoming.site = recWHIncoming.site;
             db.assetTransactionDAO().insert(txWHIncoming);
 
             return txWHIncoming;
@@ -207,7 +211,35 @@ public class GlobalState {
         }
     }
 
-    public static AssetTransaction commitWHOutgoing(MobileDB db) {
+    public static List<ConsumableTransaction> commitWHBarcodeIncoming(MobileDB db) {
+        try {
+            List<ConsumableTransaction> consumablesList = new ArrayList<>();
+            Set<Map.Entry<String, Integer>> barcodeEntries = recWHIncoming.barcodeItems.entrySet();
+
+            for (Map.Entry<String, Integer> entry : barcodeEntries) {
+                ConsumableTransaction txWHIncoming = new ConsumableTransaction();
+
+                txWHIncoming.state = recWHIncoming.state.name();
+                txWHIncoming.consumableType = (recWHIncoming.consumableType != null) ? recWHIncoming.consumableType.name() : ALL.name();
+                txWHIncoming.barcode = entry.getKey();
+                txWHIncoming.quantity = entry.getValue();
+                txWHIncoming.timestamp = System.currentTimeMillis();
+                txWHIncoming.from = recWHIncoming.from;
+                txWHIncoming.to = recWHIncoming.to;
+                txWHIncoming.site = recWHIncoming.site;
+
+                consumablesList.add(txWHIncoming);
+            }
+            db.consumableTransactionDAO().insert(consumablesList.toArray(new ConsumableTransaction[consumablesList.size()]));
+
+            return consumablesList;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static AssetTransaction commitWHRFIDOutgoing(MobileDB db) {
         try {
             AssetTransaction txWHOutgoing = new AssetTransaction();
             txWHOutgoing.state = recWHOutgoing.state.name();
@@ -215,9 +247,38 @@ public class GlobalState {
             txWHOutgoing.itemRFIDs = recWHOutgoing.items;
             txWHOutgoing.from = recWHOutgoing.from;
             txWHOutgoing.to = recWHOutgoing.to;
+            txWHOutgoing.site = recWHOutgoing.site;
             db.assetTransactionDAO().insert(txWHOutgoing);
 
             return txWHOutgoing;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<ConsumableTransaction> commitWHBarcodeOutgoing(MobileDB db) {
+        try {
+            List<ConsumableTransaction> consumablesList = new ArrayList<>();
+            Set<Map.Entry<String, Integer>> barcodeEntries = recWHOutgoing.barcodeItems.entrySet();
+
+            for (Map.Entry<String, Integer> entry : barcodeEntries) {
+                ConsumableTransaction txWHOutgoing = new ConsumableTransaction();
+
+                txWHOutgoing.state = recWHOutgoing.state.name();
+                txWHOutgoing.consumableType = (recWHOutgoing.consumableType != null) ? recWHOutgoing.consumableType.name() : ALL.name();
+                txWHOutgoing.barcode = entry.getKey();
+                txWHOutgoing.quantity = entry.getValue();
+                txWHOutgoing.timestamp = System.currentTimeMillis();
+                txWHOutgoing.from = recWHOutgoing.from;
+                txWHOutgoing.to = recWHOutgoing.to;
+                txWHOutgoing.site = recWHOutgoing.site;
+
+                consumablesList.add(txWHOutgoing);
+            }
+            db.consumableTransactionDAO().insert(consumablesList.toArray(new ConsumableTransaction[consumablesList.size()]));
+
+            return consumablesList;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
@@ -244,9 +305,9 @@ public class GlobalState {
             List<RFIDInventoryItem> items = new ArrayList<>();
             Set<Map.Entry<String, List<String>>> inventoryData = recWHInventory.items.entrySet();
 
-            for(Map.Entry<String, List<String>> entry: inventoryData){
+            for (Map.Entry<String, List<String>> entry : inventoryData) {
                 List<String> epcs = entry.getValue();
-                for(String epc:epcs) {
+                for (String epc : epcs) {
                     RFIDInventoryItem newItem = new RFIDInventoryItem();
                     newItem.assetType = entry.getKey();
                     newItem.itemRFID = epc;
@@ -256,6 +317,44 @@ public class GlobalState {
             }
 
             db.rFIDInventoryItemDAO().insert(items.toArray(new RFIDInventoryItem[items.size()]));
+            return items;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static CoInventory commitWHCoInventory(MobileDB db) {
+        try {
+            CoInventory txWHCoInventory = new CoInventory();
+            txWHCoInventory.site = recWHInventory.subSite;
+            txWHCoInventory.performedAt = System.currentTimeMillis();
+            long _id = db.coInventoryDAO().insert(txWHCoInventory);
+            txWHCoInventory.id = _id;
+
+            return txWHCoInventory;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<CoInventoryItem> commitWHCoInventoryItem(MobileDB db, CoInventory inventory) {
+        try {
+            List<CoInventoryItem> items = new ArrayList<>();
+            Set<Map.Entry<String, Integer>> inventoryData = recWHInventory.barcodeItems.entrySet();
+
+            for (Map.Entry<String, Integer> entry : inventoryData) {
+                CoInventoryItem newItem = new CoInventoryItem();
+                newItem.consumableType = (recWHInventory.consumableType != null) ? recWHInventory.consumableType.name() : ALL.name();
+                newItem.barcode = entry.getKey();
+                newItem.quantity = entry.getValue();
+                newItem.timestamp = System.currentTimeMillis();
+
+                items.add(newItem);
+            }
+
+            db.coInventoryItemDAO().insert(items.toArray(new CoInventoryItem[items.size()]));
             return items;
         } catch (Exception ex) {
             ex.printStackTrace();

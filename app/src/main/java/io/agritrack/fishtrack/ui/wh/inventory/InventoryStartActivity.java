@@ -88,7 +88,7 @@ public class InventoryStartActivity extends AppCompatActivity {
         gvInventoryMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final Context appCtx = getApplicationContext();
-                Intent i = new Intent(appCtx, LoginActivity.class);
+                Intent i = new Intent(appCtx, InventoryStartActivity.class);
 
                 switch (position) {
                     case Asset_Idx:

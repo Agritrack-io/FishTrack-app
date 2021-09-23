@@ -3,8 +3,14 @@ package io.agritrack.fishtrack.data.model.tx;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 import java.util.Date;
+import java.util.List;
+
+import io.agritrack.fishtrack.data.converter.AssetTypeConverter;
+import io.agritrack.fishtrack.data.converter.ConsumableTypeConverter;
+import io.agritrack.fishtrack.data.converter.StringListConverter;
 
 @Entity(tableName = "consumable_transaction")
 public class ConsumableTransaction {
@@ -13,13 +19,20 @@ public class ConsumableTransaction {
     public Long id;
 
     @ColumnInfo(name = "timestamp")
-    public Date timestamp;
+    public Long timestamp;
+
+    @ColumnInfo(name = "barcode")
+    public String barcode;
 
     @ColumnInfo(name = "quantity")
     public Integer quantity;
 
-    @ColumnInfo(name = "barcode")
-    public String barcode;
+    @TypeConverters(ConsumableTypeConverter.class)
+    @ColumnInfo(name = "consumable_type")
+    public String consumableType;
+
+    @ColumnInfo(name = "current_site")
+    public String site;
 
     @ColumnInfo(name = "ftes")
     public String ftes;
@@ -27,26 +40,12 @@ public class ConsumableTransaction {
     @ColumnInfo(name = "dispatch_note")
     public String dispatchNote;
 
-    @ColumnInfo(name = "transaction_type")
-    public String transactionType;
+    @ColumnInfo(name = "state")
+    public String state;
 
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_ConsumableTx_Site"))
-    public Site site;
+    @ColumnInfo(name = "source")
+    public String from;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="FK_ConsumableTx_User"))
-    public User user;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "source_site", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name="FK_ConsumableTx_Source_Site"))
-    public Site sourceSite;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "target_site", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name="FK_ConsumableTx_Target_Site"))
-    public Site targetSite;
-
-    @OneToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "consunable_id", foreignKey = @ForeignKey(name="FK_ConsumableTx_Consumable"))
-    public Consumable consumable;*/
+    @ColumnInfo(name = "dest")
+    public String to;
 }

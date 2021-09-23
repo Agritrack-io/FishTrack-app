@@ -38,17 +38,16 @@ import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
 import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
+import io.agritrack.fishtrack.enums.AssetType;
 import io.agritrack.fishtrack.enums.WarehouseTxState;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.TreelikeAdapter;
-import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
-import io.agritrack.fishtrack.ui.wh.incoming.IncomingAssetActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -60,7 +59,7 @@ import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private ToggleGroup tgChooseAssetType;
-    private String selectedAssetType;
+    private String selectedAssetType = AssetType.ALL.name();
     private String activeFilter = null;
     private  int selectedToggleButton = -1;
 
@@ -167,6 +166,7 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
                         adapterOutgoingItems.removeItem(selectedParent, selectedChild);
                         adapterOutgoingItems.notifyDataSetChanged();
                         selectedBarcode = null;
+                        selectedChild = null;
                     }
                 });
 
@@ -235,6 +235,8 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
     private void updateState() {
         GlobalState.recWHOutgoing.items = adapterOutgoingItems.getValues();
         GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
+        GlobalState.recWHOutgoing.assetType = AssetType.valueOf(this.selectedAssetType);
+        GlobalState.recWHOutgoing.site = LocalPreferences.getCurrentSiteName();
 
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
@@ -247,10 +249,10 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
-            AssetTransaction tx = GlobalState.commitWHOutgoing(db);
+            AssetTransaction tx = GlobalState.commitWHRFIDOutgoing(db);
 
             // sync WH Incoming Tx
-            Call<AssetTxDTO> syncTxAsyncCall = updService.syncIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
+            Call<AssetTxDTO> syncTxAsyncCall = updService.syncRFIDIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
             syncTxAsyncCall.enqueue(new SyncTxCallBack());
         } catch (Exception e) {
             e.printStackTrace();
@@ -391,7 +393,7 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
                 activeFilter = Filters.RFID_PLATFORM;
                 break;
             default:
-                selectedAssetType = null;
+                selectedAssetType = Constants.ftAll;
                 activeFilter = null;
                 selectedToggleButton = -1;
                 break;

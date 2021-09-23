@@ -2,11 +2,14 @@ package io.agritrack.fishtrack.ui.login.api;
 
 import java.util.List;
 
+import io.agritrack.fishtrack.data.dto.tx.ConsumableTxDTO;
 import io.agritrack.fishtrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.fishtrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.fishtrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.fishtrack.data.dto.tx.ProcessingTxDTO;
+import io.agritrack.fishtrack.data.dto.wh.CoInventoryDTO;
+import io.agritrack.fishtrack.data.dto.wh.CoInventoryItemDTO;
 import io.agritrack.fishtrack.data.dto.wh.RFIDInventoryDTO;
 import io.agritrack.fishtrack.data.dto.wh.RFIDInventoryItemDTO;
 import io.agritrack.fishtrack.data.model.wh.RFIDInventory;
@@ -32,7 +35,11 @@ public interface TransactionApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/asset/tx")
-    Call<AssetTxDTO> syncIOTx(@Body AssetTxDTO assetTx, @Header("Authorization") String token);
+    Call<AssetTxDTO> syncRFIDIOTx(@Body AssetTxDTO assetTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/consumable/tx")
+    Call<List<ConsumableTxDTO>> syncBarcodeIOTx(@Body List<ConsumableTxDTO> consumableTxs, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/asset/correlate")
@@ -45,5 +52,13 @@ public interface TransactionApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/inventory/asset/items")
     Call<List<RFIDInventoryItemDTO>> syncRFIDInventoryItemTx(@Body List<RFIDInventoryItemDTO> rFIDInventoryItems, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/inventory/consumable")
+    Call<CoInventoryDTO> syncCoInventoryTx(@Body CoInventoryDTO coInventory, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/inventory/consumable/items")
+    Call<List<CoInventoryItemDTO>> syncCoInventoryItemTx(@Body List<CoInventoryItemDTO> coInventoryItems, @Header("Authorization") String token);
 
 }

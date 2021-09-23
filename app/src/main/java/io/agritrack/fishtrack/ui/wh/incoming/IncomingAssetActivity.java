@@ -45,11 +45,9 @@ import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.TreelikeAdapter;
-import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
-import io.agritrack.fishtrack.ui.wh.correlation.CorrelationActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -61,7 +59,7 @@ import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 public class IncomingAssetActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private ToggleGroup tgChooseAssetType;
-    private String selectedAssetType;
+    private String selectedAssetType = AssetType.ALL.name();
     private String activeFilter = null;
     private  int selectedToggleButton = -1;
 
@@ -168,6 +166,7 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
                         adapterIncomingItems.removeItem(selectedParent, selectedChild);
                         adapterIncomingItems.notifyDataSetChanged();
                         selectedBarcode = null;
+                        selectedChild = null;
                     }
                 });
 
@@ -238,6 +237,7 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
         GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
         GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
         GlobalState.recWHIncoming.assetType = AssetType.valueOf(this.selectedAssetType);
+        GlobalState.recWHIncoming.site = LocalPreferences.getCurrentSiteName();
 
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
@@ -250,10 +250,10 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
-            AssetTransaction tx = GlobalState.commitWHIncoming(db);
+            AssetTransaction tx = GlobalState.commitWHRFIDIncoming(db);
 
             // sync WH Incoming Tx
-            Call<AssetTxDTO> syncTxAsyncCall = updService.syncIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
+            Call<AssetTxDTO> syncTxAsyncCall = updService.syncRFIDIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
             syncTxAsyncCall.enqueue(new SyncTxCallBack());
         } catch (Exception e) {
             e.printStackTrace();

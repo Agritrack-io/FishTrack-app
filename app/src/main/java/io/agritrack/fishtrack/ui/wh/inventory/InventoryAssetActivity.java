@@ -75,7 +75,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
     private boolean scanning = false;
 
     private TreelikeAdapter adapterInventoryItems;
-    private String selectedAssetType = "ALL";
+    private String selectedAssetType = AssetType.ALL.name();
     private String activeFilter = null;
     private int selectedToggleButton = -1;
     private ImageButton ivAddItem, ivDeleteItem;
@@ -170,6 +170,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
                         adapterInventoryItems.removeItem(selectedParent, selectedChild);
                         adapterInventoryItems.notifyDataSetChanged();
                         selectedBarcode = null;
+                        selectedChild = null;
                     }
                 });
 

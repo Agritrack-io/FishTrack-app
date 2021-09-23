@@ -271,6 +271,8 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
                     }
                 });
+                pbProximity.setProgress(0);
+                tvProximity.setText(R.string.proximity);
                 try {
                     assetSearchThread.join();
                 } catch (InterruptedException e) {

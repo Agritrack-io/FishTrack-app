@@ -32,8 +32,8 @@ public class BarcodeRecyclerAdapter extends RecyclerView.Adapter<BarcodeRecycler
         this.itemsClickListener = clickListener;
     }
 
-    public List<String> getValues() {
-        return this.mList;
+    public Map<String, Integer> getValues() {
+        return this.mData;
     }
 
     public void setValues(List<String> values) {

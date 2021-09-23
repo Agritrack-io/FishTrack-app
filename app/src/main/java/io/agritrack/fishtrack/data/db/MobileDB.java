@@ -8,6 +8,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import io.agritrack.fishtrack.data.converter.AssetTypeConverter;
+import io.agritrack.fishtrack.data.converter.ConsumableTypeConverter;
 import io.agritrack.fishtrack.data.converter.DateConverter;
 import io.agritrack.fishtrack.data.converter.LongListConverter;
 import io.agritrack.fishtrack.data.converter.StringListConverter;
@@ -22,6 +23,7 @@ import io.agritrack.fishtrack.data.dao.common.FishSpeciesDAO;
 import io.agritrack.fishtrack.data.dao.common.ReaderDAO;
 import io.agritrack.fishtrack.data.dao.common.SupplierDAO;
 import io.agritrack.fishtrack.data.dao.tx.AssetTransactionDAO;
+import io.agritrack.fishtrack.data.dao.tx.ConsumableTransactionDAO;
 import io.agritrack.fishtrack.data.dao.tx.CorrelationTransactionDAO;
 import io.agritrack.fishtrack.data.dao.tx.FishingTransactionDAO;
 import io.agritrack.fishtrack.data.dao.tx.HarvestTransactionDAO;
@@ -42,6 +44,7 @@ import io.agritrack.fishtrack.data.model.common.FishSpecies;
 import io.agritrack.fishtrack.data.model.common.Reader;
 import io.agritrack.fishtrack.data.model.common.Supplier;
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
+import io.agritrack.fishtrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.fishtrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
 import io.agritrack.fishtrack.data.model.tx.HarvestTransaction;
@@ -57,10 +60,10 @@ import io.agritrack.fishtrack.data.model.wh.RFIDInventoryItem;
 @Database(entities = {AppUser.class, Site.class, Asset.class, Supplier.class, HarvestRequest.class,
         CageDetails.class, Employee.class, FishSpecies.class, Reader.class,
         FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class,
-        AssetTransaction.class, CorrelationTransaction.class, RepairTransaction.class, HarvestTransaction.class,
+        AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class, RepairTransaction.class, HarvestTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class},
-        version = 5, exportSchema = false)
-@TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class})
+        version = 9, exportSchema = false)
+@TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class, ConsumableTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
     private static MobileDB INSTANCE;
@@ -103,6 +106,8 @@ public abstract class MobileDB extends RoomDatabase {
     public abstract HarvestTransactionDAO harvestTransactionDAO();
 
     public abstract AssetTransactionDAO assetTransactionDAO();
+
+    public abstract ConsumableTransactionDAO consumableTransactionDAO();
 
     public abstract CorrelationTransactionDAO correlationTransactionDAO();
 

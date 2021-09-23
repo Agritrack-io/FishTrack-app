@@ -24,6 +24,9 @@ public interface CoInventoryDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(CoInventory... coInventorys);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insert(CoInventory coInventory);
+
     @Delete
     void delete(CoInventory coInventory);
 

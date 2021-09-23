@@ -69,6 +69,84 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
     app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
     <RelativeLayout
+        android:id="@+id/inventoryConsumableALayout"
+        android:layout_width="0dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/inventoryConsumableBLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_rounded_corner_with_shadow"
+            android:orientation="horizontal"
+            android:padding="1dp">
+
+            <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                android:id="@+id/tgChooseConsumableType"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ToggleButton
+                    android:id="@+id/tbFood"
+                    android:layout_width="0dp"
+                    android:layout_height="34dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/tooglebutton_selector"
+                    android:gravity="center"
+                    android:textColor="@drawable/button_text_color"
+                    android:textOff="FOOD"
+                    android:textOn="FOOD"
+                    android:textSize="@dimen/text_view_font_size_medium" />
+
+                <ToggleButton
+                    android:id="@+id/tbVaccine"
+                    android:layout_width="35dp"
+                    android:layout_height="34dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/tooglebutton_selector"
+                    android:gravity="center"
+                    android:textColor="@drawable/button_text_color"
+                    android:textOff="VACCINE"
+                    android:textOn="VACCINE"
+                    android:textSize="@dimen/text_view_font_size_medium" />
+
+                <ToggleButton
+                    android:id="@+id/tbAntibiotic"
+                    android:layout_width="45dp"
+                    android:layout_height="34dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/tooglebutton_selector"
+                    android:gravity="center"
+                    android:textColor="@drawable/button_text_color"
+                    android:textOff="ANTIBIOTIC"
+                    android:textOn="ANTIBIOTIC"
+                    android:textSize="@dimen/text_view_font_size_medium" />
+
+            </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/inventoryConsumableBLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -79,7 +157,7 @@ tools:context=".ui.wh.inventory.InventoryConsumableActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/inventoryConsumableALayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
