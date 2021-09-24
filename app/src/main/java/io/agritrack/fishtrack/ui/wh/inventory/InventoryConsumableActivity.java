@@ -80,7 +80,6 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
 
     private RecyclerView rvInventoryItems;
     private TextView tvInventoryItemsCount;
-    private InventoryWHRecord whInventoryRecord;
     private boolean scanning = false;
     private BarcodeScanService scanService;
     private BarcodeRecyclerAdapter adapterInventoryItems;

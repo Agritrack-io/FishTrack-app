@@ -1,14 +1,14 @@
 package io.agritrack.fishtrack.ui.maintenance;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.ArrayAdapter;
+import android.text.Editable;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,7 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
-import java.util.Arrays;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -25,29 +28,45 @@ import java.util.concurrent.TimeUnit;
 
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Constants;
-import io.agritrack.fishtrack.enums.AssetType;
 import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.RepairRecord;
-import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
+import static io.agritrack.fishtrack.common.FishTrackUtils.detectAssetType;
 import static io.agritrack.fishtrack.common.LargeString.render;
 import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class MaintenanceExternalStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
-    private Spinner spAssetType;
+    private final String dtFormat = "dd/MM/yyyy";
+    private final SimpleDateFormat sdf = new SimpleDateFormat(dtFormat);
+
     private Button btnScanAsset;
-    private TextView tvAssetBarcode;
+    private TextView tvAssetBarcode, tvAssetType;
     private ToggleGroup tgOutMtRepairTypes;
     private EditText etOMtNextMaintenance, etOMtEstWithdrawal;
+    private final Calendar calendar = Calendar.getInstance();
 
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private String selectedOperation;
+
+    DatePickerDialog.OnDateSetListener nextDate = (view, year, monthOfYear, dayOfMonth) -> {
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, monthOfYear);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        updateNextMaintenanceDate();
+    };
+
+    DatePickerDialog.OnDateSetListener withdrawalDate = (view, year, monthOfYear, dayOfMonth) -> {
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, monthOfYear);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        updateEstWithdrawalDate();
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,16 +80,9 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
         // get  references of the controls
         assignCtrlVars();
 
-        // load all Asset Types and fill in the spAssetType Spinner.
-        AssetType[] assetTypes = AssetType.values();
-        if (assetTypes != null) {
-            String[] assetTypeArray = Arrays.stream(assetTypes).map(x -> x.name()).toArray(String[]::new);
-            ArrayAdapter<String> atAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, assetTypeArray);
-            atAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-            spAssetType.setAdapter(atAdapter);
-        }
+        setUpNextMaintenanceDate();
+        setUpEstWithdrawalDate();
 
-        // =================================
         // RFID scanning functionality
         btnScanAsset.setOnClickListener(view -> {
             //update scanning, uhfReader, tvPlatformName values in thread
@@ -85,9 +97,9 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
                             tvAssetBarcode.setText(epcStr);
+                            tvAssetType.setText(detectAssetType(epcStr));
                         }
                     });
-                    //tvCageName.setText(result);
                 }
             } catch (Exception e) {
                 future.cancel(true);
@@ -102,7 +114,7 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
     }
 
     private void assignCtrlVars() {
-        spAssetType = findViewById(R.id.spAssetType);
+        tvAssetType = findViewById(R.id.tvAssetType);
         tvAssetBarcode = findViewById(R.id.tvAssetBarcode);
         etOMtNextMaintenance = findViewById(R.id.etOMtNextMaintenance);
         etOMtEstWithdrawal = findViewById(R.id.etOMtEstWithdrawal);
@@ -147,11 +159,6 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
 
         externalRepairRecord.site = LocalPreferences.getCurrentSiteName();
 
-        if (spAssetType.getSelectedItem() != null) {
-            externalRepairRecord.assetType = AssetType.valueOf(spAssetType.getSelectedItem().toString());
-        }
-        externalRepairRecord.assetTypePos = spAssetType.getSelectedItemPosition();
-
         if (tvAssetBarcode.getText() != null) {
             externalRepairRecord.assetBC = tvAssetBarcode.getText().toString();
         }
@@ -159,7 +166,49 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
         if (!Strings.isEmptyOrWhitespace(selectedOperation)) {
             externalRepairRecord.maintenanceType = selectedOperation;
         }
+
+        Editable txtNextMaintenance = etOMtNextMaintenance.getText();
+        if (txtNextMaintenance != null && !Strings.isEmptyOrWhitespace(txtNextMaintenance.toString())) {
+            String string_date = txtNextMaintenance.toString();
+            try {
+                Date d = sdf.parse(string_date);
+                externalRepairRecord.nextDateMaintenance = d.getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Editable txtEstWithdrawal = etOMtEstWithdrawal.getText();
+        if (txtEstWithdrawal != null && !Strings.isEmptyOrWhitespace(txtEstWithdrawal.toString())) {
+            String string_date = txtEstWithdrawal.toString();
+            try {
+                Date d = sdf.parse(string_date);
+                externalRepairRecord.estimatedDateWithdrawal = d.getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
         return externalRepairRecord;
+    }
+
+    private void setUpNextMaintenanceDate(){
+        etOMtNextMaintenance.setOnClickListener(view -> new DatePickerDialog(MaintenanceExternalStartActivity.this, nextDate, calendar
+                .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)).show());
+    }
+
+    private void setUpEstWithdrawalDate(){
+        etOMtEstWithdrawal.setOnClickListener(view -> new DatePickerDialog(MaintenanceExternalStartActivity.this, withdrawalDate, calendar
+                .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)).show());
+    }
+
+    private void updateNextMaintenanceDate() {
+        etOMtNextMaintenance.setText(sdf.format(calendar.getTime()));
+    }
+
+    private void updateEstWithdrawalDate() {
+        etOMtEstWithdrawal.setText(sdf.format(calendar.getTime()));
     }
 
     private String validate(){
@@ -173,7 +222,7 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
             sb.append(String.format("\n%s is missing", "'Maintenance type'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.maintenanceType)){
+        if(GlobalState.recExternalRepair.nextDateMaintenance == null){
             sb.append(String.format("\n%s is missing", "'Next maintenance date'"));
         }
 
@@ -182,10 +231,6 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
 
 
     private void initControlsFromState() {
-        if (GlobalState.recExternalRepair.assetTypePos > -1) {
-            spAssetType.setSelection(GlobalState.recExternalRepair.assetTypePos);
-        }
-
         if (!Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.assetBC)) {
             tvAssetBarcode.setText(GlobalState.recExternalRepair.assetBC);
         }

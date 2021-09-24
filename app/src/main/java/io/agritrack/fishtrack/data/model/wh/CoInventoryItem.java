@@ -30,7 +30,7 @@ public class CoInventoryItem {
     @ColumnInfo(name = "timestamp")
     public long timestamp;
 
-    public Long CoInventory;
+    public Long coInventory;
 
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "inventory_Id", foreignKey = @ForeignKey(name="FK_CoInventoryItem_Inventory"))

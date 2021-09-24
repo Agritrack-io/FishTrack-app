@@ -10,6 +10,8 @@ public class RepairRecord {
 
     public String assetBC;
     public String maintenanceType;
+    public Long nextDateMaintenance;
+    public Long estimatedDateWithdrawal;
 
     public String teamSize;
     public ArrayList<Long> repairTeam;

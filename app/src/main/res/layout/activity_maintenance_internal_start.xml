@@ -92,7 +92,7 @@ tools:context=".ui.maintenance.MaintenanceInternalStartActivity">
             android:padding="1dp">
 
             <TextView
-                android:id="@+id/tvAssetType"
+                android:id="@+id/tvAssetTypeLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -101,32 +101,30 @@ tools:context=".ui.maintenance.MaintenanceInternalStartActivity">
                 android:text="@string/choose_asset_type"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/spAssetType"
+                app:layout_constraintBottom_toTopOf="@+id/tvAssetType"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_conversion_absoluteHeight="0dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
-            <Spinner
-                android:id="@+id/spAssetType"
-                style="@style/spinner_style"
+            <TextView
+                android:id="@+id/tvAssetType"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
                 android:layout_marginBottom="8dp"
-                android:dropDownWidth="match_parent"
-                android:focusableInTouchMode="true"
-                android:requiresFadingEdge="horizontal"
-                android:spinnerMode="dropdown"
-                android:textAlignment="textStart"
-                android:visibility="visible"
+                android:background="@drawable/bg_rounded_dialog_non_input"
+                android:gravity="center|center_vertical"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                android:textStyle="normal"
                 app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.496"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvAssetType"
+                app:layout_constraintTop_toBottomOf="@+id/tvAssetTypeLabel"
                 tools:layout_conversion_absoluteHeight="0dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
@@ -145,7 +143,7 @@ tools:context=".ui.maintenance.MaintenanceInternalStartActivity">
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spAssetType"
+                app:layout_constraintTop_toBottomOf="@+id/tvAssetType"
                 tools:layout_conversion_absoluteHeight="120dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 

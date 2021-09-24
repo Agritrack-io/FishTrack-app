@@ -29,7 +29,6 @@ import io.agritrack.fishtrack.enums.AssetType;
 import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.RepairRecord;
-import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
@@ -38,9 +37,8 @@ import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class MaintenanceInternalStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
-    private Spinner spAssetType;
     private Button btnScanAsset;
-    private TextView tvAssetBarcode;
+    private TextView tvAssetBarcode, tvAssetType;
     private ToggleGroup tgInMtRepairTypes;
     private EditText etIMtNextMaintenance, etIMtEstWithdrawal;
 
@@ -62,15 +60,6 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
 
         // get  references of the controls
         assignCtrlVars();
-
-        // load all Asset Types and fill in the spAssetType Spinner.
-        AssetType[] assetTypes = AssetType.values();
-        if (assetTypes != null) {
-            String[] assetTypeArray = Arrays.stream(assetTypes).map(x -> x.name()).toArray(String[]::new);
-            ArrayAdapter<String> atAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, assetTypeArray);
-            atAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-            spAssetType.setAdapter(atAdapter);
-        }
 
         // =================================
         // RFID scanning functionality
@@ -104,7 +93,7 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
     }
 
     private void assignCtrlVars() {
-        spAssetType = findViewById(R.id.spAssetType);
+        tvAssetType = findViewById(R.id.tvAssetType);
         tvAssetBarcode = findViewById(R.id.tvAssetBarcode);
         etIMtNextMaintenance = findViewById(R.id.etIMtNextMaintenance);
         etIMtEstWithdrawal = findViewById(R.id.etIMtEstWithdrawal);
@@ -150,11 +139,6 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
 
         indoorsRepairRecord.site = LocalPreferences.getCurrentSiteName();
 
-        if (spAssetType.getSelectedItem() != null) {
-            indoorsRepairRecord.assetType = AssetType.valueOf(spAssetType.getSelectedItem().toString());
-        }
-        indoorsRepairRecord.assetTypePos = spAssetType.getSelectedItemPosition();
-
         if (tvAssetBarcode.getText() != null) {
             indoorsRepairRecord.assetBC = tvAssetBarcode.getText().toString();
         }
@@ -184,10 +168,6 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
     }
 
     private void initControlsFromState() {
-        if (GlobalState.recInternalRepair.assetTypePos > -1) {
-            spAssetType.setSelection(GlobalState.recInternalRepair.assetTypePos);
-        }
-
         if (!Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.assetBC)) {
             tvAssetBarcode.setText(GlobalState.recInternalRepair.assetBC);
         }

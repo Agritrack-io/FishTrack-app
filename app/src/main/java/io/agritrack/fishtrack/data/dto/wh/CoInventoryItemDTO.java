@@ -11,6 +11,7 @@ import io.agritrack.fishtrack.data.model.wh.RFIDInventoryItem;
 public class CoInventoryItemDTO {
 
     public Long id;
+    public Long coInventoryId;
     public String barcode;
     public Integer quantity;
     public String code;
@@ -21,6 +22,7 @@ public class CoInventoryItemDTO {
         coInventoryItemDTO.barcode = coInventoryItem.barcode;
         coInventoryItemDTO.quantity = coInventoryItem.quantity;
         coInventoryItemDTO.code = coInventoryItem.code;
+        coInventoryItemDTO.coInventoryId = coInventoryItem.coInventory;
         return coInventoryItemDTO;
     }
 

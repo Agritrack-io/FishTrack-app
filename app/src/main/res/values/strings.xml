@@ -231,7 +231,7 @@
     <string name="title_search">SEARCH</string>
     <string name="search">Search</string>
     <string name="search_details">Search details</string>
-    <string name="choose_asset_type">Asset type:</string>
+    <string name="choose_asset_type">Asset type</string>
     <string name="search_and_select_barcode">Search and select barcode</string>
     <string name="type_barcode">Or type barcode of asset</string>
     <string name="proximity">Proximity</string>

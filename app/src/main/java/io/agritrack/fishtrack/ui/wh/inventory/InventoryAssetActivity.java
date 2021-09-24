@@ -69,7 +69,6 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private ExpandableListView xvInventoryItems;
-    private InventoryWHRecord whInventoryRecord;
     private UhfReader uhfReader;
     private ScanInventoryThread transportationBinsThread = new ScanInventoryThread();
     private boolean scanning = false;
@@ -89,9 +88,6 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_asset);
-
-        // instantiate an inventory Record
-        whInventoryRecord = GlobalState.recWHInventory;
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderInventory);

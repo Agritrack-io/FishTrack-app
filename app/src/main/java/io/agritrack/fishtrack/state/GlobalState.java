@@ -350,6 +350,7 @@ public class GlobalState {
                 newItem.barcode = entry.getKey();
                 newItem.quantity = entry.getValue();
                 newItem.timestamp = System.currentTimeMillis();
+                newItem.coInventory = inventory.id;
 
                 items.add(newItem);
             }
