@@ -17,6 +17,7 @@ import io.agritrack.fishtrack.R;
 public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecyclerAdapter.MyViewHolder> {
     private List<String> mList;
     private final LayoutInflater mLayoutInflater;
+    public boolean isClickable = true;
 
     private View.OnClickListener itemsClickListener;
 

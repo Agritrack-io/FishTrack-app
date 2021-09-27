@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -144,7 +145,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             adapterCatches.notifyDataSetChanged();
 
                             tvUsedBinsCount.setText(loadsMap.loadsCnt());
-                            tvBinWeight.setText("");
+                            tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
                         }
                     });
                 }
@@ -180,7 +181,12 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             btnDeleteCatch.setTextColor(Color.DKGRAY);
             view.setEnabled(false);
             ((Button) view).setTextColor(Color.DKGRAY);
-
+            rvWeightBatchesBin.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
+                @Override
+                public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                    return true;
+                }
+            });
         });
 
         btnDeleteCatch.setOnClickListener(view -> {
@@ -209,7 +215,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                 clearSelectedItem();
             } else {
-                // <delete> Button was pressed without selecting a Bin first.
+                // <delete> Button was pressed without selecting a Catch first.
                 CToast(getApplicationContext(), render("Plz select a Catch to delete!!"), Toast.LENGTH_LONG);
             }
         });
