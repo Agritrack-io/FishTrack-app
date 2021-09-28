@@ -312,5 +312,7 @@
     <string name="employees_sync_completed">Employees sync completed!</string>
     <string name="users_sync_completed">Users sync completed!</string>
     <string name="delete_selected_item">"About to delete: "</string>
-
+    <string name="select_site">Please select site</string>
+    <string name="select_supplier">Please select supplier</string>
+    <string name="select_subsite">Please select sub-site</string>
 </resources>

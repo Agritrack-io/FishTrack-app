@@ -21,12 +21,12 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
 
     private View.OnClickListener itemsClickListener;
 
-    public TemplateRecyclerAdapter(Context context, ArrayList<String> values) {
+    public TemplateRecyclerAdapter(Context context, List<String> values) {
         this.mList = values;
         this.mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public TemplateRecyclerAdapter(Context context, ArrayList<String> values, View.OnClickListener clickListener) {
+    public TemplateRecyclerAdapter(Context context, List<String> values, View.OnClickListener clickListener) {
         this.mList = values;
         this.mLayoutInflater = LayoutInflater.from(context);
         this.itemsClickListener = clickListener;

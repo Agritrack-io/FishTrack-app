@@ -92,59 +92,23 @@ tools:context=".ui.maintenance.MaintenanceInternalStartActivity">
             android:padding="1dp">
 
             <TextView
-                android:id="@+id/tvAssetTypeLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:gravity="left"
-                android:text="@string/choose_asset_type"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvAssetType"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_conversion_absoluteHeight="0dp"
-                tools:layout_conversion_absoluteWidth="0dp" />
-
-            <TextView
                 android:id="@+id/tvAssetType"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="50dp"
                 android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rounded_dialog_non_input"
                 android:gravity="center|center_vertical"
-                android:textColor="@color/black"
+                android:text="Please scan asset"
+                android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                android:textStyle="normal"
-                app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
+                app:layout_constraintBottom_toTopOf="@+id/tvAssetBarcode"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.496"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvAssetTypeLabel"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:layout_conversion_absoluteHeight="0dp"
-                tools:layout_conversion_absoluteWidth="0dp" />
-
-            <Button
-                android:id="@+id/btnScanAsset"
-                android:layout_width="0dp"
-                android:layout_height="94dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/button_press_effect"
-                android:text="@string/scan_assets"
-                android:textColor="@color/yellow"
-                android:textSize="@dimen/button_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvAssetBarcode"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvAssetType"
-                tools:layout_conversion_absoluteHeight="120dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
             <TextView
@@ -155,15 +119,34 @@ tools:context=".ui.maintenance.MaintenanceInternalStartActivity">
                 android:layout_marginEnd="50dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_rounded_dialog_non_input"
-                android:gravity="center|center_vertical"
+                android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
                 android:textStyle="normal"
-                app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceType"
+                app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnScanAsset" />
+                app:layout_constraintTop_toBottomOf="@+id/tvAssetType" />
+
+            <Button
+                android:id="@+id/btnScanAsset"
+                android:layout_width="0dp"
+                android:layout_height="84dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/button_press_effect"
+                android:text="@string/scan_assets"
+                android:textColor="@color/yellow"
+                android:textSize="@dimen/button_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/tvMaintenanceType"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintTop_toBottomOf="@+id/tvAssetBarcode"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_conversion_absoluteHeight="120dp"
+                tools:layout_conversion_absoluteWidth="0dp" />
 
             <TextView
                 android:id="@+id/tvMaintenanceType"
@@ -179,7 +162,7 @@ tools:context=".ui.maintenance.MaintenanceInternalStartActivity">
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvAssetBarcode"
+                app:layout_constraintTop_toBottomOf="@+id/btnScanAsset"
                 tools:layout_conversion_absoluteHeight="0dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
@@ -225,39 +208,37 @@ tools:context=".ui.maintenance.MaintenanceInternalStartActivity">
 
             </io.agritrack.fishtrack.ui.custom.ToggleGroup>
 
-<!--
-            <RadioGroup
-                android:id="@+id/radioGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="10dp"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceType">
+            <!-- <RadioGroup
+                 android:id="@+id/radioGroup"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_marginBottom="16dp"
+                 android:gravity="center"
+                 android:orientation="horizontal"
+                 android:padding="10dp"
+                 android:scrollbarAlwaysDrawVerticalTrack="true"
+                 app:layout_constraintBottom_toBottomOf="parent"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintTop_toBottomOf="@+id/tvMaintenanceType">
 
-                <RadioButton
-                    android:id="@+id/radioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:paddingEnd="10dp"
-                    android:text="@string/cleaning"
-                    android:textSize="@dimen/text_view_font_size" />
+                 <RadioButton
+                     android:id="@+id/radioButton"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:padding="5dp"
+                     android:paddingEnd="10dp"
+                     android:text="@string/cleaning"
+                     android:textSize="@dimen/text_view_font_size" />
 
-                <RadioButton
-                    android:id="@+id/radioButton2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:text="@string/repair"
-                    android:textSize="@dimen/text_view_font_size" />
-            </RadioGroup>
--->
+                 <RadioButton
+                     android:id="@+id/radioButton2"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:padding="5dp"
+                     android:text="@string/repair"
+                     android:textSize="@dimen/text_view_font_size" />
+             </RadioGroup>-->
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,9 +1,11 @@
 package io.agritrack.fishtrack.ui.maintenance;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,7 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -32,21 +38,40 @@ import io.agritrack.fishtrack.state.RepairRecord;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
+import static io.agritrack.fishtrack.common.FishTrackUtils.detectAssetType;
 import static io.agritrack.fishtrack.common.LargeString.render;
 import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class MaintenanceInternalStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
+    private final String dtFormat = "dd/MM/yyyy";
+    private final SimpleDateFormat sdf = new SimpleDateFormat(dtFormat);
+
     private Button btnScanAsset;
     private TextView tvAssetBarcode, tvAssetType;
     private ToggleGroup tgInMtRepairTypes;
     private EditText etIMtNextMaintenance, etIMtEstWithdrawal;
+    private final Calendar calendar = Calendar.getInstance();
 
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private String selectedOperation;
     private String activeFilter = null;
+
+    DatePickerDialog.OnDateSetListener nextDate = (view, year, monthOfYear, dayOfMonth) -> {
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, monthOfYear);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        updateNextMaintenanceDate();
+    };
+
+    DatePickerDialog.OnDateSetListener withdrawalDate = (view, year, monthOfYear, dayOfMonth) -> {
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, monthOfYear);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        updateEstWithdrawalDate();
+    };
 
 
     @Override
@@ -60,6 +85,9 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
 
         // get  references of the controls
         assignCtrlVars();
+
+        setUpNextMaintenanceDate();
+        setUpEstWithdrawalDate();
 
         // =================================
         // RFID scanning functionality
@@ -76,6 +104,7 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
                             tvAssetBarcode.setText(epcStr);
+                            tvAssetType.setText(detectAssetType(epcStr));
                         }
                     });
                     //tvCageName.setText(result);
@@ -146,7 +175,49 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
         if (!Strings.isEmptyOrWhitespace(selectedOperation)) {
             indoorsRepairRecord.maintenanceType = selectedOperation;
         }
+
+        Editable txtNextMaintenance = etIMtNextMaintenance.getText();
+        if (txtNextMaintenance != null && !Strings.isEmptyOrWhitespace(txtNextMaintenance.toString())) {
+            String string_date = txtNextMaintenance.toString();
+            try {
+                Date d = sdf.parse(string_date);
+                indoorsRepairRecord.nextDateMaintenance = d.getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Editable txtEstWithdrawal = etIMtEstWithdrawal.getText();
+        if (txtEstWithdrawal != null && !Strings.isEmptyOrWhitespace(txtEstWithdrawal.toString())) {
+            String string_date = txtEstWithdrawal.toString();
+            try {
+                Date d = sdf.parse(string_date);
+                indoorsRepairRecord.estimatedDateWithdrawal = d.getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
         return indoorsRepairRecord;
+    }
+
+    private void setUpNextMaintenanceDate(){
+        etIMtNextMaintenance.setOnClickListener(view -> new DatePickerDialog(MaintenanceInternalStartActivity.this, nextDate, calendar
+                .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)).show());
+    }
+
+    private void setUpEstWithdrawalDate(){
+        etIMtEstWithdrawal.setOnClickListener(view -> new DatePickerDialog(MaintenanceInternalStartActivity.this, withdrawalDate, calendar
+                .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)).show());
+    }
+
+    private void updateNextMaintenanceDate() {
+        etIMtNextMaintenance.setText(sdf.format(calendar.getTime()));
+    }
+
+    private void updateEstWithdrawalDate() {
+        etIMtEstWithdrawal.setText(sdf.format(calendar.getTime()));
     }
 
     private String validate(){
@@ -160,7 +231,7 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
             sb.append(String.format("\n%s is missing", "'Maintenance type'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.maintenanceType)){
+        if(GlobalState.recInternalRepair.nextDateMaintenance == null){
             sb.append(String.format("\n%s is missing", "'Next maintenance date'"));
         }
 

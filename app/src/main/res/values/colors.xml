@@ -4,6 +4,7 @@
     <color name="black">#000</color>
     <color name="yellow">#FFEB3B</color>
     <color name="transparent">#00000000</color>
+    <color name="semi_transparent">#77FFFFFF</color>
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">@color/black</color>

@@ -76,6 +76,12 @@ public class SiteInfo implements Serializable {
         this.active = active;
     }
 
+    public SiteInfo(String name, String description, String code) {
+        this.name = name;
+        this.description = description;
+        this.code = code;
+    }
+
     public Long getId() {
         return id;
     }
