@@ -187,7 +187,10 @@ public class FishingStartActivity extends AppCompatActivity {
             fishingRecord.speciesName = speciesSpinner.getSelectedItem().toString();
         }
         fishingRecord.speciesPos = speciesSpinner.getSelectedItemPosition();
-        fishingRecord.reqWeight = etQty.getText() != null ? Double.valueOf(etQty.getText().toString()).intValue() + "" : "0";
+        if (etQty.getText() != null) {
+            fishingRecord.reqWeight = etQty.getText().toString();
+        }
+        //fishingRecord.reqWeight = etQty.getText() != null ? Double.valueOf(etQty.getText().toString()).intValue() + "" : "0";
         if (tvPlatformName.getText() != null) {
             fishingRecord.platformRFID = tvPlatformName.getText().toString();
         }

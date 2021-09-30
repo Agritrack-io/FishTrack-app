@@ -60,6 +60,10 @@ public class ExpandableListDialog {
         dialog.show();
     }
 
+    public void hide() {
+        dialog.hide();
+    }
+
     public void dismiss() {
         dialog.dismiss();
     }

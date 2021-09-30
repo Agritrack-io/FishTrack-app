@@ -165,12 +165,14 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
         if (checkedId == R.id.tbCage) {
             selectedAssetType = Constants.ftCage;
+            loadCagesFromLocalDB();
         } else if (checkedId == R.id.tbNet) {
             selectedAssetType = Constants.ftNet;
+            loadNetsFromLocalDB();
         } else if (checkedId == R.id.tbBin) {
             selectedAssetType = Constants.ftBin;
+            loadBinsFromLocalDB();
         }
-        loadAssetsFromLocalDB();
         svSearchAsset.setVisibility(View.VISIBLE);
     }
 
@@ -217,11 +219,33 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
 
     }
 
-    private void loadAssetsFromLocalDB() {
+    private void loadCagesFromLocalDB() {
         // load assets for current Site and filter by asset type (if selected).
-        List<Asset> assetsList = db.assetDAO().getAll(); //getAssetsForType(selectedAssetType);
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftCage); //getAssetsForType(selectedAssetType);
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.barcode)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
+            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets.getFilter().filter("");
+            this.rvAssets.setAdapter(adapterAssets);
+        }
+    }
+
+    private void loadNetsFromLocalDB() {
+        // load assets for current Site and filter by asset type (if selected).
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftNet); //getAssetsForType(selectedAssetType);
+        if (assetsList != null && !assetsList.isEmpty()) {
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
+            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets.getFilter().filter("");
+            this.rvAssets.setAdapter(adapterAssets);
+        }
+    }
+
+    private void loadBinsFromLocalDB() {
+        // load assets for current Site and filter by asset type (if selected).
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftBin); //getAssetsForType(selectedAssetType);
+        if (assetsList != null && !assetsList.isEmpty()) {
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
             adapterAssets.getFilter().filter("");
             this.rvAssets.setAdapter(adapterAssets);

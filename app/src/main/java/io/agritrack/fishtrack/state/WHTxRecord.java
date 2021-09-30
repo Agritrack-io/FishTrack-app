@@ -11,7 +11,7 @@ public class WHTxRecord {
 
     public AssetType assetType;
     public ConsumableType consumableType;
-    public String incomingItemType;
+    public String incomingItemType, selectedToggleButtonTo, selectedToggleButtonFrom;
     public String outgoingItemType;
     public String from = null;
     public String to = null;

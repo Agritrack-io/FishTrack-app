@@ -8,6 +8,7 @@ import io.agritrack.fishtrack.data.dto.HarvestRequestDTO;
 import io.agritrack.fishtrack.data.dto.SiteDTO;
 import io.agritrack.fishtrack.data.dto.common.EmployeeDTO;
 import io.agritrack.fishtrack.data.dto.common.FishSpeciesDTO;
+import io.agritrack.fishtrack.data.dto.common.SupplierDTO;
 import io.agritrack.fishtrack.data.dto.wh.AssetDTO;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -49,6 +50,10 @@ public interface SyncApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/employees/{siteId}")
     Call<List<EmployeeDTO>> getEmployeesBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/suppliers/{siteId}")
+    Call<List<SupplierDTO>> getSuppliersBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/species/{country}")

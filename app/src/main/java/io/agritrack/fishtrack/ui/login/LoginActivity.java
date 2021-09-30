@@ -32,6 +32,7 @@ import io.agritrack.fishtrack.api.sync.SyncClusterSitesCallBack;
 import io.agritrack.fishtrack.api.sync.SyncEmployeesCallBack;
 import io.agritrack.fishtrack.api.sync.SyncHarvestRequestCallBack;
 import io.agritrack.fishtrack.api.sync.SyncSpeciesCallBack;
+import io.agritrack.fishtrack.api.sync.SyncSuppliersCallBack;
 import io.agritrack.fishtrack.api.sync.SyncUsersCallBack;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.AppUserDTO;
@@ -40,6 +41,7 @@ import io.agritrack.fishtrack.data.dto.HarvestRequestDTO;
 import io.agritrack.fishtrack.data.dto.SiteDTO;
 import io.agritrack.fishtrack.data.dto.common.EmployeeDTO;
 import io.agritrack.fishtrack.data.dto.common.FishSpeciesDTO;
+import io.agritrack.fishtrack.data.dto.common.SupplierDTO;
 import io.agritrack.fishtrack.data.dto.wh.AssetDTO;
 import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.config.ConfigActivity;
@@ -263,6 +265,10 @@ public class LoginActivity extends AppCompatActivity {
             // sync employees
             Call<List<EmployeeDTO>> syncEmployeesAsyncCall = syncService.getEmployeesBySiteId(siteId, "Bearer " + token);
             syncEmployeesAsyncCall.enqueue(new SyncEmployeesCallBack(this.syncResult));
+
+            // sync suppliers
+            Call<List<SupplierDTO>> syncSuppliersAsyncCall = syncService.getSuppliersBySiteId(siteId, "Bearer " + token);
+            syncSuppliersAsyncCall.enqueue(new SyncSuppliersCallBack(this.syncResult));
 
             // sync assets  (cages, nets, bins, platforms)
             Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);

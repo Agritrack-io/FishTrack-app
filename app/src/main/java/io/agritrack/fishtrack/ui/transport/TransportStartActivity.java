@@ -39,7 +39,7 @@ public class TransportStartActivity extends AppCompatActivity {
     private EditText etSecurityClip;
     private Spinner spPackagingSite, spCompany;
 
-    private final String[] company = {"nireas", "andromeda", "selonda"};
+    private final String[] company = {"Nireas", "Andromeda", "Selonda"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

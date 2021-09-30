@@ -43,7 +43,7 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
 
     private TextView tvIncomingFrom, tvIncomingTo;
     private ToggleGroup tgIncomingSource, tgIncomingDestination, tgIncomingItemType;
-    private String selectedIncomingItemType;
+    private String selectedIncomingItemType, selectedToggleButtonFrom, selectedToggleButtonTo;
     private ExpandableListDialog avramarDialog;
     private SimpleListDialog supplierDialog;
     private SimpleListDialog siteDialog;
@@ -138,7 +138,7 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
         Map<String, List<SiteInfo>> result = new HashMap<>();
         List<Site> allSites = db.siteDAO().getAll();
         if (allSites != null && !allSites.isEmpty()) {
-           result = allSites.stream().filter(x->x.lvl2 != null).map(s -> new SiteInfo(s.name, s.description, s.lvl2)).collect(Collectors.groupingBy(SiteInfo::getCode));
+            result = allSites.stream().filter(x -> x.lvl2 != null).map(s -> new SiteInfo(s.name, s.description, s.lvl2)).collect(Collectors.groupingBy(SiteInfo::getCode));
         }
 
         return result;
@@ -148,7 +148,7 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
         List<String> result = new ArrayList<>();
         List<Supplier> allSuppliers = db.supplierDAO().getAll();
         if (allSuppliers != null && !allSuppliers.isEmpty()) {
-            result = allSuppliers.stream().map(s ->s.name).collect(Collectors.toList());
+            result = allSuppliers.stream().map(s -> s.name).collect(Collectors.toList());
         }
 
         return result;
@@ -158,7 +158,7 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
         List<String> result = new ArrayList<>();
         List<Site> subSites = db.siteDAO().getCurrentSiteSubSites(LocalPreferences.getCurrentSiteLevel3());
         if (subSites != null && !subSites.isEmpty()) {
-            result = subSites.stream().map(s ->s.name).collect(Collectors.toList());
+            result = subSites.stream().map(s -> s.name).collect(Collectors.toList());
         }
 
         return result;
@@ -169,18 +169,23 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
         if (checkedId == R.id.tbAvramar) {
             avramarDialog = new ExpandableListDialog(IncomingStartActivity.this, fillAvramarData(), fromAvramarSelection, R.string.select_site);
             avramarDialog.showDialog();
+            selectedToggleButtonFrom = Constants.ftAvramar;
         } else if (checkedId == R.id.tbSupplier) {
             supplierDialog = new SimpleListDialog(IncomingStartActivity.this, fillSupplierData(), fromSupplierSelection, R.string.select_supplier);
             supplierDialog.showDialog();
+            selectedToggleButtonFrom = Constants.ftSupplier;
         } else if (checkedId == R.id.tbAssetFrom) {
             GlobalState.recWHIncoming.from = Constants.ftAsset;
             tvIncomingFrom.setText(Constants.ftAsset);
+            selectedToggleButtonFrom = Constants.ftAsset;
         } else if (checkedId == R.id.tbSite) {
             siteDialog = new SimpleListDialog(IncomingStartActivity.this, fillSubSiteData(), toSiteSelection, R.string.select_subsite);
             siteDialog.showDialog();
+            selectedToggleButtonTo = Constants.ftSite;
         } else if (checkedId == R.id.tbAssetTo) {
             GlobalState.recWHIncoming.to = Constants.ftAsset;
             tvIncomingTo.setText(Constants.ftAsset);
+            selectedToggleButtonTo = Constants.ftAsset;
         }
         if (checkedId == R.id.tbAsset) {
             selectedIncomingItemType = Constants.ftAsset;
@@ -194,6 +199,14 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
 
         if (!Strings.isEmptyOrWhitespace(selectedIncomingItemType)) {
             whIncomingRecord.incomingItemType = selectedIncomingItemType;
+        }
+
+        if (!Strings.isEmptyOrWhitespace(selectedToggleButtonFrom)) {
+            whIncomingRecord.selectedToggleButtonFrom = selectedToggleButtonFrom;
+        }
+
+        if (!Strings.isEmptyOrWhitespace(selectedToggleButtonTo)) {
+            whIncomingRecord.selectedToggleButtonTo = selectedToggleButtonTo;
         }
 
         if (!Strings.isEmptyOrWhitespace(String.valueOf(tvIncomingFrom))) {
@@ -227,17 +240,17 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
 
     private void initControlsFromState() {
 
-        if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHIncoming.from)) {
+        if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonFrom)) {
             tgIncomingSource.check(R.id.tbAvramar);
-        } else if (Constants.ftSupplier.equalsIgnoreCase(GlobalState.recWHIncoming.from)) {
+        } else if (Constants.ftSupplier.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonFrom)) {
             tgIncomingSource.check(R.id.tbSupplier);
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.from)) {
+        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonFrom)) {
             tgIncomingSource.check(R.id.tbAssetFrom);
         }
 
-        if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHIncoming.to)) {
+        if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonTo)) {
             tgIncomingDestination.check(R.id.tbSite);
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.to)) {
+        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonTo)) {
             tgIncomingDestination.check(R.id.tbAssetTo);
         }
 
@@ -245,6 +258,14 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
             tgIncomingItemType.check(R.id.tbAsset);
         } else if (Constants.ftConsumable.equalsIgnoreCase(GlobalState.recWHIncoming.incomingItemType)) {
             tgIncomingItemType.check(R.id.tbConsumable);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.from)) {
+            tvIncomingFrom.setText(GlobalState.recWHIncoming.from);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.to)) {
+            tvIncomingTo.setText(GlobalState.recWHIncoming.to);
         }
     }
 }
