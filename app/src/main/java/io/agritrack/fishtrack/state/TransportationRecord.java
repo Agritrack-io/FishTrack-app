@@ -19,6 +19,9 @@ public class TransportationRecord {
     public byte[] signatureBytes;
     public Bitmap signature;
 
+    public Double longitude;
+    public Double latitude;
+
     public TransportationRecord() {
     }
 }

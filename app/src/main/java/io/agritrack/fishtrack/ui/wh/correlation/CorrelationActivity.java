@@ -1,20 +1,30 @@
 package io.agritrack.fishtrack.ui.wh.correlation;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,16 +50,17 @@ import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.fishtrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.fishtrack.data.model.wh.Asset;
+import io.agritrack.fishtrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fishtrack.enums.AssetType;
 import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.GlobalState;
+import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.FilterableAdapter;
 import io.agritrack.fishtrack.ui.bo.GenericListModel;
 import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
-import io.agritrack.fishtrack.ui.process.ProcessConfirmActivity;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,9 +68,15 @@ import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.state.GlobalState.recFishing;
+import static io.agritrack.fishtrack.state.GlobalState.recWHCorrelation;
 import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
-public class CorrelationActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class CorrelationActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener, LocationListener {
+    private final int REQUEST_FINE_LOCATION = 1234;
+
+    private LocationManager locationManager;
+    private TimeOutProgressDlg syncProgressDialog;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -105,6 +122,12 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
 
         // get  references of the controls
         assignCtrlVars();
+
+        // get references to Location Manager Instance
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // request permission to use GPS
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(CorrelationActivity.this);
@@ -152,16 +175,42 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
             }
             correlate();
         });
-        // =================================
+
+        //************************************************************************
+        // instantiate an AlertDialog with countdown functionality
+        syncProgressDialog = new TimeOutProgressDlg(10000l, 500l, this) {
+            @Override
+            protected void doTasks() {
+                locationManager.removeUpdates(CorrelationActivity.this);
+
+                // Update state and proceed to next
+                Boolean proceed = correlate();
+                toggleProgress(false, R.string.app_name);
+
+                if (proceed) {
+                    Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+                    startActivity(i);
+                }
+            }
+        };
+        syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
         configFooter();
     }
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-            startActivity(i);
+        ivNext.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // check if permission has been granted
+                if (ActivityCompat.checkSelfPermission(CorrelationActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(CorrelationActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, CorrelationActivity.this);
+                // show Progress Dialog
+                toggleProgress(true, R.string.acquire_coordinates);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToWareHouseMenu);
@@ -200,7 +249,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         });
     }
 
-    private void correlate() {
+    private boolean correlate() {
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
@@ -217,9 +266,13 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
             // sync WH Correlation Tx
             Call<CorrelationTxDTO> syncTxAsyncCall = updService.syncCorrelationTx(CorrelationTxDTO.convert(tx), "Bearer " + token);
             syncTxAsyncCall.enqueue(new SyncTxCallBack());
+
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+
+            return false;
         } finally {
             progressDialog.dismiss();
         }
@@ -319,6 +372,36 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
+        }
+    }
+
+    // GPS Location-Related functionality
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        recWHCorrelation.longitude = location.getLongitude();
+        recWHCorrelation.latitude = location.getLatitude();
+        locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(i);
+    }
+
+    private void toggleProgress(boolean show, @StringRes int info) {
+        if (show) {
+            runOnUiThread(() -> {
+                syncProgressDialog.show();
+            });
+        } else {
+            runOnUiThread(() -> {
+                syncProgressDialog.hide();
+            });
         }
     }
 }

@@ -21,4 +21,10 @@ public class CorrelationTransaction {
 
     @ColumnInfo(name = "rfid")
     public String rfid;
+
+    @ColumnInfo(name = "longitude")
+    public Double longitude;
+
+    @ColumnInfo(name = "latitude")
+    public Double latitude;
 }

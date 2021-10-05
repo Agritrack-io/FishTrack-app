@@ -51,4 +51,10 @@ public class ProcessingTransaction {
 
     @ColumnInfo(name = "user_id")
     public String user;
+
+    @ColumnInfo(name = "longitude")
+    public Double longitude;
+
+    @ColumnInfo(name = "latitude")
+    public Double latitude;
 }

@@ -15,6 +15,8 @@ public class InventoryWHRecord {
     public Map<String, List<String>> items;
     public Map<String, Integer> barcodeItems;
     public String site;
+    public Double longitude;
+    public Double latitude;
 
     public int subSitePos = -1;
 }

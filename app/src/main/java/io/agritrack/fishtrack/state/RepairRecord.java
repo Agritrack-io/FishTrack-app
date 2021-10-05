@@ -14,7 +14,7 @@ public class RepairRecord {
     public Long estimatedDateWithdrawal;
 
     public String teamSize;
-    public ArrayList<Long> repairTeam;
+    public ArrayList<String> repairTeam;
     public String remarks;
     public String site;
     public String supplier;
@@ -22,4 +22,7 @@ public class RepairRecord {
     public String manager;
     public String cost;
     public String repairTime;
+
+    public Double longitude;
+    public Double latitude;
 }

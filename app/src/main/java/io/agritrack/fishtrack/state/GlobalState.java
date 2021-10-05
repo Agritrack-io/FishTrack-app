@@ -135,6 +135,8 @@ public class GlobalState {
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
             txFishing.user = LocalPreferences.getLoggedInUser("N/A");
             txFishing.site = LocalPreferences.getCurrentSiteId().toString();
+            txFishing.longitude = recFishing.longitude;
+            txFishing.latitude = recFishing.latitude;
 
             db.fishingTransactionDAO().update(txFishing);
 
@@ -160,6 +162,8 @@ public class GlobalState {
             txTransport.loadedBins = recTransport.availBins;
             txTransport.user = LocalPreferences.getLoggedInUser("N/A");
             txTransport.site = LocalPreferences.getCurrentSiteId().toString();
+            txTransport.longitude = recTransport.longitude;
+            txTransport.latitude = recTransport.latitude;
 
             db.transportTransactionDAO().insert(txTransport);
             return txTransport;
@@ -183,6 +187,8 @@ public class GlobalState {
             txProcess.securityClipNumber = recProcessing.securityClip;
             txProcess.user = LocalPreferences.getLoggedInUser("N/A");
             txProcess.site = LocalPreferences.getCurrentSiteId().toString();
+            txProcess.longitude = recProcessing.longitude;
+            txProcess.latitude = recProcessing.latitude;
 
             db.processingTransactionDAO().insert(txProcess);
 
@@ -202,6 +208,9 @@ public class GlobalState {
             txWHIncoming.from = recWHIncoming.from;
             txWHIncoming.to = recWHIncoming.to;
             txWHIncoming.site = recWHIncoming.site;
+            txWHIncoming.longitude = recWHIncoming.longitude;
+            txWHIncoming.latitude = recWHIncoming.latitude;
+
             db.assetTransactionDAO().insert(txWHIncoming);
 
             return txWHIncoming;
@@ -227,6 +236,8 @@ public class GlobalState {
                 txWHIncoming.from = recWHIncoming.from;
                 txWHIncoming.to = recWHIncoming.to;
                 txWHIncoming.site = recWHIncoming.site;
+                txWHIncoming.longitude = recWHIncoming.longitude;
+                txWHIncoming.latitude = recWHIncoming.latitude;
 
                 consumablesList.add(txWHIncoming);
             }
@@ -248,6 +259,9 @@ public class GlobalState {
             txWHOutgoing.from = recWHOutgoing.from;
             txWHOutgoing.to = recWHOutgoing.to;
             txWHOutgoing.site = recWHOutgoing.site;
+            txWHOutgoing.longitude = recWHOutgoing.longitude;
+            txWHOutgoing.latitude = recWHOutgoing.latitude;
+
             db.assetTransactionDAO().insert(txWHOutgoing);
 
             return txWHOutgoing;
@@ -273,6 +287,8 @@ public class GlobalState {
                 txWHOutgoing.from = recWHOutgoing.from;
                 txWHOutgoing.to = recWHOutgoing.to;
                 txWHOutgoing.site = recWHOutgoing.site;
+                txWHOutgoing.longitude = recWHOutgoing.longitude;
+                txWHOutgoing.latitude = recWHOutgoing.latitude;
 
                 consumablesList.add(txWHOutgoing);
             }
@@ -292,6 +308,8 @@ public class GlobalState {
             txWHRFIDInventory.performedAt = System.currentTimeMillis();
             long _id = db.rFIDInventoryDAO().insert(txWHRFIDInventory);
             txWHRFIDInventory.id = _id;
+            txWHRFIDInventory.longitude = recWHInventory.longitude;
+            txWHRFIDInventory.latitude = recWHInventory.latitude;
 
             return txWHRFIDInventory;
         } catch (Exception ex) {
@@ -331,6 +349,8 @@ public class GlobalState {
             txWHCoInventory.performedAt = System.currentTimeMillis();
             long _id = db.coInventoryDAO().insert(txWHCoInventory);
             txWHCoInventory.id = _id;
+            txWHCoInventory.longitude = recWHInventory.longitude;
+            txWHCoInventory.latitude = recWHInventory.latitude;
 
             return txWHCoInventory;
         } catch (Exception ex) {
@@ -369,6 +389,9 @@ public class GlobalState {
             txCorrelation.assetType = recWHCorrelation.assetType.name();
             txCorrelation.barcode = recWHCorrelation.barcode;
             txCorrelation.rfid = recWHCorrelation.rfid;
+            txCorrelation.longitude = recWHCorrelation.longitude;
+            txCorrelation.latitude = recWHCorrelation.latitude;
+
             db.correlationTransactionDAO().insert(txCorrelation);
 
             return txCorrelation;
@@ -381,6 +404,8 @@ public class GlobalState {
     public static RepairTransaction commitInternalRepair(MobileDB db) {
         try {
             RepairTransaction txIndoorsRepair = new RepairTransaction();
+            txIndoorsRepair.longitude = recInternalRepair.longitude;
+            txIndoorsRepair.latitude = recInternalRepair.latitude;
 
             db.repairTransactionDAO().insert(txIndoorsRepair);
 
@@ -394,6 +419,8 @@ public class GlobalState {
     public static RepairTransaction commitExternalRepair(MobileDB db) {
         try {
             RepairTransaction txOutdoorsRepair = new RepairTransaction();
+            txOutdoorsRepair.longitude = recExternalRepair.longitude;
+            txOutdoorsRepair.latitude = recExternalRepair.latitude;
 
             db.repairTransactionDAO().insert(txOutdoorsRepair);
 

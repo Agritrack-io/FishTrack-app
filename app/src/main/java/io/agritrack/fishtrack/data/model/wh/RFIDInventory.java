@@ -19,6 +19,12 @@ public class RFIDInventory {
     @ColumnInfo(name = "performed_at")
     public Long performedAt;
 
+    @ColumnInfo(name = "longitude")
+    public Double longitude;
+
+    @ColumnInfo(name = "latitude")
+    public Double latitude;
+
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", foreignKey = @ForeignKey(name="FK_Inventory_User"))
     public User user;

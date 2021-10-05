@@ -79,4 +79,10 @@ public class FishingTransaction {
 
     @ColumnInfo(name = "user_name")
     public String user;
+
+    @ColumnInfo(name = "longitude")
+    public Double longitude;
+
+    @ColumnInfo(name = "latitude")
+    public Double latitude;
 }

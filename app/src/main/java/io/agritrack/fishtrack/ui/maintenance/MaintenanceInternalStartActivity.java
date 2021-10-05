@@ -202,8 +202,8 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
 
     private void setUpNextMaintenanceDate(){
         etIMtNextMaintenance.setOnClickListener(view -> new DatePickerDialog(MaintenanceInternalStartActivity.this, nextDate, calendar
-                .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)).show());
+                .get(Calendar.YEAR), calendar.get(Calendar.MONTH)+10,
+                calendar.get(Calendar.DAY_OF_MONTH)+25).show());
     }
 
     private void setUpEstWithdrawalDate(){

@@ -8,6 +8,8 @@ public class CoInventoryDTO {
     public String coInvType;
     public String site;
     public Long performedAt;
+    public Double longitude;
+    public Double latitude;
 
     public static CoInventoryDTO convert(CoInventory inventory) {
         CoInventoryDTO coInventoryDTO = new CoInventoryDTO();
@@ -15,6 +17,9 @@ public class CoInventoryDTO {
         coInventoryDTO.coInvType = inventory.coInvType;
         coInventoryDTO.site = inventory.site;
         coInventoryDTO.performedAt = inventory.performedAt;
+        coInventoryDTO.longitude = inventory.longitude;
+        coInventoryDTO.latitude = inventory.latitude;
+
         return coInventoryDTO;
     }
 }

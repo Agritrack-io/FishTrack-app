@@ -13,4 +13,7 @@ public class ProcessingRecord {
     public boolean smellyTruck = Boolean.FALSE;
     public String remarks;
     public List<String> availBins;
+
+    public Double longitude;
+    public Double latitude;
 }

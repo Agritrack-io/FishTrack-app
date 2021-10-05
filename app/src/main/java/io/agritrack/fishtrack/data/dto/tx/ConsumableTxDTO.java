@@ -21,6 +21,8 @@ public class ConsumableTxDTO {
     public String ftes;
     public String dispatchNote;
     public String state;
+    public Double longitude;
+    public Double latitude;
 
     public static ConsumableTxDTO convert(ConsumableTransaction consumableTransaction) {
         ConsumableTxDTO consumableTxDTO = new ConsumableTxDTO();
@@ -32,6 +34,9 @@ public class ConsumableTxDTO {
         consumableTxDTO.dispatchNote = consumableTransaction.dispatchNote;
         consumableTxDTO.state = consumableTransaction.state;
         consumableTxDTO.consumableType = consumableTransaction.consumableType;
+        consumableTxDTO.longitude = consumableTransaction.longitude;
+        consumableTxDTO.latitude = consumableTransaction.latitude;
+
         return consumableTxDTO;
     }
 

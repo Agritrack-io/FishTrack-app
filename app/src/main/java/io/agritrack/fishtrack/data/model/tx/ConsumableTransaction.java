@@ -48,4 +48,10 @@ public class ConsumableTransaction {
 
     @ColumnInfo(name = "dest")
     public String to;
+
+    @ColumnInfo(name = "longitude")
+    public Double longitude;
+
+    @ColumnInfo(name = "latitude")
+    public Double latitude;
 }

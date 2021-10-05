@@ -8,6 +8,8 @@ public class RFIDInventoryDTO {
     public String rfidInvType;
     public String site;
     public Long performedAt;
+    public Double longitude;
+    public Double latitude;
 
     public static RFIDInventoryDTO convert(RFIDInventory inventory) {
         RFIDInventoryDTO inventoryDTO = new RFIDInventoryDTO();
@@ -15,6 +17,9 @@ public class RFIDInventoryDTO {
         inventoryDTO.rfidInvType = inventory.rfidInvType;
         inventoryDTO.site = inventory.site;
         inventoryDTO.performedAt = inventory.performedAt;
+        inventoryDTO.longitude = inventory.longitude;
+        inventoryDTO.latitude = inventory.latitude;
+
         return inventoryDTO;
     }
 }

@@ -29,6 +29,8 @@ public class FishingRecord {
     public Short totalBinsUsed;
     public Double seaTemperature;
     public Long harvestRqPkId;
+    public Double longitude;
+    public Double latitude;
 
     public FishingRecord() {
     }
@@ -55,6 +57,8 @@ public class FishingRecord {
             fishingRecord.lastFed = sdf.format(new Date(tx.lastFeed));
         }
         fishingRecord.fishingTeam = tx.team;
+        fishingRecord.longitude = tx.longitude;
+        fishingRecord.latitude = tx.latitude;
 
         return fishingRecord;
     }

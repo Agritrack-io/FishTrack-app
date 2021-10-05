@@ -47,6 +47,12 @@ public class HarvestTransaction {
     @ColumnInfo(name = "process_status")
     public TxStatus processingStatus;
 
+    @ColumnInfo(name = "longitude")
+    public Double longitude;
+
+    @ColumnInfo(name = "latitude")
+    public Double latitude;
+
    /* @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "harvest_load_id", foreignKey = @ForeignKey(name="FK_HarvestTx_Harvest_Load"))
     public HarvestLoad harvestLoad;

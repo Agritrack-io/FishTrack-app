@@ -21,4 +21,7 @@ public class WHTxRecord {
     public Map<String, List<String>> items;
     public Map<String, Integer> barcodeItems;
     public WarehouseTxState state;
+
+    public Double longitude;
+    public Double latitude;
 }

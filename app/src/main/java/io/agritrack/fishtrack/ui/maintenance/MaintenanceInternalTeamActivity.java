@@ -114,7 +114,7 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
     }
 
     private void initControlsFromState() {
-        if (GlobalState.recInternalRepair.repairTeam != null) {
+        /*if (GlobalState.recInternalRepair.repairTeam != null) {
             int sz = GlobalState.recInternalRepair.repairTeam.size();
             // Since coming from <back> button, retain the previously checked items.
             for (int i = 0; i < sz; i++) {
@@ -122,7 +122,7 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
             }
             //Get reference of selected Team Count textView
             tvInMtTeamCount.setText(String.valueOf(sz));
-        }
+        }*/
 
         if (!Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.remarks)) {
             atvInMtWorkDescription.setText(GlobalState.recInternalRepair.remarks);
@@ -166,7 +166,7 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
         SparseBooleanArray sp = this.lvTeam.getCheckedItemPositions();
         for (int idx = 0; idx < sp.size(); idx++) {
             if (sp.valueAt(idx)) {
-                GlobalState.recInternalRepair.repairTeam.add(Long.valueOf(sp.keyAt(idx)));
+                GlobalState.recInternalRepair.repairTeam.add(((GenericListModel) this.lvTeam.getAdapter().getItem(sp.keyAt(idx))).toString());
             }
         }
 

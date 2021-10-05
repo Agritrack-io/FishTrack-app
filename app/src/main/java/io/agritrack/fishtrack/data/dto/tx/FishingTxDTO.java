@@ -27,6 +27,8 @@ public class FishingTxDTO {
     public String status;
     public String user;
     public String site;
+    public Double longitude;
+    public Double latitude;
 
     public static FishingTxDTO convert(FishingTransaction fishing) {
         FishingTxDTO fishingTxDTO = new FishingTxDTO();
@@ -50,6 +52,8 @@ public class FishingTxDTO {
         fishingTxDTO.status = fishing.txStatus.name();
         fishingTxDTO.user = fishing.user;
         fishingTxDTO.site = fishing.site;
+        fishingTxDTO.longitude = fishing.longitude;
+        fishingTxDTO.latitude = fishing.latitude;
 
         return fishingTxDTO;
     }

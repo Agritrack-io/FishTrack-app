@@ -51,6 +51,12 @@ public class RepairTransaction {
     @ColumnInfo(name = "estimated_withdrawal")
     public Date estimatedWithdrawal;
 
+    @ColumnInfo(name = "longitude")
+    public Double longitude;
+
+    @ColumnInfo(name = "latitude")
+    public Double latitude;
+
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_RepairTx_Site"))
     public Site site;

@@ -19,6 +19,8 @@ public class ProcessingTxDTO {
     public String harvest_load;
     public String site;
     public String user;
+    public Double longitude;
+    public Double latitude;
 
     public static ProcessingTxDTO convert(ProcessingTransaction processing) {
         ProcessingTxDTO processingTxDto = new ProcessingTxDTO();
@@ -34,6 +36,8 @@ public class ProcessingTxDTO {
         processingTxDto.harvest_load = processing.harvestLoad;
         processingTxDto.bins_received = processing.receivedBins;
         processingTxDto.user = processing.user;
+        processingTxDto.longitude = processing.longitude;
+        processingTxDto.latitude = processing.latitude;
 
         return processingTxDto;
     }

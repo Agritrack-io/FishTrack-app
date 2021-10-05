@@ -19,6 +19,8 @@ public class RepairTxDTO {
     public Date timestamp;
     public Date nextRepair;
     public Date estimatedWithdrawal;
+    public Double longitude;
+    public Double latitude;
 
     public static RepairTransaction convert(RepairTxDTO repairTxDTO) {
         RepairTransaction repairTransaction = new RepairTransaction();
@@ -36,6 +38,9 @@ public class RepairTxDTO {
         repairTransaction.timestamp = repairTxDTO.timestamp;
         repairTransaction.nextRepair = repairTxDTO.nextRepair;
         repairTransaction.estimatedWithdrawal = repairTxDTO.estimatedWithdrawal;
+        repairTransaction.longitude = repairTxDTO.longitude;
+        repairTransaction.latitude = repairTxDTO.latitude;
+
         return repairTransaction;
     }
 }

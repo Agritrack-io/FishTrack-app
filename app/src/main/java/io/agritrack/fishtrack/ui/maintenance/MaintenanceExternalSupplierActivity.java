@@ -102,13 +102,13 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
     }
 
     private void initControlsFromState() {
-        if (GlobalState.recExternalRepair.repairTeam != null) {
+        /*if (GlobalState.recExternalRepair.repairTeam != null) {
             int sz = GlobalState.recExternalRepair.repairTeam.size();
             // Since coming from <back> button, retain the previously checked items.
             for (int i = 0; i < sz; i++) {
                 this.lvSupplier.setItemChecked(GlobalState.recExternalRepair.repairTeam.get(i).intValue(), Boolean.TRUE);
             }
-        }
+        }*/
 
         if (!Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.manager)) {
             etMaintenanceManager.setText(GlobalState.recExternalRepair.manager);

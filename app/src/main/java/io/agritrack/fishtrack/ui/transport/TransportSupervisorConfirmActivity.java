@@ -1,15 +1,26 @@
 package io.agritrack.fishtrack.ui.transport;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -21,12 +32,12 @@ import io.agritrack.fishtrack.api.APIServiceGenerator;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.fishtrack.data.model.tx.TransportTransaction;
+import io.agritrack.fishtrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.TransportationRecord;
 import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
-import io.agritrack.fishtrack.ui.process.ProcessConfirmActivity;
 import io.agritrack.fishtrack.ui.service.AuthenticationService;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -35,9 +46,15 @@ import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.state.GlobalState.recFishing;
+import static io.agritrack.fishtrack.state.GlobalState.recTransport;
 import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
-public class TransportSupervisorConfirmActivity extends AppCompatActivity {
+public class TransportSupervisorConfirmActivity extends AppCompatActivity implements LocationListener {
+    private final int REQUEST_FINE_LOCATION = 1234;
+
+    private LocationManager locationManager;
+    private TimeOutProgressDlg syncProgressDialog;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
     private TextView tvSitePackaging, tvCompany, tvNumberOfBinsCount, tvDriverName, tvLicensePlate, tvSecurityClipNumber;
@@ -56,6 +73,12 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
+        // get references to Location Manager Instance
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // request permission to use GPS
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(TransportSupervisorConfirmActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -63,16 +86,40 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        //************************************************************************
+        // instantiate an AlertDialog with countdown functionality
+        syncProgressDialog = new TimeOutProgressDlg(10000l, 500l, this) {
+            @Override
+            protected void doTasks() {
+                locationManager.removeUpdates(TransportSupervisorConfirmActivity.this);
+
+                // Update state and proceed to next
+                Boolean proceed = updateState();
+                toggleProgress(false, R.string.app_name);
+
+                if (proceed) {
+                    Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+                    startActivity(i);
+                }
+            }
+        };
+        syncProgressDialog.setMessage(R.string.acquire_coordinates);
+
         configFooter();
     }
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(view -> {
-            Boolean proceed = updateState();
-            if (proceed) {
-                Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-                startActivity(i);
+        ivNext.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // check if permission has been granted
+                if (ActivityCompat.checkSelfPermission(TransportSupervisorConfirmActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(TransportSupervisorConfirmActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, TransportSupervisorConfirmActivity.this);
+                // show Progress Dialog
+                toggleProgress(true, R.string.acquire_coordinates);
             }
         });
 
@@ -201,4 +248,33 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity {
         }
     }
 
+    // GPS Location-Related functionality
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        recTransport.longitude = location.getLongitude();
+        recTransport.latitude = location.getLatitude();
+        locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(i);
+    }
+
+    private void toggleProgress(boolean show, @StringRes int info) {
+        if (show) {
+            runOnUiThread(() -> {
+                syncProgressDialog.show();
+            });
+        } else {
+            runOnUiThread(() -> {
+                syncProgressDialog.hide();
+            });
+        }
+    }
 }

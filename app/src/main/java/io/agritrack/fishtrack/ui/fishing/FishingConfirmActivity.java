@@ -1,19 +1,26 @@
 package io.agritrack.fishtrack.ui.fishing;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -24,8 +31,10 @@ import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.fishtrack.data.model.HarvestRequest;
 import io.agritrack.fishtrack.data.model.tx.FishingTransaction;
+import io.agritrack.fishtrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.HomeActivity;
+import io.agritrack.fishtrack.ui.config.ConfigActivity;
 import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.AuthenticationService;
@@ -41,12 +50,14 @@ import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 import static java.lang.Thread.sleep;
 
 public class FishingConfirmActivity extends AppCompatActivity implements LocationListener {
+    private final int REQUEST_FINE_LOCATION = 1234;
+
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
     private LocationManager locationManager;
     private volatile Location location;
     private ProgressDialog progressDialog;
-    private final int REQUEST_FINE_LOCATION = 1234;
+    private TimeOutProgressDlg syncProgressDialog;
     private TextView tvTotalQuantityCount, tvReqQuantityCount, tvNumberOfBinsCount, tvNameCage, tvTypeOfFishConfirm, tvUsername;
 
     @Override
@@ -61,6 +72,12 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
         // get  references of the controls
         assignCtrlVars();
 
+        // get references to Location Manager Instance
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // request permission to use GPS
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(FishingConfirmActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -68,16 +85,40 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        //************************************************************************
+        // instantiate an AlertDialog with countdown functionality
+        syncProgressDialog = new TimeOutProgressDlg(10000l, 500l, this) {
+            @Override
+            protected void doTasks() {
+                locationManager.removeUpdates(FishingConfirmActivity.this);
+
+                // Update state and proceed to next
+                Boolean proceed = updateState();
+                toggleProgress(false, R.string.app_name);
+
+                if (proceed) {
+                    Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+                    startActivity(i);
+                }
+            }
+        };
+        syncProgressDialog.setMessage(R.string.acquire_coordinates);
+
         configFooter();
     }
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(view -> {
-            Boolean proceed = updateState();
-            if (proceed) {
-                Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-                startActivity(i);
+        ivNext.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // check if permission has been granted
+                if (ActivityCompat.checkSelfPermission(FishingConfirmActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FishingConfirmActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, FishingConfirmActivity.this);
+                // show Progress Dialog
+                toggleProgress(true, R.string.acquire_coordinates);
             }
         });
 
@@ -195,7 +236,8 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
     // GPS Location-Related functionality
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        this.location = location;
+        recFishing.longitude = location.getLongitude();
+        recFishing.latitude = location.getLatitude();
         locationManager.removeUpdates(this);
     }
 
@@ -205,5 +247,19 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
 
     @Override
     public void onProviderDisabled(@NonNull String provider) {
+        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(i);
+    }
+
+    private void toggleProgress(boolean show, @StringRes int info) {
+        if (show) {
+            runOnUiThread(() -> {
+                syncProgressDialog.show();
+            });
+        } else {
+            runOnUiThread(() -> {
+                syncProgressDialog.hide();
+            });
+        }
     }
 }
