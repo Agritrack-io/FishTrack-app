@@ -55,7 +55,6 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
     private LocationManager locationManager;
-    private volatile Location location;
     private ProgressDialog progressDialog;
     private TimeOutProgressDlg syncProgressDialog;
     private TextView tvTotalQuantityCount, tvReqQuantityCount, tvNumberOfBinsCount, tvNameCage, tvTypeOfFishConfirm, tvUsername;

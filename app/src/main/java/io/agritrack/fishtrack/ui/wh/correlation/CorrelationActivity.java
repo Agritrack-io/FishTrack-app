@@ -58,7 +58,6 @@ import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.FilterableAdapter;
 import io.agritrack.fishtrack.ui.bo.GenericListModel;
-import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
@@ -68,7 +67,6 @@ import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
-import static io.agritrack.fishtrack.state.GlobalState.recFishing;
 import static io.agritrack.fishtrack.state.GlobalState.recWHCorrelation;
 import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
@@ -232,6 +230,10 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvAssets.setItemAnimator(new DefaultItemAnimator());
 
+        if (adapterAssets == null) {
+            svSearchAsset.setVisibility(View.GONE);
+        }
+
         svSearchAsset.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -296,26 +298,62 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
         if (checkedId == R.id.tbCage) {
             selectedAssetType = Constants.ftCage;
+            loadCagesFromLocalDB();
             activeFilter = Filters.RFID_CAGE;
         } else if (checkedId == R.id.tbNet) {
             selectedAssetType = Constants.ftNet;
+            loadNetsFromLocalDB();
             activeFilter = Filters.RFID_NET;
         } else if (checkedId == R.id.tbBin) {
             selectedAssetType = Constants.ftBin;
+            loadBinsFromLocalDB();
             activeFilter = Filters.RFID_BIN;
         } else if (checkedId == R.id.tbPlatform) {
             selectedAssetType = Constants.ftPlatform;
+            loadPlatformsFromLocalDB();
             activeFilter = Filters.RFID_PLATFORM;
         }
-
-        loadAssetsFromLocalDB();
+        svSearchAsset.setVisibility(View.VISIBLE);
     }
 
-    private void loadAssetsFromLocalDB() {
+    private void loadCagesFromLocalDB() {
         // load assets for current Site and filter by asset type (if selected).
-        List<Asset> assetsList = db.assetDAO().getAll(); //getAssetsForType(selectedAssetType);
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftCage); //getAssetsForType(selectedAssetType);
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.barcode)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.code)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
+            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets.getFilter().filter("");
+            this.rvAssets.setAdapter(adapterAssets);
+        }
+    }
+
+    private void loadNetsFromLocalDB() {
+        // load assets for current Site and filter by asset type (if selected).
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftNet); //getAssetsForType(selectedAssetType);
+        if (assetsList != null && !assetsList.isEmpty()) {
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.code)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
+            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets.getFilter().filter("");
+            this.rvAssets.setAdapter(adapterAssets);
+        }
+    }
+
+    private void loadBinsFromLocalDB() {
+        // load assets for current Site and filter by asset type (if selected).
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftBin); //getAssetsForType(selectedAssetType);
+        if (assetsList != null && !assetsList.isEmpty()) {
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.code)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
+            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets.getFilter().filter("");
+            this.rvAssets.setAdapter(adapterAssets);
+        }
+    }
+
+    private void loadPlatformsFromLocalDB() {
+        // load assets for current Site and filter by asset type (if selected).
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftPlatform); //getAssetsForType(selectedAssetType);
+        if (assetsList != null && !assetsList.isEmpty()) {
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.code)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
             adapterAssets.getFilter().filter("");
             this.rvAssets.setAdapter(adapterAssets);

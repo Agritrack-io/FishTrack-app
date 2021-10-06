@@ -54,7 +54,6 @@ import io.agritrack.fishtrack.enums.WarehouseTxState;
 import io.agritrack.fishtrack.rfid.ScanInventoryThread;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.WHTxRecord;
-import io.agritrack.fishtrack.ui.HomeActivity;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
@@ -66,23 +65,19 @@ import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
-import static io.agritrack.fishtrack.state.GlobalState.recFishing;
 import static io.agritrack.fishtrack.state.GlobalState.recWHIncoming;
 import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class IncomingAssetActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener, LocationListener {
     private final int REQUEST_FINE_LOCATION = 1234;
-
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private LocationManager locationManager;
     private TimeOutProgressDlg syncProgressDialog;
-
     private ToggleGroup tgChooseAssetType;
     private String selectedAssetType = AssetType.ALL.name();
     private String activeFilter = null;
-    private  int selectedToggleButton = -1;
-
-    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
+    private int selectedToggleButton = -1;
     private MobileDB db;
     private UhfReader uhfReader;
     private ScanInventoryThread processingBinsThread = new ScanInventoryThread();
@@ -158,11 +153,12 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
             if (response == null) {
                 return;
             }
-            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));;//(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
+            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
+            //(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
 
             if (adapterIncomingItems == null) {
-            adapterIncomingItems = new TreelikeAdapter(this, values);
-            xvIncomingItems.setAdapter(adapterIncomingItems);
+                adapterIncomingItems = new TreelikeAdapter(this, values);
+                xvIncomingItems.setAdapter(adapterIncomingItems);
             } else {
                 adapterIncomingItems.appendItems(values);
             }
@@ -178,7 +174,7 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
         ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if (selectedParent!=null && selectedChild!=null) {
+            if (selectedParent != null && selectedChild != null) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                 confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
@@ -216,15 +212,14 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
 
                 // Update state and proceed to next
                 updateState();
-                String v = validate();
-                toggleProgress(false, R.string.app_name);
 
-                if (!Strings.isEmptyOrWhitespace(v)) {
-                    CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-                } else {
-                    Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                    startActivity(i);
-                }
+                //Set scanning to false to stop running scan thread
+                scanning = false;
+                processingBinsThread.setScanInProgress(scanning);
+
+                toggleProgress(false, R.string.app_name);
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
             }
         };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
@@ -240,11 +235,18 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener(){
+        ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // check if permission has been granted
                 if (ActivityCompat.checkSelfPermission(IncomingAssetActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(IncomingAssetActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                if (adapterIncomingItems == null) {
+                    String vd = validate();
+                    if (!Strings.isEmptyOrWhitespace(vd)) {
+                        CToast(getApplicationContext(), render("Invalid inputs : " + vd), Toast.LENGTH_LONG);
+                    }
                     return;
                 }
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, IncomingAssetActivity.this);
@@ -277,6 +279,9 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
     }
 
     private void updateState() {
+        if (adapterIncomingItems == null) {
+            return;
+        }
         GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
         GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
         GlobalState.recWHIncoming.assetType = AssetType.valueOf(this.selectedAssetType);
@@ -413,12 +418,12 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
 
-        if( selectedToggleButton == checkedId){
+        if (selectedToggleButton == checkedId) {
             group.clearCheck();
             return;
         }
         selectedToggleButton = checkedId;
-        switch(checkedId){
+        switch (checkedId) {
             case R.id.tbCage:
                 selectedAssetType = Constants.ftCage;
                 activeFilter = Filters.RFID_CAGE;
@@ -440,6 +445,36 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
                 activeFilter = null;
                 selectedToggleButton = -1;
                 break;
+        }
+    }
+
+    // GPS Location-Related functionality
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        recWHIncoming.longitude = location.getLongitude();
+        recWHIncoming.latitude = location.getLatitude();
+        locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(i);
+    }
+
+    private void toggleProgress(boolean show, @StringRes int info) {
+        if (show) {
+            runOnUiThread(() -> {
+                syncProgressDialog.show();
+            });
+        } else {
+            runOnUiThread(() -> {
+                syncProgressDialog.hide();
+            });
         }
     }
 
@@ -471,36 +506,6 @@ public class IncomingAssetActivity extends AppCompatActivity implements ToggleGr
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
-        }
-    }
-
-    // GPS Location-Related functionality
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        recWHIncoming.longitude = location.getLongitude();
-        recWHIncoming.latitude = location.getLatitude();
-        locationManager.removeUpdates(this);
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(i);
-    }
-
-    private void toggleProgress(boolean show, @StringRes int info) {
-        if (show) {
-            runOnUiThread(() -> {
-                syncProgressDialog.show();
-            });
-        } else {
-            runOnUiThread(() -> {
-                syncProgressDialog.hide();
-            });
         }
     }
 }

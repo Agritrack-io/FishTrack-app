@@ -87,7 +87,7 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
     private MobileDB db;
     private boolean scanning = false;
     private BarcodeScanService scanService;
-    private BarcodeRecyclerAdapter adapterIncomingItems;
+    private BarcodeRecyclerAdapter adapterIncomingItems = null;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
 
@@ -218,15 +218,14 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
 
                 // Update state and proceed to next
                 updateState();
-                String v = validate();
-                toggleProgress(false, R.string.app_name);
 
-                if (!Strings.isEmptyOrWhitespace(v)) {
-                    CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-                } else {
-                    Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                    startActivity(i);
-                }
+                //Set scanning to false to stop running scan thread
+                scanning = false;
+                stopScanning();
+
+                toggleProgress(false, R.string.app_name);
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
             }
         };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
@@ -263,6 +262,13 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
                 if (ActivityCompat.checkSelfPermission(IncomingConsumableActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(IncomingConsumableActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
+                if (adapterIncomingItems == null) {
+                    String vd = validate();
+                    if (!Strings.isEmptyOrWhitespace(vd)) {
+                        CToast(getApplicationContext(), render("Invalid inputs : " + vd), Toast.LENGTH_LONG);
+                    }
+                    return;
+                }
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, IncomingConsumableActivity.this);
                 // show Progress Dialog
                 toggleProgress(true, R.string.acquire_coordinates);
@@ -294,6 +300,9 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
     }
 
     private void updateState() {
+        if (adapterIncomingItems == null) {
+            return;
+        }
         GlobalState.recWHIncoming.barcodeItems = adapterIncomingItems.getValues();
         GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
         GlobalState.recWHIncoming.assetType = AssetType.valueOf(this.selectedConsumableType);

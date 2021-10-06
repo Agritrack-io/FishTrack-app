@@ -1,11 +1,18 @@
 package io.agritrack.fishtrack.ui.wh.outgoing;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -14,8 +21,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 
@@ -37,6 +47,7 @@ import io.agritrack.fishtrack.common.Filters;
 import io.agritrack.fishtrack.data.db.MobileDB;
 import io.agritrack.fishtrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.fishtrack.data.model.tx.AssetTransaction;
+import io.agritrack.fishtrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fishtrack.dialog.YesNoDialogFragment;
 import io.agritrack.fishtrack.enums.AssetType;
 import io.agritrack.fishtrack.enums.WarehouseTxState;
@@ -48,15 +59,22 @@ import io.agritrack.fishtrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
 import io.agritrack.fishtrack.ui.login.api.TransactionApi;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
+import io.agritrack.fishtrack.ui.wh.incoming.IncomingAssetActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
+import static io.agritrack.fishtrack.state.GlobalState.recWHIncoming;
+import static io.agritrack.fishtrack.state.GlobalState.recWHOutgoing;
 import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
-public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener, LocationListener {
+    private final int REQUEST_FINE_LOCATION = 1234;
+
+    private LocationManager locationManager;
+    private TimeOutProgressDlg syncProgressDialog;
 
     private ToggleGroup tgChooseAssetType;
     private String selectedAssetType = AssetType.ALL.name();
@@ -93,6 +111,12 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
 
         // get  references of the controls
         assignCtrlVars();
+
+        // get references to Location Manager Instance
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // request permission to use GPS
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(OutgoingAssetActivity.this);
@@ -182,6 +206,27 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
             showAddDialog();
         });*/
 
+        //************************************************************************
+        // instantiate an AlertDialog with countdown functionality
+        syncProgressDialog = new TimeOutProgressDlg(10000l, 500l, this) {
+            @Override
+            protected void doTasks() {
+                locationManager.removeUpdates(OutgoingAssetActivity.this);
+
+                // Update state and proceed to next
+                updateState();
+
+                //Set scanning to false to stop running scan thread
+                scanning = false;
+                processingBinsThread.setScanInProgress(scanning);
+
+                toggleProgress(false, R.string.app_name);
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
+            }
+        };
+        syncProgressDialog.setMessage(R.string.acquire_coordinates);
+
         configFooter();
     }
 
@@ -193,19 +238,23 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(view -> {
-
-            //Set scanning to false to stop running scan thread
-            scanning = false;
-            processingBinsThread.setScanInProgress(scanning);
-
-            updateState();
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            } else {
-                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                startActivity(i);
+        ivNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // check if permission has been granted
+                if (ActivityCompat.checkSelfPermission(OutgoingAssetActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(OutgoingAssetActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                if (adapterOutgoingItems == null) {
+                    String vd = validate();
+                    if (!Strings.isEmptyOrWhitespace(vd)) {
+                        CToast(getApplicationContext(), render("Invalid inputs : " + vd), Toast.LENGTH_LONG);
+                    }
+                    return;
+                }
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, OutgoingAssetActivity.this);
+                // show Progress Dialog
+                toggleProgress(true, R.string.acquire_coordinates);
             }
         });
 
@@ -233,6 +282,9 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
     }
 
     private void updateState() {
+        if (adapterOutgoingItems == null) {
+            return;
+        }
         GlobalState.recWHOutgoing.items = adapterOutgoingItems.getValues();
         GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
         GlobalState.recWHOutgoing.assetType = AssetType.valueOf(this.selectedAssetType);
@@ -397,6 +449,36 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
                 activeFilter = null;
                 selectedToggleButton = -1;
                 break;
+        }
+    }
+
+    // GPS Location-Related functionality
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        recWHOutgoing.longitude = location.getLongitude();
+        recWHOutgoing.latitude = location.getLatitude();
+        locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(i);
+    }
+
+    private void toggleProgress(boolean show, @StringRes int info) {
+        if (show) {
+            runOnUiThread(() -> {
+                syncProgressDialog.show();
+            });
+        } else {
+            runOnUiThread(() -> {
+                syncProgressDialog.hide();
+            });
         }
     }
 

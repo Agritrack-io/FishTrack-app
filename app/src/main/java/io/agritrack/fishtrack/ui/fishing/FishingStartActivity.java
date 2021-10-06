@@ -33,7 +33,6 @@ import io.agritrack.fishtrack.rfid.SingleShotScanner;
 import io.agritrack.fishtrack.state.FishingRecord;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.ui.HomeActivity;
-import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 
 import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
