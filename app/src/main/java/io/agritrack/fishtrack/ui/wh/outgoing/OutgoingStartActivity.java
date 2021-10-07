@@ -7,28 +7,55 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import io.agritrack.fishtrack.R;
 import io.agritrack.fishtrack.common.Constants;
+import io.agritrack.fishtrack.data.db.MobileDB;
+import io.agritrack.fishtrack.data.model.Site;
+import io.agritrack.fishtrack.data.model.common.Customer;
+import io.agritrack.fishtrack.data.model.common.Supplier;
+import io.agritrack.fishtrack.dialog.ExpandableListDialog;
+import io.agritrack.fishtrack.dialog.SimpleListDialog;
 import io.agritrack.fishtrack.state.GlobalState;
 import io.agritrack.fishtrack.state.WHTxRecord;
 import io.agritrack.fishtrack.ui.WhMenuActivity;
 import io.agritrack.fishtrack.ui.custom.CustomToast;
 import io.agritrack.fishtrack.ui.custom.ToggleGroup;
+import io.agritrack.fishtrack.ui.login.api.SiteInfo;
 import io.agritrack.fishtrack.ui.service.LocalPreferences;
 import io.agritrack.fishtrack.ui.wh.incoming.IncomingAssetActivity;
 import io.agritrack.fishtrack.ui.wh.incoming.IncomingConsumableActivity;
+import io.agritrack.fishtrack.ui.wh.incoming.IncomingStartActivity;
 
+import static io.agritrack.fishtrack.FishTrackApplication.getAppContext;
 import static io.agritrack.fishtrack.common.LargeString.render;
 import static io.agritrack.fishtrack.ui.custom.CustomToast.CToast;
 
 public class OutgoingStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+
+    private final MutableLiveData<SiteInfo> toAvramarSelection = new MutableLiveData<>();
+    private final MutableLiveData<String> toCustomerSelection = new MutableLiveData<>();
+    private final MutableLiveData<String> fromSiteSelection = new MutableLiveData<>();
+
     private TextView tvOutgoingFrom, tvOutgoingTo;
     private ToggleGroup tgOutgoingSource, tgOutgoingDestination, tgOutgoingItemType;
-    private String selectedOutgoingItemType;
-
+    private String selectedOutgoingItemType, selectedToggleButtonFrom, selectedToggleButtonTo;
+    private ExpandableListDialog avramarDialog;
+    private SimpleListDialog customerDialog;
+    private SimpleListDialog siteDialog;
+    private String fromSite;
+    private String toCustomer;
+    private SiteInfo toSite;
+    private MobileDB db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +66,38 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         TextView tvHeader = findViewById(R.id.tvHeaderOutgoingStart);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
+        // get an instance of local DB
+        db = MobileDB.getInstance(getAppContext());
+
         // get  references of the controls
         assignCtrlVars();
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
+
+        toAvramarSelection.observe(this, response -> {
+            if (response != null) {
+                toSite = response;
+                tvOutgoingTo.setText(toSite.getName());
+                avramarDialog.dismiss();
+            }
+        });
+
+        toCustomerSelection.observe(this, response -> {
+            if (response != null) {
+                toCustomer = response;
+                tvOutgoingTo.setText(toCustomer);
+                customerDialog.dismiss();
+            }
+        });
+
+        fromSiteSelection.observe(this, response -> {
+            if (response != null) {
+                fromSite = response;
+                tvOutgoingFrom.setText(fromSite);
+                siteDialog.dismiss();
+            }
+        });
 
         configFooter();
     }
@@ -86,20 +140,53 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         tgOutgoingDestination.setOnCheckedChangeListener(this);
     }
 
+    private Map<String, List<SiteInfo>> fillAvramarData() {
+        Map<String, List<SiteInfo>> result = new HashMap<>();
+        List<Site> allSites = db.siteDAO().getAll();
+        if (allSites != null && !allSites.isEmpty()) {
+            result = allSites.stream().filter(x -> x.lvl2 != null).map(s -> new SiteInfo(s.name, s.description, s.lvl2)).collect(Collectors.groupingBy(SiteInfo::getCode));
+        }
+
+        return result;
+    }
+
+    private List<String> fillCustomerData() {
+        List<String> result = new ArrayList<>();
+        List<Customer> allCustomers = db.customerDAO().getAll();
+        if (allCustomers != null && !allCustomers.isEmpty()) {
+            result = allCustomers.stream().map(s -> s.name).collect(Collectors.toList());
+        }
+
+        return result;
+    }
+
+    private List<String> fillSubSiteData() {
+        List<String> result = new ArrayList<>();
+        List<Site> subSites = db.siteDAO().getCurrentSiteSubSites(LocalPreferences.getCurrentSiteLevel3());
+        if (subSites != null && !subSites.isEmpty()) {
+            result = subSites.stream().map(s -> s.name).collect(Collectors.toList());
+        }
+
+        return result;
+    }
+
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
         if (checkedId == R.id.tbSite) {
-            GlobalState.recWHOutgoing.from = Constants.ftSite;
-            tvOutgoingFrom.setText(Constants.ftSite);
+            siteDialog = new SimpleListDialog(OutgoingStartActivity.this, fillSubSiteData(), fromSiteSelection, R.string.select_subsite);
+            siteDialog.showDialog();
+            selectedToggleButtonFrom = Constants.ftSite;
         } else if (checkedId == R.id.tbAssetFrom) {
             GlobalState.recWHOutgoing.from = Constants.ftAsset;
             tvOutgoingFrom.setText(Constants.ftAsset);
         } else if (checkedId == R.id.tbAvramar) {
-            GlobalState.recWHOutgoing.to = Constants.ftAvramar;
-            tvOutgoingTo.setText(Constants.ftAvramar);
+            avramarDialog = new ExpandableListDialog(OutgoingStartActivity.this, fillAvramarData(), toAvramarSelection, R.string.select_site);
+            avramarDialog.showDialog();
+            selectedToggleButtonTo = Constants.ftAvramar;
         } else if (checkedId == R.id.tbCustomer) {
-            GlobalState.recWHOutgoing.to = Constants.ftCustomer;
-            tvOutgoingTo.setText(Constants.ftCustomer);
+            customerDialog = new SimpleListDialog(OutgoingStartActivity.this, fillCustomerData(), toCustomerSelection, R.string.select_customer);
+            customerDialog.showDialog();
+            selectedToggleButtonTo = Constants.ftSupplier;
         } else if (checkedId == R.id.tbOutAssetTo) {
             GlobalState.recWHOutgoing.to = Constants.ftAsset;
             tvOutgoingTo.setText(Constants.ftAsset);
@@ -116,6 +203,22 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
 
         if (!Strings.isEmptyOrWhitespace(selectedOutgoingItemType)) {
             whOutgoingRecord.outgoingItemType = selectedOutgoingItemType;
+        }
+
+        if (!Strings.isEmptyOrWhitespace(selectedToggleButtonFrom)) {
+            whOutgoingRecord.selectedToggleButtonFrom = selectedToggleButtonFrom;
+        }
+
+        if (!Strings.isEmptyOrWhitespace(selectedToggleButtonTo)) {
+            whOutgoingRecord.selectedToggleButtonTo = selectedToggleButtonTo;
+        }
+
+        if (!Strings.isEmptyOrWhitespace(String.valueOf(tvOutgoingFrom))) {
+            whOutgoingRecord.from = tvOutgoingFrom.getText().toString();
+        }
+
+        if (!Strings.isEmptyOrWhitespace(String.valueOf(tvOutgoingTo))) {
+            whOutgoingRecord.to = tvOutgoingTo.getText().toString();
         }
         return whOutgoingRecord;
     }
@@ -140,17 +243,17 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
 
     private void initControlsFromState()    {
 
-        if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHOutgoing.from)) {
+        if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonFrom)) {
             tgOutgoingSource.check(R.id.tbSite);
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.from)) {
+        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonFrom)) {
             tgOutgoingSource.check(R.id.tbAssetFrom);
         }
 
-        if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHOutgoing.to)) {
+        if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
             tgOutgoingDestination.check(R.id.tbAvramar);
-        } else if (Constants.ftCustomer.equalsIgnoreCase(GlobalState.recWHOutgoing.to)) {
+        } else if (Constants.ftCustomer.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
             tgOutgoingDestination.check(R.id.tbCustomer);
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.to)) {
+        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
             tgOutgoingDestination.check(R.id.tbOutAssetTo);
         }
 

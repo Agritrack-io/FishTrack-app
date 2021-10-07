@@ -262,7 +262,7 @@ public class OutgoingConsumableActivity extends AppCompatActivity implements Tog
                 if (ActivityCompat.checkSelfPermission(OutgoingConsumableActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(OutgoingConsumableActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                if (adapterOutgoingItems == null) {
+                if (adapterOutgoingItems.getItemCount() == 0) {
                     String vd = validate();
                     if (!Strings.isEmptyOrWhitespace(vd)) {
                         CToast(getApplicationContext(), render("Invalid inputs : " + vd), Toast.LENGTH_LONG);
@@ -300,7 +300,7 @@ public class OutgoingConsumableActivity extends AppCompatActivity implements Tog
     }
 
     private void updateState() {
-        if (adapterOutgoingItems == null) {
+        if (adapterOutgoingItems.getItemCount() == 0) {
             return;
         }
         GlobalState.recWHOutgoing.barcodeItems = adapterOutgoingItems.getValues();

@@ -360,7 +360,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         }
     }
 
-    @Override
+    /*@Override
     protected void onDestroy() {
         if (executor != null)
             executor.shutdown();
@@ -379,7 +379,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         super.onPause();
         if (executor != null)
             executor.shutdown();
-    }
+    }*/
 
     public class SyncTxCallBack implements Callback<CorrelationTxDTO> {
         @Override

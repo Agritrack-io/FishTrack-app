@@ -314,5 +314,6 @@
     <string name="delete_selected_item">"About to delete: "</string>
     <string name="select_site">Please select site</string>
     <string name="select_supplier">Please select supplier</string>
+    <string name="select_customer">Please select customer</string>
     <string name="select_subsite">Please select sub-site</string>
 </resources>

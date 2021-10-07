@@ -18,6 +18,7 @@ import io.agritrack.fishtrack.data.dao.AppUserDAO;
 import io.agritrack.fishtrack.data.dao.CageDetailsDAO;
 import io.agritrack.fishtrack.data.dao.HarvestRequestDAO;
 import io.agritrack.fishtrack.data.dao.SiteDAO;
+import io.agritrack.fishtrack.data.dao.common.CustomerDAO;
 import io.agritrack.fishtrack.data.dao.common.EmployeeDAO;
 import io.agritrack.fishtrack.data.dao.common.FishSpeciesDAO;
 import io.agritrack.fishtrack.data.dao.common.ReaderDAO;
@@ -39,6 +40,7 @@ import io.agritrack.fishtrack.data.model.AppUser;
 import io.agritrack.fishtrack.data.model.CageDetails;
 import io.agritrack.fishtrack.data.model.HarvestRequest;
 import io.agritrack.fishtrack.data.model.Site;
+import io.agritrack.fishtrack.data.model.common.Customer;
 import io.agritrack.fishtrack.data.model.common.Employee;
 import io.agritrack.fishtrack.data.model.common.FishSpecies;
 import io.agritrack.fishtrack.data.model.common.Reader;
@@ -61,8 +63,8 @@ import io.agritrack.fishtrack.data.model.wh.RFIDInventoryItem;
         CageDetails.class, Employee.class, FishSpecies.class, Reader.class,
         FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class,
         AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class, RepairTransaction.class, HarvestTransaction.class,
-        RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class},
-        version = 12, exportSchema = false)
+        RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class},
+        version = 13, exportSchema = false)
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class, ConsumableTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
@@ -92,6 +94,8 @@ public abstract class MobileDB extends RoomDatabase {
     public abstract AssetDAO assetDAO();
 
     public abstract SupplierDAO supplierDAO();
+
+    public abstract CustomerDAO customerDAO();
 
     public abstract CageDetailsDAO cageDetailsDAO();
 

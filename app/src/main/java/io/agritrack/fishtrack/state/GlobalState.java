@@ -306,10 +306,10 @@ public class GlobalState {
             RFIDInventory txWHRFIDInventory = new RFIDInventory();
             txWHRFIDInventory.site = recWHInventory.subSite;
             txWHRFIDInventory.performedAt = System.currentTimeMillis();
-            long _id = db.rFIDInventoryDAO().insert(txWHRFIDInventory);
-            txWHRFIDInventory.id = _id;
             txWHRFIDInventory.longitude = recWHInventory.longitude;
             txWHRFIDInventory.latitude = recWHInventory.latitude;
+            long _id = db.rFIDInventoryDAO().insert(txWHRFIDInventory);
+            txWHRFIDInventory.id = _id;
 
             return txWHRFIDInventory;
         } catch (Exception ex) {
@@ -347,10 +347,10 @@ public class GlobalState {
             CoInventory txWHCoInventory = new CoInventory();
             txWHCoInventory.site = recWHInventory.subSite;
             txWHCoInventory.performedAt = System.currentTimeMillis();
-            long _id = db.coInventoryDAO().insert(txWHCoInventory);
-            txWHCoInventory.id = _id;
             txWHCoInventory.longitude = recWHInventory.longitude;
             txWHCoInventory.latitude = recWHInventory.latitude;
+            long _id = db.coInventoryDAO().insert(txWHCoInventory);
+            txWHCoInventory.id = _id;
 
             return txWHCoInventory;
         } catch (Exception ex) {

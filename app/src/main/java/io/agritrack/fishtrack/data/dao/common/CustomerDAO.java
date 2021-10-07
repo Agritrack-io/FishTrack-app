@@ -16,7 +16,7 @@ import io.agritrack.fishtrack.data.model.common.Customer;
 public interface CustomerDAO {
 
     @Query("SELECT * from customer")
-    LiveData<List<Customer>> getAll();
+    List<Customer> getAll();
 
     @Query("SELECT * from customer where id=:customerId LIMIT 1")
     Customer getById(Long customerId);
