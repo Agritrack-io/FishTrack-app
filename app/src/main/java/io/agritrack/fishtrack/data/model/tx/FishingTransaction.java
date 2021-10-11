@@ -17,6 +17,9 @@ public class FishingTransaction {
     @PrimaryKey
     public Long id;
 
+    @ColumnInfo(name = "timestamp")
+    public Long timestamp;
+
     @ColumnInfo(name = "harvest_request")
     public String harvestRq;
 

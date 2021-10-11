@@ -12,6 +12,9 @@ public class CorrelationTransaction {
     @PrimaryKey
     public Long id;
 
+    @ColumnInfo(name = "timestamp")
+    public Long timestamp;
+
     @TypeConverters(AssetTypeConverter.class)
     @ColumnInfo(name = "asset_type")
     public String assetType;

@@ -6,6 +6,7 @@ public class HarvestTxDTO {
 
     public Long id;
     public String transactionType;
+    public Long timestamp;
     public Double longitude;
     public Double latitude;
 
@@ -13,6 +14,7 @@ public class HarvestTxDTO {
         HarvestTransaction harvestTransaction = new HarvestTransaction();
         harvestTransaction.id = harvestTxDTO.id;
         harvestTransaction.transactionType = harvestTxDTO.transactionType;
+        harvestTransaction.timestamp = harvestTxDTO.timestamp;
         harvestTransaction.longitude = harvestTxDTO.longitude;
         harvestTransaction.latitude = harvestTxDTO.latitude;
 

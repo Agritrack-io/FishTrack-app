@@ -16,7 +16,7 @@ public class RepairTxDTO {
     public String repairManager;
     public String description;
     public Double cost;
-    public Date timestamp;
+    public Long timestamp;
     public Date nextRepair;
     public Date estimatedWithdrawal;
     public Double longitude;

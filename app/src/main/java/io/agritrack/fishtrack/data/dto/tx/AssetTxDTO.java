@@ -14,6 +14,7 @@ public class AssetTxDTO {
     public String rfid;
     public String state;
     public String site;
+    public Long timestamp;
     public Double longitude;
     public Double latitude;
 
@@ -28,6 +29,7 @@ public class AssetTxDTO {
         assetTxDTO.from = assetTx.from;
         assetTxDTO.to = assetTx.to;
         assetTxDTO.site = assetTx.site;
+        assetTxDTO.timestamp = assetTx.timestamp;
         assetTxDTO.longitude = assetTx.longitude;
         assetTxDTO.latitude = assetTx.latitude;
 

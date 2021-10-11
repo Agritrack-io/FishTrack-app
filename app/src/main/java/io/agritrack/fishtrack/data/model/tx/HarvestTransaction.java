@@ -14,6 +14,9 @@ public class HarvestTransaction {
     @PrimaryKey
     public Long id;
 
+    @ColumnInfo(name = "timestamp")
+    public Long timestamp;
+
     @ColumnInfo(name = "transaction_type")
     public String transactionType;
 

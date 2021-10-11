@@ -6,6 +6,7 @@ public class CorrelationTxDTO {
     public String assetType;
     public String barcode;
     public String rfid;
+    public Long timestamp;
     public Double longitude;
     public Double latitude;
 
@@ -14,6 +15,7 @@ public class CorrelationTxDTO {
         correlationTxDTO.assetType = corrTx.assetType;
         correlationTxDTO.rfid = corrTx.rfid;
         correlationTxDTO.barcode = corrTx.barcode;
+        correlationTxDTO.timestamp = corrTx.timestamp;
         correlationTxDTO.longitude = corrTx.longitude;
         correlationTxDTO.latitude = corrTx.latitude;
 

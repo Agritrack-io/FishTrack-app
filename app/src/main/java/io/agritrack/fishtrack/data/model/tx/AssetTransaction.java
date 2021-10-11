@@ -18,6 +18,9 @@ public class AssetTransaction {
     @PrimaryKey
     public Long id;
 
+    @ColumnInfo(name = "timestamp")
+    public Long timestamp;
+
     @TypeConverters(StringMapConverter.class)
     @ColumnInfo(name = "rfids")
     public Map<String, List<String>> itemRFIDs;

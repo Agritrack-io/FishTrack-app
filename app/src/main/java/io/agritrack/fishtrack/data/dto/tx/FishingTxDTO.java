@@ -27,6 +27,7 @@ public class FishingTxDTO {
     public String status;
     public String user;
     public String site;
+    public Long timestamp;
     public Double longitude;
     public Double latitude;
 
@@ -52,6 +53,7 @@ public class FishingTxDTO {
         fishingTxDTO.status = fishing.txStatus.name();
         fishingTxDTO.user = fishing.user;
         fishingTxDTO.site = fishing.site;
+        fishingTxDTO.timestamp = fishing.timestamp;
         fishingTxDTO.longitude = fishing.longitude;
         fishingTxDTO.latitude = fishing.latitude;
 

@@ -130,6 +130,7 @@ public class GlobalState {
             txFishing.orderedQuantity = recFishing.reqWeight != null ? Integer.valueOf(recFishing.reqWeight) : null;
             txFishing.requester = recFishing.requesterName;
             txFishing.totalQty = recFishing.totalFishWeight;
+            txFishing.timestamp = System.currentTimeMillis();
             txFishing.harvestBins = recFishing.availBins;
             txFishing.team = recFishing.fishingTeam;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
@@ -159,6 +160,7 @@ public class GlobalState {
             txTransport.isTruckRefrigerated = recTransport.refrigeratedTruck;
             txTransport.isParallelTransport = recTransport.parallelTransport;
             txTransport.transportHead = "N/A";
+            txTransport.timestamp = System.currentTimeMillis();
             txTransport.loadedBins = recTransport.availBins;
             txTransport.user = LocalPreferences.getLoggedInUser("N/A");
             txTransport.site = LocalPreferences.getCurrentSiteId().toString();
@@ -182,6 +184,7 @@ public class GlobalState {
             txProcess.smells = Boolean.toString(recProcessing.smellyTruck);
             txProcess.plot = recProcessing.pLot;
             txProcess.site = recProcessing.packagingSite;
+            txProcess.timestamp = System.currentTimeMillis();
             //txProcess.remarks = recProcessing.remarks;
             txProcess.receivedBins = recProcessing.availBins;
             txProcess.securityClipNumber = recProcessing.securityClip;
@@ -208,6 +211,7 @@ public class GlobalState {
             txWHIncoming.from = recWHIncoming.from;
             txWHIncoming.to = recWHIncoming.to;
             txWHIncoming.site = recWHIncoming.site;
+            txWHIncoming.timestamp = System.currentTimeMillis();
             txWHIncoming.longitude = recWHIncoming.longitude;
             txWHIncoming.latitude = recWHIncoming.latitude;
 
@@ -259,6 +263,7 @@ public class GlobalState {
             txWHOutgoing.from = recWHOutgoing.from;
             txWHOutgoing.to = recWHOutgoing.to;
             txWHOutgoing.site = recWHOutgoing.site;
+            txWHOutgoing.timestamp = System.currentTimeMillis();
             txWHOutgoing.longitude = recWHOutgoing.longitude;
             txWHOutgoing.latitude = recWHOutgoing.latitude;
 
@@ -389,6 +394,7 @@ public class GlobalState {
             txCorrelation.assetType = recWHCorrelation.assetType.name();
             txCorrelation.barcode = recWHCorrelation.barcode;
             txCorrelation.rfid = recWHCorrelation.rfid;
+            txCorrelation.timestamp = System.currentTimeMillis();
             txCorrelation.longitude = recWHCorrelation.longitude;
             txCorrelation.latitude = recWHCorrelation.latitude;
 
@@ -404,6 +410,7 @@ public class GlobalState {
     public static RepairTransaction commitInternalRepair(MobileDB db) {
         try {
             RepairTransaction txIndoorsRepair = new RepairTransaction();
+            txIndoorsRepair.timestamp = System.currentTimeMillis();
             txIndoorsRepair.longitude = recInternalRepair.longitude;
             txIndoorsRepair.latitude = recInternalRepair.latitude;
 
@@ -419,6 +426,7 @@ public class GlobalState {
     public static RepairTransaction commitExternalRepair(MobileDB db) {
         try {
             RepairTransaction txOutdoorsRepair = new RepairTransaction();
+            txOutdoorsRepair.timestamp = System.currentTimeMillis();
             txOutdoorsRepair.longitude = recExternalRepair.longitude;
             txOutdoorsRepair.latitude = recExternalRepair.latitude;
 

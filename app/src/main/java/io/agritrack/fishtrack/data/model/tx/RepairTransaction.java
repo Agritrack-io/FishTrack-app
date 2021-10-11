@@ -12,6 +12,9 @@ public class RepairTransaction {
     @PrimaryKey
     public Long id;
 
+    @ColumnInfo(name = "timestamp")
+    public Long timestamp;
+
     @ColumnInfo(name = "asset_rfid")
     public String assetRFID;
 
@@ -41,9 +44,6 @@ public class RepairTransaction {
 
     @ColumnInfo(name = "cost")
     public Double cost;
-
-    @ColumnInfo(name = "timestamp")
-    public Date timestamp;
 
     @ColumnInfo(name = "next_repair")
     public Date nextRepair;

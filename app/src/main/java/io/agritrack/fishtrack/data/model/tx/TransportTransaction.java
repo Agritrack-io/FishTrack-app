@@ -15,6 +15,9 @@ public class TransportTransaction {
     @PrimaryKey
     public Long id;
 
+    @ColumnInfo(name = "timestamp")
+    public Long timestamp;
+
     @ColumnInfo(name = "transport_head")
     public String transportHead;
 

@@ -20,6 +20,7 @@ public class TransportTxDTO {
     public List<String> bins_loaded = new LinkedList<String>();
     public String site;
     public String user;
+    public Long timestamp;
     public Double longitude;
     public Double latitude;
 
@@ -38,6 +39,7 @@ public class TransportTxDTO {
         transportTxDto.bins_loaded = transport.loadedBins;
         transportTxDto.user = transport.user;
         transportTxDto.site = transport.site;
+        transportTxDto.timestamp = transport.timestamp;
         transportTxDto.longitude = transport.longitude;
         transportTxDto.latitude = transport.latitude;
 
