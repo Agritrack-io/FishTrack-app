@@ -6,7 +6,7 @@ android:id="@+id/fishingStartActivityLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
-tools:context=".ui.transport.TransportDriverConfirmActivity">
+tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -293,7 +293,7 @@ tools:context=".ui.transport.TransportDriverConfirmActivity">
             android:orientation="vertical"
             android:padding="15dp">
 
-            <io.agritrack.fishtrack.ui.custom.CaptureSignatureView
+            <io.agritrack.ui.custom.CaptureSignatureView
                 android:id="@+id/signatureView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

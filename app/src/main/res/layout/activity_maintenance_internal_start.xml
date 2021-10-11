@@ -6,7 +6,7 @@ android:id="@+id/fishingStartActivityLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
-tools:context=".ui.maintenance.MaintenanceInternalStartActivity">
+tools:context=".fish.ui.maintenance.MaintenanceInternalStartActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -166,7 +166,7 @@ tools:context=".ui.maintenance.MaintenanceInternalStartActivity">
                 tools:layout_conversion_absoluteHeight="0dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
-            <io.agritrack.fishtrack.ui.custom.ToggleGroup
+            <io.agritrack.ui.custom.ToggleGroup
                 android:id="@+id/tgInMtRepairTypes"
                 android:layout_width="wrap_content"
                 android:layout_height="70dp"
@@ -206,7 +206,7 @@ tools:context=".ui.maintenance.MaintenanceInternalStartActivity">
                     android:textSize="@dimen/text_view_font_size_medium" />
 
 
-            </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+            </io.agritrack.ui.custom.ToggleGroup>
 
             <!-- <RadioGroup
                  android:id="@+id/radioGroup"

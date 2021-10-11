@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.agritrack.fishtrack">
+    package="io.agritrack">
 
     <uses-feature android:name="android.hardware.location.gps" />
 
@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".FishTrackApplication"
+        android:name="io.agritrack.FishTrackApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,120 +21,123 @@
         android:supportsRtl="true"
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.wh.outgoing.OutgoingConsumableActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.wh.incoming.IncomingConsumableActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name="io.agritrack.tomato.ui.TomatoHomeActivity"></activity>
         <activity
-            android:name=".ui.wh.inventory.InventoryConsumableActivity"
+            android:name=".fish.ui.wh.outgoing.OutgoingConsumableActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.wh.inventory.InventoryStartActivity"
+            android:name=".fish.ui.wh.incoming.IncomingConsumableActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.fishing.HarvestRequestsActivity"
+            android:name=".fish.ui.wh.inventory.InventoryConsumableActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.maintenance.MaintenanceExternalConfirmActivity"
+            android:name=".fish.ui.wh.inventory.InventoryStartActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.maintenance.MaintenanceExternalSupplierActivity"
+            android:name=".fish.ui.fishing.HarvestRequestsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.maintenance.MaintenanceExternalConfirmActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.maintenance.MaintenanceExternalSupplierActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".ui.maintenance.MaintenanceExternalStartActivity"
+            android:name=".fish.ui.maintenance.MaintenanceExternalStartActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.maintenance.MaintenanceInternalConfirmActivity"
+            android:name=".fish.ui.maintenance.MaintenanceInternalConfirmActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.maintenance.MaintenanceInternalTeamActivity"
+            android:name=".fish.ui.maintenance.MaintenanceInternalTeamActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".ui.maintenance.MaintenanceMenuActivity"
+            android:name=".fish.ui.maintenance.MaintenanceMenuActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.maintenance.MaintenanceInternalStartActivity"
+            android:name=".fish.ui.maintenance.MaintenanceInternalStartActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.wh.search.SearchActivity"
+            android:name=".fish.ui.wh.search.SearchActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.config.ConfigActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.wh.correlation.CorrelationActivity"
+            android:name=".fish.ui.wh.correlation.CorrelationActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".ui.wh.inventory.InventoryAssetActivity"
+            android:name=".fish.ui.wh.inventory.InventoryAssetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.WhMenuActivity"
+            android:name=".fish.ui.WhMenuActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.wh.outgoing.OutgoingAssetActivity"
+            android:name=".fish.ui.wh.outgoing.OutgoingAssetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.wh.outgoing.OutgoingStartActivity"
+            android:name=".fish.ui.wh.outgoing.OutgoingStartActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.wh.incoming.IncomingAssetActivity"
+            android:name=".fish.ui.wh.incoming.IncomingAssetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.wh.incoming.IncomingStartActivity"
+            android:name=".fish.ui.wh.incoming.IncomingStartActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.process.ProcessConfirmActivity"
+            android:name=".fish.ui.process.ProcessConfirmActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.process.ProcessBinsActivity"
+            android:name=".fish.ui.process.ProcessBinsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.process.ProcessInfoActivity"
+            android:name=".fish.ui.process.ProcessInfoActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.transport.TransportSupervisorConfirmActivity"
+            android:name=".fish.ui.transport.TransportSupervisorConfirmActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.transport.TransportDriverConfirmActivity"
+            android:name=".fish.ui.transport.TransportDriverConfirmActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.transport.TransportBinsActivity"
+            android:name=".fish.ui.transport.TransportBinsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.transport.TransportStartActivity"
+            android:name=".fish.ui.transport.TransportStartActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.fishing.FishingConfirmActivity"
+            android:name=".fish.ui.fishing.FishingConfirmActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".ui.fishing.FishingFillBinsActivity"
+            android:name=".fish.ui.fishing.FishingFillBinsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
-            android:name=".ui.fishing.FishingDetailsActivity"
+            android:name=".fish.ui.fishing.FishingDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.fishing.FishingCageActivity"
+            android:name=".fish.ui.fishing.FishingCageActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.fishing.FishingTeamActivity"
+            android:name=".fish.ui.fishing.FishingTeamActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.fishing.FishingBinsActivity"
+            android:name=".fish.ui.fishing.FishingBinsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.fishing.FishingStartActivity"
+            android:name=".fish.ui.fishing.FishingStartActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.TemplateActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.HomeActivity"
+            android:name=".fish.ui.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.login.ForgotYourPinActivity"
@@ -147,6 +150,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

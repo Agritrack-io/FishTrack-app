@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
-    tools:context=".ui.wh.incoming.IncomingStartActivity">
+    tools:context=".fish.ui.wh.incoming.IncomingStartActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -89,7 +89,7 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                <io.agritrack.ui.custom.ToggleGroup
                     android:id="@+id/tgIncomingItemType"
                     android:layout_width="0dp"
                     android:layout_height="70dp"
@@ -131,7 +131,7 @@
                         android:textOn="CONSUMABLE"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
-                </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+                </io.agritrack.ui.custom.ToggleGroup>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -169,7 +169,7 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                <io.agritrack.ui.custom.ToggleGroup
                     android:id="@+id/tgIncomingSource"
                     android:orientation="horizontal"
                     android:layout_width="0dp"
@@ -226,7 +226,7 @@
                         android:textSize="@dimen/text_view_font_size_medium" />
 
 
-                </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+                </io.agritrack.ui.custom.ToggleGroup>
 
                 <TextView
                     android:id="@+id/tvIncomingFrom"
@@ -288,7 +288,7 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                <io.agritrack.ui.custom.ToggleGroup
                     android:id="@+id/tgIncomingDestination"
                     android:layout_width="300dp"
                     android:layout_height="70dp"
@@ -329,7 +329,7 @@
                         android:textSize="@dimen/text_view_font_size_medium" />
 
 
-                </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+                </io.agritrack.ui.custom.ToggleGroup>
 
                 <TextView
                     android:id="@+id/tvIncomingTo"

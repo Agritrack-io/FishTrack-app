@@ -6,7 +6,7 @@ android:id="@+id/fishingBinsLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
-tools:context=".ui.wh.inventory.InventoryAssetActivity">
+tools:context=".fish.ui.wh.inventory.InventoryAssetActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -89,7 +89,7 @@ tools:context=".ui.wh.inventory.InventoryAssetActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <io.agritrack.fishtrack.ui.custom.ToggleGroup
+            <io.agritrack.ui.custom.ToggleGroup
                 android:id="@+id/tgChooseAssetType"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
@@ -154,7 +154,7 @@ tools:context=".ui.wh.inventory.InventoryAssetActivity">
                     android:textOff="PLATFORM"
                     android:textOn="PLATFORM"
                     android:textSize="@dimen/text_view_font_size_medium" />
-            </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+            </io.agritrack.ui.custom.ToggleGroup>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

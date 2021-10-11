@@ -6,7 +6,7 @@ android:id="@+id/fishingBinsLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_green"
-tools:context=".ui.wh.incoming.IncomingConsumableActivity">
+tools:context=".fish.ui.wh.incoming.IncomingConsumableActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -175,7 +175,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
             android:orientation="horizontal"
             android:padding="1dp">
 
-            <io.agritrack.fishtrack.ui.custom.ToggleGroup
+            <io.agritrack.ui.custom.ToggleGroup
                 android:id="@+id/tgChooseConsumableType"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
@@ -227,7 +227,7 @@ tools:context=".ui.wh.incoming.IncomingConsumableActivity">
                     android:textOn="ANTIBIOTIC"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
-            </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+            </io.agritrack.ui.custom.ToggleGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

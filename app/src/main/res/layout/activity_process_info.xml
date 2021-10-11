@@ -8,7 +8,7 @@
     android:background="@color/agri_green"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context=".ui.process.ProcessInfoActivity">
+    tools:context=".fish.ui.process.ProcessInfoActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -283,7 +283,7 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                <io.agritrack.ui.custom.ToggleGroup
                     android:id="@+id/tgChooseFishCondition"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -336,7 +336,7 @@
                         android:textOn="NOT ACCEPTABLE"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
-                </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+                </io.agritrack.ui.custom.ToggleGroup>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

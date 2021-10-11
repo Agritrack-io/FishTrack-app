@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_green"
-    tools:context=".ui.wh.search.SearchActivity">
+    tools:context=".fish.ui.wh.search.SearchActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -106,7 +106,7 @@
                     tools:layout_conversion_absoluteHeight="0dp"
                     tools:layout_conversion_absoluteWidth="0dp" />
 
-                <io.agritrack.fishtrack.ui.custom.ToggleGroup
+                <io.agritrack.ui.custom.ToggleGroup
                     android:id="@+id/tgSearchAssetType"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
@@ -156,7 +156,7 @@
                         android:textOff="BIN"
                         android:textOn="BIN"
                         android:textSize="@dimen/text_view_font_size_medium" />
-                </io.agritrack.fishtrack.ui.custom.ToggleGroup>
+                </io.agritrack.ui.custom.ToggleGroup>
 
                 <androidx.appcompat.widget.SearchView
                     android:id="@+id/svSearchAsset"

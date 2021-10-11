@@ -30,6 +30,11 @@
     <string name="menu_title_warehouse">Warehouse</string>
     <string name="menu_title_maintenance">Maintenance</string>
 
+    <string name="menu_title_seeding">Seeding</string>
+    <string name="menu_title_harvest">Harvest</string>
+    <string name="menu_title_packaging">Packaging</string>
+    <string name="menu_title_shipping">Shipping</string>
+
     <string name="menu_title_incoming">Incoming</string>
     <string name="menu_title_outgoing">Outgoing</string>
     <string name="menu_title_inventory">Inventory</string>
