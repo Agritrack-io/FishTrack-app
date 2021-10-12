@@ -1,7 +1,9 @@
 package io.agritrack.fish.ui.maintenance;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -22,7 +25,9 @@ import java.util.List;
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.Supplier;
+import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.process.ProcessInfoActivity;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -31,6 +36,11 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class MaintenanceExternalSupplierActivity extends AppCompatActivity implements OnItemClickListener {
+
+    private static final int pic_id = 123;
+    private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
+    private ImageView ivCamera;
+    private PhotoDialog photoDialog;
 
     private ListView lvSupplier;
     private EditText etMaintenanceManager, etMaintenanceCost, etMaintenanceTime, mtvExtRemarks;
@@ -69,7 +79,44 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        // Camera_open button is for open the camera
+        // and add the setOnClickListener in this button
+        ivCamera.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // Create the camera_intent ACTION_IMAGE_CAPTURE
+                // it will open the camera for capture the image
+                Intent camera_intent
+                        = new Intent(MediaStore
+                        .ACTION_IMAGE_CAPTURE);
+
+                // Start the activity with camera_intent,
+                // and request pic id
+                startActivityForResult(camera_intent, pic_id);
+            }
+        });
+
         configFooter();
+    }
+
+    // This method will help to retrieve the image
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // Match the request 'pic id with requestCode
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == pic_id) {
+
+            // BitMap is data structure of image file
+            // which stor the image in memory
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+
+            // Set the image in imageview for display
+            photoResult.setValue(photo);
+
+            photoDialog = new PhotoDialog(MaintenanceExternalSupplierActivity.this, photoResult, R.string.photo_taken);
+            photoDialog.showDialog();
+        }
     }
 
     protected void configFooter() {
@@ -97,6 +144,7 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
         etMaintenanceManager = findViewById(R.id.etMaintenanceManager);
         etMaintenanceCost = findViewById(R.id.etMaintenanceCost);
         etMaintenanceTime = findViewById(R.id.etMaintenanceTime);
+        ivCamera = (ImageView) findViewById(R.id.ivCamera);
         mtvExtRemarks = findViewById(R.id.mtvExtRemarks);
     }
 

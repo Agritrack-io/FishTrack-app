@@ -321,4 +321,13 @@
     <string name="select_supplier">Please select supplier</string>
     <string name="select_customer">Please select customer</string>
     <string name="select_subsite">Please select sub-site</string>
+
+    <string name="hello">Hello World, CamTestActivity!</string>
+
+    <!-- UI Elements -->
+    <string name="btn_capture">Click</string>
+
+    <!-- Toast Messages -->
+    <string name="camera_not_found">No cameraTest harware found</string>
+    <string name="photo_taken">Your photo</string>
 </resources>

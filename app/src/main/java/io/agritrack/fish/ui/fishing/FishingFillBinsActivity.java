@@ -32,7 +32,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import cn.pda.serialport.Tools;
 import io.agritrack.R;
+import io.agritrack.caen.common.CAENRegistersIO;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -43,6 +45,12 @@ import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.bo.BinLoadsMap;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_INTERVAL;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_RESET;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIMESTAMP;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIME_BIN;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ONE;
+import static io.agritrack.caen.api.EncodingUtils.BytesToHex;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -66,6 +74,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     private String selectedCatch;
     private ConstraintLayout selectedItem;
+
+    private final byte[] accessPassword = Tools.HexString2Bytes("00000000");
 
     // Instantiate a clickListener to be passed to adapterCatches.
     // It will be used to set the catch var to the selected catch.
@@ -128,7 +138,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
             scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_BIN);
+            //scanner.setFilter(Filters.RFID_BIN);
+
+
 
             Future<?> future = executor.submit(scanner);
             try {
@@ -140,6 +152,50 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             btnNextCatch.setEnabled(true);
                             btnNextCatch.setTextColor(getColor(R.color.aqua));
                             currentBin = epcStr;
+
+                            // select the TAG
+                            _uhfReader.selectEPC(Tools.HexString2Bytes(epcStr));
+
+                            // execute the RESET command
+                            try {
+                                byte reply = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_RESET, SHORT_ONE, SHORT_ONE, accessPassword);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            // get unix timestamp
+                            long unixTime = System.currentTimeMillis() / 1000L;
+
+                            // execute the SET TIMESTAMP command
+                            try {
+                                byte reply = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIMESTAMP, (short) 2, unixTime, accessPassword);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            // execute the SET TIMESTAMP command
+                            try {
+                                byte reply = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIME_BIN, (short) 1, (short) 1, accessPassword);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            short interval = 5;
+
+                            // execute the SET TIMESTAMP command
+                            try {
+                                byte reply = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_INTERVAL, (short) 1, interval, accessPassword);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            // execute the SET READ DATA command
+                            try {
+                                byte reply = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_RESET, (short) 1, (short) 4, accessPassword);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
 
                             adapterCatches.setValues(loadsMap.getLoads(currentBin));
                             adapterCatches.notifyDataSetChanged();

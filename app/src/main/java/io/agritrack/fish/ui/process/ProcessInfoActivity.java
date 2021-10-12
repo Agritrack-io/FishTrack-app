@@ -1,7 +1,12 @@
 package io.agritrack.fish.ui.process;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,10 +14,16 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import io.agritrack.R;
+import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -23,10 +34,14 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class ProcessInfoActivity extends AppCompatActivity {
 
+    private static final int pic_id = 123;
+    private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
     private TextView etDispatchNote, etSecurityClip, etPlot;
     private ToggleGroup tgChooseFishCondition;
     private SwitchCompat swCleanTruck, swSmell;
+    private ImageView ivCamera;
     private EditText mtvRemarks;
+    private PhotoDialog photoDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +58,44 @@ public class ProcessInfoActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        // Camera_open button is for open the camera
+        // and add the setOnClickListener in this button
+        ivCamera.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // Create the camera_intent ACTION_IMAGE_CAPTURE
+                // it will open the camera for capture the image
+                Intent camera_intent
+                        = new Intent(MediaStore
+                        .ACTION_IMAGE_CAPTURE);
+
+                // Start the activity with camera_intent,
+                // and request pic id
+                startActivityForResult(camera_intent, pic_id);
+            }
+        });
+
         configFooter();
+    }
+
+    // This method will help to retrieve the image
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // Match the request 'pic id with requestCode
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == pic_id) {
+
+            // BitMap is data structure of image file
+            // which stor the image in memory
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+
+            // Set the image in imageview for display
+            photoResult.setValue(photo);
+
+            photoDialog = new PhotoDialog(ProcessInfoActivity.this, photoResult, R.string.photo_taken);
+            photoDialog.showDialog();
+        }
     }
 
     protected void configFooter() {
@@ -73,6 +125,7 @@ public class ProcessInfoActivity extends AppCompatActivity {
         swCleanTruck = findViewById(R.id.swCleanTruck);
         swSmell = findViewById(R.id.swSmell);
         tgChooseFishCondition = findViewById(R.id.tgChooseFishCondition);
+        ivCamera = (ImageView) findViewById(R.id.ivCamera);
         mtvRemarks = findViewById(R.id.mtvRemarks);
     }
 
@@ -122,18 +175,18 @@ public class ProcessInfoActivity extends AppCompatActivity {
         return processingRecord;
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.dispatchNote)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.dispatchNote)) {
             sb.append(String.format("\n%s is missing", "'Dispatch note'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.pLot)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.pLot)) {
             sb.append(String.format("\n%s is missing", "'LOT'"));
         }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.securityClip)){
+        if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.securityClip)) {
             sb.append(String.format("\n%s is missing", "'Security clip number'"));
         }
 
