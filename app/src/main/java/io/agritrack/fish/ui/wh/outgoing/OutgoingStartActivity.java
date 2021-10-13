@@ -139,7 +139,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         Map<String, List<SiteInfo>> result = new HashMap<>();
         List<Site> allSites = db.siteDAO().getAll();
         if (allSites != null && !allSites.isEmpty()) {
-            result = allSites.stream().filter(x -> x.lvl2 != null).map(s -> new SiteInfo(s.name, s.description, s.lvl2)).collect(Collectors.groupingBy(SiteInfo::getCode));
+            result = allSites.stream().filter(x -> x.siteLevel == 3).map(s -> new SiteInfo(s.name, s.description, s.lvl2)).collect(Collectors.groupingBy(SiteInfo::getCode));
         }
 
         return result;

@@ -2,6 +2,8 @@ package io.agritrack.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.Window;
 import android.widget.ExpandableListView;
@@ -72,8 +74,7 @@ public class ExpandableListDialog {
         dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.expandable_list_dialog);
-        dialog.getWindow().setBackgroundDrawableResource(R.color.semi_transparent);
-
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
     private void findViews() {

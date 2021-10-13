@@ -22,6 +22,7 @@ public class RepairRecord {
     public String manager;
     public String cost;
     public String repairTime;
+    public String photoPath;
 
     public Double longitude;
     public Double latitude;

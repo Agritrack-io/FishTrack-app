@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,9 +38,13 @@ import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.data.model.HarvestRequest;
 import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.dialog.ExpandableListDialog;
+import io.agritrack.dialog.SimpleListDialog;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.wh.incoming.IncomingStartActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
@@ -60,7 +65,9 @@ public class HomeActivity extends AppCompatActivity {
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
     private ImageButton ivRefresh;
+    private ImageView ivSupport;
     private ProgressDialog progressDialog;
+    private SupportDialog supportDialog;
     private MobileDB db;
     private int syncCounter = 1;
 
@@ -157,6 +164,13 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        ivSupport = findViewById(R.id.ivSupport);
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(HomeActivity.this);
+            supportDialog.showDialog();
+        });
+
 
         ivRefresh = findViewById(R.id.ivRefresh);
         ivRefresh.setOnClickListener(view -> {

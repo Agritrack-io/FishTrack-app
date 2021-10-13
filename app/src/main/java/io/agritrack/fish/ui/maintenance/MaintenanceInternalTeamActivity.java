@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.SparseBooleanArray;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
@@ -44,8 +45,8 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
 
     private static final int pic_id = 123;
     private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
-    private ImageView ivCamera;
     private PhotoDialog photoDialog;
+    private ImageView ivTakenPhoto;
 
     private MobileDB db;
     private List<GenericListModel> selectedTeam;
@@ -93,6 +94,7 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
 
         // Camera_open button is for open the camera
         // and add the setOnClickListener in this button
+        ImageButton ivCamera = findViewById(R.id.ivCamera);
         ivCamera.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -106,6 +108,16 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
                 // Start the activity with camera_intent,
                 // and request pic id
                 startActivityForResult(camera_intent, pic_id);
+            }
+        });
+
+        photoResult.observe(this, response -> {
+            if (response != null) {
+                GlobalState.recInternalRepair.photoPath = System.currentTimeMillis() + "";
+                ivTakenPhoto.setVisibility(View.VISIBLE);
+            } else {
+                ivTakenPhoto.setVisibility(View.GONE);
+                GlobalState.recInternalRepair.photoPath = null;
             }
         });
 
@@ -156,7 +168,9 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
         tvInMtTeamCount = findViewById(R.id.tvInMtTeamCount);
         atvInMtWorkDescription = findViewById(R.id.atvInMtWorkDescription);
         ivAddEmployee = (ImageButton) findViewById(R.id.ivAddEmployee);
-        ivCamera = (ImageView) findViewById(R.id.ivCamera);
+        atvInMtWorkDescription.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        atvInMtWorkDescription.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
     }
 
     private void initControlsFromState() {
@@ -172,6 +186,10 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
 
         if (!Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.remarks)) {
             atvInMtWorkDescription.setText(GlobalState.recInternalRepair.remarks);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.photoPath)) {
+            ivTakenPhoto.setVisibility(View.VISIBLE);
         }
     }
 

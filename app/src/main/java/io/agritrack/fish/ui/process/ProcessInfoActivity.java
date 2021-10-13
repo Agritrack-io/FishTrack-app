@@ -1,13 +1,14 @@
 package io.agritrack.fish.ui.process;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,10 +19,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import io.agritrack.R;
 import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.fish.state.GlobalState;
@@ -29,6 +26,7 @@ import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -39,7 +37,7 @@ public class ProcessInfoActivity extends AppCompatActivity {
     private TextView etDispatchNote, etSecurityClip, etPlot;
     private ToggleGroup tgChooseFishCondition;
     private SwitchCompat swCleanTruck, swSmell;
-    private ImageView ivCamera;
+    private ImageView ivTakenPhoto;
     private EditText mtvRemarks;
     private PhotoDialog photoDialog;
 
@@ -60,6 +58,7 @@ public class ProcessInfoActivity extends AppCompatActivity {
 
         // Camera_open button is for open the camera
         // and add the setOnClickListener in this button
+        ImageButton ivCamera = findViewById(R.id.ivCamera);
         ivCamera.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -73,6 +72,16 @@ public class ProcessInfoActivity extends AppCompatActivity {
                 // Start the activity with camera_intent,
                 // and request pic id
                 startActivityForResult(camera_intent, pic_id);
+            }
+        });
+
+        photoResult.observe(this, response -> {
+            if (response != null) {
+                GlobalState.recProcessing.photoPath = System.currentTimeMillis() + "";
+                ivTakenPhoto.setVisibility(View.VISIBLE);
+            } else {
+                ivTakenPhoto.setVisibility(View.GONE);
+                GlobalState.recProcessing.photoPath = null;
             }
         });
 
@@ -99,7 +108,7 @@ public class ProcessInfoActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToReceiveBins);
+        ImageView ivNext = findViewById(R.id.ivToReceiveBins);
         ivNext.setOnClickListener(view -> {
             updateState();
             String v = validate();
@@ -111,7 +120,7 @@ public class ProcessInfoActivity extends AppCompatActivity {
             }
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), ProcessBinsActivity.class);
             startActivity(i);
@@ -125,8 +134,10 @@ public class ProcessInfoActivity extends AppCompatActivity {
         swCleanTruck = findViewById(R.id.swCleanTruck);
         swSmell = findViewById(R.id.swSmell);
         tgChooseFishCondition = findViewById(R.id.tgChooseFishCondition);
-        ivCamera = (ImageView) findViewById(R.id.ivCamera);
         mtvRemarks = findViewById(R.id.mtvRemarks);
+        mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
     }
 
     private void initControlsFromState() {
@@ -146,6 +157,10 @@ public class ProcessInfoActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(prcTx.remarks)) {
             mtvRemarks.setText(prcTx.remarks);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(prcTx.photoPath)) {
+            ivTakenPhoto.setVisibility(View.VISIBLE);
         }
 
         swCleanTruck.setChecked(prcTx.cleanTruck);

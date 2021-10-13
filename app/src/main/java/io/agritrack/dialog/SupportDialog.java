@@ -5,9 +5,12 @@ import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.text.InputType;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,35 +23,28 @@ import io.agritrack.R;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-public class PhotoDialog {
+public class SupportDialog {
 
-    private TextView tvTitle;
-    private ImageView ivPhoto;
-    private Button btnOk, btnCancel;
-    private MutableLiveData<Bitmap> liveItem;
     private final Activity activity;
     private Dialog dialog;
+    private Button btnSubmit, btnCancel;
+    private EditText mtvRemarks;
 
-    public PhotoDialog (Activity activity, MutableLiveData<Bitmap> selection, @StringRes int title) {
+    public SupportDialog (Activity activity) {
         this.activity = activity;
-        this.liveItem = selection;
 
         setDialog();
         findViews();
-        SetCaptions(title);
 
-        ivPhoto.setImageBitmap(liveItem.getValue());
-        ivPhoto.setVisibility(View.VISIBLE);
-
-        btnCancel.setOnClickListener(view -> {
-            liveItem.setValue(null);
+        btnSubmit.setOnClickListener(view -> {
             dismiss();
-            CToast(activity.getApplicationContext(), render("Your photo wasn't saved"), Toast.LENGTH_LONG);
+            for (int i=0; i < 2; i++) {
+                CToast(activity.getApplicationContext(), render("Your request was sent. We will call you as soon as possible."), Toast.LENGTH_SHORT);
+            }
         });
 
-        btnOk.setOnClickListener(view -> {
+        btnCancel.setOnClickListener(view -> {
             dismiss();
-            CToast(activity.getApplicationContext(), render("Your photo was saved locally"), Toast.LENGTH_LONG);
         });
     }
 
@@ -63,18 +59,15 @@ public class PhotoDialog {
     private void setDialog() {
         dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.photo_dialog);
+        dialog.setContentView(R.layout.support_dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
     private void findViews() {
-        tvTitle = dialog.findViewById(R.id.tv_title);
-        ivPhoto = (ImageView) dialog.findViewById(R.id.ivPhoto);
-        btnOk = (Button) dialog.findViewById(R.id.btnOk);
+        btnSubmit = (Button) dialog.findViewById(R.id.btnSubmit);
         btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
-    }
-
-    private void SetCaptions(int title) {
-        tvTitle.setText(title);
+        mtvRemarks = dialog.findViewById(R.id.mtvRemarks);
+        mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
     }
 }

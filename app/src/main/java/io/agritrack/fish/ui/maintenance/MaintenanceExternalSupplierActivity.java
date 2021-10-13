@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,8 +42,8 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
 
     private static final int pic_id = 123;
     private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
-    private ImageView ivCamera;
     private PhotoDialog photoDialog;
+    private ImageView ivTakenPhoto;
 
     private ListView lvSupplier;
     private EditText etMaintenanceManager, etMaintenanceCost, etMaintenanceTime, mtvExtRemarks;
@@ -81,6 +84,7 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
 
         // Camera_open button is for open the camera
         // and add the setOnClickListener in this button
+        ImageButton ivCamera = findViewById(R.id.ivCamera);
         ivCamera.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -94,6 +98,16 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
                 // Start the activity with camera_intent,
                 // and request pic id
                 startActivityForResult(camera_intent, pic_id);
+            }
+        });
+
+        photoResult.observe(this, response -> {
+            if (response != null) {
+                GlobalState.recExternalRepair.photoPath = System.currentTimeMillis() + "";
+                ivTakenPhoto.setVisibility(View.VISIBLE);
+            } else {
+                ivTakenPhoto.setVisibility(View.GONE);
+                GlobalState.recExternalRepair.photoPath = null;
             }
         });
 
@@ -144,8 +158,10 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
         etMaintenanceManager = findViewById(R.id.etMaintenanceManager);
         etMaintenanceCost = findViewById(R.id.etMaintenanceCost);
         etMaintenanceTime = findViewById(R.id.etMaintenanceTime);
-        ivCamera = (ImageView) findViewById(R.id.ivCamera);
         mtvExtRemarks = findViewById(R.id.mtvExtRemarks);
+        mtvExtRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mtvExtRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
     }
 
     private void initControlsFromState() {
@@ -168,6 +184,10 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
         }
         if (!Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.remarks)) {
             mtvExtRemarks.setText(GlobalState.recExternalRepair.remarks);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.photoPath)) {
+            ivTakenPhoto.setVisibility(View.VISIBLE);
         }
     }
 
