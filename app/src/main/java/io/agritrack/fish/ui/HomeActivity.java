@@ -64,8 +64,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4;
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
-    private ImageButton ivRefresh;
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivRefresh;
     private ProgressDialog progressDialog;
     private SupportDialog supportDialog;
     private MobileDB db;

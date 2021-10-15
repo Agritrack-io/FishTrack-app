@@ -33,7 +33,9 @@ import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.Employee;
 import io.agritrack.dialog.PhotoDialog;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -56,6 +58,9 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
     private EditText atvInMtWorkDescription;
     private ImageButton ivAddEmployee;
     private String memberName;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +126,11 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
             }
         });
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(MaintenanceInternalTeamActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -171,6 +181,7 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
         atvInMtWorkDescription.setImeOptions(EditorInfo.IME_ACTION_DONE);
         atvInMtWorkDescription.setRawInputType(InputType.TYPE_CLASS_TEXT);
         ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {

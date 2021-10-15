@@ -22,6 +22,7 @@ import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.HarvestRequest;
 import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.HomeActivity;
@@ -36,6 +37,9 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
     private MobileDB db;
     private ListView lvHarvestRequests;
     private GenericListModel[] harvestReqs;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +76,12 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
             this.lvHarvestRequests.setAdapter(candidatesAdapter);
             this.lvHarvestRequests.setOnItemClickListener(this);
         }
+
+        ivSupport = findViewById(R.id.ivSupport);
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(HarvestRequestsActivity.this);
+            supportDialog.showDialog();
+        });
 
         // create Footer
         configFooter();

@@ -22,8 +22,10 @@ import java.util.List;
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.InventoryWHRecord;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.adapter.InventoryMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
@@ -39,6 +41,9 @@ public class InventoryStartActivity extends AppCompatActivity {
     private static final int Asset_Idx = 0, Consumable_Idx = 1;
     private GridView gvInventoryMenu;
     private Spinner spSite;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +109,11 @@ public class InventoryStartActivity extends AppCompatActivity {
             }
         });
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(InventoryStartActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -116,9 +126,9 @@ public class InventoryStartActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
-        //tvSelectedItemType = findViewById(R.id.tvSelectedItemType);
         spSite = findViewById(R.id.spSite);
         gvInventoryMenu = findViewById(R.id.gvInventoryMenu);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private InventoryWHRecord updateState() {

@@ -47,10 +47,12 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.model.tx.AssetTransaction;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
 import io.agritrack.enums.WarehouseTxState;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
@@ -97,6 +99,9 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
     private Integer selectedParent, selectedChild;
 
     private ProgressDialog progressDialog;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,6 +230,11 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
         };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(OutgoingAssetActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -275,7 +285,7 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
         tvOutgoingProcessTo = findViewById(R.id.tvOutgoingProcessTo);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
         ivAddItem = findViewById(R.id.ivAddItem);
-
+        ivSupport = findViewById(R.id.ivSupport);
         tgChooseAssetType.setOnCheckedChangeListener(this);
     }
 

@@ -27,7 +27,8 @@ public class SupportDialog {
 
     private final Activity activity;
     private Dialog dialog;
-    private Button btnSubmit, btnCancel;
+    private Button btnSubmit, btnUrgentRequest;
+    private ImageView ivCancel;
     private EditText mtvRemarks;
 
     public SupportDialog (Activity activity) {
@@ -36,14 +37,17 @@ public class SupportDialog {
         setDialog();
         findViews();
 
-        btnSubmit.setOnClickListener(view -> {
+        btnUrgentRequest.setOnClickListener(view -> {
             dismiss();
-            for (int i=0; i < 2; i++) {
-                CToast(activity.getApplicationContext(), render("Your request was sent. We will call you as soon as possible."), Toast.LENGTH_SHORT);
-            }
+            CToast(activity.getApplicationContext(), render("Your request was sent. Please wait for remote control."), Toast.LENGTH_SHORT);
         });
 
-        btnCancel.setOnClickListener(view -> {
+        btnSubmit.setOnClickListener(view -> {
+            dismiss();
+                CToast(activity.getApplicationContext(), render("Your request was sent. We will call you as soon as possible."), Toast.LENGTH_SHORT);
+        });
+
+        ivCancel.setOnClickListener(view -> {
             dismiss();
         });
     }
@@ -65,7 +69,8 @@ public class SupportDialog {
 
     private void findViews() {
         btnSubmit = (Button) dialog.findViewById(R.id.btnSubmit);
-        btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+        btnUrgentRequest = (Button) dialog.findViewById(R.id.btnUrgentRequest);
+        ivCancel = dialog.findViewById(R.id.ivCancel);
         mtvRemarks = dialog.findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);

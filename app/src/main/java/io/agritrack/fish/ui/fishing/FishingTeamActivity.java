@@ -30,7 +30,9 @@ import java.util.stream.IntStream;
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.Employee;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -47,6 +49,9 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
     private ArrayAdapter<GenericListModel> candidatesAdapter;
     private ImageButton ivAddEmployee;
     private String memberName;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +92,12 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
+
+        ivSupport = findViewById(R.id.ivSupport);
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(FishingTeamActivity.this);
+            supportDialog.showDialog();
+        });
 
         // create Footer
         configFooter();

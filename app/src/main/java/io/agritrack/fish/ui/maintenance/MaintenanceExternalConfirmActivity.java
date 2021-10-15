@@ -24,6 +24,7 @@ import com.google.android.gms.common.util.Strings;
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.tx.RepairTransaction;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.HomeActivity;
@@ -40,6 +41,9 @@ public class MaintenanceExternalConfirmActivity extends AppCompatActivity implem
     private MobileDB db;
     private TextView tvSite, tvAssetBarcode, tvMaintenanceType, tvSupplier, tvMaintenanceManager,tvMaintenanceCost, tvNextDateMaintenance, tvUsername;
     private EditText etPasswordExtMaintenance;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,11 @@ public class MaintenanceExternalConfirmActivity extends AppCompatActivity implem
         };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(MaintenanceExternalConfirmActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -114,9 +123,9 @@ public class MaintenanceExternalConfirmActivity extends AppCompatActivity implem
         tvMaintenanceManager = findViewById(R.id.tvMaintenanceManager);
         tvMaintenanceCost = findViewById(R.id.tvMaintenanceCost);
         tvNextDateMaintenance = findViewById(R.id.tvNextDateMaintenance);
-
         tvUsername = findViewById(R.id.tvUsername);
         etPasswordExtMaintenance = findViewById(R.id.etPasswordExtMaintenance);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {

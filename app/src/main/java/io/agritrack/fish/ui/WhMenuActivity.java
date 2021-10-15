@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
 import io.agritrack.R;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
@@ -29,6 +30,9 @@ public class WhMenuActivity extends AppCompatActivity {
 
     private static final int Incoming_Idx = 0, Outgoing_Idx = 1, Inventory_Idx = 2, Correlation_Idx = 3, Search_Idx = 4;
     GridView gvWhMainMenu;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,12 @@ public class WhMenuActivity extends AppCompatActivity {
                 i.putExtra("id", position);
                 startActivity(i);
             }
+        });
+
+        ivSupport = findViewById(R.id.ivSupport);
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(WhMenuActivity.this);
+            supportDialog.showDialog();
         });
 
         configFooter();

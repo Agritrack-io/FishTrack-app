@@ -21,8 +21,10 @@ import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
 import io.agritrack.dialog.PhotoDialog;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -40,6 +42,9 @@ public class ProcessInfoActivity extends AppCompatActivity {
     private ImageView ivTakenPhoto;
     private EditText mtvRemarks;
     private PhotoDialog photoDialog;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,11 @@ public class ProcessInfoActivity extends AppCompatActivity {
                 ivTakenPhoto.setVisibility(View.GONE);
                 GlobalState.recProcessing.photoPath = null;
             }
+        });
+
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(ProcessInfoActivity.this);
+            supportDialog.showDialog();
         });
 
         configFooter();
@@ -138,6 +148,7 @@ public class ProcessInfoActivity extends AppCompatActivity {
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
         ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {
@@ -168,7 +179,7 @@ public class ProcessInfoActivity extends AppCompatActivity {
     }
 
     private ProcessingRecord updateState() {
-        ProcessingRecord processingRecord = GlobalState.initProcessingRecord();
+        ProcessingRecord processingRecord = GlobalState.recProcessing;
 
         if (etDispatchNote.getText() != null) {
             processingRecord.dispatchNote = etDispatchNote.getText().toString();

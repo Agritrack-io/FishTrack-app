@@ -29,6 +29,7 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.AppUser;
 import io.agritrack.data.model.common.FishSpecies;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
@@ -50,6 +51,9 @@ public class FishingStartActivity extends AppCompatActivity {
     private EditText etQty;
 
     private Button scanButton;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +125,11 @@ public class FishingStartActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(FishingStartActivity.this);
+            supportDialog.showDialog();
+        });
+
         // create Footer
         configFooter();
     }
@@ -151,6 +160,7 @@ public class FishingStartActivity extends AppCompatActivity {
         speciesSpinner = findViewById(R.id.spFishType);
         tvPlatformName = findViewById(R.id.tvPlatformName);
         etQty = findViewById(R.id.etRequestedQuantity);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {

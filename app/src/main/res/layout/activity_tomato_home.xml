@@ -22,8 +22,8 @@ tools:context=".tomato.ui.TomatoHomeActivity">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <ImageButton
-        android:id="@+id/ivBackToLogin"
+    <ImageView
+        android:id="@+id/ivSupport"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
@@ -32,7 +32,7 @@ tools:context=".tomato.ui.TomatoHomeActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logout_icon" />
+        app:srcCompat="@drawable/support" />
 
     <TextView
         android:id="@+id/tvTitleToolbar"
@@ -69,7 +69,7 @@ tools:context=".tomato.ui.TomatoHomeActivity">
         tools:layout_conversion_absoluteHeight="0dp"
         tools:layout_conversion_absoluteWidth="0dp" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/ivRefresh"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -79,7 +79,7 @@ tools:context=".tomato.ui.TomatoHomeActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_popup_sync" />
+        app:srcCompat="@drawable/refresh" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -132,6 +132,17 @@ tools:context=".tomato.ui.TomatoHomeActivity">
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/powered_by_agritrack" />
+
+    <ImageButton
+        android:id="@+id/ivBackToLogin"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logout_icon" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

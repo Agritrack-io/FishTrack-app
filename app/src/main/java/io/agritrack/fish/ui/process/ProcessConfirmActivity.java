@@ -32,6 +32,7 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.data.model.tx.ProcessingTransaction;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
@@ -45,6 +46,7 @@ import retrofit2.Response;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fish.state.GlobalState.recProcessing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -57,6 +59,9 @@ public class ProcessConfirmActivity extends AppCompatActivity implements Locatio
     private MobileDB db;
     private ProgressDialog progressDialog;
     private TextView tvNumberOfBinsCount, tvDispatchNote, tvPackagingLot, tvSecurityClipNumber, tvFishCondition, tvUsername;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +107,11 @@ public class ProcessConfirmActivity extends AppCompatActivity implements Locatio
         };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(ProcessConfirmActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -134,6 +144,7 @@ public class ProcessConfirmActivity extends AppCompatActivity implements Locatio
         tvSecurityClipNumber = findViewById(R.id.tvSecurityClipNumber);
         tvFishCondition = findViewById(R.id.tvFishCondition);
         tvUsername = findViewById(R.id.tvUsername);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {
@@ -158,6 +169,8 @@ public class ProcessConfirmActivity extends AppCompatActivity implements Locatio
         if (!Strings.isEmptyOrWhitespace(prcRecord.securityClip)) {
             tvSecurityClipNumber.setText(prcRecord.securityClip);
         }
+
+        //tvNumberOfBinsCount.setText(prcRecord.totalBinsUsed != null ? prcRecord.totalBinsUsed.toString() : "N/A");
 
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }

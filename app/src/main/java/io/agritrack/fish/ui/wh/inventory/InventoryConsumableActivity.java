@@ -48,10 +48,12 @@ import io.agritrack.data.dto.wh.CoInventoryDTO;
 import io.agritrack.data.dto.wh.CoInventoryItemDTO;
 import io.agritrack.data.model.wh.CoInventory;
 import io.agritrack.data.model.wh.CoInventoryItem;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.ConsumableType;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -92,6 +94,9 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
     private ConstraintLayout selectedItem;
 
     private ProgressDialog progressDialog;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     // BroadcastReceiver to receiver scan data
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -228,6 +233,11 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
         };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(InventoryConsumableActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -291,7 +301,7 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
         ivAddItem = findViewById(R.id.ivAddItem);
         btnScanConsumable = findViewById(R.id.btnScanConsumable);
-
+        ivSupport = findViewById(R.id.ivSupport);
         tgChooseConsumableType.setOnCheckedChangeListener(this);
     }
 

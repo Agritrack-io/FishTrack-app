@@ -23,6 +23,8 @@ import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.CageDetails;
+import io.agritrack.dialog.SupportDialog;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
@@ -39,6 +41,9 @@ public class FishingCageActivity extends AppCompatActivity {
     private MobileDB db;
     private Button scanCageButton, scanNetButton;
     private TextView tvCageRFID, tvNetRFID;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +112,11 @@ public class FishingCageActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(FishingCageActivity.this);
+            supportDialog.showDialog();
+        });
+
         // create Footer
         configFooter();
     }
@@ -136,6 +146,7 @@ public class FishingCageActivity extends AppCompatActivity {
         scanNetButton = findViewById(R.id.btnScanNet);
         tvNetRFID = findViewById(R.id.tvNetName);
         tvCageRFID = findViewById(R.id.tvCageName);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {

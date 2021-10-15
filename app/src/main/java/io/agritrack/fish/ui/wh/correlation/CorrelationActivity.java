@@ -50,6 +50,7 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.wh.Asset;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.enums.AssetType;
 import io.agritrack.rfid.SingleShotScanner;
@@ -90,6 +91,9 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
     private String activeFilter = null;
     private ConstraintLayout selectedItem;
     private ProgressDialog progressDialog;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
     // Instantiate a clickListener to be passed to adapterAssets.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
@@ -193,6 +197,11 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(CorrelationActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -225,8 +234,8 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         rvAssets = findViewById(R.id.rvAssets);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
         btnCorrelate = findViewById(R.id.btnCorrelate);
-
         tgSearchAssetType.setOnCheckedChangeListener(this);
+        ivSupport = findViewById(R.id.ivSupport);
         rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvAssets.setItemAnimator(new DefaultItemAnimator());
 

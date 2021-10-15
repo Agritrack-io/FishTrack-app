@@ -17,8 +17,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import io.agritrack.R;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class FishingDetailsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -28,6 +30,9 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
     private EditText etIceSupplier;
     private Spinner spSeaTemp;
     private TextView tvPathologist, tvLastFed, tvSpecies;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +58,11 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
+
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(FishingDetailsActivity.this);
+            supportDialog.showDialog();
+        });
 
         configFooter();
     }
@@ -87,6 +97,7 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
         tvSpecies = findViewById(R.id.tvTypeOfFish);
         bIceAdequacy = findViewById(R.id.switchIceAdequacy);
         etIceSupplier = findViewById(R.id.etIceSupplier);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {

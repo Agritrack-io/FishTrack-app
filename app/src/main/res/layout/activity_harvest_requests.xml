@@ -7,7 +7,7 @@
     android:background="@color/agri_green"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context=".ui.fishing.HarvestRequestsActivity">
+    tools:context=".fish.ui.fishing.HarvestRequestsActivity">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,6 +22,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivSupport"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_press_effect"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/support" />
 
         <TextView
             android:id="@+id/tvHeaderHarvestReq"

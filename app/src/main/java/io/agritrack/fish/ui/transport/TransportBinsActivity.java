@@ -33,7 +33,9 @@ import java.util.Set;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
@@ -61,6 +63,9 @@ public class TransportBinsActivity extends AppCompatActivity {
     private ConstraintLayout selectedItem;
 
     private String binBarcode;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     // Instantiate a clickListener to be passed to adapterBins.
     // It will be used to set the selectedBarcode var to the selected item barcode.
@@ -145,6 +150,10 @@ public class TransportBinsActivity extends AppCompatActivity {
         ivAddBin.setOnClickListener(view -> {
             showAddDialog();
         });
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(TransportBinsActivity.this);
+            supportDialog.showDialog();
+        });
 
         // create Footer
         configFooter();
@@ -161,6 +170,7 @@ public class TransportBinsActivity extends AppCompatActivity {
         tvBinsCount = findViewById(R.id.tvBinsCount);
         ivDeleteBin = (ImageButton) findViewById(R.id.ivDeleteBin);
         ivAddBin = (ImageButton) findViewById(R.id.ivAddBin);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void prepareScanAvailableBinsButton() {

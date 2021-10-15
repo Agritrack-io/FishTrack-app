@@ -28,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.common.Constants;
+import io.agritrack.dialog.SupportDialog;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.RepairRecord;
@@ -54,6 +56,9 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
 
     private String selectedOperation;
     private String activeFilter = null;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     DatePickerDialog.OnDateSetListener nextDate = (view, year, monthOfYear, dayOfMonth) -> {
         calendar.set(Calendar.YEAR, year);
@@ -114,6 +119,11 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(MaintenanceInternalStartActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -122,11 +132,10 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
         tvAssetBarcode = findViewById(R.id.tvAssetBarcode);
         etIMtNextMaintenance = findViewById(R.id.etIMtNextMaintenance);
         etIMtEstWithdrawal = findViewById(R.id.etIMtEstWithdrawal);
-
         btnScanAsset = findViewById(R.id.btnScanAsset);
-
         tgInMtRepairTypes = findViewById(R.id.tgInMtRepairTypes);
         tgInMtRepairTypes.setOnCheckedChangeListener(this);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     protected void configFooter() {

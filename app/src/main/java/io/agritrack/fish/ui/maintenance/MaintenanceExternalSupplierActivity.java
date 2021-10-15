@@ -29,7 +29,9 @@ import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.Supplier;
 import io.agritrack.dialog.PhotoDialog;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.fish.ui.process.ProcessInfoActivity;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
@@ -50,6 +52,9 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
 
     private MobileDB db;
     private GenericListModel[] availableSuppliers;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +116,11 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
             }
         });
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(MaintenanceExternalSupplierActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -162,6 +172,7 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
         mtvExtRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvExtRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
         ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {

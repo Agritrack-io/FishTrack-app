@@ -28,6 +28,7 @@ import java.util.Date;
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.tx.RepairTransaction;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.HomeActivity;
@@ -47,6 +48,9 @@ public class MaintenanceInternalConfirmActivity extends AppCompatActivity implem
     private EditText etPasswordFishing;
     private final String dtFormat = "dd/MM/yyyy";
     private final SimpleDateFormat sdf = new SimpleDateFormat(dtFormat);
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,11 @@ public class MaintenanceInternalConfirmActivity extends AppCompatActivity implem
         };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(MaintenanceInternalConfirmActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -119,9 +128,9 @@ public class MaintenanceInternalConfirmActivity extends AppCompatActivity implem
         tvMaintenanceType = findViewById(R.id.tvMaintenanceType);
         tvMaintenanceTeam = findViewById(R.id.tvMaintenanceTeam);
         tvNextDateMaintenance = findViewById(R.id.tvNextDateMaintenance);
-
         tvUsername = findViewById(R.id.tvUsername);
         etPasswordFishing = findViewById(R.id.etPasswordFishing);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {

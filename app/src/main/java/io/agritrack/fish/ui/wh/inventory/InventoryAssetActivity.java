@@ -49,9 +49,11 @@ import io.agritrack.data.dto.wh.RFIDInventoryDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
@@ -93,6 +95,9 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
     private String selectedBarcode;
 
     private ProgressDialog progressDialog;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,6 +224,11 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
         };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(InventoryAssetActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -234,7 +244,7 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
         //tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
         ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
         ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
-
+        ivSupport = findViewById(R.id.ivSupport);
         tgChooseAssetType.setOnCheckedChangeListener(this);
     }
 

@@ -46,6 +46,7 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.ConsumableTxDTO;
 import io.agritrack.data.model.tx.ConsumableTransaction;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
@@ -53,6 +54,7 @@ import io.agritrack.enums.ConsumableType;
 import io.agritrack.enums.WarehouseTxState;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -95,6 +97,9 @@ public class OutgoingConsumableActivity extends AppCompatActivity implements Tog
 
     private BarcodeScanService scanService;
     private BarcodeRecyclerAdapter adapterOutgoingItems;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     // BroadcastReceiver to receiver scan data
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -226,6 +231,11 @@ public class OutgoingConsumableActivity extends AppCompatActivity implements Tog
         };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(OutgoingConsumableActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -291,7 +301,7 @@ public class OutgoingConsumableActivity extends AppCompatActivity implements Tog
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
         ivAddItem = findViewById(R.id.ivAddItem);
         btnScanConsumable = findViewById(R.id.btnScanConsumable);
-
+        ivSupport = findViewById(R.id.ivSupport);
         tgChooseConsumableType.setOnCheckedChangeListener(this);
     }
 

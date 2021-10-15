@@ -32,6 +32,7 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.data.model.tx.TransportTransaction;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
@@ -58,6 +59,9 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity implem
     private TextView tvSitePackaging, tvCompany, tvNumberOfBinsCount, tvDriverName, tvLicensePlate, tvSecurityClipNumber;
     private TextView tvUsername;
     private ProgressDialog progressDialog;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +107,11 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity implem
         };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(TransportSupervisorConfirmActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -136,6 +145,7 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity implem
         tvLicensePlate = findViewById(R.id.tvLicensePlate);
         tvSecurityClipNumber = findViewById(R.id.tvSecurityClipNumber);
         tvUsername = findViewById(R.id.tvUsername);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {

@@ -37,7 +37,9 @@ import io.agritrack.R;
 import io.agritrack.caen.common.CAENRegistersIO;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
@@ -76,6 +78,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private ConstraintLayout selectedItem;
 
     private final byte[] accessPassword = Tools.HexString2Bytes("00000000");
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     // Instantiate a clickListener to be passed to adapterCatches.
     // It will be used to set the catch var to the selected catch.
@@ -153,7 +158,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             btnNextCatch.setTextColor(getColor(R.color.aqua));
                             currentBin = epcStr;
 
-                            // select the TAG
+                            /*// select the TAG
                             _uhfReader.selectEPC(Tools.HexString2Bytes(epcStr));
 
                             // execute the RESET command
@@ -194,7 +199,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                                 byte reply = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_RESET, (short) 1, (short) 4, accessPassword);
                             } catch (Exception e) {
                                 e.printStackTrace();
-                            }
+                            }*/
 
 
                             adapterCatches.setValues(loadsMap.getLoads(currentBin));
@@ -279,6 +284,11 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(FishingFillBinsActivity.this);
+            supportDialog.showDialog();
+        });
+
         // ============
         configFooter();
     }
@@ -294,6 +304,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         tvUsedBinsCount = findViewById(R.id.tvUsedBinsCount);
         tvAvailableBinsCount = findViewById(R.id.tvAvailableBinsCount);
         rvWeightBatchesBin = findViewById(R.id.rvWeightBatchesBin);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void clearSelectedItem() {

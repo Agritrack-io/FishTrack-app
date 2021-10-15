@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -37,9 +38,11 @@ import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.data.model.HarvestRequest;
 import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
@@ -60,10 +63,12 @@ public class TomatoHomeActivity extends AppCompatActivity {
     private static final int Seeding_Idx = 0, Harvest_Idx = 1, Transport_Idx = 2, Packaging_Idx = 3, Shipping_Idx = 4;
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
-    private ImageButton ivRefresh;
     private ProgressDialog progressDialog;
     private MobileDB db;
     private int syncCounter = 1;
+
+    private ImageView ivRefresh, ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +163,12 @@ public class TomatoHomeActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });*/
+
+        ivSupport = findViewById(R.id.ivSupport);
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(TomatoHomeActivity.this);
+            supportDialog.showDialog();
+        });
 
         ivRefresh = findViewById(R.id.ivRefresh);
         ivRefresh.setOnClickListener(view -> {

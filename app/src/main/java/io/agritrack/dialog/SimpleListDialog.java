@@ -64,6 +64,10 @@ public class SimpleListDialog {
         dialog.show();
     }
 
+    public void hide() {
+        dialog.hide();
+    }
+
     public void dismiss() {
         dialog.dismiss();
     }

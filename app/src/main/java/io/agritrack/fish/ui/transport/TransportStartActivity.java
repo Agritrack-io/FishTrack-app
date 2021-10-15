@@ -21,6 +21,7 @@ import java.util.Set;
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.fish.ui.HomeActivity;
@@ -39,6 +40,9 @@ public class TransportStartActivity extends AppCompatActivity {
     private Spinner spPackagingSite, spCompany;
 
     private final String[] company = {"Nireas", "Andromeda", "Selonda"};
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,11 @@ public class TransportStartActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(TransportStartActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -100,6 +109,7 @@ public class TransportStartActivity extends AppCompatActivity {
         swRefrigeratedTruck = findViewById(R.id.swRefrigeratedTruck);
         swParallelTransport = findViewById(R.id.swParallelTransport);
         etSecurityClip = findViewById(R.id.etSecurityClip);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     protected void configFooter() {

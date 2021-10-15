@@ -24,8 +24,10 @@ import io.agritrack.data.model.Site;
 import io.agritrack.data.model.common.Customer;
 import io.agritrack.dialog.ExpandableListDialog;
 import io.agritrack.dialog.SimpleListDialog;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.SiteInfo;
@@ -51,6 +53,9 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
     private String toCustomer;
     private SiteInfo toSite;
     private MobileDB db;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +99,11 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
             }
         });
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(OutgoingStartActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -123,16 +133,13 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
     private void assignCtrlVars() {
         tvOutgoingFrom = findViewById(R.id.tvOutgoingFrom);
         tvOutgoingTo = findViewById(R.id.tvOutgoingTo);
-
         tgOutgoingSource = findViewById(R.id.tgOutgoingSource);
         tgOutgoingDestination = findViewById(R.id.tgOutgoingDestination);
-
         tgOutgoingItemType = findViewById(R.id.tgOutgoingItemType);
-
         tgOutgoingItemType.setOnCheckedChangeListener(this);
-
         tgOutgoingSource.setOnCheckedChangeListener(this);
         tgOutgoingDestination.setOnCheckedChangeListener(this);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private Map<String, List<SiteInfo>> fillAvramarData() {
@@ -239,15 +246,18 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
     private void initControlsFromState()    {
 
         if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonFrom)) {
-            tgOutgoingSource.check(R.id.tbSite);
+            tgOutgoingSource.setCheckedStateForView(R.id.tbSite, true);
+            siteDialog.dismiss();
         } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonFrom)) {
             tgOutgoingSource.check(R.id.tbAssetFrom);
         }
 
         if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
-            tgOutgoingDestination.check(R.id.tbAvramar);
+            tgOutgoingDestination.setCheckedStateForView(R.id.tbAvramar, true);
+            avramarDialog.dismiss();
         } else if (Constants.ftCustomer.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
-            tgOutgoingDestination.check(R.id.tbCustomer);
+            tgOutgoingDestination.setCheckedStateForView(R.id.tbCustomer, true);
+            customerDialog.dismiss();
         } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
             tgOutgoingDestination.check(R.id.tbOutAssetTo);
         }
@@ -256,6 +266,14 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
             tgOutgoingItemType.check(R.id.tbAsset);
         } else if (Constants.ftConsumable.equalsIgnoreCase(GlobalState.recWHOutgoing.outgoingItemType)) {
             tgOutgoingItemType.check(R.id.tbConsumable);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.from)) {
+            tvOutgoingFrom.setText(GlobalState.recWHOutgoing.from);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.to)) {
+            tvOutgoingTo.setText(GlobalState.recWHOutgoing.to);
         }
     }
 }

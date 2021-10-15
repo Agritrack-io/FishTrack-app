@@ -32,9 +32,11 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.ConfirmationDialogCommand;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.Coordinates;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.ui.login.LoginActivity;
 import io.agritrack.ui.login.api.AuthApi;
 import io.agritrack.ui.login.api.SiteInfo;
@@ -68,6 +70,9 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
     private LocationManager locationManager;
     private TimeOutProgressDlg syncProgressDialog;
     private SiteInfo selectedSite;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +169,12 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
             }
         };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
+
+        ivSupport = findViewById(R.id.ivSupport);
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(ConfigActivity.this);
+            supportDialog.showDialog();
+        });
 
         // instantiate Footer controls
         configFooter();

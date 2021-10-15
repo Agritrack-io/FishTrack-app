@@ -34,6 +34,7 @@ import java.util.Set;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fish.state.GlobalState;
@@ -65,6 +66,9 @@ public class ProcessBinsActivity extends AppCompatActivity {
     private ConstraintLayout selectedItem;
 
     private String binBarcode;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     // Instantiate a clickListener to be passed to adapterBins.
     // It will be used to set the selectedBarcode var to the selected item barcode.
@@ -154,6 +158,11 @@ public class ProcessBinsActivity extends AppCompatActivity {
             showAddDialog();
         });
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(ProcessBinsActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -168,6 +177,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
         rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
         ivDeleteBin = (ImageButton) findViewById(R.id.ivDeleteBin);
         ivAddBin = (ImageButton) findViewById(R.id.ivAddBin);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void prepareScanAvailableBinsButton() {
@@ -290,7 +300,9 @@ public class ProcessBinsActivity extends AppCompatActivity {
     }
 
     private void updateState() {
-        GlobalState.recProcessing.availBins = adapterBins.getValues();
+        GlobalState.initProcessingRecord();
+
+        GlobalState.recProcessing.availBins = new LinkedList<>(adapterBins.getValues());
     }
 
     private String validate(){

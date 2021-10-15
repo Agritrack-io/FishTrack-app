@@ -11,8 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.ui.custom.CaptureSignatureView;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -23,6 +25,9 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
 
     private TextView tvSitePackaging, tvCompany, tvNumberOfBinsCount, tvDriverName, tvLicensePlate, tvSecurityClipNumber;
     private CaptureSignatureView signatureView;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +43,11 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
+
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(TransportDriverConfirmActivity.this);
+            supportDialog.showDialog();
+        });
 
         configFooter();
     }
@@ -71,6 +81,7 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
         tvLicensePlate = findViewById(R.id.tvLicensePlate);
         tvSecurityClipNumber = findViewById(R.id.tvSecurityClipNumber);
         signatureView = findViewById(R.id.signatureView);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {
@@ -100,9 +111,9 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
             tvSecurityClipNumber.setText(trns.clipNumber);
         }
 
-        if (trns.signature!=null) {
+        /*if (trns.signature!=null) {
             signatureView.ClearCanvas();
-        }
+        }*/
 
 //        swRefrigeratedTruck.setChecked(trns.refrigeratedTruck);
 //        swParallelTransport.setChecked(trns.parallelTransport);

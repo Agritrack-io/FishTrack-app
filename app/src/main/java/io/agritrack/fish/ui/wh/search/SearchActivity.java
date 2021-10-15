@@ -35,6 +35,8 @@ import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;
+import io.agritrack.dialog.SupportDialog;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.rfid.ScanFilterThread;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
@@ -59,6 +61,9 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
     private EditText etAssetBarcode;
     private SearchView svSearchAsset;
     private TextView tvProximity;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     private final Handler handler = new Handler(Looper.getMainLooper()) {
 
@@ -156,6 +161,11 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
         // initialize scanning threads
         prepareScanAvailableBinsButton();
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(SearchActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -190,7 +200,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
         btnSearchAsset = findViewById(R.id.btnSearchAsset);
         pbProximity = findViewById(R.id.pbProximity);
         tvProximity = findViewById(R.id.tvProximity);
-
+        ivSupport = findViewById(R.id.ivSupport);
         tgSearchAssetType.setOnCheckedChangeListener(this);
         rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvAssets.setItemAnimator(new DefaultItemAnimator());

@@ -8,6 +8,7 @@ public class ProcessingRecord {
     public String pLot;
     public String packagingSite;
     public String fishCondition;
+    public Short totalBinsUsed;
     public int fishConditionPos = -1;
     public boolean cleanTruck = Boolean.TRUE;
     public boolean smellyTruck = Boolean.FALSE;
@@ -17,4 +18,7 @@ public class ProcessingRecord {
 
     public Double longitude;
     public Double latitude;
+
+    public ProcessingRecord() {
+    }
 }

@@ -24,8 +24,10 @@ import io.agritrack.data.model.Site;
 import io.agritrack.data.model.common.Supplier;
 import io.agritrack.dialog.ExpandableListDialog;
 import io.agritrack.dialog.SimpleListDialog;
+import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
+import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.SiteInfo;
@@ -51,6 +53,9 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
     private String fromSupplier;
     private String toSite;
     private MobileDB db;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,21 +99,24 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
             }
         });
 
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(IncomingStartActivity.this);
+            supportDialog.showDialog();
+        });
+
         configFooter();
     }
 
     private void assignCtrlVars() {
         tvIncomingFrom = findViewById(R.id.tvIncomingFrom);
         tvIncomingTo = findViewById(R.id.tvIncomingTo);
-
         tgIncomingSource = findViewById(R.id.tgIncomingSource);
         tgIncomingDestination = findViewById(R.id.tgIncomingDestination);
         tgIncomingItemType = findViewById(R.id.tgIncomingItemType);
-
         tgIncomingItemType.setOnCheckedChangeListener(this);
-
         tgIncomingSource.setOnCheckedChangeListener(this);
         tgIncomingDestination.setOnCheckedChangeListener(this);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 
     protected void configFooter() {
@@ -241,15 +249,18 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
     private void initControlsFromState() {
 
         if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonFrom)) {
-            tgIncomingSource.check(R.id.tbAvramar);
+            tgIncomingSource.setCheckedStateForView(R.id.tbAvramar, true);
+            avramarDialog.dismiss();
         } else if (Constants.ftSupplier.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonFrom)) {
-            tgIncomingSource.check(R.id.tbSupplier);
+            tgIncomingSource.setCheckedStateForView(R.id.tbSupplier, true);
+            supplierDialog.dismiss();
         } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonFrom)) {
             tgIncomingSource.check(R.id.tbAssetFrom);
         }
 
         if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonTo)) {
-            tgIncomingDestination.check(R.id.tbSite);
+            tgIncomingDestination.setCheckedStateForView(R.id.tbSite, true);
+            siteDialog.dismiss();
         } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonTo)) {
             tgIncomingDestination.check(R.id.tbAssetTo);
         }
