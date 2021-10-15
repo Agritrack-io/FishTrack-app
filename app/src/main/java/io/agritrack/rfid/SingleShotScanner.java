@@ -10,6 +10,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import cn.pda.serialport.Tools;
+import io.agritrack.common.Filters;
 
 public class SingleShotScanner implements Callable {
     private final Function<TagModel, String> TagToString = t -> Tools.Bytes2HexString(t.getmEpcBytes(), t.getmEpcBytes().length);
@@ -37,10 +38,12 @@ public class SingleShotScanner implements Callable {
                     Optional<TagModel> tag = filteredStream.sorted((y, x) -> Byte.compare(x.getmRssi(), y.getmRssi())).findFirst();
 
                     if (tag.isPresent()) {
-                        String tagStr = TagToString.apply(tag.get());
-                        return (tagStr.length() > 12) ? tagStr.substring(11) : "N/A";
-                    } else {
-                        return "";
+                        if (RFID_FILTER != Filters.RFID_BIN) {
+                            String tagStr = TagToString.apply(tag.get());
+                            return (tagStr.length() > 12) ? tagStr.substring(11) : "N/A";
+                        } else {
+                            return TagToString.apply(tag.get());
+                        }
                     }
                 }
             }

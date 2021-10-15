@@ -332,6 +332,7 @@
     <string name="describe">Describe</string>
     <string name="enter_pin_support">PIN</string>
 
+    <string name="init_temp_logger">Please wait, initialize temperature logger...</string>
 
     <string name="hello">Hello World, CamTestActivity!</string>
 

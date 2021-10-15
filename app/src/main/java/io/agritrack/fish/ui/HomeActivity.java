@@ -44,6 +44,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.fishing.FishingFillBinsActivity;
 import io.agritrack.fish.ui.wh.incoming.IncomingStartActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
@@ -122,7 +123,7 @@ public class HomeActivity extends AppCompatActivity {
                         FishingRecord fishingRecord;
 
                         // default Next Activity is FishingStart...
-                        i = new Intent(appCtx, FishingStartActivity.class);
+                        i = new Intent(appCtx, FishingFillBinsActivity.class);
                         if (openTx != null) {
                             // there is a FishingTx in progress
                             fishingRecord = FishingRecord.convert(openTx);
