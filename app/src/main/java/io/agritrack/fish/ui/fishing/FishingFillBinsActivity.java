@@ -39,6 +39,7 @@ import io.agritrack.caen.common.CAENRegistersIO;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.TempLoggerDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
@@ -65,6 +66,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final byte[] accessPassword = Tools.HexString2Bytes("00000000");
     private final UhfReader _uhfReader = UhfReader.getInstance();
+    private  TempLoggerDialog tempLoggerDialog;
     FishingRecord fishingRecord = recFishing;
     private MobileDB db;
     private Button btnCurrentBinScan, btnNextCatch, btnDeleteCatch, btnFillBin;
@@ -134,6 +136,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // =================================
         // RFID scanning functionality
         btnCurrentBinScan.setOnClickListener(view -> {
+            tempLoggerDialog = new TempLoggerDialog(FishingFillBinsActivity.this, R.string.init_temp_logger);
+            tempLoggerDialog.showDialog();
 
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
@@ -143,7 +147,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
             Future<?> future = executor.submit(scanner);
             try {
-                String epcStr = future.get(4000, TimeUnit.MILLISECONDS).toString();
+                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
@@ -151,7 +155,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             btnNextCatch.setEnabled(true);
                             btnNextCatch.setTextColor(getColor(R.color.aqua));
                             currentBin = epcStr;
-                            initDataLogger();
+                            tempLoggerDialog.initDataLogger(_uhfReader, currentBin);
+                            //initDataLogger();
                         }
                     });
                 }
@@ -357,17 +362,78 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private void initDataLogger(){
         _uhfReader.selectEPC(Tools.HexString2Bytes(currentBin));
         try {
-            byte reply0 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_RESET, SHORT_ONE, SHORT_ONE, accessPassword);
+            int counter0 = 10;
+            byte reply0 = 1;
+            while (counter0>0 && reply0!=0) {
+                reply0 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_RESET, SHORT_ONE, SHORT_ONE, accessPassword);
+                if (reply0==0){
+                    break;
+                }
+                counter0--;
+            }
+            if (counter0==0){
+                CToast(getApplicationContext(), render("Failed to reset data logger. Please scan bin again"), Toast.LENGTH_LONG);
+                return;
+            }
 
+            int counter1 = 10;
             long unixTime = System.currentTimeMillis() / 1000L;
-            byte reply1 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIMESTAMP, (short) 2, unixTime, accessPassword);
+            byte reply1 = 1;
+            while (counter1>0 && reply1!=0) {
+                reply1 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIMESTAMP, (short) 2, unixTime, accessPassword);
+                if (reply1==0){
+                    break;
+                }
+                counter1--;
+                Thread.sleep(100);
+            }
+            if (counter1==0){
+                CToast(getApplicationContext(), render("Failed to set timestamp. Please scan bin again"), Toast.LENGTH_LONG);
+                return;
+            }
 
-            byte reply2 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIME_BIN, (short) 1, (short) 1, accessPassword);
+            int counter2 = 10;
+            byte reply2 = 1;
+            while (counter2>0 && reply2!=0) {
+                reply2 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIME_BIN, (short) 1, (short) 1, accessPassword);
+                if (reply2==0){
+                    break;
+                }
+                counter2--;
+            }
+            if (counter2==0){
+                CToast(getApplicationContext(), render("Failed to set time bin. Please scan bin again"), Toast.LENGTH_LONG);
+                return;
+            }
 
-            short interval = 5;
-            byte reply3 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_INTERVAL, (short) 1, interval, accessPassword);
+            int counter3 = 10;
+            short interval = 30;
+            byte reply3 = 1;
+            while (counter3>0 && reply3!=0) {
+                reply3 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_INTERVAL, (short) 1, interval, accessPassword);
+                if (reply3==0){
+                    break;
+                }
+                counter3--;
+            }
+            if (counter3==0){
+                CToast(getApplicationContext(), render("Failed to set interval. Please scan bin again"), Toast.LENGTH_LONG);
+                return;
+            }
 
-            byte reply4 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_RESET, (short) 1, (short) 4, accessPassword);
+            int counter4 = 10;
+            byte reply4 = 1;
+            while (counter4>0 && reply4!=0) {
+                reply4 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_RESET, (short) 1, (short) 4, accessPassword);
+                if (reply4==0){
+                    break;
+                }
+                counter4--;
+            }
+            if (counter4==0){
+                CToast(getApplicationContext(), render("Failed to start logger. Please scan bin again"), Toast.LENGTH_LONG);
+                return;
+            }
 
             if (reply0+reply1+reply2+reply3+reply4 >0){
                 CToast(getApplicationContext(), render("Please scan bin again"), Toast.LENGTH_LONG);
@@ -379,5 +445,4 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 }

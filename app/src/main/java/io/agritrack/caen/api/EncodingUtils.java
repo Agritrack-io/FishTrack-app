@@ -76,15 +76,15 @@ public class EncodingUtils {
 
     public static String parseData(byte[] data) {
         StringBuffer sb = new StringBuffer();
+        if (data!=null) {
+            for (int i = 0; i < data.length; i += 6) {
+                short t = ToShort(new byte[]{data[i], data[i + 1]});
 
-        for (int i = 0; i < data.length; i += 6) {
-            short t =  ToShort(new byte[]{data[i], data[i + 1]});
-
-            byte[] bytes = new byte[]{data[i + 4], data[i + 5], data[i + 2], data[i + 3]};
-            String ts = BytesToHex(bytes);
-            sb.append(parseTemperature(t) +"\u2103, " +"\t"+parseTimestamp(bytes) + "\n");
+                byte[] bytes = new byte[]{data[i + 4], data[i + 5], data[i + 2], data[i + 3]};
+                String ts = BytesToHex(bytes);
+                sb.append(parseTemperature(t) + "\u2103, " + "\t" + parseTimestamp(bytes) + "\n");
+            }
         }
-
         return sb.toString();
     }
 
