@@ -1,4 +1,4 @@
-package io.agritrack.ui.bo;
+package io.agritrack.fish.ui.bo;
 
 import com.google.android.gms.common.util.Strings;
 

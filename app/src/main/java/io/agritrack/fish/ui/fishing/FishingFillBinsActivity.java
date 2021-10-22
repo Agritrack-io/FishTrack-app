@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
@@ -35,26 +34,20 @@ import java.util.concurrent.TimeUnit;
 
 import cn.pda.serialport.Tools;
 import io.agritrack.R;
-import io.agritrack.caen.common.CAENRegistersIO;
+
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TempLoggerDialog;
-import io.agritrack.dialog.TimeOutProgressDlg;
+
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
-import io.agritrack.ui.bo.BinLoadsMap;
+import io.agritrack.fish.ui.bo.BinLoadsMap;
 import io.agritrack.ui.service.LocalPreferences;
 
-import static cn.pda.serialport.Tools.Bytes2HexString;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_INTERVAL;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_RESET;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIMESTAMP;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIME_BIN;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ONE;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -64,9 +57,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final byte[] accessPassword = Tools.HexString2Bytes("00000000");
-    private final UhfReader _uhfReader = UhfReader.getInstance();
-    private  TempLoggerDialog tempLoggerDialog;
     FishingRecord fishingRecord = recFishing;
     private MobileDB db;
     private Button btnCurrentBinScan, btnNextCatch, btnDeleteCatch, btnFillBin;
@@ -136,8 +126,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // =================================
         // RFID scanning functionality
         btnCurrentBinScan.setOnClickListener(view -> {
-            tempLoggerDialog = new TempLoggerDialog(FishingFillBinsActivity.this, R.string.init_temp_logger);
-            tempLoggerDialog.showDialog();
 
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
@@ -155,17 +143,14 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             btnNextCatch.setEnabled(true);
                             btnNextCatch.setTextColor(getColor(R.color.aqua));
                             currentBin = epcStr;
-                            tempLoggerDialog.initDataLogger(_uhfReader, currentBin);
-                            //initDataLogger();
+                            adapterCatches.setValues(loadsMap.getLoads(currentBin));
+                            adapterCatches.notifyDataSetChanged();
                         }
                     });
                 }
             } catch (Exception e) {
                 future.cancel(true);
             }
-
-            adapterCatches.setValues(loadsMap.getLoads(currentBin));
-            adapterCatches.notifyDataSetChanged();
 
             tvUsedBinsCount.setText(loadsMap.loadsCnt());
             tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
@@ -339,7 +324,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                 mCatchWeight = input.getText().toString();
                 adapterCatches.addItem(mCatchWeight);
                 adapterCatches.notifyDataSetChanged();
-                //loadsMap.addLoad(currentBin, mCatchWeight);
 
                 tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
                 tvTotalWeightCount.setText(loadsMap.totalWeight().toString() + " " + "(" + fishingRecord.reqWeight + ")");
@@ -357,92 +341,5 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         builder.show();
 
-    }
-
-    private void initDataLogger(){
-        _uhfReader.selectEPC(Tools.HexString2Bytes(currentBin));
-        try {
-            int counter0 = 10;
-            byte reply0 = 1;
-            while (counter0>0 && reply0!=0) {
-                reply0 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_RESET, SHORT_ONE, SHORT_ONE, accessPassword);
-                if (reply0==0){
-                    break;
-                }
-                counter0--;
-            }
-            if (counter0==0){
-                CToast(getApplicationContext(), render("Failed to reset data logger. Please scan bin again"), Toast.LENGTH_LONG);
-                return;
-            }
-
-            int counter1 = 10;
-            long unixTime = System.currentTimeMillis() / 1000L;
-            byte reply1 = 1;
-            while (counter1>0 && reply1!=0) {
-                reply1 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIMESTAMP, (short) 2, unixTime, accessPassword);
-                if (reply1==0){
-                    break;
-                }
-                counter1--;
-                Thread.sleep(100);
-            }
-            if (counter1==0){
-                CToast(getApplicationContext(), render("Failed to set timestamp. Please scan bin again"), Toast.LENGTH_LONG);
-                return;
-            }
-
-            int counter2 = 10;
-            byte reply2 = 1;
-            while (counter2>0 && reply2!=0) {
-                reply2 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIME_BIN, (short) 1, (short) 1, accessPassword);
-                if (reply2==0){
-                    break;
-                }
-                counter2--;
-            }
-            if (counter2==0){
-                CToast(getApplicationContext(), render("Failed to set time bin. Please scan bin again"), Toast.LENGTH_LONG);
-                return;
-            }
-
-            int counter3 = 10;
-            short interval = 30;
-            byte reply3 = 1;
-            while (counter3>0 && reply3!=0) {
-                reply3 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_INTERVAL, (short) 1, interval, accessPassword);
-                if (reply3==0){
-                    break;
-                }
-                counter3--;
-            }
-            if (counter3==0){
-                CToast(getApplicationContext(), render("Failed to set interval. Please scan bin again"), Toast.LENGTH_LONG);
-                return;
-            }
-
-            int counter4 = 10;
-            byte reply4 = 1;
-            while (counter4>0 && reply4!=0) {
-                reply4 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_RESET, (short) 1, (short) 4, accessPassword);
-                if (reply4==0){
-                    break;
-                }
-                counter4--;
-            }
-            if (counter4==0){
-                CToast(getApplicationContext(), render("Failed to start logger. Please scan bin again"), Toast.LENGTH_LONG);
-                return;
-            }
-
-            if (reply0+reply1+reply2+reply3+reply4 >0){
-                CToast(getApplicationContext(), render("Please scan bin again"), Toast.LENGTH_LONG);
-            } else {
-                CToast(getApplicationContext(), render("Successful initialization"), Toast.LENGTH_LONG);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

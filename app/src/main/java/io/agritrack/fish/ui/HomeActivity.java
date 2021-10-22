@@ -123,7 +123,7 @@ public class HomeActivity extends AppCompatActivity {
                         FishingRecord fishingRecord;
 
                         // default Next Activity is FishingStart...
-                        i = new Intent(appCtx, FishingFillBinsActivity.class);
+                        i = new Intent(appCtx, FishingStartActivity.class);
                         if (openTx != null) {
                             // there is a FishingTx in progress
                             fishingRecord = FishingRecord.convert(openTx);

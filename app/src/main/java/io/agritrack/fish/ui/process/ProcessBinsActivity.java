@@ -9,10 +9,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,16 +32,26 @@ import com.google.android.gms.common.util.Strings;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
+import cn.pda.serialport.Tools;
 import io.agritrack.R;
+import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.TempLoggerDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fish.ui.fishing.FishingFillBinsActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.HomeActivity;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -53,11 +65,18 @@ public class ProcessBinsActivity extends AppCompatActivity {
     private RecyclerView rvBinsForTransport;
     private TextView tvBinsCount;
 
+
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
 
     private UhfReader uhfReader;
     private ScanInventoryThread processingBinsThread = new ScanInventoryThread();
     private boolean scanning = false;
+
+    private Button btnScanBin;
+    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private  GetTempDataDialog tempLoggerDialog;
+    private String currentBin;
 
     private TemplateRecyclerAdapter adapterBins;
 
@@ -104,6 +123,9 @@ public class ProcessBinsActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBinsForTransport.setLayoutManager(layoutManager);
         rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
@@ -121,8 +143,42 @@ public class ProcessBinsActivity extends AppCompatActivity {
             adapterBins.notifyDataSetChanged();
         });
 
-        // initialize scanning threads
-        prepareScanAvailableBinsButton();
+        /*// initialize scanning threads
+        prepareScanAvailableBinsButton();*/
+
+        // =================================
+        // RFID scanning functionality
+        btnScanBin.setOnClickListener(view -> {
+            tempLoggerDialog = new GetTempDataDialog(ProcessBinsActivity.this, R.string.get_temp_data);
+            tempLoggerDialog.showDialog();
+
+            //update scanning, uhfReader, tvPlatformName values in thread
+            UhfReader _uhfReader = UhfReader.getInstance();
+            _uhfReader.setWorkArea(3);
+            scanner.setUhfReader(_uhfReader);
+            scanner.setFilter(Filters.RFID_BIN);
+
+            Future<?> future = executor.submit(scanner);
+            try {
+                String epcStr = future.get(4000, TimeUnit.MILLISECONDS).toString();
+                if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            currentBin = epcStr;
+                            /*currentBins.add(currentBin);
+                            binAdapter.notifyDataSetChanged();*/
+                            adapterBins.addUniqueItem(currentBin);
+                            adapterBins.notifyDataSetChanged();
+                            tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+                            //tempLoggerDialog.getTempData(_uhfReader, currentBin);
+                            //initDataLogger();
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                future.cancel(true);
+            }
+        });
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -173,6 +229,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
+        btnScanBin = findViewById(R.id.btnScanBin);
         tvBinsCount = findViewById(R.id.tvBinsCount);
         rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
         ivDeleteBin = (ImageButton) findViewById(R.id.ivDeleteBin);
