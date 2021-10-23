@@ -160,7 +160,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
             Future<?> future = executor.submit(scanner);
             try {
-                String epcStr = future.get(4000, TimeUnit.MILLISECONDS).toString();
+                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {

@@ -88,7 +88,7 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
 
         //************************************************************************
         // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(10000l, 500l, this) {
+        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
             @Override
             public void doTasks() {
                 locationManager.removeUpdates(FishingConfirmActivity.this);

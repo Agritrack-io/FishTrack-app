@@ -20,11 +20,15 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
+import io.agritrack.common.Constants;
+import io.agritrack.dialog.ExpandableListDialog;
 import io.agritrack.dialog.PhotoDialog;
+import io.agritrack.dialog.SimpleListDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.HomeActivity;
+import io.agritrack.fish.ui.wh.incoming.IncomingStartActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -32,7 +36,7 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-public class ProcessInfoActivity extends AppCompatActivity {
+public class ProcessInfoActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private static final int pic_id = 123;
     private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
@@ -42,6 +46,7 @@ public class ProcessInfoActivity extends AppCompatActivity {
     private ImageView ivTakenPhoto;
     private EditText mtvRemarks;
     private PhotoDialog photoDialog;
+    private String selectedFishCondition;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -144,6 +149,7 @@ public class ProcessInfoActivity extends AppCompatActivity {
         swCleanTruck = findViewById(R.id.swCleanTruck);
         swSmell = findViewById(R.id.swSmell);
         tgChooseFishCondition = findViewById(R.id.tgChooseFishCondition);
+        tgChooseFishCondition.setOnCheckedChangeListener(this);
         mtvRemarks = findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
@@ -190,6 +196,9 @@ public class ProcessInfoActivity extends AppCompatActivity {
         if (etPlot.getText() != null) {
             processingRecord.pLot = etPlot.getText().toString();
         }
+        if (!Strings.isEmptyOrWhitespace(selectedFishCondition)) {
+            processingRecord.fishCondition = selectedFishCondition;
+        }
 
         if (mtvRemarks.getText() != null) {
             processingRecord.remarks = mtvRemarks.getText().toString();
@@ -204,7 +213,7 @@ public class ProcessInfoActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.dispatchNote)) {
+        /*if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.dispatchNote)) {
             sb.append(String.format("\n%s is missing", "'Dispatch note'"));
         }
 
@@ -214,12 +223,23 @@ public class ProcessInfoActivity extends AppCompatActivity {
 
         if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.securityClip)) {
             sb.append(String.format("\n%s is missing", "'Security clip number'"));
-        }
+        }*/
 
         /*if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)){
             sb.append(String.format("\n%s is missing", "'Fish condition'"));
         }*/
 
         return sb.toString();
+    }
+
+    @Override
+    public void onCheckedChanged(ToggleGroup group, int checkedId) {
+        if (checkedId == R.id.tbGood) {
+            selectedFishCondition = "GOOD";
+        } else if (checkedId == R.id.tbAcceptable) {
+            selectedFishCondition = "ACCEPTABLE";
+        } else if (checkedId == R.id.tbNotAcceptable) {
+            selectedFishCondition = "NOT ACCEPTABLE";
+        }
     }
 }

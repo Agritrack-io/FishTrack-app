@@ -145,6 +145,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             currentBin = epcStr;
                             adapterCatches.setValues(loadsMap.getLoads(currentBin));
                             adapterCatches.notifyDataSetChanged();
+                            tvUsedBinsCount.setText(loadsMap.loadsCnt());
                         }
                     });
                 }
@@ -152,7 +153,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                 future.cancel(true);
             }
 
-            tvUsedBinsCount.setText(loadsMap.loadsCnt());
             tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
         });
 

@@ -211,7 +211,7 @@ public class OutgoingAssetActivity extends AppCompatActivity implements ToggleGr
 
         //************************************************************************
         // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(10000l, 500l, this) {
+        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
             @Override
             public void doTasks() {
                 locationManager.removeUpdates(OutgoingAssetActivity.this);

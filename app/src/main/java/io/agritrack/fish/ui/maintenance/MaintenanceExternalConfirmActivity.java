@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -31,7 +32,9 @@ import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recExternalRepair;
+import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class MaintenanceExternalConfirmActivity extends AppCompatActivity implements LocationListener {
     private final int REQUEST_FINE_LOCATION = 1234;
@@ -68,7 +71,7 @@ public class MaintenanceExternalConfirmActivity extends AppCompatActivity implem
 
         //************************************************************************
         // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(10000l, 500l, this) {
+        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
             @Override
             public void doTasks() {
                 locationManager.removeUpdates(MaintenanceExternalConfirmActivity.this);
@@ -78,6 +81,7 @@ public class MaintenanceExternalConfirmActivity extends AppCompatActivity implem
                 toggleProgress(false, R.string.app_name);
 
                 if (proceed) {
+                    CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG);
                     Intent i = new Intent(getApplicationContext(), HomeActivity.class);
                     startActivity(i);
                 }

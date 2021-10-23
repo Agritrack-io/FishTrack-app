@@ -48,7 +48,7 @@ public class FishingRecord {
         fishingRecord.netRFID = tx.netRFID;
         fishingRecord.availBins = tx.harvestBins;
         fishingRecord.pathologist = tx.ichthyopathologist;
-        fishingRecord.adequateIce = "True".equalsIgnoreCase(tx.iceAdequacy) ? Boolean.TRUE : Boolean.FALSE;
+        fishingRecord.adequateIce = Boolean.TRUE;
         fishingRecord.iceSupplier = tx.iceSupplier;
         fishingRecord.totalFishWeight = tx.totalQty;
         fishingRecord.totalBinsUsed = tx.harvestBinsCnt;

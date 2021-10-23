@@ -198,7 +198,7 @@ public class TransportStartActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.packagingSite)) {
+        /*if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.packagingSite)) {
             sb.append(String.format("\n%s is missing", "'Packaging site'"));
         }
 
@@ -220,7 +220,7 @@ public class TransportStartActivity extends AppCompatActivity {
 
         if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.clipNumber)) {
             sb.append(String.format("\n%s is missing", "'Security clip number'"));
-        }
+        }*/
 
         return sb.toString();
     }

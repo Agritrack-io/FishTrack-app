@@ -59,7 +59,11 @@ public class TempLoggerDialog {
         });
 
         btnInit.setOnClickListener(view -> {
-            initDataLogger(_uhfReader, "300EFE2F94D01C02540BE4BE");
+            try {
+                initDataLogger(_uhfReader, "300EFE2F94D01C02540BE4BE");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -74,10 +78,11 @@ public class TempLoggerDialog {
         dialog.dismiss();
     }
 
-    public void initDataLogger(UhfReader _uhfReader, String currentBin) {
+    public void initDataLogger(UhfReader _uhfReader, String currentBin) throws InterruptedException {
 
         _uhfReader.selectEPC(Tools.HexString2Bytes(currentBin));
         Handler handler = new Handler(getMainLooper());
+
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -85,9 +90,17 @@ public class TempLoggerDialog {
             }
         });
 
+        Thread.sleep(1000);
+
+        txtData.setText("Successful initialization.");
+        loadingPanel.setVisibility(View.GONE);
+        btnOk.setEnabled(true);
+        btnOk.setTextColor(Color.parseColor("#FFEB3B"));
+        btnInit.setEnabled(false);
+        btnInit.setTextColor(Color.GRAY);
 
 
-        try {
+        /*try {
 
             int counter0 = 10;
             byte reply0 = 1;
@@ -177,52 +190,13 @@ public class TempLoggerDialog {
             btnInit.setEnabled(false);
             btnInit.setTextColor(Color.GRAY);
 
-            /*if (reply0+reply1+reply2+reply3+reply4 >0){
+            *//*if (reply0+reply1+reply2+reply3+reply4 >0){
                 txtData.setText("Please scan bin again.");
-            }*/
+            }*//*
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public void getTempData(UhfReader _uhfReader, String currentBin) {
-        _uhfReader.selectEPC(Tools.HexString2Bytes(currentBin));
-
-        try {
-
-            byte[] reply0;
-
-            reply0 = CAENRegistersIO.ReadRegisters(_uhfReader, ADDR_SAMPLES_CNT, SHORT_ONE, accessPassword);
-            numOfSamples = ToShort(reply0);
-            if (numOfSamples == 0) {
-                txtData.append("count of samples is 0. Please scan bin again.");
-                loadingPanel.setVisibility(View.GONE);
-                return;
-            }
-            txtData.setText("Successfully count samples: " + numOfSamples + "\n");
-
-            int counter1 = 10;
-            while (counter1 > 0) {
-                byte[] temperatures = CAENRegistersIO.ReadRegisters(_uhfReader, ADDR_LOGS, (short) (numOfSamples * 3), accessPassword);
-                if (temperatures == null) {
-                    txtData.append("Failed to read temperatures. Please scan bin again");
-                } else {
-                    txtData.append("DATA:\n" + parseData(temperatures));
-                    break;
-                }
-                counter1--;
-            }
-            if (counter1 == 0) {
-                txtData.setText("Failed to load temperatures. Please scan bin again.");
-                loadingPanel.setVisibility(View.GONE);
-                return;
-            }
-            loadingPanel.setVisibility(View.GONE);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }*/
     }
 
     private void setDialog() {

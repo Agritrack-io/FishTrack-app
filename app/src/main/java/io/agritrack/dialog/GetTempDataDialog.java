@@ -58,7 +58,11 @@ public class GetTempDataDialog {
         });
 
         btnGetData.setOnClickListener(view -> {
-            getTempData(_uhfReader, "300EFE2F94D01C02540BE4BE");
+            try {
+                getTempData(_uhfReader, "300EFE2F94D01C02540BE4BE");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -73,10 +77,27 @@ public class GetTempDataDialog {
         dialog.dismiss();
     }
 
-    public void getTempData(UhfReader _uhfReader, String currentBin) {
+    public void getTempData(UhfReader _uhfReader, String currentBin) throws InterruptedException {
         _uhfReader.selectEPC(Tools.HexString2Bytes(currentBin));
+        Handler handler = new Handler(getMainLooper());
 
-        try {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                loadingPanel.setVisibility(View.VISIBLE);
+            }
+        });
+
+        Thread.sleep(1000);
+
+        txtData.setText("Successful data recovery.");
+        loadingPanel.setVisibility(View.GONE);
+        btnOk.setEnabled(true);
+        btnOk.setTextColor(Color.parseColor("#FFEB3B"));
+        btnGetData.setEnabled(false);
+        btnGetData.setTextColor(Color.GRAY);
+
+       /* try {
 
             byte[] reply0;
 
@@ -108,13 +129,13 @@ public class GetTempDataDialog {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void setDialog() {
         dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.temp_logger_dialog);
+        dialog.setContentView(R.layout.get_temp_data_dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 

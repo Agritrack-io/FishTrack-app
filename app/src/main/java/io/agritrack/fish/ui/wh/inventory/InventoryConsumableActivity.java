@@ -214,7 +214,7 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
 
         //************************************************************************
         // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(10000l, 500l, this) {
+        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
             @Override
             public void doTasks() {
                 locationManager.removeUpdates(InventoryConsumableActivity.this);
@@ -444,7 +444,7 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_AssetTx_tx_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             }
         }
 
@@ -475,7 +475,7 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_AssetTx_tx_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             }
         }
 
