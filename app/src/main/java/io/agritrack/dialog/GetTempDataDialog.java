@@ -50,7 +50,7 @@ public class GetTempDataDialog {
         _uhfReader.setWorkArea(3);
 
         txtData.setMovementMethod(new ScrollingMovementMethod());
-        txtData.setTextColor(Color.BLACK);
+        txtData.setTextColor(Color.parseColor("#16325c"));
 
         btnOk.setOnClickListener(view -> {
             loadingPanel.setVisibility(View.GONE);
@@ -65,7 +65,8 @@ public class GetTempDataDialog {
     public void showDialog() {
         dialog.show();
         btnOk.setEnabled(false);
-        txtData.setText("Please place the device near the temperature logger and click INITIALIZE");
+        btnOk.setTextColor(Color.GRAY);
+        txtData.setText("Please place the device near the temperature logger and click GET DATA");
     }
 
     public void dismiss() {
