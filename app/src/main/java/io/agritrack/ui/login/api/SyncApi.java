@@ -28,7 +28,7 @@ public interface SyncApi {
     Call<SiteDTO> getSiteById(@Path("siteId") Long siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/harvest-request/{siteId}")
+    @GET("/harvest-requests/{siteId}")
     Call<List<HarvestRequestDTO>> getHarvestRequestsBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")

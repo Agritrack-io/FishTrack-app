@@ -23,7 +23,7 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class TransportDriverConfirmActivity extends AppCompatActivity {
 
-    private TextView tvSitePackaging, tvCompany, tvNumberOfBinsCount, tvDriverName, tvLicensePlate, tvSecurityClipNumber;
+    private TextView tvSitePackaging, tvNumberOfBinsCount, tvDriverName, tvLicensePlate, tvSecurityClipNumber;
     private CaptureSignatureView signatureView;
 
     private ImageView ivSupport;
@@ -75,7 +75,6 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
 
     private void assignCtrlVars() {
         tvSitePackaging = findViewById(R.id.tvSitePackaging);
-        tvCompany = findViewById(R.id.tvCompany);
         tvNumberOfBinsCount = findViewById(R.id.tvNumberOfBinsCount);
         tvDriverName = findViewById(R.id.tvDriverName);
         tvLicensePlate = findViewById(R.id.tvLicensePlate);
@@ -89,10 +88,6 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(trns.packagingSite)) {
             tvSitePackaging.setText(trns.packagingSite);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(trns.destinationCompany)) {
-            tvCompany.setText(trns.destinationCompany);
         }
 
         if (trns.availBins!=null) {

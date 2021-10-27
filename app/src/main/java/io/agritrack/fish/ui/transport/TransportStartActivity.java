@@ -37,9 +37,7 @@ public class TransportStartActivity extends AppCompatActivity {
     private SwitchCompat swRefrigeratedTruck, swParallelTransport;
     private AutoCompleteTextView etDriverName, etLicensePlate, etDriverPhone;
     private EditText etSecurityClip;
-    private Spinner spPackagingSite, spCompany;
-
-    private final String[] company = {"Nireas", "Andromeda", "Selonda"};
+    private Spinner spPackagingSite;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -67,10 +65,6 @@ public class TransportStartActivity extends AppCompatActivity {
             hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
             spPackagingSite.setAdapter(hrAdapter);
         }
-
-        ArrayAdapter<String> cAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, company);
-        cAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-        spCompany.setAdapter(cAdapter);
 
         // AutoCompleteTextView driverNames, driverPhones, licensePlates
 
@@ -102,7 +96,6 @@ public class TransportStartActivity extends AppCompatActivity {
 
     private void assignCtrlVars() {
         spPackagingSite = findViewById(R.id.spPackagingSite);
-        spCompany = findViewById(R.id.spCompany);
         etDriverName = (AutoCompleteTextView) findViewById(R.id.etDriverName);
         etDriverPhone = (AutoCompleteTextView) findViewById(R.id.etDriverPhone);
         etLicensePlate = (AutoCompleteTextView) findViewById(R.id.etLicensePlate);
@@ -139,10 +132,6 @@ public class TransportStartActivity extends AppCompatActivity {
             spPackagingSite.setSelection(trns.sitePos);
         }
 
-        if (trns.companyPos > -1) {
-            spCompany.setSelection(trns.companyPos);
-        }
-
         if (!Strings.isEmptyOrWhitespace(trns.driverName)) {
             etDriverName.setText(trns.driverName);
         }
@@ -170,10 +159,7 @@ public class TransportStartActivity extends AppCompatActivity {
             transportationRecord.packagingSite = spPackagingSite.getSelectedItem().toString();
         }
         transportationRecord.sitePos = spPackagingSite.getSelectedItemPosition();
-        if (spCompany.getSelectedItem() != null) {
-            transportationRecord.destinationCompany = spCompany.getSelectedItem().toString();
-        }
-        transportationRecord.companyPos = spCompany.getSelectedItemPosition();
+
         if (etDriverName.getText() != null) {
             transportationRecord.driverName = etDriverName.getText().toString();
             LocalPreferences.addDriverName(transportationRecord.driverName);
@@ -198,12 +184,8 @@ public class TransportStartActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        /*if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.packagingSite)) {
+        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.packagingSite)) {
             sb.append(String.format("\n%s is missing", "'Packaging site'"));
-        }
-
-        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.destinationCompany)) {
-            sb.append(String.format("\n%s is missing", "'Company'"));
         }
 
         if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverName)) {
@@ -220,7 +202,7 @@ public class TransportStartActivity extends AppCompatActivity {
 
         if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.clipNumber)) {
             sb.append(String.format("\n%s is missing", "'Security clip number'"));
-        }*/
+        }
 
         return sb.toString();
     }

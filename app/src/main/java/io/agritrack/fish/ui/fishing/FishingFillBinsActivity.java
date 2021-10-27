@@ -32,20 +32,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import cn.pda.serialport.Tools;
 import io.agritrack.R;
-
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TempLoggerDialog;
-
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.bo.BinLoadsMap;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
-import io.agritrack.fish.ui.bo.BinLoadsMap;
 import io.agritrack.ui.service.LocalPreferences;
 
 import static io.agritrack.common.LargeString.render;
@@ -140,10 +136,11 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
                             tvCurrentBin.setText(epcStr);
-                            btnNextCatch.setEnabled(true);
-                            btnNextCatch.setTextColor(getColor(R.color.aqua));
                             currentBin = epcStr;
                             adapterCatches.setValues(loadsMap.getLoads(currentBin));
+                            if (loadsMap.getLoads(currentBin)!=null){
+                                view.setEnabled(true);
+                            }
                             adapterCatches.notifyDataSetChanged();
                             tvUsedBinsCount.setText(loadsMap.loadsCnt());
                         }
@@ -153,6 +150,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                 future.cancel(true);
             }
 
+            btnNextCatch.setEnabled(true);
+            btnNextCatch.setTextColor(getColor(R.color.aqua));
             tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
         });
 
@@ -165,8 +164,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             btnCurrentBinScan.setTextColor(Color.DKGRAY);
             btnFillBin.setEnabled(true);
             btnFillBin.setTextColor(getColor(R.color.aqua));
-            btnDeleteCatch.setEnabled(true);
-            btnDeleteCatch.setTextColor(getColor(R.color.aqua));
 
             //show Message box
             showCatchDialog();
@@ -211,6 +208,14 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
                         //tvInventoryItemsCount.setText(String.valueOf(adapterIncomingItems.getItemCount()));
                         selectedCatch = null;
+
+                        if (adapterCatches.getItemCount()!=0) {
+                            btnDeleteCatch.setEnabled(true);
+                            btnDeleteCatch.setTextColor(getColor(R.color.aqua));
+                        } else {
+                            btnDeleteCatch.setEnabled(false);
+                            btnDeleteCatch.setTextColor(Color.DKGRAY);
+                        }
                     }
                 });
 
@@ -322,14 +327,23 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mCatchWeight = input.getText().toString();
+                if (Strings.isEmptyOrWhitespace(mCatchWeight) || mCatchWeight == null) {
+                    CToast(getApplicationContext(), render("Please type weight"), Toast.LENGTH_LONG);
+                    return;
+                }
                 adapterCatches.addItem(mCatchWeight);
                 adapterCatches.notifyDataSetChanged();
 
                 tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
                 tvTotalWeightCount.setText(loadsMap.totalWeight().toString() + " " + "(" + fishingRecord.reqWeight + ")");
 
-                btnDeleteCatch.setEnabled(true);
-                btnDeleteCatch.setTextColor(getColor(R.color.aqua));
+                if (adapterCatches.getItemCount()!=0) {
+                    btnDeleteCatch.setEnabled(true);
+                    btnDeleteCatch.setTextColor(getColor(R.color.aqua));
+                } else {
+                    btnDeleteCatch.setEnabled(false);
+                    btnDeleteCatch.setTextColor(Color.DKGRAY);
+                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

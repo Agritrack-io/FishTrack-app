@@ -137,23 +137,10 @@ tools:context=".fish.ui.transport.TransportSupervisorConfirmActivity">
                 android:text="@string/packaging_site"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvCompanyLabel"
+                app:layout_constraintBottom_toTopOf="@+id/tvNumberOfBinsLabel"
                 app:layout_constraintEnd_toStartOf="@+id/tvSitePackaging"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvCompanyLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/company"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvNumberOfBinsLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvCompany"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSitePackagingLabel" />
 
             <TextView
                 android:id="@+id/tvNumberOfBinsLabel"
@@ -166,22 +153,7 @@ tools:context=".fish.ui.transport.TransportSupervisorConfirmActivity">
                 app:layout_constraintBottom_toTopOf="@+id/tvDriverNameLabel"
                 app:layout_constraintEnd_toStartOf="@+id/tvNumberOfBinsCount"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvCompanyLabel" />
-
-            <TextView
-                android:id="@+id/tvCompany"
-                android:layout_width="180dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/border_bottom"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvNumberOfBinsCount"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvCompanyLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvSitePackaging" />
+                app:layout_constraintTop_toBottomOf="@+id/tvSitePackagingLabel" />
 
             <TextView
                 android:id="@+id/tvNumberOfBinsCount"
@@ -197,7 +169,7 @@ tools:context=".fish.ui.transport.TransportSupervisorConfirmActivity">
                 app:layout_constraintBottom_toTopOf="@+id/tvDriverName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvNumberOfBinsLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvCompany" />
+                app:layout_constraintTop_toBottomOf="@+id/tvSitePackaging" />
 
             <TextView
                 android:id="@+id/tvDriverNameLabel"
@@ -223,7 +195,7 @@ tools:context=".fish.ui.transport.TransportSupervisorConfirmActivity">
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvCompany"
+                app:layout_constraintBottom_toTopOf="@+id/tvNumberOfBinsCount"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvSitePackagingLabel"
                 app:layout_constraintTop_toTopOf="parent" />

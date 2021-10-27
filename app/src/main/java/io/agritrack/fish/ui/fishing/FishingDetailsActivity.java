@@ -25,7 +25,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class FishingDetailsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private final List<Double> temperatures = Arrays.asList(15.0d, 16.0d, 17.0d, 18.0d, 19.0d, 20.0d, 21.0d, 22.0d, 23.0d, 24.0d, 25.0d, 26.0d);
+    private final List<Double> temperatures = Arrays.asList(5.0d, 6.0d, 7.0d, 8.0d, 9.0d, 10.0d, 11.0d, 12.0d, 13.0d, 14.0d, 15.0d, 16.0d, 17.0d, 18.0d, 19.0d, 20.0d);
     private SwitchCompat bIceAdequacy;
     private EditText etIceSupplier;
     private Spinner spSeaTemp;

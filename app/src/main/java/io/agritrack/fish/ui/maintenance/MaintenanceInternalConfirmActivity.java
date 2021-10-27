@@ -87,7 +87,6 @@ public class MaintenanceInternalConfirmActivity extends AppCompatActivity implem
                 toggleProgress(false, R.string.app_name);
 
                 if (proceed) {
-                    CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG)s;
                     Intent i = new Intent(getApplicationContext(), HomeActivity.class);
                     startActivity(i);
                 }

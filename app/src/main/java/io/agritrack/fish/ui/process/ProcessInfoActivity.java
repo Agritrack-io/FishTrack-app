@@ -213,7 +213,7 @@ public class ProcessInfoActivity extends AppCompatActivity implements ToggleGrou
     private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        /*if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.dispatchNote)) {
+        if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.dispatchNote)) {
             sb.append(String.format("\n%s is missing", "'Dispatch note'"));
         }
 
@@ -223,11 +223,11 @@ public class ProcessInfoActivity extends AppCompatActivity implements ToggleGrou
 
         if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.securityClip)) {
             sb.append(String.format("\n%s is missing", "'Security clip number'"));
-        }*/
+        }
 
-        /*if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)){
+        if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)){
             sb.append(String.format("\n%s is missing", "'Fish condition'"));
-        }*/
+        }
 
         return sb.toString();
     }

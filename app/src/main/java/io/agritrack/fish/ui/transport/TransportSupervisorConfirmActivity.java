@@ -56,7 +56,7 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity implem
     private TimeOutProgressDlg syncProgressDialog;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
-    private TextView tvSitePackaging, tvCompany, tvNumberOfBinsCount, tvDriverName, tvLicensePlate, tvSecurityClipNumber;
+    private TextView tvSitePackaging, tvNumberOfBinsCount, tvDriverName, tvLicensePlate, tvSecurityClipNumber;
     private TextView tvUsername;
     private ProgressDialog progressDialog;
 
@@ -139,7 +139,6 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity implem
 
     private void assignCtrlVars() {
         tvSitePackaging = findViewById(R.id.tvSitePackaging);
-        tvCompany = findViewById(R.id.tvCompany);
         tvNumberOfBinsCount = findViewById(R.id.tvNumberOfBinsCount);
         tvDriverName = findViewById(R.id.tvDriverName);
         tvLicensePlate = findViewById(R.id.tvLicensePlate);
@@ -153,10 +152,6 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity implem
 
         if (!Strings.isEmptyOrWhitespace(trns.packagingSite)) {
             tvSitePackaging.setText(trns.packagingSite);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(trns.destinationCompany)) {
-            tvCompany.setText(trns.destinationCompany);
         }
 
         if (trns.availBins != null) {
