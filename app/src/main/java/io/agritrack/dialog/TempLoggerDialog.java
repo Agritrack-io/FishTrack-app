@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Handler;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
@@ -98,6 +100,8 @@ public class TempLoggerDialog {
         btnOk.setTextColor(Color.parseColor("#FFEB3B"));
         btnInit.setEnabled(false);
         btnInit.setTextColor(Color.GRAY);
+        final ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
+        tg.startTone(ToneGenerator.TONE_PROP_BEEP);
 
 
         /*try {

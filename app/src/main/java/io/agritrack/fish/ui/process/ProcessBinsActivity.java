@@ -160,18 +160,14 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
             Future<?> future = executor.submit(scanner);
             try {
-                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
+                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
                             currentBin = epcStr;
-                            /*currentBins.add(currentBin);
-                            binAdapter.notifyDataSetChanged();*/
                             adapterBins.addUniqueItem(currentBin);
                             adapterBins.notifyDataSetChanged();
                             tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-                            //tempLoggerDialog.getTempData(_uhfReader, currentBin);
-                            //initDataLogger();
                         }
                     });
                 }

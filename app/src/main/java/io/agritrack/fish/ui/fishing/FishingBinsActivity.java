@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -137,9 +139,6 @@ public class FishingBinsActivity extends AppCompatActivity {
             adapterBins.notifyDataSetChanged();
         });
 
-        /*// initialize scanning threads
-        prepareScanAvailableBinsButton();*/
-
         // =================================
         // RFID scanning functionality
         btnScanBin.setOnClickListener(view -> {
@@ -154,18 +153,14 @@ public class FishingBinsActivity extends AppCompatActivity {
 
             Future<?> future = executor.submit(scanner);
             try {
-                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
+                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
                             currentBin = epcStr;
-                            /*currentBins.add(currentBin);
-                            binAdapter.notifyDataSetChanged();*/
                             adapterBins.addUniqueItem(currentBin);
                             adapterBins.notifyDataSetChanged();
                             tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-                            //tempLoggerDialog.initDataLogger(_uhfReader, currentBin);
-                            //initDataLogger();
                         }
                     });
                 }
@@ -221,53 +216,6 @@ public class FishingBinsActivity extends AppCompatActivity {
         if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
         }
-    }
-
-    private void prepareScanAvailableBinsButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setWorkArea(3);
-        uhfReader.setOutputPower(33);
-
-        final Button scanButton = findViewById(R.id.btnScanBin);
-        scanButton.setOnClickListener(view -> {
-            clearSelectedItem();
-            scanning = !scanning;
-
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (inventoryThread.getState() == Thread.State.TERMINATED) {
-                inventoryThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            inventoryThread.setScanInProgress(scanning);
-            inventoryThread.setUhfReader(uhfReader);
-            inventoryThread.setScanResult(scanResult);
-            inventoryThread.setFilter(Filters.RFID_BIN);
-
-            if (scanning) {
-                scanButton.setText(R.string.stop_scan);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                    }
-                });
-                if (inventoryThread.getState() == Thread.State.NEW) {
-                    inventoryThread.start();
-                }
-            } else {
-                scanButton.setText(R.string.scan_bin);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-                    }
-                });
-                try {
-                    inventoryThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     protected void configFooter() {

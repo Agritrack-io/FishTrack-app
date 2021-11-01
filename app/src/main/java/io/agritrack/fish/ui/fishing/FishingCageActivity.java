@@ -39,8 +39,8 @@ public class FishingCageActivity extends AppCompatActivity {
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private MobileDB db;
-    private Button scanCageButton, scanNetButton;
-    private TextView tvCageRFID, tvNetRFID;
+    private Button scanPlatformButton, scanCageButton, scanNetButton;
+    private TextView tvPlatformRFID, tvCageRFID, tvNetRFID;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -62,6 +62,29 @@ public class FishingCageActivity extends AppCompatActivity {
 
         // =================================
         // RFID scanning functionality
+        scanPlatformButton.setOnClickListener(view -> {
+            //update scanning, uhfReader, tvPlatformName values in thread
+            UhfReader _uhfReader = UhfReader.getInstance();
+            _uhfReader.setWorkArea(3);
+            scanner.setUhfReader(_uhfReader);
+            scanner.setFilter(Filters.RFID_PLATFORM);
+
+            Future<?> future = executor.submit(scanner);
+            try {
+                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
+                if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            tvPlatformRFID.setText(epcStr);
+                        }
+                    });
+                    //tvCageName.setText(result);
+                }
+            } catch (Exception e) {
+                future.cancel(true);
+            }
+        });
+
         scanCageButton.setOnClickListener(view -> {
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
@@ -71,7 +94,7 @@ public class FishingCageActivity extends AppCompatActivity {
 
             Future<?> future = executor.submit(scanner);
             try {
-                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
+                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
@@ -94,7 +117,7 @@ public class FishingCageActivity extends AppCompatActivity {
 
             Future<?> future = executor.submit(scanner);
             try {
-                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
+                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
@@ -142,16 +165,19 @@ public class FishingCageActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
+        scanPlatformButton = findViewById(R.id.btnScanPlatform);
         scanCageButton = findViewById(R.id.btnScanCage);
         scanNetButton = findViewById(R.id.btnScanNet);
         tvNetRFID = findViewById(R.id.tvNetName);
         tvCageRFID = findViewById(R.id.tvCageName);
+        tvPlatformRFID = findViewById(R.id.tvPlatformName);
         ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {
         FishingRecord hvst = GlobalState.recFishing;
 
+        tvPlatformRFID.setText(hvst.platformRFID);
         tvCageRFID.setText(hvst.cageRFID);
         tvNetRFID.setText(hvst.netRFID);
     }
@@ -172,10 +198,15 @@ public class FishingCageActivity extends AppCompatActivity {
         }
 
         GlobalState.recFishing.netRFID = tvNetRFID.getText().toString();
+        GlobalState.recFishing.platformRFID = tvPlatformRFID.getText().toString();
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
+
+        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.platformRFID)) {
+            sb.append(String.format("\n%s is missing", "'Platform tag'"));
+        }
 
         if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.cageRFID)) {
             sb.append(String.format("\n%s is missing", "'Cage tag'"));

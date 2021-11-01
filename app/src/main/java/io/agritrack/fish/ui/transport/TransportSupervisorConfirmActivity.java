@@ -229,7 +229,7 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity implem
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Transport TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_transport_tx_update_failure), Toast.LENGTH_LONG));
             }
         }
 

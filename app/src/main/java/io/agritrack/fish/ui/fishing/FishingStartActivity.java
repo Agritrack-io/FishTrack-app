@@ -46,11 +46,8 @@ public class FishingStartActivity extends AppCompatActivity {
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private MobileDB db;
-    private TextView tvPlatformName;
     private Spinner harvestSpinner, speciesSpinner;
     private EditText etQty;
-
-    private Button scanButton;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -95,31 +92,6 @@ public class FishingStartActivity extends AppCompatActivity {
                 recFishing.speciesPos = Arrays.asList(species).indexOf(recFishing.speciesName);
             }
         }
-
-        // =================================
-        // RFID scanning functionality
-        scanButton.setOnClickListener(view -> {
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_PLATFORM);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            tvPlatformName.setText(epcStr);
-                        }
-                    });
-                    //tvPlatformName.setText(result);
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
-        });
         // =================================
 
         // set (any?) previously selected values to activity Controls.
@@ -155,10 +127,8 @@ public class FishingStartActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
-        scanButton = findViewById(R.id.btnScanPlatform);
         harvestSpinner = findViewById(R.id.spHarvest);
         speciesSpinner = findViewById(R.id.spFishType);
-        tvPlatformName = findViewById(R.id.tvPlatformName);
         etQty = findViewById(R.id.etRequestedQuantity);
         ivSupport = findViewById(R.id.ivSupport);
     }
@@ -178,10 +148,6 @@ public class FishingStartActivity extends AppCompatActivity {
         if (!Strings.isEmptyOrWhitespace(hvst.reqWeight)) {
             etQty.setText(hvst.reqWeight);
         }
-
-        if (!Strings.isEmptyOrWhitespace(hvst.platformRFID)) {
-            tvPlatformName.setText(hvst.platformRFID);
-        }
         //harvestSpinner.setSelection(arrayAdapter.getPosition("Category 2"));
     }
 
@@ -200,9 +166,6 @@ public class FishingStartActivity extends AppCompatActivity {
             fishingRecord.reqWeight = etQty.getText().toString();
         }
         //fishingRecord.reqWeight = etQty.getText() != null ? Double.valueOf(etQty.getText().toString()).intValue() + "" : "0";
-        if (tvPlatformName.getText() != null) {
-            fishingRecord.platformRFID = tvPlatformName.getText().toString();
-        }
 
         GlobalState.commitFishing(db, Boolean.FALSE);
 
@@ -222,10 +185,6 @@ public class FishingStartActivity extends AppCompatActivity {
 
         if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.reqWeight)) {
             sb.append(String.format("\n%s is missing", "'Requested quantity'"));
-        }
-
-        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.platformRFID)) {
-            sb.append(String.format("\n%s is missing", "'Platform tag'"));
         }
 
         return sb.toString();

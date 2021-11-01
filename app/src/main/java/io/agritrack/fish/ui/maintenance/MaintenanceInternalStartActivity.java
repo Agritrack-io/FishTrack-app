@@ -100,7 +100,7 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
 
             Future<?> future = executor.submit(scanner);
             try {
-                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
+                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {

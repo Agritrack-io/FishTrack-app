@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.fishing;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,6 +11,8 @@ import android.os.Looper;
 import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,6 +47,7 @@ import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.barcode.SoundUtil.context;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -64,6 +68,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private BinLoadsMap loadsMap;
     private String selectedCatch;
     private ConstraintLayout selectedItem;
+    private Boolean isClickable = true;
+
     // Instantiate a clickListener to be passed to adapterCatches.
     // It will be used to set the catch var to the selected catch.
     private final View.OnClickListener catchesOnClickListener = new View.OnClickListener() {
@@ -131,16 +137,13 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
             Future<?> future = executor.submit(scanner);
             try {
-                String epcStr = future.get(1000, TimeUnit.MILLISECONDS).toString();
+                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
                             tvCurrentBin.setText(epcStr);
                             currentBin = epcStr;
                             adapterCatches.setValues(loadsMap.getLoads(currentBin));
-                            if (loadsMap.getLoads(currentBin)!=null){
-                                view.setEnabled(true);
-                            }
                             adapterCatches.notifyDataSetChanged();
                             tvUsedBinsCount.setText(loadsMap.loadsCnt());
                         }
@@ -181,12 +184,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             btnDeleteCatch.setTextColor(Color.DKGRAY);
             view.setEnabled(false);
             ((Button) view).setTextColor(Color.DKGRAY);
-            rvWeightBatchesBin.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
-                @Override
-                public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                    return true;
-                }
-            });
         });
 
         btnDeleteCatch.setOnClickListener(view -> {
@@ -320,6 +317,19 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         final EditText input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                input.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager inputMethodManager= (InputMethodManager) FishingFillBinsActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
+            }
+        });
+        input.requestFocus();
         builder.setView(input);
 
         // Set up the buttons

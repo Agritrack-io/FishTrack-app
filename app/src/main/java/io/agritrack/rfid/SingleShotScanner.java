@@ -18,7 +18,7 @@ public class SingleShotScanner implements Callable {
 
     public void setUhfReader(UhfReader uhfReader) {
         this.uhfReader = uhfReader;
-        this.uhfReader.setOutputPower(23);
+        this.uhfReader.setOutputPower(33);
     }
 
     public void setFilter(String rfidFilter) {
