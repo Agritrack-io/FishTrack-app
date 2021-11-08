@@ -23,12 +23,10 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class FishingDetailsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class FishingDetailsActivity extends AppCompatActivity {
 
-    private final List<Double> temperatures = Arrays.asList(5.0d, 6.0d, 7.0d, 8.0d, 9.0d, 10.0d, 11.0d, 12.0d, 13.0d, 14.0d, 15.0d, 16.0d, 17.0d, 18.0d, 19.0d, 20.0d);
     private SwitchCompat bIceAdequacy;
     private EditText etIceSupplier;
-    private Spinner spSeaTemp;
     private TextView tvPathologist, tvLastFed, tvSpecies;
 
     private ImageView ivSupport;
@@ -48,13 +46,9 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
 
         tvPathologist.setText(GlobalState.recFishing.pathologist);
 
-        tvLastFed.setText("23-10-2021");
+        tvLastFed.setText("06-11-2021");
 
         tvSpecies.setText(GlobalState.recFishing.speciesName);
-
-        // fill the Temperatures spinner with data
-        ArrayAdapter<Double> temperaturesAdapter = new ArrayAdapter<Double>(this, R.layout.simple_spinner_item, this.temperatures);
-        spSeaTemp.setAdapter(temperaturesAdapter);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -67,20 +61,12 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
         configFooter();
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        GlobalState.recFishing.seaTemperature = this.temperatures.get(position);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {}
-
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToFillBins);
         ivNext.setOnClickListener(view -> {
             updateState();
-                Intent i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
-                startActivity(i);
+            Intent i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
+            startActivity(i);
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToCage);
@@ -91,7 +77,6 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
     }
 
     private void assignCtrlVars() {
-        spSeaTemp = findViewById(R.id.spSeaTemp);
         tvPathologist = findViewById(R.id.tvNameOfIchthyopathologist);
         tvLastFed = findViewById(R.id.tvDateOfLastNutrition);
         tvSpecies = findViewById(R.id.tvTypeOfFish);
@@ -102,16 +87,11 @@ public class FishingDetailsActivity extends AppCompatActivity implements Adapter
 
     private void initControlsFromState() {
         FishingRecord hvst = GlobalState.recFishing;
-        if (hvst != null) {
-            spSeaTemp.setSelection(this.temperatures.indexOf(GlobalState.recFishing.seaTemperature));
-            etIceSupplier.setText(hvst.iceSupplier);
-            bIceAdequacy.setChecked(hvst.adequateIce);
-        }
+
     }
 
     private void updateState() {
         GlobalState.recFishing.adequateIce = bIceAdequacy.isChecked();
         GlobalState.recFishing.iceSupplier = etIceSupplier.getText().toString();
-        GlobalState.recFishing.seaTemperature = Double.valueOf(spSeaTemp.getSelectedItem().toString());
     }
 }
