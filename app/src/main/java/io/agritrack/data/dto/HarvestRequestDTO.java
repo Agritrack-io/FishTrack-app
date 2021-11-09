@@ -8,6 +8,7 @@ public class HarvestRequestDTO {
     public String fish_type;
     public String request_quantity;
     public String requester;
+    public String cage;
     public String site;
     public String user;
 
@@ -18,6 +19,7 @@ public class HarvestRequestDTO {
         harvestRequest.requestId = harvestRequestDTO.request_id;
         harvestRequest.reqQty = harvestRequestDTO.request_quantity;
         harvestRequest.requester = harvestRequestDTO.requester;
+        harvestRequest.cageRFID = harvestRequestDTO.cage;
         harvestRequest.site = harvestRequestDTO.site;
         harvestRequest.user = harvestRequestDTO.user;
 

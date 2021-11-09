@@ -23,6 +23,9 @@ public class HarvestRequest {
     @ColumnInfo(name = "species")
     public String fishName;
 
+    @ColumnInfo(name = "cage")
+    public String cageRFID;
+
     @ColumnInfo(name = "user_name")
     public String user;
 
