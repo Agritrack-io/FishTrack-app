@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.ui.HomeActivity;
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
@@ -80,7 +80,7 @@ public class MaintenanceMenuActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);
         });
     }

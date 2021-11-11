@@ -22,6 +22,7 @@ import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.Locale;
 
+import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.SyncAssetsCallBack;
@@ -41,8 +42,8 @@ import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.FishSpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
-import io.agritrack.fish.ui.HomeActivity;
-import io.agritrack.tomato.ui.TomatoHomeActivity;
+import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.tomato.ui.FruitHomeActivity;
 import io.agritrack.ui.config.ConfigActivity;
 import io.agritrack.ui.login.api.AuthApi;
 import io.agritrack.ui.login.api.AuthInfo;
@@ -54,6 +55,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.os.Build.PRODUCT;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -61,7 +63,6 @@ import static io.agritrack.ui.service.LocalPreferences.Logged_In_User_Key;
 import static io.agritrack.ui.service.LocalPreferences.Token_Key;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final  String PRODUCT = "FISH";//[FISH, TOMATO, MILK]
     private static final String TAG = LoginActivity.class.getSimpleName();
     private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
@@ -100,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // if last login occurred < 2 hours ?? ago, no further login is required.
         if (diffHours < 2) {
-            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);
         } else {
             final TextView tvForgotYourPassword = findViewById(R.id.tvForgotPasswordText);
@@ -288,12 +289,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToProductMenu() {
-        if ("TOMATO".equalsIgnoreCase(PRODUCT)){
-            Intent i = new Intent(getApplicationContext(), TomatoHomeActivity.class);
+        if ("TOMATO".equalsIgnoreCase(FishTrackApplication.PRODUCT)){
+            Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             i.putExtra("syncErrors", this.syncResult.toString());
             startActivity(i);
-        } else if ("FISH".equalsIgnoreCase(PRODUCT)){
-            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+        } else if ("FISH".equalsIgnoreCase(FishTrackApplication.PRODUCT)){
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             i.putExtra("syncErrors", this.syncResult.toString());
             startActivity(i);
         }

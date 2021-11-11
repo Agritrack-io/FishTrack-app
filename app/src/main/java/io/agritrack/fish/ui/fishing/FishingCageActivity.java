@@ -24,7 +24,6 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.CageDetails;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;

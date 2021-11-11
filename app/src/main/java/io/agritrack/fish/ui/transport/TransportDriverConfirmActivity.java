@@ -14,7 +14,6 @@ import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
-import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.ui.custom.CaptureSignatureView;
 import io.agritrack.ui.service.LocalPreferences;
 

@@ -36,7 +36,6 @@ import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.rfid.ScanFilterThread;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;

@@ -34,7 +34,7 @@ import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.HomeActivity;
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
@@ -98,7 +98,7 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
                 toggleProgress(false, R.string.app_name);
 
                 if (proceed) {
-                    Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
                     startActivity(i);
                 }
             }

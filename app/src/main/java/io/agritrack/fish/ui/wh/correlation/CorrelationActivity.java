@@ -55,7 +55,7 @@ import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.enums.AssetType;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.HomeActivity;
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.bo.GenericListModel;
@@ -190,7 +190,7 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
                 toggleProgress(false, R.string.app_name);
 
                 if (proceed) {
-                    Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
                     startActivity(i);
                 }
             }

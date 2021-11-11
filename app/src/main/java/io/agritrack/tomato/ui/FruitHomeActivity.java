@@ -1,4 +1,7 @@
-package io.agritrack.fish.ui;
+package io.agritrack.tomato.ui;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,9 +13,6 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,45 +36,37 @@ import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.FishSpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
-import io.agritrack.data.model.HarvestRequest;
-import io.agritrack.data.model.tx.FishingTransaction;
-import io.agritrack.dialog.ExpandableListDialog;
-import io.agritrack.dialog.SimpleListDialog;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.enums.TxStatus;
-import io.agritrack.fish.state.FishingRecord;
-import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.fishing.FishingFillBinsActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingStartActivity;
-import io.agritrack.ui.adapter.HomeMenuAdapter;
-import io.agritrack.ui.adapter.MenuItem;
+import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
-import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
-import io.agritrack.ui.login.LoginActivity;
-import io.agritrack.ui.login.api.SyncApi;
 import io.agritrack.fish.ui.maintenance.MaintenanceMenuActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
-import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.fish.ui.transport.TransportStartActivity;
+import io.agritrack.ui.adapter.HomeMenuAdapter;
+import io.agritrack.ui.adapter.MenuItem;
+import io.agritrack.ui.login.LoginActivity;
+import io.agritrack.ui.login.api.SyncApi;
+import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 
-public class HomeActivity extends AppCompatActivity {
-    private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4;
+public class FruitHomeActivity extends AppCompatActivity {
+    private static final int Seeding_Idx = 0, Harvest_Idx = 1, Storage_semi_ready = 2, Packaging_Idx = 3, Shipping_Idx = 4, Transport_Idx = 5;
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
-    private ImageView ivSupport, ivRefresh;
     private ProgressDialog progressDialog;
-    private SupportDialog supportDialog;
     private MobileDB db;
     private int syncCounter = 1;
+
+    private ImageView ivRefresh, ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_fruit_home);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderHome);
@@ -84,14 +76,14 @@ public class HomeActivity extends AppCompatActivity {
         db = MobileDB.getInstance(getAppContext());
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_processing), ProcessBinsActivity.class, R.drawable.processing));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_seeding), FishingStartActivity.class, R.drawable.fishing));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_harvest), TransportStartActivity.class, R.drawable.transport));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_transport), ProcessBinsActivity.class, R.drawable.processing));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_packaging), WhMenuActivity.class, R.drawable.warehouse));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_shipping), MaintenanceMenuActivity.class, R.drawable.maintenance));
 
         // instantiate ProgressDialog and set style.
-        progressDialog = new ProgressDialog(HomeActivity.this);
+        progressDialog = new ProgressDialog(FruitHomeActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         syncResult.observe(this, response -> {
@@ -112,39 +104,16 @@ public class HomeActivity extends AppCompatActivity {
 
         gvMainMenu = findViewById(R.id.gvMainMenu);
         gvMainMenu.setAdapter(adapter);
-        gvMainMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*gvMainMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final Context appCtx = getApplicationContext();
                 Intent i = new Intent(appCtx, LoginActivity.class);
 
                 switch (position) {
-                    case Fishing_Idx:
-                        FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
-                        FishingRecord fishingRecord;
+                    case Seeding_Idx:
 
-                        // default Next Activity is FishingStart...
-                        i = new Intent(appCtx, FishingStartActivity.class);
-                        if (openTx != null) {
-                            // there is a FishingTx in progress
-                            fishingRecord = FishingRecord.convert(openTx);
-                            GlobalState.recFishing = fishingRecord;
-                        } else {
-                            // instantiate a new Fishing Record.
-                            fishingRecord = GlobalState.initFishingRecord();
-
-                            // load Harvest Request fetched via Synch op.
-                            List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getAll();
-                            if (harvestRequests != null && !harvestRequests.isEmpty()) {
-                                i = new Intent(appCtx, HarvestRequestsActivity.class);
-                            } else {
-                                // NO FishingTx in progress
-                                openTx = new FishingTransaction();
-                                openTx.txStatus = TxStatus.PENDING;
-                                fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
-                            }
-                        }
                         break;
-                    case Transport_Idx:
+                    case Harvest_Idx:
                         i = new Intent(appCtx, TransportStartActivity.class);
                         break;
                     case Processing_Idx:
@@ -163,14 +132,13 @@ public class HomeActivity extends AppCompatActivity {
                 i.putExtra("id", position);
                 startActivity(i);
             }
-        });
+        });*/
 
         ivSupport = findViewById(R.id.ivSupport);
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(HomeActivity.this);
+            supportDialog = new SupportDialog(FruitHomeActivity.this);
             supportDialog.showDialog();
         });
-
 
         ivRefresh = findViewById(R.id.ivRefresh);
         ivRefresh.setOnClickListener(view -> {

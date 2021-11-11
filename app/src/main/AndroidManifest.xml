@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true">
-        <activity android:name="io.agritrack.tomato.ui.TomatoHomeActivity"></activity>
+        <activity android:name="io.agritrack.tomato.ui.FruitHomeActivity"></activity>
         <activity
             android:name=".fish.ui.wh.outgoing.OutgoingConsumableActivity"
             android:screenOrientation="portrait" />
@@ -139,7 +139,7 @@
             android:name=".ui.TemplateActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fish.ui.HomeActivity"
+            android:name=".fish.ui.FishHomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.login.ForgotYourPinActivity"

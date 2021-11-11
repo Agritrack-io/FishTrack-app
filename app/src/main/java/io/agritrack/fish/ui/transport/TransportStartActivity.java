@@ -24,7 +24,7 @@ import io.agritrack.data.model.Site;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
-import io.agritrack.fish.ui.HomeActivity;
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
@@ -120,7 +120,7 @@ public class TransportStartActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);
         });
     }

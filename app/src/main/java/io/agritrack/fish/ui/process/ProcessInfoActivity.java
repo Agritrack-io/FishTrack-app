@@ -20,19 +20,13 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
-import io.agritrack.common.Constants;
-import io.agritrack.dialog.ExpandableListDialog;
 import io.agritrack.dialog.PhotoDialog;
-import io.agritrack.dialog.SimpleListDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
-import io.agritrack.fish.ui.HomeActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingStartActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
-import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 

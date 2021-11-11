@@ -25,7 +25,7 @@ import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.HomeActivity;
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -110,7 +110,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
 
         ImageView ivBack = findViewById(R.id.ivBackToHomeMenu);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);
         });
     }

@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -32,13 +31,12 @@ import io.agritrack.data.model.tx.RepairTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.HomeActivity;
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recInternalRepair;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class MaintenanceInternalConfirmActivity extends AppCompatActivity implements LocationListener {
     private final int REQUEST_FINE_LOCATION = 1234;
@@ -87,7 +85,7 @@ public class MaintenanceInternalConfirmActivity extends AppCompatActivity implem
                 toggleProgress(false, R.string.app_name);
 
                 if (proceed) {
-                    Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
                     startActivity(i);
                 }
             }

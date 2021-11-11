@@ -28,7 +28,7 @@ import io.agritrack.data.model.tx.RepairTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.HomeActivity;
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
@@ -82,7 +82,7 @@ public class MaintenanceExternalConfirmActivity extends AppCompatActivity implem
 
                 if (proceed) {
                     CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG);
-                    Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
                     startActivity(i);
                 }
             }

@@ -36,7 +36,6 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.Coordinates;
-import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.ui.login.LoginActivity;
 import io.agritrack.ui.login.api.AuthApi;
 import io.agritrack.ui.login.api.SiteInfo;

@@ -32,7 +32,6 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.Employee;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
 

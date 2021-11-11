@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 import io.agritrack.R;
 import io.agritrack.common.Constants;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.ui.HomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.RepairRecord;
