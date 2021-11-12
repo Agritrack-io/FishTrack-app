@@ -29,6 +29,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
@@ -41,6 +42,7 @@ public class FishingStartActivity extends AppCompatActivity {
     private MobileDB db;
     private Spinner harvestSpinner, speciesSpinner;
     private EditText etQty;
+    private TextView tvCageName, tvFishSize, tvNotes;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -114,6 +116,10 @@ public class FishingStartActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
+            if(IsDemo){
+                db.fishingTransactionDAO().deleteAll();
+            }
+
             Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);
         });
@@ -124,6 +130,9 @@ public class FishingStartActivity extends AppCompatActivity {
         speciesSpinner = findViewById(R.id.spFishType);
         etQty = findViewById(R.id.etRequestedQuantity);
         ivSupport = findViewById(R.id.ivSupport);
+        tvCageName = findViewById(R.id.tvCageName);
+        tvFishSize = findViewById(R.id.tvFishSize);
+        tvNotes = findViewById(R.id.tvNotes);
     }
 
     private void initControlsFromState() {
@@ -140,6 +149,18 @@ public class FishingStartActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(hvst.reqWeight)) {
             etQty.setText(hvst.reqWeight);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(hvst.cageCode)){
+            tvCageName.setText(hvst.cageCode);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(hvst.fishSize)){
+            tvFishSize.setText(hvst.fishSize);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(hvst.notes)){
+            tvNotes.setText(hvst.notes);
         }
         //harvestSpinner.setSelection(arrayAdapter.getPosition("Category 2"));
     }
@@ -158,6 +179,14 @@ public class FishingStartActivity extends AppCompatActivity {
         if (etQty.getText() != null) {
             fishingRecord.reqWeight = etQty.getText().toString();
         }
+
+        if (tvCageName.getText() != null) {
+            fishingRecord.cageCode = tvCageName.getText().toString();
+        }
+
+        if (tvFishSize.getText() != null) {
+            fishingRecord.fishSize = tvFishSize.getText().toString();
+        }
         //fishingRecord.reqWeight = etQty.getText() != null ? Double.valueOf(etQty.getText().toString()).intValue() + "" : "0";
 
         GlobalState.commitFishing(db, Boolean.FALSE);
@@ -168,18 +197,23 @@ public class FishingStartActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.requesterName)) {
-            sb.append(String.format("\n%s is missing", "'Harvest initiator'"));
-        }
+        if(!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.requesterName)) {
+                sb.append(String.format("\n%s is missing", "'Harvest initiator'"));
+            }
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.speciesName)) {
-            sb.append(String.format("\n%s is missing", "'Fish type'"));
-        }
+            if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.speciesName)) {
+                sb.append(String.format("\n%s is missing", "'Fish type'"));
+            }
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.reqWeight)) {
-            sb.append(String.format("\n%s is missing", "'Requested quantity'"));
-        }
+            if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.reqWeight)) {
+                sb.append(String.format("\n%s is missing", "'Requested quantity'"));
+            }
 
+            if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.cageCode)) {
+                sb.append(String.format("\n%s is missing", "'Cage code'"));
+            }
+        }
         return sb.toString();
     }
 

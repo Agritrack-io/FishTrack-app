@@ -175,7 +175,6 @@
                     android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_view_font_size"
                     app:layout_constraintBottom_toTopOf="@+id/tvFishTypeLabel"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/tvNameCage"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
@@ -198,8 +197,9 @@
 
                 <TextView
                     android:id="@+id/tvNameCage"
-                    android:layout_width="220dp"
+                    android:layout_width="243dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/border_bottom"
                     android:textAlignment="viewEnd"

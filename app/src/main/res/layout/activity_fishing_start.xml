@@ -104,6 +104,151 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
+
+                <TextView
+                    android:id="@+id/tvHarvest"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:gravity="left"
+                    android:text="@string/choose_harvest"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/spHarvest"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/spHarvest"
+                    style="@style/spinner_style"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:dropDownWidth="match_parent"
+                    android:focusableInTouchMode="true"
+                    android:requiresFadingEdge="horizontal"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="textStart"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toTopOf="@+id/tvCage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.496"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvHarvest" />
+
+                <TextView
+                    android:id="@+id/tvCage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="left"
+                    android:text="Cage"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvCageName"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spHarvest" />
+
+                <TextView
+                    android:id="@+id/tvCageName"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:paddingStart="10dp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvFishType"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCage" />
+
+                <TextView
+                    android:id="@+id/tvFishType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="left"
+                    android:text="@string/fish_type"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/spFishType"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCageName" />
+
+                <Spinner
+                    android:id="@+id/spFishType"
+                    style="@style/spinner_style"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:dropDownWidth="match_parent"
+                    android:focusableInTouchMode="true"
+                    android:requiresFadingEdge="horizontal"
+                    android:textAlignment="textStart"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toTopOf="@+id/tvFishSizeLabel"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvFishType" />
+
+                <TextView
+                    android:id="@+id/tvFishSizeLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="left"
+                    android:text="Fish Size"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvFishSize"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spFishType" />
+
+                <TextView
+                    android:id="@+id/tvFishSize"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="50dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:padding="5dp"
+                    android:textAlignment="viewEnd"
+                    android:paddingStart="10dp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvRequestedQuantity"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvFishSizeLabel" />
+
+                <TextView
+                    android:id="@+id/tvgr"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:paddingLeft="4dp"
+                    android:text="gr"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvFishSize"
+                    app:layout_constraintStart_toEndOf="@+id/tvFishSize"
+                    app:layout_constraintTop_toTopOf="@+id/tvFishSize" />
+
                 <TextView
                     android:id="@+id/tvRequestedQuantity"
                     android:layout_width="0dp"
@@ -117,95 +262,15 @@
                     app:layout_constraintBottom_toTopOf="@+id/etRequestedQuantity"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spFishType"
-                    tools:layout_conversion_absoluteHeight="172dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
-
-                <TextView
-                    android:id="@+id/tvHarvest"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
-                    android:gravity="left"
-                    android:text="@string/choose_harvest"
-                    android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/spHarvest"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
-
-                <Spinner
-                    android:id="@+id/spHarvest"
-                    style="@style/spinner_style"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="50dp"
-                    android:dropDownWidth="match_parent"
-                    android:focusableInTouchMode="true"
-                    android:requiresFadingEdge="horizontal"
-                    android:spinnerMode="dropdown"
-                    android:textAlignment="textStart"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toTopOf="@+id/tvFishType"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.496"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvHarvest"
-                    tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
-
-
-                <TextView
-                    android:id="@+id/tvFishType"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
-                    android:gravity="left"
-                    android:text="@string/fish_type"
-                    android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/spFishType"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spHarvest"
-                    tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
-
-                <Spinner
-                    android:id="@+id/spFishType"
-                    style="@style/spinner_style"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="50dp"
-                    android:dropDownWidth="match_parent"
-                    android:focusableInTouchMode="true"
-                    android:requiresFadingEdge="horizontal"
-                    android:textAlignment="textStart"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toTopOf="@+id/tvRequestedQuantity"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvFishType"
-                    tools:layout_conversion_absoluteHeight="24dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvFishSize" />
 
                 <EditText
                     android:id="@+id/etRequestedQuantity"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="70dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="100dp"
-                    android:layout_marginBottom="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginBottom="8dp"
                     android:background="@drawable/bg_rounded_dialog_input"
                     android:ems="10"
                     android:inputType="number"
@@ -215,12 +280,10 @@
                     android:textAlignment="viewEnd"
                     android:textColorHint="@color/black"
                     android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/tvNotesLabel"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvRequestedQuantity"
-                    tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvRequestedQuantity" />
 
                 <TextView
                     android:id="@+id/tvKg"
@@ -235,6 +298,39 @@
                     app:layout_constraintBottom_toBottomOf="@+id/etRequestedQuantity"
                     app:layout_constraintStart_toEndOf="@+id/etRequestedQuantity"
                     app:layout_constraintTop_toTopOf="@+id/etRequestedQuantity" />
+
+                <TextView
+                    android:id="@+id/tvNotesLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="left"
+                    android:text="Notes"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/tvNotes"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etRequestedQuantity" />
+
+                <TextView
+                    android:id="@+id/tvNotes"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:padding="5dp"
+                    android:paddingStart="10dp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvNotesLabel" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

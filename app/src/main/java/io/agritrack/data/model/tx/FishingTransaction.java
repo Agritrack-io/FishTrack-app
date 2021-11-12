@@ -32,6 +32,9 @@ public class FishingTransaction {
     @ColumnInfo(name = "cage_rfid")
     public String cageRFID;
 
+    @ColumnInfo(name = "cage_code")
+    public String cageCode;
+
     @ColumnInfo(name = "net_rfid")
     public String netRFID;
 
@@ -40,6 +43,9 @@ public class FishingTransaction {
 
     @ColumnInfo(name = "fish_type")
     public String fishType;
+
+    @ColumnInfo(name = "fish_size")
+    public String fishSize;
 
     @ColumnInfo(name = "ice_adequacy")
     public String iceAdequacy;
@@ -72,6 +78,9 @@ public class FishingTransaction {
     @TypeConverters(StringListConverter.class)
     @ColumnInfo(name = "team_members")
     public List<String> team;
+
+    @ColumnInfo(name = "notes")
+    public String notes;
 
     @TypeConverters(TxStatusEnumConverter.class)
     @ColumnInfo(name = "status")

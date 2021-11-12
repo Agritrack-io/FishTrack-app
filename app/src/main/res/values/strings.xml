@@ -105,8 +105,8 @@
     <string name="used_bins">USED BINS:</string>
     <string name="available_bins">AVAILABLE BINS:</string>
     <string name="total_quantity">Total quantity (Kg):</string>
-    <string name="confirm_requested_quantity">Req Quantity(Kg):</string>
-    <string name="confirm_name_cage">Cage Name:</string>
+    <string name="confirm_requested_quantity">Req quantity (Kg):</string>
+    <string name="confirm_name_cage">Cage:</string>
     <string name="confirm_fish_type">Fish Type:</string>
     <string name="fishing_confirm">Confirm details</string>
     <string name="fishing_enter_pin">Enter PIN</string>

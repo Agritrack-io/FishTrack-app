@@ -11,9 +11,11 @@ public class FishingTxDTO {
     public String harvest_request;
     public String platform_rfid;
     public String cage_rfid;
+    public String cage_code;
     public String net_rfid;
     public String ichthyopathologist;
     public String fish_type;
+    public String fish_size;
     public String ice_adequacy;
     public String ice_supplier;
     public Long last_feed;
@@ -37,9 +39,11 @@ public class FishingTxDTO {
         fishingTxDTO.harvest_request = fishing.harvestRq;
         fishingTxDTO.platform_rfid = fishing.platformRFID;
         fishingTxDTO.cage_rfid = fishing.cageRFID;
+        fishingTxDTO.cage_code = fishing.cageCode;
         fishingTxDTO.net_rfid = fishing.netRFID;
         fishingTxDTO.ichthyopathologist = fishing.ichthyopathologist;
         fishingTxDTO.fish_type = fishing.fishType;
+        fishingTxDTO.fish_size = fishing.fishSize;
         fishingTxDTO.ice_adequacy = fishing.iceAdequacy;
         fishingTxDTO.ice_supplier = fishing.iceSupplier;
         fishingTxDTO.last_feed = fishing.lastFeed;

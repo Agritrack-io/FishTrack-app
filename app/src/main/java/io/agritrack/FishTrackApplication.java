@@ -8,7 +8,12 @@ import com.facebook.stetho.Stetho;
 
 public class FishTrackApplication extends Application {
     private static Context mContext;
-    public static final  String PRODUCT = "TOMATO";//[FISH, TOMATO, MILK]
+
+    //This flag is used to redirect flow to different menu according to the product
+    public static final  String PRODUCT = "FISH";//[FISH, TOMATO, MILK]
+
+    //When true, no validation is performed in selected activities. This is required for Demo purposes
+    public static final boolean IsDemo = true;
 
     public static Context getAppContext() {
         return FishTrackApplication.mContext;

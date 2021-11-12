@@ -17,7 +17,6 @@ import io.agritrack.data.model.tx.AssetTransaction;
 import io.agritrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
-import io.agritrack.data.model.tx.HarvestTransaction;
 import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.data.model.tx.RepairTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
@@ -433,20 +432,6 @@ public class GlobalState {
             db.repairTransactionDAO().insert(txOutdoorsRepair);
 
             return txOutdoorsRepair;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    public static HarvestTransaction commitHarvest(MobileDB db) {
-        try {
-            HarvestTransaction txHarvest = new HarvestTransaction();
-
-
-            db.harvestTransactionDAO().insert(txHarvest);
-
-            return txHarvest;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

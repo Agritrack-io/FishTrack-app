@@ -23,8 +23,17 @@ public class HarvestRequest {
     @ColumnInfo(name = "species")
     public String fishName;
 
-    @ColumnInfo(name = "cage")
+    @ColumnInfo(name = "fish_size")
+    public String fishSize;
+
+    @ColumnInfo(name = "cage_rfid")
     public String cageRFID;
+
+    @ColumnInfo(name = "cage_code")
+    public String cageCode;
+
+    @ColumnInfo(name = "notes")
+    public String notes;
 
     @ColumnInfo(name = "user_name")
     public String user;
