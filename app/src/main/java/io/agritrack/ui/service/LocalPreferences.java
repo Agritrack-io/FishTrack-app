@@ -6,8 +6,10 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -28,6 +30,7 @@ public class LocalPreferences {
     public static final String SelectedSiteLevel_Key = "selectedSiteLevel3";
     public static final String Locale_Key = "localeCode";
     public static final String Logged_In_User_Key = "LoggedinUser";
+    public static final String Logged_User_Roles_Key = "LoggedUserRoles";
 
     public static final String Driver_Names_Key = "DriverNames";
     public static final String Driver_Phones_Key = "DriverPhones";
@@ -193,5 +196,14 @@ public class LocalPreferences {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    public static void setUserRoles(List<String> roles){
+        writeValue(Logged_User_Roles_Key, new HashSet<String>(roles));
+    }
+
+    public static List<String> getUserRoles() {
+        Set<String> rolesSet = pref.getStringSet(Logged_User_Roles_Key, new HashSet<>());
+        return new ArrayList<String>(rolesSet);
     }
 }

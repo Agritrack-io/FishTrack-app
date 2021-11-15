@@ -17,6 +17,7 @@ import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.ui.custom.CaptureSignatureView;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -120,9 +121,10 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
 
     private String validate(){
         StringBuilder sb = new StringBuilder();
-
-        if(!signatureView.isSigned()){
-            sb.append(String.format("\n%s is missing", "'Signature'"));
+        if (!IsDemo) {
+            if (!signatureView.isSigned()) {
+                sb.append(String.format("\n%s is missing", "'Signature'"));
+            }
         }
 
         return sb.toString();

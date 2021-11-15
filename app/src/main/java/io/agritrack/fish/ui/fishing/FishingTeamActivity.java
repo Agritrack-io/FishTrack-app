@@ -35,6 +35,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -155,9 +156,10 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-
-        if (GlobalState.recFishing.fishingTeam == null || GlobalState.recFishing.fishingTeam.isEmpty()) {
-            sb.append(String.format("\n%s is missing", "'Team members'"));
+        if(!IsDemo) {
+            if (GlobalState.recFishing.fishingTeam == null || GlobalState.recFishing.fishingTeam.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Team members'"));
+            }
         }
 
         return sb.toString();

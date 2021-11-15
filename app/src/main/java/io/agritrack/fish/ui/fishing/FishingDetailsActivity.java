@@ -38,7 +38,7 @@ public class FishingDetailsActivity extends AppCompatActivity {
 
         tvPathologist.setText(GlobalState.recFishing.pathologist);
 
-        tvLastFed.setText("06-11-2021");
+        tvLastFed.setText(GlobalState.recFishing.lastFed);
 
         tvSpecies.setText(GlobalState.recFishing.speciesName);
 

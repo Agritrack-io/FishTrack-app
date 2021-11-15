@@ -30,6 +30,7 @@ import io.agritrack.ui.adapter.InventoryMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -145,9 +146,10 @@ public class InventoryStartActivity extends AppCompatActivity {
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-
-        if (Strings.isEmptyOrWhitespace(GlobalState.recWHInventory.subSite)) {
-            sb.append(String.format("\n%s is missing", "'Subsite'"));
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recWHInventory.subSite)) {
+                sb.append(String.format("\n%s is missing", "'Subsite'"));
+            }
         }
 
         return sb.toString();

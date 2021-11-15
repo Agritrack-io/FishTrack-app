@@ -27,6 +27,7 @@ import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -206,21 +207,22 @@ public class ProcessInfoActivity extends AppCompatActivity implements ToggleGrou
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.dispatchNote)) {
+                sb.append(String.format("\n%s is missing", "'Dispatch note'"));
+            }
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.dispatchNote)) {
-            sb.append(String.format("\n%s is missing", "'Dispatch note'"));
-        }
+            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.pLot)) {
+                sb.append(String.format("\n%s is missing", "'LOT'"));
+            }
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.pLot)) {
-            sb.append(String.format("\n%s is missing", "'LOT'"));
-        }
+            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.securityClip)) {
+                sb.append(String.format("\n%s is missing", "'Security clip number'"));
+            }
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.securityClip)) {
-            sb.append(String.format("\n%s is missing", "'Security clip number'"));
-        }
-
-        if(Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)){
-            sb.append(String.format("\n%s is missing", "'Fish condition'"));
+            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)) {
+                sb.append(String.format("\n%s is missing", "'Fish condition'"));
+            }
         }
 
         return sb.toString();

@@ -35,6 +35,7 @@ import io.agritrack.fish.state.RepairRecord;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.FishTrackUtils.detectAssetType;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -226,17 +227,18 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
 
     private String validate(){
         StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.assetBC)) {
+                sb.append(String.format("\n%s is missing", "'Scan barcode'"));
+            }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.assetBC)){
-            sb.append(String.format("\n%s is missing", "'Scan barcode'"));
-        }
+            if (Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.maintenanceType)) {
+                sb.append(String.format("\n%s is missing", "'Maintenance type'"));
+            }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recInternalRepair.maintenanceType)){
-            sb.append(String.format("\n%s is missing", "'Maintenance type'"));
-        }
-
-        if(GlobalState.recInternalRepair.nextDateMaintenance == null){
-            sb.append(String.format("\n%s is missing", "'Next maintenance date'"));
+            if (GlobalState.recInternalRepair.nextDateMaintenance == null) {
+                sb.append(String.format("\n%s is missing", "'Next maintenance date'"));
+            }
         }
 
         return sb.toString();

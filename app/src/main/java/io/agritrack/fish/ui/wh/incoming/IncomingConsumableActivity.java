@@ -63,6 +63,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recWHIncoming;
@@ -339,9 +340,10 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-
-        if (GlobalState.recWHIncoming.barcodeItems == null || GlobalState.recWHIncoming.barcodeItems.isEmpty()) {
-            sb.append(String.format("\n%s is missing", "'Incoming items'"));
+        if (!IsDemo) {
+            if (GlobalState.recWHIncoming.barcodeItems == null || GlobalState.recWHIncoming.barcodeItems.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Incoming items'"));
+            }
         }
 
         return sb.toString();

@@ -50,6 +50,7 @@ import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -355,11 +356,11 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
     private String validate(){
         StringBuilder sb = new StringBuilder();
-
-        if(GlobalState.recProcessing.availBins==null || GlobalState.recProcessing.availBins.isEmpty()){
-            sb.append(String.format("\n%s is missing", "'Received bins'"));
+        if (!IsDemo) {
+            if (GlobalState.recProcessing.availBins == null || GlobalState.recProcessing.availBins.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Received bins'"));
+            }
         }
-
         return sb.toString();
     }
 

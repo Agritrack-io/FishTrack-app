@@ -62,6 +62,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recWHInventory;
@@ -371,9 +372,10 @@ public class InventoryConsumableActivity extends AppCompatActivity implements To
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-
-        if (GlobalState.recWHInventory.barcodeItems == null || GlobalState.recWHInventory.barcodeItems.isEmpty()) {
-            sb.append(String.format("\n%s is missing", "'Inventory items'"));
+        if (!IsDemo) {
+            if (GlobalState.recWHInventory.barcodeItems == null || GlobalState.recWHInventory.barcodeItems.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Inventory items'"));
+            }
         }
 
         return sb.toString();

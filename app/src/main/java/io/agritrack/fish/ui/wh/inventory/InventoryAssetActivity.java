@@ -64,6 +64,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recWHInventory;
@@ -427,9 +428,10 @@ public class InventoryAssetActivity extends AppCompatActivity implements ToggleG
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-
-        if(GlobalState.recWHInventory.items == null || GlobalState.recWHInventory.items.isEmpty()) {
-            sb.append(String.format("\n%s is missing", "'Inventory items'"));
+        if (!IsDemo) {
+            if (GlobalState.recWHInventory.items == null || GlobalState.recWHInventory.items.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Inventory items'"));
+            }
         }
 
         return sb.toString();

@@ -29,6 +29,7 @@ import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -176,13 +177,14 @@ public class FishingCageActivity extends AppCompatActivity {
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
+        if(!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.platformRFID)) {
+                sb.append(String.format("\n%s is missing", "'Platform tag'"));
+            }
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.platformRFID)) {
-            sb.append(String.format("\n%s is missing", "'Platform tag'"));
-        }
-
-        if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.cageRFID)) {
-            sb.append(String.format("\n%s is missing", "'Cage tag'"));
+            if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.cageRFID)) {
+                sb.append(String.format("\n%s is missing", "'Cage tag'"));
+            }
         }
 
         return sb.toString();

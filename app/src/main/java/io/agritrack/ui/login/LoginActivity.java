@@ -60,6 +60,7 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 import static io.agritrack.ui.service.LocalPreferences.Logged_In_User_Key;
+import static io.agritrack.ui.service.LocalPreferences.Logged_User_Roles_Key;
 import static io.agritrack.ui.service.LocalPreferences.Token_Key;
 
 public class LoginActivity extends AppCompatActivity {
@@ -191,6 +192,7 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUiWithUser(LoggedInUserView model) {
         LocalPreferences.writeValue(Token_Key, model.getToken());
         LocalPreferences.writeValue(Logged_In_User_Key, model.getUsername());
+        LocalPreferences.setUserRoles(model.getRoles());
         LocalPreferences.updateLoginTime();
 
         boolean shouldSync = true; //LocalPreferences.shouldSync(Boolean.TRUE);
@@ -229,7 +231,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if (hoursSinceLastLogin <= 2 && authenticatedUser) {
                 LocalPreferences.updateLoginTime();
-                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(username, LocalPreferences.getToken()))));
+                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(username, LocalPreferences.getToken(), LocalPreferences.getUserRoles()))));
             } else {
                 AuthApi authService = APIServiceGenerator.createAPI(AuthApi.class);
                 LoginRQ loginRQ = new LoginRQ(username, pin);
@@ -385,7 +387,7 @@ public class LoginActivity extends AppCompatActivity {
             AuthInfo rs = response.body();
 
             if (rs != null) {
-                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(this.userName, rs.getToken()))));
+                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(this.userName, rs.getToken(), rs.getRoles()))));
                 LocalPreferences.updateLoginTime();
             } else {
                 // Probably Invalid Credentials

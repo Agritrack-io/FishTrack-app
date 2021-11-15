@@ -3,6 +3,7 @@ package io.agritrack.ui.login.api;
 import java.util.List;
 
 import io.agritrack.data.dto.tx.ConsumableTxDTO;
+import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
 import io.agritrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
@@ -60,4 +61,7 @@ public interface TransactionApi {
     @POST("/inventory/consumable/items")
     Call<List<CoInventoryItemDTO>> syncCoInventoryItemTx(@Body List<CoInventoryItemDTO> coInventoryItems, @Header("Authorization") String token);
 
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/temperatures/cages")
+    Call<SeaTemperatureTxDTO> syncSeaTempTx(@Body SeaTemperatureTxDTO seaTemperatureTx, @Header("Authorization") String token);
 }

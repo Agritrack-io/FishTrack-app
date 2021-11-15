@@ -19,6 +19,7 @@ import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.data.model.tx.RepairTransaction;
+import io.agritrack.data.model.tx.SeaTemperatureTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.data.model.wh.CoInventory;
 import io.agritrack.data.model.wh.CoInventoryItem;
@@ -45,6 +46,8 @@ public class GlobalState {
 
     public static RepairRecord recInternalRepair = new RepairRecord();
     public static RepairRecord recExternalRepair = new RepairRecord();
+
+    public static SeaTemperatureRecord recTools = new SeaTemperatureRecord();
 
     private GlobalState() {
     }
@@ -102,6 +105,11 @@ public class GlobalState {
     public static RepairRecord initExternalRepairRecord() {
         recExternalRepair = new RepairRecord();
         return recExternalRepair;
+    }
+
+    public static SeaTemperatureRecord initToolsRecord() {
+        recTools = new SeaTemperatureRecord();
+        return recTools;
     }
 
     public static FishingTransaction commitFishing(MobileDB db, Boolean finalCommit) {
@@ -432,6 +440,26 @@ public class GlobalState {
             db.repairTransactionDAO().insert(txOutdoorsRepair);
 
             return txOutdoorsRepair;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static SeaTemperatureTransaction commitSeaTemp(MobileDB db) {
+        try {
+            SeaTemperatureTransaction seaTemperatureTransaction = new SeaTemperatureTransaction();
+            seaTemperatureTransaction.timestamp = System.currentTimeMillis();
+            seaTemperatureTransaction.siteName = LocalPreferences.getCurrentSiteName();
+            seaTemperatureTransaction.siteId = LocalPreferences.getCurrentSiteId();
+            seaTemperatureTransaction.refTemp = recTools.referencePointTemp;
+            seaTemperatureTransaction.cageTemp = recTools.cageTemp;
+            seaTemperatureTransaction.longitude = recTools.longitude;
+            seaTemperatureTransaction.latitude = recTools.latitude;
+
+            db.seaTemperatureTransactionDAO().insert(seaTemperatureTransaction);
+
+            return seaTemperatureTransaction;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

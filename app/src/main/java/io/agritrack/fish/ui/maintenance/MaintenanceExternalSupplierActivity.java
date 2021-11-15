@@ -34,6 +34,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -211,21 +212,22 @@ public class MaintenanceExternalSupplierActivity extends AppCompatActivity imple
 
     private String validate(){
         StringBuilder sb = new StringBuilder();
-
+        if (!IsDemo) {
         /*if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.supplier)){
             sb.append(String.format("\n%s is missing", "'Supplier'"));
         }*/
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.manager)){
-            sb.append(String.format("\n%s is missing", "'Maintenance manager'"));
-        }
+            if (Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.manager)) {
+                sb.append(String.format("\n%s is missing", "'Maintenance manager'"));
+            }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.cost)){
-            sb.append(String.format("\n%s is missing", "'Maintenance cost'"));
-        }
+            if (Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.cost)) {
+                sb.append(String.format("\n%s is missing", "'Maintenance cost'"));
+            }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.repairTime)){
-            sb.append(String.format("\n%s is missing", "'Maintenance time'"));
+            if (Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.repairTime)) {
+                sb.append(String.format("\n%s is missing", "'Maintenance time'"));
+            }
         }
 
         return sb.toString();

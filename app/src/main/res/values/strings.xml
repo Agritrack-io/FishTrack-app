@@ -29,6 +29,7 @@
     <string name="menu_title_processing">Processing</string>
     <string name="menu_title_warehouse">Warehouse</string>
     <string name="menu_title_maintenance">Maintenance</string>
+    <string name="menu_title_sea_temp">Sea Temperature</string>
 
     <string name="menu_title_seeding">Seeding</string>
     <string name="menu_title_harvest">Harvest</string>
@@ -256,6 +257,11 @@
     <string name="maintenance_details">Maintenance details</string>
     <string name="details">Details</string>
     <string name="remarks">Remarks</string>
+
+    <string name="title_sea_temp">SEA TEMPERATURE</string>
+    <string name="current_site">Current location</string>
+    <string name="reference_point_temp">Reference point temperature</string>
+    <string name="cage_temp">Cage temperature</string>
 
     <string name="site_label">Site:</string>
     <string name="asset_code_label">Barcode:</string>

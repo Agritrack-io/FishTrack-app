@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name="io.agritrack.FishTrackApplication"
+        android:name=".FishTrackApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,7 +23,8 @@
         android:supportsRtl="true"
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true">
-        <activity android:name="io.agritrack.tomato.ui.FruitHomeActivity"></activity>
+        <activity android:name=".fish.ui.seaTemperature.SeaTemperatureActivity"></activity>
+        <activity android:name=".tomato.ui.FruitHomeActivity" />
         <activity
             android:name=".fish.ui.wh.outgoing.OutgoingConsumableActivity"
             android:screenOrientation="portrait" />

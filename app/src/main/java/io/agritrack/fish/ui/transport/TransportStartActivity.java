@@ -27,6 +27,7 @@ import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -183,25 +184,26 @@ public class TransportStartActivity extends AppCompatActivity {
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.packagingSite)) {
+                sb.append(String.format("\n%s is missing", "'Packaging site'"));
+            }
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.packagingSite)) {
-            sb.append(String.format("\n%s is missing", "'Packaging site'"));
-        }
+            if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverName)) {
+                sb.append(String.format("\n%s is missing", "'Driver name'"));
+            }
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverName)) {
-            sb.append(String.format("\n%s is missing", "'Driver name'"));
-        }
+            if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverPhone)) {
+                sb.append(String.format("\n%s is missing", "'Driver phone'"));
+            }
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverPhone)) {
-            sb.append(String.format("\n%s is missing", "'Driver phone'"));
-        }
+            if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.licensePlate)) {
+                sb.append(String.format("\n%s is missing", "'License plate'"));
+            }
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.licensePlate)) {
-            sb.append(String.format("\n%s is missing", "'License plate'"));
-        }
-
-        if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.clipNumber)) {
-            sb.append(String.format("\n%s is missing", "'Security clip number'"));
+            if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.clipNumber)) {
+                sb.append(String.format("\n%s is missing", "'Security clip number'"));
+            }
         }
 
         return sb.toString();

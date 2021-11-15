@@ -29,6 +29,7 @@ import io.agritrack.data.dao.tx.CorrelationTransactionDAO;
 import io.agritrack.data.dao.tx.FishingTransactionDAO;
 import io.agritrack.data.dao.tx.ProcessingTransactionDAO;
 import io.agritrack.data.dao.tx.RepairTransactionDAO;
+import io.agritrack.data.dao.tx.SeaTemperatureTransactionDAO;
 import io.agritrack.data.dao.tx.TransportTransactionDAO;
 import io.agritrack.data.dao.wh.AssetDAO;
 import io.agritrack.data.dao.wh.CoInventoryDAO;
@@ -50,6 +51,7 @@ import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.data.model.tx.RepairTransaction;
+import io.agritrack.data.model.tx.SeaTemperatureTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.data.model.wh.CoInventory;
@@ -60,9 +62,9 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
 @Database(entities = {AppUser.class, Site.class, Asset.class, Supplier.class, HarvestRequest.class,
         CageDetails.class, Employee.class, FishSpecies.class, Reader.class,
         FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class,
-        AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class, RepairTransaction.class,
+        AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class, RepairTransaction.class, SeaTemperatureTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class},
-        version = 14, exportSchema = false)
+        version = 1, exportSchema = false)
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class, ConsumableTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
@@ -112,6 +114,8 @@ public abstract class MobileDB extends RoomDatabase {
     public abstract CorrelationTransactionDAO correlationTransactionDAO();
 
     public abstract RepairTransactionDAO repairTransactionDAO();
+
+    public abstract SeaTemperatureTransactionDAO seaTemperatureTransactionDAO();
 
     public abstract EmployeeDAO employeeDAO();
 

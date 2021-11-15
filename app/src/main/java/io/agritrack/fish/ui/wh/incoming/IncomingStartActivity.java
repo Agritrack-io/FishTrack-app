@@ -32,6 +32,7 @@ import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.SiteInfo;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -229,17 +230,18 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.incomingItemType)) {
+                sb.append(String.format("\n%s is missing", "'Item type'"));
+            }
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.incomingItemType)) {
-            sb.append(String.format("\n%s is missing", "'Item type'"));
-        }
+            if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.from)) {
+                sb.append(String.format("\n%s is missing", "'Source site'"));
+            }
 
-        if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.from)) {
-            sb.append(String.format("\n%s is missing", "'Source site'"));
-        }
-
-        if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.to)) {
-            sb.append(String.format("\n%s is missing", "'Target site'"));
+            if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.to)) {
+                sb.append(String.format("\n%s is missing", "'Target site'"));
+            }
         }
 
         return sb.toString();

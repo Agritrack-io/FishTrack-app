@@ -29,12 +29,13 @@ import java.util.concurrent.TimeUnit;
 import io.agritrack.R;
 import io.agritrack.common.Constants;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.RepairRecord;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.FishTrackUtils.detectAssetType;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -43,34 +44,28 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
 
     private final String dtFormat = "dd/MM/yyyy";
     private final SimpleDateFormat sdf = new SimpleDateFormat(dtFormat);
-
-    private Button btnScanAsset;
-    private TextView tvAssetBarcode, tvAssetType;
-    private ToggleGroup tgOutMtRepairTypes;
-    private EditText etOMtNextMaintenance, etOMtEstWithdrawal;
     private final Calendar calendar = Calendar.getInstance();
-
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    private String selectedOperation;
-
-    private ImageView ivSupport;
-    private SupportDialog supportDialog;
-
-    DatePickerDialog.OnDateSetListener nextDate = (view, year, monthOfYear, dayOfMonth) -> {
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, monthOfYear);
-        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        updateNextMaintenanceDate();
-    };
-
     DatePickerDialog.OnDateSetListener withdrawalDate = (view, year, monthOfYear, dayOfMonth) -> {
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, monthOfYear);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         updateEstWithdrawalDate();
     };
+    private Button btnScanAsset;
+    private TextView tvAssetBarcode, tvAssetType;
+    private ToggleGroup tgOutMtRepairTypes;
+    private EditText etOMtNextMaintenance, etOMtEstWithdrawal;
+    DatePickerDialog.OnDateSetListener nextDate = (view, year, monthOfYear, dayOfMonth) -> {
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, monthOfYear);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        updateNextMaintenanceDate();
+    };
+    private String selectedOperation;
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,13 +129,13 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
     }
 
     protected void configFooter() {
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMaintenanceMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToMaintenanceMenu);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), MaintenanceMenuActivity.class);
             startActivity(i);
         });
 
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToMaintenanceSupplier);
+        ImageView ivNext = findViewById(R.id.ivToMaintenanceSupplier);
         ivNext.setOnClickListener(view -> {
             updateState();
             String v = validate();
@@ -199,13 +194,13 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
         return externalRepairRecord;
     }
 
-    private void setUpNextMaintenanceDate(){
+    private void setUpNextMaintenanceDate() {
         etOMtNextMaintenance.setOnClickListener(view -> new DatePickerDialog(MaintenanceExternalStartActivity.this, nextDate, calendar
                 .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)).show());
     }
 
-    private void setUpEstWithdrawalDate(){
+    private void setUpEstWithdrawalDate() {
         etOMtEstWithdrawal.setOnClickListener(view -> new DatePickerDialog(MaintenanceExternalStartActivity.this, withdrawalDate, calendar
                 .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)).show());
@@ -219,21 +214,21 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
         etOMtEstWithdrawal.setText(sdf.format(calendar.getTime()));
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.assetBC)) {
+                sb.append(String.format("\n%s is missing", "'Scan barcode'"));
+            }
 
-        if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.assetBC)){
-            sb.append(String.format("\n%s is missing", "'Scan barcode'"));
+            if (Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.maintenanceType)) {
+                sb.append(String.format("\n%s is missing", "'Maintenance type'"));
+            }
+
+            if (GlobalState.recExternalRepair.nextDateMaintenance == null) {
+                sb.append(String.format("\n%s is missing", "'Next maintenance date'"));
+            }
         }
-
-        if(Strings.isEmptyOrWhitespace(GlobalState.recExternalRepair.maintenanceType)){
-            sb.append(String.format("\n%s is missing", "'Maintenance type'"));
-        }
-
-        if(GlobalState.recExternalRepair.nextDateMaintenance == null){
-            sb.append(String.format("\n%s is missing", "'Next maintenance date'"));
-        }
-
         return sb.toString();
     }
 

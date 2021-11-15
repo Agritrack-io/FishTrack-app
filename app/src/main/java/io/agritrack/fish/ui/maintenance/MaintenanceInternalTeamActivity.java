@@ -38,6 +38,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -249,9 +250,10 @@ public class MaintenanceInternalTeamActivity extends AppCompatActivity implement
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-
-        if (GlobalState.recInternalRepair.repairTeam == null || GlobalState.recInternalRepair.repairTeam.isEmpty()) {
-            sb.append(String.format("\n%s is missing", "'Team members'"));
+        if (!IsDemo) {
+            if (GlobalState.recInternalRepair.repairTeam == null || GlobalState.recInternalRepair.repairTeam.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Team members'"));
+            }
         }
 
         return sb.toString();

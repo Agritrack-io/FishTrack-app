@@ -47,6 +47,7 @@ import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.barcode.SoundUtil.context;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
@@ -301,9 +302,10 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-
-        if (GlobalState.recFishing.totalBinsUsed == null) {
-            sb.append(String.format("\n%s is missing", "'Harvest bins'"));
+        if(!IsDemo) {
+            if (GlobalState.recFishing.totalBinsUsed == null) {
+                sb.append(String.format("\n%s is missing", "'Harvest bins'"));
+            }
         }
 
         return sb.toString();

@@ -15,7 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -42,23 +45,25 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.ui.adapter.HomeMenuAdapter;
-import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
-import io.agritrack.ui.login.LoginActivity;
-import io.agritrack.ui.login.api.SyncApi;
 import io.agritrack.fish.ui.maintenance.MaintenanceMenuActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
-import io.agritrack.ui.service.LocalPreferences;
+import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
 import io.agritrack.fish.ui.transport.TransportStartActivity;
+import io.agritrack.ui.adapter.HomeMenuAdapter;
+import io.agritrack.ui.adapter.MenuItem;
+import io.agritrack.ui.login.LoginActivity;
+import io.agritrack.ui.login.api.SyncApi;
+import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 
 public class FishHomeActivity extends AppCompatActivity {
-    private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4;
+    private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4, Tools_Idx = 5;
+    private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
     private ImageView ivSupport, ivRefresh;
@@ -67,24 +72,36 @@ public class FishHomeActivity extends AppCompatActivity {
     private MobileDB db;
     private int syncCounter = 1;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fish_home);
 
+        //Initialize mapping of roles to menus
+        assignPrivilegesToRoles();
+
+        List<String> userRoles = LocalPreferences.getUserRoles();
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderHome);
         tvHeader.setText(LocalPreferences.HeaderMsg());
-
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_processing), ProcessBinsActivity.class, R.drawable.processing));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
+        if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
+            menuItemsList.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
+            menuItemsList.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
+            menuItemsList.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
+            menuItemsList.add(new MenuItem(Maintenance_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
+            menuItemsList.add(new MenuItem(Tools_Idx, getString(R.string.menu_title_sea_temp), SeaTemperatureActivity.class, R.drawable.sea_temp));
+        }
+        if (roleCanAccessMenu(userRoles, Processing_Idx)) {
+            menuItemsList.add(new MenuItem(Processing_Idx, getString(R.string.menu_title_processing), ProcessBinsActivity.class, R.drawable.processing));
+            menuItemsList.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
+            menuItemsList.add(new MenuItem(Maintenance_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
+        }
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(FishHomeActivity.this);
@@ -112,8 +129,10 @@ public class FishHomeActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final Context appCtx = getApplicationContext();
                 Intent i = new Intent(appCtx, LoginActivity.class);
+                MenuItem mi = (MenuItem) gvMainMenu.getItemAtPosition(position);
+                //String clickedText = yourGridView.getItemAtPosition(position).toString());
 
-                switch (position) {
+                switch (mi.getLoc()) {
                     case Fishing_Idx:
                         FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
                         FishingRecord fishingRecord;
@@ -152,6 +171,10 @@ public class FishHomeActivity extends AppCompatActivity {
                     case Maintenance_Idx:
                         i = new Intent(appCtx, MaintenanceMenuActivity.class);
                         break;
+                    case Tools_Idx:
+                        i = new Intent(appCtx, SeaTemperatureActivity.class);
+                        break;
+
                     default:
                 }
 
@@ -244,5 +267,23 @@ public class FishHomeActivity extends AppCompatActivity {
     // hide/dismiss Progress bar
     private void hideProgressDialog() {
         progressDialog.dismiss();
+    }
+
+    private void assignPrivilegesToRoles() {
+        Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Transport_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Processing_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+    }
+
+    private boolean roleCanAccessMenu(List<String> roles, Integer menuId) {
+        String[] privileges = Privileges.get(menuId);
+        if (privileges != null && privileges.length>0) {
+            for (String role:roles){
+                if (Arrays.stream(privileges).anyMatch(role::equalsIgnoreCase)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

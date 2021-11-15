@@ -41,6 +41,7 @@ import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -297,11 +298,11 @@ public class TransportBinsActivity extends AppCompatActivity {
 
     private String validate(){
         StringBuilder sb = new StringBuilder();
-
-        if(GlobalState.recTransport.availBins==null || GlobalState.recTransport.availBins.isEmpty()){
-            sb.append(String.format("\n%s is missing", "'Bins for transport'"));
+        if (!IsDemo) {
+            if (GlobalState.recTransport.availBins == null || GlobalState.recTransport.availBins.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Bins for transport'"));
+            }
         }
-
         return sb.toString();
     }
 
