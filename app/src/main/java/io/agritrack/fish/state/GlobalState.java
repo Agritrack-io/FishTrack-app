@@ -123,6 +123,7 @@ public class GlobalState {
             txFishing.netRFID = recFishing.netRFID;
             txFishing.fishType = recFishing.speciesName;
             txFishing.ichthyopathologist = recFishing.pathologist;
+            txFishing.packagingPlant = recFishing.packagingPlant;
             if (!Strings.isEmptyOrWhitespace(recFishing.lastFed)) {
                 try {
                     Date lf = sdf.parse(recFishing.lastFed);

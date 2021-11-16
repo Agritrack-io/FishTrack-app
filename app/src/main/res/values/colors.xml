@@ -11,6 +11,8 @@
     <color name="colorAccent">#D6E4FE</color>
     <color name="dark_grey">#A9A9A9a9</color>
     <color name="light_grey">#d3d3d3</color>
+    <color name="smooth_grey">#f2f2f2</color>
+
 
 
     <color name="color_bg_edit_text_login">#6b9ce7</color>
@@ -33,8 +35,9 @@
 
     <color name="color_gray_title_add_dialog">#4A4A4A</color>
 
-    <color name="agri_green">#e4fcc2</color>
+    <color name="agri_semi_green">#e4fcc2</color>
     <color name="agri_blue">#16325c</color>
+    <color name="agri_green">#8DC63F</color>
     <color name="agri_red">#B10007</color>
     <color name="footer_green">#cde2ae</color>
     <color name="secondary_text_material_light">#8a000000</color>

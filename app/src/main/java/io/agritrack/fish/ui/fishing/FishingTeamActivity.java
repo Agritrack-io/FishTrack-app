@@ -30,6 +30,7 @@ import java.util.stream.IntStream;
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.Employee;
+import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.ui.bo.GenericListModel;
@@ -50,8 +51,9 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
     private ImageButton ivAddEmployee;
     private String memberName;
 
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
+    private InfoDialog infoDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,12 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
+
+        assignCtrlVars();
+
+        // set Header Info
+        TextView tvHeader = findViewById(R.id.tvHeaderFishingTeam);
+        tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get main controls references
         this.lvFishingTeam = findViewById(R.id.lvFishingTeam);
@@ -85,7 +93,6 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
             this.lvFishingTeam.setOnItemClickListener(this);
         }
 
-        ivAddEmployee = (ImageButton) findViewById(R.id.ivAddEmployee);
         ivAddEmployee.setOnClickListener(view -> {
             showAddDialog();
         });
@@ -93,10 +100,14 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-        ivSupport = findViewById(R.id.ivSupport);
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(FishingTeamActivity.this);
             supportDialog.showDialog();
+        });
+
+        ivInfo.setOnClickListener(view -> {
+            infoDialog = new InfoDialog(FishingTeamActivity.this);
+            infoDialog.showDialog();
         });
 
         // create Footer
@@ -121,6 +132,12 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
             Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
             startActivity(i);
         });
+    }
+
+    private void assignCtrlVars() {
+        ivAddEmployee = (ImageButton) findViewById(R.id.ivAddEmployee);
+        ivSupport = findViewById(R.id.ivSupport);
+        ivInfo = findViewById(R.id.ivInfo);
     }
 
     private void initControlsFromState() {

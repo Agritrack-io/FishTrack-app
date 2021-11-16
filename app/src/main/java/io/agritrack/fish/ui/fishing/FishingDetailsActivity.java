@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import io.agritrack.R;
+import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
@@ -21,8 +22,9 @@ public class FishingDetailsActivity extends AppCompatActivity {
     private EditText etIceSupplier;
     private TextView tvPathologist, tvLastFed, tvSpecies;
 
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
+    private InfoDialog infoDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,11 @@ public class FishingDetailsActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
+        ivInfo.setOnClickListener(view -> {
+            infoDialog = new InfoDialog(FishingDetailsActivity.this);
+            infoDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -75,6 +82,7 @@ public class FishingDetailsActivity extends AppCompatActivity {
         bIceAdequacy = findViewById(R.id.switchIceAdequacy);
         etIceSupplier = findViewById(R.id.etIceSupplier);
         ivSupport = findViewById(R.id.ivSupport);
+        ivInfo = findViewById(R.id.ivInfo);
     }
 
     private void initControlsFromState() {

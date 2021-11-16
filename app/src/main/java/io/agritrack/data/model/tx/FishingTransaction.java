@@ -89,6 +89,9 @@ public class FishingTransaction {
     @ColumnInfo(name = "site_code")
     public String site;
 
+    @ColumnInfo(name = "packaging_plant")
+    public String packagingPlant;
+
     @ColumnInfo(name = "user_name")
     public String user;
 

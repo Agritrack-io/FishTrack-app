@@ -34,6 +34,7 @@ public class FishingRecord {
     public Double longitude;
     public Double latitude;
     public String notes;
+    public String packagingPlant;
 
     public FishingRecord() {
     }
@@ -59,6 +60,7 @@ public class FishingRecord {
         fishingRecord.totalBinsUsed = tx.harvestBinsCnt;
         fishingRecord.seaTemperature = tx.seaTemperature;
         fishingRecord.notes = tx.notes;
+        fishingRecord.packagingPlant = tx.packagingPlant;
         if(tx.lastFeed!=null) {
             fishingRecord.lastFed = sdf.format(new Date(tx.lastFeed));
         }

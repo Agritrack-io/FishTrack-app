@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/drawable-hdpi/bg_rounded_dialog_non_input.xml" value="0.1796875" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/drawable/bg_rounded_dialog_non_input_smooth.xml" value="0.1796875" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_bins.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_cage.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_confirm.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_details.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_fill_bins.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_start.xml" value="0.1358695652173913" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_team.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_harvesting_confirm.xml" value="0.23489583333333333" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_harvesting_start.xml" value="0.22083333333333333" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_harvesting_totes.xml" value="0.23489583333333333" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_sea_temperature.xml" value="0.12025316455696203" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_seeding_confirm.xml" value="0.23489583333333333" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_seeding_start.xml" value="0.16354166666666667" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_transport_bins.xml" value="0.11423505572441743" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/expandable_list_dialog.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/get_temp_data_dialog.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/info_dialog.xml" value="0.16" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/item_home_adapter.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/photo_dialog.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/progress_indicator.xml" value="0.16354166666666667" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/simple_list_dialog.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/simple_recycler_view_item.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/simple_spinner_item.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/support_dialog.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

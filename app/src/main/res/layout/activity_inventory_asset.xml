@@ -5,7 +5,7 @@ xmlns:tools="http://schemas.android.com/tools"
 android:id="@+id/fishingBinsLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-android:background="@color/agri_green"
+android:background="@color/agri_semi_green"
 tools:context=".fish.ui.wh.inventory.InventoryAssetActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,7 +60,7 @@ tools:context=".fish.ui.wh.inventory.InventoryAssetActivity">
             android:backgroundTint="@color/agri_blue"
             android:backgroundTintMode="screen"
             android:gravity="center"
-            android:textColor="@color/agri_green"
+            android:textColor="@color/agri_semi_green"
             android:textSize="@dimen/subtitle_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -176,7 +176,7 @@ tools:context=".fish.ui.wh.inventory.InventoryAssetActivity">
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
-            android:background="@color/agri_green"
+            android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
             android:text="@string/select_asset_type"
             android:textColor="@color/label_blue"

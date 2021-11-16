@@ -22,6 +22,7 @@ import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.AppUser;
 import io.agritrack.data.model.common.FishSpecies;
+import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.FishingRecord;
@@ -44,8 +45,9 @@ public class FishingStartActivity extends AppCompatActivity {
     private EditText etQty;
     private TextView tvCageName, tvFishSize, tvNotes;
 
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
+    private InfoDialog infoDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +99,12 @@ public class FishingStartActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
+        ivInfo.setOnClickListener(view -> {
+            infoDialog = new InfoDialog(FishingStartActivity.this);
+            infoDialog.showDialog();
+        });
+
+
         // create Footer
         configFooter();
     }
@@ -133,6 +141,7 @@ public class FishingStartActivity extends AppCompatActivity {
         tvCageName = findViewById(R.id.tvCageName);
         tvFishSize = findViewById(R.id.tvFishSize);
         tvNotes = findViewById(R.id.tvNotes);
+        ivInfo = findViewById(R.id.ivInfo);
     }
 
     private void initControlsFromState() {

@@ -39,6 +39,7 @@ import io.agritrack.R;
 import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TempLoggerDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -80,6 +81,8 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
+    private InfoDialog infoDialog;
+    private ImageView ivInfo;
 
     // Instantiate a clickListener to be passed to adapterBins.
     // It will be used to point the selectedBarcode variable to the selected item barcode value.
@@ -204,6 +207,11 @@ public class FishingBinsActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
+        ivInfo.setOnClickListener(view -> {
+            infoDialog = new InfoDialog(FishingBinsActivity.this);
+            infoDialog.showDialog();
+        });
+
         // create Footer
         configFooter();
     }
@@ -251,6 +259,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         ivDeleteBin = findViewById(R.id.ivDeleteBin1);
         ivAddBin = findViewById(R.id.ivAddBin);
         ivSupport = findViewById(R.id.ivSupport);
+        ivInfo = findViewById(R.id.ivInfo);
     }
 
     private void initControlsFromState() {

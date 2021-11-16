@@ -134,6 +134,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
             GlobalState.recFishing.fishSize = harvestRq.fishSize;
             GlobalState.recFishing.reqWeight = harvestRq.reqQty;
             GlobalState.recFishing.notes = harvestRq.notes;
+            GlobalState.recFishing.packagingPlant = harvestRq.packagingPlant;
         }
     }
 

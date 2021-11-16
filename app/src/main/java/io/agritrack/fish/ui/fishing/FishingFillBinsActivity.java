@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
@@ -92,8 +93,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             btnDeleteCatch.setTextColor(getColor(R.color.aqua));
         }
     };
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
+    private InfoDialog infoDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,6 +236,11 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
+        ivInfo.setOnClickListener(view -> {
+            infoDialog = new InfoDialog(FishingFillBinsActivity.this);
+            infoDialog.showDialog();
+        });
+
         // ============
         configFooter();
     }
@@ -250,6 +257,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         tvAvailableBinsCount = findViewById(R.id.tvAvailableBinsCount);
         rvWeightBatchesBin = findViewById(R.id.rvWeightBatchesBin);
         ivSupport = findViewById(R.id.ivSupport);
+        ivInfo = findViewById(R.id.ivInfo);
     }
 
     private void clearSelectedItem() {

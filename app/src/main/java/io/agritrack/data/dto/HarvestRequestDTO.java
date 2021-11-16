@@ -14,6 +14,7 @@ public class HarvestRequestDTO {
     public String site;
     public String user;
     public String notes;
+    public String plant;
 
     public static HarvestRequest convert(HarvestRequestDTO harvestRequestDTO) {
         HarvestRequest harvestRequest = new HarvestRequest();
@@ -28,6 +29,7 @@ public class HarvestRequestDTO {
         harvestRequest.site = harvestRequestDTO.site;
         harvestRequest.user = harvestRequestDTO.user;
         harvestRequest.notes = harvestRequestDTO.notes;
+        harvestRequest.packagingPlant = harvestRequestDTO.plant;
 
         return harvestRequest;
     }

@@ -5,7 +5,7 @@
     android:id="@+id/loginActivityLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/agri_green"
+    android:background="@color/agri_semi_green"
     android:descendantFocusability="beforeDescendants"
     android:focusable="true"
     android:focusableInTouchMode="true"

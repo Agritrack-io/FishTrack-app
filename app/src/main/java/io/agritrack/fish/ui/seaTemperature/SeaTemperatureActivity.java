@@ -26,6 +26,9 @@ import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -56,6 +59,7 @@ public class SeaTemperatureActivity extends AppCompatActivity implements Locatio
     private TimeOutProgressDlg syncProgressDialog;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private EditText etReferenceTemp, etCageTemp;
+    private TextView tvCurrentDate;
     private MobileDB db;
     private ProgressDialog progressDialog;
 
@@ -137,6 +141,8 @@ public class SeaTemperatureActivity extends AppCompatActivity implements Locatio
         etReferenceTemp.setFilters(new InputFilter[] { filter });
         etCageTemp.setFilters(new InputFilter[] { filter });
 
+        tvCurrentDate.setText(Today());
+
         showCurrentSite();
 
         configFooter();
@@ -165,6 +171,7 @@ public class SeaTemperatureActivity extends AppCompatActivity implements Locatio
     }
 
     private void assignCtrlVars() {
+        tvCurrentDate = findViewById(R.id.tvCurrentDate);
         etReferenceTemp = findViewById(R.id.etReferenceTemp);
         etCageTemp = findViewById(R.id.etCageTemp);
         ivSupport = findViewById(R.id.ivSupport);
@@ -279,5 +286,11 @@ public class SeaTemperatureActivity extends AppCompatActivity implements Locatio
                 syncProgressDialog.hide();
             });
         }
+    }
+
+    public static String Today() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+        Date date = new Date(System.currentTimeMillis());
+        return dateFormat.format(date);
     }
 }

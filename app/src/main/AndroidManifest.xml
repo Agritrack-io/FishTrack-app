@@ -23,7 +23,22 @@
         android:supportsRtl="true"
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true">
-        <activity android:name=".fish.ui.seaTemperature.SeaTemperatureActivity"></activity>
+        <activity
+            android:name=".tomato.ui.harvesting.HarvestingConfirmActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tomato.ui.harvesting.HarvestingTotesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tomato.ui.harvesting.HarvestingStartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tomato.ui.seeding.SeedingConfirmActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tomato.ui.seeding.SeedingStartActivity"
+            android:exported="false" />
+        <activity android:name=".fish.ui.seaTemperature.SeaTemperatureActivity" />
         <activity android:name=".tomato.ui.FruitHomeActivity" />
         <activity
             android:name=".fish.ui.wh.outgoing.OutgoingConsumableActivity"

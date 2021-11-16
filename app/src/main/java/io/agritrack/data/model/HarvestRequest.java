@@ -41,6 +41,9 @@ public class HarvestRequest {
     @ColumnInfo(name = "site_name")
     public String site;
 
+    @ColumnInfo(name = "packaging_plant")
+    public String packagingPlant;
+
    /* @OneToMany(mappedBy = "harvestRequest", fetch = FetchType.LAZY)
     public List<HarvestLoad> harvestLoads;*/
 }

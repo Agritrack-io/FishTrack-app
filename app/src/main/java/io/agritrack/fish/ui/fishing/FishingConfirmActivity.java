@@ -31,6 +31,7 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.model.HarvestRequest;
 import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
@@ -58,8 +59,9 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
     private TimeOutProgressDlg syncProgressDialog;
     private TextView tvTotalQuantityCount, tvReqQuantityCount, tvNumberOfBinsCount, tvNameCage, tvTypeOfFishConfirm, tvUsername;
 
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
+    private InfoDialog infoDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +112,11 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
             supportDialog.showDialog();
         });
 
+        ivInfo.setOnClickListener(view -> {
+            infoDialog = new InfoDialog(FishingConfirmActivity.this);
+            infoDialog.showDialog();
+        });
+
         configFooter();
     }
 
@@ -143,6 +150,7 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
         tvTypeOfFishConfirm = findViewById(R.id.tvTypeOfFishConfirm);
         tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
+        ivInfo = findViewById(R.id.ivInfo);
     }
 
     private void initControlsFromState() {

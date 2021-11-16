@@ -19,19 +19,9 @@ import com.android.hdhe.uhf.reader.UhfReader;
 
 import cn.pda.serialport.Tools;
 import io.agritrack.R;
-import io.agritrack.caen.common.CAENRegistersIO;
 
 import static android.os.Looper.getMainLooper;
-import static io.agritrack.R.color.agri_green;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_INTERVAL;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_LOGS;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_RESET;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_SAMPLES_CNT;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIMESTAMP;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIME_BIN;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ONE;
-import static io.agritrack.caen.api.EncodingUtils.ToShort;
-import static io.agritrack.caen.api.EncodingUtils.parseData;
+import static io.agritrack.R.color.agri_semi_green;
 
 public class TempLoggerDialog {
     private static Short numOfSamples = Short.valueOf("0");

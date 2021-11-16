@@ -4,24 +4,24 @@ import io.agritrack.data.model.tx.SeaTemperatureTransaction;
 
 public class SeaTemperatureTxDTO {
 
-    public Long timestamp;
+    public Long measured_at;
     public String site_name;
     public Long site_id;
     public Double ref_temperature;
     public Double cage_temperature;
-    public Double longitude;
-    public Double latitude;
+    public Double lon;
+    public Double lat;
 
     public static SeaTemperatureTxDTO convert(SeaTemperatureTransaction seaTemperatureTransaction) {
         SeaTemperatureTxDTO seaTemperatureTxDTO = new SeaTemperatureTxDTO();
 
-        seaTemperatureTxDTO.timestamp = seaTemperatureTransaction.timestamp;
+        seaTemperatureTxDTO.measured_at = seaTemperatureTransaction.timestamp;
         seaTemperatureTxDTO.site_name = seaTemperatureTransaction.siteName;
         seaTemperatureTxDTO.site_id = seaTemperatureTransaction.siteId;
         seaTemperatureTxDTO.ref_temperature = seaTemperatureTransaction.refTemp;
         seaTemperatureTxDTO.cage_temperature = seaTemperatureTransaction.cageTemp;
-        seaTemperatureTxDTO.longitude = seaTemperatureTransaction.longitude;
-        seaTemperatureTxDTO.latitude = seaTemperatureTransaction.latitude;
+        seaTemperatureTxDTO.lon = seaTemperatureTransaction.longitude;
+        seaTemperatureTxDTO.lat = seaTemperatureTransaction.latitude;
 
         return seaTemperatureTxDTO;
     }

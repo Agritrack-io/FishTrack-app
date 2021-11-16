@@ -55,8 +55,11 @@
     <string name="title_fishing">FISHING</string>
     <string name="start_fishing">Start Fishing</string>
     <string name="choose_harvest">Choose Harvest initiator</string>
+    <string name="harvest_initiator">Harvest initiator</string>
+    <string name="harvest_details">Harvest details</string>
     <string name="fish_type">Fish Type</string>
     <string name="requested_quantity">Requested Quantity</string>
+    <string name="packaging_plant">Packaging Plant</string>
     <string name="scan_platform">Scan Platform tag</string>
     <string name="barcode_platform">Barcode of Platform</string>
 
@@ -259,6 +262,7 @@
     <string name="remarks">Remarks</string>
 
     <string name="title_sea_temp">SEA TEMPERATURE</string>
+    <string name="current_date_msg">Sea temperature measurements taken on:</string>
     <string name="current_site">Current location</string>
     <string name="reference_point_temp">Reference point temperature</string>
     <string name="cage_temp">Cage temperature</string>
@@ -349,4 +353,23 @@
     <!-- Toast Messages -->
     <string name="camera_not_found">No cameraTest harware found</string>
     <string name="photo_taken">Your photo</string>
+    <!-- End of Fish strings -->
+
+
+    <!-- Tomato strings -->
+    <string name="title_seeding">SEEDING</string>
+    <string name="start_seeding">Start Seeding</string>
+    <string name="scan_pole">Scan Pole tag</string>
+    <string name="tomato_type">Tomato Type</string>
+    <string name="greenhouse">Greenhouse:</string>
+    <string name="pole">Pole:</string>
+    <string name="confirm_tomato_type">Tomato Type:</string>
+
+    <string name="title_harvesting">HARVESTING</string>
+    <string name="harvest_lot">Harvest LOT</string>
+    <string name="select_totes">Select totes</string>
+    <string name="totes_for_harvest">Used Totes</string>
+    <string name="number_of_totes"># of totes:</string>
+    <string name="scan_totes">Scan Totes</string>
+    <string name="confirm_harvest_lot">Harvest LOT:</string>
 </resources>

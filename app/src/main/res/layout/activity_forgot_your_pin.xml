@@ -5,7 +5,7 @@
     android:id="@+id/forgotYourPINLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/agri_green"
+    android:background="@color/agri_semi_green"
     tools:context=".ui.login.ForgotYourPinActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout

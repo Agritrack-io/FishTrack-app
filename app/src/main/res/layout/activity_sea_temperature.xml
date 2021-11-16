@@ -5,7 +5,9 @@
     android:id="@+id/fishingStartActivityLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/agri_green"
+    android:background="@color/agri_semi_green"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     tools:context=".fish.ui.seaTemperature.SeaTemperatureActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,7 +62,7 @@
             android:backgroundTint="@color/agri_blue"
             android:backgroundTintMode="screen"
             android:gravity="center"
-            android:textColor="@color/agri_green"
+            android:textColor="@color/agri_semi_green"
             android:textSize="@dimen/subtitle_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +77,7 @@
         android:id="@+id/formLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/agri_green"
+        android:background="@color/agri_semi_green"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintBottom_toTopOf="@+id/footerLayout"
@@ -83,9 +85,68 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <RelativeLayout
+            android:id="@+id/seaTempDLayout"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/seaTempALayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <TextView
+                    android:id="@+id/tvCurrentDateLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="@string/current_date_msg"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvCurrentDate"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvCurrentDate"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:paddingStart="10dp"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCurrentDateLabel" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/seaTempALayout"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="100dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
@@ -93,7 +154,7 @@
             app:layout_constraintBottom_toTopOf="@+id/seaTempBLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/seaTempDLayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -130,7 +191,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="16dp"
-                android:background="@color/agri_green"
+                android:background="@color/agri_semi_green"
                 android:paddingHorizontal="8dp"
                 android:text="@string/current_site"
                 android:textColor="@color/label_blue"
@@ -141,7 +202,7 @@
         <RelativeLayout
             android:id="@+id/seaTempBLayout"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="150dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
@@ -195,14 +256,14 @@
                     app:layout_constraintStart_toEndOf="@+id/etReferenceTemp"
                     app:layout_constraintTop_toTopOf="@+id/etReferenceTemp" />
 
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="16dp"
-                android:background="@color/agri_green"
+                android:background="@color/agri_semi_green"
                 android:paddingHorizontal="8dp"
                 android:text="@string/reference_point_temp"
                 android:textColor="@color/label_blue"
@@ -213,7 +274,7 @@
         <RelativeLayout
             android:id="@+id/seaTempCLayout"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="150dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
@@ -274,7 +335,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="16dp"
-                android:background="@color/agri_green"
+                android:background="@color/agri_semi_green"
                 android:paddingHorizontal="8dp"
                 android:text="@string/cage_temp"
                 android:textColor="@color/label_blue"

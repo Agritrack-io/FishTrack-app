@@ -62,7 +62,7 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 
 public class FishHomeActivity extends AppCompatActivity {
-    private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4, Tools_Idx = 5;
+    private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4, SeaTemp_Idx = 5, All_Idx =6;
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
@@ -95,12 +95,20 @@ public class FishHomeActivity extends AppCompatActivity {
             menuItemsList.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
             menuItemsList.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
             menuItemsList.add(new MenuItem(Maintenance_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
-            menuItemsList.add(new MenuItem(Tools_Idx, getString(R.string.menu_title_sea_temp), SeaTemperatureActivity.class, R.drawable.sea_temp));
+            menuItemsList.add(new MenuItem(SeaTemp_Idx, getString(R.string.menu_title_sea_temp), SeaTemperatureActivity.class, R.drawable.sea_temp));
         }
         if (roleCanAccessMenu(userRoles, Processing_Idx)) {
             menuItemsList.add(new MenuItem(Processing_Idx, getString(R.string.menu_title_processing), ProcessBinsActivity.class, R.drawable.processing));
             menuItemsList.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
             menuItemsList.add(new MenuItem(Maintenance_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
+        }
+        if (roleCanAccessMenu(userRoles, All_Idx)) {
+            menuItemsList.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
+            menuItemsList.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
+            menuItemsList.add(new MenuItem(Processing_Idx, getString(R.string.menu_title_processing), ProcessBinsActivity.class, R.drawable.processing));
+            menuItemsList.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
+            menuItemsList.add(new MenuItem(Maintenance_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
+            menuItemsList.add(new MenuItem(SeaTemp_Idx, getString(R.string.menu_title_sea_temp), SeaTemperatureActivity.class, R.drawable.sea_temp));
         }
 
         // instantiate ProgressDialog and set style.
@@ -171,7 +179,7 @@ public class FishHomeActivity extends AppCompatActivity {
                     case Maintenance_Idx:
                         i = new Intent(appCtx, MaintenanceMenuActivity.class);
                         break;
-                    case Tools_Idx:
+                    case SeaTemp_Idx:
                         i = new Intent(appCtx, SeaTemperatureActivity.class);
                         break;
 
@@ -270,9 +278,9 @@ public class FishHomeActivity extends AppCompatActivity {
     }
 
     private void assignPrivilegesToRoles() {
-        Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Transport_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Processing_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING"});
+        Privileges.put(Processing_Idx, new String[]{"ROLE_PACKAGING"});
+        Privileges.put(All_Idx, new String[]{"ROLE_SUPER_USER", "ROLE_ADMIN"});
     }
 
     private boolean roleCanAccessMenu(List<String> roles, Integer menuId) {

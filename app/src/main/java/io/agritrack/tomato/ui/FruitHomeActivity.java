@@ -42,6 +42,8 @@ import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.maintenance.MaintenanceMenuActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
 import io.agritrack.fish.ui.transport.TransportStartActivity;
+import io.agritrack.tomato.ui.harvesting.HarvestingStartActivity;
+import io.agritrack.tomato.ui.seeding.SeedingStartActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
@@ -76,8 +78,8 @@ public class FruitHomeActivity extends AppCompatActivity {
         db = MobileDB.getInstance(getAppContext());
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_seeding), FishingStartActivity.class, R.drawable.fishing));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_harvest), TransportStartActivity.class, R.drawable.transport));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_seeding), SeedingStartActivity.class, R.drawable.fishing));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_harvest), HarvestingStartActivity.class, R.drawable.transport));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_transport), ProcessBinsActivity.class, R.drawable.processing));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_packaging), WhMenuActivity.class, R.drawable.warehouse));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_shipping), MaintenanceMenuActivity.class, R.drawable.maintenance));
@@ -104,19 +106,19 @@ public class FruitHomeActivity extends AppCompatActivity {
 
         gvMainMenu = findViewById(R.id.gvMainMenu);
         gvMainMenu.setAdapter(adapter);
-        /*gvMainMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gvMainMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final Context appCtx = getApplicationContext();
                 Intent i = new Intent(appCtx, LoginActivity.class);
 
                 switch (position) {
                     case Seeding_Idx:
-
+                        i = new Intent(appCtx, SeedingStartActivity.class);
                         break;
                     case Harvest_Idx:
-                        i = new Intent(appCtx, TransportStartActivity.class);
+                        i = new Intent(appCtx, HarvestingStartActivity.class);
                         break;
-                    case Processing_Idx:
+                   /* case Processing_Idx:
                         i = new Intent(appCtx, ProcessBinsActivity.class);
                         break;
                     case Warehouse_Idx:
@@ -124,7 +126,7 @@ public class FruitHomeActivity extends AppCompatActivity {
                         break;
                     case Maintenance_Idx:
                         i = new Intent(appCtx, MaintenanceMenuActivity.class);
-                        break;
+                        break;*/
                     default:
                 }
 
@@ -132,7 +134,7 @@ public class FruitHomeActivity extends AppCompatActivity {
                 i.putExtra("id", position);
                 startActivity(i);
             }
-        });*/
+        });
 
         ivSupport = findViewById(R.id.ivSupport);
         ivSupport.setOnClickListener(view -> {
