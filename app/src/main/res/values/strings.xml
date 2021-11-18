@@ -31,7 +31,7 @@
     <string name="menu_title_maintenance">Maintenance</string>
     <string name="menu_title_sea_temp">Sea Temperature</string>
 
-    <string name="menu_title_seeding">Seeding</string>
+    <string name="menu_title_planting">Planting</string>
     <string name="menu_title_harvest">Harvest</string>
     <string name="menu_title_packaging">Packaging</string>
     <string name="menu_title_shipping">Shipping</string>
@@ -372,4 +372,11 @@
     <string name="number_of_totes"># of totes:</string>
     <string name="scan_totes">Scan Totes</string>
     <string name="confirm_harvest_lot">Harvest LOT:</string>
+
+    <string name="title_fruit_wh_menu">WH MENU</string>
+    <string name="title_inventory_totes">INVENTORY TOTES</string>
+    <string name="title_inventory_ifco">INVENTORY IFCO</string>
+    <string name="item_inventory_totes">TOTES</string>
+    <string name="item_inventory_ifco">IFCO</string>
+    <string name="items">Items</string>
 </resources>

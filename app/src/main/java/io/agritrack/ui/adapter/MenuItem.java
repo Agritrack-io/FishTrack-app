@@ -1,6 +1,8 @@
 package io.agritrack.ui.adapter;
 
 
+import java.util.Objects;
+
 public class MenuItem {
     private Integer loc;
     private String name;
@@ -69,4 +71,19 @@ public class MenuItem {
     public void setActivity(Class activity) {
         this.clazz = activity;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuItem menuItem = (MenuItem) o;
+        return Objects.equals(clazz, menuItem.clazz);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, clazz);
+    }
+
+
 }

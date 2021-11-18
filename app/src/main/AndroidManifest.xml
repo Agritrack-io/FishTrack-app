@@ -24,6 +24,18 @@
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".tomato.ui.warehouse.inventory.IfcoInventoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tomato.ui.warehouse.inventory.TotesInventoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tomato.ui.warehouse.inventory.FruitInventoryStartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tomato.ui.FruitWhMenuActivity"
+            android:exported="false" />
+        <activity
             android:name=".tomato.ui.harvesting.HarvestingConfirmActivity"
             android:exported="false" />
         <activity
@@ -33,10 +45,10 @@
             android:name=".tomato.ui.harvesting.HarvestingStartActivity"
             android:exported="false" />
         <activity
-            android:name=".tomato.ui.seeding.SeedingConfirmActivity"
+            android:name=".tomato.ui.seeding.PlantingConfirmActivity"
             android:exported="false" />
         <activity
-            android:name=".tomato.ui.seeding.SeedingStartActivity"
+            android:name=".tomato.ui.seeding.PlantingStartActivity"
             android:exported="false" />
         <activity android:name=".fish.ui.seaTemperature.SeaTemperatureActivity" />
         <activity android:name=".tomato.ui.FruitHomeActivity" />

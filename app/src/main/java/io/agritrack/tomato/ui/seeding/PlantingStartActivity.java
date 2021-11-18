@@ -1,10 +1,7 @@
 package io.agritrack.tomato.ui.seeding;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,7 +13,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
@@ -30,15 +26,11 @@ import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.state.FishingRecord;
-import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.fishing.FishingBinsActivity;
-import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.tomato.ui.FruitHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class SeedingStartActivity extends AppCompatActivity {
+public class PlantingStartActivity extends AppCompatActivity {
 
     private MobileDB db;
     private ImageView ivSupport;
@@ -53,7 +45,7 @@ public class SeedingStartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seeding_start);
+        setContentView(R.layout.activity_planting_start);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
@@ -94,7 +86,7 @@ public class SeedingStartActivity extends AppCompatActivity {
         });
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(SeedingStartActivity.this);
+            supportDialog = new SupportDialog(PlantingStartActivity.this);
             supportDialog.showDialog();
         });
 
@@ -105,7 +97,7 @@ public class SeedingStartActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
-                Intent i = new Intent(getApplicationContext(), SeedingConfirmActivity.class);
+                Intent i = new Intent(getApplicationContext(), PlantingConfirmActivity.class);
                 startActivity(i);
         });
 

@@ -27,8 +27,6 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.tomato.ui.FruitHomeActivity;
-import io.agritrack.tomato.ui.seeding.SeedingConfirmActivity;
-import io.agritrack.tomato.ui.seeding.SeedingStartActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class HarvestingStartActivity extends AppCompatActivity {

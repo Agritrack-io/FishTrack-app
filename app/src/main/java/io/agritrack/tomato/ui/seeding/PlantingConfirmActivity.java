@@ -24,17 +24,13 @@ import android.widget.TextView;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
-import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
-import io.agritrack.fish.ui.fishing.FishingFillBinsActivity;
 import io.agritrack.tomato.ui.FruitHomeActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class SeedingConfirmActivity extends AppCompatActivity implements LocationListener {
+public class PlantingConfirmActivity extends AppCompatActivity implements LocationListener {
 
     private final int REQUEST_FINE_LOCATION = 1234;
 
@@ -51,7 +47,7 @@ public class SeedingConfirmActivity extends AppCompatActivity implements Locatio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seeding_confirm);
+        setContentView(R.layout.activity_planting_confirm);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderSeedingConfirm);
@@ -67,7 +63,7 @@ public class SeedingConfirmActivity extends AppCompatActivity implements Locatio
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
 
         // instantiate ProgressDialog and set style.
-        progressDialog = new ProgressDialog(SeedingConfirmActivity.this);
+        progressDialog = new ProgressDialog(PlantingConfirmActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // set (any?) previously selected values to activity Controls.
@@ -78,7 +74,7 @@ public class SeedingConfirmActivity extends AppCompatActivity implements Locatio
         syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
             @Override
             public void doTasks() {
-                locationManager.removeUpdates(SeedingConfirmActivity.this);
+                locationManager.removeUpdates(PlantingConfirmActivity.this);
 
                 // Update state and proceed to next
                 //Boolean proceed = updateState();
@@ -93,7 +89,7 @@ public class SeedingConfirmActivity extends AppCompatActivity implements Locatio
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(SeedingConfirmActivity.this);
+            supportDialog = new SupportDialog(PlantingConfirmActivity.this);
             supportDialog.showDialog();
         });
 
@@ -106,10 +102,10 @@ public class SeedingConfirmActivity extends AppCompatActivity implements Locatio
             @Override
             public void onClick(View v) {
                 // check if permission has been granted
-                if (ActivityCompat.checkSelfPermission(SeedingConfirmActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(SeedingConfirmActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(PlantingConfirmActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(PlantingConfirmActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, SeedingConfirmActivity.this);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, PlantingConfirmActivity.this);
                 // show Progress Dialog
                 toggleProgress(true, R.string.acquire_coordinates);
             }
@@ -117,7 +113,7 @@ public class SeedingConfirmActivity extends AppCompatActivity implements Locatio
 
         ImageView ivBack = findViewById(R.id.ivBackToStartSeeding);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), SeedingStartActivity.class);
+            Intent i = new Intent(getApplicationContext(), PlantingStartActivity.class);
             startActivity(i);
         });
     }

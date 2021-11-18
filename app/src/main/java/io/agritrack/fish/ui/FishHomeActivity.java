@@ -16,9 +16,14 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -86,29 +91,28 @@ public class FishHomeActivity extends AppCompatActivity {
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderHome);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
-        ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
+        Set<MenuItem> menuItemsSet = new LinkedHashSet<MenuItem>();
         if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
-            menuItemsList.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
-            menuItemsList.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
-            menuItemsList.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
-            menuItemsList.add(new MenuItem(Maintenance_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
-            menuItemsList.add(new MenuItem(SeaTemp_Idx, getString(R.string.menu_title_sea_temp), SeaTemperatureActivity.class, R.drawable.sea_temp));
+            menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
         }
         if (roleCanAccessMenu(userRoles, Processing_Idx)) {
-            menuItemsList.add(new MenuItem(Processing_Idx, getString(R.string.menu_title_processing), ProcessBinsActivity.class, R.drawable.processing));
-            menuItemsList.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
-            menuItemsList.add(new MenuItem(Maintenance_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
+            menuItemsSet.add(new MenuItem(Processing_Idx, getString(R.string.menu_title_processing), ProcessBinsActivity.class, R.drawable.processing));
         }
-        if (roleCanAccessMenu(userRoles, All_Idx)) {
-            menuItemsList.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
-            menuItemsList.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
-            menuItemsList.add(new MenuItem(Processing_Idx, getString(R.string.menu_title_processing), ProcessBinsActivity.class, R.drawable.processing));
-            menuItemsList.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
-            menuItemsList.add(new MenuItem(Maintenance_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
-            menuItemsList.add(new MenuItem(SeaTemp_Idx, getString(R.string.menu_title_sea_temp), SeaTemperatureActivity.class, R.drawable.sea_temp));
+        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
+            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
+        }
+        if (roleCanAccessMenu(userRoles, Warehouse_Idx)) {
+            menuItemsSet.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
+        }
+        if (roleCanAccessMenu(userRoles, Maintenance_Idx)) {
+            menuItemsSet.add(new MenuItem(Maintenance_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
+        }
+        if (roleCanAccessMenu(userRoles, SeaTemp_Idx)) {
+            menuItemsSet.add(new MenuItem(SeaTemp_Idx, getString(R.string.menu_title_sea_temp), SeaTemperatureActivity.class, R.drawable.sea_temp));
         }
 
         // instantiate ProgressDialog and set style.
@@ -129,7 +133,8 @@ public class FishHomeActivity extends AppCompatActivity {
             }
         });
 
-        HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
+        List<MenuItem> miList = menuItemsSet.stream().sorted(Comparator.comparingInt(MenuItem::getLoc)).collect(Collectors.toList());
+        HomeMenuAdapter adapter = new HomeMenuAdapter(this, (ArrayList<MenuItem>) miList);
 
         gvMainMenu = findViewById(R.id.gvMainMenu);
         gvMainMenu.setAdapter(adapter);
@@ -278,9 +283,12 @@ public class FishHomeActivity extends AppCompatActivity {
     }
 
     private void assignPrivilegesToRoles() {
-        Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING"});
-        Privileges.put(Processing_Idx, new String[]{"ROLE_PACKAGING"});
-        Privileges.put(All_Idx, new String[]{"ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Processing_Idx, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Transport_Idx, new String[]{"ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Warehouse_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Maintenance_Idx, new String[]{"ROLE_PACKAGING", "ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(SeaTemp_Idx, new String[]{"ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
     }
 
     private boolean roleCanAccessMenu(List<String> roles, Integer menuId) {

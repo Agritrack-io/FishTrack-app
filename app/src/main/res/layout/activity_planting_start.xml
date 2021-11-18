@@ -8,7 +8,7 @@ android:layout_height="match_parent"
 android:background="@color/agri_semi_green"
 android:descendantFocusability="beforeDescendants"
 android:focusableInTouchMode="true"
-tools:context=".tomato.ui.seeding.SeedingStartActivity">
+tools:context=".tomato.ui.seeding.PlantingStartActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
