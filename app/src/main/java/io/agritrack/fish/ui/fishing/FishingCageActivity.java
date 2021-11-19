@@ -172,7 +172,7 @@ public class FishingCageActivity extends AppCompatActivity {
             GlobalState.recFishing.cageRFID = cageRFID.toString();
             CageDetails cage = db.cageDetailsDAO().getByRFId(GlobalState.recFishing.cageRFID);
             if (cage != null) {
-                GlobalState.recFishing.speciesName = cage.fishType; //TODO: compare with Requested Species
+                GlobalState.recFishing.speciesName = cage.species; //TODO: compare with Requested Species
                 GlobalState.recFishing.pathologist = cage.ichthyopathologist;
                 GlobalState.recFishing.lastFed = cage.lastFed;
             } else {

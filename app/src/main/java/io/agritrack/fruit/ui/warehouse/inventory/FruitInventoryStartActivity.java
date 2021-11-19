@@ -1,6 +1,5 @@
-package io.agritrack.tomato.ui.warehouse.inventory;
+package io.agritrack.fruit.ui.warehouse.inventory;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -30,11 +29,8 @@ import io.agritrack.data.model.Site;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.InventoryWHRecord;
-import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.fish.ui.wh.inventory.InventoryAssetActivity;
-import io.agritrack.fish.ui.wh.inventory.InventoryConsumableActivity;
 import io.agritrack.fish.ui.wh.inventory.InventoryStartActivity;
-import io.agritrack.tomato.ui.FruitWhMenuActivity;
+import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.ui.adapter.InventoryMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.service.LocalPreferences;

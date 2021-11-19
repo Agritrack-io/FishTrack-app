@@ -1,4 +1,4 @@
-package io.agritrack.tomato.ui.seeding;
+package io.agritrack.fruit.ui.planting;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
@@ -27,7 +27,7 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.tomato.ui.FruitHomeActivity;
+import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class PlantingStartActivity extends AppCompatActivity {

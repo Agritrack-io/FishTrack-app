@@ -261,6 +261,8 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         });
     }
 
+
+
     private boolean correlate() {
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());

@@ -15,6 +15,7 @@ public class ConsumableTxDTO {
     public String ftes;
     public String dispatchNote;
     public String state;
+    public String collection_lot;
     public Double longitude;
     public Double latitude;
 
@@ -28,6 +29,7 @@ public class ConsumableTxDTO {
         consumableTxDTO.dispatchNote = consumableTransaction.dispatchNote;
         consumableTxDTO.state = consumableTransaction.state;
         consumableTxDTO.consumableType = consumableTransaction.consumableType;
+        consumableTxDTO.collection_lot = consumableTransaction.collectionLot;
         consumableTxDTO.longitude = consumableTransaction.longitude;
         consumableTxDTO.latitude = consumableTransaction.latitude;
 

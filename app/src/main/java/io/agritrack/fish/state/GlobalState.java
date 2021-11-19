@@ -187,7 +187,7 @@ public class GlobalState {
         try {
             ProcessingTransaction txProcess = new ProcessingTransaction();
             txProcess.dispatchNote = recProcessing.dispatchNote;
-            txProcess.fishCondition = recProcessing.fishCondition;
+            txProcess.productCondition = recProcessing.fishCondition;
             txProcess.cleanTruck = Boolean.toString(recProcessing.cleanTruck);
             txProcess.smells = Boolean.toString(recProcessing.smellyTruck);
             txProcess.plot = recProcessing.pLot;

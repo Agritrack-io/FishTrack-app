@@ -13,8 +13,8 @@ public class HarvestLoad {
     @ColumnInfo(name = "status")
     public String status;
 
-    @ColumnInfo(name = "fish_type")
-    public String fishType;
+    @ColumnInfo(name = "species")
+    public String species;
 
     @ColumnInfo(name = "fish_size")
     public String fishSize;

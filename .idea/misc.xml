@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/drawable-hdpi/bg_rounded_dialog_non_input.xml" value="0.1796875" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/drawable/bg_rounded_dialog_non_input_smooth.xml" value="0.1796875" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_correlation.xml" value="0.2504528985507246" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_bins.xml" value="0.1" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_cage.xml" value="0.1" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_confirm.xml" value="0.1" />
@@ -12,15 +13,21 @@
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_fill_bins.xml" value="0.1" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_start.xml" value="0.1358695652173913" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fishing_team.xml" value="0.1" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fruit_correlation.xml" value="0.2911458333333333" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fruit_home.xml" value="0.25416666666666665" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fruit_wh_menu.xml" value="0.16927083333333334" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_harvesting_confirm.xml" value="0.23489583333333333" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_harvesting_start.xml" value="0.22083333333333333" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_harvesting_totes.xml" value="0.23489583333333333" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_ifco_inventory.xml" value="0.325" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_inventory.xml" value="0.35260416666666666" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_inventory_asset.xml" value="0.3292572463768116" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_inventory_consumable.xml" value="0.30027173913043476" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_inventory_start.xml" value="0.3292572463768116" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_sea_temperature.xml" value="0.12025316455696203" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_seeding_confirm.xml" value="0.23489583333333333" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_seeding_start.xml" value="0.16354166666666667" />
+        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_semi_ready_storage.xml" value="0.25416666666666665" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_totes_inventory.xml" value="0.35260416666666666" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_transport_bins.xml" value="0.11423505572441743" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_wh_menu.xml" value="0.3292572463768116" />

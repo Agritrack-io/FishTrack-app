@@ -20,7 +20,8 @@ import io.agritrack.data.dao.HarvestRequestDAO;
 import io.agritrack.data.dao.SiteDAO;
 import io.agritrack.data.dao.common.CustomerDAO;
 import io.agritrack.data.dao.common.EmployeeDAO;
-import io.agritrack.data.dao.common.FishSpeciesDAO;
+import io.agritrack.data.dao.common.IotLoggerDAO;
+import io.agritrack.data.dao.common.SpeciesDAO;
 import io.agritrack.data.dao.common.ReaderDAO;
 import io.agritrack.data.dao.common.SupplierDAO;
 import io.agritrack.data.dao.tx.AssetTransactionDAO;
@@ -42,7 +43,8 @@ import io.agritrack.data.model.HarvestRequest;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.common.Customer;
 import io.agritrack.data.model.common.Employee;
-import io.agritrack.data.model.common.FishSpecies;
+import io.agritrack.data.model.common.IotLogger;
+import io.agritrack.data.model.common.Species;
 import io.agritrack.data.model.common.Reader;
 import io.agritrack.data.model.common.Supplier;
 import io.agritrack.data.model.tx.AssetTransaction;
@@ -60,11 +62,11 @@ import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
 
 @Database(entities = {AppUser.class, Site.class, Asset.class, Supplier.class, HarvestRequest.class,
-        CageDetails.class, Employee.class, FishSpecies.class, Reader.class,
+        CageDetails.class, Employee.class, Species.class, Reader.class, IotLogger.class,
         FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class,
         AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class, RepairTransaction.class, SeaTemperatureTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class},
-        version = 13, exportSchema = false)
+        version = 33, exportSchema = false)
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class, ConsumableTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
@@ -119,9 +121,11 @@ public abstract class MobileDB extends RoomDatabase {
 
     public abstract EmployeeDAO employeeDAO();
 
-    public abstract FishSpeciesDAO speciesDAO();
+    public abstract SpeciesDAO speciesDAO();
 
     public abstract ReaderDAO readerDAO();
+
+    public abstract IotLoggerDAO iotLoggerDAO();
 
     public abstract RFIDInventoryDAO rFIDInventoryDAO();
 

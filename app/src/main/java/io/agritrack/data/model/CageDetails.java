@@ -19,8 +19,8 @@ public class CageDetails {
     @ColumnInfo(name = "hlot")
     public String hlot;
 
-    @ColumnInfo(name = "fish_type")
-    public String fishType;
+    @ColumnInfo(name = "species")
+    public String species;
 
     @ColumnInfo(name = "site_id")
     public Long site;

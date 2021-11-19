@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "species")
-public class FishSpecies {
+public class Species {
 
     @PrimaryKey
     public Long id;
@@ -22,6 +22,9 @@ public class FishSpecies {
     @ColumnInfo(name="name")
     public String name;
 
-    public FishSpecies() {
+    @ColumnInfo(name="type")
+    public String type;
+
+    public Species() {
     }
 }

@@ -1,4 +1,4 @@
-package io.agritrack.tomato.ui;
+package io.agritrack.fruit.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
@@ -16,10 +16,15 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.SyncAssetsCallBack;
@@ -36,18 +41,12 @@ import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
-import io.agritrack.data.dto.common.FishSpeciesDTO;
+import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.fish.ui.fishing.FishingStartActivity;
-import io.agritrack.fish.ui.maintenance.MaintenanceMenuActivity;
-import io.agritrack.fish.ui.process.ProcessBinsActivity;
-import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
-import io.agritrack.fish.ui.transport.TransportStartActivity;
-import io.agritrack.tomato.ui.harvesting.HarvestingStartActivity;
-import io.agritrack.tomato.ui.seeding.PlantingStartActivity;
+import io.agritrack.fruit.ui.harvesting.HarvestingStartActivity;
+import io.agritrack.fruit.ui.planting.PlantingStartActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
@@ -59,7 +58,7 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 
 public class FruitHomeActivity extends AppCompatActivity {
-    private static final int Planting_Idx = 0, Harvest_Idx = 1, Storage_semi_ready = 2, Packaging_Idx = 3, Storage_ready = 4, Shipping_Idx = 5, Tools_Idx = 6, Temp_measure_Idx = 7, All_Idx = 8;
+    private static final int Planting_Idx = 0, Harvest_Idx = 1, Storage_semi_ready = 2, Packaging_Idx = 3, Storage_ready = 4, Shipping_Idx = 5, Warehouse_Idx = 6, Temp_measure_Idx = 7;
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
@@ -87,40 +86,31 @@ public class FruitHomeActivity extends AppCompatActivity {
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
-        ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_planting), PlantingStartActivity.class, R.drawable.fishing));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_harvest), HarvestingStartActivity.class, R.drawable.transport));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_transport), ProcessBinsActivity.class, R.drawable.processing));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_packaging), WhMenuActivity.class, R.drawable.warehouse));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_shipping), MaintenanceMenuActivity.class, R.drawable.maintenance));
-
-
+        Set<MenuItem> menuItemsSet = new LinkedHashSet<MenuItem>();
         if (roleCanAccessMenu(userRoles, Planting_Idx)) {
-            menuItemsList.add(new MenuItem(Planting_Idx, getString(R.string.menu_title_fishing), PlantingStartActivity.class, R.drawable.fishing));
-            menuItemsList.add(new MenuItem(Harvest_Idx, getString(R.string.menu_title_transport), HarvestingStartActivity.class, R.drawable.transport));
-            menuItemsList.add(new MenuItem(Tools_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
-            menuItemsList.add(new MenuItem(Temp_measure_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
+            menuItemsSet.add(new MenuItem(Planting_Idx, getString(R.string.menu_title_planting), PlantingStartActivity.class, R.drawable.planting));
+        }
+        if (roleCanAccessMenu(userRoles, Harvest_Idx)) {
+            menuItemsSet.add(new MenuItem(Harvest_Idx, getString(R.string.menu_title_harvest), HarvestingStartActivity.class, R.drawable.harvest));
+        }
+        /*if (roleCanAccessMenu(userRoles, Storage_semi_ready)) {
+            menuItemsSet.add(new MenuItem(Storage_semi_ready, getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
         }
         if (roleCanAccessMenu(userRoles, Packaging_Idx)) {
-            menuItemsList.add(new MenuItem(Storage_semi_ready, getString(R.string.menu_title_processing), ProcessBinsActivity.class, R.drawable.processing));
-            menuItemsList.add(new MenuItem(Packaging_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
-            menuItemsList.add(new MenuItem(Storage_ready, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
-            menuItemsList.add(new MenuItem(Shipping_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
-            menuItemsList.add(new MenuItem(Tools_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
-            menuItemsList.add(new MenuItem(Temp_measure_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
+            menuItemsSet.add(new MenuItem(Packaging_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
         }
-        if (roleCanAccessMenu(userRoles, All_Idx)) {
-            menuItemsList.add(new MenuItem(Planting_Idx, getString(R.string.menu_title_fishing), PlantingStartActivity.class, R.drawable.fishing));
-            menuItemsList.add(new MenuItem(Harvest_Idx, getString(R.string.menu_title_transport), HarvestingStartActivity.class, R.drawable.transport));
-            menuItemsList.add(new MenuItem(Storage_semi_ready, getString(R.string.menu_title_processing), ProcessBinsActivity.class, R.drawable.processing));
-            menuItemsList.add(new MenuItem(Packaging_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
-            menuItemsList.add(new MenuItem(Storage_ready, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
-            menuItemsList.add(new MenuItem(Shipping_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
-            menuItemsList.add(new MenuItem(Tools_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
-            menuItemsList.add(new MenuItem(Temp_measure_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
+        if (roleCanAccessMenu(userRoles, Storage_ready)) {
+            menuItemsSet.add(new MenuItem(Storage_ready, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
         }
-
-
+        if (roleCanAccessMenu(userRoles, Shipping_Idx)) {
+            menuItemsSet.add(new MenuItem(Shipping_Idx, getString(R.string.menu_title_sea_temp), SeaTemperatureActivity.class, R.drawable.sea_temp));
+        }*/
+        if (roleCanAccessMenu(userRoles, Warehouse_Idx)) {
+            menuItemsSet.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), FruitWhMenuActivity.class, R.drawable.warehouse));
+        }
+        /*if (roleCanAccessMenu(userRoles, Temp_measure_Idx)) {
+            menuItemsSet.add(new MenuItem(Temp_measure_Idx, getString(R.string.menu_title_sea_temp), SeaTemperatureActivity.class, R.drawable.sea_temp));
+        }*/
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(FruitHomeActivity.this);
@@ -140,7 +130,8 @@ public class FruitHomeActivity extends AppCompatActivity {
             }
         });
 
-        HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
+        List<MenuItem> miList = menuItemsSet.stream().sorted(Comparator.comparingInt(MenuItem::getLoc)).collect(Collectors.toList());
+        HomeMenuAdapter adapter = new HomeMenuAdapter(this, (ArrayList<MenuItem>) miList);
 
         gvMainMenu = findViewById(R.id.gvMainMenu);
         gvMainMenu.setAdapter(adapter);
@@ -157,10 +148,10 @@ public class FruitHomeActivity extends AppCompatActivity {
                     case Harvest_Idx:
                         i = new Intent(appCtx, HarvestingStartActivity.class);
                         break;
-                   /* case Processing_Idx:
-                        i = new Intent(appCtx, ProcessBinsActivity.class);
-                        break;
                     case Warehouse_Idx:
+                        i = new Intent(appCtx, FruitWhMenuActivity.class);
+                        break;
+                    /*case Warehouse_Idx:
                         i = new Intent(appCtx, WhMenuActivity.class);
                         break;
                     case Maintenance_Idx:
@@ -236,7 +227,7 @@ public class FruitHomeActivity extends AppCompatActivity {
             syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
 
             // sync fish species
-            Call<List<FishSpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCode("gr", "Bearer " + token);
+            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.PRODUCT, "Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
 
         } catch (Exception e) {
@@ -260,9 +251,14 @@ public class FruitHomeActivity extends AppCompatActivity {
     }
 
     private void assignPrivilegesToRoles() {
-        Privileges.put(Planting_Idx, new String[]{"ROLE_SEEDING"});
-        Privileges.put(Packaging_Idx, new String[]{"ROLE_PACKAGING"});
-        Privileges.put(All_Idx, new String[]{"ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Planting_Idx, new String[]{"ROLE_SEEDING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Harvest_Idx, new String[]{"ROLE_SEEDING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Storage_semi_ready, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Packaging_Idx, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Storage_ready, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Shipping_Idx, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Warehouse_Idx, new String[]{"ROLE_SEEDING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Temp_measure_Idx, new String[]{"ROLE_SEEDING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
     }
 
     private boolean roleCanAccessMenu(List<String> roles, Integer menuId) {

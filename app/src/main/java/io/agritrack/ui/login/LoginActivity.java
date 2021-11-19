@@ -39,11 +39,11 @@ import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
-import io.agritrack.data.dto.common.FishSpeciesDTO;
+import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.tomato.ui.FruitHomeActivity;
+import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.ui.config.ConfigActivity;
 import io.agritrack.ui.login.api.AuthApi;
 import io.agritrack.ui.login.api.AuthInfo;
@@ -55,12 +55,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.os.Build.PRODUCT;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 import static io.agritrack.ui.service.LocalPreferences.Logged_In_User_Key;
-import static io.agritrack.ui.service.LocalPreferences.Logged_User_Roles_Key;
 import static io.agritrack.ui.service.LocalPreferences.Token_Key;
 
 public class LoginActivity extends AppCompatActivity {
@@ -280,7 +278,7 @@ public class LoginActivity extends AppCompatActivity {
             syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
 
             // sync fish species
-            Call<List<FishSpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCode("gr", "Bearer " + token);
+            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.PRODUCT,"Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
 
             goToProductMenu();

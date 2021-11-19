@@ -1,4 +1,4 @@
-package io.agritrack.tomato.ui.warehouse.inventory;
+package io.agritrack.fruit.ui.warehouse.inventory;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
@@ -13,11 +13,15 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -28,9 +32,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ExpandableListView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,13 +48,10 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.RFIDInventoryDTO;
@@ -59,14 +61,10 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.enums.AssetType;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.fish.ui.wh.inventory.InventoryAssetActivity;
-import io.agritrack.fish.ui.wh.inventory.InventoryStartActivity;
 import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
-import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
@@ -138,6 +136,9 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
         // get  references of the controls
         assignCtrlVars();
 
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
+
         // get references to Location Manager Instance
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -148,61 +149,29 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
         progressDialog = new ProgressDialog(TotesInventoryActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        /*xvInventoryItems.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                clearSelectedItem();
-
-                selectedParent = null;
-                selectedChild = null;
-                return false;
-            }
-        });
-
-        xvInventoryItems.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                ConstraintLayout view = (ConstraintLayout) v;
-                TextView tvSiteName = v.findViewById(R.id.tvSiteName);
-                selectedBarcode = tvSiteName.getText().toString();
-
-                clearSelectedItem();
-
-                v.setSelected(true);
-                view.setBackgroundColor(Color.GRAY);
-                selectedItem = view;
-
-                selectedParent = groupPosition;
-                selectedChild = childPosition;
-
-                return true;
-            }
-        });
-
-        // initiate RFID scanner behaviour
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvInventoryTotes.setLayoutManager(layoutManager);
+        rvInventoryTotes.setItemAnimator(new DefaultItemAnimator());
+        adapterTotes = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
+        rvInventoryTotes.setAdapter(adapterTotes);
+        rvInventoryTotes.setNestedScrollingEnabled(false);
 
         scanResult.observe(this, response -> {
             if (response == null) {
                 return;
             }
-            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
-
-            if (adapterInventoryItems == null) {
-                adapterInventoryItems = new TreelikeAdapter(this, values);
-                xvInventoryItems.setAdapter(adapterInventoryItems);
-            } else {
-                adapterInventoryItems.appendItems(values);
-            }
-            adapterInventoryItems.notifyDataSetChanged();
+            tvTotesCount.setText(String.valueOf(response.size()));
+            adapterTotes.setValues(new ArrayList<>(response));
+            adapterTotes.notifyDataSetChanged();
         });
 
         // initialize scanning threads
         prepareScanAvailableBinsButton();
 
-        ivDeleteItem.setOnClickListener(view -> {
+        ivDeleteTote.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if (selectedParent != null && selectedChild != null) {
+            if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                 confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
@@ -211,10 +180,10 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
                     if (barcode != null) {
-                        adapterInventoryItems.removeItem(selectedParent, selectedChild);
-                        adapterInventoryItems.notifyDataSetChanged();
+                        adapterTotes.removeItem(barcode);
+                        adapterTotes.notifyDataSetChanged();
+                        tvTotesCount.setText(String.valueOf(adapterTotes.getItemCount()));
                         selectedBarcode = null;
-                        selectedChild = null;
                     }
                 });
 
@@ -222,15 +191,15 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render("Plz select a Tote to delete!!"), Toast.LENGTH_LONG);
             }
-        });*/
+        });
 
-       /* ivAddItem.setOnClickListener(view -> {
+        ivAddTote.setOnClickListener(view -> {
             showAddDialog();
-        });*/
+        });
 
-       /* //************************************************************************
+        //************************************************************************
         // instantiate an AlertDialog with countdown functionality
         syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
             @Override
@@ -242,13 +211,13 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
 
                 //Set scanning to false to stop running scan thread
                 scanning = false;
-                transportationBinsThread.setScanInProgress(scanning);
+                inventoryTotesThread.setScanInProgress(scanning);
 
                 toggleProgress(false, R.string.app_name);
-                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
                 startActivity(i);
             }
-        };*/
+        };
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
         ivSupport.setOnClickListener(view -> {
@@ -266,25 +235,23 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
     }
 
     private void assignCtrlVars() {
-       /* tgChooseAssetType = findViewById(R.id.tgChooseAssetType);
-        xvInventoryItems = findViewById(R.id.xvInventoryItems);
-        //tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
-        ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
-        ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
         ivSupport = findViewById(R.id.ivSupport);
-        tgChooseAssetType.setOnCheckedChangeListener(this);*/
+        rvInventoryTotes = findViewById(R.id.rvInventoryTotes);
+        tvTotesCount = findViewById(R.id.tvTotesCount);
+        ivDeleteTote = (ImageButton) findViewById(R.id.ivDeleteTote);
+        ivAddTote = (ImageButton) findViewById(R.id.ivAddTote);
     }
 
     protected void configFooter() {
         ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
-        /*ivNext.setOnClickListener(new View.OnClickListener() {
+        ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // check if permission has been granted
                 if (ActivityCompat.checkSelfPermission(TotesInventoryActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(TotesInventoryActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                if (adapterInventoryItems == null) {
+                if (adapterTotes == null) {
                     String vd = validate();
                     if (!Strings.isEmptyOrWhitespace(vd)) {
                         CToast(getApplicationContext(), render("Invalid inputs : " + vd), Toast.LENGTH_LONG);
@@ -295,21 +262,67 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
                 // show Progress Dialog
                 toggleProgress(true, R.string.acquire_coordinates);
             }
-        });*/
+        });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
+        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToFruitInventoryStart);
         ivBack.setOnClickListener(view -> {
-/*
             //Set scanning to false to stop running scan thread
             scanning = false;
-            transportationBinsThread.setScanInProgress(scanning);
+            inventoryTotesThread.setScanInProgress(scanning);
 
-            Intent i = new Intent(getApplicationContext(), InventoryStartActivity.class);
-            startActivity(i);*/
+            Intent i = new Intent(getApplicationContext(), FruitInventoryStartActivity.class);
+            startActivity(i);
         });
     }
 
-    /*private void showAddDialog() {
+    private void prepareScanAvailableBinsButton() {
+        // RFID scanning functionality
+        uhfReader = UhfReader.getInstance();
+        uhfReader.setWorkArea(3);
+        uhfReader.setOutputPower(33);
+
+        final Button scanButton = findViewById(R.id.btnScanTotes);
+        scanButton.setOnClickListener(view -> {
+            clearSelectedItem();
+            scanning = !scanning;
+
+            // Following check is required to instantiate a ScanningThread that was stopped previously.
+            if (inventoryTotesThread.getState() == Thread.State.TERMINATED) {
+                inventoryTotesThread = new ScanInventoryThread();
+            }
+            //update scanning, uhfReader, tvPlatformName values in thread
+            inventoryTotesThread.setScanInProgress(scanning);
+            inventoryTotesThread.setUhfReader(uhfReader);
+            inventoryTotesThread.setScanResult(scanResult);
+            inventoryTotesThread.setFilter(Filters.RFID_BIN);
+
+            if (scanning) {
+                scanButton.setText(R.string.stop_scan);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                    }
+                });
+                if (inventoryTotesThread.getState() == Thread.State.NEW) {
+                    inventoryTotesThread.start();
+                }
+            } else {
+                scanButton.setText(R.string.scan_totes);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+                    }
+                });
+                try {
+                    inventoryTotesThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Type item BARCODE");
 
@@ -323,9 +336,9 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                itemBarcode = input.getText().toString();
-                adapterInventoryItems.addItem(itemBarcode);
-                adapterInventoryItems.notifyDataSetChanged();
+                toteBarcode = input.getText().toString();
+                adapterTotes.addItem(toteBarcode);
+                adapterTotes.notifyDataSetChanged();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -337,7 +350,7 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
 
         builder.show();
 
-    }*/
+    }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
@@ -348,6 +361,42 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
         }
 
         return sb.toString();
+    }
+
+    private void initControlsFromState() {
+
+    }
+
+    private void updateState() {
+        if (adapterTotes == null) {
+            return;
+        }
+
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
+
+        try {
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(render("Synchronizing data..."));
+            progressDialog.show();
+
+            String token = LocalPreferences.getToken();
+
+            // persist WHIncomingAssetTX Record data to local DB.
+            RFIDInventory invtx = GlobalState.commitWHRFIDInventory(db);
+            List<RFIDInventoryItem> invItemtxs = GlobalState.commitWHRFIDInventoryItem(db, invtx);
+
+            // sync WH Inventory Tx
+            Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(RFIDInventoryDTO.convert(invtx), "Bearer " + token);
+            Call<List<RFIDInventoryItemDTO>> syncInvItemTxCallBack = updService.syncRFIDInventoryItemTx(RFIDInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
+            syncInvTxCallBack.enqueue(new TotesInventoryActivity.SyncInvTxCallBack());
+            syncInvItemTxCallBack.enqueue(new TotesInventoryActivity.SyncInvItemTxCallBack());
+        } catch (Exception e) {
+            e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+        } finally {
+            progressDialog.dismiss();
+        }
     }
 
     public class SyncInvTxCallBack implements Callback<RFIDInventoryDTO> {

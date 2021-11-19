@@ -7,7 +7,7 @@ import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
-import io.agritrack.data.dto.common.FishSpeciesDTO;
+import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import retrofit2.Call;
@@ -56,8 +56,8 @@ public interface SyncApi {
     Call<List<SupplierDTO>> getSuppliersBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/species/{country}")
-    Call<List<FishSpeciesDTO>> getSpeciesByCountryCode(@Path("country") String country, @Header("Authorization") String token);
+    @GET("/species")
+    Call<List<SpeciesDTO>> getSpeciesByCountryCodeAndType(@Query("country") String country, @Query("type") String type, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/cage-detail/{siteId}")

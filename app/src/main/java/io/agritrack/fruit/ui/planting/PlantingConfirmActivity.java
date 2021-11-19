@@ -1,4 +1,4 @@
-package io.agritrack.tomato.ui.seeding;
+package io.agritrack.fruit.ui.planting;
 
 import static io.agritrack.fish.state.GlobalState.recFishing;
 
@@ -26,7 +26,7 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
-import io.agritrack.tomato.ui.FruitHomeActivity;
+import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 

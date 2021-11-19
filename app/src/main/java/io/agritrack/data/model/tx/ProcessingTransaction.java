@@ -27,14 +27,14 @@ public class ProcessingTransaction {
     @ColumnInfo(name = "plot")
     public String plot;
 
-    @ColumnInfo(name = "fish_type")
-    public String fishType;
+    @ColumnInfo(name = "species")
+    public String species;
 
     @ColumnInfo(name = "dispatch_note")
     public String dispatchNote;
 
-    @ColumnInfo(name = "fish_condition")
-    public String fishCondition;
+    @ColumnInfo(name = "product_condition")
+    public String productCondition;
 
     @TypeConverters(StringListConverter.class)
     @ColumnInfo(name = "bins_received")

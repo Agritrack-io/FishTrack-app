@@ -8,7 +8,7 @@ public class CageDetailsDTO {
     public String asset_rfid;
     public String ichthyopathologist;
     public String hlot;
-    public String fish_type;
+    public String species;
     public Long site;
     public String last_fed;
 
@@ -18,7 +18,7 @@ public class CageDetailsDTO {
         cageDetails.rfid = detailsDTO.asset_rfid;
         cageDetails.ichthyopathologist = detailsDTO.ichthyopathologist;
         cageDetails.hlot = detailsDTO.hlot;
-        cageDetails.fishType = detailsDTO.fish_type;
+        cageDetails.species = detailsDTO.species;
         cageDetails.site = detailsDTO.site;
         cageDetails.lastFed = detailsDTO.last_fed;
         return cageDetails;

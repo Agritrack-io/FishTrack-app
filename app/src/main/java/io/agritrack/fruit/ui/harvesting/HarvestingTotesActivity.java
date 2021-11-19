@@ -1,4 +1,4 @@
-package io.agritrack.tomato.ui.harvesting;
+package io.agritrack.fruit.ui.harvesting;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
@@ -25,7 +25,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,10 +33,6 @@ import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -45,8 +40,6 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.rfid.ScanInventoryThread;
-import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.tomato.ui.FruitHomeActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
