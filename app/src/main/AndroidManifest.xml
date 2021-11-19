@@ -24,52 +24,60 @@
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".fruit.ui.storage.SemiReadyStorageActivity"
-            android:screenOrientation="portrait"
+            android:name=".fruit.ui.storage.SemiReadyStorageConfirmActivity"
             android:exported="false" />
+        <activity
+            android:name=".fruit.ui.storage.SemiReadyStorageScanActivity"
+            android:exported="false" />
+        <activity
+            android:name=".fruit.ui.storage.SemiReadyStorageActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.warehouse.correlation.FruitCorrelationActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.warehouse.inventory.IfcoInventoryActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.warehouse.inventory.TotesInventoryActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.warehouse.inventory.FruitInventoryStartActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.FruitWhMenuActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.harvesting.HarvestingConfirmActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.harvesting.HarvestingTotesActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.harvesting.HarvestingStartActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.planting.PlantingConfirmActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.planting.PlantingStartActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-        <activity android:name=".fish.ui.seaTemperature.SeaTemperatureActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
-        <activity android:name=".fruit.ui.FruitHomeActivity"
+        <activity
+            android:name=".fish.ui.seaTemperature.SeaTemperatureActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fruit.ui.FruitHomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.wh.outgoing.OutgoingConsumableActivity"

@@ -386,4 +386,8 @@
     <string name="scan_rfid">Scan RFID</string>
     <string name="pole_barcode">Pole</string>
     <string name="temp_logger_barcode">Temp logger</string>
+
+    <string name="title_semi_storage">SEMI READY STORAGE</string>
+    <string name="totes_for_semi_storage">Received Totes</string>
+    <string name="total_weight">Total weight</string>
 </resources>
