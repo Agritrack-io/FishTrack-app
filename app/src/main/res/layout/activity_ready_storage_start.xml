@@ -6,7 +6,7 @@ android:id="@+id/fishingBinsLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_semi_green"
-tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
+tools:context=".fruit.ui.storage_ready.ReadyStorageStartActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -43,7 +43,7 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
         android:layout_marginBottom="32dp"
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
-        android:text="@string/title_semi_storage"
+        android:text="@string/title_storage"
         android:textColor="@color/yellow"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -53,7 +53,7 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
         tools:ignore="MissingPrefix" />
 
     <TextView
-        android:id="@+id/tvHeaderSemiReadyStorageScan"
+        android:id="@+id/tvHeaderStorageReadyStart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -83,7 +83,7 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
     <RelativeLayout
         android:id="@+id/incomingAssetALayout"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="150dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -96,81 +96,68 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
             android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:padding="1dp">
 
             <TextView
-                android:id="@+id/tvFrom"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
+                android:id="@+id/tvPoleName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="50dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/details_from"
-                android:textColor="@color/agri_blue"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/title_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvSemiStorageFrom"
+                android:background="@drawable/bg_rounded_dialog_non_input"
+                android:gravity="center|center_vertical"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toTopOf="@+id/btnScanPole"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvSemiStorageFrom"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginStart="6dp"
-                android:layout_marginTop="8dp"
+            <Button
+                android:id="@+id/btnScanPole"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginEnd="100dp"
                 android:layout_marginBottom="8dp"
-                android:background="@drawable/border_bottom"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/text_view_font_size_medium_to_normal"
-                android:textStyle="normal"
+                android:background="@drawable/button_press_effect"
+                android:text="@string/scan_tag"
+                android:textColor="@color/yellow"
+                android:textSize="@dimen/button_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvFrom"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvTo"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginEnd="6dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/details_to"
-                android:textColor="@color/agri_blue"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/title_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvSemiStorageTo"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvSemiStorageTo"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/border_bottom"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/black"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/text_view_font_size_medium_to_normal"
-                android:textStyle="normal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintHorizontal_bias="0.75"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPoleName"
+                tools:layout_conversion_absoluteHeight="120dp"
+                tools:layout_conversion_absoluteWidth="0dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:background="@color/agri_semi_green"
+            android:paddingHorizontal="8dp"
+            android:text="@string/scan_warehouse"
+            android:textColor="@color/label_blue"
+            android:textSize="18sp" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/incomingAssetCLayout"
         android:layout_width="0dp"
-        android:layout_height="500dp"
+        android:layout_height="420dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -192,40 +179,40 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
                 android:id="@+id/tvSelectTotes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="center_horizontal"
-                android:text="@string/totes_for_semi_storage"
+                android:text="@string/items"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/rvUsedTotesHarvest"
-                app:layout_constraintEnd_toStartOf="@+id/ivDeleteTote"
-                app:layout_constraintStart_toEndOf="@+id/ivAddTote"
+                app:layout_constraintBottom_toTopOf="@+id/rvIfcoForStorage"
+                app:layout_constraintEnd_toStartOf="@+id/ivDeleteIfco"
+                app:layout_constraintStart_toEndOf="@+id/ivAddIfco"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/btnScanTotes"
+                android:id="@+id/btnScanIfco"
                 android:layout_width="0dp"
                 android:layout_height="64dp"
                 android:layout_marginStart="100dp"
                 android:layout_marginEnd="100dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/button_press_effect"
-                android:text="@string/scan_totes"
+                android:text="@string/scan_ifco"
                 android:textColor="@color/yellow"
                 android:textSize="@dimen/button_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvNumberTotes"
+                app:layout_constraintTop_toBottomOf="@+id/tvNumberIfco"
                 tools:layout_conversion_absoluteHeight="120dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvUsedTotesHarvest"
+                android:id="@+id/rvIfcoForStorage"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -233,7 +220,7 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
                 android:background="@drawable/bg_rounded_input_spinner"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/tvNumberTotes"
+                app:layout_constraintBottom_toTopOf="@+id/tvNumberIfco"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvSelectTotes">
@@ -241,23 +228,23 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
             </androidx.recyclerview.widget.RecyclerView>
 
             <TextView
-                android:id="@+id/tvNumberTotes"
+                android:id="@+id/tvNumberIfco"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
                 android:gravity="center_horizontal"
-                android:text="@string/number_of_totes"
+                android:text="@string/number_of_ifco"
                 android:textColor="@color/label_blue"
                 android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/btnScanTotes"
-                app:layout_constraintEnd_toStartOf="@+id/tvTotesCount"
+                app:layout_constraintBottom_toTopOf="@+id/btnScanIfco"
+                app:layout_constraintEnd_toStartOf="@+id/tvIfcoCount"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvUsedTotesHarvest" />
+                app:layout_constraintTop_toBottomOf="@+id/rvIfcoForStorage" />
 
             <TextView
-                android:id="@+id/tvTotesCount"
+                android:id="@+id/tvIfcoCount"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginTop="8dp"
@@ -269,27 +256,27 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
                 android:textIsSelectable="false"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/tvNumberTotes"
-                app:layout_constraintTop_toBottomOf="@+id/rvUsedTotesHarvest" />
+                app:layout_constraintStart_toEndOf="@+id/tvNumberIfco"
+                app:layout_constraintTop_toBottomOf="@+id/rvIfcoForStorage" />
 
             <ImageButton
-                android:id="@+id/ivDeleteTote"
+                android:id="@+id/ivDeleteIfco"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="16dp"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toTopOf="@+id/rvUsedTotesHarvest"
+                app:layout_constraintBottom_toTopOf="@+id/rvIfcoForStorage"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvSelectTotes"
                 app:srcCompat="@drawable/ic_delete" />
 
             <ImageButton
-                android:id="@+id/ivAddTote"
+                android:id="@+id/ivAddIfco"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="16dp"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toTopOf="@+id/rvUsedTotesHarvest"
+                app:layout_constraintBottom_toTopOf="@+id/rvIfcoForStorage"
                 app:layout_constraintEnd_toStartOf="@+id/tvSelectTotes"
                 app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/ic_add_stock_opname" />
@@ -303,7 +290,7 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="@string/select_totes"
+            android:text="@string/select_ifco"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
@@ -330,13 +317,13 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
         android:scaleX="0.7"
         android:scaleY="0.7"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivToSemiReadyStorageWeight"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToSemiReadyStorage"
+        app:layout_constraintEnd_toStartOf="@+id/ivToConfirm"
+        app:layout_constraintStart_toEndOf="@+id/ivBackToFruitMenu"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/powered_by_agritrack" />
 
     <ImageView
-        android:id="@+id/ivBackToSemiReadyStorage"
+        android:id="@+id/ivBackToFruitMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -350,7 +337,7 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
         app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
     <ImageView
-        android:id="@+id/ivToSemiReadyStorageWeight"
+        android:id="@+id/ivToConfirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

@@ -79,12 +79,8 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
     private LocationManager locationManager;
     private TimeOutProgressDlg syncProgressDialog;
 
-    private ToggleGroup tgChooseAssetType;
     private MobileDB db;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-    private UhfReader uhfReader;
-    private boolean scanning = false;
 
     private ConstraintLayout selectedItem;
     private String selectedBarcode;
@@ -94,15 +90,14 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
     private ImageView ivSupport;
     private SupportDialog supportDialog;
 
+    private UhfReader uhfReader;
+    private boolean scanning = false;
     private ScanInventoryThread inventoryTotesThread = new ScanInventoryThread();
-
+    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private TemplateRecyclerAdapter adapterTotes;
-
     private RecyclerView rvInventoryTotes;
     private TextView tvTotesCount;
-
     private ImageButton ivAddTote, ivDeleteTote;
-
     private String toteBarcode;
 
     // Instantiate a clickListener to be passed to adapterBins.

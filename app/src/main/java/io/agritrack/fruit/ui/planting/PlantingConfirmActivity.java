@@ -1,6 +1,6 @@
 package io.agritrack.fruit.ui.planting;
 
-import static io.agritrack.fish.state.GlobalState.recFishing;
+import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -26,6 +26,10 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
+import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.state.TransportationRecord;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.PlantRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
@@ -39,7 +43,7 @@ public class PlantingConfirmActivity extends AppCompatActivity implements Locati
     private LocationManager locationManager;
     private ProgressDialog progressDialog;
     private TimeOutProgressDlg syncProgressDialog;
-    private TextView tvTomatoType, tvPole, tvGreenHouse;
+    private TextView tvTomatoType, tvPole, tvGreenHouse, tvUsername;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -122,25 +126,26 @@ public class PlantingConfirmActivity extends AppCompatActivity implements Locati
         tvGreenHouse = findViewById(R.id.tvGreenHouse);
         tvPole = findViewById(R.id.tvPole);
         tvTomatoType = findViewById(R.id.tvTomatoType);
+        tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {
-        /*tvUsername.setText(LocalPreferences.getLoggedInUser(""));
+        PlantRecord recPlant = FruitGlobalState.recPlant;
 
-        tvTotalQuantityCount.setText(recFishing.totalFishWeight != null ? recFishing.totalFishWeight.toString() : "N/A");
-        tvReqQuantityCount.setText(recFishing.reqWeight != null ? recFishing.reqWeight : "N/A");
-        tvNumberOfBinsCount.setText(recFishing.totalBinsUsed != null ? recFishing.totalBinsUsed.toString() : "N/A");
-        tvNameCage.setText(recFishing.cageRFID != null ? recFishing.cageRFID : "N/A");
-        tvTypeOfFishConfirm.setText(recFishing.speciesName != null ? recFishing.speciesName : "N/A");*/
+        //tvGreenHouse.setText(recPlant.totalFishWeight != null ? recFishing.totalFishWeight.toString() : "N/A");
+        tvPole.setText(recPlant.poleRFID != null ? recPlant.poleRFID : "N/A");
+        tvTomatoType.setText(recPlant.speciesName != null ? recPlant.speciesName : "N/A");
+
+        tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }
 
 
     // GPS Location-Related functionality
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        recFishing.longitude = location.getLongitude();
-        recFishing.latitude = location.getLatitude();
+        recPlant.longitude = location.getLongitude();
+        recPlant.latitude = location.getLatitude();
         locationManager.removeUpdates(this);
         toggleProgress(false, R.string.app_name);
     }

@@ -1,6 +1,5 @@
-package io.agritrack.fruit.ui.harvesting;
+package io.agritrack.fruit.ui.packaging;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -33,42 +32,47 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class HarvestingTotesActivity extends AppCompatActivity {
-
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-
-    private UhfReader uhfReader;
-    private ScanInventoryThread harvestTotesThread = new ScanInventoryThread();
-    private boolean scanning = false;
-
-    private TemplateRecyclerAdapter adapterTotes;
-
-    private RecyclerView rvUsedTotesHarvest;
-    private TextView tvTotesCount;
-
-    private ImageButton ivAddTote, ivDeleteTote;
-    private String selectedBarcode;
-    private ConstraintLayout selectedItem;
-
-    private String toteBarcode;
+public class PackagingStartActivity extends AppCompatActivity {
 
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
+
+    private TextView tvPoleName;
+    private Button btnScanPole;
+    
+    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    private UhfReader uhfReader;
+    private boolean scanning = false;
+    private ScanInventoryThread inventoryTotesThread = new ScanInventoryThread();
+    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
+    private TemplateRecyclerAdapter adapterTotes;
+    private RecyclerView rvTotesForPackage;
+    private TextView tvTotesCount;
+    private ImageButton ivAddTote, ivDeleteTote;
+    private String toteBarcode;
+
+    private ConstraintLayout selectedItem;
+    private String selectedBarcode;
 
     // Instantiate a clickListener to be passed to adapterBins.
     // It will be used to set the selectedBarcode var to the selected item barcode.
@@ -88,17 +92,17 @@ public class HarvestingTotesActivity extends AppCompatActivity {
             selectedItem = view;
         }
     };
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_harvesting_totes);
+        setContentView(R.layout.activity_packaging_start);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderHarvestingTotes);
+        TextView tvHeader = findViewById(R.id.tvHeaderPackagingStart);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
@@ -107,12 +111,37 @@ public class HarvestingTotesActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        // =================================
+        // RFID scanning functionality
+        btnScanPole.setOnClickListener(view -> {
+            //update scanning, uhfReader, tvPlatformName values in thread
+            UhfReader _uhfReader = UhfReader.getInstance();
+            _uhfReader.setWorkArea(3);
+            scanner.setUhfReader(_uhfReader);
+            scanner.setFilter(Filters.RFID_PLATFORM);
+
+            Future<?> future = executor.submit(scanner);
+            try {
+                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
+                if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            tvPoleName.setText(epcStr);
+                        }
+                    });
+                    //tvCageName.setText(result);
+                }
+            } catch (Exception e) {
+                future.cancel(true);
+            }
+        });
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvUsedTotesHarvest.setLayoutManager(layoutManager);
-        rvUsedTotesHarvest.setItemAnimator(new DefaultItemAnimator());
+        rvTotesForPackage.setLayoutManager(layoutManager);
+        rvTotesForPackage.setItemAnimator(new DefaultItemAnimator());
         adapterTotes = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
-        rvUsedTotesHarvest.setAdapter(adapterTotes);
-        rvUsedTotesHarvest.setNestedScrollingEnabled(false);
+        rvTotesForPackage.setAdapter(adapterTotes);
+        rvTotesForPackage.setNestedScrollingEnabled(false);
 
         scanResult.observe(this, response -> {
             if (response == null) {
@@ -125,9 +154,6 @@ public class HarvestingTotesActivity extends AppCompatActivity {
 
         // initialize scanning threads
         prepareScanAvailableBinsButton();
-
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
 
         ivDeleteTote.setOnClickListener(view -> {
             clearSelectedItem();
@@ -161,7 +187,7 @@ public class HarvestingTotesActivity extends AppCompatActivity {
         });
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(HarvestingTotesActivity.this);
+            supportDialog = new SupportDialog(PackagingStartActivity.this);
             supportDialog.showDialog();
         });
 
@@ -170,28 +196,34 @@ public class HarvestingTotesActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToConfirm);
+        ImageView ivNext = findViewById(R.id.ivToPackagingLot);
         ivNext.setOnClickListener(view -> {
-            updateState();
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            } else {
-                Intent i = new Intent(getApplicationContext(), HarvestingConfirmActivity.class);
-                startActivity(i);
-            }
+            Intent i = new Intent(getApplicationContext(), PackagingLotActivity.class);
+            startActivity(i);
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToHarvestingStart);
+        ImageView ivBack = findViewById(R.id.ivBackToFruitMenu);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), HarvestingStartActivity.class);
+            Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             startActivity(i);
         });
     }
 
+    private void clearSelectedItem() {
+        if (selectedItem != null) {
+            selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
+        }
+    }
+
+    private void initControlsFromState() {
+
+    }
+
     private void assignCtrlVars() {
+        btnScanPole = findViewById(R.id.btnScanPole);
+        tvPoleName = findViewById(R.id.tvPoleName);
         ivSupport = findViewById(R.id.ivSupport);
-        rvUsedTotesHarvest = findViewById(R.id.rvUsedTotesHarvest);
+        rvTotesForPackage = findViewById(R.id.rvTotesForPackage);
         tvTotesCount = findViewById(R.id.tvTotesCount);
         ivDeleteTote = (ImageButton) findViewById(R.id.ivDeleteTote);
         ivAddTote = (ImageButton) findViewById(R.id.ivAddTote);
@@ -209,14 +241,14 @@ public class HarvestingTotesActivity extends AppCompatActivity {
             scanning = !scanning;
 
             // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (harvestTotesThread.getState() == Thread.State.TERMINATED) {
-                harvestTotesThread = new ScanInventoryThread();
+            if (inventoryTotesThread.getState() == Thread.State.TERMINATED) {
+                inventoryTotesThread = new ScanInventoryThread();
             }
             //update scanning, uhfReader, tvPlatformName values in thread
-            harvestTotesThread.setScanInProgress(scanning);
-            harvestTotesThread.setUhfReader(uhfReader);
-            harvestTotesThread.setScanResult(scanResult);
-            harvestTotesThread.setFilter(Filters.RFID_BIN);
+            inventoryTotesThread.setScanInProgress(scanning);
+            inventoryTotesThread.setUhfReader(uhfReader);
+            inventoryTotesThread.setScanResult(scanResult);
+            inventoryTotesThread.setFilter(Filters.RFID_BIN);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
@@ -225,8 +257,8 @@ public class HarvestingTotesActivity extends AppCompatActivity {
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
                     }
                 });
-                if (harvestTotesThread.getState() == Thread.State.NEW) {
-                    harvestTotesThread.start();
+                if (inventoryTotesThread.getState() == Thread.State.NEW) {
+                    inventoryTotesThread.start();
                 }
             } else {
                 scanButton.setText(R.string.scan_totes);
@@ -236,7 +268,7 @@ public class HarvestingTotesActivity extends AppCompatActivity {
                     }
                 });
                 try {
-                    harvestTotesThread.join();
+                    inventoryTotesThread.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -244,19 +276,9 @@ public class HarvestingTotesActivity extends AppCompatActivity {
         });
     }
 
-    private void clearSelectedItem(){
-        if(selectedItem!=null) {
-            selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-        }
-    }
-
-    private void initControlsFromState() {
-
-    }
-
     private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Type tote BARCODE");
+        builder.setTitle("Type item BARCODE");
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -269,7 +291,7 @@ public class HarvestingTotesActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 toteBarcode = input.getText().toString();
-                adapterTotes.addUniqueItem(toteBarcode);
+                adapterTotes.addItem(toteBarcode);
                 adapterTotes.notifyDataSetChanged();
             }
         });
@@ -282,23 +304,5 @@ public class HarvestingTotesActivity extends AppCompatActivity {
 
         builder.show();
 
-    }
-
-    private void updateState() {
-        FruitGlobalState.recHarvest.totes = new LinkedList<>(adapterTotes.getValues());
-
-        if (tvTotesCount.getText() != null && !Strings.isEmptyOrWhitespace(tvTotesCount.getText().toString())) {
-            FruitGlobalState.recHarvest.totalTotesUsed = Short.valueOf(tvTotesCount.getText().toString());
-        }
-    }
-
-    private String validate(){
-        StringBuilder sb = new StringBuilder();
-        if (!IsDemo) {
-            if (FruitGlobalState.recHarvest.totes == null || FruitGlobalState.recHarvest.totes.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Used totes'"));
-            }
-        }
-        return sb.toString();
     }
 }

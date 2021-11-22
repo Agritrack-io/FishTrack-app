@@ -1,7 +1,11 @@
 package io.agritrack.fruit.ui.planting;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
+import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
+import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,14 +13,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -25,7 +33,12 @@ import java.util.concurrent.TimeUnit;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.common.Species;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.state.TransportationRecord;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.PlantRecord;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
@@ -60,6 +73,19 @@ public class PlantingStartActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        // load fish species and fill in the spFishType Spinner.
+        List<Species> tomatoSpecies = db.speciesDAO().getAll();
+        if (tomatoSpecies != null && !tomatoSpecies.isEmpty()) {
+            String[] species = tomatoSpecies.stream().map(x -> x.localName).toArray(String[]::new);
+            ArrayAdapter<String> spAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, species);
+            spAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
+            spTomatoType.setAdapter(spAdapter);
+
+            if (!Strings.isEmptyOrWhitespace(recPlant.speciesName)) {
+                recPlant.speciesPos = Arrays.asList(species).indexOf(recPlant.speciesName);
+            }
+        }
+
         // =================================
         // RFID scanning functionality
         btnScanPole.setOnClickListener(view -> {
@@ -67,7 +93,7 @@ public class PlantingStartActivity extends AppCompatActivity {
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
             scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_PLATFORM);
+            //scanner.setFilter(Filters.RFID_PLATFORM);
 
             Future<?> future = executor.submit(scanner);
             try {
@@ -78,7 +104,6 @@ public class PlantingStartActivity extends AppCompatActivity {
                             tvPoleName.setText(epcStr);
                         }
                     });
-                    //tvCageName.setText(result);
                 }
             } catch (Exception e) {
                 future.cancel(true);
@@ -97,8 +122,14 @@ public class PlantingStartActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
                 Intent i = new Intent(getApplicationContext(), PlantingConfirmActivity.class);
                 startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
@@ -119,7 +150,31 @@ public class PlantingStartActivity extends AppCompatActivity {
 
     }
 
-    private void updateState() {
+    private PlantRecord updateState() {
+        PlantRecord plantRecord = FruitGlobalState.initPlantRecord();
 
+        plantRecord.poleRFID = tvPoleName.getText().toString();
+
+        if (spTomatoType.getSelectedItem() != null) {
+            plantRecord.speciesName = spTomatoType.getSelectedItem().toString();
+        }
+        plantRecord.speciesPos = spTomatoType.getSelectedItemPosition();
+
+        return plantRecord;
+    }
+
+    private String validate() {
+        StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(recPlant.poleRFID)) {
+                sb.append(String.format("\n%s is missing", "'Pole tag'"));
+            }
+
+            if (Strings.isEmptyOrWhitespace(recPlant.speciesName)) {
+                sb.append(String.format("\n%s is missing", "'Tomato type'"));
+            }
+        }
+
+        return sb.toString();
     }
 }

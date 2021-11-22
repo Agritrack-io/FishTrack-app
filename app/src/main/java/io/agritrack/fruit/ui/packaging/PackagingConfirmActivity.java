@@ -1,7 +1,6 @@
-package io.agritrack.fruit.ui.harvesting;
+package io.agritrack.fruit.ui.packaging;
 
 import static io.agritrack.fish.state.GlobalState.recFishing;
-import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -27,14 +26,11 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
-import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.state.HarvestRecord;
-import io.agritrack.fruit.state.PlantRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class HarvestingConfirmActivity extends AppCompatActivity implements LocationListener {
+public class PackagingConfirmActivity extends AppCompatActivity implements LocationListener {
 
     private final int REQUEST_FINE_LOCATION = 1234;
 
@@ -43,18 +39,18 @@ public class HarvestingConfirmActivity extends AppCompatActivity implements Loca
     private LocationManager locationManager;
     private ProgressDialog progressDialog;
     private TimeOutProgressDlg syncProgressDialog;
-    private TextView tvGreenHouse, tvPole, tvHarvestLot, tvNumberTotes, tvUsername;
+    private TextView tvHarvestLot, tvNumberIfco;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_harvesting_confirm);
+        setContentView(R.layout.activity_packaging_confirm);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderHarvestingConfirm);
+        TextView tvHeader = findViewById(R.id.tvHeaderPackagingConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
@@ -67,7 +63,7 @@ public class HarvestingConfirmActivity extends AppCompatActivity implements Loca
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
 
         // instantiate ProgressDialog and set style.
-        progressDialog = new ProgressDialog(HarvestingConfirmActivity.this);
+        progressDialog = new ProgressDialog(PackagingConfirmActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // set (any?) previously selected values to activity Controls.
@@ -78,7 +74,7 @@ public class HarvestingConfirmActivity extends AppCompatActivity implements Loca
         syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
             @Override
             public void doTasks() {
-                locationManager.removeUpdates(HarvestingConfirmActivity.this);
+                locationManager.removeUpdates(PackagingConfirmActivity.this);
 
                 // Update state and proceed to next
                 //Boolean proceed = updateState();
@@ -93,7 +89,7 @@ public class HarvestingConfirmActivity extends AppCompatActivity implements Loca
         syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(HarvestingConfirmActivity.this);
+            supportDialog = new SupportDialog(PackagingConfirmActivity.this);
             supportDialog.showDialog();
         });
 
@@ -106,48 +102,44 @@ public class HarvestingConfirmActivity extends AppCompatActivity implements Loca
             @Override
             public void onClick(View v) {
                 // check if permission has been granted
-                if (ActivityCompat.checkSelfPermission(HarvestingConfirmActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(HarvestingConfirmActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(PackagingConfirmActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(PackagingConfirmActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, HarvestingConfirmActivity.this);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, PackagingConfirmActivity.this);
                 // show Progress Dialog
                 toggleProgress(true, R.string.acquire_coordinates);
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToHarvestingTotes);
+        ImageView ivBack = findViewById(R.id.ivBackToPackagingIfco);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), HarvestingTotesActivity.class);
+            Intent i = new Intent(getApplicationContext(), PackagingIfcoActivity.class);
             startActivity(i);
         });
     }
 
     private void assignCtrlVars() {
-        tvGreenHouse = findViewById(R.id.tvGreenHouse);
-        tvPole = findViewById(R.id.tvPole);
         tvHarvestLot = findViewById(R.id.tvHarvestLot);
-        tvNumberTotes = findViewById(R.id.tvNumberTotes);
-        tvUsername = findViewById(R.id.tvUsername);
+        tvNumberIfco = findViewById(R.id.tvNumberIfco);
         ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {
-        HarvestRecord recHarvest = FruitGlobalState.recHarvest;
+        /*tvUsername.setText(LocalPreferences.getLoggedInUser(""));
 
-        //tvGreenHouse.setText(recPlant.totalFishWeight != null ? recFishing.totalFishWeight.toString() : "N/A");
-        tvPole.setText(recHarvest.poleRFID != null ? recHarvest.poleRFID : "N/A");
-        tvHarvestLot.setText(recHarvest.harvestLot != null ? recHarvest.harvestLot : "N/A");
-        tvNumberTotes.setText(recHarvest.totalTotesUsed != null ? recHarvest.totalTotesUsed.toString() : "N/A");
-
-        tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
+        tvTotalQuantityCount.setText(recFishing.totalFishWeight != null ? recFishing.totalFishWeight.toString() : "N/A");
+        tvReqQuantityCount.setText(recFishing.reqWeight != null ? recFishing.reqWeight : "N/A");
+        tvNumberOfBinsCount.setText(recFishing.totalBinsUsed != null ? recFishing.totalBinsUsed.toString() : "N/A");
+        tvNameCage.setText(recFishing.cageRFID != null ? recFishing.cageRFID : "N/A");
+        tvTypeOfFishConfirm.setText(recFishing.speciesName != null ? recFishing.speciesName : "N/A");*/
     }
 
 
     // GPS Location-Related functionality
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        recHarvest.longitude = location.getLongitude();
-        recHarvest.latitude = location.getLatitude();
+        recFishing.longitude = location.getLongitude();
+        recFishing.latitude = location.getLatitude();
         locationManager.removeUpdates(this);
         toggleProgress(false, R.string.app_name);
     }

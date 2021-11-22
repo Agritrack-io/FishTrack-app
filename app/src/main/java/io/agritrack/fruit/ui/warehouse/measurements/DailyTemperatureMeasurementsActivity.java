@@ -1,11 +1,6 @@
-package io.agritrack.fruit.ui.harvesting;
+package io.agritrack.fruit.ui.warehouse.measurements;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
-import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,18 +10,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -36,33 +25,37 @@ import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.state.HarvestRecord;
-import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.dialog.TempLoggerDialog;
+import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.fishing.FishingBinsActivity;
 import io.agritrack.fruit.ui.FruitHomeActivity;
+import io.agritrack.fruit.ui.storage_ready.ReadyStorageConfirmActivity;
+import io.agritrack.fruit.ui.storage_ready.ReadyStorageStartActivity;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class HarvestingStartActivity extends AppCompatActivity {
+public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
 
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
-    private TextView tvPoleName, tvHarvestLot;
-    private Button btnScanPole;
 
+    private TextView tvPoleName;
+    private Button btnScanPole;
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private TempLoggerDialog tempLoggerDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_harvesting_start);
+        setContentView(R.layout.activity_daily_temperature_measurements);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderHarvestingStart);
+        TextView tvHeader = findViewById(R.id.tvHeaderDailyMeasurements);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
@@ -74,6 +67,9 @@ public class HarvestingStartActivity extends AppCompatActivity {
         // =================================
         // RFID scanning functionality
         btnScanPole.setOnClickListener(view -> {
+            tempLoggerDialog = new TempLoggerDialog(DailyTemperatureMeasurementsActivity.this, R.string.init_temp_logger);
+            tempLoggerDialog.showDialog();
+
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
@@ -94,15 +90,11 @@ public class HarvestingStartActivity extends AppCompatActivity {
             } catch (Exception e) {
                 future.cancel(true);
             }
+            updateState();
         });
 
-        Calendar calender = Calendar.getInstance();
-        Date date = new Date(System.currentTimeMillis());
-        calender.setTime(date);
-        tvHarvestLot.setText(Integer.toString(calender.get(Calendar.DAY_OF_WEEK)) + Integer.toString(calender.get(Calendar.WEEK_OF_YEAR)));
-
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(HarvestingStartActivity.this);
+            supportDialog = new SupportDialog(DailyTemperatureMeasurementsActivity.this);
             supportDialog.showDialog();
         });
 
@@ -111,54 +103,28 @@ public class HarvestingStartActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToScanTotes);
-        ivNext.setOnClickListener(view -> {
-            updateState();
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            } else {
-                Intent i = new Intent(getApplicationContext(), HarvestingTotesActivity.class);
-                startActivity(i);
-            }
-        });
-
-        ImageView ivBack = findViewById(R.id.ivBackToMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToFruitMenu);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             startActivity(i);
         });
     }
 
-    private void assignCtrlVars() {
-        ivSupport = findViewById(R.id.ivSupport);
-        tvPoleName = findViewById(R.id.tvPoleName);
-        btnScanPole = findViewById(R.id.btnScanPole);
-        tvHarvestLot = findViewById(R.id.tvHarvestLot);
-    }
-
     private void initControlsFromState() {
 
     }
 
-    private HarvestRecord updateState() {
-        HarvestRecord harvestRecord = FruitGlobalState.initHarvestRecord();
-
-        harvestRecord.poleRFID = tvPoleName.getText().toString();
-        harvestRecord.harvestLot = tvHarvestLot.getText().toString();
-
-
-        return harvestRecord;
+    private void updateState() {
+        ImageView ivNext = findViewById(R.id.ivToCongs);
+        ivNext.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
+            startActivity(i);
+        });
     }
 
-    private String validate() {
-        StringBuilder sb = new StringBuilder();
-        if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(recHarvest.poleRFID)) {
-                sb.append(String.format("\n%s is missing", "'Pole tag'"));
-            }
-        }
-
-        return sb.toString();
+    private void assignCtrlVars() {
+        btnScanPole = findViewById(R.id.btnScanPole);
+        tvPoleName = findViewById(R.id.tvPoleName);
+        ivSupport = findViewById(R.id.ivSupport);
     }
 }

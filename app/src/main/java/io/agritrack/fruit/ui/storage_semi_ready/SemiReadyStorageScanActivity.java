@@ -1,4 +1,4 @@
-package io.agritrack.fruit.ui.storage;
+package io.agritrack.fruit.ui.storage_semi_ready;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
@@ -41,9 +41,6 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
-import io.agritrack.fruit.ui.harvesting.HarvestingConfirmActivity;
-import io.agritrack.fruit.ui.harvesting.HarvestingStartActivity;
-import io.agritrack.fruit.ui.harvesting.HarvestingTotesActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
@@ -170,15 +167,15 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToConfirm);
+        ImageView ivNext = findViewById(R.id.ivToSemiReadyStorageWeight);
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), SemiReadyStorageConfirmActivity.class);
+            Intent i = new Intent(getApplicationContext(), SemiReadyStorageWeightActivity.class);
             startActivity(i);
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToSemiReadyStorage);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), SemiReadyStorageActivity.class);
+            Intent i = new Intent(getApplicationContext(), SemiReadyStorageStartActivity.class);
             startActivity(i);
         });
     }

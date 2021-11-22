@@ -44,10 +44,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.common.Employee;
@@ -57,6 +62,7 @@ import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
@@ -79,13 +85,11 @@ public class FruitCorrelationActivity extends AppCompatActivity implements Adapt
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
 
     private Button btnScanAssetTag, btnCorrelate;
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-    private UhfReader uhfReader;
-    private ScanInventoryThread correlationThread = new ScanInventoryThread();
-    private boolean scanning = false;
-    private String activeFilter = null;
+
     private TextView tvCorrPoleBarcode, tvCorrTempLoggerBarcode;
-    private TreelikeAdapter adapterCorrelatedItems;
+
+    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private ProgressDialog progressDialog;
 
@@ -141,25 +145,30 @@ public class FruitCorrelationActivity extends AppCompatActivity implements Adapt
             this.lvGreenhouse.setOnItemClickListener(this);
         }
 
-        // initiate RFID scanner behaviour
+        // =================================
+        // RFID scanning functionality
+        btnScanAssetTag.setOnClickListener(view -> {
+            //update scanning, uhfReader, tvPlatformName values in thread
+            UhfReader _uhfReader = UhfReader.getInstance();
+            _uhfReader.setWorkArea(3);
+            scanner.setUhfReader(_uhfReader);
+            scanner.setFilter(Filters.RFID_PLATFORM);
 
-        scanResult.observe(this, response -> {
-            if (response == null) {
-                return;
+            Future<?> future = executor.submit(scanner);
+            try {
+                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
+                if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            tvCorrPoleBarcode.setText(epcStr);
+                        }
+                    });
+                    //tvCageName.setText(result);
+                }
+            } catch (Exception e) {
+                future.cancel(true);
             }
-            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
-
-            if (adapterCorrelatedItems == null) {
-                adapterCorrelatedItems = new TreelikeAdapter(this, values);
-                //tvCorrPoleBarcode.setText(adapterCorrelatedItems.getValues().toString());
-            } else {
-                //adapterInventoryItems.appendItems(values);
-            }
-            //adapterInventoryItems.notifyDataSetChanged();
         });
-
-        // initialize scanning threads
-        prepareScanAvailableBinsButton();
 
         btnCorrelate.setOnClickListener(view -> {
             /*GlobalState.recWHCorrelation.assetType = !Strings.isEmptyOrWhitespace(selectedAssetType) ? AssetType.valueOf(selectedAssetType) : null;
@@ -258,52 +267,6 @@ public class FruitCorrelationActivity extends AppCompatActivity implements Adapt
         } finally {
             progressDialog.dismiss();
         }
-    }
-
-    private void prepareScanAvailableBinsButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setWorkArea(3);
-        uhfReader.setOutputPower(33);
-
-        final Button scanButton = findViewById(R.id.btnScanAssetTag);
-        scanButton.setOnClickListener(view -> {
-            scanning = !scanning;
-
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (correlationThread.getState() == Thread.State.TERMINATED) {
-                correlationThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            correlationThread.setScanInProgress(scanning);
-            correlationThread.setUhfReader(uhfReader);
-            correlationThread.setScanResult(scanResult);
-            correlationThread.setFilter(activeFilter);
-
-            if (scanning) {
-                scanButton.setText(R.string.stop_scan);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                    }
-                });
-                if (correlationThread.getState() == Thread.State.NEW) {
-                    correlationThread.start();
-                }
-            } else {
-                scanButton.setText(R.string.scan_assets);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-                    }
-                });
-                try {
-                    correlationThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     private String validate() {

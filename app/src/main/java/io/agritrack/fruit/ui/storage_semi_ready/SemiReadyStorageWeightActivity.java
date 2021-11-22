@@ -1,11 +1,6 @@
-package io.agritrack.fruit.ui.harvesting;
+package io.agritrack.fruit.ui.storage_semi_ready;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
-import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,19 +9,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -36,33 +25,35 @@ import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.state.HarvestRecord;
+import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class HarvestingStartActivity extends AppCompatActivity {
+public class SemiReadyStorageWeightActivity extends AppCompatActivity {
 
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
-    private TextView tvPoleName, tvHarvestLot;
+
+    private TextView tvPoleName;
     private Button btnScanPole;
+    private EditText etTotalWeight;
 
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_harvesting_start);
+        setContentView(R.layout.activity_semi_ready_storage_weight);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderHarvestingStart);
+        TextView tvHeader = findViewById(R.id.tvHeaderSemiReadyStorageWeight);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
@@ -96,13 +87,8 @@ public class HarvestingStartActivity extends AppCompatActivity {
             }
         });
 
-        Calendar calender = Calendar.getInstance();
-        Date date = new Date(System.currentTimeMillis());
-        calender.setTime(date);
-        tvHarvestLot.setText(Integer.toString(calender.get(Calendar.DAY_OF_WEEK)) + Integer.toString(calender.get(Calendar.WEEK_OF_YEAR)));
-
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(HarvestingStartActivity.this);
+            supportDialog = new SupportDialog(SemiReadyStorageWeightActivity.this);
             supportDialog.showDialog();
         });
 
@@ -111,54 +97,32 @@ public class HarvestingStartActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToScanTotes);
+        ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
-            updateState();
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            } else {
-                Intent i = new Intent(getApplicationContext(), HarvestingTotesActivity.class);
-                startActivity(i);
-            }
+            Intent i = new Intent(getApplicationContext(), SemiReadyStorageConfirmActivity.class);
+            startActivity(i);
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToSemiReadyStorageScan);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), SemiReadyStorageScanActivity.class);
             startActivity(i);
         });
     }
 
     private void assignCtrlVars() {
-        ivSupport = findViewById(R.id.ivSupport);
         tvPoleName = findViewById(R.id.tvPoleName);
         btnScanPole = findViewById(R.id.btnScanPole);
-        tvHarvestLot = findViewById(R.id.tvHarvestLot);
+        ivSupport = findViewById(R.id.ivSupport);
+        etTotalWeight = findViewById(R.id.etTotalWeight);
     }
 
     private void initControlsFromState() {
+        WHTxRecord WHTxRecord = GlobalState.recWHIncoming;
 
     }
 
-    private HarvestRecord updateState() {
-        HarvestRecord harvestRecord = FruitGlobalState.initHarvestRecord();
+    private void updateState() {
 
-        harvestRecord.poleRFID = tvPoleName.getText().toString();
-        harvestRecord.harvestLot = tvHarvestLot.getText().toString();
-
-
-        return harvestRecord;
-    }
-
-    private String validate() {
-        StringBuilder sb = new StringBuilder();
-        if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(recHarvest.poleRFID)) {
-                sb.append(String.format("\n%s is missing", "'Pole tag'"));
-            }
-        }
-
-        return sb.toString();
     }
 }

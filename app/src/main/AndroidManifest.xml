@@ -24,13 +24,56 @@
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".fruit.ui.storage.SemiReadyStorageConfirmActivity"
+            android:name=".fruit.ui.warehouse.measurements.DailyTemperatureMeasurementsActivity"
             android:exported="false" />
         <activity
-            android:name=".fruit.ui.storage.SemiReadyStorageScanActivity"
+            android:name=".fruit.ui.shipping.ShippingConfirmActivity"
             android:exported="false" />
         <activity
-            android:name=".fruit.ui.storage.SemiReadyStorageActivity"
+            android:name=".fruit.ui.shipping.ShippingDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".fruit.ui.shipping.ShippingStartActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fruit.ui.storage_ready.ReadyStorageConfirmActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fruit.ui.storage_ready.ReadyStorageStartActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fruit.ui.packaging.PackagingConfirmActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fruit.ui.packaging.PackagingIfcoActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fruit.ui.packaging.PackagingLotActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fruit.ui.packaging.PackagingStartActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fruit.ui.storage_semi_ready.SemiReadyStorageWeightActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fruit.ui.storage_semi_ready.SemiReadyStorageConfirmActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

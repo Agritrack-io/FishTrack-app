@@ -1,4 +1,4 @@
-package io.agritrack.fruit.ui.storage;
+package io.agritrack.fruit.ui.storage_semi_ready;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 
@@ -23,10 +23,9 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.Employee;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.ui.FruitHomeActivity;
-import io.agritrack.fruit.ui.planting.PlantingConfirmActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class SemiReadyStorageActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class SemiReadyStorageStartActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private MobileDB db;
     private ListView lvGreenhouse;
@@ -40,7 +39,7 @@ public class SemiReadyStorageActivity extends AppCompatActivity implements Adapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_semi_ready_storage);
+        setContentView(R.layout.activity_semi_ready_storage_start);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderSemiReadyStorage);
@@ -82,7 +81,7 @@ public class SemiReadyStorageActivity extends AppCompatActivity implements Adapt
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToSemiReadyStorage);
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PlantingConfirmActivity.class);
+            Intent i = new Intent(getApplicationContext(), SemiReadyStorageScanActivity.class);
             startActivity(i);
         });
 
