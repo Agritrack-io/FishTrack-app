@@ -100,7 +100,7 @@ public class TempLoggerDialog {
         tg.startTone(ToneGenerator.TONE_PROP_BEEP);
 
 
-        try {
+        /*try {
 
             int counter0 = 10;
             byte reply0 = 1;
@@ -188,20 +188,20 @@ public class TempLoggerDialog {
                 txtData.setText("Failed to start logger. Please scan bin again.");
                 loadingPanel.setVisibility(View.GONE);
                 return;
-            }
+            }*/
             loadingPanel.setVisibility(View.GONE);
             btnOk.setEnabled(true);
             btnOk.setTextColor(Color.parseColor("#FFEB3B"));
             btnInit.setEnabled(false);
             btnInit.setTextColor(Color.GRAY);
 
-            if (reply0+reply1+reply2+reply3+reply4 >0){
+            /*if (reply0+reply1+reply2+reply3+reply4 >0){
                 txtData.setText("Please scan bin again.");
-            }
+            }*/
 
-        } catch (Exception e) {
+        /*} catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void setDialog() {

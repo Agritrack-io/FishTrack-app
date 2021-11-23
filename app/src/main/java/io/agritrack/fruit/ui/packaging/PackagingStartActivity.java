@@ -248,7 +248,7 @@ public class PackagingStartActivity extends AppCompatActivity {
             inventoryTotesThread.setScanInProgress(scanning);
             inventoryTotesThread.setUhfReader(uhfReader);
             inventoryTotesThread.setScanResult(scanResult);
-            inventoryTotesThread.setFilter(Filters.RFID_BIN);
+            inventoryTotesThread.setFilter(Filters.RFID_TOTE);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
