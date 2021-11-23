@@ -258,13 +258,13 @@ public class FruitHomeActivity extends AppCompatActivity {
     }
 
     private void assignPrivilegesToRoles() {
-        Privileges.put(Planting_Idx, new String[]{"ROLE_SEEDING","ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Harvest_Idx, new String[]{"ROLE_SEEDING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Planting_Idx, new String[]{"ROLE_PLANTING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Harvest_Idx, new String[]{"ROLE_PLANTING","ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Storage_semi_ready, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Packaging_Idx, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Storage_ready, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Shipping_Idx, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Warehouse_Idx, new String[]{"ROLE_SEEDING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Warehouse_Idx, new String[]{"ROLE_PLANTING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
     }
 
     private boolean roleCanAccessMenu(List<String> roles, Integer menuId) {

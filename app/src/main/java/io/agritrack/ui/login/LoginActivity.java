@@ -100,8 +100,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // if last login occurred < 2 hours ?? ago, no further login is required.
         if (diffHours < 2) {
-            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
-            startActivity(i);
+            goToProductMenu();
         } else {
             final TextView tvForgotYourPassword = findViewById(R.id.tvForgotPasswordText);
             final Button btLogin = findViewById(R.id.btnLogin);

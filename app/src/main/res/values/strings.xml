@@ -352,7 +352,7 @@
 
 
     <!-- Tomato strings -->
-    <string name="menu_title_planting">Planting</string>
+    <string name="menu_title_planting">Plant</string>
     <string name="menu_title_harvest">Harvest</string>
     <string name="menu_title_semi_storage">Semi-ready storage</string>
     <string name="menu_title_packaging">Packaging</string>
@@ -361,8 +361,8 @@
     <string name="menu_title_measurements">Measurements</string>
 
 
-    <string name="title_seeding">SEEDING</string>
-    <string name="start_seeding">Start Seeding</string>
+    <string name="title_seeding">PLANT</string>
+    <string name="start_seeding">Start Planting</string>
     <string name="scan_pole">Scan Pole tag</string>
     <string name="tomato_type">Tomato Type</string>
     <string name="greenhouse">Greenhouse:</string>
