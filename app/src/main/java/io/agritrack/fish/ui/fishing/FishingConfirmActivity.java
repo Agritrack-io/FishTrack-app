@@ -1,26 +1,19 @@
 package io.agritrack.fish.ui.fishing;
 
-import android.Manifest;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -33,9 +26,9 @@ import io.agritrack.data.model.HarvestRequest;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
@@ -43,20 +36,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
-import static io.agritrack.ui.custom.CustomToast.CToast;
-import static java.lang.Thread.sleep;
-
-public class FishingConfirmActivity extends AppCompatActivity implements LocationListener {
-    private final int REQUEST_FINE_LOCATION = 1234;
+public class FishingConfirmActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
-    private LocationManager locationManager;
+
     private ProgressDialog progressDialog;
-    private TimeOutProgressDlg syncProgressDialog;
     private TextView tvTotalQuantityCount, tvReqQuantityCount, tvNumberOfBinsCount, tvNameCage, tvTypeOfFishConfirm, tvUsername;
 
     private ImageView ivSupport, ivInfo;
@@ -68,6 +53,9 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_confirm);
 
+        // activate GPS location update feature.
+        super.findLocation();
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
@@ -75,37 +63,12 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
         // get  references of the controls
         assignCtrlVars();
 
-        // get references to Location Manager Instance
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        // request permission to use GPS
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
-
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(FishingConfirmActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
-
-        //************************************************************************
-        // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
-            @Override
-            public void doTasks() {
-                locationManager.removeUpdates(FishingConfirmActivity.this);
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-                toggleProgress(false, R.string.app_name);
-
-                if (proceed) {
-                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
-                    startActivity(i);
-                }
-            }
-        };
-        syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(FishingConfirmActivity.this);
@@ -122,16 +85,28 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener(){
+        ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // check if permission has been granted
-                if (ActivityCompat.checkSelfPermission(FishingConfirmActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FishingConfirmActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+
+                if (mLastLocation != null) {
+                    recFishing.longitude = mLastLocation.getLongitude();
+                    recFishing.latitude = mLastLocation.getLatitude();
+                } else {
+                    CToast(FishingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, FishingConfirmActivity.this);
-                // show Progress Dialog
-                toggleProgress(true, R.string.acquire_coordinates);
+
+                // Update state and proceed to next
+                Boolean proceed = updateState();
+
+                if (proceed) {
+                    // stop GPS location updates.
+                    stopListener();
+
+                    // move to next activity.
+                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+                    startActivity(i);
+                }
             }
         });
 
@@ -182,12 +157,7 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
                 return false;
             } else {
                 try {
-                    /*progressDialog.setCancelable(false);
-                    progressDialog.setMessage(render("Synchronizing data..."));
-                    progressDialog.show();*/
-
                     String token = LocalPreferences.getToken();
-                    //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
                     // persist Fishing Record data to local DB.
                     FishingTransaction tx = GlobalState.commitFishing(db, Boolean.TRUE);
@@ -247,35 +217,4 @@ public class FishingConfirmActivity extends AppCompatActivity implements Locatio
         }
     }
 
-
-    // GPS Location-Related functionality
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        recFishing.longitude = location.getLongitude();
-        recFishing.latitude = location.getLatitude();
-        locationManager.removeUpdates(this);
-        toggleProgress(false, R.string.app_name);
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(i);
-    }
-
-    private void toggleProgress(boolean show, @StringRes int info) {
-        if (show) {
-            runOnUiThread(() -> {
-                syncProgressDialog.show();
-            });
-        } else {
-            runOnUiThread(() -> {
-                syncProgressDialog.hide();
-            });
-        }
-    }
 }

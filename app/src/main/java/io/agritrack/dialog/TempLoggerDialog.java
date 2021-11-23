@@ -1,5 +1,13 @@
 package io.agritrack.dialog;
 
+import static android.os.Looper.getMainLooper;
+
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_INTERVAL;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_RESET;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIMESTAMP;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIME_BIN;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ONE;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -19,9 +27,7 @@ import com.android.hdhe.uhf.reader.UhfReader;
 
 import cn.pda.serialport.Tools;
 import io.agritrack.R;
-
-import static android.os.Looper.getMainLooper;
-import static io.agritrack.R.color.agri_semi_green;
+import io.agritrack.caen.common.CAENRegistersIO;
 
 public class TempLoggerDialog {
     private static Short numOfSamples = Short.valueOf("0");
@@ -52,7 +58,7 @@ public class TempLoggerDialog {
 
         btnInit.setOnClickListener(view -> {
             try {
-                initDataLogger(_uhfReader, "300EFE2F94D01C02540BE4BE");
+                initDataLogger(_uhfReader, "300EFE2F94D01C02540BE47B");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -94,7 +100,7 @@ public class TempLoggerDialog {
         tg.startTone(ToneGenerator.TONE_PROP_BEEP);
 
 
-        /*try {
+        try {
 
             int counter0 = 10;
             byte reply0 = 1;
@@ -102,6 +108,7 @@ public class TempLoggerDialog {
                 reply0 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_RESET, SHORT_ONE, SHORT_ONE, accessPassword);
                 if (reply0 == 0 || reply0 == 1 || reply0 == 2) {
                     //txtData.setText("1. successfully reset\n");
+                    reply0 = 0;
                     break;
                 }
                 counter0--;
@@ -119,6 +126,7 @@ public class TempLoggerDialog {
                 reply1 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIMESTAMP, (short) 2, unixTime, accessPassword);
                 if (reply1 == 0 || reply1 == reply0) {
                     //txtData.append("2. successfully timestamp\n");
+                    reply1 = 0;
                     break;
                 }
                 counter1--;
@@ -135,6 +143,7 @@ public class TempLoggerDialog {
                 reply2 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIME_BIN, (short) 1, (short) 1, accessPassword);
                 if (reply2 == 0 || reply2 == reply1 || reply2 == reply0) {
                     //txtData.append("3. successfully time bin\n");
+                    reply2 = 0;
                     break;
                 }
                 counter2--;
@@ -152,6 +161,7 @@ public class TempLoggerDialog {
                 reply3 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_INTERVAL, (short) 1, interval, accessPassword);
                 if (reply3 == 0 || reply3 == reply2 || reply3 == reply1 || reply3 == reply0) {
                     //txtData.append("4. successfully interval\n");
+                    reply3 = 0;
                     break;
                 }
                 counter3--;
@@ -169,6 +179,7 @@ public class TempLoggerDialog {
                 if (reply4 == 0 || reply4 == reply3 || reply4 == reply2 || reply4 == reply1 || reply4 == reply0) {
                     txtData.setText("Successfully initialized");
                     loadingPanel.setVisibility(View.GONE);
+                    reply4 = 0;
                     break;
                 }
                 counter4--;
@@ -184,13 +195,13 @@ public class TempLoggerDialog {
             btnInit.setEnabled(false);
             btnInit.setTextColor(Color.GRAY);
 
-            *//*if (reply0+reply1+reply2+reply3+reply4 >0){
+            if (reply0+reply1+reply2+reply3+reply4 >0){
                 txtData.setText("Please scan bin again.");
-            }*//*
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     private void setDialog() {

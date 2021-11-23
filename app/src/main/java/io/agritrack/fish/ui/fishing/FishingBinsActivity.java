@@ -1,5 +1,10 @@
 package io.agritrack.fish.ui.fishing;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,22 +48,16 @@ import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TempLoggerDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
-
 public class FishingBinsActivity extends AppCompatActivity {
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private MobileDB db;
-    private UhfReader uhfReader;
     private ScanInventoryThread inventoryThread = new ScanInventoryThread();
     private boolean scanning = false;
 
@@ -322,8 +321,6 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (uhfReader != null)
-            uhfReader.close();
         scanning = false;
         super.onDestroy();
     }
