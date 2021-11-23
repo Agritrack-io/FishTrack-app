@@ -38,6 +38,9 @@ public class ConsumableTransaction {
     @ColumnInfo(name = "state")
     public String state;
 
+    @ColumnInfo(name = "collection_lot")
+    public String collectionLot;
+
     @ColumnInfo(name = "source")
     public String from;
 

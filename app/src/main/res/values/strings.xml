@@ -31,11 +31,6 @@
     <string name="menu_title_maintenance">Maintenance</string>
     <string name="menu_title_sea_temp">Sea Temperature</string>
 
-    <string name="menu_title_planting">Planting</string>
-    <string name="menu_title_harvest">Harvest</string>
-    <string name="menu_title_packaging">Packaging</string>
-    <string name="menu_title_shipping">Shipping</string>
-
     <string name="menu_title_incoming">Incoming</string>
     <string name="menu_title_outgoing">Outgoing</string>
     <string name="menu_title_inventory">Inventory</string>
@@ -357,8 +352,17 @@
 
 
     <!-- Tomato strings -->
-    <string name="title_seeding">SEEDING</string>
-    <string name="start_seeding">Start Seeding</string>
+    <string name="menu_title_planting">Plant</string>
+    <string name="menu_title_harvest">Harvest</string>
+    <string name="menu_title_semi_storage">Semi-ready storage</string>
+    <string name="menu_title_packaging">Packaging</string>
+    <string name="menu_title_storage">Ready storage</string>
+    <string name="menu_title_shipping">Shipping</string>
+    <string name="menu_title_measurements">Measurements</string>
+
+
+    <string name="title_seeding">PLANT</string>
+    <string name="start_seeding">Start Planting</string>
     <string name="scan_pole">Scan Pole tag</string>
     <string name="tomato_type">Tomato Type</string>
     <string name="greenhouse">Greenhouse:</string>
@@ -379,4 +383,34 @@
     <string name="item_inventory_totes">TOTES</string>
     <string name="item_inventory_ifco">IFCO</string>
     <string name="items">Items</string>
+    <string name="scan_ifco">Scan IFCO</string>
+    <string name="number_of_ifco"># of IFCO:</string>
+
+    <string name="select_greenhouse">Select greenhouse</string>
+    <string name="scan_rfid">Scan RFID</string>
+    <string name="pole_barcode">Pole</string>
+    <string name="temp_logger_barcode">Temp logger</string>
+
+    <string name="title_semi_storage">SEMI READY STORAGE</string>
+    <string name="totes_for_semi_storage">Received Totes</string>
+    <string name="type_total_weight">Total weight</string>
+    <string name="scan_warehouse">Scan warehouse</string>
+    <string name="scan_tag">Scan tag</string>
+    <string name="warehouse">Warehouse:</string>
+    <string name="weight">Weight:</string>
+
+    <string name="title_package">PACKAGING</string>
+    <string name="totes_for_package">Totes for packaging</string>
+    <string name="enter_lot_on_printer">Please enter the following LOT on the printing machine</string>
+    <string name="trays_qty">Trays quantity</string>
+
+    <string name="title_storage">READY STORAGE</string>
+    <string name="select_ifco">Select IFCO</string>
+
+    <string name="title_shipping">SHIPPING</string>
+    <string name="shipping_details">Shipping details</string>
+    <string name="confirm_customer">Customer:</string>
+
+    <string name="title_measurements">DAILY MEASUREMENTS</string>
+    <string name="scan_temp_logger">Temperature logger</string>
 </resources>

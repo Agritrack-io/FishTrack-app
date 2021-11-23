@@ -1,0 +1,169 @@
+package io.agritrack.fruit.ui.storage_ready;
+
+import static io.agritrack.fish.state.GlobalState.recFishing;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import io.agritrack.R;
+import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.data.db.MobileDB;
+import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.TimeOutProgressDlg;
+import io.agritrack.fruit.ui.FruitHomeActivity;
+import io.agritrack.ui.login.api.TransactionApi;
+import io.agritrack.ui.service.LocalPreferences;
+
+public class ReadyStorageConfirmActivity extends AppCompatActivity implements LocationListener {
+
+    private final int REQUEST_FINE_LOCATION = 1234;
+
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    private MobileDB db;
+    private LocationManager locationManager;
+    private ProgressDialog progressDialog;
+    private TimeOutProgressDlg syncProgressDialog;
+    private TextView tvFrom, tvTo, tvNumberIfco;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_ready_storage_confirm);
+
+        // set Header Info
+        TextView tvHeader = findViewById(R.id.tvHeaderStorageReadyConfirm);
+        tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // get  references of the controls
+        assignCtrlVars();
+
+        // get references to Location Manager Instance
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // request permission to use GPS
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+
+        // instantiate ProgressDialog and set style.
+        progressDialog = new ProgressDialog(ReadyStorageConfirmActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
+
+        //************************************************************************
+        // instantiate an AlertDialog with countdown functionality
+        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
+            @Override
+            public void doTasks() {
+                locationManager.removeUpdates(ReadyStorageConfirmActivity.this);
+
+                // Update state and proceed to next
+                //Boolean proceed = updateState();
+                toggleProgress(false, R.string.app_name);
+
+
+                Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
+                startActivity(i);
+
+            }
+        };
+        syncProgressDialog.setMessage(R.string.acquire_coordinates);
+
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(ReadyStorageConfirmActivity.this);
+            supportDialog.showDialog();
+        });
+
+        configFooter();
+    }
+
+    protected void configFooter() {
+        ImageView ivNext = findViewById(R.id.ivToCongs);
+        ivNext.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // check if permission has been granted
+                if (ActivityCompat.checkSelfPermission(ReadyStorageConfirmActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ReadyStorageConfirmActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ReadyStorageConfirmActivity.this);
+                // show Progress Dialog
+                toggleProgress(true, R.string.acquire_coordinates);
+            }
+        });
+
+        ImageView ivBack = findViewById(R.id.ivBackToReadyStorageStart);
+        ivBack.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), ReadyStorageStartActivity.class);
+            startActivity(i);
+        });
+    }
+
+    private void assignCtrlVars() {
+        tvFrom = findViewById(R.id.tvFrom);
+        tvTo = findViewById(R.id.tvTo);
+        tvNumberIfco = findViewById(R.id.tvNumberIfco);
+        ivSupport = findViewById(R.id.ivSupport);
+    }
+
+    private void initControlsFromState() {
+        /*tvUsername.setText(LocalPreferences.getLoggedInUser(""));
+
+        tvTotalQuantityCount.setText(recFishing.totalFishWeight != null ? recFishing.totalFishWeight.toString() : "N/A");
+        tvReqQuantityCount.setText(recFishing.reqWeight != null ? recFishing.reqWeight : "N/A");
+        tvNumberOfBinsCount.setText(recFishing.totalBinsUsed != null ? recFishing.totalBinsUsed.toString() : "N/A");
+        tvNameCage.setText(recFishing.cageRFID != null ? recFishing.cageRFID : "N/A");
+        tvTypeOfFishConfirm.setText(recFishing.speciesName != null ? recFishing.speciesName : "N/A");*/
+    }
+
+
+    // GPS Location-Related functionality
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        recFishing.longitude = location.getLongitude();
+        recFishing.latitude = location.getLatitude();
+        locationManager.removeUpdates(this);
+        toggleProgress(false, R.string.app_name);
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(i);
+    }
+
+    private void toggleProgress(boolean show, @StringRes int info) {
+        if (show) {
+            runOnUiThread(() -> {
+                syncProgressDialog.show();
+            });
+        } else {
+            runOnUiThread(() -> {
+                syncProgressDialog.hide();
+            });
+        }
+    }
+}

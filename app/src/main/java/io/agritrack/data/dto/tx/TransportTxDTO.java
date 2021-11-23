@@ -23,6 +23,7 @@ public class TransportTxDTO {
     public Long timestamp;
     public Double longitude;
     public Double latitude;
+    public List<ShipItemTxDTO> items;
 
     public static TransportTxDTO convert(TransportTransaction transport) {
         TransportTxDTO transportTxDto = new TransportTxDTO();

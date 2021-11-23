@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.AppUser;
-import io.agritrack.data.model.common.FishSpecies;
+import io.agritrack.data.model.common.Species;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.rfid.SingleShotScanner;
@@ -78,7 +78,7 @@ public class FishingStartActivity extends AppCompatActivity {
         }
 
         // load fish species and fill in the spFishType Spinner.
-        List<FishSpecies> fishSpecies = db.speciesDAO().getAll();
+        List<Species> fishSpecies = db.speciesDAO().getAll();
         if (fishSpecies != null && !fishSpecies.isEmpty()) {
             String[] species = fishSpecies.stream().map(x -> x.localName).toArray(String[]::new);
             ArrayAdapter<String> spAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, species);

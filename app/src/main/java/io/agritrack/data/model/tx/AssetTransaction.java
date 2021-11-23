@@ -37,6 +37,9 @@ public class AssetTransaction {
     @ColumnInfo(name = "source")
     public String from;
 
+    @ColumnInfo(name = "collection_lot")
+    public String collectionLot;
+
     @ColumnInfo(name = "dest")
     public String to;
 

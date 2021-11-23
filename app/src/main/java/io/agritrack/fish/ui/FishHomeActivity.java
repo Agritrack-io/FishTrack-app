@@ -18,13 +18,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.SyncAssetsCallBack;
@@ -41,7 +41,7 @@ import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
-import io.agritrack.data.dto.common.FishSpeciesDTO;
+import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.data.model.HarvestRequest;
@@ -67,7 +67,7 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 
 public class FishHomeActivity extends AppCompatActivity {
-    private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4, SeaTemp_Idx = 5, All_Idx =6;
+    private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4, SeaTemp_Idx = 5;
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
@@ -259,7 +259,7 @@ public class FishHomeActivity extends AppCompatActivity {
             syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
 
             // sync fish species
-            Call<List<FishSpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCode("gr", "Bearer " + token);
+            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.PRODUCT, "Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
 
         } catch (Exception e) {
