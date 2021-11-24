@@ -1,5 +1,11 @@
 package io.agritrack.fish.ui.process;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recProcessing;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -43,11 +49,6 @@ import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recProcessing;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class ProcessConfirmActivity extends AppCompatActivity implements LocationListener {
     private final int REQUEST_FINE_LOCATION = 1234;
@@ -226,7 +227,7 @@ public class ProcessConfirmActivity extends AppCompatActivity implements Locatio
         public void onResponse(Call<ProcessingTxDTO> call, Response<ProcessingTxDTO> response) {
             ProcessingTxDTO rs = response.body();
 
-            if (rs != null) {
+            if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Processing TX on backend!!!

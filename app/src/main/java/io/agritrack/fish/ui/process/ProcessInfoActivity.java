@@ -1,5 +1,9 @@
 package io.agritrack.fish.ui.process;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -26,10 +30,6 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class ProcessInfoActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -70,9 +70,7 @@ public class ProcessInfoActivity extends AppCompatActivity implements ToggleGrou
             public void onClick(View v) {
                 // Create the camera_intent ACTION_IMAGE_CAPTURE
                 // it will open the camera for capture the image
-                Intent camera_intent
-                        = new Intent(MediaStore
-                        .ACTION_IMAGE_CAPTURE);
+                Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                 // Start the activity with camera_intent,
                 // and request pic id

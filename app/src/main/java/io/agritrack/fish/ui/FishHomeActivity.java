@@ -1,5 +1,8 @@
 package io.agritrack.fish.ui;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -63,9 +66,6 @@ import io.agritrack.ui.login.api.SyncApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-
 public class FishHomeActivity extends AppCompatActivity {
     private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4, SeaTemp_Idx = 5;
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
@@ -100,7 +100,7 @@ public class FishHomeActivity extends AppCompatActivity {
             menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
         }
         if (roleCanAccessMenu(userRoles, Processing_Idx)) {
-            menuItemsSet.add(new MenuItem(Processing_Idx, getString(R.string.menu_title_processing), ProcessBinsActivity.class, R.drawable.processing));
+            menuItemsSet.add(new MenuItem(Processing_Idx, getString(R.string.menu_title_fish_packaging), ProcessBinsActivity.class, R.drawable.processing));
         }
         if (roleCanAccessMenu(userRoles, Transport_Idx)) {
             menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));

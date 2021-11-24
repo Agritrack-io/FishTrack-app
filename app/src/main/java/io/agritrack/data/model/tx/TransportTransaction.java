@@ -50,7 +50,7 @@ public class TransportTransaction {
     public List<String> loadedBins;
 
     @ColumnInfo(name = "site_code")
-    public String site;
+    public String siteCode;
 
     @ColumnInfo(name = "user_name")
     public String user;
@@ -60,12 +60,4 @@ public class TransportTransaction {
 
     @ColumnInfo(name = "latitude")
     public Double latitude;
-
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "harvest_load_id", foreignKey = @ForeignKey(name="FK_Transport_Harvest_Load"))
-    public HarvestLoad harvestLoad;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flot_id", foreignKey = @ForeignKey(name="FK_Transport_FLOT"))
-    public Flot flot;*/
 }

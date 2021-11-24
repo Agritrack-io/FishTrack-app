@@ -1,5 +1,15 @@
 package io.agritrack.ui.config;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+import static io.agritrack.ui.service.LocalPreferences.Latitude_Key;
+import static io.agritrack.ui.service.LocalPreferences.Longitude_Key;
+import static io.agritrack.ui.service.LocalPreferences.SelectedCluster_Key;
+import static io.agritrack.ui.service.LocalPreferences.SelectedSiteId_Key;
+import static io.agritrack.ui.service.LocalPreferences.SelectedSiteLevel_Key;
+import static io.agritrack.ui.service.LocalPreferences.SelectedSiteName_Key;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -44,16 +54,6 @@ import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
-import static io.agritrack.ui.service.LocalPreferences.Latitude_Key;
-import static io.agritrack.ui.service.LocalPreferences.Longitude_Key;
-import static io.agritrack.ui.service.LocalPreferences.SelectedCluster_Key;
-import static io.agritrack.ui.service.LocalPreferences.SelectedSiteId_Key;
-import static io.agritrack.ui.service.LocalPreferences.SelectedSiteLevel_Key;
-import static io.agritrack.ui.service.LocalPreferences.SelectedSiteName_Key;
 
 public class ConfigActivity extends AppCompatActivity implements LocationListener {
     private final int REQUEST_FINE_LOCATION = 1234;

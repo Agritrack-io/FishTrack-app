@@ -1,5 +1,10 @@
 package io.agritrack.fish.ui.fishing;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,11 +40,6 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class FishingTeamActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -122,14 +122,14 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), FishingCageActivity.class);
+                Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
                 startActivity(i);
             }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToBins);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
+            Intent i = new Intent(getApplicationContext(), FishingStartActivity.class);
             startActivity(i);
         });
     }

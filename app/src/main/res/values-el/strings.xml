@@ -26,7 +26,7 @@
 
     <string name="menu_title_fishing">Αλίευση</string>
     <string name="menu_title_transport">Μεταφορά</string>
-    <string name="menu_title_processing">Παραλαβή</string>
+    <string name="menu_title_fish_packaging">Παραλαβή</string>
     <string name="menu_title_warehouse">Αποθήκη</string>
     <string name="menu_title_maintenance">Συντήρηση</string>
 

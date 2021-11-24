@@ -26,7 +26,7 @@
 
     <string name="menu_title_fishing">Fishing</string>
     <string name="menu_title_transport">Transport</string>
-    <string name="menu_title_processing">Processing</string>
+    <string name="menu_title_fish_packaging">Packaging</string>
     <string name="menu_title_warehouse">Warehouse</string>
     <string name="menu_title_maintenance">Maintenance</string>
     <string name="menu_title_sea_temp">Sea Temperature</string>
@@ -143,9 +143,9 @@
     <string name="login_failed">Login failed</string>
     <string name="logo">Logo</string>
 
-    <string name="title_processing">PROCESSING</string>
+    <string name="title_processing">PACKAGING</string>
     <string name="title_date_lot_dispatch_note">DATE / LOT / DISPATCH NOTE</string>
-    <string name="processing_details">Processing details</string>
+    <string name="processing_details">Packaging details</string>
 
     <string name="dispatch_note">Type dispatch note</string>
     <string name="enter_lot">Type LOT</string>
@@ -301,7 +301,7 @@
     <string name="error_cancelled_call">Call was cancelled forcefully!!!</string>
     <string name="error_fishing_tx_update_failure">Fishing transaction update failure!!!</string>
     <string name="error_transport_tx_update_failure">Failed to update Transport transaction!!!</string>
-    <string name="error_processing_tx_update_failure">Failed to update Processing transaction!!!</string>
+    <string name="error_processing_tx_update_failure">Failed to update Packaging transaction!!!</string>
     <string name="no_epc_filter_selected">Please enter the tag to search for...</string>
     <string name="scan_asset_tag">Scan Asset</string>
     <string name="button_correlate">Correlate</string>

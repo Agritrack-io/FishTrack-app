@@ -234,7 +234,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
+                Intent i = new Intent(getApplicationContext(), FishingCageActivity.class);
                 startActivity(i);
             }
         });
@@ -246,7 +246,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             scanning = false;
             inventoryThread.setScanInProgress(scanning);
 
-            Intent i = new Intent(getApplicationContext(), FishingStartActivity.class);
+            Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
             startActivity(i);
         });
     }

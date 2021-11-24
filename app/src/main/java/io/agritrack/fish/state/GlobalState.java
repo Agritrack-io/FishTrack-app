@@ -171,7 +171,7 @@ public class GlobalState {
             txTransport.timestamp = System.currentTimeMillis();
             txTransport.loadedBins = recTransport.availBins;
             txTransport.user = LocalPreferences.getLoggedInUser("N/A");
-            txTransport.site = LocalPreferences.getCurrentSiteId().toString();
+            txTransport.siteCode = LocalPreferences.getCurrentSiteId().toString();
             txTransport.longitude = recTransport.longitude;
             txTransport.latitude = recTransport.latitude;
 

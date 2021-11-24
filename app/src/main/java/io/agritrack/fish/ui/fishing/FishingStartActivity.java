@@ -1,5 +1,11 @@
 package io.agritrack.fish.ui.fishing;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -24,17 +30,11 @@ import io.agritrack.data.model.AppUser;
 import io.agritrack.data.model.common.Species;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.service.LocalPreferences;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class FishingStartActivity extends AppCompatActivity {
 
@@ -117,7 +117,7 @@ public class FishingStartActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
+                Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
                 startActivity(i);
             }
         });

@@ -1,5 +1,10 @@
 package io.agritrack.fish.ui.fishing;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,15 +30,10 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.CageDetails;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.service.LocalPreferences;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class FishingCageActivity extends AppCompatActivity {
 
@@ -144,7 +144,7 @@ public class FishingCageActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToTeam);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
+            Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
             startActivity(i);
         });
     }
