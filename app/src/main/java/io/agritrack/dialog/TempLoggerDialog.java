@@ -93,7 +93,6 @@ public class TempLoggerDialog {
         tg.startTone(ToneGenerator.TONE_PROP_BEEP);
 
 
-<<<<<<< HEAD
 //        try {
 //
 //            int counter0 = 10;
@@ -196,7 +195,6 @@ public class TempLoggerDialog {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-=======
         /*try {
 
             int counter0 = 10;
@@ -299,7 +297,6 @@ public class TempLoggerDialog {
         /*} catch (Exception e) {
             e.printStackTrace();
         }*/
->>>>>>> 6f3674803cc8596f0d30f948438cc69e7d53d9be
     }
 
     private void setDialog() {

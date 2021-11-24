@@ -53,10 +53,12 @@ import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.enums.AssetType;
+import io.agritrack.fish.ui.transport.TransportSupervisorConfirmActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
+import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -69,14 +71,12 @@ import retrofit2.Response;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recTransport;
 import static io.agritrack.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-public class CorrelationActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener, LocationListener {
-    private final int REQUEST_FINE_LOCATION = 1234;
+public class CorrelationActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener{
 
-    private LocationManager locationManager;
-    private TimeOutProgressDlg syncProgressDialog;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -119,18 +119,15 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_correlation);
 
+        // activate GPS location update feature.
+        super.findLocation();
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderCorrelation);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
-
-        // get references to Location Manager Instance
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        // request permission to use GPS
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(CorrelationActivity.this);
@@ -179,25 +176,6 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
             correlate();
         });
 
-        //************************************************************************
-        // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
-            @Override
-            public void doTasks() {
-                locationManager.removeUpdates(CorrelationActivity.this);
-
-                // Update state and proceed to next
-                Boolean proceed = correlate();
-                toggleProgress(false, R.string.app_name);
-
-                if (proceed) {
-                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
-                    startActivity(i);
-                }
-            }
-        };
-        syncProgressDialog.setMessage(R.string.acquire_coordinates);
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(CorrelationActivity.this);
             supportDialog.showDialog();
@@ -208,16 +186,28 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener(){
+        ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // check if permission has been granted
-                if (ActivityCompat.checkSelfPermission(CorrelationActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(CorrelationActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+
+                if (mLastLocation != null) {
+                    recWHCorrelation.longitude = mLastLocation.getLongitude();
+                    recWHCorrelation.latitude = mLastLocation.getLatitude();
+                } else {
+                    CToast(CorrelationActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, CorrelationActivity.this);
-                // show Progress Dialog
-                toggleProgress(true, R.string.acquire_coordinates);
+
+                // Update state and proceed to next
+                Boolean proceed = correlate();
+
+                if (proceed) {
+                    // stop GPS location updates.
+                    stopListener();
+
+                    // move to next activity.
+                    Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                    startActivity(i);
+                }
             }
         });
 
@@ -422,37 +412,6 @@ public class CorrelationActivity extends AppCompatActivity implements ToggleGrou
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
-        }
-    }
-
-    // GPS Location-Related functionality
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        recWHCorrelation.longitude = location.getLongitude();
-        recWHCorrelation.latitude = location.getLatitude();
-        locationManager.removeUpdates(this);
-        toggleProgress(false, R.string.app_name);
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(i);
-    }
-
-    private void toggleProgress(boolean show, @StringRes int info) {
-        if (show) {
-            runOnUiThread(() -> {
-                syncProgressDialog.show();
-            });
-        } else {
-            runOnUiThread(() -> {
-                syncProgressDialog.hide();
-            });
         }
     }
 }

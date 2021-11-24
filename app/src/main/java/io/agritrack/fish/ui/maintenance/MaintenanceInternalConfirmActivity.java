@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.maintenance;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -32,22 +34,24 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.transport.TransportSupervisorConfirmActivity;
+import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recInternalRepair;
+import static io.agritrack.fish.state.GlobalState.recTransport;
+import static io.agritrack.ui.custom.CustomToast.CToast;
 
-public class MaintenanceInternalConfirmActivity extends AppCompatActivity implements LocationListener {
-    private final int REQUEST_FINE_LOCATION = 1234;
+public class MaintenanceInternalConfirmActivity extends LocationAwareActivity {
 
-    private LocationManager locationManager;
-    private TimeOutProgressDlg syncProgressDialog;
     private MobileDB db;
     private TextView tvSite, tvAssetBarcode, tvMaintenanceType, tvMaintenanceTeam, tvNextDateMaintenance, tvUsername;
     private EditText etPasswordFishing;
     private final String dtFormat = "dd/MM/yyyy";
     private final SimpleDateFormat sdf = new SimpleDateFormat(dtFormat);
+    private ProgressDialog progressDialog;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -57,14 +61,11 @@ public class MaintenanceInternalConfirmActivity extends AppCompatActivity implem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintenance_internal_confirm);
 
+        // activate GPS location update feature.
+        super.findLocation();
+
         // get  references of the controls
         assignCtrlVars();
-
-        // get references to Location Manager Instance
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        // request permission to use GPS
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderMaintenanceInternalConfirm);
@@ -72,25 +73,6 @@ public class MaintenanceInternalConfirmActivity extends AppCompatActivity implem
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
-
-        //************************************************************************
-        // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
-            @Override
-            public void doTasks() {
-                locationManager.removeUpdates(MaintenanceInternalConfirmActivity.this);
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-                toggleProgress(false, R.string.app_name);
-
-                if (proceed) {
-                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
-                    startActivity(i);
-                }
-            }
-        };
-        syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(MaintenanceInternalConfirmActivity.this);
@@ -107,17 +89,29 @@ public class MaintenanceInternalConfirmActivity extends AppCompatActivity implem
             startActivity(i);
         });
 
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener(){
+        ImageView ivNext = findViewById(R.id.ivToCongs);
+        ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // check if permission has been granted
-                if (ActivityCompat.checkSelfPermission(MaintenanceInternalConfirmActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MaintenanceInternalConfirmActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+
+                if (mLastLocation != null) {
+                    recInternalRepair.longitude = mLastLocation.getLongitude();
+                    recInternalRepair.latitude = mLastLocation.getLatitude();
+                } else {
+                    CToast(MaintenanceInternalConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MaintenanceInternalConfirmActivity.this);
-                // show Progress Dialog
-                toggleProgress(true, R.string.acquire_coordinates);
+
+                // Update state and proceed to next
+                Boolean proceed = updateState();
+
+                if (proceed) {
+                    // stop GPS location updates.
+                    stopListener();
+
+                    // move to next activity.
+                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+                    startActivity(i);
+                }
             }
         });
     }
@@ -157,36 +151,5 @@ public class MaintenanceInternalConfirmActivity extends AppCompatActivity implem
         RepairTransaction tx = GlobalState.commitInternalRepair(db);
 
             return true;
-    }
-
-    // GPS Location-Related functionality
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        recInternalRepair.longitude = location.getLongitude();
-        recInternalRepair.latitude = location.getLatitude();
-        locationManager.removeUpdates(this);
-        toggleProgress(false, R.string.app_name);
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(i);
-    }
-
-    private void toggleProgress(boolean show, @StringRes int info) {
-        if (show) {
-            runOnUiThread(() -> {
-                syncProgressDialog.show();
-            });
-        } else {
-            runOnUiThread(() -> {
-                syncProgressDialog.hide();
-            });
-        }
     }
 }

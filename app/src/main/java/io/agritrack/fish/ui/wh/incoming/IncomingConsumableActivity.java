@@ -55,6 +55,7 @@ import io.agritrack.enums.WarehouseTxState;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.fish.ui.WhMenuActivity;
+import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.TransactionApi;
@@ -66,14 +67,11 @@ import retrofit2.Response;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recTransport;
 import static io.agritrack.fish.state.GlobalState.recWHIncoming;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-public class IncomingConsumableActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener, LocationListener {
-    private final int REQUEST_FINE_LOCATION = 1234;
-
-    private LocationManager locationManager;
-    private TimeOutProgressDlg syncProgressDialog;
+public class IncomingConsumableActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private ToggleGroup tgChooseConsumableType;
 
@@ -139,18 +137,15 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incoming_consumable);
 
+        // activate GPS location update feature.
+        super.findLocation();
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderIncomingProcess);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
-        
-        // get references to Location Manager Instance
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        // request permission to use GPS
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(IncomingConsumableActivity.this);
@@ -210,27 +205,6 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
             }
         });
 
-        //************************************************************************
-        // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
-            @Override
-            public void doTasks() {
-                locationManager.removeUpdates(IncomingConsumableActivity.this);
-
-                // Update state and proceed to next
-                updateState();
-
-                //Set scanning to false to stop running scan thread
-                scanning = false;
-                stopScanning();
-
-                toggleProgress(false, R.string.app_name);
-                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                startActivity(i);
-            }
-        };
-        syncProgressDialog.setMessage(R.string.acquire_coordinates);
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(IncomingConsumableActivity.this);
             supportDialog.showDialog();
@@ -261,23 +235,28 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener(){
+        ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // check if permission has been granted
-                if (ActivityCompat.checkSelfPermission(IncomingConsumableActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(IncomingConsumableActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+
+                if (mLastLocation != null) {
+                    recTransport.longitude = mLastLocation.getLongitude();
+                    recTransport.latitude = mLastLocation.getLatitude();
+                } else {
+                    CToast(IncomingConsumableActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
-                if (adapterIncomingItems.getItemCount() == 0) {
-                    String vd = validate();
-                    if (!Strings.isEmptyOrWhitespace(vd)) {
-                        CToast(getApplicationContext(), render("Invalid inputs : " + vd), Toast.LENGTH_LONG);
-                    }
-                    return;
+
+                // Update state and proceed to next
+                Boolean proceed = updateState();
+
+                if (proceed) {
+                    // stop GPS location updates.
+                    stopListener();
+
+                    // move to next activity.
+                    Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                    startActivity(i);
                 }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, IncomingConsumableActivity.this);
-                // show Progress Dialog
-                toggleProgress(true, R.string.acquire_coordinates);
             }
         });
 
@@ -305,11 +284,15 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
         tgChooseConsumableType.setOnCheckedChangeListener(this);
     }
 
-    private void updateState() {
-        if (adapterIncomingItems.getItemCount() == 0) {
-            return;
+    private boolean updateState() {
+        if (adapterIncomingItems != null) {
+            GlobalState.recWHIncoming.barcodeItems = adapterIncomingItems.getValues();
         }
-        GlobalState.recWHIncoming.barcodeItems = adapterIncomingItems.getValues();
+        String v = validate();
+        if (!Strings.isEmptyOrWhitespace(v)) {
+            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            return false;
+        }
         GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
         GlobalState.recWHIncoming.assetType = AssetType.valueOf(this.selectedConsumableType);
         GlobalState.recWHIncoming.site = LocalPreferences.getCurrentSiteName();
@@ -330,9 +313,12 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
             // sync WH Incoming Tx
             Call<List<ConsumableTxDTO>> syncTxAsyncCall = updService.syncBarcodeIOTx(ConsumableTxDTO.convert(tx), "Bearer " + token);
             syncTxAsyncCall.enqueue(new IncomingConsumableActivity.SyncTxCallBack());
+
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+            return false;
         } finally {
             progressDialog.dismiss();
         }
@@ -474,37 +460,6 @@ public class IncomingConsumableActivity extends AppCompatActivity implements Tog
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
-        }
-    }
-
-    // GPS Location-Related functionality
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        recWHIncoming.longitude = location.getLongitude();
-        recWHIncoming.latitude = location.getLatitude();
-        locationManager.removeUpdates(this);
-        toggleProgress(false, R.string.app_name);
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(i);
-    }
-
-    private void toggleProgress(boolean show, @StringRes int info) {
-        if (show) {
-            runOnUiThread(() -> {
-                syncProgressDialog.show();
-            });
-        } else {
-            runOnUiThread(() -> {
-                syncProgressDialog.hide();
-            });
         }
     }
 }

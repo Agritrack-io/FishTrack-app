@@ -17,6 +17,7 @@ import android.provider.Settings;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,6 +40,8 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.transport.TransportSupervisorConfirmActivity;
+import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -49,17 +52,15 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recTools;
+import static io.agritrack.fish.state.GlobalState.recTransport;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-public class SeaTemperatureActivity extends AppCompatActivity implements LocationListener {
+public class SeaTemperatureActivity extends LocationAwareActivity {
 
-    private final int REQUEST_FINE_LOCATION = 1234;
-
-    private LocationManager locationManager;
-    private TimeOutProgressDlg syncProgressDialog;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private EditText etReferenceTemp, etCageTemp;
     private TextView tvCurrentDate;
+
     private MobileDB db;
     private ProgressDialog progressDialog;
 
@@ -71,15 +72,12 @@ public class SeaTemperatureActivity extends AppCompatActivity implements Locatio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sea_temperature);
 
+        // activate GPS location update feature.
+        super.findLocation();
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderCorrelation);
         tvHeader.setText(LocalPreferences.HeaderMsg());
-
-        // get references to Location Manager Instance
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        // request permission to use GPS
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(SeaTemperatureActivity.this);
@@ -89,25 +87,6 @@ public class SeaTemperatureActivity extends AppCompatActivity implements Locatio
         db = MobileDB.getInstance(getAppContext());
 
         assignCtrlVars();
-
-        //************************************************************************
-        // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
-            @Override
-            public void doTasks() {
-                locationManager.removeUpdates(SeaTemperatureActivity.this);
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-                toggleProgress(false, R.string.app_name);
-
-                if (proceed) {
-                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
-                    startActivity(i);
-                }
-            }
-        };
-        syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(SeaTemperatureActivity.this);
@@ -150,16 +129,27 @@ public class SeaTemperatureActivity extends AppCompatActivity implements Locatio
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(view -> {
+        ivNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-            recTools.referencePointTemp = !TextUtils.isEmpty(etReferenceTemp.getText().toString()) ? Double.valueOf(etReferenceTemp.getText().toString()) : null;
-            recTools.cageTemp = !TextUtils.isEmpty(etCageTemp.getText().toString()) ? Double.valueOf(etCageTemp.getText().toString()) : null;
+                if (mLastLocation != null) {
+                    recTools.longitude = mLastLocation.getLongitude();
+                    recTools.latitude = mLastLocation.getLatitude();
+                } else {
+                    CToast(SeaTemperatureActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
+                }
 
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            } else {
-                this.syncProgressDialog.start();
+                // Update state and proceed to next
+                Boolean proceed = updateState();
+                if (proceed) {
+                    // stop GPS location updates.
+                    stopListener();
+
+                    // move to next activity.
+                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+                    startActivity(i);
+                }
             }
         });
 
@@ -178,6 +168,19 @@ public class SeaTemperatureActivity extends AppCompatActivity implements Locatio
     }
 
     private boolean updateState() {
+
+        if (etReferenceTemp.getText() != null && !Strings.isEmptyOrWhitespace(etReferenceTemp.getText().toString())) {
+            recTools.referencePointTemp = Double.valueOf(etReferenceTemp.getText().toString());
+        }
+        if (etCageTemp.getText() != null && !Strings.isEmptyOrWhitespace(etCageTemp.getText().toString())) {
+            recTools.cageTemp = Double.valueOf(etCageTemp.getText().toString());
+        }
+        String v = validate();
+        if (!Strings.isEmptyOrWhitespace(v)) {
+            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            return false;
+        }
+
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
@@ -231,7 +234,7 @@ public class SeaTemperatureActivity extends AppCompatActivity implements Locatio
         public void onResponse(Call<SeaTemperatureTxDTO> call, Response<SeaTemperatureTxDTO> response) {
             SeaTemperatureTxDTO rs = response.body();
 
-            if (rs != null) {
+            if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
@@ -254,37 +257,6 @@ public class SeaTemperatureActivity extends AppCompatActivity implements Locatio
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
-        }
-    }
-
-    // GPS Location-Related functionality
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        recTools.longitude = location.getLongitude();
-        recTools.latitude = location.getLatitude();
-        locationManager.removeUpdates(this);
-        toggleProgress(false, R.string.app_name);
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(i);
-    }
-
-    private void toggleProgress(boolean show, @StringRes int info) {
-        if (show) {
-            runOnUiThread(() -> {
-                syncProgressDialog.show();
-            });
-        } else {
-            runOnUiThread(() -> {
-                syncProgressDialog.hide();
-            });
         }
     }
 

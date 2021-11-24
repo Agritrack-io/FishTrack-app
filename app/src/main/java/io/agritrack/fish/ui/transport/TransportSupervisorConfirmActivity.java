@@ -3,6 +3,7 @@ package io.agritrack.fish.ui.transport;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fish.state.GlobalState.recTransport;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -43,6 +44,8 @@ import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.process.ProcessConfirmActivity;
+import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
@@ -50,13 +53,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TransportSupervisorConfirmActivity extends AppCompatActivity implements LocationListener {
-    private final int REQUEST_FINE_LOCATION = 1234;
+public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
 
-    private LocationManager locationManager;
-    private TimeOutProgressDlg syncProgressDialog;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
+
     private TextView tvSitePackaging, tvNumberOfBinsCount, tvDriverName, tvLicensePlate, tvSecurityClipNumber;
     private TextView tvUsername;
     private ProgressDialog progressDialog;
@@ -69,6 +70,9 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity implem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transport_supervisor_confirm);
 
+        // activate GPS location update feature.
+        super.findLocation();
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderTransportSupervisorConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
@@ -76,37 +80,12 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity implem
         // get  references of the controls
         assignCtrlVars();
 
-        // get references to Location Manager Instance
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        // request permission to use GPS
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
-
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(TransportSupervisorConfirmActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
-
-        //************************************************************************
-        // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
-            @Override
-            public void doTasks() {
-                locationManager.removeUpdates(TransportSupervisorConfirmActivity.this);
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-                toggleProgress(false, R.string.app_name);
-
-                if (proceed) {
-                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
-                    startActivity(i);
-                }
-            }
-        };
-        syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(TransportSupervisorConfirmActivity.this);
@@ -118,16 +97,28 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity implem
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener(){
+        ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // check if permission has been granted
-                if (ActivityCompat.checkSelfPermission(TransportSupervisorConfirmActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(TransportSupervisorConfirmActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+
+                if (mLastLocation != null) {
+                    recTransport.longitude = mLastLocation.getLongitude();
+                    recTransport.latitude = mLastLocation.getLatitude();
+                } else {
+                    CToast(TransportSupervisorConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, TransportSupervisorConfirmActivity.this);
-                // show Progress Dialog
-                toggleProgress(true, R.string.acquire_coordinates);
+
+                // Update state and proceed to next
+                Boolean proceed = updateState();
+
+                if (proceed) {
+                    // stop GPS location updates.
+                    stopListener();
+
+                    // move to next activity.
+                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+                    startActivity(i);
+                }
             }
         });
 
@@ -249,37 +240,6 @@ public class TransportSupervisorConfirmActivity extends AppCompatActivity implem
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
-        }
-    }
-
-    // GPS Location-Related functionality
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        recTransport.longitude = location.getLongitude();
-        recTransport.latitude = location.getLatitude();
-        locationManager.removeUpdates(this);
-        toggleProgress(false, R.string.app_name);
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(i);
-    }
-
-    private void toggleProgress(boolean show, @StringRes int info) {
-        if (show) {
-            runOnUiThread(() -> {
-                syncProgressDialog.show();
-            });
-        } else {
-            runOnUiThread(() -> {
-                syncProgressDialog.hide();
-            });
         }
     }
 }
