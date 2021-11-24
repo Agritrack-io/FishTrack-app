@@ -171,8 +171,6 @@ public class FishingConfirmActivity extends LocationAwareActivity {
                     e.printStackTrace();
                     CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
                     return false;
-                } finally {
-                    //progressDialog.dismiss();
                 }
             }
         } else {

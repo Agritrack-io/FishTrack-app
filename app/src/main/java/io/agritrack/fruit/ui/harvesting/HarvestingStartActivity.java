@@ -78,7 +78,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
             scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_PLATFORM);
+            //scanner.setFilter(Filters.RFID_POLE);
 
             Future<?> future = executor.submit(scanner);
             try {

@@ -216,7 +216,7 @@ public class HarvestingTotesActivity extends AppCompatActivity {
             harvestTotesThread.setScanInProgress(scanning);
             harvestTotesThread.setUhfReader(uhfReader);
             harvestTotesThread.setScanResult(scanResult);
-            harvestTotesThread.setFilter(Filters.RFID_BIN);
+            harvestTotesThread.setFilter(Filters.RFID_TOTE);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);

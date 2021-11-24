@@ -12,4 +12,9 @@ public class Filters {
     public static final String BARCODE_FOOD = "";
     public static final String BARCODE_VACCINE = "";
     public static final String BARCODE_ANTIBIOTIC = "";
+
+
+    public static final String RFID_TOTE = "BE20";
+    public static final String RFID_POLE = "1946";
+    public static final String RFID_LOGGER = "01C0";
 }

@@ -93,6 +93,7 @@ public class TempLoggerDialog {
         tg.startTone(ToneGenerator.TONE_PROP_BEEP);
 
 
+<<<<<<< HEAD
 //        try {
 //
 //            int counter0 = 10;
@@ -195,6 +196,110 @@ public class TempLoggerDialog {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
+=======
+        /*try {
+
+            int counter0 = 10;
+            byte reply0 = 1;
+            while (counter0 > 0) {
+                reply0 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_RESET, SHORT_ONE, SHORT_ONE, accessPassword);
+                if (reply0 == 0 || reply0 == 1 || reply0 == 2) {
+                    //txtData.setText("1. successfully reset\n");
+                    reply0 = 0;
+                    break;
+                }
+                counter0--;
+            }
+            if (counter0 == 0) {
+                txtData.setText("Failed to reset data logger. Please scan bin again.");
+                loadingPanel.setVisibility(View.GONE);
+                return;
+            }
+
+            int counter1 = 10;
+            long unixTime = System.currentTimeMillis() / 1000L;
+            byte reply1 = 1;
+            while (counter1 > 0) {
+                reply1 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIMESTAMP, (short) 2, unixTime, accessPassword);
+                if (reply1 == 0 || reply1 == reply0) {
+                    //txtData.append("2. successfully timestamp\n");
+                    reply1 = 0;
+                    break;
+                }
+                counter1--;
+            }
+            if (counter1 == 0) {
+                txtData.setText("Failed to set timestamp. Please scan bin again.");
+                loadingPanel.setVisibility(View.GONE);
+                return;
+            }
+
+            int counter2 = 10;
+            byte reply2 = 1;
+            while (counter2 > 0) {
+                reply2 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIME_BIN, (short) 1, (short) 1, accessPassword);
+                if (reply2 == 0 || reply2 == reply1 || reply2 == reply0) {
+                    //txtData.append("3. successfully time bin\n");
+                    reply2 = 0;
+                    break;
+                }
+                counter2--;
+            }
+            if (counter2 == 0) {
+                txtData.setText("Failed to set time bin. Please scan bin again.");
+                loadingPanel.setVisibility(View.GONE);
+                return;
+            }
+
+            int counter3 = 10;
+            short interval = 30;
+            byte reply3 = 1;
+            while (counter3 > 0) {
+                reply3 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_INTERVAL, (short) 1, interval, accessPassword);
+                if (reply3 == 0 || reply3 == reply2 || reply3 == reply1 || reply3 == reply0) {
+                    //txtData.append("4. successfully interval\n");
+                    reply3 = 0;
+                    break;
+                }
+                counter3--;
+            }
+            if (counter3 == 0) {
+                txtData.setText("Failed to set interval. Please scan bin again.");
+                loadingPanel.setVisibility(View.GONE);
+                return;
+            }
+
+            int counter4 = 10;
+            byte reply4 = 1;
+            while (counter4 > 0) {
+                reply4 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_RESET, (short) 1, (short) 4, accessPassword);
+                if (reply4 == 0 || reply4 == reply3 || reply4 == reply2 || reply4 == reply1 || reply4 == reply0) {
+                    txtData.setText("Successfully initialized");
+                    loadingPanel.setVisibility(View.GONE);
+                    reply4 = 0;
+                    break;
+                }
+                counter4--;
+            }
+            if (counter4 == 0) {
+                txtData.setText("Failed to start logger. Please scan bin again.");
+                loadingPanel.setVisibility(View.GONE);
+                return;
+            }*/
+            loadingPanel.setVisibility(View.GONE);
+            btnOk.setEnabled(true);
+            btnOk.setTextColor(Color.parseColor("#FFEB3B"));
+            btnInit.setEnabled(false);
+            btnInit.setTextColor(Color.GRAY);
+
+            /*if (reply0+reply1+reply2+reply3+reply4 >0){
+                txtData.setText("Please scan bin again.");
+            }*/
+
+        /*} catch (Exception e) {
+            e.printStackTrace();
+        }*/
+>>>>>>> 6f3674803cc8596f0d30f948438cc69e7d53d9be
     }
 
     private void setDialog() {
