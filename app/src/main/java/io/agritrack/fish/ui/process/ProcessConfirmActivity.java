@@ -123,6 +123,9 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToReceiveBins);
         ivBack.setOnClickListener(view -> {
+            // stop GPS location updates.
+            stopListener();
+
             Intent i = new Intent(getApplicationContext(), ProcessInfoActivity.class);
             startActivity(i);
         });

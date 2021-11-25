@@ -16,8 +16,8 @@ public class AssetTxDTO {
     public String site;
     public String collection_lot;
     public Long timestamp;
-    public Double longitude;
-    public Double latitude;
+    public Double lon;
+    public Double lat;
 
     public static AssetTxDTO convert(AssetTransaction assetTx) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -32,8 +32,8 @@ public class AssetTxDTO {
         assetTxDTO.site = assetTx.site;
         assetTxDTO.collection_lot = assetTx.collectionLot;
         assetTxDTO.timestamp = assetTx.timestamp;
-        assetTxDTO.longitude = assetTx.longitude;
-        assetTxDTO.latitude = assetTx.latitude;
+        assetTxDTO.lon = assetTx.longitude;
+        assetTxDTO.lat = assetTx.latitude;
 
         return assetTxDTO;
     }

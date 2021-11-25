@@ -124,6 +124,9 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToDriverConfirm);
         ivBack.setOnClickListener(view -> {
+            // stop GPS location updates.
+            stopListener();
+
             Intent i = new Intent(getApplicationContext(), TransportDriverConfirmActivity.class);
             startActivity(i);
         });

@@ -241,8 +241,8 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
             public void onClick(View v) {
 
                 if (mLastLocation != null) {
-                    recTransport.longitude = mLastLocation.getLongitude();
-                    recTransport.latitude = mLastLocation.getLatitude();
+                    recWHInventory.longitude = mLastLocation.getLongitude();
+                    recWHInventory.latitude = mLastLocation.getLatitude();
                 } else {
                     CToast(InventoryConsumableActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
@@ -263,6 +263,9 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
 
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
+            // stop GPS location updates.
+            stopListener();
+
             //Set scanning to false to stop running scan thread
             scanning = false;
             stopScanning();

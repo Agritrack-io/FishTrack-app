@@ -85,6 +85,9 @@ public class MaintenanceInternalConfirmActivity extends LocationAwareActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMaintenanceInternalTeam);
         ivBack.setOnClickListener(view -> {
+            // stop GPS location updates.
+            stopListener();
+
             Intent i = new Intent(getApplicationContext(), MaintenanceInternalTeamActivity.class);
             startActivity(i);
         });

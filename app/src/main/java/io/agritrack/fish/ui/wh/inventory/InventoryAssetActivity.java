@@ -230,8 +230,8 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
             public void onClick(View v) {
 
                 if (mLastLocation != null) {
-                    recTransport.longitude = mLastLocation.getLongitude();
-                    recTransport.latitude = mLastLocation.getLatitude();
+                    recWHInventory.longitude = mLastLocation.getLongitude();
+                    recWHInventory.latitude = mLastLocation.getLatitude();
                 } else {
                     CToast(InventoryAssetActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
@@ -252,6 +252,8 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
+            // stop GPS location updates.
+            stopListener();
 
             //Set scanning to false to stop running scan thread
             scanning = false;

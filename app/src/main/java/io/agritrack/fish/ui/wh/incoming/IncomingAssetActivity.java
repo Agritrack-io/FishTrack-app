@@ -229,8 +229,8 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
             public void onClick(View v) {
 
                 if (mLastLocation != null) {
-                    recTransport.longitude = mLastLocation.getLongitude();
-                    recTransport.latitude = mLastLocation.getLatitude();
+                    recWHIncoming.longitude = mLastLocation.getLongitude();
+                    recWHIncoming.latitude = mLastLocation.getLatitude();
                 } else {
                     CToast(IncomingAssetActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
@@ -251,6 +251,8 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
 
         ImageView ivBack = findViewById(R.id.ivBackToStartIncoming);
         ivBack.setOnClickListener(view -> {
+            // stop GPS location updates.
+            stopListener();
 
             //Set scanning to false to stop running scan thread
             scanning = false;

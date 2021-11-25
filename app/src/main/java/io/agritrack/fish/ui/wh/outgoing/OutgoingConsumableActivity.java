@@ -241,8 +241,8 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
             public void onClick(View v) {
 
                 if (mLastLocation != null) {
-                    recTransport.longitude = mLastLocation.getLongitude();
-                    recTransport.latitude = mLastLocation.getLatitude();
+                    recWHOutgoing.longitude = mLastLocation.getLongitude();
+                    recWHOutgoing.latitude = mLastLocation.getLatitude();
                 } else {
                     CToast(OutgoingConsumableActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
@@ -263,6 +263,8 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
 
         ImageView ivBack = findViewById(R.id.ivBackToStartOutgoing);
         ivBack.setOnClickListener(view -> {
+            // stop GPS location updates.
+            stopListener();
 
             //Set scanning to false to stop running scan thread
             scanning = false;

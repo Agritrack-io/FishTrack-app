@@ -112,6 +112,9 @@ public class FishingConfirmActivity extends LocationAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToFillBins);
         ivBack.setOnClickListener(view -> {
+            // stop GPS location updates.
+            stopListener();
+
             Intent i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
             startActivity(i);
         });

@@ -155,6 +155,9 @@ public class SeaTemperatureActivity extends LocationAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
+            // stop GPS location updates.
+            stopListener();
+
             Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);
         });
