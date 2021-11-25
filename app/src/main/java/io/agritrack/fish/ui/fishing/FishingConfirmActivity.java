@@ -100,9 +100,6 @@ public class FishingConfirmActivity extends LocationAwareActivity {
                 Boolean proceed = updateState();
 
                 if (proceed) {
-                    // stop GPS location updates.
-                    stopListener();
-
                     // move to next activity.
                     Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
                     startActivity(i);
@@ -112,9 +109,6 @@ public class FishingConfirmActivity extends LocationAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToFillBins);
         ivBack.setOnClickListener(view -> {
-            // stop GPS location updates.
-            stopListener();
-
             Intent i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
             startActivity(i);
         });

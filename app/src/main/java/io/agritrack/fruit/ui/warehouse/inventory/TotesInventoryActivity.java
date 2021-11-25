@@ -4,6 +4,7 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recWHInventory;
+import static io.agritrack.fruit.state.FruitGlobalState.recInventory;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.annotation.NonNull;
@@ -62,8 +63,11 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
+import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.TransactionApi;
@@ -72,12 +76,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TotesInventoryActivity extends AppCompatActivity implements LocationListener {
-
-    private final int REQUEST_FINE_LOCATION = 1234;
-
-    private LocationManager locationManager;
-    private TimeOutProgressDlg syncProgressDialog;
+public class TotesInventoryActivity extends LocationAwareActivity {
 
     private MobileDB db;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
@@ -124,6 +123,9 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_totes_inventory);
 
+        // activate GPS location update feature.
+        super.findLocation();
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderTotesInventory);
         tvHeader.setText(LocalPreferences.HeaderMsg());
@@ -133,12 +135,6 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
-
-        // get references to Location Manager Instance
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        // request permission to use GPS
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(TotesInventoryActivity.this);
@@ -194,27 +190,6 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
             showAddDialog();
         });
 
-        //************************************************************************
-        // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
-            @Override
-            public void doTasks() {
-                locationManager.removeUpdates(TotesInventoryActivity.this);
-
-                // Update state and proceed to next
-                updateState();
-
-                //Set scanning to false to stop running scan thread
-                scanning = false;
-                inventoryTotesThread.setScanInProgress(scanning);
-
-                toggleProgress(false, R.string.app_name);
-                Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
-                startActivity(i);
-            }
-        };
-        syncProgressDialog.setMessage(R.string.acquire_coordinates);
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(TotesInventoryActivity.this);
             supportDialog.showDialog();
@@ -238,24 +213,26 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
     }
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToCongs);
+        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // check if permission has been granted
-                if (ActivityCompat.checkSelfPermission(TotesInventoryActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(TotesInventoryActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+
+                if (mLastLocation != null) {
+                    recInventory.longitude = mLastLocation.getLongitude();
+                    recInventory.latitude = mLastLocation.getLatitude();
+                } else {
+                    CToast(TotesInventoryActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
-                if (adapterTotes == null) {
-                    String vd = validate();
-                    if (!Strings.isEmptyOrWhitespace(vd)) {
-                        CToast(getApplicationContext(), render("Invalid inputs : " + vd), Toast.LENGTH_LONG);
-                    }
-                    return;
+
+                // Update state and proceed to next
+                Boolean proceed = updateState();
+
+                if (proceed) {
+                    // move to next activity.
+                    Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
+                    startActivity(i);
                 }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, TotesInventoryActivity.this);
-                // show Progress Dialog
-                toggleProgress(true, R.string.acquire_coordinates);
             }
         });
 
@@ -362,9 +339,14 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
 
     }
 
-    private void updateState() {
-        if (adapterTotes == null) {
-            return;
+    private boolean updateState() {
+        if (adapterTotes != null) {
+            recInventory.items = adapterTotes.getValues();
+        }
+        String v = validate();
+        if (!Strings.isEmptyOrWhitespace(v)) {
+            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            return false;
         }
 
         // get an instance of local DB
@@ -386,9 +368,12 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
             Call<List<RFIDInventoryItemDTO>> syncInvItemTxCallBack = updService.syncRFIDInventoryItemTx(RFIDInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
             syncInvTxCallBack.enqueue(new TotesInventoryActivity.SyncInvTxCallBack());
             syncInvItemTxCallBack.enqueue(new TotesInventoryActivity.SyncInvItemTxCallBack());
+
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+            return false;
         } finally {
             progressDialog.dismiss();
         }
@@ -452,37 +437,6 @@ public class TotesInventoryActivity extends AppCompatActivity implements Locatio
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
-        }
-    }
-
-    // GPS Location-Related functionality
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        recWHInventory.longitude = location.getLongitude();
-        recWHInventory.latitude = location.getLatitude();
-        locationManager.removeUpdates(this);
-        toggleProgress(false, R.string.app_name);
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(i);
-    }
-
-    private void toggleProgress(boolean show, @StringRes int info) {
-        if (show) {
-            runOnUiThread(() -> {
-                syncProgressDialog.show();
-            });
-        } else {
-            runOnUiThread(() -> {
-                syncProgressDialog.hide();
-            });
         }
     }
 }

@@ -112,9 +112,6 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
                 Boolean proceed = updateState();
 
                 if (proceed) {
-                    // stop GPS location updates.
-                    stopListener();
-
                     // move to next activity.
                     Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
                     startActivity(i);
@@ -124,9 +121,6 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToDriverConfirm);
         ivBack.setOnClickListener(view -> {
-            // stop GPS location updates.
-            stopListener();
-
             Intent i = new Intent(getApplicationContext(), TransportDriverConfirmActivity.class);
             startActivity(i);
         });

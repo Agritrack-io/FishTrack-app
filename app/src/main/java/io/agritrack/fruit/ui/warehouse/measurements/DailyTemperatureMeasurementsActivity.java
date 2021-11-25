@@ -29,6 +29,7 @@ import io.agritrack.dialog.TempLoggerDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.fishing.FishingBinsActivity;
 import io.agritrack.fruit.ui.FruitHomeActivity;
+import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.fruit.ui.storage_ready.ReadyStorageConfirmActivity;
 import io.agritrack.fruit.ui.storage_ready.ReadyStorageStartActivity;
 import io.agritrack.rfid.SingleShotScanner;
@@ -117,7 +118,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
     private void updateState() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
             startActivity(i);
         });
     }

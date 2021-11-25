@@ -9,6 +9,8 @@ public class StorageRecord {
     public Double totalWeight;
     public String poleRFID;
     public String harvestLot;
+    public Double longitude;
+    public Double latitude;
 
     public StorageRecord(){
     }

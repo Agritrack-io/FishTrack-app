@@ -111,9 +111,6 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
                 Boolean proceed = updateState();
 
                 if (proceed) {
-                    // stop GPS location updates.
-                    stopListener();
-
                     // move to next activity.
                     Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
                     startActivity(i);
@@ -123,9 +120,6 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToReceiveBins);
         ivBack.setOnClickListener(view -> {
-            // stop GPS location updates.
-            stopListener();
-
             Intent i = new Intent(getApplicationContext(), ProcessInfoActivity.class);
             startActivity(i);
         });

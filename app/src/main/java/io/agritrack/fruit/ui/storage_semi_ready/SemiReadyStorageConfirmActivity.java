@@ -1,6 +1,9 @@
 package io.agritrack.fruit.ui.storage_semi_ready;
 
 import static io.agritrack.fish.state.GlobalState.recFishing;
+import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
+import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
+import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -20,6 +23,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -27,18 +31,17 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fruit.ui.FruitHomeActivity;
+import io.agritrack.fruit.ui.harvesting.HarvestingConfirmActivity;
+import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class SemiReadyStorageConfirmActivity extends AppCompatActivity implements LocationListener {
-
-    private final int REQUEST_FINE_LOCATION = 1234;
+public class SemiReadyStorageConfirmActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
-    private LocationManager locationManager;
+
     private ProgressDialog progressDialog;
-    private TimeOutProgressDlg syncProgressDialog;
     private TextView tvGreenHouse, tvWarehouse, tvWeight, tvNumberTotes;
 
     private ImageView ivSupport;
@@ -49,6 +52,9 @@ public class SemiReadyStorageConfirmActivity extends AppCompatActivity implement
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_semi_ready_storage_confirm);
 
+        // activate GPS location update feature.
+        super.findLocation();
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderSemiReadyStorageConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
@@ -56,37 +62,12 @@ public class SemiReadyStorageConfirmActivity extends AppCompatActivity implement
         // get  references of the controls
         assignCtrlVars();
 
-        // get references to Location Manager Instance
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        // request permission to use GPS
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
-
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(SemiReadyStorageConfirmActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
-
-        //************************************************************************
-        // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
-            @Override
-            public void doTasks() {
-                locationManager.removeUpdates(SemiReadyStorageConfirmActivity.this);
-
-                // Update state and proceed to next
-                //Boolean proceed = updateState();
-                toggleProgress(false, R.string.app_name);
-
-
-                Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
-                startActivity(i);
-
-            }
-        };
-        syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(SemiReadyStorageConfirmActivity.this);
@@ -98,16 +79,25 @@ public class SemiReadyStorageConfirmActivity extends AppCompatActivity implement
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener(){
+        ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // check if permission has been granted
-                if (ActivityCompat.checkSelfPermission(SemiReadyStorageConfirmActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(SemiReadyStorageConfirmActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+
+                if (mLastLocation != null) {
+                    recStorage.longitude = mLastLocation.getLongitude();
+                    recStorage.latitude = mLastLocation.getLatitude();
+                } else {
+                    CToast(SemiReadyStorageConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, SemiReadyStorageConfirmActivity.this);
-                // show Progress Dialog
-                toggleProgress(true, R.string.acquire_coordinates);
+
+                // Update state and proceed to next
+                Boolean proceed = updateState();
+
+                if (proceed) {
+                    // move to next activity.
+                    Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
+                    startActivity(i);
+                }
             }
         });
 
@@ -136,35 +126,7 @@ public class SemiReadyStorageConfirmActivity extends AppCompatActivity implement
         tvTypeOfFishConfirm.setText(recFishing.speciesName != null ? recFishing.speciesName : "N/A");*/
     }
 
-
-    // GPS Location-Related functionality
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        recFishing.longitude = location.getLongitude();
-        recFishing.latitude = location.getLatitude();
-        locationManager.removeUpdates(this);
-        toggleProgress(false, R.string.app_name);
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(i);
-    }
-
-    private void toggleProgress(boolean show, @StringRes int info) {
-        if (show) {
-            runOnUiThread(() -> {
-                syncProgressDialog.show();
-            });
-        } else {
-            runOnUiThread(() -> {
-                syncProgressDialog.hide();
-            });
-        }
+    private boolean updateState(){
+        return true;
     }
 }

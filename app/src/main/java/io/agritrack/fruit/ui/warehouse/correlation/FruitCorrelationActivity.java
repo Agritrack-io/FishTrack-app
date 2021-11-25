@@ -3,6 +3,8 @@ package io.agritrack.fruit.ui.warehouse.correlation;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fruit.state.FruitGlobalState.recCorrelation;
+import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.Manifest;
@@ -46,7 +48,9 @@ import io.agritrack.data.model.Site;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
+import io.agritrack.fruit.ui.harvesting.HarvestingConfirmActivity;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
@@ -169,13 +173,22 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // check if permission has been granted
-                if (ActivityCompat.checkSelfPermission(FruitCorrelationActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(FruitCorrelationActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+
+                if (mLastLocation != null) {
+                    recCorrelation.longitude = mLastLocation.getLongitude();
+                    recCorrelation.latitude = mLastLocation.getLatitude();
+                } else {
+                    CToast(FruitCorrelationActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
-                /*locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, FruitCorrelationActivity.this);
-                // show Progress Dialog
-                toggleProgress(true, R.string.acquire_coordinates);*/
+
+                // Update state and proceed to next
+                Boolean proceed = correlate();
+
+                if (proceed) {
+                    // move to next activity.
+                    Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
+                    startActivity(i);
+                }
             }
         });
 

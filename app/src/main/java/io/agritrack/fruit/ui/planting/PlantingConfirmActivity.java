@@ -112,9 +112,6 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
                 Boolean proceed = updateState();
 
                 if (proceed) {
-                    // stop GPS location updates.
-                    stopListener();
-
                     // move to next activity.
                     Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
                     startActivity(i);

@@ -201,9 +201,6 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
                 Boolean proceed = correlate();
 
                 if (proceed) {
-                    // stop GPS location updates.
-                    stopListener();
-
                     // move to next activity.
                     Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
                     startActivity(i);
@@ -213,9 +210,6 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
 
         ImageView ivBack = findViewById(R.id.ivBackToWareHouseMenu);
         ivBack.setOnClickListener(view -> {
-            // stop GPS location updates.
-            stopListener();
-
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });

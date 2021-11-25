@@ -46,12 +46,15 @@ public class FruitGlobalState {
     public static PlantRecord recPlant = new PlantRecord();
     public static HarvestRecord recHarvest = new HarvestRecord();
     public static StorageRecord recStorage = new StorageRecord();
-    public static ProcessingRecord recProcessing = new ProcessingRecord();
+    public static PackagingRecord recPackaging = new PackagingRecord();
+    public static ShippingRecord recShipping = new ShippingRecord();
+    public static CorrelationRecord recCorrelation = new CorrelationRecord();
+    public static InventoryRecord recInventory = new InventoryRecord();
 
     public static WHTxRecord recWHIncoming = new WHTxRecord();
     public static WHTxRecord recWHOutgoing = new WHTxRecord();
-    public static WHCorrelationRecord recWHCorrelation = new WHCorrelationRecord();
-    public static InventoryWHRecord recWHInventory = new InventoryWHRecord();
+
+
 
     public static RepairRecord recInternalRepair = new RepairRecord();
     public static RepairRecord recExternalRepair = new RepairRecord();
@@ -76,9 +79,24 @@ public class FruitGlobalState {
         return recStorage;
     }
 
-    public static ProcessingRecord initProcessingRecord() {
-        recProcessing = new ProcessingRecord();
-        return recProcessing;
+    public static PackagingRecord initPackagingRecord() {
+        recPackaging = new PackagingRecord();
+        return recPackaging;
+    }
+
+    public static ShippingRecord initShippingRecord() {
+        recShipping = new ShippingRecord();
+        return recShipping;
+    }
+
+    public static CorrelationRecord initCorrelationRecord() {
+        recCorrelation = new CorrelationRecord();
+        return recCorrelation;
+    }
+
+    public static InventoryRecord initInventoryRecord() {
+        recInventory = new InventoryRecord();
+        return recInventory;
     }
 
     public static WHTxRecord initWHIncomingRecord() {
@@ -89,16 +107,6 @@ public class FruitGlobalState {
     public static WHTxRecord initWHOutgoingRecord() {
         recWHOutgoing = new WHTxRecord();
         return recWHOutgoing;
-    }
-
-    public static WHCorrelationRecord initWHCorrelationRecord() {
-        recWHCorrelation = new WHCorrelationRecord();
-        return recWHCorrelation;
-    }
-
-    public static InventoryWHRecord initWHInventoryRecord() {
-        recWHInventory = new InventoryWHRecord();
-        return recWHInventory;
     }
 
     public static RepairRecord initInternalRepairRecord() {
@@ -149,20 +157,6 @@ public class FruitGlobalState {
     public static ProcessingTransaction commitProcessing(MobileDB db) {
         try {
             ProcessingTransaction txProcess = new ProcessingTransaction();
-            txProcess.dispatchNote = recProcessing.dispatchNote;
-            txProcess.productCondition = recProcessing.fishCondition;
-            txProcess.cleanTruck = Boolean.toString(recProcessing.cleanTruck);
-            txProcess.smells = Boolean.toString(recProcessing.smellyTruck);
-            txProcess.plot = recProcessing.pLot;
-            txProcess.site = recProcessing.packagingSite;
-            txProcess.timestamp = System.currentTimeMillis();
-            //txProcess.remarks = recProcessing.remarks;
-            txProcess.receivedBins = recProcessing.availBins;
-            txProcess.securityClipNumber = recProcessing.securityClip;
-            txProcess.user = LocalPreferences.getLoggedInUser("N/A");
-            txProcess.site = LocalPreferences.getCurrentSiteId().toString();
-            txProcess.longitude = recProcessing.longitude;
-            txProcess.latitude = recProcessing.latitude;
 
             db.processingTransactionDAO().insert(txProcess);
 
@@ -280,10 +274,10 @@ public class FruitGlobalState {
     public static RFIDInventory commitWHRFIDInventory(MobileDB db) {
         try {
             RFIDInventory txWHRFIDInventory = new RFIDInventory();
-            txWHRFIDInventory.site = recWHInventory.subSite;
+            txWHRFIDInventory.site = recInventory.subSite;
             txWHRFIDInventory.performedAt = System.currentTimeMillis();
-            txWHRFIDInventory.longitude = recWHInventory.longitude;
-            txWHRFIDInventory.latitude = recWHInventory.latitude;
+            txWHRFIDInventory.longitude = recInventory.longitude;
+            txWHRFIDInventory.latitude = recInventory.latitude;
             long _id = db.rFIDInventoryDAO().insert(txWHRFIDInventory);
             txWHRFIDInventory.id = _id;
 
@@ -297,9 +291,9 @@ public class FruitGlobalState {
     public static List<RFIDInventoryItem> commitWHRFIDInventoryItem(MobileDB db, RFIDInventory inventory) {
         try {
             List<RFIDInventoryItem> items = new ArrayList<>();
-            Set<Map.Entry<String, List<String>>> inventoryData = recWHInventory.items.entrySet();
+            List<String> inventoryData = recInventory.items;
 
-            for (Map.Entry<String, List<String>> entry : inventoryData) {
+            /*for (String entry : inventoryData) {
                 List<String> epcs = entry.getValue();
                 for (String epc : epcs) {
                     RFIDInventoryItem newItem = new RFIDInventoryItem();
@@ -308,7 +302,7 @@ public class FruitGlobalState {
                     newItem.inventory = inventory.id;
                     items.add(newItem);
                 }
-            }
+            }*/
 
             db.rFIDInventoryItemDAO().insert(items.toArray(new RFIDInventoryItem[items.size()]));
             return items;
@@ -321,10 +315,10 @@ public class FruitGlobalState {
     public static CoInventory commitWHCoInventory(MobileDB db) {
         try {
             CoInventory txWHCoInventory = new CoInventory();
-            txWHCoInventory.site = recWHInventory.subSite;
+            txWHCoInventory.site = recInventory.subSite;
             txWHCoInventory.performedAt = System.currentTimeMillis();
-            txWHCoInventory.longitude = recWHInventory.longitude;
-            txWHCoInventory.latitude = recWHInventory.latitude;
+            txWHCoInventory.longitude = recInventory.longitude;
+            txWHCoInventory.latitude = recInventory.latitude;
             long _id = db.coInventoryDAO().insert(txWHCoInventory);
             txWHCoInventory.id = _id;
 
@@ -338,11 +332,11 @@ public class FruitGlobalState {
     public static List<CoInventoryItem> commitWHCoInventoryItem(MobileDB db, CoInventory inventory) {
         try {
             List<CoInventoryItem> items = new ArrayList<>();
-            Set<Map.Entry<String, Integer>> inventoryData = recWHInventory.barcodeItems.entrySet();
+            Set<Map.Entry<String, Integer>> inventoryData = recInventory.barcodeItems.entrySet();
 
             for (Map.Entry<String, Integer> entry : inventoryData) {
                 CoInventoryItem newItem = new CoInventoryItem();
-                newItem.consumableType = (recWHInventory.consumableType != null) ? recWHInventory.consumableType.name() : ALL.name();
+                newItem.consumableType = (recInventory.consumableType != null) ? recInventory.consumableType.name() : ALL.name();
                 newItem.barcode = entry.getKey();
                 newItem.quantity = entry.getValue();
                 newItem.timestamp = System.currentTimeMillis();
@@ -362,12 +356,6 @@ public class FruitGlobalState {
     public static CorrelationTransaction commitWHCorrelation(MobileDB db) {
         try {
             CorrelationTransaction txCorrelation = new CorrelationTransaction();
-            txCorrelation.assetType = recWHCorrelation.assetType.name();
-            txCorrelation.barcode = recWHCorrelation.barcode;
-            txCorrelation.rfid = recWHCorrelation.rfid;
-            txCorrelation.timestamp = System.currentTimeMillis();
-            txCorrelation.longitude = recWHCorrelation.longitude;
-            txCorrelation.latitude = recWHCorrelation.latitude;
 
             db.correlationTransactionDAO().insert(txCorrelation);
 

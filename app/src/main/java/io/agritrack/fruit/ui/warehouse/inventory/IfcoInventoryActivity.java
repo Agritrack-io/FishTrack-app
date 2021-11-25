@@ -4,6 +4,8 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recWHInventory;
+import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
+import static io.agritrack.fruit.state.FruitGlobalState.recInventory;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.Manifest;
@@ -60,7 +62,11 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
+import io.agritrack.fruit.ui.harvesting.HarvestingConfirmActivity;
+import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
@@ -68,12 +74,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class IfcoInventoryActivity extends AppCompatActivity implements LocationListener {
+public class IfcoInventoryActivity extends LocationAwareActivity {
 
-    private final int REQUEST_FINE_LOCATION = 1234;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-    private LocationManager locationManager;
-    private TimeOutProgressDlg syncProgressDialog;
     private MobileDB db;
 
     private RecyclerView rvInventoryIfco;
@@ -127,18 +130,15 @@ public class IfcoInventoryActivity extends AppCompatActivity implements Location
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ifco_inventory);
 
+        // activate GPS location update feature.
+        super.findLocation();
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderIfcoInventory);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
-
-        // get references to Location Manager Instance
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        // request permission to use GPS
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(IfcoInventoryActivity.this);
@@ -199,27 +199,6 @@ public class IfcoInventoryActivity extends AppCompatActivity implements Location
             }
         });
 
-        //************************************************************************
-        // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(200l, 500l, this) {
-            @Override
-            public void doTasks() {
-                locationManager.removeUpdates(IfcoInventoryActivity.this);
-
-                // Update state and proceed to next
-                updateState();
-
-                //Set scanning to false to stop running scan thread
-                scanning = false;
-                stopScanning();
-
-                toggleProgress(false, R.string.app_name);
-                Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
-                startActivity(i);
-            }
-        };
-        syncProgressDialog.setMessage(R.string.acquire_coordinates);
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(IfcoInventoryActivity.this);
             supportDialog.showDialog();
@@ -253,20 +232,22 @@ public class IfcoInventoryActivity extends AppCompatActivity implements Location
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // check if permission has been granted
-                if (ActivityCompat.checkSelfPermission(IfcoInventoryActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(IfcoInventoryActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+
+                if (mLastLocation != null) {
+                    recInventory.longitude = mLastLocation.getLongitude();
+                    recInventory.latitude = mLastLocation.getLatitude();
+                } else {
+                    CToast(IfcoInventoryActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
-                /*if (adapterIfco.getItemCount() == 0) {
-                    String vd = validate();
-                    if (!Strings.isEmptyOrWhitespace(vd)) {
-                        CToast(getApplicationContext(), render("Invalid inputs : " + vd), Toast.LENGTH_LONG);
-                    }
-                    return;
-                }*/
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, IfcoInventoryActivity.this);
-                // show Progress Dialog
-                toggleProgress(true, R.string.acquire_coordinates);
+
+                // Update state and proceed to next
+                Boolean proceed = updateState();
+
+                if (proceed) {
+                    // move to next activity.
+                    Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
+                    startActivity(i);
+                }
             }
         });
 
@@ -320,11 +301,15 @@ public class IfcoInventoryActivity extends AppCompatActivity implements Location
 
     }
 
-    private void updateState() {
-        if (adapterIfco.getItemCount() == 0) {
-            return;
+    private boolean updateState() {
+        if (adapterIfco != null) {
+            FruitGlobalState.recInventory.barcodeItems = adapterIfco.getValues();
         }
-        GlobalState.recWHInventory.barcodeItems = adapterIfco.getValues();
+        String v = validate();
+        if (!Strings.isEmptyOrWhitespace(v)) {
+            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            return false;
+        }
 
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
@@ -345,9 +330,12 @@ public class IfcoInventoryActivity extends AppCompatActivity implements Location
             Call<List<CoInventoryItemDTO>> syncInvItemTxCallBack = updService.syncCoInventoryItemTx(CoInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
             syncInvTxCallBack.enqueue(new IfcoInventoryActivity.SyncInvTxCallBack());
             syncInvItemTxCallBack.enqueue(new IfcoInventoryActivity.SyncInvItemTxCallBack());
+
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+            return false;
         } finally {
             progressDialog.dismiss();
         }
@@ -388,37 +376,6 @@ public class IfcoInventoryActivity extends AppCompatActivity implements Location
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
-    }
-
-    // GPS Location-Related functionality
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        recWHInventory.longitude = location.getLongitude();
-        recWHInventory.latitude = location.getLatitude();
-        locationManager.removeUpdates(this);
-        toggleProgress(false, R.string.app_name);
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(i);
-    }
-
-    private void toggleProgress(boolean show, @StringRes int info) {
-        if (show) {
-            runOnUiThread(() -> {
-                syncProgressDialog.show();
-            });
-        } else {
-            runOnUiThread(() -> {
-                syncProgressDialog.hide();
-            });
-        }
     }
 
     public class SyncInvTxCallBack implements Callback<CoInventoryDTO> {

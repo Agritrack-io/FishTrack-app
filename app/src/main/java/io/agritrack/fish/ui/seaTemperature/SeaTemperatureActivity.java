@@ -143,9 +143,6 @@ public class SeaTemperatureActivity extends LocationAwareActivity {
                 // Update state and proceed to next
                 Boolean proceed = updateState();
                 if (proceed) {
-                    // stop GPS location updates.
-                    stopListener();
-
                     // move to next activity.
                     Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
                     startActivity(i);
@@ -155,9 +152,6 @@ public class SeaTemperatureActivity extends LocationAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            // stop GPS location updates.
-            stopListener();
-
             Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);
         });

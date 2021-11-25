@@ -82,6 +82,11 @@ public class ConfigActivity extends LocationAwareActivity {
                 CToast(getAppContext(), render("No location returned by GPS! Plz try again"), Toast.LENGTH_LONG);
             }
         } else {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             showCoords();
             loadClusterInfo();
         }

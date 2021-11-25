@@ -240,9 +240,6 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
                 Boolean proceed = updateState();
 
                 if (proceed) {
-                    // stop GPS location updates.
-                    stopListener();
-
                     // move to next activity.
                     Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
                     startActivity(i);
@@ -252,9 +249,6 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
-            // stop GPS location updates.
-            stopListener();
-
             //Set scanning to false to stop running scan thread
             scanning = false;
             transportationBinsThread.setScanInProgress(scanning);
