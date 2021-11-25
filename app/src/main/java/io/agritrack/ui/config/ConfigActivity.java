@@ -10,25 +10,15 @@ import static io.agritrack.ui.service.LocalPreferences.SelectedSiteId_Key;
 import static io.agritrack.ui.service.LocalPreferences.SelectedSiteLevel_Key;
 import static io.agritrack.ui.service.LocalPreferences.SelectedSiteName_Key;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 
@@ -43,9 +33,9 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.ConfirmationDialogCommand;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.Coordinates;
+import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.LoginActivity;
 import io.agritrack.ui.login.api.AuthApi;
 import io.agritrack.ui.login.api.SiteInfo;
@@ -55,10 +45,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConfigActivity extends AppCompatActivity implements LocationListener {
-    private final int REQUEST_FINE_LOCATION = 1234;
+public class ConfigActivity extends LocationAwareActivity {
     private final MutableLiveData<List<SiteInfo>> siteInfoResults = new MutableLiveData<>();
-    volatile Location currentLocation;
     private MobileDB db;
     private TextView tvLongitude, tvLatitude;
     private ImageView btGPS;
@@ -66,8 +54,6 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
     private ClusterListViewAdapter clustersAdapter;
     private Map<String, List<SiteInfo>> mapOfSitesPerCluster;
     private List<String> clusterIDs;
-    private LocationManager locationManager;
-    private TimeOutProgressDlg syncProgressDialog;
     private SiteInfo selectedSite;
 
     private ImageView ivSupport;
@@ -85,6 +71,20 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
 
         // get reference to recyclerView holding the sites close to reader's location.
         xvClusters = findViewById(R.id.xvClusters);
+
+        // activate GPS location update feature.
+        Location loc = super.findLocation();
+
+        if(loc == null) {
+            if(LocalPreferences.locationExists()) {
+                CToast(getAppContext(), render("No location returned by GPS! \nPrevious Coordinates will be used."), Toast.LENGTH_LONG);
+            } else {
+                CToast(getAppContext(), render("No location returned by GPS! Plz try again"), Toast.LENGTH_LONG);
+            }
+        } else {
+            showCoords();
+            loadClusterInfo();
+        }
 
         // Listview on child click listener
         xvClusters.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -125,27 +125,18 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
         // start observing siteInfo results..
         initiateSiteInfoObserver();
 
-        // get references to Location Manager Instance
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
         // get references to localDB instance
         db = MobileDB.getInstance(getAppContext());
 
-        // request permission to use GPS
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
-
         // allow btGPS to invoke Location Updates Requests.
         btGPS = findViewById(R.id.btnGPS);
-        btGPS.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // check if permission has been granted
-                if (ActivityCompat.checkSelfPermission(ConfigActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ConfigActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ConfigActivity.this);
-                // show Progress Dialog
-                toggleProgress(true, R.string.acquire_coordinates);
+        btGPS.setOnClickListener(v -> {
+            Location loc1 = findLocation();
+            if(loc1 == null) {
+                CToast(getAppContext(), render("No location returned by GPS!"), Toast.LENGTH_LONG);
+            } else {
+                showCoords();
+                loadClusterInfo();
             }
         });
 
@@ -155,19 +146,6 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
         //************************************************************************
         // fill coordinate TextViews with previously stored (if any) coordinates.
         readCurrentLocationFromSharedPreferences();
-
-        //************************************************************************
-        // instantiate an AlertDialog with countdown functionality
-        syncProgressDialog = new TimeOutProgressDlg(10000l, 500l, this) {
-            @Override
-            public void doTasks() {
-                locationManager.removeUpdates(ConfigActivity.this);
-
-                // if No GPS info was fetched, the currently stored Location will be used.
-                loadClusterInfo(Boolean.FALSE);
-            }
-        };
-        syncProgressDialog.setMessage(R.string.acquire_coordinates);
 
         ivSupport = findViewById(R.id.ivSupport);
         ivSupport.setOnClickListener(view -> {
@@ -192,24 +170,14 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
     }
 
     private void loadClusterInfo(Boolean useGPSoutcome) {
-        if (currentLocation == null && useGPSoutcome) {
-            // hide progress Dialog
-            syncProgressDialog.hide();
-
+        if (mLastLocation == null && useGPSoutcome) {
             // show error cause message
             CToast(getAppContext(), render("No location returned by GPS!"), Toast.LENGTH_LONG);
             return;
         } else if (!useGPSoutcome && !LocalPreferences.locationExists()) {
-            // hide progress Dialog
-            syncProgressDialog.hide();
-
             // show error cause message
             CToast(getAppContext(), render("No location found locally!"), Toast.LENGTH_LONG);
             return;
-        }
-
-        if (syncProgressDialog != null) {
-            syncProgressDialog.setMessage(R.string.acquire_cluster_info);
         }
 
         AuthApi authService = APIServiceGenerator.createAPI(AuthApi.class);
@@ -221,78 +189,22 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
             public void onResponse(Call<List<SiteInfo>> call, Response<List<SiteInfo>> response) {
                 List<SiteInfo> rs = response.body();
                 siteInfoResults.setValue(rs);
-
-                // hide progress Dialog
-                syncProgressDialog.hide();
             }
 
             @Override
             public void onFailure(Call<List<SiteInfo>> call, Throwable t) {
-                // hide progress Dialog
-                syncProgressDialog.hide();
-
                 System.out.println(t);
                 Toast.makeText(getAppContext(), render("Plz Check WIFI connection.."), Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_FINE_LOCATION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                try {
-                    toggleProgress(true, R.string.acquire_coordinates);
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-                } catch (SecurityException ex) {
-                    Toast.makeText(getAppContext(), render("Location Access Permission was not granted!"), Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    }
-
     private void showCoords() {
         runOnUiThread(() -> {
-            tvLatitude.setText(coord2Degrees(this.currentLocation.getLatitude(), Coordinates.LATITUDE));
-            tvLongitude.setText(coord2Degrees(this.currentLocation.getLongitude(), Coordinates.LONGITUDE));
+            tvLatitude.setText(coord2Degrees(this.mLastLocation.getLatitude(), Coordinates.LATITUDE));
+            tvLongitude.setText(coord2Degrees(this.mLastLocation.getLongitude(), Coordinates.LONGITUDE));
             writeCurrentLocationToSharedPreferences();
-            toggleProgress(false, R.string.app_name);
         });
-    }
-
-    private void toggleProgress(boolean show, @StringRes int info) {
-        if (show) {
-            runOnUiThread(() -> {
-                syncProgressDialog.show();
-            });
-        } else {
-            runOnUiThread(() -> {
-                syncProgressDialog.hide();
-            });
-        }
-    }
-
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-        this.currentLocation = location;
-        locationManager.removeUpdates(this);
-        showCoords();
-        loadClusterInfo();
-    }
-
-    @Override
-    public void onProviderEnabled(@NonNull String provider) {
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
-
-    @Override
-    public void onProviderDisabled(@NonNull String provider) {
-        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(i);
     }
 
     // ###################################
@@ -321,9 +233,9 @@ public class ConfigActivity extends AppCompatActivity implements LocationListene
     }
 
     private void writeCurrentLocationToSharedPreferences() {
-        if (this.currentLocation != null) {
-            LocalPreferences.writeValue(Longitude_Key, String.valueOf(this.currentLocation.getLongitude()));
-            LocalPreferences.writeValue(Latitude_Key, String.valueOf(this.currentLocation.getLatitude()));
+        if (this.mLastLocation != null) {
+            LocalPreferences.writeValue(Longitude_Key, String.valueOf(this.mLastLocation.getLongitude()));
+            LocalPreferences.writeValue(Latitude_Key, String.valueOf(this.mLastLocation.getLatitude()));
         }
     }
 

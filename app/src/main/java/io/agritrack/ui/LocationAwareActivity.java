@@ -65,7 +65,7 @@ public class LocationAwareActivity extends AppCompatActivity implements Location
                             });
                         } else {
                             Criteria criteria = new Criteria();
-                            criteria.setAccuracy(Criteria.NO_REQUIREMENT);
+                            criteria.setAccuracy(Criteria.ACCURACY_FINE);
                             locationManager.requestSingleUpdate(criteria, new LocationListener() {
                                 @Override public void onLocationChanged(Location location) {mLastLocation = location;}
                                 @Override public void onStatusChanged(String provider, int status, Bundle extras) { }
