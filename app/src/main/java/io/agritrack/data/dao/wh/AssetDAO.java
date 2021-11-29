@@ -23,6 +23,9 @@ public interface AssetDAO {
     @Query("SELECT * from asset where id=:assetId LIMIT 1")
     Asset getById(Long assetId);
 
+    @Query("SELECT * from asset where rfid_barcode=:epcStr LIMIT 1")
+    Asset getAssetByEpc(String epcStr);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Asset... assets);
 

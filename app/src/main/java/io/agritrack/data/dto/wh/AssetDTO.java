@@ -11,7 +11,9 @@ public class AssetDTO {
     public String barcode;
     public String code;
     public String rfid_barcode;
-    public String site;
+    public Long site;
+    public String site_name;
+    public String site_code;
     public String cage_RFID;
     public String type;
     public String shape;
@@ -46,6 +48,7 @@ public class AssetDTO {
         asset.code = assetDTO.code;
         asset.rfidBarcode = assetDTO.rfid_barcode;
         asset.siteId = assetDTO.site;
+        asset.siteCode = assetDTO.site_code;
         asset.cageRFId = assetDTO.cage_RFID;
         asset.type = assetDTO.type;
         asset.shape = assetDTO.shape;

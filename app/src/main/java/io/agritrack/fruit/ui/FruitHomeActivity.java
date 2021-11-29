@@ -46,11 +46,12 @@ import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.ui.harvesting.HarvestingStartActivity;
+import io.agritrack.fruit.ui.packaging.PackagingSelectOrderActivity;
 import io.agritrack.fruit.ui.packaging.PackagingStartActivity;
 import io.agritrack.fruit.ui.planting.PlantingStartActivity;
 import io.agritrack.fruit.ui.shipping.ShippingStartActivity;
 import io.agritrack.fruit.ui.storage_ready.ReadyStorageStartActivity;
-import io.agritrack.fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity;
+import io.agritrack.fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
@@ -101,10 +102,10 @@ public class FruitHomeActivity extends AppCompatActivity {
             menuItemsSet.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), FruitWhMenuActivity.class, R.drawable.warehouse));
         }
         if (roleCanAccessMenu(userRoles, Storage_semi_ready)) {
-            menuItemsSet.add(new MenuItem(Storage_semi_ready, getString(R.string.menu_title_semi_storage), SemiReadyStorageStartActivity.class, R.drawable.transport));
+            menuItemsSet.add(new MenuItem(Storage_semi_ready, getString(R.string.menu_title_semi_storage), SemiReadyStorageScanActivity.class, R.drawable.transport));
         }
         if (roleCanAccessMenu(userRoles, Packaging_Idx)) {
-            menuItemsSet.add(new MenuItem(Packaging_Idx, getString(R.string.menu_title_packaging), PackagingStartActivity.class, R.drawable.transport));
+            menuItemsSet.add(new MenuItem(Packaging_Idx, getString(R.string.menu_title_packaging), PackagingSelectOrderActivity.class, R.drawable.transport));
         }
         if (roleCanAccessMenu(userRoles, Storage_ready)) {
             menuItemsSet.add(new MenuItem(Storage_ready, getString(R.string.menu_title_storage), ReadyStorageStartActivity.class, R.drawable.transport));
@@ -153,10 +154,10 @@ public class FruitHomeActivity extends AppCompatActivity {
                         i = new Intent(appCtx, FruitWhMenuActivity.class);
                         break;
                     case Storage_semi_ready:
-                        i = new Intent(appCtx, SemiReadyStorageStartActivity.class);
+                        i = new Intent(appCtx, SemiReadyStorageScanActivity.class);
                         break;
                     case Packaging_Idx:
-                        i = new Intent(appCtx, PackagingStartActivity.class);
+                        i = new Intent(appCtx, PackagingSelectOrderActivity.class);
                         break;
                     case Storage_ready:
                         i = new Intent(appCtx, ReadyStorageStartActivity.class);

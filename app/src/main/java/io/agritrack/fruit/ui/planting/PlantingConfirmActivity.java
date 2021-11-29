@@ -35,8 +35,10 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.FishingTxDTO;
+import io.agritrack.data.dto.tx.PlantTxDTO;
 import io.agritrack.data.model.HarvestRequest;
 import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.data.model.tx.PlantTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fish.state.GlobalState;
@@ -102,8 +104,8 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
             public void onClick(View v) {
 
                 if (mLastLocation != null) {
-                    recFishing.longitude = mLastLocation.getLongitude();
-                    recFishing.latitude = mLastLocation.getLatitude();
+                    recPlant.longitude = mLastLocation.getLongitude();
+                    recPlant.latitude = mLastLocation.getLatitude();
                 } else {
                     CToast(PlantingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
@@ -137,7 +139,7 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
     private void initControlsFromState() {
         PlantRecord recPlant = FruitGlobalState.recPlant;
 
-        //tvGreenHouse.setText(recPlant.totalFishWeight != null ? recFishing.totalFishWeight.toString() : "N/A");
+        tvGreenHouse.setText(recPlant.greenhouse != null ? recPlant.greenhouse : "N/A");
         tvPole.setText(recPlant.poleRFID != null ? recPlant.poleRFID : "N/A");
         tvTomatoType.setText(recPlant.speciesName != null ? recPlant.speciesName : "N/A");
 
@@ -165,11 +167,11 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
                 try {
                     String token = LocalPreferences.getToken();
 
-                    // persist Fishing Record data to local DB.
-                    FishingTransaction tx = GlobalState.commitFishing(db, Boolean.TRUE);
+                    // persist Planting Record data to local DB.
+                    PlantTransaction tx = FruitGlobalState.commitPlanting(db);
 
                     // sync fish species
-                    Call<FishingTxDTO> syncTxAsyncCall = updService.syncFishingTx(FishingTxDTO.convert(tx), "Bearer " + token);
+                    Call<PlantTxDTO> syncTxAsyncCall = updService.syncPlantTx(PlantTxDTO.convert(tx), "Bearer " + token);
                     syncTxAsyncCall.enqueue(new PlantingConfirmActivity.SyncTxCallBack());
 
                     return true;
@@ -185,26 +187,21 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
         }
     }
 
-    public class SyncTxCallBack implements Callback<FishingTxDTO> {
+    public class SyncTxCallBack implements Callback<PlantTxDTO> {
         @Override
-        public void onResponse(Call<FishingTxDTO> call, Response<FishingTxDTO> response) {
-            FishingTxDTO rs = response.body();
+        public void onResponse(Call<PlantTxDTO> call, Response<PlantTxDTO> response) {
+            PlantTxDTO rs = response.body();
 
             if (rs != null) {
-                if (recFishing.harvestRqPkId != null) {
-                    HarvestRequest delObj = new HarvestRequest();
-                    delObj.id = recFishing.harvestRqPkId;
-                    db.harvestRequestsDAO().delete(delObj);
-                }
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_fishing_tx_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_plant_tx_update_failure), Toast.LENGTH_LONG));
             }
         }
 
         @Override
-        public void onFailure(Call<FishingTxDTO> call, Throwable error) {
+        public void onFailure(Call<PlantTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

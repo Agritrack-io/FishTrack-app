@@ -175,13 +175,13 @@ tools:context=".fruit.ui.warehouse.measurements.DailyTemperatureMeasurementsActi
         android:scaleX="0.7"
         android:scaleY="0.7"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivToShippingDetails"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToFruitMenu"
+        app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
+        app:layout_constraintStart_toEndOf="@+id/ivBackToFruitWhMenu"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/powered_by_agritrack" />
 
     <ImageView
-        android:id="@+id/ivBackToFruitMenu"
+        android:id="@+id/ivBackToFruitWhMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

@@ -35,6 +35,8 @@ import java.util.concurrent.TimeUnit;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.Site;
+import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.HarvestRecord;
@@ -49,6 +51,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
     private SupportDialog supportDialog;
     private TextView tvPoleName, tvHarvestLot;
     private Button btnScanPole;
+    private String greenhouse;
 
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -78,7 +81,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
             scanner.setUhfReader(_uhfReader);
-            //scanner.setFilter(Filters.RFID_POLE);
+            scanner.setFilter(Filters.RFID_POLE);
 
             Future<?> future = executor.submit(scanner);
             try {
@@ -87,9 +90,13 @@ public class HarvestingStartActivity extends AppCompatActivity {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
                             tvPoleName.setText(epcStr);
+                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
+                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
+                            if (tempSite !=null) {
+                                greenhouse = tempSite.name;
+                            }
                         }
                     });
-                    //tvCageName.setText(result);
                 }
             } catch (Exception e) {
                 future.cancel(true);
@@ -99,7 +106,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
         Calendar calender = Calendar.getInstance();
         Date date = new Date(System.currentTimeMillis());
         calender.setTime(date);
-        tvHarvestLot.setText(Integer.toString(calender.get(Calendar.DAY_OF_WEEK)) + Integer.toString(calender.get(Calendar.WEEK_OF_YEAR)));
+        tvHarvestLot.setText(Integer.toString(calender.get(Calendar.WEEK_OF_YEAR)) + Integer.toString(calender.get(Calendar.DAY_OF_WEEK)-1));
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(HarvestingStartActivity.this);
@@ -138,7 +145,11 @@ public class HarvestingStartActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
+        HarvestRecord trns = FruitGlobalState.recHarvest;
 
+        if (!Strings.isEmptyOrWhitespace(trns.poleRFID)) {
+            tvPoleName.setText(trns.poleRFID);
+        }
     }
 
     private HarvestRecord updateState() {
@@ -147,6 +158,9 @@ public class HarvestingStartActivity extends AppCompatActivity {
         harvestRecord.poleRFID = tvPoleName.getText().toString();
         harvestRecord.harvestLot = tvHarvestLot.getText().toString();
 
+        if (!Strings.isEmptyOrWhitespace(this.greenhouse)){
+            harvestRecord.greenhouse = this.greenhouse;
+        }
 
         return harvestRecord;
     }

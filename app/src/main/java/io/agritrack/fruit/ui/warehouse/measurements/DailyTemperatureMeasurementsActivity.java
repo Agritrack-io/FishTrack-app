@@ -104,9 +104,9 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivBack = findViewById(R.id.ivBackToFruitMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToFruitWhMenu);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
             startActivity(i);
         });
     }

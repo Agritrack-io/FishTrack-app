@@ -32,6 +32,9 @@ public interface SiteDAO {
     @Query("SELECT * from site where id=:siteId LIMIT 1")
     Site getById(Long siteId);
 
+    @Query("SELECT * from site where lvl3=:site_name and lvl4=:site_code LIMIT 1")
+    Site getBySiteNameAndCode(String site_name, String site_code);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Site... sites);
 

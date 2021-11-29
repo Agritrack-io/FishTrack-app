@@ -15,6 +15,9 @@ public class PlantTxDTO {
     public String asset_rfid;
     public String logger_rfid;
     public String species;
+    public Double longitude;
+    public Double latitude;
+    public Long created_at;
 
     public static PlantTxDTO convert(PlantTransaction plantTransaction) {
         PlantTxDTO plantTxDTO = new PlantTxDTO();
@@ -25,6 +28,9 @@ public class PlantTxDTO {
         plantTxDTO.asset_rfid = plantTransaction.assetRFID;
         plantTxDTO.logger_rfid = plantTransaction.loggerRFID;
         plantTxDTO.species = plantTransaction.species;
+        plantTxDTO.longitude = plantTransaction.longitude;
+        plantTxDTO.latitude = plantTransaction.latitude;
+        plantTxDTO.created_at = plantTransaction.createdAt;
 
         return plantTxDTO;
     }

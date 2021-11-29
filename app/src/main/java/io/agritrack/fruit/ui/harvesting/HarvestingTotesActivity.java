@@ -42,7 +42,9 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.HarvestRecord;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
@@ -104,9 +106,6 @@ public class HarvestingTotesActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvUsedTotesHarvest.setLayoutManager(layoutManager);
         rvUsedTotesHarvest.setItemAnimator(new DefaultItemAnimator());
@@ -122,6 +121,9 @@ public class HarvestingTotesActivity extends AppCompatActivity {
             adapterTotes.setValues(new ArrayList<>(response));
             adapterTotes.notifyDataSetChanged();
         });
+
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
 
         // initialize scanning threads
         prepareScanAvailableBinsButton();
@@ -251,7 +253,15 @@ public class HarvestingTotesActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
+        HarvestRecord trns = FruitGlobalState.recHarvest;
 
+        if (trns.totes != null) {
+            adapterTotes.setValues(new LinkedList<>(trns.totes));
+            adapterTotes.notifyDataSetChanged();
+            //Get reference of binsCount textView
+            //TextView tvBinsCount = findViewById(R.id.tvBinsCount);
+            tvTotesCount.setText(String.valueOf(trns.totes.size()));
+        }
     }
 
     private void showAddDialog() {

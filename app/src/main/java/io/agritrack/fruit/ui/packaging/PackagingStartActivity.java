@@ -202,9 +202,9 @@ public class PackagingStartActivity extends AppCompatActivity {
             startActivity(i);
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToFruitMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToPackagingSelectOrder);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), PackagingSelectOrderActivity.class);
             startActivity(i);
         });
     }

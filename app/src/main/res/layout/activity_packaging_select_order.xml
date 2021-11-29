@@ -5,7 +5,10 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_semi_green"
-tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity">
+android:descendantFocusability="beforeDescendants"
+android:focusableInTouchMode="true"
+tools:context=".fruit.ui.packaging.PackagingSelectOrderActivity">
+
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -33,7 +36,7 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity">
         app:srcCompat="@drawable/support" />
 
     <TextView
-        android:id="@+id/tvTitleToolbar"
+        android:id="@+id/tvHeaderHarvestReq"
         fontPath="fonts/open_sans_semibold.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +45,7 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity">
         android:layout_marginBottom="32dp"
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
-        android:text="@string/title_semi_storage"
+        android:text="@string/title_open_orders"
         android:textColor="@color/yellow"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -52,7 +55,7 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity">
         tools:ignore="MissingPrefix" />
 
     <TextView
-        android:id="@+id/tvHeaderSemiReadyStorage"
+        android:id="@+id/tvHeaderPackagingSelectOrder"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -74,21 +77,20 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity">
     android:id="@+id/formLayout"
     android:layout_width="0dp"
     android:layout_height="0dp"
-    android:background="@color/agri_semi_green"
-    app:layout_constraintHorizontal_bias="0.0"
-    app:layout_constraintTop_toBottomOf="@id/headerLayout"
     app:layout_constraintBottom_toTopOf="@+id/footerLayout"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent">
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/headerLayout">
+
 
     <RelativeLayout
-        android:id="@+id/correlateALayout"
+        android:id="@+id/harvestReqMainLayout"
         android:layout_width="0dp"
-        android:layout_height="320dp"
+        android:layout_height="0dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,16 +101,31 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity">
             android:layout_height="match_parent"
             android:layout_marginTop="12dp"
             android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:nestedScrollingEnabled="false"
             android:orientation="vertical"
             android:padding="1dp">
 
+            <TextView
+                android:id="@+id/tvPickHarvestRequest"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:paddingEnd="16dp"
+                android:text="@string/pick_harvest_request"
+                android:textAlignment="textEnd"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/lvOpenOrders"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <ListView
-                android:id="@+id/lvGreenhouse"
+                android:id="@+id/lvOpenOrders"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_rounded_input_spinner"
@@ -118,7 +135,8 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity">
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.496"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/tvPickHarvestRequest" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
@@ -128,7 +146,7 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="@string/select_greenhouse"
+            android:text="@string/select_open_order"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
     </RelativeLayout>
@@ -146,7 +164,7 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity">
     app:layout_constraintTop_toBottomOf="@+id/formLayout">
 
     <ImageView
-        android:id="@+id/imageView6"
+        android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -154,13 +172,13 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity">
         android:scaleX="0.7"
         android:scaleY="0.7"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivToSemiReadyStorage"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToFruitMenu"
+        app:layout_constraintEnd_toStartOf="@+id/ivToStartPackaging"
+        app:layout_constraintStart_toEndOf="@+id/ivBackToFruitHome"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/powered_by_agritrack" />
 
     <ImageView
-        android:id="@+id/ivBackToFruitMenu"
+        android:id="@+id/ivBackToFruitHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -174,7 +192,7 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity">
         app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
     <ImageView
-        android:id="@+id/ivToSemiReadyStorage"
+        android:id="@+id/ivToStartPackaging"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -187,5 +205,6 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageStartActivity">
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

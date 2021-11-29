@@ -11,6 +11,8 @@ public class HarvestRecord {
 
     public Double longitude;
     public Double latitude;
+    public String greenhouse;
+    public String speciesName;
 
     public HarvestRecord(){
     }

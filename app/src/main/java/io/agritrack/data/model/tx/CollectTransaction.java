@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "plant_transaction")
-public class PlantTransaction {
+@Entity(tableName = "collect_transaction")
+public class CollectTransaction {
 
     @PrimaryKey
     public Long id;
@@ -27,6 +27,12 @@ public class PlantTransaction {
 
     @ColumnInfo(name = "species")
     public String species;
+
+    @ColumnInfo(name = "collection_lot")
+    public String collectionLot;
+
+    @ColumnInfo(name = "number_totes")
+    public Integer totesCnt;
 
     @ColumnInfo(name = "longitude")
     public Double longitude;

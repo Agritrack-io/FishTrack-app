@@ -2,7 +2,9 @@ package io.agritrack.ui.login.api;
 
 import java.util.List;
 
+import io.agritrack.data.dto.tx.CollectTxDTO;
 import io.agritrack.data.dto.tx.ConsumableTxDTO;
+import io.agritrack.data.dto.tx.PlantTxDTO;
 import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
 import io.agritrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.data.dto.tx.AssetTxDTO;
@@ -32,6 +34,14 @@ public interface TransactionApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/receipt")
     Call<ProcessingTxDTO> syncProcessingTx(@Body ProcessingTxDTO processTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/plant")
+    Call<PlantTxDTO> syncPlantTx(@Body PlantTxDTO plantTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/collect")
+    Call<CollectTxDTO> syncCollectingTx(@Body CollectTxDTO collectingTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/asset/tx")

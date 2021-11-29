@@ -133,9 +133,9 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
                             String[] epcs = epcStr.split(",");
                             for (String epc : epcs) {
                                 if (epc.indexOf(Filters.RFID_POLE) > 0)
-                                    tvCorrPoleBarcode.setText(epc);
+                                    tvCorrPoleBarcode.setText(epc.substring(11));
                                 else if (epc.indexOf(Filters.RFID_LOGGER) > 0)
-                                    tvCorrTempLoggerBarcode.setText(epc);
+                                    tvCorrTempLoggerBarcode.setText(epc.substring(11));
                             }
 
                         }

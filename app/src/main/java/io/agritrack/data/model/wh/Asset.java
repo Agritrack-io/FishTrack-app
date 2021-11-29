@@ -29,7 +29,10 @@ public class Asset {
     public String rfidBarcode;
 
     @ColumnInfo(name = "site_id")
-    public String siteId;
+    public Long siteId;
+
+    @ColumnInfo(name = "site_code")
+    public String siteCode;
 
     @ColumnInfo(name = "cage_rfid")
     public String cageRFId;

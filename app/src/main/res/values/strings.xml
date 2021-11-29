@@ -368,6 +368,7 @@
     <string name="greenhouse">Greenhouse:</string>
     <string name="pole">Pole:</string>
     <string name="confirm_tomato_type">Tomato Type:</string>
+    <string name="error_plant_tx_update_failure">Plant transaction update failure!!!</string>
 
     <string name="title_harvesting">HARVESTING</string>
     <string name="harvest_lot">Harvest LOT</string>
@@ -376,6 +377,7 @@
     <string name="number_of_totes"># of totes:</string>
     <string name="scan_totes">Scan Totes</string>
     <string name="confirm_harvest_lot">Harvest LOT:</string>
+    <string name="error_harvest_tx_update_failure">Harvest transaction update failure!!!</string>
 
     <string name="title_fruit_wh_menu">WH MENU</string>
     <string name="title_inventory_totes">INVENTORY TOTES</string>
@@ -400,6 +402,8 @@
     <string name="weight">Weight:</string>
 
     <string name="title_package">PACKAGING</string>
+    <string name="title_open_orders">ORDERS</string>
+    <string name="select_open_order">Currently Open Orders</string>
     <string name="totes_for_package">Totes for packaging</string>
     <string name="enter_lot_on_printer">Please enter the following LOT on the printing machine</string>
     <string name="trays_qty">Trays quantity</string>

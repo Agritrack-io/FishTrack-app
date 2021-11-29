@@ -2,40 +2,25 @@ package io.agritrack.fruit.state;
 
 import static io.agritrack.enums.AssetType.ALL;
 
-import com.google.android.gms.common.util.Strings;
-
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.HarvestRequest;
 import io.agritrack.data.model.tx.AssetTransaction;
+import io.agritrack.data.model.tx.CollectTransaction;
 import io.agritrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.PlantTransaction;
 import io.agritrack.data.model.tx.ProcessingTransaction;
-import io.agritrack.data.model.tx.RepairTransaction;
-import io.agritrack.data.model.tx.SeaTemperatureTransaction;
-import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.data.model.wh.CoInventory;
 import io.agritrack.data.model.wh.CoInventoryItem;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
-import io.agritrack.enums.TxStatus;
-import io.agritrack.fish.state.FishingRecord;
-import io.agritrack.fruit.state.HarvestRecord;
-import io.agritrack.fish.state.InventoryWHRecord;
-import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.state.RepairRecord;
 import io.agritrack.fish.state.SeaTemperatureRecord;
-import io.agritrack.fish.state.TransportationRecord;
-import io.agritrack.fish.state.WHCorrelationRecord;
 import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -124,16 +109,42 @@ public class FruitGlobalState {
         return recTools;
     }
 
-    public static PlantTransaction commitPlanting(MobileDB db, Boolean finalCommit) {
+    public static PlantTransaction commitPlanting(MobileDB db) {
         try {
             PlantTransaction txPlant = new PlantTransaction();
 
             txPlant.assetRFID = recPlant.poleRFID;
+            txPlant.site = recPlant.greenhouse;
             txPlant.species = recPlant.speciesName;
+            txPlant.userId = LocalPreferences.getLoggedInUser("N/A");
+            txPlant.longitude = recPlant.longitude;
+            txPlant.latitude = recPlant.latitude;
+            txPlant.createdAt = System.currentTimeMillis();
 
-            db.plantTransactionDAO().update(txPlant);
+            db.plantTransactionDAO().insert(txPlant);
 
             return txPlant;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static CollectTransaction commitCollecting(MobileDB db) {
+        try {
+            CollectTransaction txCollecting = new CollectTransaction();
+
+            txCollecting.assetRFID = recHarvest.poleRFID;
+            txCollecting.site = recHarvest.greenhouse;
+            txCollecting.species = recHarvest.speciesName;
+            txCollecting.userId = LocalPreferences.getLoggedInUser("N/A");
+            txCollecting.longitude = recHarvest.longitude;
+            txCollecting.latitude = recHarvest.latitude;
+            txCollecting.createdAt = System.currentTimeMillis();
+
+            db.collectingTransactionDAO().insert(txCollecting);
+
+            return txCollecting;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

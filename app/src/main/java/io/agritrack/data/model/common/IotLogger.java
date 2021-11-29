@@ -25,6 +25,9 @@ public class IotLogger {
     @ColumnInfo(name = "asset_rfid")
     public String assetRFID;
 
+    @ColumnInfo(name = "site_name")
+    public String siteName;
+
     @ColumnInfo(name = "code")
     public String code;
 }

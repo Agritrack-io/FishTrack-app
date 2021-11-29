@@ -41,6 +41,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
+import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
@@ -56,7 +57,7 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
     private TemplateRecyclerAdapter adapterTotes;
 
     private RecyclerView rvUsedTotesHarvest;
-    private TextView tvTotesCount, tvSemiStorageFrom, tvSemiStorageTo;
+    private TextView tvTotesCount;
 
     private ImageButton ivAddTote, ivDeleteTote;
     private String selectedBarcode;
@@ -173,16 +174,14 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
             startActivity(i);
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToSemiReadyStorage);
+        ImageView ivBack = findViewById(R.id.ivBackToFruitHome);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), SemiReadyStorageStartActivity.class);
+            Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             startActivity(i);
         });
     }
 
     private void assignCtrlVars() {
-        tvSemiStorageFrom = findViewById(R.id.tvSemiStorageFrom);
-        tvSemiStorageTo = findViewById(R.id.tvSemiStorageTo);
         ivSupport = findViewById(R.id.ivSupport);
         rvUsedTotesHarvest = findViewById(R.id.rvUsedTotesHarvest);
         tvTotesCount = findViewById(R.id.tvTotesCount);
@@ -245,12 +244,6 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
 
     private void initControlsFromState() {
         WHTxRecord WHTxRecord = GlobalState.recWHIncoming;
-
-        if (!Strings.isEmptyOrWhitespace(WHTxRecord.from)) {
-            tvSemiStorageFrom.setText(WHTxRecord.from);
-        }
-
-        tvSemiStorageTo.setText("Packaging Plant");
 
     }
 

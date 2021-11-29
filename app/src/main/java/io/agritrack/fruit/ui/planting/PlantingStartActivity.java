@@ -3,11 +3,8 @@ package io.agritrack.fruit.ui.planting;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
 import static io.agritrack.ui.custom.CustomToast.CToast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
@@ -33,14 +32,15 @@ import java.util.concurrent.TimeUnit;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.Site;
 import io.agritrack.data.model.common.Species;
+import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.HarvestRecord;
 import io.agritrack.fruit.state.PlantRecord;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fruit.ui.FruitHomeActivity;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class PlantingStartActivity extends AppCompatActivity {
@@ -51,6 +51,7 @@ public class PlantingStartActivity extends AppCompatActivity {
     private Spinner spTomatoType;
     private TextView tvPoleName;
     private Button btnScanPole;
+    private String greenhouse;
 
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -93,7 +94,7 @@ public class PlantingStartActivity extends AppCompatActivity {
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
             scanner.setUhfReader(_uhfReader);
-            //scanner.setFilter(Filters.RFID_PLATFORM);
+            scanner.setFilter(Filters.RFID_POLE);
 
             Future<?> future = executor.submit(scanner);
             try {
@@ -102,6 +103,11 @@ public class PlantingStartActivity extends AppCompatActivity {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
                             tvPoleName.setText(epcStr);
+                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
+                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
+                            if (tempSite !=null) {
+                                greenhouse = tempSite.name;
+                            }
                         }
                     });
                 }
@@ -147,7 +153,11 @@ public class PlantingStartActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
+        PlantRecord trns = FruitGlobalState.recPlant;
 
+        if (!Strings.isEmptyOrWhitespace(trns.poleRFID)) {
+            tvPoleName.setText(trns.poleRFID);
+        }
     }
 
     private PlantRecord updateState() {
@@ -159,6 +169,10 @@ public class PlantingStartActivity extends AppCompatActivity {
             plantRecord.speciesName = spTomatoType.getSelectedItem().toString();
         }
         plantRecord.speciesPos = spTomatoType.getSelectedItemPosition();
+
+        if (!Strings.isEmptyOrWhitespace(this.greenhouse)){
+            plantRecord.greenhouse = this.greenhouse;
+        }
 
         return plantRecord;
     }

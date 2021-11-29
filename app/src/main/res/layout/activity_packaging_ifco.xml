@@ -82,7 +82,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
-        <RelativeLayout
+<!--        <RelativeLayout
             android:id="@+id/incomingAssetALayout"
             android:layout_width="0dp"
             android:layout_height="100dp"
@@ -137,7 +137,7 @@
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 
-        </RelativeLayout>
+        </RelativeLayout>-->
 
         <RelativeLayout
             android:id="@+id/fishMainLayout"
@@ -150,7 +150,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/incomingAssetALayout">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
