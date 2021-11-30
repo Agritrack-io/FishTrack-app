@@ -1,5 +1,6 @@
 package io.agritrack.fruit.ui.storage_semi_ready;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -32,6 +33,7 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Set;
 
 import io.agritrack.R;
@@ -41,6 +43,9 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.HarvestRecord;
+import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
@@ -102,9 +107,6 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvUsedTotesHarvest.setLayoutManager(layoutManager);
         rvUsedTotesHarvest.setItemAnimator(new DefaultItemAnimator());
@@ -120,6 +122,9 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
             adapterTotes.setValues(new ArrayList<>(response));
             adapterTotes.notifyDataSetChanged();
         });
+
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
 
         // initialize scanning threads
         prepareScanAvailableBinsButton();
@@ -170,8 +175,14 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToSemiReadyStorageWeight);
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), SemiReadyStorageWeightActivity.class);
-            startActivity(i);
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
+                Intent i = new Intent(getApplicationContext(), SemiReadyStorageWeightActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToFruitHome);
@@ -243,8 +254,15 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        WHTxRecord WHTxRecord = GlobalState.recWHIncoming;
+        StorageRecord trns = FruitGlobalState.recStorage;
 
+        if (trns.receivedTotes != null) {
+            adapterTotes.setValues(new LinkedList<>(trns.receivedTotes));
+            adapterTotes.notifyDataSetChanged();
+            //Get reference of binsCount textView
+            //TextView tvBinsCount = findViewById(R.id.tvBinsCount);
+            tvTotesCount.setText(String.valueOf(trns.receivedTotes.size()));
+        }
     }
 
     private void showAddDialog() {
@@ -277,7 +295,25 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
 
     }
 
-    private void updateState() {
+    private StorageRecord updateState() {
+        StorageRecord storageRecord = FruitGlobalState.initStorageRecord();
 
+        storageRecord.receivedTotes = new LinkedList<>(adapterTotes.getValues());
+
+        if (tvTotesCount.getText() != null && !Strings.isEmptyOrWhitespace(tvTotesCount.getText().toString())) {
+            storageRecord.totalTotesReceived = Short.valueOf(tvTotesCount.getText().toString());
+        }
+
+        return storageRecord;
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (FruitGlobalState.recStorage.receivedTotes == null || FruitGlobalState.recStorage.receivedTotes.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Received totes'"));
+            }
+        }
+        return sb.toString();
     }
 }

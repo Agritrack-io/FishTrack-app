@@ -9,6 +9,7 @@ import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
+import io.agritrack.data.dto.tx.CollectTxDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import retrofit2.Call;
 import retrofit2.http.GET;

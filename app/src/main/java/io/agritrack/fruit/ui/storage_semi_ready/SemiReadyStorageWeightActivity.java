@@ -1,6 +1,11 @@
 package io.agritrack.fruit.ui.storage_semi_ready;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
+import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
+import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
@@ -24,9 +30,13 @@ import java.util.concurrent.TimeUnit;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.Site;
+import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -39,6 +49,7 @@ public class SemiReadyStorageWeightActivity extends AppCompatActivity {
     private TextView tvPoleName;
     private Button btnScanPole;
     private EditText etTotalWeight;
+    private String warehouse;
 
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -69,7 +80,7 @@ public class SemiReadyStorageWeightActivity extends AppCompatActivity {
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
             scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_PLATFORM);
+            scanner.setFilter(Filters.RFID_POLE);
 
             Future<?> future = executor.submit(scanner);
             try {
@@ -78,9 +89,13 @@ public class SemiReadyStorageWeightActivity extends AppCompatActivity {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
                             tvPoleName.setText(epcStr);
+                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
+                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
+                            if (tempSite !=null) {
+                                warehouse = tempSite.name;
+                            }
                         }
                     });
-                    //tvCageName.setText(result);
                 }
             } catch (Exception e) {
                 future.cancel(true);
@@ -99,8 +114,14 @@ public class SemiReadyStorageWeightActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), SemiReadyStorageConfirmActivity.class);
-            startActivity(i);
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
+                Intent i = new Intent(getApplicationContext(), SemiReadyStorageConfirmActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToSemiReadyStorageScan);
@@ -118,11 +139,41 @@ public class SemiReadyStorageWeightActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        WHTxRecord WHTxRecord = GlobalState.recWHIncoming;
+        StorageRecord trns = FruitGlobalState.recStorage;
 
+        if (!Strings.isEmptyOrWhitespace(trns.totalWeight)) {
+            etTotalWeight.setText(trns.totalWeight);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(trns.poleRFID)) {
+            tvPoleName.setText(trns.poleRFID);
+        }
     }
 
     private void updateState() {
+        recStorage.poleRFID = tvPoleName.getText().toString();
 
+        if (!Strings.isEmptyOrWhitespace(this.warehouse)) {
+            recStorage.warehouse = this.warehouse;
+        }
+
+        if (etTotalWeight.getText() != null) {
+            recStorage.totalWeight = etTotalWeight.getText().toString();
+        }
+    }
+
+    private String validate() {
+        StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(recStorage.totalWeight)) {
+                sb.append(String.format("\n%s is missing", "'Total weight'"));
+            }
+
+            if (Strings.isEmptyOrWhitespace(recStorage.poleRFID)) {
+                sb.append(String.format("\n%s is missing", "'Pole tag'"));
+            }
+        }
+
+        return sb.toString();
     }
 }

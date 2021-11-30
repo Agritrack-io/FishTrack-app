@@ -2,6 +2,7 @@ package io.agritrack.fruit.ui.packaging;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fruit.state.FruitGlobalState.recPackaging;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import io.agritrack.R;
 import io.agritrack.barcode.BarcodeScanService;
@@ -34,7 +36,11 @@ import io.agritrack.barcode.SoundUtil;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.PackagingRecord;
+import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
+import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class PackagingIfcoActivity extends AppCompatActivity {
@@ -47,7 +53,7 @@ public class PackagingIfcoActivity extends AppCompatActivity {
     private TextView tvIfcoCount;
     private boolean scanning = false;
     private BarcodeScanService scanService;
-    private BarcodeRecyclerAdapter adapterIfco;
+    private TemplateRecyclerAdapter adapterIfco;
     // BroadcastReceiver to receiver scan data
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -107,7 +113,7 @@ public class PackagingIfcoActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvInventoryIfco.setLayoutManager(layoutManager);
         rvInventoryIfco.setItemAnimator(new DefaultItemAnimator());
-        adapterIfco = new BarcodeRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
+        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
         rvInventoryIfco.setAdapter(adapterIfco);
         rvInventoryIfco.setNestedScrollingEnabled(false);
 
@@ -203,7 +209,25 @@ public class PackagingIfcoActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
+        PackagingRecord trns = recPackaging;
 
+        if (trns.packagedIfco != null) {
+            adapterIfco.setValues(new LinkedList<>(trns.packagedIfco));
+            adapterIfco.notifyDataSetChanged();
+            //Get reference of binsCount textView
+            //TextView tvBinsCount = findViewById(R.id.tvBinsCount);
+            tvIfcoCount.setText(String.valueOf(trns.totesForPackaging.size()));
+        }
+    }
+
+    private void updateState(){
+        PackagingRecord packagingRecord = FruitGlobalState.recPackaging;
+
+        packagingRecord.packagedIfco = new LinkedList<>(adapterIfco.getValues());
+
+        if (tvIfcoCount.getText() != null && !Strings.isEmptyOrWhitespace(tvIfcoCount.getText().toString())) {
+            packagingRecord.totalPackagedIfco = Short.valueOf(tvIfcoCount.getText().toString());
+        }
     }
 
     private void assignCtrlVars() {

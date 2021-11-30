@@ -21,7 +21,7 @@ public class PackageTransaction {
     public String site;
 
     @ColumnInfo(name = "user_id")
-    public Long userId;
+    public String userId;
 
     @ColumnInfo(name = "collection_lot")
     public String collectionLot;
@@ -46,4 +46,7 @@ public class PackageTransaction {
 
     @ColumnInfo(name = "latitude")
     public Double latitude;
+
+    @ColumnInfo(name = "created_at")
+    public Long createdAt;
 }

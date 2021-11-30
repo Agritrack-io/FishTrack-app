@@ -315,6 +315,8 @@
     <string name="pick_harvest_request">Please select One...</string>
     <string name="no_harvest_requests_found_alert">No Harvest Request returned from backend!!!</string>
     <string name="harvest_requests_sync_completed">Harvest Request sync completed!</string>
+    <string name="no_collection_tx_found_alert">No Harvest tx returned from backend!!!</string>
+    <string name="collection_tx_sync_completed">Harvest tx sync completed!</string>
     <string name="sites_sync_completed">Sites sync completed!</string>
     <string name="species_sync_completed">Fish types sync completed!</string>
     <string name="cage_details_sync_completed">Cage details sync completed!</string>

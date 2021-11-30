@@ -13,8 +13,10 @@ import io.agritrack.data.model.tx.AssetTransaction;
 import io.agritrack.data.model.tx.CollectTransaction;
 import io.agritrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.data.model.tx.CorrelationTransaction;
+import io.agritrack.data.model.tx.PackageTransaction;
 import io.agritrack.data.model.tx.PlantTransaction;
 import io.agritrack.data.model.tx.ProcessingTransaction;
+import io.agritrack.data.model.tx.StorageTransaction;
 import io.agritrack.data.model.wh.CoInventory;
 import io.agritrack.data.model.wh.CoInventoryItem;
 import io.agritrack.data.model.wh.RFIDInventory;
@@ -151,13 +153,19 @@ public class FruitGlobalState {
         }
     }
 
-    public static AssetTransaction commitSemiStorage(MobileDB db) {
+    public static StorageTransaction commitSemiStorage(MobileDB db) {
         try {
-            AssetTransaction txSemiStorage = new AssetTransaction();
+            StorageTransaction txSemiStorage = new StorageTransaction();
 
+            txSemiStorage.totesForStorage = recStorage.receivedTotes;
+            txSemiStorage.totalWeight = recStorage.totalWeight;
             txSemiStorage.collectionLot = recStorage.harvestLot;
+            txSemiStorage.userId = LocalPreferences.getLoggedInUser("N/A");
+            txSemiStorage.longitude = recStorage.longitude;
+            txSemiStorage.latitude = recStorage.latitude;
+            txSemiStorage.createdAt = System.currentTimeMillis();
 
-            db.assetTransactionDAO().insert(txSemiStorage);
+            db.storageTransactionDAO().insert(txSemiStorage);
             return txSemiStorage;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -165,13 +173,21 @@ public class FruitGlobalState {
         }
     }
 
-    public static ProcessingTransaction commitProcessing(MobileDB db) {
+    public static PackageTransaction commitPackaging(MobileDB db) {
         try {
-            ProcessingTransaction txProcess = new ProcessingTransaction();
+            PackageTransaction txPackage = new PackageTransaction();
 
-            db.processingTransactionDAO().insert(txProcess);
+            txPackage.totesForProcess = recPackaging.totesForPackaging;
+            txPackage.packagedIfco = recPackaging.packagedIfco;
+            txPackage.collectionLot = recPackaging.collectionLot;
+            txPackage.userId = LocalPreferences.getLoggedInUser("N/A");
+            txPackage.longitude = recPackaging.longitude;
+            txPackage.latitude = recPackaging.latitude;
+            txPackage.createdAt = System.currentTimeMillis();
 
-            return txProcess;
+            db.packageTransactionDAO().insert(txPackage);
+
+            return txPackage;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

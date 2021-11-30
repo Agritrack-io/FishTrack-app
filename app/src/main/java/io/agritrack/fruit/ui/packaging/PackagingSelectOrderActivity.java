@@ -27,6 +27,7 @@ import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.HarvestRequest;
 import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.data.model.wh.Order;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.state.GlobalState;
@@ -40,7 +41,7 @@ public class PackagingSelectOrderActivity extends AppCompatActivity implements A
 
     private MobileDB db;
     private ListView lvOpenOrders;
-    private io.agritrack.ui.bo.GenericListModel[] harvestReqs;
+    private io.agritrack.ui.bo.GenericListModel[] orders;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -64,10 +65,10 @@ public class PackagingSelectOrderActivity extends AppCompatActivity implements A
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // load Harvest Request fetched via Synch op.
-        List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getAll();
-        if (harvestRequests != null && !harvestRequests.isEmpty()) {
-            this.harvestReqs = harvestRequests.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, String.format("%s, %s kg, %s", x.cageCode, x.reqQty, x.fishName))).toArray(io.agritrack.ui.bo.GenericListModel[]::new);
-            ArrayAdapter<io.agritrack.ui.bo.GenericListModel> candidatesAdapter = new ArrayAdapter<io.agritrack.ui.bo.GenericListModel>(this, android.R.layout.simple_list_item_checked, harvestReqs) {
+        //List<Order> orders = db.orderDAO().getAll();
+        /*if (orders != null && !orders.isEmpty()) {
+            this.orders = orders.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, String.format("%s, %s kg, %s", x.cageCode, x.reqQty, x.fishName))).toArray(io.agritrack.ui.bo.GenericListModel[]::new);
+            ArrayAdapter<io.agritrack.ui.bo.GenericListModel> ordersAdapter = new ArrayAdapter<io.agritrack.ui.bo.GenericListModel>(this, android.R.layout.simple_list_item_checked, orders) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);
@@ -77,9 +78,9 @@ public class PackagingSelectOrderActivity extends AppCompatActivity implements A
                 }
             };
 
-            this.lvOpenOrders.setAdapter(candidatesAdapter);
+            this.lvOpenOrders.setAdapter(ordersAdapter);
             this.lvOpenOrders.setOnItemClickListener(this);
-        }
+        }*/
 
         ivSupport = findViewById(R.id.ivSupport);
         ivSupport.setOnClickListener(view -> {
