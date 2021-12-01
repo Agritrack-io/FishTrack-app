@@ -41,6 +41,8 @@ import io.agritrack.data.model.tx.PlantTransaction;
 import io.agritrack.data.model.tx.StorageTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
+import io.agritrack.enums.WarehouseTxState;
+import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.PlantRecord;
 import io.agritrack.fruit.state.StorageRecord;
@@ -146,6 +148,8 @@ public class SemiReadyStorageConfirmActivity extends LocationAwareActivity {
     }
 
     private boolean updateState(){
+        recStorage.state = WarehouseTxState.Incoming;
+
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 

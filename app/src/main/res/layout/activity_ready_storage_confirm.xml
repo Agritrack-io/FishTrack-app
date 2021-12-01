@@ -101,46 +101,19 @@ tools:context=".fruit.ui.storage_ready.ReadyStorageConfirmActivity">
             android:padding="15dp">
 
             <TextView
-                android:id="@+id/tvFromLabel"
+                android:id="@+id/tvWarehouseLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/details_from"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvToLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvFrom"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvFrom"
-                android:layout_width="186dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvTo"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvFromLabel"
-                app:layout_constraintTop_toTopOf="parent" />
-            <TextView
-                android:id="@+id/tvToLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/details_to"
+                android:text="@string/warehouse"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvNumberIfcoLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvTo"
+                app:layout_constraintEnd_toStartOf="@+id/tvWarehouse"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvFromLabel" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvTo"
+                android:id="@+id/tvWarehouse"
                 android:layout_width="186dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -150,8 +123,8 @@ tools:context=".fruit.ui.storage_ready.ReadyStorageConfirmActivity">
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvNumberIfco"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvToLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvFrom" />
+                app:layout_constraintStart_toEndOf="@+id/tvWarehouseLabel"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <!--<TextView
                 android:id="@+id/tvWeightLabel"
@@ -189,7 +162,7 @@ tools:context=".fruit.ui.storage_ready.ReadyStorageConfirmActivity">
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvNumberIfco"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvToLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/tvWarehouseLabel" />
 
             <TextView
                 android:id="@+id/tvNumberIfco"
@@ -203,7 +176,7 @@ tools:context=".fruit.ui.storage_ready.ReadyStorageConfirmActivity">
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvNumberIfcoLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvTo" />
+                app:layout_constraintTop_toBottomOf="@+id/tvWarehouse" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

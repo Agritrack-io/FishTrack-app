@@ -4,13 +4,10 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recCorrelation;
-import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,8 +21,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.core.app.ActivityCompat;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
@@ -41,16 +36,17 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.enums.AssetType;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fruit.ui.FruitHomeActivity;
+import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
-import io.agritrack.fruit.ui.harvesting.HarvestingConfirmActivity;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
@@ -72,7 +68,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
     private TextView tvCorrPoleBarcode, tvCorrTempLoggerBarcode;
     private ProgressDialog progressDialog;
 
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivNext;
     private SupportDialog supportDialog;
 
     @Override
@@ -115,6 +111,8 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
             this.lvGreenhouse.setOnItemClickListener(this);
         }
 
+        ivNext.setEnabled(false);
+
         // =================================
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(view -> {
@@ -140,7 +138,6 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
 
                         }
                     });
-                    //tvCageName.setText(result);
                 }
             } catch (Exception e) {
                 future.cancel(true);
@@ -148,16 +145,28 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         });
 
         btnCorrelate.setOnClickListener(view -> {
-            /*GlobalState.recWHCorrelation.assetType = !Strings.isEmptyOrWhitespace(selectedAssetType) ? AssetType.valueOf(selectedAssetType) : null;
-            GlobalState.recWHCorrelation.barcode = !Strings.isEmptyOrWhitespace(selectedBarcode) ? selectedBarcode : null; //tvCorrAssetBarcode.getText() != null ? tvCorrAssetBarcode.getText().toString() : null;
-            GlobalState.recWHCorrelation.rfid = tvCorrAssetBarcode.getText() != null ? tvCorrAssetBarcode.getText().toString() : null;*/
+            FruitGlobalState.recCorrelation.parentType = AssetType.valueOf(Constants.ftPole);
+            FruitGlobalState.recCorrelation.poleRFID = tvCorrPoleBarcode.getText() != null ? tvCorrPoleBarcode.getText().toString() : null;
+            FruitGlobalState.recCorrelation.assetType = AssetType.valueOf(Constants.ftDataLogger);
+            FruitGlobalState.recCorrelation.loggerRFID = tvCorrTempLoggerBarcode.getText() != null ? tvCorrTempLoggerBarcode.getText().toString() : null;
 
+            if (mLastLocation != null) {
+                recCorrelation.longitude = mLastLocation.getLongitude();
+                recCorrelation.latitude = mLastLocation.getLatitude();
+            } else {
+                CToast(FruitCorrelationActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
+            }
+
+            // Update state and proceed to next
+            Boolean proceed = correlate();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
                 return;
             }
-            correlate();
+            if (proceed) {
+                ivNext.setEnabled(true);
+            }
         });
 
         ivSupport.setOnClickListener(view -> {
@@ -169,27 +178,9 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (mLastLocation != null) {
-                    recCorrelation.longitude = mLastLocation.getLongitude();
-                    recCorrelation.latitude = mLastLocation.getLatitude();
-                } else {
-                    CToast(FruitCorrelationActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = correlate();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
-                    startActivity(i);
-                }
-            }
+        ivNext.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
+            startActivity(i);
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToFruitWareHouseMenu);
@@ -200,6 +191,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
     }
 
     private void assignCtrlVars() {
+        ivNext = findViewById(R.id.ivToCongs);
         tvCorrPoleBarcode = findViewById(R.id.tvCorrPoleBarcode);
         tvCorrTempLoggerBarcode = findViewById(R.id.tvCorrTempLoggerBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
@@ -216,14 +208,10 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         this.db = MobileDB.getInstance(getAppContext());
 
         try {
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(render("Synchronizing data..."));
-            progressDialog.show();
-
             String token = LocalPreferences.getToken();
 
             // persist WHCorrelationTX Record data to local DB.
-            CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
+            CorrelationTransaction tx = FruitGlobalState.commitWHCorrelation(db);
 
             // sync WH Correlation Tx
             Call<CorrelationTxDTO> syncTxAsyncCall = updService.syncCorrelationTx(CorrelationTxDTO.convert(tx), "Bearer " + token);
@@ -235,20 +223,21 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
             CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
 
             return false;
-        } finally {
-            progressDialog.dismiss();
         }
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHCorrelation.barcode)) {
-                sb.append(String.format("\n%s is missing", "'Asset BARCODE'"));
+            if (FruitGlobalState.recCorrelation.site == null || FruitGlobalState.recCorrelation.site.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Site'"));
+            }
+            if (Strings.isEmptyOrWhitespace(recCorrelation.poleRFID)) {
+                sb.append(String.format("\n%s is missing", "'Pole'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHCorrelation.rfid)) {
-                sb.append(String.format("\n%s is missing", "'Asset RFID'"));
+            if (Strings.isEmptyOrWhitespace(recCorrelation.loggerRFID)) {
+                sb.append(String.format("\n%s is missing", "'Temp Logger'"));
             }
         }
         return sb.toString();
@@ -260,6 +249,9 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         boolean currentCheck = v.isChecked();
         io.agritrack.ui.bo.GenericListModel member = (io.agritrack.ui.bo.GenericListModel) this.lvGreenhouse.getItemAtPosition(position);
         member.setChecked(!currentCheck);
+
+        int sp = this.lvGreenhouse.getCheckedItemPosition();
+        FruitGlobalState.recCorrelation.site = this.lvGreenhouse.getAdapter().getItem(sp).toString();
     }
 
     public class SyncTxCallBack implements Callback<CorrelationTxDTO> {

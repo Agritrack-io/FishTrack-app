@@ -160,7 +160,7 @@ public class GlobalState {
         try {
             TransportTransaction txTransport = new TransportTransaction();
 
-            txTransport.packagingSiteId = recTransport.packagingSite;
+            txTransport.destination = recTransport.packagingSite;
             txTransport.driverName = recTransport.driverName;
             txTransport.truckLicensePlate = recTransport.licensePlate;
             txTransport.securityClipNo = recTransport.clipNumber;
@@ -401,7 +401,7 @@ public class GlobalState {
             CorrelationTransaction txCorrelation = new CorrelationTransaction();
             txCorrelation.assetType = recWHCorrelation.assetType.name();
             txCorrelation.barcode = recWHCorrelation.barcode;
-            txCorrelation.rfid = recWHCorrelation.rfid;
+            txCorrelation.assetRFID = recWHCorrelation.rfid;
             txCorrelation.timestamp = System.currentTimeMillis();
             txCorrelation.longitude = recWHCorrelation.longitude;
             txCorrelation.latitude = recWHCorrelation.latitude;

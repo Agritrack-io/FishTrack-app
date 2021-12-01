@@ -45,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.sync.CollectionLotEnquiryCallBack;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
@@ -53,11 +54,11 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.PackagingRecord;
+import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.api.EnquiryApi;
-import io.agritrack.ui.login.api.SyncApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
@@ -66,7 +67,7 @@ public class PackagingStartActivity extends AppCompatActivity {
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-
+    private final MutableLiveData<String> enquiryResult = new MutableLiveData<>();
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -80,8 +81,8 @@ public class PackagingStartActivity extends AppCompatActivity {
     private TextView tvTotesCount;
     private ImageButton ivAddTote, ivDeleteTote;
     private String toteBarcode;
-    private String warehouse;
-    private Optional<String> firstToteRfid;
+    private String warehouse, firstToteRfid;
+    private Optional<String> optToteRfid;
     private ConstraintLayout selectedItem;
     private String selectedBarcode;
 
@@ -133,7 +134,16 @@ public class PackagingStartActivity extends AppCompatActivity {
             tvTotesCount.setText(String.valueOf(response.size()));
             adapterTotes.setValues(new ArrayList<>(response));
             adapterTotes.notifyDataSetChanged();
-            firstToteRfid = response.stream().findFirst();
+            optToteRfid = response.stream().findFirst();
+            firstToteRfid = optToteRfid.get();
+        });
+
+        enquiryResult.observe(this, response -> {
+            if (response == null) {
+                CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
+                return;
+            }
+            recPackaging.collectionLot = response;
         });
 
         // set (any?) previously selected values to activity Controls.
@@ -207,6 +217,8 @@ public class PackagingStartActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
+        invokeEnquiryLot();
+
         // create Footer
         configFooter();
     }
@@ -224,9 +236,9 @@ public class PackagingStartActivity extends AppCompatActivity {
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToPackagingSelectOrder);
+        ImageView ivBack = findViewById(R.id.ivBackToFruitHome);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackagingSelectOrderActivity.class);
+            Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             startActivity(i);
         });
     }
@@ -237,10 +249,14 @@ public class PackagingStartActivity extends AppCompatActivity {
         }
     }
 
-    private void invokeSyncAll() {
+    private void invokeEnquiryLot() {
         try {
             EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
             String token = LocalPreferences.getToken();
+
+            // sync collection lot for current Site
+            Call<String> enquiryCollectionLotAsyncCall = enquiryService.getCollectionLotByToteRfid(firstToteRfid, "Bearer " + token);
+            enquiryCollectionLotAsyncCall.enqueue(new CollectionLotEnquiryCallBack(this.enquiryResult));
 
 
         } catch (Exception e) {

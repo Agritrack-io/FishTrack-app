@@ -12,6 +12,12 @@ public class CorrelationTransaction {
     @PrimaryKey
     public Long id;
 
+    @ColumnInfo(name = "user_name")
+    public String user;
+
+    @ColumnInfo(name = "site")
+    public String site;
+
     @ColumnInfo(name = "timestamp")
     public Long timestamp;
 
@@ -22,8 +28,15 @@ public class CorrelationTransaction {
     @ColumnInfo(name = "barcode")
     public String barcode;
 
-    @ColumnInfo(name = "rfid")
-    public String rfid;
+    @ColumnInfo(name = "asset_rfid")
+    public String assetRFID;
+
+    @TypeConverters(AssetTypeConverter.class)
+    @ColumnInfo(name = "parent_type")
+    public String parentType;
+
+    @ColumnInfo(name = "parent_rfid")
+    public String parentRFID;
 
     @ColumnInfo(name = "longitude")
     public Double longitude;

@@ -21,8 +21,8 @@ public class TransportTransaction {
     @ColumnInfo(name = "transport_head")
     public String transportHead;
 
-    @ColumnInfo(name = "packaging_site_id")
-    public String packagingSiteId;
+    @ColumnInfo(name = "destination")
+    public String destination;
 
     @ColumnInfo(name = "truck_refrigerated")
     public Boolean isTruckRefrigerated;

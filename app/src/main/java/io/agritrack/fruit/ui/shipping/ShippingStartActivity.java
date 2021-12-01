@@ -1,7 +1,10 @@
 package io.agritrack.fruit.ui.shipping;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fruit.state.FruitGlobalState.recShipping;
+import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +33,7 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -40,12 +44,18 @@ import io.agritrack.barcode.BarcodeScanService;
 import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.Site;
+import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.ShippingRecord;
+import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.fruit.ui.storage_ready.ReadyStorageConfirmActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
+import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class ShippingStartActivity extends AppCompatActivity {
@@ -62,8 +72,9 @@ public class ShippingStartActivity extends AppCompatActivity {
     private RecyclerView rvIfcoForShipping;
     private TextView tvIfcoCount;
     private boolean scanning = false;
+    private String warehouse;
     private BarcodeScanService scanService;
-    private BarcodeRecyclerAdapter adapterIfco;
+    private TemplateRecyclerAdapter adapterIfco;
     // BroadcastReceiver to receiver scan data
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -117,15 +128,15 @@ public class ShippingStartActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvIfcoForShipping.setLayoutManager(layoutManager);
         rvIfcoForShipping.setItemAnimator(new DefaultItemAnimator());
-        adapterIfco = new BarcodeRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
+        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
         rvIfcoForShipping.setAdapter(adapterIfco);
         rvIfcoForShipping.setNestedScrollingEnabled(false);
+
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
 
         // initiate raw sound
         SoundUtil.initSoundPool(this);
@@ -142,7 +153,7 @@ public class ShippingStartActivity extends AppCompatActivity {
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
             scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_PLATFORM);
+            scanner.setFilter(Filters.RFID_POLE);
 
             Future<?> future = executor.submit(scanner);
             try {
@@ -151,9 +162,13 @@ public class ShippingStartActivity extends AppCompatActivity {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
                             tvPoleName.setText(epcStr);
+                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
+                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
+                            if (tempSite !=null) {
+                                warehouse = tempSite.name;
+                            }
                         }
                     });
-                    //tvCageName.setText(result);
                 }
             } catch (Exception e) {
                 future.cancel(true);
@@ -232,8 +247,14 @@ public class ShippingStartActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToShippingDetails);
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), ShippingDetailsActivity.class);
-            startActivity(i);
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
+                Intent i = new Intent(getApplicationContext(), ShippingDetailsActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToFruitMenu);
@@ -244,7 +265,50 @@ public class ShippingStartActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
+        ShippingRecord trns = FruitGlobalState.recShipping;
 
+        if (trns.packagedIfco != null) {
+            adapterIfco.setValues(new LinkedList<>(trns.packagedIfco));
+            adapterIfco.notifyDataSetChanged();
+            //Get reference of binsCount textView
+            tvIfcoCount.setText(String.valueOf(trns.packagedIfco.size()));
+        }
+
+        if (!Strings.isEmptyOrWhitespace(trns.poleRFID)) {
+            tvPoleName.setText(trns.poleRFID);
+        }
+    }
+
+    private ShippingRecord updateState() {
+        ShippingRecord shippingRecord = FruitGlobalState.initShippingRecord();
+
+        shippingRecord.packagedIfco = new LinkedList<>(adapterIfco.getValues());
+
+        if (tvIfcoCount.getText() != null && !Strings.isEmptyOrWhitespace(tvIfcoCount.getText().toString())) {
+            shippingRecord.totalIfcoCnt = Short.valueOf(tvIfcoCount.getText().toString());
+        }
+
+        shippingRecord.poleRFID = tvPoleName.getText().toString();
+
+        if (!Strings.isEmptyOrWhitespace(this.warehouse)) {
+            shippingRecord.warehouse = this.warehouse;
+        }
+
+        return shippingRecord;
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(recShipping.warehouse)) {
+                sb.append(String.format("\n%s is missing", "'Warehouse'"));
+            }
+
+            if (FruitGlobalState.recShipping.packagedIfco == null || FruitGlobalState.recStorage.packagedIfco.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Received IFCO'"));
+            }
+        }
+        return sb.toString();
     }
 
     private void assignCtrlVars() {

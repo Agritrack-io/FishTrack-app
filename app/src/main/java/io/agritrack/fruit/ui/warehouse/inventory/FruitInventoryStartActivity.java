@@ -1,5 +1,6 @@
 package io.agritrack.fruit.ui.warehouse.inventory;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -30,6 +31,8 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.InventoryWHRecord;
 import io.agritrack.fish.ui.wh.inventory.InventoryStartActivity;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.InventoryRecord;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.ui.adapter.InventoryMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
@@ -131,26 +134,26 @@ public class FruitInventoryStartActivity extends AppCompatActivity {
         ivSupport = findViewById(R.id.ivSupport);
     }
 
-    private InventoryWHRecord updateState() {
-        InventoryWHRecord inventoryRecord = GlobalState.initWHInventoryRecord();
+    private InventoryRecord updateState() {
+        InventoryRecord inventoryRecord = FruitGlobalState.initInventoryRecord();
 
-        /*inventoryRecord.selectedSite = LocalPreferences.getCurrentSiteName();
+        inventoryRecord.selectedSite = LocalPreferences.getCurrentSiteName();
 
         if (spSite.getSelectedItem() != null) {
             inventoryRecord.subSite = spSite.getSelectedItem().toString();
         }
-        inventoryRecord.subSitePos = spSite.getSelectedItemPosition();*/
+        inventoryRecord.subSitePos = spSite.getSelectedItemPosition();
 
         return inventoryRecord;
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        /*if (!IsDemo) {
+        if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recWHInventory.subSite)) {
-                sb.append(String.format("\n%s is missing", "'Subsite'"));
+                sb.append(String.format("\n%s is missing", "'Site'"));
             }
-        }*/
+        }
 
         return sb.toString();
     }

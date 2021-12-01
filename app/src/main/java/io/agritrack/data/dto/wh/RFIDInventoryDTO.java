@@ -7,6 +7,7 @@ public class RFIDInventoryDTO {
     public Long id;
     public String rfidInvType;
     public String site;
+    public String user;
     public Long performedAt;
     public Double longitude;
     public Double latitude;
@@ -16,6 +17,7 @@ public class RFIDInventoryDTO {
         inventoryDTO.id = inventory.id;
         inventoryDTO.rfidInvType = inventory.rfidInvType;
         inventoryDTO.site = inventory.site;
+        inventoryDTO.user = inventory.user;
         inventoryDTO.performedAt = inventory.performedAt;
         inventoryDTO.longitude = inventory.longitude;
         inventoryDTO.latitude = inventory.latitude;

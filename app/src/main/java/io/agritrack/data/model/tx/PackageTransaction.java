@@ -26,13 +26,6 @@ public class PackageTransaction {
     @ColumnInfo(name = "collection_lot")
     public String collectionLot;
 
-    @ColumnInfo(name = "customer")
-    public String customer;
-
-    @TypeConverters(TxStatusEnumConverter.class)
-    @ColumnInfo(name = "status")
-    public TxStatus txStatus = TxStatus.NONE;
-
     @TypeConverters(StringListConverter.class)
     @ColumnInfo(name = "totes_for_process")
     public List<String> totesForProcess;

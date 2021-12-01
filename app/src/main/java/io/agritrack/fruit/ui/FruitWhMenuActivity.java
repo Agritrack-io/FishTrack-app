@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.ui.warehouse.correlation.FruitCorrelationActivity;
 import io.agritrack.fruit.ui.warehouse.inventory.FruitInventoryStartActivity;
 import io.agritrack.fruit.ui.warehouse.measurements.DailyTemperatureMeasurementsActivity;
@@ -60,6 +61,7 @@ public class FruitWhMenuActivity extends AppCompatActivity {
                         i = new Intent(appCtx, FruitInventoryStartActivity.class);
                         break;
                     case Correlation_Idx:
+                        FruitGlobalState.initCorrelationRecord();
                         i = new Intent(appCtx, FruitCorrelationActivity.class);
                         break;
                     case Temp_measure_Idx:
