@@ -33,18 +33,4 @@ public class CollectTxDTO {
 
         return collectTxDTO;
     }
-
-    public static CollectTransaction convert(CollectTxDTO collectTxDTO) {
-        CollectTransaction collectTransaction = new CollectTransaction();
-
-        collectTransaction.id = collectTxDTO.id;
-        collectTransaction.site = collectTxDTO.site;
-        collectTransaction.userId = collectTxDTO.user_id;
-        collectTransaction.plantLot = collectTxDTO.plant_lot;
-        collectTransaction.assetRFID = collectTxDTO.asset_rfid;
-        collectTransaction.species = collectTxDTO.species;
-        collectTransaction.collectionLot = collectTxDTO.collection_lot;
-
-        return collectTransaction;
-    }
 }

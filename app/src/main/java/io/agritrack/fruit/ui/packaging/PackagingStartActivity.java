@@ -5,16 +5,7 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.fruit.state.FruitGlobalState.recPackaging;
-import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
 import static io.agritrack.ui.custom.CustomToast.CToast;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -32,11 +23,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,6 +44,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
@@ -51,39 +52,36 @@ import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.state.HarvestRecord;
 import io.agritrack.fruit.state.PackagingRecord;
-import io.agritrack.fruit.state.StorageRecord;
-import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.ui.login.api.EnquiryApi;
+import io.agritrack.ui.login.api.SyncApi;
 import io.agritrack.ui.service.LocalPreferences;
+import retrofit2.Call;
 
 public class PackagingStartActivity extends AppCompatActivity {
+
+    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
 
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
-
     private TextView tvPoleName;
     private Button btnScanPole;
-    
-    private final SingleShotScanner scanner = new SingleShotScanner();
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
     private UhfReader uhfReader;
     private boolean scanning = false;
     private ScanInventoryThread inventoryTotesThread = new ScanInventoryThread();
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private TemplateRecyclerAdapter adapterTotes;
     private RecyclerView rvTotesForPackage;
     private TextView tvTotesCount;
     private ImageButton ivAddTote, ivDeleteTote;
     private String toteBarcode;
-
     private String warehouse;
-
+    private Optional<String> firstToteRfid;
     private ConstraintLayout selectedItem;
     private String selectedBarcode;
 
@@ -96,7 +94,7 @@ public class PackagingStartActivity extends AppCompatActivity {
             TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if(selectedItem!=null) {
+            if (selectedItem != null) {
                 selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
 
@@ -105,7 +103,7 @@ public class PackagingStartActivity extends AppCompatActivity {
             selectedItem = view;
         }
     };
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +133,7 @@ public class PackagingStartActivity extends AppCompatActivity {
             tvTotesCount.setText(String.valueOf(response.size()));
             adapterTotes.setValues(new ArrayList<>(response));
             adapterTotes.notifyDataSetChanged();
+            firstToteRfid = response.stream().findFirst();
         });
 
         // set (any?) previously selected values to activity Controls.
@@ -158,7 +157,7 @@ public class PackagingStartActivity extends AppCompatActivity {
                             tvPoleName.setText(epcStr);
                             Asset pole = db.assetDAO().getAssetByEpc(epcStr);
                             Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
-                            if (tempSite !=null) {
+                            if (tempSite != null) {
                                 warehouse = tempSite.name;
                             }
                         }
@@ -238,6 +237,19 @@ public class PackagingStartActivity extends AppCompatActivity {
         }
     }
 
+    private void invokeSyncAll() {
+        try {
+            EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
+            String token = LocalPreferences.getToken();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+    }
+
     private void initControlsFromState() {
         PackagingRecord trns = recPackaging;
 
@@ -259,7 +271,7 @@ public class PackagingStartActivity extends AppCompatActivity {
 
         packagingRecord.poleRFID = tvPoleName.getText().toString();
 
-        if (!Strings.isEmptyOrWhitespace(this.warehouse)){
+        if (!Strings.isEmptyOrWhitespace(this.warehouse)) {
             packagingRecord.warehouse = this.warehouse;
         }
 

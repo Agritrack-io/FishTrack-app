@@ -216,7 +216,7 @@ public class FruitHomeActivity extends AppCompatActivity {
             syncHarvestResAsyncCall.enqueue(new SyncHarvestRequestCallBack(this.syncResult));
 
             /*// sync collection lot for current Site
-            Call<List<CollectTxDTO>> syncCollectionTxAsyncCall = syncService.getCollectionTx(siteId, "Bearer " + token);
+            Call<List<CollectTxDTO>> syncCollectionTxAsyncCall = syncService.getCollectionLotByToteRfid(siteId, "Bearer " + token);
             syncCollectionTxAsyncCall.enqueue(new CollectionLotEnquiryCallBack(this.syncResult));*/
 
             // sync users
