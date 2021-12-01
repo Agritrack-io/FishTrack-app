@@ -1,7 +1,7 @@
 package io.agritrack.fruit.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,6 +13,9 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +35,7 @@ import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
 import io.agritrack.api.sync.SyncEmployeesCallBack;
 import io.agritrack.api.sync.SyncHarvestRequestCallBack;
+import io.agritrack.api.sync.SyncIOTLoggersCallBack;
 import io.agritrack.api.sync.SyncSpeciesCallBack;
 import io.agritrack.api.sync.SyncSuppliersCallBack;
 import io.agritrack.api.sync.SyncUsersCallBack;
@@ -41,13 +45,13 @@ import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
+import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.ui.harvesting.HarvestingStartActivity;
 import io.agritrack.fruit.ui.packaging.PackagingSelectOrderActivity;
-import io.agritrack.fruit.ui.packaging.PackagingStartActivity;
 import io.agritrack.fruit.ui.planting.PlantingStartActivity;
 import io.agritrack.fruit.ui.shipping.ShippingStartActivity;
 import io.agritrack.fruit.ui.storage_ready.ReadyStorageStartActivity;
@@ -58,9 +62,6 @@ import io.agritrack.ui.login.LoginActivity;
 import io.agritrack.ui.login.api.SyncApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
-
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
 
 public class FruitHomeActivity extends AppCompatActivity {
     private static final int Planting_Idx = 0, Harvest_Idx = 1, Storage_semi_ready = 2, Packaging_Idx = 3, Storage_ready = 4, Shipping_Idx = 5, Warehouse_Idx = 6;
@@ -237,6 +238,10 @@ public class FruitHomeActivity extends AppCompatActivity {
             // sync fish species
             Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.PRODUCT, "Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
+
+            // sync IOT Loggers
+            Call<List<IotLoggerDTO>> syncIOTLoggersAsyncCall = syncService.getIOTLoggersBySiteId(siteId, "Bearer " + token);
+            syncIOTLoggersAsyncCall.enqueue(new SyncIOTLoggersCallBack(this.syncResult));
 
         } catch (Exception e) {
             e.printStackTrace();

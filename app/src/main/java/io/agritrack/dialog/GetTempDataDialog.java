@@ -1,5 +1,7 @@
 package io.agritrack.dialog;
 
+import static android.os.Looper.getMainLooper;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -19,18 +21,6 @@ import com.android.hdhe.uhf.reader.UhfReader;
 
 import cn.pda.serialport.Tools;
 import io.agritrack.R;
-import io.agritrack.caen.common.CAENRegistersIO;
-
-import static android.os.Looper.getMainLooper;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_INTERVAL;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_LOGS;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_RESET;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_SAMPLES_CNT;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIMESTAMP;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIME_BIN;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ONE;
-import static io.agritrack.caen.api.EncodingUtils.ToShort;
-import static io.agritrack.caen.api.EncodingUtils.parseData;
 
 public class GetTempDataDialog {
     private static Short numOfSamples = Short.valueOf("0");
@@ -61,7 +51,7 @@ public class GetTempDataDialog {
 
         btnGetData.setOnClickListener(view -> {
             try {
-                getTempData(_uhfReader, "300EFE2F94D01C02540BE4BE");
+                getTempData(_uhfReader, "300EFE2F94D01C02540BE47B");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

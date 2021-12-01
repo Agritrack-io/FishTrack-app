@@ -45,6 +45,7 @@
     <string name="menu_title_platform">Platform</string>
 
     <string name="title_config">Configure app</string>
+    <string name="title_Tools">IOT Logger</string>
 
     <string name="title_user_date">USER NAME / DATE</string>
     <string name="title_fishing">FISHING</string>
@@ -417,4 +418,7 @@
 
     <string name="title_measurements">DAILY MEASUREMENTS</string>
     <string name="scan_temp_logger">Temperature logger</string>
+    <string name="IOTLoggers_sync_completed">IOTLoggers sync completed!</string>
+    <string name="no_IOTLoggers_found_alert">No IOTLogger returned from backend!!!</string>
+    <string name="menu_title_tools">Logger Tools</string>
 </resources>

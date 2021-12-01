@@ -24,6 +24,9 @@
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.tools.ToolsActivity"
+            android:exported="false" />
+        <activity
             android:name=".fruit.ui.packaging.PackagingSelectOrderActivity"
             android:exported="false" />
         <activity

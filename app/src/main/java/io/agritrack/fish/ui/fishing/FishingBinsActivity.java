@@ -44,31 +44,26 @@ import io.agritrack.R;
 import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TempLoggerDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class FishingBinsActivity extends AppCompatActivity {
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-    private MobileDB db;
-    private ScanInventoryThread inventoryThread = new ScanInventoryThread();
-    private boolean scanning = false;
-
-    private TemplateRecyclerAdapter adapterBins;
-
-    private RecyclerView rvBins;
-    private TextView tvBinsCount;
-
-    private Button btnScanBin;
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private MobileDB db;
+    private TemplateRecyclerAdapter adapterBins;
+    private RecyclerView rvBins;
+    private TextView tvBinsCount;
+    private Button btnScanBin;
     private TempLoggerDialog tempLoggerDialog;
     private String currentBin;
 
@@ -76,14 +71,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
 
-    private String binBarcode = "";
-
-    private ImageView ivSupport;
-    private SupportDialog supportDialog;
-    private InfoDialog infoDialog;
-    private ImageView ivInfo;
-
-    // Instantiate a clickListener to be passed to adapterBins.
+    // Instantiate a clickListener to be passed to adapterBins Adapter.
     // It will be used to point the selectedBarcode variable to the selected item barcode value.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
         @Override
@@ -101,7 +89,11 @@ public class FishingBinsActivity extends AppCompatActivity {
             selectedItem = view;
         }
     };
-
+    private String binBarcode = "";
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
+    private InfoDialog infoDialog;
+    private ImageView ivInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,11 +133,11 @@ public class FishingBinsActivity extends AppCompatActivity {
         // RFID scanning functionality
         btnScanBin.setOnClickListener(view -> {
             tempLoggerDialog = new TempLoggerDialog(FishingBinsActivity.this, R.string.init_temp_logger);
-            tempLoggerDialog.showDialog();
 
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
+            _uhfReader.setOutputPower(24);
             scanner.setUhfReader(_uhfReader);
             scanner.setFilter(Filters.RFID_BIN);
 
@@ -159,6 +151,14 @@ public class FishingBinsActivity extends AppCompatActivity {
                             adapterBins.addUniqueItem(currentBin);
                             adapterBins.notifyDataSetChanged();
                             tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+
+                            // after bin is identified, initialize the temperatures logger.
+                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(currentBin);
+                            if(logger!=null || IsDemo) {
+                                tempLoggerDialog.showDialog(logger.rfid);
+                            } else {
+                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_LONG);
+                            }
                         }
                     });
                 }
@@ -225,10 +225,6 @@ public class FishingBinsActivity extends AppCompatActivity {
         ImageView ivNext = findViewById(R.id.ivToTeam);
         ivNext.setOnClickListener(view -> {
 
-            //Set scanning to false to stop running scan thread
-            scanning = false;
-            inventoryThread.setScanInProgress(scanning);
-
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -241,11 +237,6 @@ public class FishingBinsActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToMain);
         ivBack.setOnClickListener(view -> {
-
-            //Set scanning to false to stop running scan thread
-            scanning = false;
-            inventoryThread.setScanInProgress(scanning);
-
             Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
             startActivity(i);
         });
@@ -299,18 +290,16 @@ public class FishingBinsActivity extends AppCompatActivity {
         });
 
         builder.show();
-
     }
 
     private void updateState() {
         GlobalState.recFishing.availBins = new LinkedList<>(adapterBins.getValues());
-
         GlobalState.commitFishing(db, Boolean.FALSE);
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if(!IsDemo) {
+        if (!IsDemo) {
             if (GlobalState.recFishing.availBins == null || GlobalState.recFishing.availBins.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Bins for usage'"));
             }
@@ -321,7 +310,6 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        scanning = false;
         super.onDestroy();
     }
 }

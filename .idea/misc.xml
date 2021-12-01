@@ -18,7 +18,6 @@
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fruit_correlation.xml" value="0.2911458333333333" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fruit_home.xml" value="0.25416666666666665" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_fruit_wh_menu.xml" value="0.16927083333333334" />
-        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_harvest_requests.xml" value="0.2677083333333333" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_harvesting_confirm.xml" value="0.23489583333333333" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_harvesting_start.xml" value="0.22083333333333333" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_harvesting_totes.xml" value="0.23489583333333333" />
@@ -31,7 +30,6 @@
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_packaging_confirm.xml" value="0.2734375" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_packaging_ifco.xml" value="0.23802083333333332" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_packaging_lot.xml" value="0.22395833333333334" />
-        <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_packaging_select_order.xml" value="0.2677083333333333" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_packaging_start.xml" value="0.23802083333333332" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_planting_confirm.xml" value="0.2875" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/activity_planting_start.xml" value="0.25416666666666665" />
@@ -68,6 +66,12 @@
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/site_layout.xml" value="0.24635416666666668" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/support_dialog.xml" value="0.1" />
         <entry key="..\:/Dev/agritrack workspace nikos/fishtrack-app/app/src/main/res/layout/temp_logger_dialog.xml" value="0.17889492753623187" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/activity_config.xml" value="0.3145833333333333" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/activity_shipping_details.xml" value="0.3145833333333333" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/activity_shipping_start.xml" value="0.3145833333333333" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/activity_tools.xml" value="0.3145833333333333" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/get_temp_data_dialog.xml" value="0.25677083333333334" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/temp_logger_dialog.xml" value="0.21979166666666666" />
       </map>
     </option>
   </component>

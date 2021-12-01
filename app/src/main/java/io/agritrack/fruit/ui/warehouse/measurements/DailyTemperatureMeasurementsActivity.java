@@ -2,8 +2,6 @@ package io.agritrack.fruit.ui.warehouse.measurements;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,10 +10,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
-import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -26,12 +25,8 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TempLoggerDialog;
-import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.fishing.FishingBinsActivity;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
-import io.agritrack.fruit.ui.storage_ready.ReadyStorageConfirmActivity;
-import io.agritrack.fruit.ui.storage_ready.ReadyStorageStartActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -69,7 +64,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
         // RFID scanning functionality
         btnScanPole.setOnClickListener(view -> {
             tempLoggerDialog = new TempLoggerDialog(DailyTemperatureMeasurementsActivity.this, R.string.init_temp_logger);
-            tempLoggerDialog.showDialog();
+            tempLoggerDialog.showDialog(null);
 
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
