@@ -8,7 +8,7 @@ public class IotLoggerDTO {
     public String model;
     public String type;
     public String barcode;
-    public String rfid_barcode;
+    public String rfid;
     public String asset_rfid;
     public String code;
 
@@ -18,7 +18,7 @@ public class IotLoggerDTO {
         iotLogger.model = iotLoggerDTO.model;
         iotLogger.type = iotLoggerDTO.type;
         iotLogger.barcode = iotLoggerDTO.barcode;
-        iotLogger.rfidBarcode = iotLoggerDTO.rfid_barcode;
+        iotLogger.rfid = iotLoggerDTO.rfid;
         iotLogger.assetRFID = iotLoggerDTO.asset_rfid;
         iotLogger.code = iotLoggerDTO.code;
         return iotLogger;

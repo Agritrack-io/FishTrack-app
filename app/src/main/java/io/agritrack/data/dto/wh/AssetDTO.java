@@ -72,6 +72,7 @@ public class AssetDTO {
         asset.erpCode = assetDTO.erp_code;
         asset.insertInCageAt = assetDTO.insert_in_cage_at;
         asset.description = assetDTO.description;
+
         return asset;
     }
 }

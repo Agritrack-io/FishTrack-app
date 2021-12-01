@@ -19,8 +19,8 @@ public class IotLogger {
     @ColumnInfo(name = "barcode")
     public String barcode;
 
-    @ColumnInfo(name = "rfid_barcode")
-    public String rfidBarcode;
+    @ColumnInfo(name = "rfid")
+    public String rfid;
 
     @ColumnInfo(name = "asset_rfid")
     public String assetRFID;

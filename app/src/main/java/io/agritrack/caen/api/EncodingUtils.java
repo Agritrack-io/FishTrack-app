@@ -74,6 +74,12 @@ public class EncodingUtils {
         return bb.getInt();
     }
 
+    public static long ToLong(byte[] b) {
+        ByteBuffer bb = ByteBuffer.wrap(b);
+        bb.order(ByteOrder.BIG_ENDIAN);
+        return bb.getLong();
+    }
+
     public static String parseData(byte[] data) {
         StringBuffer sb = new StringBuffer();
         if (data!=null) {

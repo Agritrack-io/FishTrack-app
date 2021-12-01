@@ -7,6 +7,7 @@ import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
+import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.tx.CollectTxDTO;
@@ -63,4 +64,8 @@ public interface SyncApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/cage-detail/{siteId}")
     Call<List<CageDetailsDTO>> getCageDetailsBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/logger/{siteId}")
+    Call<List<IotLoggerDTO>> getIOTLoggersBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
 }

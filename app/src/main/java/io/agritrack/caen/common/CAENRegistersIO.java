@@ -1,7 +1,5 @@
 package io.agritrack.caen.common;
 
-import com.android.hdhe.uhf.reader.UhfReader;
-
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CMD_READ;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CMD_WRITE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.MAXBYTESIZEDATA;
@@ -9,6 +7,8 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.REPLY_NACK;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.TIME_WAITTAG_CMDREADBASE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.TIME_WAITTAG_CMDWRITE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.TIME_WAITTAG_WRITEPAGE;
+
+import com.android.hdhe.uhf.reader.UhfReader;
 
 
 public class CAENRegistersIO {
@@ -79,7 +79,8 @@ public class CAENRegistersIO {
 
         //check reply
         if (reply == REPLY_NACK) {
-            throw new Exception("Tag replied NACK");
+            //throw new Exception("Tag replied NACK");
+            return REPLY_NACK;
         }
 
         return reply;
@@ -90,8 +91,6 @@ public class CAENRegistersIO {
 
         // check current idmsg value written in reply word and adjust idmsg of next command accordingly
         byte[] replyVal = INTERFACEMEM.ReadReply(reader, accessPassword);
-
-        //String _id = BytesToHex(replyVal);
 
         while (replyVal.length == 1 && retries < 10) {
             // wait for tag to parse command, execute it, and reply
@@ -104,8 +103,6 @@ public class CAENRegistersIO {
             msgId++;
             return msgId;
         }
-
-        //String _idd = BytesToHex(replyVal);
 
         return replyVal[0];
     }
