@@ -101,34 +101,6 @@
                 android:padding="15dp">
 
                 <TextView
-                    android:id="@+id/tvGreenHouseLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/greenhouse"
-                    android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/tvWarehouseLabel"
-                    app:layout_constraintEnd_toStartOf="@+id/tvGreenHouse"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tvGreenHouse"
-                    android:layout_width="186dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/border_bottom"
-                    android:textAlignment="viewEnd"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toTopOf="@+id/tvWarehouse"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tvGreenHouseLabel"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
                     android:id="@+id/tvWarehouseLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -138,7 +110,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/tvWeightLabel"
                     app:layout_constraintEnd_toStartOf="@+id/tvWarehouse"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvGreenHouseLabel" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tvWarehouse"
@@ -152,7 +124,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/tvWeight"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvWarehouseLabel"
-                    app:layout_constraintTop_toBottomOf="@+id/tvGreenHouse" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tvWeightLabel"

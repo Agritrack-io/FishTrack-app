@@ -1,7 +1,11 @@
 package io.agritrack.fruit.ui.packaging;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
+import static io.agritrack.fruit.state.FruitGlobalState.recPackaging;
+import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +36,7 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,8 +46,14 @@ import java.util.concurrent.TimeUnit;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.Site;
+import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.HarvestRecord;
+import io.agritrack.fruit.state.PackagingRecord;
+import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
@@ -70,6 +81,8 @@ public class PackagingStartActivity extends AppCompatActivity {
     private TextView tvTotesCount;
     private ImageButton ivAddTote, ivDeleteTote;
     private String toteBarcode;
+
+    private String warehouse;
 
     private ConstraintLayout selectedItem;
     private String selectedBarcode;
@@ -108,34 +121,6 @@ public class PackagingStartActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
-
-        // =================================
-        // RFID scanning functionality
-        btnScanPole.setOnClickListener(view -> {
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_PLATFORM);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            tvPoleName.setText(epcStr);
-                        }
-                    });
-                    //tvCageName.setText(result);
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
-        });
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTotesForPackage.setLayoutManager(layoutManager);
         rvTotesForPackage.setItemAnimator(new DefaultItemAnimator());
@@ -150,6 +135,38 @@ public class PackagingStartActivity extends AppCompatActivity {
             tvTotesCount.setText(String.valueOf(response.size()));
             adapterTotes.setValues(new ArrayList<>(response));
             adapterTotes.notifyDataSetChanged();
+        });
+
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
+
+        // =================================
+        // RFID scanning functionality
+        btnScanPole.setOnClickListener(view -> {
+            //update scanning, uhfReader, tvPlatformName values in thread
+            UhfReader _uhfReader = UhfReader.getInstance();
+            _uhfReader.setWorkArea(3);
+            scanner.setUhfReader(_uhfReader);
+            scanner.setFilter(Filters.RFID_POLE);
+
+            Future<?> future = executor.submit(scanner);
+            try {
+                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
+                if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            tvPoleName.setText(epcStr);
+                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
+                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
+                            if (tempSite !=null) {
+                                warehouse = tempSite.name;
+                            }
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                future.cancel(true);
+            }
         });
 
         // initialize scanning threads
@@ -198,8 +215,14 @@ public class PackagingStartActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToPackagingLot);
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackagingLotActivity.class);
-            startActivity(i);
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
+                Intent i = new Intent(getApplicationContext(), PackagingLotActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToPackagingSelectOrder);
@@ -216,7 +239,51 @@ public class PackagingStartActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
+        PackagingRecord trns = recPackaging;
 
+        if (!Strings.isEmptyOrWhitespace(trns.poleRFID)) {
+            tvPoleName.setText(trns.poleRFID);
+        }
+
+        if (trns.totesForPackaging != null) {
+            adapterTotes.setValues(new LinkedList<>(trns.totesForPackaging));
+            adapterTotes.notifyDataSetChanged();
+            //Get reference of binsCount textView
+            //TextView tvBinsCount = findViewById(R.id.tvBinsCount);
+            tvTotesCount.setText(String.valueOf(trns.totesForPackaging.size()));
+        }
+    }
+
+    private PackagingRecord updateState() {
+        PackagingRecord packagingRecord = FruitGlobalState.initPackagingRecord();
+
+        packagingRecord.poleRFID = tvPoleName.getText().toString();
+
+        if (!Strings.isEmptyOrWhitespace(this.warehouse)){
+            packagingRecord.warehouse = this.warehouse;
+        }
+
+        packagingRecord.totesForPackaging = new LinkedList<>(adapterTotes.getValues());
+
+        if (tvTotesCount.getText() != null && !Strings.isEmptyOrWhitespace(tvTotesCount.getText().toString())) {
+            packagingRecord.totalTotesForPackaging = Short.valueOf(tvTotesCount.getText().toString());
+        }
+
+        return packagingRecord;
+    }
+
+    private String validate() {
+        StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(recHarvest.poleRFID)) {
+                sb.append(String.format("\n%s is missing", "'Warehouse tag'"));
+            }
+            if (recPackaging.totesForPackaging == null || recPackaging.totesForPackaging.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Totes for packaging'"));
+            }
+        }
+
+        return sb.toString();
     }
 
     private void assignCtrlVars() {

@@ -15,10 +15,10 @@ import io.agritrack.data.model.wh.Order;
 @Dao
 public interface OrderDAO {
 
-    @Query("SELECT * from order")
+    @Query("SELECT * from orders")
     LiveData<List<Order>> getAll();
 
-    @Query("SELECT * from order where id=:orderId LIMIT 1")
+    @Query("SELECT * from orders where id=:orderId LIMIT 1")
     Order getById(Long orderId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -27,7 +27,7 @@ public interface OrderDAO {
     @Delete
     void delete(Order order);
 
-    @Query("DELETE from order")
+    @Query("DELETE from orders")
     void deleteAll();
 
     @Update

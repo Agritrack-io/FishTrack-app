@@ -33,6 +33,7 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
+import io.agritrack.api.sync.CollectionLotEnquiryCallBack;
 import io.agritrack.api.sync.SyncEmployeesCallBack;
 import io.agritrack.api.sync.SyncHarvestRequestCallBack;
 import io.agritrack.api.sync.SyncIOTLoggersCallBack;
@@ -48,6 +49,7 @@ import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
+import io.agritrack.data.dto.tx.CollectTxDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.ui.harvesting.HarvestingStartActivity;
@@ -214,6 +216,10 @@ public class FruitHomeActivity extends AppCompatActivity {
             // sync harvestRequests for current Site
             Call<List<HarvestRequestDTO>> syncHarvestResAsyncCall = syncService.getHarvestRequestsBySiteId(siteId, "Bearer " + token);
             syncHarvestResAsyncCall.enqueue(new SyncHarvestRequestCallBack(this.syncResult));
+
+            /*// sync collection lot for current Site
+            Call<List<CollectTxDTO>> syncCollectionTxAsyncCall = syncService.getCollectionTx(siteId, "Bearer " + token);
+            syncCollectionTxAsyncCall.enqueue(new CollectionLotEnquiryCallBack(this.syncResult));*/
 
             // sync users
             Call<List<AppUserDTO>> syncUsersAsyncCall = syncService.getUsersBySiteId(siteId, "Bearer " + token);

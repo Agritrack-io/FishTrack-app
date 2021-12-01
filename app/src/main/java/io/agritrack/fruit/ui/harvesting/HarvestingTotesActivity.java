@@ -122,9 +122,6 @@ public class HarvestingTotesActivity extends AppCompatActivity {
             adapterTotes.notifyDataSetChanged();
         });
 
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
-
         // initialize scanning threads
         prepareScanAvailableBinsButton();
 

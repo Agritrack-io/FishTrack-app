@@ -1,5 +1,7 @@
 package io.agritrack.fruit.ui.storage_semi_ready;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
@@ -20,21 +22,38 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.tx.PlantTxDTO;
+import io.agritrack.data.dto.tx.StorageTxDTO;
+import io.agritrack.data.model.tx.PlantTransaction;
+import io.agritrack.data.model.tx.StorageTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.PlantRecord;
+import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.fruit.ui.harvesting.HarvestingConfirmActivity;
+import io.agritrack.fruit.ui.planting.PlantingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
+import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SemiReadyStorageConfirmActivity extends LocationAwareActivity {
 
@@ -42,7 +61,7 @@ public class SemiReadyStorageConfirmActivity extends LocationAwareActivity {
     private MobileDB db;
 
     private ProgressDialog progressDialog;
-    private TextView tvGreenHouse, tvWarehouse, tvWeight, tvNumberTotes;
+    private TextView tvWarehouse, tvWeight, tvNumberTotes, tvUsername;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -109,24 +128,92 @@ public class SemiReadyStorageConfirmActivity extends LocationAwareActivity {
     }
 
     private void assignCtrlVars() {
-        tvGreenHouse = findViewById(R.id.tvGreenHouse);
         tvWarehouse = findViewById(R.id.tvWarehouse);
         tvWeight = findViewById(R.id.tvWeight);
         tvNumberTotes = findViewById(R.id.tvNumberTotes);
         ivSupport = findViewById(R.id.ivSupport);
+        tvUsername = findViewById(R.id.tvUsername);
     }
 
     private void initControlsFromState() {
-        /*tvUsername.setText(LocalPreferences.getLoggedInUser(""));
+        StorageRecord recStorage = FruitGlobalState.recStorage;
 
-        tvTotalQuantityCount.setText(recFishing.totalFishWeight != null ? recFishing.totalFishWeight.toString() : "N/A");
-        tvReqQuantityCount.setText(recFishing.reqWeight != null ? recFishing.reqWeight : "N/A");
-        tvNumberOfBinsCount.setText(recFishing.totalBinsUsed != null ? recFishing.totalBinsUsed.toString() : "N/A");
-        tvNameCage.setText(recFishing.cageRFID != null ? recFishing.cageRFID : "N/A");
-        tvTypeOfFishConfirm.setText(recFishing.speciesName != null ? recFishing.speciesName : "N/A");*/
+        tvWarehouse.setText(recStorage.warehouse != null ? recStorage.warehouse : "N/A");
+        tvWeight.setText(recStorage.totalWeight != null ? recStorage.totalWeight.toString() : "N/A");
+        tvNumberTotes.setText(recStorage.totalTotesReceived != null ? recStorage.totalTotesReceived.toString() : "N/A");
+
+        tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }
 
     private boolean updateState(){
-        return true;
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
+
+        EditText etPIN = findViewById(R.id.etPasswordFishing);
+        if (!TextUtils.isEmpty(etPIN.getText().toString())) {
+            String login = LocalPreferences.getLoggedInUser("").trim();
+            String pin = etPIN.getText().toString().trim();
+
+            // use typed-in PIN to compare credentials with those stored in the Local DB.
+            AuthenticationService authSvc = new AuthenticationService();
+            boolean authentication = authSvc.authenticateUser(this.db, login, pin);
+
+            // credentials do NOT match
+            if (!authentication) {
+                runOnUiThread(() -> CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG));
+                return false;
+            } else {
+                try {
+                    String token = LocalPreferences.getToken();
+
+                    // persist Planting Record data to local DB.
+                    StorageTransaction tx = FruitGlobalState.commitSemiStorage(db);
+
+                    // sync fish species
+                    Call<StorageTxDTO> syncTxAsyncCall = updService.syncStorageTx(StorageTxDTO.convert(tx), "Bearer " + token);
+                    syncTxAsyncCall.enqueue(new SemiReadyStorageConfirmActivity.SyncTxCallBack());
+
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+                    return false;
+                }
+            }
+        } else {
+            runOnUiThread(() -> CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG));
+            return false;
+        }
+    }
+
+    public class SyncTxCallBack implements Callback<StorageTxDTO> {
+        @Override
+        public void onResponse(Call<StorageTxDTO> call, Response<StorageTxDTO> response) {
+            StorageTxDTO rs = response.body();
+
+            if (rs != null) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+            } else {
+                // could not update Fishing TX on backend!!!
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_plant_tx_update_failure), Toast.LENGTH_LONG));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<StorageTxDTO> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
+            }
+        }
     }
 }

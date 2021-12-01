@@ -25,12 +25,12 @@ public interface CollectTransactionDAO {
     void insert(CollectTransaction... collectTransactions);
 
     @Delete
-    void delete(CollectTransaction plantTransaction);
+    void delete(CollectTransaction collectTransaction);
 
     @Query("DELETE from collect_transaction")
     void deleteAll();
 
     @Update
-    void update(CollectTransaction plantTransaction);
+    void update(CollectTransaction collectTransaction);
 }
 

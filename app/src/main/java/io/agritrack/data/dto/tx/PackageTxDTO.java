@@ -8,7 +8,7 @@ public class PackageTxDTO {
 
     public Long id;
     public String site;
-    public Long user_id;
+    public String user_id;
     public String collection_lot;
     public List<String> totesForProcess;
     public List<String> packagedIfco;

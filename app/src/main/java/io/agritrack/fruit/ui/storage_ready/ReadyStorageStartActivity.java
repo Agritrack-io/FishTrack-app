@@ -1,7 +1,9 @@
 package io.agritrack.fruit.ui.storage_ready;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +32,7 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -40,11 +43,16 @@ import io.agritrack.barcode.BarcodeScanService;
 import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.Site;
+import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
+import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class ReadyStorageStartActivity extends AppCompatActivity {
@@ -60,9 +68,10 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
 
     private RecyclerView rvIfcoForStorage;
     private TextView tvIfcoCount;
+    private String warehouse;
     private boolean scanning = false;
     private BarcodeScanService scanService;
-    private BarcodeRecyclerAdapter adapterIfco;
+    private TemplateRecyclerAdapter adapterIfco;
     // BroadcastReceiver to receiver scan data
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -122,7 +131,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvIfcoForStorage.setLayoutManager(layoutManager);
         rvIfcoForStorage.setItemAnimator(new DefaultItemAnimator());
-        adapterIfco = new BarcodeRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
+        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
         rvIfcoForStorage.setAdapter(adapterIfco);
         rvIfcoForStorage.setNestedScrollingEnabled(false);
 
@@ -141,7 +150,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
             scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_PLATFORM);
+            scanner.setFilter(Filters.RFID_POLE);
 
             Future<?> future = executor.submit(scanner);
             try {
@@ -150,9 +159,13 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
                             tvPoleName.setText(epcStr);
+                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
+                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
+                            if (tempSite !=null) {
+                                warehouse = tempSite.name;
+                            }
                         }
                     });
-                    //tvCageName.setText(result);
                 }
             } catch (Exception e) {
                 future.cancel(true);
@@ -231,8 +244,14 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), ReadyStorageConfirmActivity.class);
-            startActivity(i);
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
+                Intent i = new Intent(getApplicationContext(), ReadyStorageConfirmActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToFruitMenu);
@@ -243,7 +262,46 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
+        StorageRecord trns = FruitGlobalState.recStorage;
 
+        if (trns.packagedIfco != null) {
+            adapterIfco.setValues(new LinkedList<>(trns.packagedIfco));
+            adapterIfco.notifyDataSetChanged();
+            //Get reference of binsCount textView
+            tvIfcoCount.setText(String.valueOf(trns.packagedIfco.size()));
+        }
+
+        if (!Strings.isEmptyOrWhitespace(trns.poleRFID)) {
+            tvPoleName.setText(trns.poleRFID);
+        }
+    }
+
+    private StorageRecord updateState() {
+        StorageRecord storageRecord = FruitGlobalState.initStorageRecord();
+
+        storageRecord.packagedIfco = new LinkedList<>(adapterIfco.getValues());
+
+        if (tvIfcoCount.getText() != null && !Strings.isEmptyOrWhitespace(tvIfcoCount.getText().toString())) {
+            storageRecord.totalIfcoCnt = Short.valueOf(tvIfcoCount.getText().toString());
+        }
+
+        recStorage.poleRFID = tvPoleName.getText().toString();
+
+        if (!Strings.isEmptyOrWhitespace(this.warehouse)) {
+            recStorage.warehouse = this.warehouse;
+        }
+
+        return storageRecord;
+    }
+
+    private String validate(){
+        StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (FruitGlobalState.recStorage.receivedTotes == null || FruitGlobalState.recStorage.receivedTotes.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Received totes'"));
+            }
+        }
+        return sb.toString();
     }
 
     private void assignCtrlVars() {
