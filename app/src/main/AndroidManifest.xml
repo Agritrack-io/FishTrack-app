@@ -25,7 +25,8 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".ui.tools.ToolsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.packaging.PackagingSelectOrderActivity"
             android:exported="false" />

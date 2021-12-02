@@ -44,7 +44,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/formLayout"
         android:layout_width="0dp"
@@ -55,139 +54,267 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
+
         <TextView
-            android:id="@+id/lbRevision"
-            android:layout_width="150dp"
-            android:layout_height="20dp"
+            android:id="@+id/tvCurrentEPC"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            android:text="Revision :"
-            android:textColor="@color/black"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_rounded_dialog_input"
+            android:gravity="center|center_vertical"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/lbHWRevision"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tvRevision"
+            android:id="@+id/lbFWRevision"
             android:layout_width="0dp"
-            android:layout_height="42dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_rounded_dialog_input"
-            android:gravity="center_vertical"
-            android:paddingEnd="10dp"
-            android:textAlignment="textEnd"
-            android:textColor="@color/agri_blue"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lbRevision" />
-
-        <TextView
-            android:id="@+id/tvEPC"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_rounded_dialog_input"
-            android:gravity="center_vertical"
-            android:paddingEnd="10dp"
-            android:textAlignment="textEnd"
-            android:textColor="@color/agri_blue"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lbEPC" />
-
-        <TextView
-            android:id="@+id/lbEPC"
-            android:layout_width="150dp"
             android:layout_height="20dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="EPC"
+            android:layout_marginEnd="8dp"
+            android:text="Firmware Rev :"
             android:textColor="@color/black"
+            app:layout_constraintEnd_toStartOf="@+id/lbHWRevision"
+            app:layout_constraintStart_toEndOf="@+id/tvCurrentEPC"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvRevision" />
+            app:layout_constraintTop_toBottomOf="@+id/tvCurrentEPC" />
+
+        <TextView
+            android:id="@+id/tvFWRevision"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_rounded_dialog_input"
+            android:paddingEnd="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/agri_blue"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/tvHWRevision"
+            app:layout_constraintStart_toEndOf="@+id/tvHWRevision"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lbFWRevision" />
+
+        <TextView
+            android:id="@+id/lbHWRevision"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:text="Hardware Rev :"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toStartOf="@+id/lbTimeBIN"
+            app:layout_constraintStart_toEndOf="@+id/lbFWRevision"
+            app:layout_constraintTop_toBottomOf="@+id/tvCurrentEPC" />
+
+        <TextView
+            android:id="@+id/tvHWRevision"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_rounded_dialog_input"
+            android:textAlignment="center"
+            android:paddingEnd="5dp"
+            android:textColor="@color/agri_blue"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/tvTimeBIN"
+            app:layout_constraintStart_toEndOf="@+id/tvFWRevision"
+            app:layout_constraintTop_toBottomOf="@+id/lbHWRevision" />
+
+        <TextView
+            android:id="@+id/lbTimeBIN"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:text="Time Bin :"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/lbHWRevision"
+            app:layout_constraintTop_toBottomOf="@+id/tvCurrentEPC" />
+
+        <TextView
+            android:id="@+id/tvTimeBIN"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_rounded_dialog_input"
+            android:textAlignment="center"
+            android:textColor="@color/agri_blue"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvHWRevision"
+            app:layout_constraintTop_toBottomOf="@+id/lbTimeBIN" />
 
         <TextView
             android:id="@+id/lbDateTime"
             android:layout_width="150dp"
             android:layout_height="20dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:text="Date / Time :"
+            android:layout_marginTop="8dp"
+            android:text="Init Date / Time :"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvEPC" />
+            app:layout_constraintTop_toBottomOf="@+id/tvTimeBIN" />
 
         <TextView
             android:id="@+id/tvDateTime"
             android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/bg_rounded_dialog_input"
-            android:gravity="center_vertical"
-            android:paddingEnd="10dp"
-            android:textAlignment="textEnd"
+            android:textAlignment="center"
             android:textColor="@color/agri_blue"
             android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toStartOf="@+id/btnControlReg"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lbDateTime" />
 
         <TextView
+            android:id="@+id/lbControlReg"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="CONTROL Reg"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/btnControlReg"
+            app:layout_constraintTop_toBottomOf="@+id/tvTimeBIN" />
+
+        <Button
+            android:id="@+id/btnControlReg"
+            android:layout_width="120dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_rounded_btn_labelled"
+            android:textAlignment="center"
+            android:textColor="@color/label_blue"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvDateTime"
+            app:layout_constraintTop_toBottomOf="@+id/lbControlReg" />
+
+        <TextView
             android:id="@+id/lbInterval"
-            android:layout_width="150dp"
+            android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:text="Interval :"
             android:textColor="@color/black"
+            app:layout_constraintEnd_toStartOf="@id/lbMemory"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvDateTime" />
 
         <TextView
             android:id="@+id/tvInterval"
             android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
             android:background="@drawable/bg_rounded_dialog_input"
-            android:gravity="center_vertical"
-            android:paddingEnd="10dp"
-            android:textAlignment="textEnd"
+            android:textAlignment="center"
+            android:paddingEnd="5dp"
+            android:textColor="@color/agri_blue"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@id/tvMemory"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lbInterval" />
+
+
+        <TextView
+            android:id="@+id/lbBattery"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Battery :"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/lbMemory"
+            app:layout_constraintTop_toBottomOf="@+id/btnControlReg" />
+
+        <TextView
+            android:id="@+id/tvBattery"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_rounded_dialog_input"
+            android:textAlignment="center"
+            android:paddingEnd="5dp"
             android:textColor="@color/agri_blue"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lbInterval" />
+            app:layout_constraintStart_toEndOf="@id/tvMemory"
+            app:layout_constraintTop_toBottomOf="@+id/lbBattery" />
+
+        <TextView
+            android:id="@+id/lbMemory"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Memory :"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toStartOf="@+id/lbBattery"
+            app:layout_constraintStart_toEndOf="@+id/lbInterval"
+            app:layout_constraintTop_toBottomOf="@+id/tvDateTime" />
+
+        <TextView
+            android:id="@+id/tvMemory"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_rounded_dialog_input"
+            android:textAlignment="center"
+            android:paddingEnd="5dp"
+            android:textColor="@color/agri_blue"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/tvBattery"
+            app:layout_constraintStart_toEndOf="@+id/tvInterval"
+            app:layout_constraintTop_toBottomOf="@+id/lbMemory" />
+
 
         <TextView
             android:id="@+id/lbSamplesCnt"
             android:layout_width="150dp"
             android:layout_height="20dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="Samples cnt :"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvInterval" />
 
-        <TextView
-            android:id="@+id/tvSamplesCnt"
+        <Button
+            android:id="@+id/btnSamplesCnt"
             android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_rounded_dialog_input"
-            android:gravity="center_vertical"
-            android:paddingEnd="10dp"
+            android:background="@drawable/bg_rounded_btn_labelled"
+            android:paddingEnd="5dp"
             android:textAlignment="textEnd"
-            android:textColor="@color/agri_blue"
+            android:textColor="@color/label_blue"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -198,21 +325,19 @@
             android:layout_width="150dp"
             android:layout_height="20dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="Last Sample Value :"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSamplesCnt" />
+            app:layout_constraintTop_toBottomOf="@+id/btnSamplesCnt" />
 
         <TextView
             android:id="@+id/tvLastSampleValue"
             android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/bg_rounded_dialog_input"
-            android:gravity="center_vertical"
-            android:paddingEnd="10dp"
             android:textAlignment="textEnd"
             android:textColor="@color/agri_blue"
             android:textSize="24sp"
@@ -220,22 +345,47 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lbLastSampleValue" />
 
-
         <Button
             android:id="@+id/btnRead"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:text="Read"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/btnReset"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnInit"
+            app:layout_constraintTop_toBottomOf="@+id/tvLastSampleValue" />
+
+        <Button
+            android:id="@+id/btnInit"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:enabled="false"
+            android:text="INIT"
+            app:layout_constraintBottom_toTopOf="@+id/btnReset"
+            app:layout_constraintEnd_toStartOf="@id/btnRead"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLastSampleValue" />
 
-
+        <Button
+            android:id="@+id/btnReset"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:enabled="false"
+            android:text="RESET"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -263,21 +413,17 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/ivBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
             android:background="@drawable/button_rounded_shape_corners"
-            android:padding="1dp"
-            android:scaleX="1.5"
-            android:scaleY="1.2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_shortcut_arrow_back" />
+            app:srcCompat="@drawable/logout_icon" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

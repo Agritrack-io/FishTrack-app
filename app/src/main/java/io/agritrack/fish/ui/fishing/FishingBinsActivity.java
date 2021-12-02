@@ -154,9 +154,9 @@ public class FishingBinsActivity extends AppCompatActivity {
 
                             // after bin is identified, initialize the temperatures logger.
                             IotLogger logger = db.iotLoggerDAO().getByAssetRFID(currentBin);
-                            if(logger!=null || IsDemo) {
+                            if(logger!=null) {
                                 tempLoggerDialog.showDialog(logger.rfid);
-                            } else {
+                            } else if(!IsDemo) {
                                 CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_LONG);
                             }
                         }

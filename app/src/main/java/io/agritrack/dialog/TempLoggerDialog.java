@@ -174,7 +174,7 @@ public class TempLoggerDialog {
         }
 
         try {
-            CAENCommander cmd = new CAENCommander();
+            CAENCommander cmd = new CAENCommander(_uhfReader, currentBin);
             //short rev = cmd.READ_REVISION();
             short cnt = cmd.READ_SAMPLES_COUNT();
         } catch (Exception e) {

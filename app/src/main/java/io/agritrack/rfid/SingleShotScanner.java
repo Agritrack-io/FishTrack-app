@@ -11,10 +11,11 @@ import java.util.stream.Stream;
 
 import cn.pda.serialport.Tools;
 
-public class SingleShotScanner implements Callable {
+public class SingleShotScanner implements Callable<String> {
     private final Function<TagModel, String> TagToString = t -> Tools.Bytes2HexString(t.getmEpcBytes(), t.getmEpcBytes().length);
     private UhfReader uhfReader;
     private String RFID_FILTER = null;
+    private Boolean trimEPCFlag = Boolean.FALSE;
 
     public void setUhfReader(UhfReader uhfReader) {
         this.uhfReader = uhfReader;
@@ -25,8 +26,12 @@ public class SingleShotScanner implements Callable {
         this.RFID_FILTER = rfidFilter;
     }
 
+    public void trimEPC(Boolean trimEPC) {
+        this.trimEPCFlag = trimEPC;
+    }
+
     @Override
-    public Object call() throws Exception {
+    public String call() throws Exception {
         int idx = 0;
         while (true) {
             idx++;
@@ -38,7 +43,10 @@ public class SingleShotScanner implements Callable {
 
                     if (tag.isPresent()) {
                         String tagStr = TagToString.apply(tag.get());
-                        return (tagStr.length() > 12) ? tagStr.substring(11) : "N/A";
+                        if (!trimEPCFlag)
+                            return tagStr;
+                        else
+                            return (tagStr.length() > 12) ? tagStr.substring(11) : "N/A";
                     } else {
                         return "";
                     }

@@ -5,6 +5,7 @@
     <color name="yellow">#FFEB3B</color>
     <color name="transparent">#00000000</color>
     <color name="semi_transparent">#77FFFFFF</color>
+    <color name="thick_transparent">#AAFFFFFF</color>
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">@color/black</color>
@@ -13,10 +14,7 @@
     <color name="light_grey">#d3d3d3</color>
     <color name="smooth_grey">#f2f2f2</color>
 
-
-
     <color name="color_bg_edit_text_login">#6b9ce7</color>
-
     <color name="color_blue_gradient_login_1">#2C86F9</color>
     <color name="color_blue_gradient_login_2">#175EB9</color>
     <color name="color_tv_blue_btn_login">#165EB9</color>
