@@ -295,7 +295,7 @@ public class HarvestingTotesActivity extends AppCompatActivity {
         FruitGlobalState.recHarvest.totes = new LinkedList<>(adapterTotes.getValues());
 
         if (tvTotesCount.getText() != null && !Strings.isEmptyOrWhitespace(tvTotesCount.getText().toString())) {
-            FruitGlobalState.recHarvest.totalTotesUsed = Short.valueOf(tvTotesCount.getText().toString());
+            FruitGlobalState.recHarvest.totalTotesUsed = Integer.valueOf(tvTotesCount.getText().toString());
         }
     }
 

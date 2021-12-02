@@ -9,7 +9,7 @@ public class TransportTxDTO {
 
     public Long id;
     public String transport_head;
-    public String packaging_site;
+    public String destination;
     public Boolean truck_refrigerated;
     public Boolean parallel_transport;
     public String truck_license_plate;
@@ -29,7 +29,7 @@ public class TransportTxDTO {
         TransportTxDTO transportTxDto = new TransportTxDTO();
 
         transportTxDto.transport_head = transport.transportHead;
-        transportTxDto.packaging_site = transport.packagingSiteId;
+        transportTxDto.destination = transport.destination;
         transportTxDto.truck_refrigerated = transport.isTruckRefrigerated;
         transportTxDto.parallel_transport = transport.isParallelTransport;
         transportTxDto.truck_license_plate = transport.truckLicensePlate;

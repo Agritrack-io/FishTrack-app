@@ -10,6 +10,9 @@ public class CoInventory {
     @PrimaryKey
     public Long id;
 
+    @ColumnInfo(name = "user_name")
+    public String user;
+
     @ColumnInfo(name = "co_inventory_type")
     public String coInvType;
 

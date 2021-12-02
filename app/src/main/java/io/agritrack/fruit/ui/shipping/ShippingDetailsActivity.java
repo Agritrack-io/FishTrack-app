@@ -1,6 +1,9 @@
 package io.agritrack.fruit.ui.shipping;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -13,6 +16,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.util.Strings;
 
 import java.util.List;
 import java.util.Set;
@@ -21,7 +27,11 @@ import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.fish.ui.transport.TransportStartActivity;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.ShippingRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -84,8 +94,14 @@ public class ShippingDetailsActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), ShippingConfirmActivity.class);
-            startActivity(i);
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
+                Intent i = new Intent(getApplicationContext(), ShippingConfirmActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToShippingStart);
@@ -103,6 +119,54 @@ public class ShippingDetailsActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
+        ShippingRecord trns = FruitGlobalState.recShipping;
+        if (trns.customerPos > -1) {
+            spCustomer.setSelection(trns.customerPos);
+        }
 
+        if (!Strings.isEmptyOrWhitespace(trns.driverName)) {
+            etDriverName.setText(trns.driverName);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(trns.licensePlate)) {
+            etLicensePlate.setText(trns.licensePlate);
+        }
+    }
+
+    private void updateState() {
+        ShippingRecord shippingRecord = FruitGlobalState.recShipping;
+
+        if (spCustomer.getSelectedItem() != null) {
+            shippingRecord.customer = spCustomer.getSelectedItem().toString();
+        }
+        shippingRecord.customerPos = spCustomer.getSelectedItemPosition();
+
+        if (etDriverName.getText() != null) {
+            shippingRecord.driverName = etDriverName.getText().toString();
+            LocalPreferences.addDriverName(shippingRecord.driverName);
+        }
+        if (etLicensePlate.getText() != null) {
+            shippingRecord.licensePlate = etLicensePlate.getText().toString();
+            LocalPreferences.addLicensePlate(shippingRecord.licensePlate);
+        }
+    }
+
+    private String validate() {
+        StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(FruitGlobalState.recShipping.customer)) {
+                sb.append(String.format("\n%s is missing", "'Customer'"));
+            }
+
+            if (Strings.isEmptyOrWhitespace(FruitGlobalState.recShipping.driverName)) {
+                sb.append(String.format("\n%s is missing", "'Driver name'"));
+            }
+
+            if (Strings.isEmptyOrWhitespace(FruitGlobalState.recShipping.licensePlate)) {
+                sb.append(String.format("\n%s is missing", "'License plate'"));
+            }
+        }
+
+        return sb.toString();
     }
 }

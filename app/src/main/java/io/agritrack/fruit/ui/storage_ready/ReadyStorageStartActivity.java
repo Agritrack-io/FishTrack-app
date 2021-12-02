@@ -3,6 +3,7 @@ package io.agritrack.fruit.ui.storage_ready;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
 import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -125,15 +126,15 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvIfcoForStorage.setLayoutManager(layoutManager);
         rvIfcoForStorage.setItemAnimator(new DefaultItemAnimator());
         adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
         rvIfcoForStorage.setAdapter(adapterIfco);
         rvIfcoForStorage.setNestedScrollingEnabled(false);
+
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
 
         // initiate raw sound
         SoundUtil.initSoundPool(this);
@@ -297,8 +298,12 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
     private String validate(){
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (FruitGlobalState.recStorage.receivedTotes == null || FruitGlobalState.recStorage.receivedTotes.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Received totes'"));
+            if (Strings.isEmptyOrWhitespace(recStorage.warehouse)) {
+                sb.append(String.format("\n%s is missing", "'Warehouse'"));
+            }
+
+            if (FruitGlobalState.recStorage.packagedIfco == null || FruitGlobalState.recStorage.packagedIfco.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Received IFCO'"));
             }
         }
         return sb.toString();

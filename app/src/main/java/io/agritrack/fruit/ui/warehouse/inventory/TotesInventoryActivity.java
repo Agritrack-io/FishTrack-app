@@ -3,36 +3,24 @@ package io.agritrack.fruit.ui.warehouse.inventory;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recWHInventory;
 import static io.agritrack.fruit.state.FruitGlobalState.recInventory;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -53,6 +41,7 @@ import java.util.Set;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.RFIDInventoryDTO;
@@ -60,16 +49,14 @@ import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.enums.AssetType;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
-import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -132,9 +119,6 @@ public class TotesInventoryActivity extends LocationAwareActivity {
 
         // get  references of the controls
         assignCtrlVars();
-
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(TotesInventoryActivity.this);
@@ -266,7 +250,7 @@ public class TotesInventoryActivity extends LocationAwareActivity {
             inventoryTotesThread.setScanInProgress(scanning);
             inventoryTotesThread.setUhfReader(uhfReader);
             inventoryTotesThread.setScanResult(scanResult);
-            inventoryTotesThread.setFilter(Filters.RFID_BIN);
+            inventoryTotesThread.setFilter(Filters.RFID_TOTE);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
@@ -327,7 +311,7 @@ public class TotesInventoryActivity extends LocationAwareActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (GlobalState.recWHInventory.items == null || GlobalState.recWHInventory.items.isEmpty()) {
+            if (FruitGlobalState.recInventory.totesItems == null || FruitGlobalState.recInventory.totesItems.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Inventory items'"));
             }
         }
@@ -335,13 +319,9 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         return sb.toString();
     }
 
-    private void initControlsFromState() {
-
-    }
-
     private boolean updateState() {
         if (adapterTotes != null) {
-            recInventory.items = adapterTotes.getValues();
+            recInventory.totesItems = adapterTotes.getValues();
         }
         String v = validate();
         if (!Strings.isEmptyOrWhitespace(v)) {
@@ -349,19 +329,17 @@ public class TotesInventoryActivity extends LocationAwareActivity {
             return false;
         }
 
+        FruitGlobalState.recInventory.assetType = AssetType.valueOf(Constants.ftTote);
+
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
         try {
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(render("Synchronizing data..."));
-            progressDialog.show();
-
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
-            RFIDInventory invtx = GlobalState.commitWHRFIDInventory(db);
-            List<RFIDInventoryItem> invItemtxs = GlobalState.commitWHRFIDInventoryItem(db, invtx);
+            RFIDInventory invtx = FruitGlobalState.commitWHRFIDInventory(db);
+            List<RFIDInventoryItem> invItemtxs = FruitGlobalState.commitWHRFIDInventoryItem(db, invtx);
 
             // sync WH Inventory Tx
             Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(RFIDInventoryDTO.convert(invtx), "Bearer " + token);
@@ -374,8 +352,6 @@ public class TotesInventoryActivity extends LocationAwareActivity {
             e.printStackTrace();
             CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
             return false;
-        } finally {
-            progressDialog.dismiss();
         }
     }
 

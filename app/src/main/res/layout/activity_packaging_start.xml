@@ -318,12 +318,12 @@ tools:context=".fruit.ui.packaging.PackagingStartActivity">
         android:scaleY="0.7"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivToPackagingLot"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToPackagingSelectOrder"
+        app:layout_constraintStart_toEndOf="@+id/ivBackToFruitHome"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/powered_by_agritrack" />
 
     <ImageView
-        android:id="@+id/ivBackToPackagingSelectOrder"
+        android:id="@+id/ivBackToFruitHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

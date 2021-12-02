@@ -7,6 +7,7 @@ public class CoInventoryDTO {
     public Long id;
     public String coInvType;
     public String site;
+    public String user;
     public Long performedAt;
     public Double longitude;
     public Double latitude;
@@ -16,6 +17,7 @@ public class CoInventoryDTO {
         coInventoryDTO.id = inventory.id;
         coInventoryDTO.coInvType = inventory.coInvType;
         coInventoryDTO.site = inventory.site;
+        coInventoryDTO.user = inventory.user;
         coInventoryDTO.performedAt = inventory.performedAt;
         coInventoryDTO.longitude = inventory.longitude;
         coInventoryDTO.latitude = inventory.latitude;

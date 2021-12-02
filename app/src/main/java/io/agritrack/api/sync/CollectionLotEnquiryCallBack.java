@@ -25,10 +25,10 @@ public class CollectionLotEnquiryCallBack extends BaseSyncCallBack<String>{
         if (collectionLot != null) {
 
             // Harvest Requests sync succeeded.
-            syncResult.setValue(getAppContext().getString(R.string.collection_tx_sync_completed));
+            syncResult.setValue(collectionLot);
         } else {
             // no Harvest Requests found
-            syncResult.setValue(getAppContext().getString(R.string.no_collection_tx_found_alert));
+            syncResult.setValue(null);
         }
     }
 }

@@ -21,4 +21,9 @@ public class Constants {
 
     public static final String ftCleaning = "CLEANING";
     public static final String ftRepair = "REPAIR";
+
+    public static final String ftPole = "POLE";
+    public static final String ftTote = "TOTE";
+    public static final String ftIfco = "IFCO";
+    public static final String ftDataLogger = "DATA_LOGGER";
 }

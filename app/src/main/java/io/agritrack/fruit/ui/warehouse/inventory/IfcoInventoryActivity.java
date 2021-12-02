@@ -3,12 +3,9 @@ package io.agritrack.fruit.ui.warehouse.inventory;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recWHInventory;
-import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.fruit.state.FruitGlobalState.recInventory;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -16,13 +13,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -32,11 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -53,21 +41,21 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.barcode.BarcodeScanService;
 import io.agritrack.barcode.SoundUtil;
+import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.CoInventoryDTO;
 import io.agritrack.data.dto.wh.CoInventoryItemDTO;
 import io.agritrack.data.model.wh.CoInventory;
 import io.agritrack.data.model.wh.CoInventoryItem;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.enums.AssetType;
+import io.agritrack.enums.ConsumableType;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
-import io.agritrack.fruit.ui.harvesting.HarvestingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
-import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
+import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -83,7 +71,7 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
     private TextView tvIfcoCount;
     private boolean scanning = false;
     private BarcodeScanService scanService;
-    private BarcodeRecyclerAdapter adapterIfco;
+    private TemplateRecyclerAdapter adapterIfco;
     // BroadcastReceiver to receiver scan data
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -147,7 +135,7 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvInventoryIfco.setLayoutManager(layoutManager);
         rvInventoryIfco.setItemAnimator(new DefaultItemAnimator());
-        adapterIfco = new BarcodeRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
+        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
         rvInventoryIfco.setAdapter(adapterIfco);
         rvInventoryIfco.setNestedScrollingEnabled(false);
 
@@ -303,7 +291,7 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
 
     private boolean updateState() {
         if (adapterIfco != null) {
-            FruitGlobalState.recInventory.barcodeItems = adapterIfco.getValues();
+            FruitGlobalState.recInventory.ifcoItems = adapterIfco.getValues();
         }
         String v = validate();
         if (!Strings.isEmptyOrWhitespace(v)) {
@@ -311,19 +299,17 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
             return false;
         }
 
+        FruitGlobalState.recInventory.consumableType = ConsumableType.valueOf(Constants.ftIfco);
+
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
         try {
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(render("Synchronizing data..."));
-            progressDialog.show();
-
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
-            CoInventory invtx = GlobalState.commitWHCoInventory(db);
-            List<CoInventoryItem> invItemtxs = GlobalState.commitWHCoInventoryItem(db, invtx);
+            CoInventory invtx = FruitGlobalState.commitWHCoInventory(db);
+            List<CoInventoryItem> invItemtxs = FruitGlobalState.commitWHCoInventoryItem(db, invtx);
 
             // sync WH Inventory Tx
             Call<CoInventoryDTO> syncInvTxCallBack = updService.syncCoInventoryTx(CoInventoryDTO.convert(invtx), "Bearer " + token);
@@ -336,15 +322,13 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
             e.printStackTrace();
             CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
             return false;
-        } finally {
-            progressDialog.dismiss();
         }
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (GlobalState.recWHInventory.barcodeItems == null || GlobalState.recWHInventory.barcodeItems.isEmpty()) {
+            if (FruitGlobalState.recInventory.ifcoItems == null || FruitGlobalState.recInventory.ifcoItems.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Inventory items'"));
             }
         }

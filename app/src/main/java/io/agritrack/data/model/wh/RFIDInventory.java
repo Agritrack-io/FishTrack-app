@@ -10,6 +10,9 @@ public class RFIDInventory {
     @PrimaryKey
     public Long id;
 
+    @ColumnInfo(name = "user_name")
+    public String user;
+
     @ColumnInfo(name = "inventory_type")
     public String rfidInvType;
 
