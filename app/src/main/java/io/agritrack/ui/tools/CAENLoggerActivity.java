@@ -1,5 +1,6 @@
 package io.agritrack.ui.tools;
 
+import static io.agritrack.caen.api.EncodingUtils.parseTemperature;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
@@ -87,8 +88,9 @@ public class CAENLoggerActivity extends AppCompatActivity {
                     } else {
                         this.cmd.INIT();
                     }
-                    String lastTemperature = cmd.READ_LAST_SAMPLE();
-                    tvLastSampleValue.setText(lastTemperature);
+                    short lastTemperature = cmd.READ_LAST_SAMPLE();
+                    String value = parseTemperature(lastTemperature) + "\u2103";
+                    tvLastSampleValue.setText(value);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -100,7 +102,14 @@ public class CAENLoggerActivity extends AppCompatActivity {
         btnControlReg.setOnClickListener(view -> {
             if (this.cmd != null) {
                 try {
-                    this.cmd.HighSensitivity();
+                    CharSequence regCtrl = btnControlReg.getText();
+                    String regCtrlStr = (regCtrl != null) ? regCtrl.toString() : null;
+                    if(regCtrlStr!=null && regCtrlStr.length()==5 && regCtrlStr.charAt(0)=='1') {
+                        this.cmd.LowSensitivity();
+                    } else if(regCtrlStr!=null && regCtrlStr.length()==3 && regCtrlStr.charAt(0)=='1'){
+                        this.cmd.HighSensitivity();
+                    }
+
                     String controlReg = cmd.READ_CONTROL_REGISTER();
                     btnControlReg.setText(controlReg);
                 } catch (Exception e) {
@@ -172,8 +181,9 @@ public class CAENLoggerActivity extends AppCompatActivity {
             String epoch = cmd.READ_INIT_DATETIME();
             tvDateTime.setText(epoch);
 
-            String lastTemperature = cmd.READ_LAST_SAMPLE();
-            tvLastSampleValue.setText(lastTemperature);
+            short lastTemperature = cmd.READ_LAST_SAMPLE();
+            String value = parseTemperature(lastTemperature) + "\u2103";
+            tvLastSampleValue.setText(value);
 
         } catch (Exception e) {
             e.printStackTrace();

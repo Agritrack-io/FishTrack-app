@@ -1,6 +1,7 @@
 package io.agritrack.dialog;
 
 import static android.os.Looper.getMainLooper;
+import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -14,23 +15,26 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 
+import java.util.List;
+
 import cn.pda.serialport.Tools;
 import io.agritrack.R;
+import io.agritrack.caen.api.CAENCommander;
 
 public class GetTempDataDialog {
-    private static Short numOfSamples = Short.valueOf("0");
     private final Activity activity;
-    private final byte[] accessPassword = Tools.HexString2Bytes("00000000");
+    private final UhfReader _uhfReader;
     private TextView tvTitle, txtData;
     private Button btnOk, btnGetData;
     private Dialog dialog;
     private View loadingPanel;
-    private final UhfReader _uhfReader;
+    private String currentBinEPC;
 
     public GetTempDataDialog(Activity activity, @StringRes int title) {
         this.activity = activity;
@@ -51,14 +55,15 @@ public class GetTempDataDialog {
 
         btnGetData.setOnClickListener(view -> {
             try {
-                getTempData(_uhfReader, "300EFE2F94D01C02540BE47B");
+                getTempData(_uhfReader, this.currentBinEPC);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
     }
 
-    public void showDialog() {
+    public void showDialog(String binEPC) {
+        this.currentBinEPC = binEPC;
         dialog.show();
         btnOk.setEnabled(false);
         btnOk.setTextColor(Color.GRAY);
@@ -80,7 +85,18 @@ public class GetTempDataDialog {
             }
         });
 
-        Thread.sleep(1000);
+        //Thread.sleep(1000);
+        try {
+            CAENCommander cmd = new CAENCommander(_uhfReader, currentBin);
+            short count = cmd.READ_SAMPLES_COUNT();
+            List<String[]> values = cmd.READ_SAMPLES(count);
+            CToast(activity.getApplicationContext(), values.toString(), Toast.LENGTH_LONG);
+
+            CAENCommander.Response rs = cmd.RESET();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         txtData.setText("Successful data recovery.");
         loadingPanel.setVisibility(View.GONE);
@@ -91,39 +107,6 @@ public class GetTempDataDialog {
         final ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
         tg.startTone(ToneGenerator.TONE_PROP_BEEP);
 
-       /* try {
-
-            byte[] reply0;
-
-            reply0 = CAENRegistersIO.ReadRegisters(_uhfReader, ADDR_SAMPLES_CNT, SHORT_ONE, accessPassword);
-            numOfSamples = ToShort(reply0);
-            if (numOfSamples == 0) {
-                txtData.append("count of samples is 0. Please scan bin again.");
-                loadingPanel.setVisibility(View.GONE);
-                return;
-            }
-            txtData.setText("Successfully count samples: " + numOfSamples + "\n");
-
-            int counter1 = 10;
-            while (counter1 > 0) {
-                byte[] temperatures = CAENRegistersIO.ReadRegisters(_uhfReader, ADDR_LOGS, (short) (numOfSamples * 3), accessPassword);
-                if (temperatures == null) {
-                    txtData.append("Failed to read temperatures. Please scan bin again");
-                } else {
-                    txtData.append("DATA:\n" + parseData(temperatures));
-                    break;
-                }
-                counter1--;
-            }
-            if (counter1 == 0) {
-                txtData.setText("Failed to load temperatures. Please scan bin again.");
-                loadingPanel.setVisibility(View.GONE);
-                return;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
     }
 
     private void setDialog() {
@@ -135,13 +118,9 @@ public class GetTempDataDialog {
 
     private void findViews() {
         tvTitle = dialog.findViewById(R.id.tv_title);
-        btnOk = (Button) dialog.findViewById(R.id.btnOk);
-        btnGetData = (Button) dialog.findViewById(R.id.btnGetData);
+        btnOk = dialog.findViewById(R.id.btnOk);
+        btnGetData = dialog.findViewById(R.id.btnGetData);
         txtData = dialog.findViewById(R.id.etData);
         loadingPanel = dialog.findViewById(R.id.loadingPanel);
-    }
-
-    private void SetCaptions(int title) {
-        tvTitle.setText(title);
     }
 }
