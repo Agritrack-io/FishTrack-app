@@ -147,13 +147,13 @@ public class FishingBinsActivity extends AppCompatActivity {
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
-                            currentBin = epcStr;
+                            currentBin = epcStr.substring(11);
                             adapterBins.addUniqueItem(currentBin);
                             adapterBins.notifyDataSetChanged();
                             tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
 
                             // after bin is identified, initialize the temperatures logger.
-                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(currentBin);
+                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
                             if(logger!=null) {
                                 tempLoggerDialog.showDialog(logger.rfid);
                             } else if(!IsDemo) {

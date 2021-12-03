@@ -24,7 +24,7 @@
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ui.tools.ToolsActivity"
+            android:name=".ui.tools.CAENLoggerActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

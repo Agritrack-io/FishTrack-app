@@ -59,6 +59,7 @@ import io.agritrack.ui.login.api.LoginRQ;
 import io.agritrack.ui.login.api.SyncApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
+import io.agritrack.ui.tools.CAENLoggerActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -71,6 +72,7 @@ public class LoginActivity extends AppCompatActivity {
     private ImageButton ibLocale;
     private ProgressDialog progressDialog;
     private int syncCounter = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +146,11 @@ public class LoginActivity extends AppCompatActivity {
                     noCredentialsEnteredAlert();
                 } else if ("config".equals(username) && "8888".equals(pin)) {
                     Intent i = new Intent(getApplicationContext(), ConfigActivity.class);
+                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+                    startActivity(i);
+                    finish();
+                } else if ("logger".equals(username) && "8888".equals(pin)) {
+                    Intent i = new Intent(getApplicationContext(), CAENLoggerActivity.class);
                     i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
                     startActivity(i);
                     finish();
@@ -374,6 +381,14 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 lastTap = now;
             }
+        });
+
+        ivLogo.setOnLongClickListener(v -> {
+            Intent i = new Intent(getApplicationContext(), CAENLoggerActivity.class);
+            i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+            startActivity(i);
+            finish();
+            return false;
         });
     }
 

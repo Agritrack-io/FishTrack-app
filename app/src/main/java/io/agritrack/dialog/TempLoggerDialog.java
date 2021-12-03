@@ -2,9 +2,6 @@ package io.agritrack.dialog;
 
 import static android.os.Looper.getMainLooper;
 import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIMESTAMP;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.REPLY_NACK;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_TWO;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -12,6 +9,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Handler;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
@@ -27,8 +26,6 @@ import com.google.android.gms.common.util.Strings;
 
 import cn.pda.serialport.Tools;
 import io.agritrack.R;
-import io.agritrack.caen.api.CAENCommander;
-import io.agritrack.caen.common.CAENRegistersIO;
 
 public class TempLoggerDialog {
     private static final Short numOfSamples = Short.valueOf("0");
@@ -97,16 +94,16 @@ public class TempLoggerDialog {
             }
         });
 
-//        Thread.sleep(1000);
+        Thread.sleep(1000);
 
-//        txtData.setText("Successful initialization. \n\n[ACCEPTABLE TEMPERATURE.]");
-//        loadingPanel.setVisibility(View.GONE);
-//        btnOk.setEnabled(true);
-//        btnOk.setTextColor(Color.parseColor("#FFEB3B"));
-//        btnInit.setEnabled(false);
-//        btnInit.setTextColor(Color.GRAY);
-//        final ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
-//        tg.startTone(ToneGenerator.TONE_PROP_BEEP);
+        txtData.setText("Successful initialization. \n\n[ACCEPTABLE TEMPERATURE.]");
+        loadingPanel.setVisibility(View.GONE);
+        btnOk.setEnabled(true);
+        btnOk.setTextColor(Color.parseColor("#FFEB3B"));
+        btnInit.setEnabled(false);
+        btnInit.setTextColor(Color.GRAY);
+        final ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
+        tg.startTone(ToneGenerator.TONE_PROP_BEEP);
 
 
         try {
@@ -119,15 +116,15 @@ public class TempLoggerDialog {
 //                return;
 //            }
 //
-            long unixTime = System.currentTimeMillis() / 1000L;
-            int reply1 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIMESTAMP, SHORT_TWO, unixTime, accessPassword);
-            if (reply1 != REPLY_NACK) {
-                reply1 = 0;
-            } else {
-                txtData.setText("Failed to set timestamp. Please scan bin again.");
-                loadingPanel.setVisibility(View.GONE);
-                return;
-            }
+//            long unixTime = System.currentTimeMillis() / 1000L;
+//            int reply1 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIMESTAMP, SHORT_TWO, unixTime, accessPassword);
+//            if (reply1 != REPLY_NACK) {
+//                reply1 = 0;
+//            } else {
+//                txtData.setText("Failed to set timestamp. Please scan bin again.");
+//                loadingPanel.setVisibility(View.GONE);
+//                return;
+//            }
 //
 //            int reply2 = CAENRegistersIO.WriteRegisters(_uhfReader, ADDR_TIME_BIN, SHORT_ONE, SHORT_ONE, accessPassword);
 //            if (reply2 != REPLY_NACK) {
@@ -173,13 +170,13 @@ public class TempLoggerDialog {
             e.printStackTrace();
         }
 
-        try {
-            CAENCommander cmd = new CAENCommander(_uhfReader, currentBin);
-            //short rev = cmd.READ_REVISION();
-            short cnt = cmd.READ_SAMPLES_COUNT();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            CAENCommander cmd = new CAENCommander(_uhfReader, currentBin);
+//            //short rev = cmd.READ_REVISION();
+//            short cnt = cmd.READ_SAMPLES_COUNT();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
     }
 

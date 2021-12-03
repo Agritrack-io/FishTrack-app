@@ -14,6 +14,7 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.REPLY_ACK;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.REPLY_NACK;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_FOUR;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ONE;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_THREE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_TWO;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ZERO;
 import static io.agritrack.caen.api.EncodingUtils.ToInt;
@@ -43,9 +44,14 @@ public class CAENCommander {
     }
 
     public void INIT() throws Exception {
+        INIT((short) (60 * 15));
+    }
+
+    public void INIT(short interval) throws Exception {
         HighSensitivity();
         WriteTimeBin_ONE();
-        WriteInterval((short) 30);
+        interval = interval > 0 ? interval : (short) 30;
+        WriteInterval(interval);
         WriteCurrentDatetime();
         EnableLogging();
     }
@@ -168,6 +174,16 @@ public class CAENCommander {
         return ToShort(reply);
     }
 
+    public String[] READ_FIRST_SAMPLE() throws Exception {
+        byte[] reply = CAENRegistersIO.ReadRegisters(uhfReader, ADDR_LOGS, SHORT_THREE, accessPassword);
+        if (reply != null && reply.length > 0 && reply[0] == REPLY_NACK)
+            throw new Exception("Failed to read first sample.");
+        else if (reply.length < 6)
+            return null;
+
+        return parseData(reply).get(0);
+    }
+
     public List<String[]> READ_SAMPLES(int samplesCnt) throws Exception {
         if (samplesCnt <= SampleBatchSize) {
             return READ_SAMPLES_BATCH(SHORT_ZERO, samplesCnt);
@@ -175,7 +191,7 @@ public class CAENCommander {
             List<String[]> result = new LinkedList<>();
             for (short batchStart = 0; batchStart < samplesCnt; batchStart += SampleBatchSize) {
                 short batchSize = (samplesCnt - batchStart) >= SampleBatchSize ? SampleBatchSize : (short) (samplesCnt % SampleBatchSize);
-                List<String[]> batch = READ_SAMPLES_BATCH((short)(batchStart*3), batchSize);
+                List<String[]> batch = READ_SAMPLES_BATCH((short) (batchStart * 3), batchSize);
                 result.addAll(batch);
                 Thread.sleep(200l);
             }
@@ -240,7 +256,7 @@ public class CAENCommander {
         if (t > 2240) {
             return String.format("%.2f", (double) (t - 8192) / 32d);
         } else {
-            return String.format("%.2f", (double) (t / 32d));
+            return String.format("%.2f", t / 32d);
         }
     }
 

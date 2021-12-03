@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,14 +22,15 @@ import java.util.List;
 import io.agritrack.R;
 import io.agritrack.caen.api.CAENCommander;
 import io.agritrack.common.Filters;
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.ui.login.LoginActivity;
 
-public class ToolsActivity extends AppCompatActivity {
+public class CAENLoggerActivity extends AppCompatActivity {
 
     private UhfReader uhfReader;
 
-    private TextView tvFWRevision, tvHWRevision, tvTimeBIN, tvDateTime, tvInterval, tvLastSampleValue, tvCurrentEPC, tvMemory, tvBattery;
+    private TextView tvFWRevision, tvHWRevision, tvTimeBIN, tvDateTime, tvLastSampleValue, tvCurrentEPC, tvMemory, tvBattery;
+    private EditText etInterval;
     private Button btnRead, btnReset, btnInit, btnSamplesCnt, btnControlReg;
 
     private CAENCommander cmd;
@@ -37,7 +39,7 @@ public class ToolsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tools);
+        setContentView(R.layout.activity_caen_logger);
 
         // get  references of the controls
         assignCtrlVars();
@@ -60,7 +62,7 @@ public class ToolsActivity extends AppCompatActivity {
                     tvHWRevision.setText("");
                     tvTimeBIN.setText("");
                     tvDateTime.setText("");
-                    tvInterval.setText("");
+                    etInterval.setText("");
                     tvLastSampleValue.setText("");
                     tvCurrentEPC.setText("");
                     btnControlReg.setText("");
@@ -78,10 +80,13 @@ public class ToolsActivity extends AppCompatActivity {
         });
 
         btnInit.setOnClickListener(view -> {
-
             if (this.cmd != null) {
                 try {
-                    this.cmd.INIT();
+                    if (etInterval.getText() != null && !Strings.isEmptyOrWhitespace(etInterval.getText().toString())) {
+                        this.cmd.INIT(Short.valueOf(etInterval.getText().toString()));
+                    } else {
+                        this.cmd.INIT();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -161,7 +166,7 @@ public class ToolsActivity extends AppCompatActivity {
             btnSamplesCnt.setText(cnt + " measurements.");
 
             short interval = cmd.READ_INTERVAL();
-            tvInterval.setText(interval + " seconds.");
+            etInterval.setText(String.valueOf(interval));
 
             String epoch = cmd.READ_INIT_DATETIME();
             tvDateTime.setText(epoch);
@@ -180,7 +185,7 @@ public class ToolsActivity extends AppCompatActivity {
         tvHWRevision = findViewById(R.id.tvHWRevision);
         tvTimeBIN = findViewById(R.id.tvTimeBIN);
         tvDateTime = findViewById(R.id.tvDateTime);
-        tvInterval = findViewById(R.id.tvInterval);
+        etInterval = findViewById(R.id.etInterval);
         btnSamplesCnt = findViewById(R.id.btnSamplesCnt);
         tvLastSampleValue = findViewById(R.id.tvLastSampleValue);
         btnControlReg = findViewById(R.id.btnControlReg);
@@ -191,7 +196,7 @@ public class ToolsActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = findViewById(R.id.ivBack);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(i);
         });
     }
@@ -199,10 +204,10 @@ public class ToolsActivity extends AppCompatActivity {
 
     private void displayMeasurementsDialog(List<String[]> values) {
 
-        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(ToolsActivity.this);
+        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(CAENLoggerActivity.this);
         dlgBuilder.setTitle("Logger Data");
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ToolsActivity.this, R.layout.agri_list_item_12dp);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(CAENLoggerActivity.this, R.layout.agri_list_item_12dp);
 
         int idx = 1;
         for (String[] value : values) {

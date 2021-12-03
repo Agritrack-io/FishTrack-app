@@ -66,11 +66,10 @@ import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
 import io.agritrack.ui.login.api.SyncApi;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.ToolsActivity;
 import retrofit2.Call;
 
 public class FishHomeActivity extends AppCompatActivity {
-    private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4, SeaTemp_Idx = 5, Logger_Idx = 6;
+    private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4, SeaTemp_Idx = 5;
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
@@ -116,9 +115,6 @@ public class FishHomeActivity extends AppCompatActivity {
         }
         if (roleCanAccessMenu(userRoles, SeaTemp_Idx)) {
             menuItemsSet.add(new MenuItem(SeaTemp_Idx, getString(R.string.menu_title_sea_temp), SeaTemperatureActivity.class, R.drawable.sea_temp));
-        }
-        if (roleCanAccessMenu(userRoles, Logger_Idx)) {
-            menuItemsSet.add(new MenuItem(Logger_Idx, getString(R.string.menu_title_tools), ToolsActivity.class, R.drawable.sea_temp));
         }
 
 
@@ -193,9 +189,6 @@ public class FishHomeActivity extends AppCompatActivity {
                         break;
                     case SeaTemp_Idx:
                         i = new Intent(appCtx, SeaTemperatureActivity.class);
-                        break;
-                    case Logger_Idx:
-                        i = new Intent(appCtx, ToolsActivity.class);
                         break;
                     default:
                 }
@@ -302,7 +295,6 @@ public class FishHomeActivity extends AppCompatActivity {
         Privileges.put(Warehouse_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Maintenance_Idx, new String[]{"ROLE_PACKAGING", "ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(SeaTemp_Idx, new String[]{"ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Logger_Idx, new String[]{"ROLE_SUPER_USER", "ROLE_ADMIN"});
     }
 
     private boolean roleCanAccessMenu(List<String> roles, Integer menuId) {
