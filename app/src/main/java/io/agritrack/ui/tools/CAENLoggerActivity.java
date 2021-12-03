@@ -119,7 +119,6 @@ public class CAENLoggerActivity extends AppCompatActivity {
         SingleShotScanner scanner = new SingleShotScanner();
         scanner.setUhfReader(uhfReader);
         scanner.setFilter(Filters.RFID_LOGGER);
-        scanner.trimEPC(Boolean.FALSE);
 
         try {
             String epcStr = scanner.call();
