@@ -87,6 +87,8 @@ public class CAENLoggerActivity extends AppCompatActivity {
                     } else {
                         this.cmd.INIT();
                     }
+                    String lastTemperature = cmd.READ_LAST_SAMPLE();
+                    tvLastSampleValue.setText(lastTemperature);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -170,6 +172,9 @@ public class CAENLoggerActivity extends AppCompatActivity {
 
             String epoch = cmd.READ_INIT_DATETIME();
             tvDateTime.setText(epoch);
+
+            String lastTemperature = cmd.READ_LAST_SAMPLE();
+            tvLastSampleValue.setText(lastTemperature);
 
         } catch (Exception e) {
             e.printStackTrace();

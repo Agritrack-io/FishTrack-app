@@ -18,6 +18,7 @@ public class CAEN_CONSTANTS {
     public final static short ADDR_TIME_BIN = (short) 0x0012;
     public final static short ADDR_INTERVAL = (short) 0x0023;
     public final static short ADDR_LOGS = (short) 0x008A;
+    public final static short ADDR_LAST_SAMPLE = (short) 0x0066;
     public final static short ADDR_SAMPLES_CNT = (short) 0x0067;
 
     public final static short ADDR_FW_REVISION = (short) 0x0008;

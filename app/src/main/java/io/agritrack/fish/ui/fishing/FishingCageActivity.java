@@ -100,7 +100,7 @@ public class FishingCageActivity extends AppCompatActivity {
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
-                            tvCageRFID.setText(epcStr);
+                            tvCageRFID.setText(epcStr.substring(11));
                         }
                     });
                     //tvCageName.setText(result);

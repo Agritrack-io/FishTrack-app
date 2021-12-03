@@ -1,5 +1,10 @@
 package io.agritrack.fish.ui.fishing;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,9 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,12 +50,6 @@ import io.agritrack.fish.ui.bo.BinLoadsMap;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.barcode.SoundUtil.context;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 
 public class FishingFillBinsActivity extends AppCompatActivity {
@@ -144,8 +141,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
-                            tvCurrentBin.setText(epcStr);
-                            currentBin = epcStr;
+                            String epc = epcStr.substring(11);
+                            tvCurrentBin.setText(epc);
+                            currentBin = epc;
                             adapterCatches.setValues(loadsMap.getLoads(currentBin));
                             adapterCatches.notifyDataSetChanged();
                             tvUsedBinsCount.setText(loadsMap.loadsCnt());

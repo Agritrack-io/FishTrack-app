@@ -1,5 +1,10 @@
 package io.agritrack.fish.ui.process;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,18 +47,13 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class ProcessBinsActivity extends AppCompatActivity {
     private MobileDB db;
@@ -160,7 +160,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         public void run() {
-                            currentBin = epcStr;
+                            currentBin = epcStr.substring(11);
                             adapterBins.addUniqueItem(currentBin);
                             adapterBins.notifyDataSetChanged();
                             tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));

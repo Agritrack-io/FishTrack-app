@@ -19,6 +19,7 @@ public class FishingRecord {
     public String fishSize;
     public String platformRFID;
     public String cageRFID;
+    public String expectedCageRFID;
     public String cageCode; //Cage code assigned by Avramar
     public String netRFID;
     public List<String> availBins;

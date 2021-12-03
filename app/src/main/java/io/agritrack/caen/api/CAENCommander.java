@@ -5,6 +5,7 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_FW_REVISION;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_HW_REVISION;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_INIT_DATE_L;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_INTERVAL;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_LAST_SAMPLE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_LOGS;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_SAMPLES_CNT;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_STATUS;
@@ -14,7 +15,6 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.REPLY_ACK;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.REPLY_NACK;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_FOUR;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ONE;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_THREE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_TWO;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ZERO;
 import static io.agritrack.caen.api.EncodingUtils.ToInt;
@@ -174,14 +174,24 @@ public class CAENCommander {
         return ToShort(reply);
     }
 
-    public String[] READ_FIRST_SAMPLE() throws Exception {
-        byte[] reply = CAENRegistersIO.ReadRegisters(uhfReader, ADDR_LOGS, SHORT_THREE, accessPassword);
+    public String READ_LAST_SAMPLE() throws Exception {
+        byte[] reply = CAENRegistersIO.ReadRegisters(uhfReader, ADDR_LAST_SAMPLE, SHORT_ONE, accessPassword);
         if (reply != null && reply.length > 0 && reply[0] == REPLY_NACK)
-            throw new Exception("Failed to read first sample.");
-        else if (reply.length < 6)
-            return null;
+            throw new Exception("Failed to read last sample value.");
 
-        return parseData(reply).get(0);
+
+        short t = ToShort(reply); //(new byte[]{reply[i], reply[i + 1]});
+        String value = parseTemperature(t) + "\u2103";
+
+        return value; //ToShort(reply);
+
+//
+//        if (reply != null && reply.length > 0 && reply[0] == REPLY_NACK)
+//            throw new Exception("Failed to read last sample value.");
+//        else if (reply.length < 6)
+//            return null;
+//
+//        return parseData(reply).get(0);
     }
 
     public List<String[]> READ_SAMPLES(int samplesCnt) throws Exception {

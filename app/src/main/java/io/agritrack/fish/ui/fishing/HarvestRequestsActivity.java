@@ -1,5 +1,10 @@
 package io.agritrack.fish.ui.fishing;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -28,11 +33,6 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class HarvestRequestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private MobileDB db;
@@ -129,7 +129,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
             GlobalState.recFishing.harvestRq = harvestRq.requestId;
             GlobalState.recFishing.speciesName = harvestRq.fishName;
             GlobalState.recFishing.cageCode = harvestRq.cageCode;
-            GlobalState.recFishing.cageRFID = harvestRq.cageRFID;
+            GlobalState.recFishing.expectedCageRFID = harvestRq.cageRFID;
             GlobalState.recFishing.requesterName = harvestRq.requester;
             GlobalState.recFishing.fishSize = harvestRq.fishSize;
             GlobalState.recFishing.reqWeight = harvestRq.reqQty;
