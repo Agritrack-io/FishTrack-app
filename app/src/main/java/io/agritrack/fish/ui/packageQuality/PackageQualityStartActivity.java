@@ -44,6 +44,7 @@ import io.agritrack.R;
 import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -149,7 +150,6 @@ public class PackageQualityStartActivity extends AppCompatActivity {
         // RFID scanning functionality
         btnScanBin.setOnClickListener(view -> {
             tempLoggerDialog = new GetTempDataDialog(PackageQualityStartActivity.this, R.string.get_temp_data);
-            tempLoggerDialog.showDialog();
 
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
@@ -167,6 +167,14 @@ public class PackageQualityStartActivity extends AppCompatActivity {
                             adapterBins.addUniqueItem(currentBin);
                             adapterBins.notifyDataSetChanged();
                             tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+
+                            // after bin is identified, download temperatures from logger.
+                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
+                            if(logger!=null) {
+                                tempLoggerDialog.showDialog(logger.rfid);
+                            } else if(!IsDemo) {
+                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_LONG);
+                            }
                         }
                     });
                 }
