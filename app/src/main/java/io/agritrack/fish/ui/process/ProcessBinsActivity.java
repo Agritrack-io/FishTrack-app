@@ -44,6 +44,7 @@ import io.agritrack.R;
 import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -123,8 +124,50 @@ public class ProcessBinsActivity extends AppCompatActivity {
             adapterBins.notifyDataSetChanged();
         });
 
+<<<<<<< HEAD
         // initialize scanning threads
         prepareScanAvailableBinsButton();
+=======
+        /*// initialize scanning threads
+        prepareScanAvailableBinsButton();*/
+
+        // =================================
+        // RFID scanning functionality
+        btnScanBin.setOnClickListener(view -> {
+            tempLoggerDialog = new GetTempDataDialog(ProcessBinsActivity.this, R.string.get_temp_data);
+
+            //update scanning, uhfReader, tvPlatformName values in thread
+            UhfReader _uhfReader = UhfReader.getInstance();
+            _uhfReader.setWorkArea(3);
+            scanner.setUhfReader(_uhfReader);
+            scanner.setFilter(Filters.RFID_BIN);
+
+            Future<?> future = executor.submit(scanner);
+            try {
+                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
+                if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            currentBin = epcStr.substring(11);
+                            adapterBins.addUniqueItem(currentBin);
+                            adapterBins.notifyDataSetChanged();
+                            tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+
+                            // after bin is identified, download temperatures from logger.
+                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
+                            if(logger!=null) {
+                                tempLoggerDialog.showDialog(logger.rfid);
+                            } else if(!IsDemo) {
+                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_LONG);
+                            }
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                future.cancel(true);
+            }
+        });
+>>>>>>> eaf06f6e29c3b6e3c3208c3e0df74a25ece446e9
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();

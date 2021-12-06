@@ -1,7 +1,7 @@
 package io.agritrack.rfid;
 
 import static io.agritrack.common.Filters.RFID_BIN;
-import static io.agritrack.common.Filters.RFID_CAGE;
+import static io.agritrack.common.Filters.RFID_LOGGER;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.android.hdhe.uhf.readerInterface.TagModel;
@@ -27,7 +27,7 @@ public class SingleShotScanner implements Callable<String> {
 
     public void setFilter(String rfidFilter) {
         this.RFID_FILTER = rfidFilter;
-        this.trimEPCFlag = (RFID_BIN.equalsIgnoreCase(rfidFilter)) ? Boolean.FALSE : Boolean.TRUE;
+        this.trimEPCFlag = (RFID_BIN.equalsIgnoreCase(rfidFilter) || RFID_LOGGER.equalsIgnoreCase(rfidFilter)) ? Boolean.FALSE : Boolean.TRUE;
     }
 
     @Override

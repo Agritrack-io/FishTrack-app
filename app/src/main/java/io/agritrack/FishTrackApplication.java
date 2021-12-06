@@ -18,6 +18,8 @@ public class FishTrackApplication extends Application {
     //When true, no validation is performed in selected activities. This feature is enabled for Presentations and Demos.
     public static final boolean IsDemo = true;
 
+    public static final short TempInterval = (short)900;
+
     public static Context getAppContext() {
         return FishTrackApplication.mContext;
     }

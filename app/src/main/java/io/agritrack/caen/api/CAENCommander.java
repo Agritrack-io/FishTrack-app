@@ -17,13 +17,12 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_FOUR;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ONE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_TWO;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ZERO;
-import static io.agritrack.caen.api.EncodingUtils.ToInt;
 import static io.agritrack.caen.api.EncodingUtils.ToShort;
+import static io.agritrack.caen.api.EncodingUtils.parseTemperature;
+import static io.agritrack.caen.api.EncodingUtils.parseTimestamp;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,7 +49,6 @@ public class CAENCommander {
     public void INIT(short interval) throws Exception {
         HighSensitivity();
         WriteTimeBin_ONE();
-        interval = interval > 0 ? interval : (short) 30;
         WriteInterval(interval);
         WriteCurrentDatetime();
         EnableLogging();
@@ -68,10 +66,20 @@ public class CAENCommander {
         Short bits = Short.valueOf("0014", 16);
         Response res = WriteRegisters(ADDR_CONTROL, SHORT_ONE, bits);
         if (!res.succeeded()) {
-            return new Response(REPLY_NACK, "Failed to reset data logger.");
+            return new Response(REPLY_NACK, "Failed to set High Sensitivity.");
         }
         return success;
     }
+
+    public Response LowSensitivity() {
+        Short bits = Short.valueOf("0004", 16);
+        Response res = WriteRegisters(ADDR_CONTROL, SHORT_ONE, bits);
+        if (!res.succeeded()) {
+            return new Response(REPLY_NACK, "Failed to set Low Sensitivity.");
+        }
+        return success;
+    }
+
 
     public Response WriteCurrentDatetime() {
         long unixTime = System.currentTimeMillis() / 1000L;
@@ -174,24 +182,12 @@ public class CAENCommander {
         return ToShort(reply);
     }
 
-    public String READ_LAST_SAMPLE() throws Exception {
+    public short READ_LAST_SAMPLE() throws Exception {
         byte[] reply = CAENRegistersIO.ReadRegisters(uhfReader, ADDR_LAST_SAMPLE, SHORT_ONE, accessPassword);
         if (reply != null && reply.length > 0 && reply[0] == REPLY_NACK)
             throw new Exception("Failed to read last sample value.");
 
-
-        short t = ToShort(reply); //(new byte[]{reply[i], reply[i + 1]});
-        String value = parseTemperature(t) + "\u2103";
-
-        return value; //ToShort(reply);
-
-//
-//        if (reply != null && reply.length > 0 && reply[0] == REPLY_NACK)
-//            throw new Exception("Failed to read last sample value.");
-//        else if (reply.length < 6)
-//            return null;
-//
-//        return parseData(reply).get(0);
+        return ToShort(reply);
     }
 
     public List<String[]> READ_SAMPLES(int samplesCnt) throws Exception {
@@ -262,20 +258,20 @@ public class CAENCommander {
         return measurements;
     }
 
-    private String parseTemperature(short t) {
-        if (t > 2240) {
-            return String.format("%.2f", (double) (t - 8192) / 32d);
-        } else {
-            return String.format("%.2f", t / 32d);
-        }
-    }
-
-    private String parseTimestamp(byte[] b) {
-        int l = ToInt(b);
-        Date dt = new Date(l * 1000l);
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        return format.format(dt);
-    }
+//    private String parseTemperature(short t) {
+//        if (t > 2240) {
+//            return String.format("%.2f", (double) (t - 8192) / 32d);
+//        } else {
+//            return String.format("%.2f", t / 32d);
+//        }
+//    }
+//
+//    private String parseTimestamp(byte[] b) {
+//        int l = ToInt(b);
+//        Date dt = new Date(l * 1000l);
+//        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+//        return format.format(dt);
+//    }
 
     public class Response {
         public byte code;

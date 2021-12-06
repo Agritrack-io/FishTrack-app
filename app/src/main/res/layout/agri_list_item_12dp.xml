@@ -7,4 +7,5 @@
     android:minHeight="12dp"
     android:paddingEnd="50dp"
     android:textAlignment="textEnd"
-    android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+    android:textSize="20sp" />
