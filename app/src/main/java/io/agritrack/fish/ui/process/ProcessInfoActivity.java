@@ -31,17 +31,12 @@ import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class ProcessInfoActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class ProcessInfoActivity extends AppCompatActivity {
 
-    private static final int pic_id = 123;
-    private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
-    private TextView etDispatchNote, etSecurityClip, etPlot;
-    private ToggleGroup tgChooseFishCondition;
+
+    private TextView etDispatchNote, etSecurityClip;
     private SwitchCompat swCleanTruck, swSmell;
-    private ImageView ivTakenPhoto;
-    private EditText mtvRemarks;
-    private PhotoDialog photoDialog;
-    private String selectedFishCondition;
+
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -61,58 +56,12 @@ public class ProcessInfoActivity extends AppCompatActivity implements ToggleGrou
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-        // Camera_open button is for open the camera
-        // and add the setOnClickListener in this button
-        ImageButton ivCamera = findViewById(R.id.ivCamera);
-        ivCamera.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // Create the camera_intent ACTION_IMAGE_CAPTURE
-                // it will open the camera for capture the image
-                Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                // Start the activity with camera_intent,
-                // and request pic id
-                startActivityForResult(camera_intent, pic_id);
-            }
-        });
-
-        photoResult.observe(this, response -> {
-            if (response != null) {
-                GlobalState.recProcessing.photoPath = System.currentTimeMillis() + "";
-                ivTakenPhoto.setVisibility(View.VISIBLE);
-            } else {
-                ivTakenPhoto.setVisibility(View.GONE);
-                GlobalState.recProcessing.photoPath = null;
-            }
-        });
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(ProcessInfoActivity.this);
             supportDialog.showDialog();
         });
 
         configFooter();
-    }
-
-    // This method will help to retrieve the image
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        // Match the request 'pic id with requestCode
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == pic_id) {
-
-            // BitMap is data structure of image file
-            // which stor the image in memory
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-
-            // Set the image in imageview for display
-            photoResult.setValue(photo);
-
-            photoDialog = new PhotoDialog(ProcessInfoActivity.this, photoResult, R.string.photo_taken);
-            photoDialog.showDialog();
-        }
     }
 
     protected void configFooter() {
@@ -138,15 +87,8 @@ public class ProcessInfoActivity extends AppCompatActivity implements ToggleGrou
     private void assignCtrlVars() {
         etDispatchNote = findViewById(R.id.etDispatchNote);
         etSecurityClip = findViewById(R.id.etSecurityClipNum);
-        etPlot = findViewById(R.id.etPlot);
         swCleanTruck = findViewById(R.id.swCleanTruck);
         swSmell = findViewById(R.id.swSmell);
-        tgChooseFishCondition = findViewById(R.id.tgChooseFishCondition);
-        tgChooseFishCondition.setOnCheckedChangeListener(this);
-        mtvRemarks = findViewById(R.id.mtvRemarks);
-        mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
-        ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
         ivSupport = findViewById(R.id.ivSupport);
     }
 
@@ -159,18 +101,6 @@ public class ProcessInfoActivity extends AppCompatActivity implements ToggleGrou
 
         if (!Strings.isEmptyOrWhitespace(prcTx.securityClip)) {
             etSecurityClip.setText(prcTx.securityClip);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(prcTx.pLot)) {
-            etPlot.setText(prcTx.pLot);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(prcTx.remarks)) {
-            mtvRemarks.setText(prcTx.remarks);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(prcTx.photoPath)) {
-            ivTakenPhoto.setVisibility(View.VISIBLE);
         }
 
         swCleanTruck.setChecked(prcTx.cleanTruck);
@@ -186,16 +116,6 @@ public class ProcessInfoActivity extends AppCompatActivity implements ToggleGrou
         if (etSecurityClip.getText() != null) {
             processingRecord.securityClip = etSecurityClip.getText().toString();
         }
-        if (etPlot.getText() != null) {
-            processingRecord.pLot = etPlot.getText().toString();
-        }
-        if (!Strings.isEmptyOrWhitespace(selectedFishCondition)) {
-            processingRecord.fishCondition = selectedFishCondition;
-        }
-
-        if (mtvRemarks.getText() != null) {
-            processingRecord.remarks = mtvRemarks.getText().toString();
-        }
 
         processingRecord.cleanTruck = swCleanTruck.isChecked();
         processingRecord.smellyTruck = swSmell.isChecked();
@@ -210,30 +130,11 @@ public class ProcessInfoActivity extends AppCompatActivity implements ToggleGrou
                 sb.append(String.format("\n%s is missing", "'Dispatch note'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.pLot)) {
-                sb.append(String.format("\n%s is missing", "'LOT'"));
-            }
-
             if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.securityClip)) {
                 sb.append(String.format("\n%s is missing", "'Security clip number'"));
-            }
-
-            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)) {
-                sb.append(String.format("\n%s is missing", "'Fish condition'"));
             }
         }
 
         return sb.toString();
-    }
-
-    @Override
-    public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        if (checkedId == R.id.tbGood) {
-            selectedFishCondition = "GOOD";
-        } else if (checkedId == R.id.tbAcceptable) {
-            selectedFishCondition = "ACCEPTABLE";
-        } else if (checkedId == R.id.tbNotAcceptable) {
-            selectedFishCondition = "NOT ACCEPTABLE";
-        }
     }
 }

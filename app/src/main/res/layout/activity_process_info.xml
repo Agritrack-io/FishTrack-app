@@ -45,7 +45,7 @@
             android:layout_marginBottom="32dp"
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
-            android:text="@string/title_processing"
+            android:text="@string/title_receipt"
             android:textColor="@color/yellow"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -85,7 +85,7 @@
         <RelativeLayout
             android:id="@+id/processStartALayout"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="250dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
@@ -122,34 +122,10 @@
                     android:textSize="@dimen/text_view_font_size"
                     android:completionThreshold="1"
                     android:imeOptions="actionNext"
-                    app:layout_constraintBottom_toTopOf="@+id/etPlot"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/etPlot"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/bg_rounded_dialog_input"
-                    android:ems="10"
-                    android:hint="@string/enter_lot"
-                    android:inputType="text"
-                    android:padding="5dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:textColorHint="@color/black"
-                    android:textSize="@dimen/text_view_font_size"
-                    android:completionThreshold="1"
-                    android:imeOptions="actionNext"
                     app:layout_constraintBottom_toTopOf="@+id/etSecurityClipNum"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/etDispatchNote" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
                     android:id="@+id/etSecurityClipNum"
@@ -173,7 +149,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/etPlot" />
+                    app:layout_constraintTop_toBottomOf="@+id/etDispatchNote" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -195,13 +171,13 @@
         <RelativeLayout
             android:id="@+id/processStartBLayout"
             android:layout_width="0dp"
-            android:layout_height="220dp"
+            android:layout_height="250dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toTopOf="@+id/processStartCLayout"
-            app:layout_constraintEnd_toStartOf="@+id/processStartB1Layout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/processStartALayout">
 
@@ -217,9 +193,9 @@
                     android:id="@+id/swCleanTruck"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="70dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="70dp"
                     android:layout_marginBottom="16dp"
                     android:checked="true"
                     android:showText="true"
@@ -243,9 +219,9 @@
                     android:id="@+id/swSmell"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="70dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="70dp"
                     android:layout_marginBottom="16dp"
                     android:checked="false"
                     android:showText="true"
@@ -275,185 +251,6 @@
                 android:background="@color/agri_semi_green"
                 android:paddingHorizontal="8dp"
                 android:text="@string/truck"
-                android:textColor="@color/label_blue"
-                android:textSize="18sp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/processStartB1Layout"
-            android:layout_width="0dp"
-            android:layout_height="220dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toTopOf="@+id/processStartCLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/processStartBLayout"
-            app:layout_constraintTop_toBottomOf="@+id/processStartALayout">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/shape_rounded_corner_with_shadow"
-                android:orientation="vertical"
-                android:padding="1dp">
-
-                <io.agritrack.ui.custom.ToggleGroup
-                    android:id="@+id/tgChooseFishCondition"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ToggleButton
-                        android:id="@+id/tbGood"
-                        android:layout_width="fill_parent"
-                        android:layout_height="70dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
-                        android:gravity="center"
-                        android:textColor="@drawable/button_text_color"
-                        android:textOff="GOOD"
-                        android:textOn="GOOD"
-                        android:textSize="@dimen/text_view_font_size_medium" />
-
-                    <ToggleButton
-                        android:id="@+id/tbAcceptable"
-                        android:layout_width="fill_parent"
-                        android:layout_height="70dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
-                        android:gravity="center"
-                        android:textColor="@drawable/button_text_color"
-                        android:textOff="ACCEPTABLE"
-                        android:textOn="ACCEPTABLE"
-                        android:textSize="@dimen/text_view_font_size_medium" />
-
-                    <ToggleButton
-                        android:id="@+id/tbNotAcceptable"
-                        android:layout_width="fill_parent"
-                        android:layout_height="70dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
-                        android:gravity="center"
-                        android:textColor="@drawable/button_text_color"
-                        android:textOff="NOT ACCEPTABLE"
-                        android:textOn="NOT ACCEPTABLE"
-                        android:textSize="@dimen/text_view_font_size_medium" />
-
-                </io.agritrack.ui.custom.ToggleGroup>
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="16dp"
-                android:background="@color/agri_semi_green"
-                android:paddingHorizontal="8dp"
-                android:text="@string/fish_condition"
-                android:textColor="@color/label_blue"
-                android:textSize="18sp" />
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/processStartCLayout"
-            android:layout_width="0dp"
-            android:layout_height="140dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/processStartBLayout">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/shape_rounded_corner_with_shadow"
-                android:orientation="vertical"
-                android:padding="1dp">
-
-                <EditText
-                    android:id="@+id/mtvRemarks"
-                    android:layout_width="300dp"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/bg_rounded_dialog_input"
-                    android:gravity="top"
-                    android:hint="@string/receipt_remarks"
-                    android:inputType="textMultiLine"
-                    android:padding="5dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:scrollbarAlwaysDrawVerticalTrack="true"
-                    android:scrollbarFadeDuration="0"
-                    android:selectAllOnFocus="true"
-                    android:textColorHint="@color/black"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageButton
-                    android:id="@+id/ivCamera"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/camera_press_effect"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/mtvRemarks"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_shortcut_camera_alt" />
-
-                <ImageView
-                    android:id="@+id/ivTakenPhoto"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/mtvRemarks"
-                    app:layout_constraintTop_toBottomOf="@+id/ivCamera"
-                    app:srcCompat="@drawable/no_image" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="16dp"
-                android:background="@color/agri_semi_green"
-                android:paddingHorizontal="8dp"
-                android:text="@string/remarks"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 

@@ -142,7 +142,7 @@
     <string name="syncing">Παρακαλώ περιμένετε, γίνεται συγχρονισμός</string>
     <string name="logo">Logo</string>
 
-    <string name="title_processing">ΠΑΡΑΛΑΒΗ</string>
+    <string name="title_receipt">ΠΑΡΑΛΑΒΗ</string>
     <string name="processing_details">Πληροφορίες παραλαβής</string>
     <string name="title_date_lot_dispatch_note">ΗΜΕΡΟΜΗΝΙΑ / LOT / ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ</string>
 
