@@ -1,9 +1,17 @@
-package io.agritrack.fish.ui.process;
+package io.agritrack.fish.ui.packageQuality;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -20,14 +28,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
@@ -51,22 +51,34 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.process.ProcessBinsActivity;
+import io.agritrack.fish.ui.process.ProcessInfoActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class ProcessBinsActivity extends AppCompatActivity {
+public class PackageQualityStartActivity extends AppCompatActivity {
+
+    private MobileDB db;
+
+    private RecyclerView rvBinsForTransport;
+    private TextView tvBinsCount;
+
+
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
 
     private UhfReader uhfReader;
     private ScanInventoryThread processingBinsThread = new ScanInventoryThread();
     private boolean scanning = false;
 
-    private TemplateRecyclerAdapter adapterBins;
+    private Button btnScanBin;
+    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private GetTempDataDialog tempLoggerDialog;
+    private String currentBin;
 
-    private RecyclerView rvBinsForTransport;
-    private TextView tvBinsCount;
+    private TemplateRecyclerAdapter adapterBins;
 
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
@@ -99,14 +111,20 @@ public class ProcessBinsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_process_bins);
+        setContentView(R.layout.activity_package_quality_start);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderProcessBins);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
+        // get an instance of local DB
+        db = MobileDB.getInstance(getAppContext());
+
         // get  references of the controls
         assignCtrlVars();
+
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBinsForTransport.setLayoutManager(layoutManager);
@@ -115,17 +133,55 @@ public class ProcessBinsActivity extends AppCompatActivity {
         rvBinsForTransport.setAdapter(adapterBins);
         rvBinsForTransport.setNestedScrollingEnabled(false);
 
+        //Get reference of binsCount textView
         scanResult.observe(this, response -> {
             if (response == null) {
                 return;
             }
             tvBinsCount.setText(String.valueOf(response.size()));
-            adapterBins.setValues(new ArrayList<>(response));
+            adapterBins.setValues(new LinkedList<>(response));
             adapterBins.notifyDataSetChanged();
         });
 
-        // initialize scanning threads
-        prepareScanAvailableBinsButton();
+        /*// initialize scanning threads
+        prepareScanAvailableBinsButton();*/
+
+        // =================================
+        // RFID scanning functionality
+        btnScanBin.setOnClickListener(view -> {
+            tempLoggerDialog = new GetTempDataDialog(PackageQualityStartActivity.this, R.string.get_temp_data);
+
+            //update scanning, uhfReader, tvPlatformName values in thread
+            UhfReader _uhfReader = UhfReader.getInstance();
+            _uhfReader.setWorkArea(3);
+            scanner.setUhfReader(_uhfReader);
+            scanner.setFilter(Filters.RFID_BIN);
+
+            Future<?> future = executor.submit(scanner);
+            try {
+                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
+                if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            currentBin = epcStr.substring(11);
+                            adapterBins.addUniqueItem(currentBin);
+                            adapterBins.notifyDataSetChanged();
+                            tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+
+                            // after bin is identified, download temperatures from logger.
+                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
+                            if(logger!=null) {
+                                tempLoggerDialog.showDialog(logger.rfid);
+                            } else if(!IsDemo) {
+                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_LONG);
+                            }
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                future.cancel(true);
+            }
+        });
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -162,7 +218,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
         });
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(ProcessBinsActivity.this);
+            supportDialog = new SupportDialog(PackageQualityStartActivity.this);
             supportDialog.showDialog();
         });
 
@@ -176,6 +232,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
+        btnScanBin = findViewById(R.id.btnScanBin);
         tvBinsCount = findViewById(R.id.tvBinsCount);
         rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
         ivDeleteBin = (ImageButton) findViewById(R.id.ivDeleteBin);
@@ -231,7 +288,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToSupervisorConfirm);
+        ImageView ivNext = (ImageView) findViewById(R.id.ivToPackageQualityInfo);
         ivNext.setOnClickListener(view -> {
 
             //Set scanning to false to stop running scan thread
@@ -243,12 +300,12 @@ public class ProcessBinsActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), ProcessInfoActivity.class);
+                Intent i = new Intent(getApplicationContext(), PackageQualityInfoActivity.class);
                 startActivity(i);
             }
         });
 
-         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartProcess);
+        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
 
             //Set scanning to false to stop running scan thread

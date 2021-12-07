@@ -58,6 +58,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.maintenance.MaintenanceMenuActivity;
+import io.agritrack.fish.ui.packageQuality.PackageQualityStartActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
 import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
 import io.agritrack.fish.ui.transport.TransportStartActivity;
@@ -69,7 +70,7 @@ import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
 public class FishHomeActivity extends AppCompatActivity {
-    private static final int Fishing_Idx = 0, Transport_Idx = 1, Processing_Idx = 2, Warehouse_Idx = 3, Maintenance_Idx = 4, SeaTemp_Idx = 5;
+    private static final int Fishing_Idx = 0, Transport_Idx = 1, Receiving_Idx = 2, Packaging_Quality_Idx= 3, Warehouse_Idx = 4, Maintenance_Idx = 5, SeaTemp_Idx = 6;
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
@@ -101,8 +102,11 @@ public class FishHomeActivity extends AppCompatActivity {
         if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
             menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
         }
-        if (roleCanAccessMenu(userRoles, Processing_Idx)) {
-            menuItemsSet.add(new MenuItem(Processing_Idx, getString(R.string.menu_title_fish_packaging), ProcessBinsActivity.class, R.drawable.processing));
+        if (roleCanAccessMenu(userRoles, Receiving_Idx)) {
+            menuItemsSet.add(new MenuItem(Receiving_Idx, getString(R.string.menu_title_fish_receiving), ProcessBinsActivity.class, R.drawable.processing));
+        }
+        if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
+            menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), PackageQualityStartActivity.class, R.drawable.quality));
         }
         if (roleCanAccessMenu(userRoles, Transport_Idx)) {
             menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
@@ -178,8 +182,11 @@ public class FishHomeActivity extends AppCompatActivity {
                     case Transport_Idx:
                         i = new Intent(appCtx, TransportStartActivity.class);
                         break;
-                    case Processing_Idx:
+                    case Receiving_Idx:
                         i = new Intent(appCtx, ProcessBinsActivity.class);
+                        break;
+                    case Packaging_Quality_Idx:
+                        i = new Intent(appCtx, PackageQualityStartActivity.class);
                         break;
                     case Warehouse_Idx:
                         i = new Intent(appCtx, WhMenuActivity.class);
@@ -290,7 +297,8 @@ public class FishHomeActivity extends AppCompatActivity {
 
     private void assignPrivilegesToRoles() {
         Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Processing_Idx, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Receiving_Idx, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Packaging_Quality_Idx, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Transport_Idx, new String[]{"ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Warehouse_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Maintenance_Idx, new String[]{"ROLE_PACKAGING", "ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
