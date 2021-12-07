@@ -42,16 +42,16 @@ public class CAENCommander {
         this.success = new Response();
     }
 
-    public void INIT() throws Exception {
-        INIT((short) (60 * 15));
+    public short INIT() throws Exception {
+        return INIT((short) (60 * 15));
     }
 
-    public void INIT(short interval) throws Exception {
-        HighSensitivity();
+    public short INIT(short interval) throws Exception {
         WriteTimeBin_ONE();
         WriteInterval(interval);
         WriteCurrentDatetime();
         EnableLogging();
+        return READ_LAST_SAMPLE();
     }
 
     public Response RESET() {
@@ -184,8 +184,11 @@ public class CAENCommander {
 
     public short READ_LAST_SAMPLE() throws Exception {
         byte[] reply = CAENRegistersIO.ReadRegisters(uhfReader, ADDR_LAST_SAMPLE, SHORT_ONE, accessPassword);
-        if (reply != null && reply.length > 0 && reply[0] == REPLY_NACK)
+        if (reply != null && reply.length > 1 && reply[0] == REPLY_NACK)
             throw new Exception("Failed to read last sample value.");
+        else if(reply.length == 1) {
+            return Short.valueOf("-99");
+        }
 
         return ToShort(reply);
     }

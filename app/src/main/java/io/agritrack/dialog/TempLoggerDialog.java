@@ -31,7 +31,7 @@ import io.agritrack.caen.api.CAENCommander;
 
 public class TempLoggerDialog {
     private final Activity activity;
-    private final UhfReader _uhfReader;
+    private final UhfReader uhfReader;
     private TextView tvTitle, txtData;
     private Button btnOk, btnInit;
     private Dialog dialog;
@@ -44,9 +44,9 @@ public class TempLoggerDialog {
         setDialog();
         findViews();
 
-        _uhfReader = UhfReader.getInstance();
-        _uhfReader.setWorkArea(3);
-        _uhfReader.setOutputPower(24);
+        this.uhfReader = UhfReader.getInstance();
+        this.uhfReader.setWorkArea(3);
+        this.uhfReader.setOutputPower(24);
 
         txtData.setMovementMethod(new ScrollingMovementMethod());
         txtData.setTextColor(Color.parseColor("#16325c"));
@@ -58,7 +58,7 @@ public class TempLoggerDialog {
 
         btnInit.setOnClickListener(view -> {
             try {
-                initDataLogger(_uhfReader, this.currentBinEPC);
+                initDataLogger(this.currentBinEPC);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -77,7 +77,7 @@ public class TempLoggerDialog {
         dialog.dismiss();
     }
 
-    public void initDataLogger(UhfReader _uhfReader, String currentBin) throws InterruptedException {
+    public void initDataLogger(String currentBin) throws InterruptedException {
 
         if (Strings.isEmptyOrWhitespace(this.currentBinEPC) && !IsDemo) {
             CToast(this.activity.getApplicationContext(), render("NO Logger Tag detected!!!"), Toast.LENGTH_LONG);
@@ -88,15 +88,15 @@ public class TempLoggerDialog {
         handler.post(() -> loadingPanel.setVisibility(View.VISIBLE));
 
         try {
-            CAENCommander cmd = new CAENCommander(_uhfReader, currentBin);
+            CAENCommander cmd = new CAENCommander(this.uhfReader, currentBin);
+            cmd.HighSensitivity();
             CAENCommander.Response rs = cmd.RESET();
-            cmd.INIT(TempInterval);
-            short lastTemperature = cmd.READ_LAST_SAMPLE();
+            short lastTemperature = cmd.INIT(TempInterval);
             lastTemperatureStr = parseTemperature(lastTemperature) + "\u2103";
+            cmd.LowSensitivity();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         txtData.setText(String.format("Successful initialization. \n\n[ACCEPTABLE TEMPERATURE: %s]", lastTemperatureStr));
         loadingPanel.setVisibility(View.GONE);
@@ -121,9 +121,5 @@ public class TempLoggerDialog {
         btnInit = dialog.findViewById(R.id.btnInit);
         txtData = dialog.findViewById(R.id.etData);
         loadingPanel = dialog.findViewById(R.id.loadingPanel);
-    }
-
-    private void SetCaptions(int title) {
-        tvTitle.setText(title);
     }
 }

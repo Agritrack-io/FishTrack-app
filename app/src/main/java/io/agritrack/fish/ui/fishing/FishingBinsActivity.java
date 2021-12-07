@@ -2,6 +2,7 @@ package io.agritrack.fish.ui.fishing;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.caen.api.EncodingUtils.parseTemperature;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -24,7 +25,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,15 +33,13 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.barcode.SoundUtil;
+import io.agritrack.caen.api.CAENCommander;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.IotLogger;
@@ -56,9 +54,6 @@ import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class FishingBinsActivity extends AppCompatActivity {
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-    private final SingleShotScanner scanner = new SingleShotScanner();
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private MobileDB db;
     private TemplateRecyclerAdapter adapterBins;
     private RecyclerView rvBins;
@@ -70,7 +65,6 @@ public class FishingBinsActivity extends AppCompatActivity {
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
-
     // Instantiate a clickListener to be passed to adapterBins Adapter.
     // It will be used to point the selectedBarcode variable to the selected item barcode value.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
@@ -89,6 +83,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             selectedItem = view;
         }
     };
+    private Set<String> scannedBinEPCs;
     private String binBarcode = "";
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -120,52 +115,21 @@ public class FishingBinsActivity extends AppCompatActivity {
         rvBins.setAdapter(adapterBins);
         rvBins.setNestedScrollingEnabled(false);
 
-        scanResult.observe(this, response -> {
+        // instantiate a set to hold scanned EPCS.it will be passed to adapter shich feeds the ListView.
+        scannedBinEPCs = new LinkedHashSet<>();
+
+/*        scanResult.observe(this, response -> {
             if (response == null) {
                 return;
             }
             tvBinsCount.setText(String.valueOf(response.size()));
             adapterBins.setValues(new ArrayList<>(response));
             adapterBins.notifyDataSetChanged();
-        });
+        });*/
 
         // =================================
         // RFID scanning functionality
-        btnScanBin.setOnClickListener(view -> {
-            tempLoggerDialog = new TempLoggerDialog(FishingBinsActivity.this, R.string.init_temp_logger);
-
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            _uhfReader.setOutputPower(24);
-            scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_BIN);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            currentBin = epcStr.substring(11);
-                            adapterBins.addUniqueItem(currentBin);
-                            adapterBins.notifyDataSetChanged();
-                            tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-
-                            // after bin is identified, initialize the temperatures logger.
-                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
-                            if(logger!=null) {
-                                tempLoggerDialog.showDialog(logger.rfid);
-                            } else if(!IsDemo) {
-                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_LONG);
-                            }
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
-        });
+        btnScanBin.setOnClickListener(this::onClick);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -213,6 +177,46 @@ public class FishingBinsActivity extends AppCompatActivity {
 
         // create Footer
         configFooter();
+    }
+
+    private String scanCloserEPC(UhfReader uhfReader) {
+        SingleShotScanner scanner = new SingleShotScanner();
+        scanner.setUhfReader(uhfReader);
+        scanner.setFilter(Filters.RFID_BIN);
+
+        try {
+            String epcStr = scanner.call();
+            if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                // after bin is identified, initialize the temperatures logger.
+                IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
+                if (logger != null) {
+                    scannedBinEPCs.add(epcStr.substring(11));
+                    tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
+                    adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
+                    adapterBins.notifyDataSetChanged();
+                    return logger.rfid;
+                } else if (!IsDemo) {
+                    CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_LONG);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private CAENCommander.Response resetLogger(CAENCommander cmd) {
+        return cmd.RESET();
+    }
+
+    private String initializeLogger(CAENCommander cmd) {
+        try {
+            short lastTemperature = cmd.INIT();
+            return parseTemperature(lastTemperature) + "\u2103";
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void clearSelectedItem() {
@@ -311,5 +315,62 @@ public class FishingBinsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    private void onClick(View view) {
+        //update scanning, uhfReader, tvPlatformName values in thread
+        UhfReader _uhfReader = UhfReader.getInstance();
+        _uhfReader.setWorkArea(3);
+        _uhfReader.setOutputPower(24);
+
+        String strEPC = scanCloserEPC(_uhfReader);
+        if (!Strings.isEmptyOrWhitespace(strEPC)) {
+            if (IsDemo) {
+
+//            Thread t = new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+                try {
+                    CAENCommander cmd = new CAENCommander(_uhfReader, strEPC);
+                    cmd.HighSensitivity();
+                    Thread.sleep(1000);
+                    CAENCommander.Response rs = resetLogger(cmd);
+                    Thread.sleep(1000);
+                    //String temp = initializeLogger(cmd);
+                    //Thread.sleep(1000);
+                    cmd.LowSensitivity();
+
+                    CToast(getApplicationContext(), "Logger resetted!"/*temp*/, Toast.LENGTH_LONG);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+//                }
+//            });
+//            t.start();
+            } else {
+                tempLoggerDialog = new TempLoggerDialog(FishingBinsActivity.this, R.string.init_temp_logger);
+                if (!Strings.isEmptyOrWhitespace(strEPC)) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        public void run() {
+                            currentBin = strEPC.substring(11);
+                            adapterBins.addUniqueItem(currentBin);
+                            adapterBins.notifyDataSetChanged();
+                            tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+
+                            // after bin is identified, initialize the temperatures logger.
+                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(strEPC);
+                            if (logger != null) {
+                                tempLoggerDialog.showDialog(logger.rfid);
+                            } else if (!IsDemo) {
+                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_LONG);
+                            }
+                        }
+                    });
+                }
+            }
+        } else {
+            CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
+        }
+
     }
 }

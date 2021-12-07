@@ -16,7 +16,7 @@ public class CAENRegistersIO {
     public static byte[] ReadRegisters(UhfReader reader, short address, short length, byte[] accessPassword) throws Exception {
         short command;
         byte msgID = 0x00;
-        short numBytes = length;
+        short numBytes = (short) (length * 1);
         byte reply = REPLY_NACK;
 
         if (numBytes > MAXBYTESIZEDATA) {
@@ -78,10 +78,7 @@ public class CAENRegistersIO {
         reply = adjustReplyId(msgID, reader, pwd);
 
         //check reply
-        if (reply == REPLY_NACK) {
-            //throw new Exception("Tag replied NACK");
-            return REPLY_NACK;
-        }
+        //throw new Exception("Tag replied NACK");
 
         return reply;
     }

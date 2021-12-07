@@ -423,4 +423,6 @@
     <string name="IOTLoggers_sync_completed">IOTLoggers sync completed!</string>
     <string name="no_IOTLoggers_found_alert">No IOTLogger returned from backend!!!</string>
     <string name="menu_title_tools">Logger Tools</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

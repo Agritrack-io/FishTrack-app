@@ -83,12 +83,12 @@ public class CAENLoggerActivity extends AppCompatActivity {
         btnInit.setOnClickListener(view -> {
             if (this.cmd != null) {
                 try {
+                    short lastTemperature = Short.valueOf("-99");
                     if (etInterval.getText() != null && !Strings.isEmptyOrWhitespace(etInterval.getText().toString())) {
-                        this.cmd.INIT(Short.valueOf(etInterval.getText().toString()));
+                        lastTemperature = this.cmd.INIT(Short.valueOf(etInterval.getText().toString()));
                     } else {
-                        this.cmd.INIT();
+                        lastTemperature = this.cmd.INIT();
                     }
-                    short lastTemperature = cmd.READ_LAST_SAMPLE();
                     String value = parseTemperature(lastTemperature) + "\u2103";
                     tvLastSampleValue.setText(value);
                 } catch (Exception e) {
