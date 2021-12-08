@@ -1,10 +1,7 @@
 package io.agritrack.dialog;
 
 import static android.os.Looper.getMainLooper;
-<<<<<<< Updated upstream
 import static io.agritrack.ui.custom.CustomToast.CToast;
-=======
->>>>>>> Stashed changes
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -28,10 +25,7 @@ import java.util.List;
 
 import cn.pda.serialport.Tools;
 import io.agritrack.R;
-<<<<<<< Updated upstream
 import io.agritrack.caen.api.CAENCommander;
-=======
->>>>>>> Stashed changes
 
 public class GetTempDataDialog {
     private final Activity activity;
@@ -61,11 +55,7 @@ public class GetTempDataDialog {
 
         btnGetData.setOnClickListener(view -> {
             try {
-<<<<<<< Updated upstream
                 getTempData(_uhfReader, this.currentBinEPC);
-=======
-                getTempData(_uhfReader, "300EFE2F94D01C02540BE47B");
->>>>>>> Stashed changes
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
