@@ -203,9 +203,13 @@ public class FishingBinsActivity extends AppCompatActivity {
         return cmd.RESET();
     }
 
-    private String initializeLogger(CAENCommander cmd) {
+    private CAENCommander.Response setupLogger(CAENCommander cmd) {
+        return cmd.SETUP(CAENCommander.DefaultInterval);
+    }
+
+    private String enableLogger(CAENCommander cmd) {
         try {
-            short lastTemperature = cmd.INIT();
+            short lastTemperature = cmd.START_LOGGING();
             return parseTemperature(lastTemperature) + "\u2103";
         } catch (Exception e) {
             e.printStackTrace();
@@ -319,17 +323,14 @@ public class FishingBinsActivity extends AppCompatActivity {
 
         String strEPC = scanCloserEPC(_uhfReader);
 
-        FragmentManager fm = getSupportFragmentManager();
-        CaenLoggerDialogFragment loggerDialogFragment = CaenLoggerDialogFragment.newInstance(strEPC);
-        loggerDialogFragment.show(fm, CaenLoggerDialogFragment.TAG);
+        if (!Strings.isEmptyOrWhitespace(strEPC)) {
+            FragmentManager fm = getSupportFragmentManager();
+            CaenLoggerDialogFragment loggerDlg = CaenLoggerDialogFragment.newInstance(strEPC);
+            loggerDlg.show(fm, CaenLoggerDialogFragment.TAG);
+        } else {
+            CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
+        }
 
-
-//        loggerDialogFragment.handleLogger(_uhfReader);
-//
-//        try {Thread.sleep(3000l);}
-//        catch (InterruptedException e) {e.printStackTrace();}
-//
-//        loggerDialogFragment.dismiss();
         return;
 /*
         if (!Strings.isEmptyOrWhitespace(strEPC)) {
@@ -379,6 +380,49 @@ public class FishingBinsActivity extends AppCompatActivity {
         } else {
             CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
         }*/
-
     }
+
+
+/*
+    public void prepareLogger(UhfReader uhfReader, CaenLoggerDialogFragment loggerDlg, String loggerEPC) {
+        //---------------------------------------------------
+        CAENCommander cmd = new CAENCommander(uhfReader, loggerEPC);
+        //---------------------------------------------------
+
+        loggerDlg.setMessage("Preparing Logger...");
+        cmd.HighSensitivity();
+
+        loggerDlg.setMessage("Resetting Logger...");
+        loggerDlg.setButtonText(R.id.btnReset, "Resetting...");
+        CAENCommander.Response rs = resetLogger(cmd);
+        if(rs.succeeded()) {
+            loggerDlg.setButtonText(R.id.btnReset, "Success");
+        } else {
+            loggerDlg.setButtonText(R.id.btnReset, "Failed");
+        }
+
+        loggerDlg.setMessage("Setting Logger up...");
+        loggerDlg.setButtonText(R.id.btnSetup, "Setting Up...");
+        CAENCommander.Response res = setupLogger(cmd);
+        if(res.succeeded()) {
+            loggerDlg.setButtonText(R.id.btnSetup, "Success");
+        } else {
+            loggerDlg.setButtonText(R.id.btnSetup, "Failed");
+        }
+
+        loggerDlg.setMessage("Start Logging...");
+        loggerDlg.setButtonText(R.id.btnInit, "Start Logger...");
+        String temp = enableLogger(cmd);
+        if(!Strings.isEmptyOrWhitespace(temp)) {
+            loggerDlg.setButtonText(R.id.btnInit, "Success");
+        } else {
+            loggerDlg.setButtonText(R.id.btnInit, "Failed");
+        }
+
+        cmd.LowSensitivity();
+
+        loggerDlg.setMessage("First value: " + temp);
+        loggerDlg.dismiss();
+    }
+*/
 }

@@ -7,6 +7,9 @@ import static io.agritrack.caen.api.EncodingUtils.parseTemperature;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -36,6 +39,10 @@ public class TempLoggerDialog {
     private Button btnOk, btnInit;
     private Dialog dialog;
     private View loadingPanel;
+<<<<<<< Updated upstream
+=======
+    private final UhfReader _uhfReader;
+>>>>>>> Stashed changes
     private String currentBinEPC;
 
     public TempLoggerDialog(Activity activity, @StringRes int title) {
@@ -58,7 +65,11 @@ public class TempLoggerDialog {
 
         btnInit.setOnClickListener(view -> {
             try {
+<<<<<<< Updated upstream
                 initDataLogger(this.currentBinEPC);
+=======
+                initDataLogger(_uhfReader, this.currentBinEPC);
+>>>>>>> Stashed changes
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -79,11 +90,20 @@ public class TempLoggerDialog {
 
     public void initDataLogger(String currentBin) throws InterruptedException {
 
+<<<<<<< Updated upstream
         if (Strings.isEmptyOrWhitespace(this.currentBinEPC) && !IsDemo) {
             CToast(this.activity.getApplicationContext(), render("NO Logger Tag detected!!!"), Toast.LENGTH_LONG);
             return;
         }
         String lastTemperatureStr = "N/A";
+=======
+        if(Strings.isEmptyOrWhitespace(this.currentBinEPC)) {
+            CToast(this.activity.getApplicationContext(), render("NO Logger Tag detected!!!"), Toast.LENGTH_LONG);
+            return;
+        }
+
+        _uhfReader.selectEPC(Tools.HexString2Bytes(currentBin));
+>>>>>>> Stashed changes
         Handler handler = new Handler(getMainLooper());
         handler.post(() -> loadingPanel.setVisibility(View.VISIBLE));
 
