@@ -11,8 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -52,8 +50,10 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
+import io.agritrack.ui.tools.CaenLoggerDialogFragment;
 
 public class FishingBinsActivity extends AppCompatActivity {
+
     private MobileDB db;
     private TemplateRecyclerAdapter adapterBins;
     private RecyclerView rvBins;
@@ -65,6 +65,14 @@ public class FishingBinsActivity extends AppCompatActivity {
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
+
+    private Set<String> scannedBinEPCs;
+    private String binBarcode = "";
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
+    private InfoDialog infoDialog;
+    private ImageView ivInfo;
+
     // Instantiate a clickListener to be passed to adapterBins Adapter.
     // It will be used to point the selectedBarcode variable to the selected item barcode value.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
@@ -83,12 +91,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             selectedItem = view;
         }
     };
-    private Set<String> scannedBinEPCs;
-    private String binBarcode = "";
-    private ImageView ivSupport;
-    private SupportDialog supportDialog;
-    private InfoDialog infoDialog;
-    private ImageView ivInfo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,15 +120,6 @@ public class FishingBinsActivity extends AppCompatActivity {
 
         // instantiate a set to hold scanned EPCS.it will be passed to adapter shich feeds the ListView.
         scannedBinEPCs = new LinkedHashSet<>();
-
-/*        scanResult.observe(this, response -> {
-            if (response == null) {
-                return;
-            }
-            tvBinsCount.setText(String.valueOf(response.size()));
-            adapterBins.setValues(new ArrayList<>(response));
-            adapterBins.notifyDataSetChanged();
-        });*/
 
         // =================================
         // RFID scanning functionality
@@ -209,9 +203,13 @@ public class FishingBinsActivity extends AppCompatActivity {
         return cmd.RESET();
     }
 
-    private String initializeLogger(CAENCommander cmd) {
+    private CAENCommander.Response setupLogger(CAENCommander cmd) {
+        return cmd.SETUP(CAENCommander.DefaultInterval);
+    }
+
+    private String enableLogger(CAENCommander cmd) {
         try {
-            short lastTemperature = cmd.INIT();
+            short lastTemperature = cmd.START_LOGGING();
             return parseTemperature(lastTemperature) + "\u2103";
         } catch (Exception e) {
             e.printStackTrace();
@@ -324,6 +322,17 @@ public class FishingBinsActivity extends AppCompatActivity {
         _uhfReader.setOutputPower(24);
 
         String strEPC = scanCloserEPC(_uhfReader);
+
+        if (!Strings.isEmptyOrWhitespace(strEPC)) {
+            FragmentManager fm = getSupportFragmentManager();
+            CaenLoggerDialogFragment loggerDlg = CaenLoggerDialogFragment.newInstance(strEPC);
+            loggerDlg.show(fm, CaenLoggerDialogFragment.TAG);
+        } else {
+            CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
+        }
+
+        return;
+/*
         if (!Strings.isEmptyOrWhitespace(strEPC)) {
             if (IsDemo) {
 
@@ -340,7 +349,7 @@ public class FishingBinsActivity extends AppCompatActivity {
                     //Thread.sleep(1000);
                     cmd.LowSensitivity();
 
-                    CToast(getApplicationContext(), "Logger resetted!"/*temp*/, Toast.LENGTH_LONG);
+                    CToast(getApplicationContext(), "Logger resetted!"*//*temp*//*, Toast.LENGTH_LONG);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -370,7 +379,50 @@ public class FishingBinsActivity extends AppCompatActivity {
             }
         } else {
             CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
+        }*/
+    }
+
+
+/*
+    public void prepareLogger(UhfReader uhfReader, CaenLoggerDialogFragment loggerDlg, String loggerEPC) {
+        //---------------------------------------------------
+        CAENCommander cmd = new CAENCommander(uhfReader, loggerEPC);
+        //---------------------------------------------------
+
+        loggerDlg.setMessage("Preparing Logger...");
+        cmd.HighSensitivity();
+
+        loggerDlg.setMessage("Resetting Logger...");
+        loggerDlg.setButtonText(R.id.btnReset, "Resetting...");
+        CAENCommander.Response rs = resetLogger(cmd);
+        if(rs.succeeded()) {
+            loggerDlg.setButtonText(R.id.btnReset, "Success");
+        } else {
+            loggerDlg.setButtonText(R.id.btnReset, "Failed");
         }
 
+        loggerDlg.setMessage("Setting Logger up...");
+        loggerDlg.setButtonText(R.id.btnSetup, "Setting Up...");
+        CAENCommander.Response res = setupLogger(cmd);
+        if(res.succeeded()) {
+            loggerDlg.setButtonText(R.id.btnSetup, "Success");
+        } else {
+            loggerDlg.setButtonText(R.id.btnSetup, "Failed");
+        }
+
+        loggerDlg.setMessage("Start Logging...");
+        loggerDlg.setButtonText(R.id.btnInit, "Start Logger...");
+        String temp = enableLogger(cmd);
+        if(!Strings.isEmptyOrWhitespace(temp)) {
+            loggerDlg.setButtonText(R.id.btnInit, "Success");
+        } else {
+            loggerDlg.setButtonText(R.id.btnInit, "Failed");
+        }
+
+        cmd.LowSensitivity();
+
+        loggerDlg.setMessage("First value: " + temp);
+        loggerDlg.dismiss();
     }
+*/
 }

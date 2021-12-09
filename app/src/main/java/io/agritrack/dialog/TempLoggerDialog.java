@@ -26,6 +26,7 @@ import androidx.annotation.StringRes;
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import cn.pda.serialport.Tools;
 import io.agritrack.R;
 import io.agritrack.caen.api.CAENCommander;
 
@@ -36,6 +37,7 @@ public class TempLoggerDialog {
     private Button btnOk, btnInit;
     private Dialog dialog;
     private View loadingPanel;
+    private UhfReader _uhfReader;
     private String currentBinEPC;
 
     public TempLoggerDialog(Activity activity, @StringRes int title) {
@@ -84,6 +86,12 @@ public class TempLoggerDialog {
             return;
         }
         String lastTemperatureStr = "N/A";
+        if (Strings.isEmptyOrWhitespace(this.currentBinEPC)) {
+            CToast(this.activity.getApplicationContext(), render("NO Logger Tag detected!!!"), Toast.LENGTH_LONG);
+            return;
+        }
+
+        _uhfReader.selectEPC(Tools.HexString2Bytes(currentBin));
         Handler handler = new Handler(getMainLooper());
         handler.post(() -> loadingPanel.setVisibility(View.VISIBLE));
 

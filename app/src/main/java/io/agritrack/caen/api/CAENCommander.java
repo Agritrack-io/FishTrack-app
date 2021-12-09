@@ -30,6 +30,7 @@ import cn.pda.serialport.Tools;
 import io.agritrack.caen.common.CAENRegistersIO;
 
 public class CAENCommander {
+    public static final Short DefaultInterval = (short) (60 * 15);
     private static final Short SampleBatchSize = 30;
     private final byte[] accessPassword = Tools.HexString2Bytes("00000000");
     private final UhfReader uhfReader;
@@ -43,7 +44,7 @@ public class CAENCommander {
     }
 
     public short INIT() throws Exception {
-        return INIT((short) (60 * 15));
+        return INIT(DefaultInterval);
     }
 
     public short INIT(short interval) throws Exception {
@@ -60,6 +61,17 @@ public class CAENCommander {
             return new Response(REPLY_NACK, "Failed to reset data logger.");
         }
         return success;
+    }
+
+    public Response SETUP(short interval) {
+        WriteTimeBin_ONE();
+        WriteInterval(interval);
+        return WriteCurrentDatetime();
+    }
+
+    public short START_LOGGING() throws Exception {
+        EnableLogging();
+        return READ_LAST_SAMPLE();
     }
 
     public Response HighSensitivity() {
@@ -261,20 +273,6 @@ public class CAENCommander {
         return measurements;
     }
 
-//    private String parseTemperature(short t) {
-//        if (t > 2240) {
-//            return String.format("%.2f", (double) (t - 8192) / 32d);
-//        } else {
-//            return String.format("%.2f", t / 32d);
-//        }
-//    }
-//
-//    private String parseTimestamp(byte[] b) {
-//        int l = ToInt(b);
-//        Date dt = new Date(l * 1000l);
-//        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-//        return format.format(dt);
-//    }
 
     public class Response {
         public byte code;
