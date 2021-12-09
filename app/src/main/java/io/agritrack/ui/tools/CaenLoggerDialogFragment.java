@@ -6,11 +6,12 @@ import android.animation.TimeAnimator;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
 
@@ -24,8 +25,8 @@ import io.agritrack.caen.api.CAENCommander;
 
 
 public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
-    private static final int LEVEL_INCREMENT = 100;
-    private static final int MAX_LEVEL = Integer.MAX_VALUE;
+    private static final int LEVEL_INCREMENT = 1000;
+    private static final int MAX_LEVEL = 10000;
     private static final String LOGGER_EPC = "loggerEPC";
     public static String TAG = "CaenLoggerDialogFragment";
 
@@ -36,13 +37,12 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
     private ClipDrawable mClipDrawable;
 
     private Button btnReset, btnSetup, btnInit;
-    private TextView tvTitle;
     private TaskRunner taskRunner;
 
     protected final View.OnClickListener initBtnListener = v -> {
-        btnInit.setBackgroundResource(R.drawable.button_background);
 
-        tvTitle.setText("Start Logging...");
+        // draw btnInit background and text
+        btnInit.setBackgroundResource(R.drawable.button_background);
         btnInit.setText("Start Logger...");
 
         startAnimation(v, btnInit);
@@ -66,9 +66,8 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
         });
     };
     protected final View.OnClickListener setupBtnListener = v -> {
+        // draw btnSetup background and text
         btnSetup.setBackgroundResource(R.drawable.button_background);
-
-        tvTitle.setText("Setting Logger up...");
         btnSetup.setText("Setting Up...");
 
         startAnimation(v, btnSetup);
@@ -95,9 +94,8 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
     };
 
     private final View.OnClickListener resetBtnListener = v -> {
+        // draw btnReset background and text
         btnReset.setBackgroundResource(R.drawable.button_background);
-
-        tvTitle.setText("Resetting Logger...");
         btnReset.setText("Resetting...");
 
         startAnimation(v, btnReset);
@@ -113,6 +111,8 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
             if (rs.succeeded()) {
                 btnReset.setText("Success");
                 btnReset.setOnClickListener(null);
+
+                stopAnimation();
 
                 btnSetup.setOnClickListener(setupBtnListener);
                 btnSetup.callOnClick();
@@ -138,6 +138,16 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
         return frag;
     }
 
+    public void startLoggerPreparation() {
+        btnReset.callOnClick();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        btnReset.callOnClick();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_dialog_caen_logger, container, false);
@@ -145,7 +155,6 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
         btnReset = rootView.findViewById(R.id.btnReset);
         btnSetup = rootView.findViewById(R.id.btnSetup);
         btnInit = rootView.findViewById(R.id.btnInit);
-
 
         if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
             String loggerEPC = getArguments().getString(LOGGER_EPC);
@@ -161,16 +170,17 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
             btnReset.setOnClickListener(resetBtnListener);
         }
 
-//        getDialog().setCanceledOnTouchOutside(false);
+        getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+        WindowManager.LayoutParams p = getDialog().getWindow().getAttributes();
+        p.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE;
+        p.y = 100;
+        getDialog().getWindow().setAttributes(p);
 
-        tvTitle = (TextView) rootView.findViewById(R.id.loggerMessage);
-        tvTitle.setText("Preparing Logger...");
 
         return rootView;
     }
 
     private void startAnimation(View view, Button buttonID) {
-
         mCurrentLevel = 0;
 
         // Get a handle on the ClipDrawable that we will animate.
@@ -185,7 +195,9 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
     }
 
     private void stopAnimation() {
-        mAnimator.cancel();
+        mCurrentLevel = MAX_LEVEL;
+        //mClipDrawable.setLevel(MAX_LEVEL);
+        onTimeUpdate(mAnimator, MAX_LEVEL, LEVEL_INCREMENT);
     }
 
     @Override

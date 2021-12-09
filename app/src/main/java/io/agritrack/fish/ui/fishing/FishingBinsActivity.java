@@ -58,18 +58,10 @@ public class FishingBinsActivity extends AppCompatActivity {
     private RecyclerView rvBins;
     private TextView tvBinsCount;
     private Button btnScanBin;
-    private String currentBin;
 
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
-
-    private Set<String> scannedBinEPCs;
-    private String binBarcode = "";
-    private ImageView ivSupport;
-    private SupportDialog supportDialog;
-    private InfoDialog infoDialog;
-    private ImageView ivInfo;
 
     // Instantiate a clickListener to be passed to adapterBins Adapter.
     // It will be used to point the selectedBarcode variable to the selected item barcode value.
@@ -90,6 +82,12 @@ public class FishingBinsActivity extends AppCompatActivity {
         }
     };
 
+    private Set<String> scannedBinEPCs;
+    private String binBarcode = "";
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
+    private InfoDialog infoDialog;
+    private ImageView ivInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -330,97 +328,5 @@ public class FishingBinsActivity extends AppCompatActivity {
         }
 
         return;
-/*
-        if (!Strings.isEmptyOrWhitespace(strEPC)) {
-            if (IsDemo) {
-
-//            Thread t = new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-                try {
-                    CAENCommander cmd = new CAENCommander(_uhfReader, strEPC);
-                    cmd.HighSensitivity();
-                    Thread.sleep(1000);
-                    CAENCommander.Response rs = resetLogger(cmd);
-                    Thread.sleep(1000);
-                    //String temp = initializeLogger(cmd);
-                    //Thread.sleep(1000);
-                    cmd.LowSensitivity();
-
-                    CToast(getApplicationContext(), "Logger resetted!"*//*temp*//*, Toast.LENGTH_LONG);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-//                }
-//            });
-//            t.start();
-            } else {
-                tempLoggerDialog = new TempLoggerDialog(FishingBinsActivity.this, R.string.init_temp_logger);
-                if (!Strings.isEmptyOrWhitespace(strEPC)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            currentBin = strEPC.substring(11);
-                            adapterBins.addUniqueItem(currentBin);
-                            adapterBins.notifyDataSetChanged();
-                            tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-
-                            // after bin is identified, initialize the temperatures logger.
-                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(strEPC);
-                            if (logger != null) {
-                                tempLoggerDialog.showDialog(logger.rfid);
-                            } else if (!IsDemo) {
-                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_LONG);
-                            }
-                        }
-                    });
-                }
-            }
-        } else {
-            CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
-        }*/
     }
-
-
-/*
-    public void prepareLogger(UhfReader uhfReader, CaenLoggerDialogFragment loggerDlg, String loggerEPC) {
-        //---------------------------------------------------
-        CAENCommander cmd = new CAENCommander(uhfReader, loggerEPC);
-        //---------------------------------------------------
-
-        loggerDlg.setMessage("Preparing Logger...");
-        cmd.HighSensitivity();
-
-        loggerDlg.setMessage("Resetting Logger...");
-        loggerDlg.setButtonText(R.id.btnReset, "Resetting...");
-        CAENCommander.Response rs = resetLogger(cmd);
-        if(rs.succeeded()) {
-            loggerDlg.setButtonText(R.id.btnReset, "Success");
-        } else {
-            loggerDlg.setButtonText(R.id.btnReset, "Failed");
-        }
-
-        loggerDlg.setMessage("Setting Logger up...");
-        loggerDlg.setButtonText(R.id.btnSetup, "Setting Up...");
-        CAENCommander.Response res = setupLogger(cmd);
-        if(res.succeeded()) {
-            loggerDlg.setButtonText(R.id.btnSetup, "Success");
-        } else {
-            loggerDlg.setButtonText(R.id.btnSetup, "Failed");
-        }
-
-        loggerDlg.setMessage("Start Logging...");
-        loggerDlg.setButtonText(R.id.btnInit, "Start Logger...");
-        String temp = enableLogger(cmd);
-        if(!Strings.isEmptyOrWhitespace(temp)) {
-            loggerDlg.setButtonText(R.id.btnInit, "Success");
-        } else {
-            loggerDlg.setButtonText(R.id.btnInit, "Failed");
-        }
-
-        cmd.LowSensitivity();
-
-        loggerDlg.setMessage("First value: " + temp);
-        loggerDlg.dismiss();
-    }
-*/
 }
