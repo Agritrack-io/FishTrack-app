@@ -30,7 +30,7 @@ import cn.pda.serialport.Tools;
 import io.agritrack.caen.common.CAENRegistersIO;
 
 public class CAENCommander {
-    public static final Short DefaultInterval = (short) (60 * 15);
+    public static final Short DefaultInterval = (short) (30);
     private static final Short SampleBatchSize = 30;
     private final byte[] accessPassword = Tools.HexString2Bytes("00000000");
     private final UhfReader uhfReader;

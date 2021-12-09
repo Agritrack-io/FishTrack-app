@@ -18,8 +18,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -32,8 +30,6 @@ import android.widget.Toast;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -58,6 +54,7 @@ import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
+import io.agritrack.ui.tools.CaenLoggerReadTemperatureDialogFragment;
 
 public class PackageQualityStartActivity extends AppCompatActivity {
 
@@ -335,7 +332,18 @@ public class PackageQualityStartActivity extends AppCompatActivity {
         _uhfReader.setOutputPower(24);
 
         String strEPC = scanCloserEPC(_uhfReader);
+
         if (!Strings.isEmptyOrWhitespace(strEPC)) {
+            FragmentManager fm = getSupportFragmentManager();
+            CaenLoggerReadTemperatureDialogFragment loggerDlg = CaenLoggerReadTemperatureDialogFragment.newInstance(strEPC);
+            loggerDlg.show(fm, CaenLoggerReadTemperatureDialogFragment.TAG);
+        } else {
+            CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
+        }
+
+        return;
+
+        /*if (!Strings.isEmptyOrWhitespace(strEPC)) {
             if (IsDemo) {
 //            Thread t = new Thread(new Runnable() {
 //                @Override
@@ -356,10 +364,10 @@ public class PackageQualityStartActivity extends AppCompatActivity {
                     }
                     cmd.LowSensitivity();
 
-                    /*if (values !=null) {
+                    *//*if (values !=null) {
                         CAENCommander.Response rs = resetLogger(cmd);
-                        CToast(getApplicationContext(), "Logger resetted!"*//*temp*//*, Toast.LENGTH_LONG);
-                    }*/
+                        CToast(getApplicationContext(), "Logger reseted!"*//**//*temp*//**//*, Toast.LENGTH_LONG);
+                    }*//*
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (Exception e) {
@@ -394,8 +402,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
             }
         } else {
             CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
-        }
-
+        }*/
     }
 
     private void displayMeasurementsDialog(List<String[]> values) {
