@@ -19,6 +19,7 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import io.agritrack.R;
 import io.agritrack.caen.api.CAENCommander;
@@ -36,11 +37,25 @@ public class CAENLoggerActivity extends AppCompatActivity {
 
     private CAENCommander cmd;
     private short valuesCnt;
+    private TaskRunner taskRunner;
+    private String loggerEpc;
+
+    Callable<String> readLoggerTask = new Callable<String>() {
+        @Override
+        public String call() throws Exception {
+             ReadLogger(loggerEpc);
+             return null;
+        }
+    };
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_caen_logger);
+
+        taskRunner = new TaskRunner();
 
         // get  references of the controls
         assignCtrlVars();
@@ -132,10 +147,14 @@ public class CAENLoggerActivity extends AppCompatActivity {
         try {
             String epcStr = scanner.call();
             if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                loggerEpc = epcStr;
                 tvCurrentEPC.setText(epcStr);
                 btnReset.setEnabled(true);
                 btnInit.setEnabled(true);
-                ReadLogger(epcStr);
+
+                taskRunner.executeAsync(readLoggerTask, (rs) -> {
+                    //Code after read logger task is completed
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();

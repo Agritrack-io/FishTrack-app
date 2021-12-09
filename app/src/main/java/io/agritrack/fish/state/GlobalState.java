@@ -216,7 +216,7 @@ public class GlobalState {
             Measurements measurements = new Measurements();
             measurements.loggerRFID = recProcessing.logger_rfid;
             measurements.retrievedAt = recProcessing.retrievedAt;
-            measurements.values = recProcessing.tempValues;
+            //measurements.values = recProcessing.tempValues;
 
             db.measurementsDAO().insert(measurements);
 

@@ -24,7 +24,7 @@ import io.agritrack.caen.api.CAENCommander;
 
 
 public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
-    private static final int LEVEL_INCREMENT = 400;
+    private static final int LEVEL_INCREMENT = 100;
     private static final int MAX_LEVEL = Integer.MAX_VALUE;
     private static final String LOGGER_EPC = "loggerEPC";
     public static String TAG = "CaenLoggerDialogFragment";
@@ -36,18 +36,17 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
     private ClipDrawable mClipDrawable;
 
     private Button btnReset, btnSetup, btnInit;
-    private TextView msg;
+    private TextView tvTitle;
     private TaskRunner taskRunner;
 
     protected final View.OnClickListener initBtnListener = v -> {
         btnInit.setBackgroundResource(R.drawable.button_background);
 
-        msg.setText("Start Logging...");
+        tvTitle.setText("Start Logging...");
         btnInit.setText("Start Logger...");
 
         startAnimation(v, btnInit);
-
-        //String rs = enableLogger(loggerCommander);
+        //Task for init button
         Callable<String> enableLoggerTask = new Callable<String>() {
             @Override
             public String call() throws Exception {
@@ -69,20 +68,20 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
     protected final View.OnClickListener setupBtnListener = v -> {
         btnSetup.setBackgroundResource(R.drawable.button_background);
 
-        msg.setText("Setting Logger up...");
+        tvTitle.setText("Setting Logger up...");
         btnSetup.setText("Setting Up...");
 
         startAnimation(v, btnSetup);
 
         //CAENCommander.Response rs = setupLogger(loggerCommander);
-        Callable<CAENCommander.Response> resetTask = new Callable<CAENCommander.Response>() {
+        Callable<CAENCommander.Response> setUpTask = new Callable<CAENCommander.Response>() {
             @Override
             public CAENCommander.Response call() throws Exception {
                 return setupLogger(loggerCommander);
             }
         };
 
-        taskRunner.executeAsync(resetTask, (rs) -> {
+        taskRunner.executeAsync(setUpTask, (rs) -> {
             if (rs.succeeded()) {
                 btnSetup.setText("Success");
                 btnSetup.setOnClickListener(null);
@@ -98,12 +97,11 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
     private final View.OnClickListener resetBtnListener = v -> {
         btnReset.setBackgroundResource(R.drawable.button_background);
 
-        msg.setText("Resetting Logger...");
+        tvTitle.setText("Resetting Logger...");
         btnReset.setText("Resetting...");
 
         startAnimation(v, btnReset);
 
-        //CAENCommander.Response rs = resetLogger(loggerCommander);
         Callable<CAENCommander.Response> resetTask = new Callable<CAENCommander.Response>() {
             @Override
             public CAENCommander.Response call() throws Exception {
@@ -144,9 +142,9 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_dialog_caen_logger, container, false);
 
-        btnReset = (Button) rootView.findViewById(R.id.btnReset);
-        btnSetup = (Button) rootView.findViewById(R.id.btnSetup);
-        btnInit = (Button) rootView.findViewById(R.id.btnInit);
+        btnReset = rootView.findViewById(R.id.btnReset);
+        btnSetup = rootView.findViewById(R.id.btnSetup);
+        btnInit = rootView.findViewById(R.id.btnInit);
 
 
         if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
@@ -165,8 +163,8 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
 
 //        getDialog().setCanceledOnTouchOutside(false);
 
-        msg = (TextView) rootView.findViewById(R.id.loggerMessage);
-        msg.setText("Preparing Logger...");
+        tvTitle = (TextView) rootView.findViewById(R.id.loggerMessage);
+        tvTitle.setText("Preparing Logger...");
 
         return rootView;
     }

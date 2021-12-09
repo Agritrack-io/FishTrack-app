@@ -43,7 +43,6 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TempLoggerDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
@@ -59,7 +58,6 @@ public class FishingBinsActivity extends AppCompatActivity {
     private RecyclerView rvBins;
     private TextView tvBinsCount;
     private Button btnScanBin;
-    private TempLoggerDialog tempLoggerDialog;
     private String currentBin;
 
     private ImageButton ivAddBin, ivDeleteBin;

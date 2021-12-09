@@ -24,8 +24,6 @@ import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TempLoggerDialog;
-import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.service.LocalPreferences;
@@ -40,7 +38,6 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
     private Button btnScanPole;
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private TempLoggerDialog tempLoggerDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +60,6 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
         // =================================
         // RFID scanning functionality
         btnScanPole.setOnClickListener(view -> {
-            tempLoggerDialog = new TempLoggerDialog(DailyTemperatureMeasurementsActivity.this, R.string.init_temp_logger);
-            tempLoggerDialog.showDialog(null);
 
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
