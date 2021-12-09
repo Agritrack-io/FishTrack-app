@@ -12,7 +12,6 @@ import java.util.List;
 
 import io.agritrack.data.model.common.IotLogger;
 
-
 @Dao
 public interface IotLoggerDAO {
     @Query("SELECT * from iot_logger")

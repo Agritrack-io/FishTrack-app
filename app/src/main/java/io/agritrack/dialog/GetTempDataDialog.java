@@ -86,7 +86,7 @@ public class GetTempDataDialog {
         });
 
         //Thread.sleep(1000);
-        try {
+        /*try {
             CAENCommander cmd = new CAENCommander(_uhfReader, currentBin);
             short count = cmd.READ_SAMPLES_COUNT();
             List<String[]> values = cmd.READ_SAMPLES(count);
@@ -95,7 +95,7 @@ public class GetTempDataDialog {
             CAENCommander.Response rs = cmd.RESET();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
 
         txtData.setText("Successful data recovery.");

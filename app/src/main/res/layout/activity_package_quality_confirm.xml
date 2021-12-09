@@ -43,7 +43,7 @@ tools:context=".fish.ui.packageQuality.PackageQualityConfirmActivity">
         android:layout_marginBottom="32dp"
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
-        android:text="@string/title_packaging"
+        android:text="@string/title_quality"
         android:textColor="@color/yellow"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -307,7 +307,6 @@ tools:context=".fish.ui.packageQuality.PackageQualityConfirmActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
     <ImageView

@@ -13,6 +13,7 @@ import java.util.Set;
 
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.HarvestRequest;
+import io.agritrack.data.model.common.Measurements;
 import io.agritrack.data.model.tx.AssetTransaction;
 import io.agritrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.data.model.tx.CorrelationTransaction;
@@ -204,6 +205,22 @@ public class GlobalState {
             db.processingTransactionDAO().insert(txProcess);
 
             return txProcess;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Measurements commitMeasurements(MobileDB db) {
+        try {
+            Measurements measurements = new Measurements();
+            measurements.loggerRFID = recProcessing.logger_rfid;
+            measurements.retrievedAt = recProcessing.retrievedAt;
+            measurements.values = recProcessing.tempValues;
+
+            db.measurementsDAO().insert(measurements);
+
+            return measurements;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

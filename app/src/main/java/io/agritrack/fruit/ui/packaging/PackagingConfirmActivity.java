@@ -1,5 +1,6 @@
 package io.agritrack.fruit.ui.packaging;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
@@ -184,7 +185,7 @@ public class PackagingConfirmActivity extends LocationAwareActivity {
         public void onResponse(Call<PackageTxDTO> call, Response<PackageTxDTO> response) {
             PackageTxDTO rs = response.body();
 
-            if (rs != null) {
+            if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!

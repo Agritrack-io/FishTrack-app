@@ -259,7 +259,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         public void onResponse(Call<CorrelationTxDTO> call, Response<CorrelationTxDTO> response) {
             CorrelationTxDTO rs = response.body();
 
-            if (rs != null) {
+            if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
                 tvCorrPoleBarcode.setText("");
                 tvCorrTempLoggerBarcode.setText("");

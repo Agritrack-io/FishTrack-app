@@ -1,6 +1,7 @@
 <resources>
     <string name="empty" />
     <string name="app_name">FishTrack</string>
+    <string name="app_name_tomato">TomatoTrack</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
 
     <string name="label_copyright_splash">Copyright AgriTrack v1.0.0</string>
@@ -27,7 +28,7 @@
     <string name="menu_title_fishing">Fishing</string>
     <string name="menu_title_transport">Transport</string>
     <string name="menu_title_fish_receiving">Receipt</string>
-    <string name="menu_title_fish_packaging">Packaging Quality</string>
+    <string name="menu_title_fish_packaging">Quality</string>
     <string name="menu_title_warehouse">Warehouse</string>
     <string name="menu_title_maintenance">Maintenance</string>
     <string name="menu_title_sea_temp">Sea Temperature</string>
@@ -149,7 +150,7 @@
     <string name="title_date_lot_dispatch_note">DATE / LOT / DISPATCH NOTE</string>
     <string name="processing_details">Receipt details</string>
 
-    <string name="title_packaging">PACKAGE QUALITY</string>
+    <string name="title_quality">QUALITY</string>
     
     <string name="dispatch_note">Type dispatch note</string>
     <string name="enter_lot">Type LOT</string>

@@ -145,7 +145,7 @@
                     android:textColorHint="@color/black"
                     android:textSize="@dimen/text_view_font_size"
                     android:completionThreshold="1"
-                    android:imeOptions="actionNext"
+                    android:imeOptions="actionDone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

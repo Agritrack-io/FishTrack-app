@@ -367,7 +367,7 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
         public void onResponse(Call<CoInventoryDTO> call, Response<CoInventoryDTO> response) {
             CoInventoryDTO rs = response.body();
 
-            if (rs != null) {
+            if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
@@ -398,7 +398,7 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
         public void onResponse(Call<List<CoInventoryItemDTO>> call, Response<List<CoInventoryItemDTO>> response) {
             List<CoInventoryItemDTO> rs = response.body();
 
-            if (rs != null) {
+            if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!

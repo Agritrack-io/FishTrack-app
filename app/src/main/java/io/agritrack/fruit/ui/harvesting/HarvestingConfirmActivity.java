@@ -1,5 +1,6 @@
 package io.agritrack.fruit.ui.harvesting;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
@@ -173,7 +174,7 @@ public class HarvestingConfirmActivity extends LocationAwareActivity {
         public void onResponse(Call<CollectTxDTO> call, Response<CollectTxDTO> response) {
             CollectTxDTO rs = response.body();
 
-            if (rs != null) {
+            if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!

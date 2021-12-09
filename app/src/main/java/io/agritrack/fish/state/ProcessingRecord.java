@@ -1,5 +1,4 @@
 package io.agritrack.fish.state;
-
 import java.util.List;
 
 public class ProcessingRecord {
@@ -9,15 +8,16 @@ public class ProcessingRecord {
     public String packagingSite;
     public String fishCondition;
     public Short totalBinsUsed;
-    public int fishConditionPos = -1;
     public boolean cleanTruck = Boolean.TRUE;
     public boolean smellyTruck = Boolean.FALSE;
     public String remarks;
     public List<String> availBins;
+    public List<String> tempValues;
+    public Long retrievedAt;
     public String photoPath;
-
     public Double longitude;
     public Double latitude;
+    public String logger_rfid;
 
     public ProcessingRecord() {
     }

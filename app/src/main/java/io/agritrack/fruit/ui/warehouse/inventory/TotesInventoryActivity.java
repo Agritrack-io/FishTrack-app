@@ -360,7 +360,7 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         public void onResponse(Call<RFIDInventoryDTO> call, Response<RFIDInventoryDTO> response) {
             RFIDInventoryDTO rs = response.body();
 
-            if (rs != null) {
+            if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
@@ -390,7 +390,7 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         public void onResponse(Call<List<RFIDInventoryItemDTO>> call, Response<List<RFIDInventoryItemDTO>> response) {
             List<RFIDInventoryItemDTO> rs = response.body();
 
-            if (rs != null) {
+            if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!

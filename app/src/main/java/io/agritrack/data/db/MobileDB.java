@@ -21,6 +21,7 @@ import io.agritrack.data.dao.SiteDAO;
 import io.agritrack.data.dao.common.CustomerDAO;
 import io.agritrack.data.dao.common.EmployeeDAO;
 import io.agritrack.data.dao.common.IotLoggerDAO;
+import io.agritrack.data.dao.common.MeasurementsDAO;
 import io.agritrack.data.dao.common.SpeciesDAO;
 import io.agritrack.data.dao.common.ReaderDAO;
 import io.agritrack.data.dao.common.SupplierDAO;
@@ -50,6 +51,7 @@ import io.agritrack.data.model.Site;
 import io.agritrack.data.model.common.Customer;
 import io.agritrack.data.model.common.Employee;
 import io.agritrack.data.model.common.IotLogger;
+import io.agritrack.data.model.common.Measurements;
 import io.agritrack.data.model.common.Species;
 import io.agritrack.data.model.common.Reader;
 import io.agritrack.data.model.common.Supplier;
@@ -77,8 +79,8 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
         CageDetails.class, Employee.class, Species.class, Reader.class, IotLogger.class, PlantTransaction.class, CollectTransaction.class, StorageTransaction.class,
         FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class, PackageTransaction.class, ShipItemTransaction.class,
         AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class, RepairTransaction.class, SeaTemperatureTransaction.class,
-        RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class},
-        version = 10, exportSchema = false)
+        RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class, Measurements.class},
+        version = 76, exportSchema = false)
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class, ConsumableTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
@@ -158,5 +160,7 @@ public abstract class MobileDB extends RoomDatabase {
     public abstract CoInventoryItemDAO coInventoryItemDAO();
 
     public abstract OrderDAO orderDAO();
+
+    public abstract MeasurementsDAO measurementsDAO();
 }
 

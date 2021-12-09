@@ -106,16 +106,16 @@ public class FruitHomeActivity extends AppCompatActivity {
             menuItemsSet.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), FruitWhMenuActivity.class, R.drawable.warehouse));
         }
         if (roleCanAccessMenu(userRoles, Storage_semi_ready)) {
-            menuItemsSet.add(new MenuItem(Storage_semi_ready, getString(R.string.menu_title_semi_storage), SemiReadyStorageScanActivity.class, R.drawable.transport));
+            menuItemsSet.add(new MenuItem(Storage_semi_ready, getString(R.string.menu_title_semi_storage), SemiReadyStorageScanActivity.class, R.drawable.incoming));
         }
         if (roleCanAccessMenu(userRoles, Packaging_Idx)) {
-            menuItemsSet.add(new MenuItem(Packaging_Idx, getString(R.string.menu_title_packaging), PackagingStartActivity.class, R.drawable.transport));
+            menuItemsSet.add(new MenuItem(Packaging_Idx, getString(R.string.menu_title_packaging), PackagingStartActivity.class, R.drawable.packaging));
         }
         if (roleCanAccessMenu(userRoles, Storage_ready)) {
-            menuItemsSet.add(new MenuItem(Storage_ready, getString(R.string.menu_title_storage), ReadyStorageStartActivity.class, R.drawable.transport));
+            menuItemsSet.add(new MenuItem(Storage_ready, getString(R.string.menu_title_storage), ReadyStorageStartActivity.class, R.drawable.incoming));
         }
         if (roleCanAccessMenu(userRoles, Shipping_Idx)) {
-            menuItemsSet.add(new MenuItem(Shipping_Idx, getString(R.string.menu_title_shipping), ShippingStartActivity.class, R.drawable.sea_temp));
+            menuItemsSet.add(new MenuItem(Shipping_Idx, getString(R.string.menu_title_shipping), ShippingStartActivity.class, R.drawable.shipping));
         }
 
         // instantiate ProgressDialog and set style.

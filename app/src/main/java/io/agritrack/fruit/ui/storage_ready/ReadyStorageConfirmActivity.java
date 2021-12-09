@@ -1,5 +1,6 @@
 package io.agritrack.fruit.ui.storage_ready;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
@@ -187,7 +188,7 @@ public class ReadyStorageConfirmActivity extends LocationAwareActivity {
         public void onResponse(Call<StorageTxDTO> call, Response<StorageTxDTO> response) {
             StorageTxDTO rs = response.body();
 
-            if (rs != null) {
+            if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!

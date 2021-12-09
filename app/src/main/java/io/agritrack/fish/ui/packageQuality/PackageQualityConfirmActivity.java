@@ -26,7 +26,9 @@ import java.net.SocketTimeoutException;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.common.MeasurementsDTO;
 import io.agritrack.data.dto.tx.ProcessingTxDTO;
+import io.agritrack.data.model.common.Measurements;
 import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
@@ -178,12 +180,19 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
                     String token = LocalPreferences.getToken();
                     //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
-                    // persist Transportation Record data to local DB.
+                    // persist Processing Record data to local DB.
                     ProcessingTransaction tx = GlobalState.commitProcessing(db);
+
+                    // persist Measurements Record data to local DB.
+                    Measurements val = GlobalState.commitMeasurements(db);
 
                     // sync Processing records
                     Call<ProcessingTxDTO> syncTxAsyncCall = updService.syncProcessingTx(ProcessingTxDTO.convert(tx), "Bearer " + token);
                     syncTxAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncTxCallBack());
+
+                    // sync Measurements records
+                    Call<MeasurementsDTO> syncMsAsyncCall = updService.syncMeasurements(MeasurementsDTO.convert(val), "Bearer " + token);
+                    syncMsAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncMsCallBack());
                     return true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -214,6 +223,37 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
 
         @Override
         public void onFailure(Call<ProcessingTxDTO> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
+            }
+        }
+    }
+
+    public class SyncMsCallBack implements Callback<MeasurementsDTO> {
+        @Override
+        public void onResponse(Call<MeasurementsDTO> call, Response<MeasurementsDTO> response) {
+            MeasurementsDTO rs = response.body();
+
+            if (rs != null || IsDemo) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+            } else {
+                // could not update Processing TX on backend!!!
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_processing_tx_update_failure), Toast.LENGTH_LONG));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<MeasurementsDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

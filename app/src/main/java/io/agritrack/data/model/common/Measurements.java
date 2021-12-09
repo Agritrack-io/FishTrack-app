@@ -4,14 +4,13 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.List;
+
 @Entity(tableName = "measurements")
 public class Measurements {
 
     @PrimaryKey
     public Long id;
-
-    @ColumnInfo(name = "type")
-    public String type;
 
     @ColumnInfo(name = "logger_id")
     public Long loggerId;

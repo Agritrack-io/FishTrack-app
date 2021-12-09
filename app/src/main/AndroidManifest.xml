@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="io.agritrack">
 
     <uses-feature android:name="android.hardware.location.gps" />
@@ -22,32 +23,41 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/FishTrack"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:replace="android:label">
+
         <activity
             android:name=".fish.ui.packageQuality.PackageQualityConfirmActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".fish.ui.packageQuality.PackageQualityStartActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".fish.ui.packageQuality.PackageQualityInfoActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.tools.CAENLoggerActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.packaging.PackagingSelectOrderActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".fruit.ui.warehouse.measurements.DailyTemperatureMeasurementsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".fruit.ui.shipping.ShippingConfirmActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".fruit.ui.shipping.ShippingDetailsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".fruit.ui.shipping.ShippingStartActivity"
             android:exported="false"
