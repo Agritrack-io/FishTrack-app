@@ -103,6 +103,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
                 // after bin is identified, initialize the temperatures logger.
                 IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
                 if (logger != null) {
+                    tvPoleName.setText(epcStr);
                     return logger.rfid;
                 } else if (!IsDemo) {
                     CToast(getApplicationContext(), render("No IOT Logger was found linked to this POLE!!"), Toast.LENGTH_LONG);

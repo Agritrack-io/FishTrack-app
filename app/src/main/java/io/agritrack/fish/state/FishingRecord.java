@@ -36,6 +36,8 @@ public class FishingRecord {
     public Double latitude;
     public String notes;
     public String packagingPlant;
+    public Long temperatureTime;
+    public String temperature;
 
     public FishingRecord() {
     }

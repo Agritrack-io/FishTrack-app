@@ -13,15 +13,20 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import io.agritrack.R;
 import io.agritrack.caen.api.CAENCommander;
+import io.agritrack.fish.ui.bo.LoggerReading;
 
 
 public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
@@ -31,6 +36,7 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
     public static String TAG = "CaenLoggerDialogFragment";
 
     private CAENCommander loggerCommander;
+    private LoggerReading reading;
 
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0;
@@ -58,13 +64,18 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
             if (!Strings.isEmptyOrWhitespace(rs)) {
                 btnInit.setText("Success");
                 btnInit.setOnClickListener(null);
+                Map<String, Object> m = new HashMap<>();
+                m.put("timestamp", System.currentTimeMillis());
+                m.put("LastValue", rs);
 
                 getDialog().dismiss();
+                reading.setReading(m);
             } else {
                 btnInit.setText("Failed");
             }
         });
     };
+
     protected final View.OnClickListener setupBtnListener = v -> {
         // draw btnSetup background and text
         btnSetup.setBackgroundResource(R.drawable.button_background);
@@ -178,6 +189,12 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
 
 
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        reading = new ViewModelProvider(requireActivity()).get(LoggerReading.class);
     }
 
     private void startAnimation(View view, Button buttonID) {

@@ -6,6 +6,7 @@ import static io.agritrack.caen.api.EncodingUtils.parseTemperature;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,6 +24,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,9 +34,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.text.DateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import io.agritrack.R;
@@ -46,6 +55,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.bo.LoggerReading;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
@@ -58,6 +68,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     private RecyclerView rvBins;
     private TextView tvBinsCount;
     private Button btnScanBin;
+    private LoggerReading loggerReading;
 
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
@@ -89,6 +100,9 @@ public class FishingBinsActivity extends AppCompatActivity {
     private InfoDialog infoDialog;
     private ImageView ivInfo;
 
+    private DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.UK);
+
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,6 +177,17 @@ public class FishingBinsActivity extends AppCompatActivity {
         ivInfo.setOnClickListener(view -> {
             infoDialog = new InfoDialog(FishingBinsActivity.this);
             infoDialog.showDialog();
+        });
+
+        loggerReading = new ViewModelProvider(this).get(LoggerReading.class);
+        loggerReading.getReading().observe(this, reading ->{
+            String temp = (String) reading.get("LastValue");
+            Long ts = (Long) reading.get("timestamp");
+
+            GlobalState.recFishing.temperatureTime = ts;
+            GlobalState.recFishing.temperature = temp;
+
+            CToast(getApplicationContext(), String.format("%s:%s",dateFormat.format(new Date(ts)), temp), Toast.LENGTH_LONG);
         });
 
         // create Footer
