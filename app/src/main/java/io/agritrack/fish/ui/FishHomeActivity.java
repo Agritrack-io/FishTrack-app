@@ -52,7 +52,6 @@ import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.data.model.HarvestRequest;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
@@ -169,14 +168,17 @@ public class FishHomeActivity extends AppCompatActivity {
 
                             // load Harvest Request fetched via Synch op.
                             List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getAll();
-                            if (harvestRequests != null && !harvestRequests.isEmpty()) {
+                            i = new Intent(appCtx, HarvestRequestsActivity.class);
+
+                            // Currently Only Harvest Requests created at Web will be handled!!
+                         /* if (harvestRequests != null && !harvestRequests.isEmpty()) {
                                 i = new Intent(appCtx, HarvestRequestsActivity.class);
                             } else {
                                 // NO FishingTx in progress
                                 openTx = new FishingTransaction();
                                 openTx.txStatus = TxStatus.PENDING;
                                 fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
-                            }
+                            }*/
                         }
                         break;
                     case Transport_Idx:

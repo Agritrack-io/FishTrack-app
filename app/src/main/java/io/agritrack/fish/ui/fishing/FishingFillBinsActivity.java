@@ -1,13 +1,13 @@
 package io.agritrack.fish.ui.fishing;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -56,8 +56,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    FishingRecord fishingRecord = recFishing;
-    private MobileDB db;
     private Button btnCurrentBinScan, btnNextCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
     private RecyclerView rvWeightBatchesBin;
@@ -67,8 +65,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private BinLoadsMap loadsMap;
     private String selectedCatch;
     private ConstraintLayout selectedItem;
-    private Boolean isClickable = true;
-
     // Instantiate a clickListener to be passed to adapterCatches.
     // It will be used to set the catch var to the selected catch.
     private final View.OnClickListener catchesOnClickListener = new View.OnClickListener() {
@@ -139,24 +135,22 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             try {
                 String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
                 if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            String epc = epcStr.substring(11);
-                            tvCurrentBin.setText(epc);
-                            currentBin = epc;
-                            adapterCatches.setValues(loadsMap.getLoads(currentBin));
-                            adapterCatches.notifyDataSetChanged();
-                            tvUsedBinsCount.setText(loadsMap.loadsCnt());
-                        }
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        String epc = epcStr.substring(11);
+                        tvCurrentBin.setText(epc);
+                        currentBin = epc;
+                        adapterCatches.setValues(loadsMap.getLoads(currentBin));
+                        adapterCatches.notifyDataSetChanged();
+                        tvUsedBinsCount.setText(loadsMap.loadsCnt());
                     });
+
+                    btnNextCatch.setEnabled(true);
+                    btnNextCatch.setTextColor(getColor(R.color.aqua));
+                    tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
                 }
             } catch (Exception e) {
                 future.cancel(true);
             }
-
-            btnNextCatch.setEnabled(true);
-            btnNextCatch.setTextColor(getColor(R.color.aqua));
-            tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
         });
 
 
@@ -202,12 +196,12 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                         adapterCatches.notifyDataSetChanged();
 
                         tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-                        tvTotalWeightCount.setText(loadsMap.totalWeight().toString() + " " + "(" + fishingRecord.reqWeight + ")");
+                        tvTotalWeightCount.setText(String.format("%s (%s)",  loadsMap.totalWeight().toString(), recFishing.reqWeight));
 
                         //tvInventoryItemsCount.setText(String.valueOf(adapterIncomingItems.getItemCount()));
                         selectedCatch = null;
 
-                        if (adapterCatches.getItemCount()!=0) {
+                        if (adapterCatches.getItemCount() != 0) {
                             btnDeleteCatch.setEnabled(true);
                             btnDeleteCatch.setTextColor(getColor(R.color.aqua));
                         } else {
@@ -291,24 +285,25 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     }
 
     private FishingRecord updateState() {
-        FishingRecord fishingRecord = recFishing;
+        // get an instance of local DB
+        MobileDB db = MobileDB.getInstance(getAppContext());
 
         if (tvTotalWeightCount.getText() != null) {
-            fishingRecord.totalFishWeight = loadsMap.totalWeight();
+            recFishing.totalFishWeight = loadsMap.totalWeight();
         }
 
         if (tvUsedBinsCount.getText() != null && !Strings.isEmptyOrWhitespace(tvUsedBinsCount.getText().toString())) {
-            fishingRecord.totalBinsUsed = Short.valueOf(tvUsedBinsCount.getText().toString());
+            recFishing.totalBinsUsed = Short.valueOf(tvUsedBinsCount.getText().toString());
         }
 
         GlobalState.commitFishing(db, Boolean.FALSE);
 
-        return fishingRecord;
+        return recFishing;
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if(!IsDemo) {
+        if (!IsDemo) {
             if (GlobalState.recFishing.totalBinsUsed == null) {
                 sb.append(String.format("\n%s is missing", "'Harvest bins'"));
             }
@@ -325,51 +320,35 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         final EditText input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                input.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager inputMethodManager= (InputMethodManager) FishingFillBinsActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
-                    }
-                });
-            }
-        });
+        input.setOnFocusChangeListener((v, hasFocus) -> input.post(() -> {
+            InputMethodManager inputMethodManager = (InputMethodManager) FishingFillBinsActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
+        }));
         input.requestFocus();
         builder.setView(input);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mCatchWeight = input.getText().toString();
-                if (Strings.isEmptyOrWhitespace(mCatchWeight) || mCatchWeight == null) {
-                    CToast(getApplicationContext(), render("Please type weight"), Toast.LENGTH_LONG);
-                    return;
-                }
-                adapterCatches.addItem(mCatchWeight);
-                adapterCatches.notifyDataSetChanged();
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            mCatchWeight = input.getText().toString();
+            if (Strings.isEmptyOrWhitespace(mCatchWeight) || mCatchWeight == null) {
+                CToast(getApplicationContext(), render("Please type weight"), Toast.LENGTH_LONG);
+                return;
+            }
+            adapterCatches.addItem(mCatchWeight);
+            adapterCatches.notifyDataSetChanged();
 
-                tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-                tvTotalWeightCount.setText(loadsMap.totalWeight().toString() + " " + "(" + fishingRecord.reqWeight + ")");
+            tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
+            tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
 
-                if (adapterCatches.getItemCount()!=0) {
-                    btnDeleteCatch.setEnabled(true);
-                    btnDeleteCatch.setTextColor(getColor(R.color.aqua));
-                } else {
-                    btnDeleteCatch.setEnabled(false);
-                    btnDeleteCatch.setTextColor(Color.DKGRAY);
-                }
+            if (adapterCatches.getItemCount() != 0) {
+                btnDeleteCatch.setEnabled(true);
+                btnDeleteCatch.setTextColor(getColor(R.color.aqua));
+            } else {
+                btnDeleteCatch.setEnabled(false);
+                btnDeleteCatch.setTextColor(Color.DKGRAY);
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
 

@@ -42,6 +42,8 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
     private ImageView ivSupport;
     private SupportDialog supportDialog;
 
+    private long harvestRQcnt = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +65,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         // load Harvest Request fetched via Synch op.
         List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getAll();
         if (harvestRequests != null && !harvestRequests.isEmpty()) {
+            //
             this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.id, String.format("%s, %s kg, %s", x.cageCode, x.reqQty, x.fishName))).toArray(GenericListModel[]::new);
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, android.R.layout.simple_list_item_checked, harvestReqs) {
                 @Override
@@ -73,9 +76,10 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
                     return view;
                 }
             };
-
+            //
             this.lvHarvestRequests.setAdapter(candidatesAdapter);
             this.lvHarvestRequests.setOnItemClickListener(this);
+            this.harvestRQcnt = harvestRequests.size();
         }
 
         ivSupport = findViewById(R.id.ivSupport);
@@ -94,7 +98,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         ivNext.setOnClickListener(view -> {
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(v), Toast.LENGTH_LONG);
             } else {
                 // NO open FishingTx exists, instantiate a new.
                 FishingTransaction openTx = new FishingTransaction();
@@ -140,7 +144,9 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if(!IsDemo) {
+        if (this.harvestRQcnt == 0) {
+            sb.append("No Harvest Requests available. \nPlz contact Harvest Dept.");
+        } else if(!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.speciesName)) {
                 sb.append(String.format("Please Select a Harvest Request to proceed", ""));
             }

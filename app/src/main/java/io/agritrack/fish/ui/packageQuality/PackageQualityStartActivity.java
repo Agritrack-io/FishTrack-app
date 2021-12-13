@@ -6,13 +6,6 @@ import static io.agritrack.caen.api.EncodingUtils.parseTemperature;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,6 +20,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
@@ -54,7 +54,7 @@ import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.CaenLoggerReadTemperatureDialogFragment;
+import io.agritrack.ui.tools.LoggerReadFishDialogFragment;
 
 public class PackageQualityStartActivity extends AppCompatActivity {
 
@@ -335,8 +335,8 @@ public class PackageQualityStartActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(strEPC)) {
             FragmentManager fm = getSupportFragmentManager();
-            CaenLoggerReadTemperatureDialogFragment loggerDlg = CaenLoggerReadTemperatureDialogFragment.newInstance(strEPC);
-            loggerDlg.show(fm, CaenLoggerReadTemperatureDialogFragment.TAG);
+            LoggerReadFishDialogFragment loggerDlg = LoggerReadFishDialogFragment.newInstance(strEPC);
+            loggerDlg.show(fm, LoggerReadFishDialogFragment.TAG);
         } else {
             CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
         }

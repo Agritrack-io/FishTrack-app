@@ -64,9 +64,9 @@ public class CAENCommander {
     }
 
     public Response SETUP(short interval) {
-        WriteTimeBin_ONE();
-        WriteInterval(interval);
-        return WriteCurrentDatetime();
+        //WriteTimeBin_ONE();
+        return WriteInterval(interval);
+        //return WriteCurrentDatetime();
     }
 
     public short START_LOGGING() throws Exception {

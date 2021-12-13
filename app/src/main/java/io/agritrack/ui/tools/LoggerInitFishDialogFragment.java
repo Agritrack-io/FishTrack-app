@@ -1,52 +1,55 @@
 package io.agritrack.ui.tools;
 
 import static io.agritrack.caen.api.EncodingUtils.parseTemperature;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.animation.TimeAnimator;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import io.agritrack.R;
 import io.agritrack.caen.api.CAENCommander;
+import io.agritrack.fish.ui.bo.LoggerReading;
 
-public class CaenLoggerFruitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener{
-    private static final int LEVEL_INCREMENT = 100;
-    private static final int MAX_LEVEL = Integer.MAX_VALUE;
+
+public class LoggerInitFishDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
+    public static String TAG = "CAENInitFishDialogFragment";
+
+    private static final int LEVEL_INCREMENT = 1000;
+    private static final int MAX_LEVEL = 10000;
     private static final String LOGGER_EPC = "loggerEPC";
-    public static String TAG = "CaenLoggerDialogFragment";
 
     private CAENCommander loggerCommander;
+    private LoggerReading reading;
 
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0;
     private ClipDrawable mClipDrawable;
 
-    private Button btnRead, btnReset, btnSetup, btnInit;
-    private TextView tvTitle;
+    private Button btnReset, btnSetup, btnInit;
     private TaskRunner taskRunner;
 
-    private List<String[]> values = null;
-
     protected final View.OnClickListener initBtnListener = v -> {
-        btnInit.setBackgroundResource(R.drawable.button_background);
 
-        tvTitle.setText("Start Logging...");
+        // draw btnInit background and text
+        btnInit.setBackgroundResource(R.drawable.button_background);
         btnInit.setText("Start Logger...");
 
         startAnimation(v, btnInit);
@@ -62,17 +65,21 @@ public class CaenLoggerFruitDialogFragment extends DialogFragment implements Tim
             if (!Strings.isEmptyOrWhitespace(rs)) {
                 btnInit.setText("Success");
                 btnInit.setOnClickListener(null);
+                Map<String, Object> m = new HashMap<>();
+                m.put("timestamp", System.currentTimeMillis());
+                m.put("LastValue", rs);
 
                 getDialog().dismiss();
+                reading.setReading(m);
             } else {
-                btnInit.setText("Failed");
+                btnInit.setText("Init:: Failed");
             }
         });
     };
-    protected final View.OnClickListener setupBtnListener = v -> {
-        btnSetup.setBackgroundResource(R.drawable.button_background);
 
-        tvTitle.setText("Setting Logger up...");
+    protected final View.OnClickListener setupBtnListener = v -> {
+        // draw btnSetup background and text
+        btnSetup.setBackgroundResource(R.drawable.button_background);
         btnSetup.setText("Setting Up...");
 
         startAnimation(v, btnSetup);
@@ -87,21 +94,20 @@ public class CaenLoggerFruitDialogFragment extends DialogFragment implements Tim
 
         taskRunner.executeAsync(setUpTask, (rs) -> {
             if (rs.succeeded()) {
-                btnSetup.setText("Success");
+                btnSetup.setText("Setup:: OK");
                 btnSetup.setOnClickListener(null);
 
                 btnInit.setOnClickListener(initBtnListener);
                 btnInit.callOnClick();
             } else {
-                btnSetup.setText("Failed");
+                btnSetup.setText("Setup:: Failed");
             }
         });
     };
 
-    protected final View.OnClickListener resetBtnListener = v -> {
+    private final View.OnClickListener resetBtnListener = v -> {
+        // draw btnReset background and text
         btnReset.setBackgroundResource(R.drawable.button_background);
-
-        tvTitle.setText("Resetting Logger...");
         btnReset.setText("Resetting...");
 
         startAnimation(v, btnReset);
@@ -115,55 +121,28 @@ public class CaenLoggerFruitDialogFragment extends DialogFragment implements Tim
 
         taskRunner.executeAsync(resetTask, (rs) -> {
             if (rs.succeeded()) {
-                btnReset.setText("Success");
+                btnReset.setText("Reset:: OK");
                 btnReset.setOnClickListener(null);
+
+                stopAnimation();
 
                 btnSetup.setOnClickListener(setupBtnListener);
                 btnSetup.callOnClick();
             } else {
-                btnReset.setText("Failed");
+                btnReset.setText("Reset:: Failed");
             }
         });
     };
 
-    private final View.OnClickListener readBtnListener = v -> {
-        btnRead.setBackgroundResource(R.drawable.button_background);
-
-        tvTitle.setText("Start Reading...");
-        btnRead.setText("Read Logger...");
-
-        startAnimation(v, btnRead);
-        //Task for read button
-        Callable<List<String[]>> readLoggerTask = new Callable<List<String[]>>() {
-            @Override
-            public List<String[]> call() throws Exception {
-                return readLogger(loggerCommander);
-            }
-        };
-
-        taskRunner.executeAsync(readLoggerTask, (rs) -> {
-            if (rs != null) {
-                btnRead.setText("Success");
-                btnRead.setOnClickListener(null);
-
-                btnReset.setOnClickListener(resetBtnListener);
-                btnReset.callOnClick();
-                CToast(getActivity(), "Measurements:"+ rs.size(), Toast.LENGTH_LONG);
-            } else {
-                btnRead.setText("Failed. Press the button again.");
-            }
-        });
-    };
-
-    public CaenLoggerFruitDialogFragment() {
+    public LoggerInitFishDialogFragment() {
         // Empty constructor is required for DialogFragment
         // Make sure not to add arguments to the constructor
         // Use `newInstance` instead as shown below
         taskRunner = new TaskRunner();
     }
 
-    public static CaenLoggerFruitDialogFragment newInstance(String epc) {
-        CaenLoggerFruitDialogFragment frag = new CaenLoggerFruitDialogFragment();
+    public static LoggerInitFishDialogFragment newInstance(String epc) {
+        LoggerInitFishDialogFragment frag = new LoggerInitFishDialogFragment();
         Bundle args = new Bundle();
         args.putString(LOGGER_EPC, epc);
         frag.setArguments(args);
@@ -171,15 +150,23 @@ public class CaenLoggerFruitDialogFragment extends DialogFragment implements Tim
         return frag;
     }
 
+    public void startLoggerPreparation() {
+        btnReset.callOnClick();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        btnReset.callOnClick();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_dialog_fruit_caen_logger, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_dialog_fish_init_logger, container, false);
 
-        btnRead = rootView.findViewById(R.id.btnRead);
         btnReset = rootView.findViewById(R.id.btnReset);
         btnSetup = rootView.findViewById(R.id.btnSetup);
         btnInit = rootView.findViewById(R.id.btnInit);
-
 
         if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
             String loggerEPC = getArguments().getString(LOGGER_EPC);
@@ -191,20 +178,27 @@ public class CaenLoggerFruitDialogFragment extends DialogFragment implements Tim
 
             loggerCommander = new CAENCommander(_uhfReader, loggerEPC);
 
-            btnRead.setText("Press to Start.");
-            btnRead.setOnClickListener(resetBtnListener);
+            btnReset.setText("Press to Start.");
+            btnReset.setOnClickListener(resetBtnListener);
         }
 
-//        getDialog().setCanceledOnTouchOutside(false);
+        getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+        WindowManager.LayoutParams p = getDialog().getWindow().getAttributes();
+        p.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE;
+        p.y = 100;
+        getDialog().getWindow().setAttributes(p);
 
-        tvTitle = (TextView) rootView.findViewById(R.id.loggerMessage);
-        tvTitle.setText("Preparing Logger...");
 
         return rootView;
     }
 
-    private void startAnimation(View view, Button buttonID) {
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        reading = new ViewModelProvider(requireActivity()).get(LoggerReading.class);
+    }
 
+    private void startAnimation(View view, Button buttonID) {
         mCurrentLevel = 0;
 
         // Get a handle on the ClipDrawable that we will animate.
@@ -219,7 +213,9 @@ public class CaenLoggerFruitDialogFragment extends DialogFragment implements Tim
     }
 
     private void stopAnimation() {
-        mAnimator.cancel();
+        mCurrentLevel = MAX_LEVEL;
+        //mClipDrawable.setLevel(MAX_LEVEL);
+        onTimeUpdate(mAnimator, MAX_LEVEL, LEVEL_INCREMENT);
     }
 
     @Override
@@ -255,26 +251,5 @@ public class CaenLoggerFruitDialogFragment extends DialogFragment implements Tim
             e.printStackTrace();
         }
         return null;
-    }
-
-    private List<String[]> readLogger(CAENCommander cmd) {
-        //List<String[]> values = null;
-        try {
-            cmd.HighSensitivity();
-            short cnt = cmd.READ_SAMPLES_COUNT();
-            if (cnt > 0) {
-                try {
-                    values = cmd.READ_SAMPLES(cnt);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            return values;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            cmd.LowSensitivity();
-        }
-        return values;
     }
 }

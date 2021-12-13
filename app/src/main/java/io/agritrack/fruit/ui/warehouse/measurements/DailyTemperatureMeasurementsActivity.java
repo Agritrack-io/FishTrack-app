@@ -7,8 +7,6 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,11 +19,8 @@ import androidx.fragment.app.FragmentManager;
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -35,8 +30,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.CaenLoggerDialogFragment;
-import io.agritrack.ui.tools.CaenLoggerFruitDialogFragment;
+import io.agritrack.ui.tools.LoggerInitFruitDialogFragment;
 
 public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
 
@@ -139,8 +133,8 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(strEPC)) {
             FragmentManager fm = getSupportFragmentManager();
-            CaenLoggerFruitDialogFragment loggerDlg = CaenLoggerFruitDialogFragment.newInstance(strEPC);
-            loggerDlg.show(fm, CaenLoggerFruitDialogFragment.TAG);
+            LoggerInitFruitDialogFragment loggerDlg = LoggerInitFruitDialogFragment.newInstance(strEPC);
+            loggerDlg.show(fm, LoggerInitFruitDialogFragment.TAG);
         } else {
             CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
         }

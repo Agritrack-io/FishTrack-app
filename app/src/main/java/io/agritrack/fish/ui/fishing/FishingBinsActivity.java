@@ -24,8 +24,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,14 +32,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
-import java.text.DateFormat;
-import java.time.LocalDateTime;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import io.agritrack.R;
@@ -59,7 +54,7 @@ import io.agritrack.fish.ui.bo.LoggerReading;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.CaenLoggerDialogFragment;
+import io.agritrack.ui.tools.LoggerInitFishDialogFragment;
 
 public class FishingBinsActivity extends AppCompatActivity {
 
@@ -100,7 +95,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     private InfoDialog infoDialog;
     private ImageView ivInfo;
 
-    private DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.UK);
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     @SuppressLint("NewApi")
     @Override
@@ -187,7 +182,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             GlobalState.recFishing.temperatureTime = ts;
             GlobalState.recFishing.temperature = temp;
 
-            CToast(getApplicationContext(), String.format("%s:%s",dateFormat.format(new Date(ts)), temp), Toast.LENGTH_LONG);
+            CToast(getApplicationContext(), String.format("%s: %s",dateFormat.format(new Date(ts)), temp), Toast.LENGTH_LONG);
         });
 
         // create Footer
@@ -346,8 +341,8 @@ public class FishingBinsActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(strEPC)) {
             FragmentManager fm = getSupportFragmentManager();
-            CaenLoggerDialogFragment loggerDlg = CaenLoggerDialogFragment.newInstance(strEPC);
-            loggerDlg.show(fm, CaenLoggerDialogFragment.TAG);
+            LoggerInitFishDialogFragment loggerDlg = LoggerInitFishDialogFragment.newInstance(strEPC);
+            loggerDlg.show(fm, LoggerInitFishDialogFragment.TAG);
         } else {
             CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
         }
