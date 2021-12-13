@@ -246,7 +246,7 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
     private String enableLogger(CAENCommander cmd) {
         try {
             short lastTemperature = cmd.START_LOGGING();
-            return parseTemperature(lastTemperature) + "\u2103";
+            return parseTemperature(lastTemperature);
         } catch (Exception e) {
             e.printStackTrace();
         }

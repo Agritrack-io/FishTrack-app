@@ -27,15 +27,15 @@
         tools:replace="android:label">
 
         <activity
-            android:name=".fish.ui.packageQuality.PackageQualityConfirmActivity"
+            android:name=".fish.ui.quality.PackageQualityConfirmActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".fish.ui.packageQuality.PackageQualityStartActivity"
+            android:name=".fish.ui.quality.PackageQualityStartActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".fish.ui.packageQuality.PackageQualityInfoActivity"
+            android:name=".fish.ui.quality.PackageQualityInfoActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity

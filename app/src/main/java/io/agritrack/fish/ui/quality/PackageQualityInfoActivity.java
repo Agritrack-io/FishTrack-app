@@ -1,4 +1,4 @@
-package io.agritrack.fish.ui.packageQuality;
+package io.agritrack.fish.ui.quality;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
@@ -27,8 +27,6 @@ import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
-import io.agritrack.fish.ui.process.ProcessBinsActivity;
-import io.agritrack.fish.ui.process.ProcessConfirmActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 

@@ -45,6 +45,7 @@ import io.agritrack.caen.api.CAENCommander;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.IotLogger;
+import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -64,6 +65,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     private TextView tvBinsCount;
     private Button btnScanBin;
     private LoggerReading loggerReading;
+    private GetTempDataDialog tempLoggerDialog;
 
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
@@ -89,7 +91,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     };
 
     private Set<String> scannedBinEPCs;
-    private String binBarcode = "";
+    private String binBarcode = "", binEPC;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
@@ -182,7 +184,14 @@ public class FishingBinsActivity extends AppCompatActivity {
             GlobalState.recFishing.temperatureTime = ts;
             GlobalState.recFishing.temperature = temp;
 
+<<<<<<< HEAD
             CToast(getApplicationContext(), String.format("%s: %s",dateFormat.format(new Date(ts)), temp), Toast.LENGTH_LONG);
+=======
+            tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);
+            tempLoggerDialog.showDialog();
+
+            //CToast(getApplicationContext(), String.format("%s:%s",dateFormat.format(new Date(ts)), temp), Toast.LENGTH_LONG);
+>>>>>>> 85f25e63876c2b1987d82015e58a0e3a8c477eed
         });
 
         // create Footer
@@ -196,6 +205,7 @@ public class FishingBinsActivity extends AppCompatActivity {
 
         try {
             String epcStr = scanner.call();
+            binEPC = epcStr.substring(11);
             if (!Strings.isEmptyOrWhitespace(epcStr)) {
                 // after bin is identified, initialize the temperatures logger.
                 IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
