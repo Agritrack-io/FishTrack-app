@@ -1,6 +1,7 @@
 package io.agritrack.ui.tools;
 
-import static io.agritrack.caen.api.EncodingUtils.parseTemperature;
+import static io.agritrack.caen.api.EncodingUtils.parseTemperatureNumeric;
+import static io.agritrack.caen.api.EncodingUtils.parseTemperatureText;
 
 import android.animation.TimeAnimator;
 import android.graphics.drawable.ClipDrawable;
@@ -53,15 +54,15 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
 
         startAnimation(v, btnInit);
         //Task for init button
-        Callable<String> enableLoggerTask = new Callable<String>() {
+        Callable<Double> enableLoggerTask = new Callable<Double>() {
             @Override
-            public String call() throws Exception {
+            public Double call() throws Exception {
                 return enableLogger(loggerCommander);
             }
         };
 
         taskRunner.executeAsync(enableLoggerTask, (rs) -> {
-            if (!Strings.isEmptyOrWhitespace(rs)) {
+            if (rs!=-99) {
                 btnInit.setText("Success");
                 btnInit.setOnClickListener(null);
                 Map<String, Object> m = new HashMap<>();
@@ -242,10 +243,10 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
         return cmd.SETUP(CAENCommander.DefaultInterval);
     }
 
-    private String enableLogger(CAENCommander cmd) {
+    private Double enableLogger(CAENCommander cmd) {
         try {
             short lastTemperature = cmd.START_LOGGING();
-            return parseTemperature(lastTemperature);
+            return parseTemperatureNumeric(lastTemperature);
         } catch (Exception e) {
             e.printStackTrace();
         }

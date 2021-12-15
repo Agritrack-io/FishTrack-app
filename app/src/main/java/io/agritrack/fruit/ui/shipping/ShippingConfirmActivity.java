@@ -3,27 +3,12 @@ package io.agritrack.fruit.ui.shipping;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
-import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.fruit.state.FruitGlobalState.recShipping;
-import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
-import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -31,30 +16,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.util.Strings;
-
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.tx.StorageTxDTO;
-import io.agritrack.data.dto.tx.TransportTxDTO;
-import io.agritrack.data.model.tx.StorageTransaction;
-import io.agritrack.data.model.tx.TransportTransaction;
+import io.agritrack.data.dto.tx.ShippingTxDTO;
+import io.agritrack.data.model.tx.items.ShippingTxWithItems;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.enums.WarehouseTxState;
-import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.transport.TransportSupervisorConfirmActivity;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.ShippingRecord;
-import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
-import io.agritrack.fruit.ui.harvesting.HarvestingConfirmActivity;
-import io.agritrack.fruit.ui.storage_ready.ReadyStorageConfirmActivity;
-import io.agritrack.fruit.ui.storage_ready.ReadyStorageStartActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
@@ -180,10 +154,10 @@ public class ShippingConfirmActivity extends LocationAwareActivity {
                     //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
                     // persist Transportation Record data to local DB.
-                    TransportTransaction tx = FruitGlobalState.commitTransport(db);
+                    ShippingTxWithItems tx = FruitGlobalState.commitShipping(db);
 
                     // sync fish species
-                    Call<TransportTxDTO> syncTxAsyncCall = updService.syncTransportTx(TransportTxDTO.convert(tx), "Bearer " + token);
+                    Call<ShippingTxDTO> syncTxAsyncCall = updService.syncShippingTx(ShippingTxDTO.convert(tx), "Bearer " + token);
                     syncTxAsyncCall.enqueue(new ShippingConfirmActivity.SyncTxCallBack());
                     return true;
                 } catch (Exception e) {
@@ -198,21 +172,21 @@ public class ShippingConfirmActivity extends LocationAwareActivity {
         }
     }
 
-    public class SyncTxCallBack implements Callback<TransportTxDTO> {
+    public class SyncTxCallBack implements Callback<ShippingTxDTO> {
         @Override
-        public void onResponse(Call<TransportTxDTO> call, Response<TransportTxDTO> response) {
-            TransportTxDTO rs = response.body();
+        public void onResponse(Call<ShippingTxDTO> call, Response<ShippingTxDTO> response) {
+            ShippingTxDTO rs = response.body();
 
             if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Transport TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_transport_tx_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_shipping_tx_update_failure), Toast.LENGTH_LONG));
             }
         }
 
         @Override
-        public void onFailure(Call<TransportTxDTO> call, Throwable error) {
+        public void onFailure(Call<ShippingTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

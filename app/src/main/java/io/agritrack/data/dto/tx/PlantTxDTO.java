@@ -10,7 +10,7 @@ public class PlantTxDTO {
 
     public Long id;
     public String site;
-    public Long userId;
+    public String user;
     public String plant_lot;
     public String asset_rfid;
     public String logger_rfid;
@@ -24,6 +24,7 @@ public class PlantTxDTO {
 
         plantTxDTO.id = plantTransaction.id;
         plantTxDTO.site = plantTransaction.site;
+        plantTxDTO.user = plantTransaction.userId;
         plantTxDTO.plant_lot = plantTransaction.plantLot;
         plantTxDTO.asset_rfid = plantTransaction.assetRFID;
         plantTxDTO.logger_rfid = plantTransaction.loggerRFID;

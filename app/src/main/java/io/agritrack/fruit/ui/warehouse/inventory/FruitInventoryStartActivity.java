@@ -82,7 +82,7 @@ public class FruitInventoryStartActivity extends AppCompatActivity {
         gvInventoryMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final Context appCtx = getApplicationContext();
-                Intent i = new Intent(appCtx, InventoryStartActivity.class);
+                Intent i = new Intent(appCtx, FruitInventoryStartActivity.class);
 
                 switch (position) {
                     case Totes_Idx:
@@ -150,7 +150,7 @@ public class FruitInventoryStartActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHInventory.subSite)) {
+            if (Strings.isEmptyOrWhitespace(FruitGlobalState.recInventory.subSite)) {
                 sb.append(String.format("\n%s is missing", "'Site'"));
             }
         }

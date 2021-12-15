@@ -33,7 +33,7 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
-import io.agritrack.api.sync.CollectionLotEnquiryCallBack;
+import io.agritrack.api.sync.SyncCustomersCallBack;
 import io.agritrack.api.sync.SyncEmployeesCallBack;
 import io.agritrack.api.sync.SyncHarvestRequestCallBack;
 import io.agritrack.api.sync.SyncIOTLoggersCallBack;
@@ -45,6 +45,7 @@ import io.agritrack.data.dto.AppUserDTO;
 import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
+import io.agritrack.data.dto.common.CustomerDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
@@ -230,6 +231,10 @@ public class FruitHomeActivity extends AppCompatActivity {
             Call<List<SupplierDTO>> syncSuppliersAsyncCall = syncService.getSuppliersBySiteId(siteId, "Bearer " + token);
             syncSuppliersAsyncCall.enqueue(new SyncSuppliersCallBack(this.syncResult));
 
+            // sync customers
+            Call<List<CustomerDTO>> syncCustomersAsyncCall = syncService.getCustomersBySiteId(siteId, "Bearer " + token);
+            syncCustomersAsyncCall.enqueue(new SyncCustomersCallBack(this.syncResult));
+
             // sync assets  (cages, nets, bins, platforms)
             Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
             syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
@@ -241,6 +246,14 @@ public class FruitHomeActivity extends AppCompatActivity {
             // sync fish species
             Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.PRODUCT, "Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
+
+            /*// sync fish species
+            Call<String> syncSpeciesAsyncCall = syncService.getCollectionLotForToteRfid(toteRFID, "Bearer " + token);
+            syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
+
+            // sync fish species
+            Call<List<String>> syncSpeciesAsyncCall = syncService.getIfcoBatch(ifcoBarcode, "Bearer " + token);
+            syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));*/
 
             // sync IOT Loggers
             Call<List<IotLoggerDTO>> syncIOTLoggersAsyncCall = syncService.getIOTLoggersBySiteId(siteId, "Bearer " + token);

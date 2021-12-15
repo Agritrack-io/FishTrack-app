@@ -14,16 +14,20 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -84,7 +88,7 @@ public class ShippingStartActivity extends AppCompatActivity {
                 String barcode = new String(data);
                 adapterIfco.addItem(barcode);
                 adapterIfco.notifyDataSetChanged();
-                tvIfcoCount.setText("# " + adapterIfco.getItemCount());
+                tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
                 scanning = false;
             }
         }
@@ -97,7 +101,7 @@ public class ShippingStartActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvItemDescription);
+            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
             if (selectedItem != null) {
@@ -110,6 +114,7 @@ public class ShippingStartActivity extends AppCompatActivity {
         }
     };
 
+    private String ifcoBarcode;
     private ImageButton ivAddIfco, ivDeleteIfco;
     private Button btnScanIfco;
     
@@ -202,9 +207,9 @@ public class ShippingStartActivity extends AppCompatActivity {
             }
         });
 
-       /* ivAddItem.setOnClickListener(view -> {
+        ivAddIfco.setOnClickListener(view -> {
             showAddDialog();
-        });*/
+        });
 
         btnScanIfco.setOnClickListener(view -> {
             clearSelectedItem();
@@ -277,6 +282,8 @@ public class ShippingStartActivity extends AppCompatActivity {
         if (!Strings.isEmptyOrWhitespace(trns.poleRFID)) {
             tvPoleName.setText(trns.poleRFID);
         }
+
+        warehouse = trns.warehouse;
     }
 
     private ShippingRecord updateState() {
@@ -285,7 +292,7 @@ public class ShippingStartActivity extends AppCompatActivity {
         shippingRecord.packagedIfco = new LinkedList<>(adapterIfco.getValues());
 
         if (tvIfcoCount.getText() != null && !Strings.isEmptyOrWhitespace(tvIfcoCount.getText().toString())) {
-            shippingRecord.totalIfcoCnt = Short.valueOf(tvIfcoCount.getText().toString());
+            shippingRecord.totalIfcoCnt = Integer.valueOf(tvIfcoCount.getText().toString());
         }
 
         shippingRecord.poleRFID = tvPoleName.getText().toString();
@@ -304,9 +311,9 @@ public class ShippingStartActivity extends AppCompatActivity {
                 sb.append(String.format("\n%s is missing", "'Warehouse'"));
             }
 
-            if (FruitGlobalState.recShipping.packagedIfco == null || FruitGlobalState.recStorage.packagedIfco.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Received IFCO'"));
-            }
+            /*if (FruitGlobalState.recShipping.packagedIfco == null || FruitGlobalState.recStorage.packagedIfco.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'IFCO for shipping'"));
+            }*/
         }
         return sb.toString();
     }
@@ -346,5 +353,36 @@ public class ShippingStartActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+    }
+
+    private void showAddDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Type item BARCODE");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ifcoBarcode = input.getText().toString();
+                adapterIfco.addItem(ifcoBarcode);
+                adapterIfco.notifyDataSetChanged();
+                tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
     }
 }

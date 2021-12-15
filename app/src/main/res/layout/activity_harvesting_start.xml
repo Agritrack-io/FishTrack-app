@@ -143,6 +143,40 @@ tools:context=".fruit.ui.harvesting.HarvestingStartActivity">
                 tools:layout_conversion_absoluteWidth="0dp" />
 
             <TextView
+                android:id="@+id/tvSpeciesNameLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:gravity="left"
+                android:text="@string/tomato_type"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/tvSpeciesName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnScanPole" />
+
+            <TextView
+                android:id="@+id/tvSpeciesName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="70dp"
+                android:background="@drawable/bg_rounded_dialog_non_input"
+                android:gravity="center|center_vertical"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toTopOf="@+id/tvHarvestLotLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvSpeciesNameLabel" />
+
+            <TextView
                 android:id="@+id/tvHarvestLotLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

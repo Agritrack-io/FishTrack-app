@@ -1,5 +1,6 @@
 package io.agritrack.fruit.ui.packaging;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recPackaging;
@@ -12,14 +13,18 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -63,7 +68,7 @@ public class PackagingIfcoActivity extends AppCompatActivity {
                 String barcode = new String(data);
                 adapterIfco.addItem(barcode);
                 adapterIfco.notifyDataSetChanged();
-                tvIfcoCount.setText("# " + adapterIfco.getItemCount());
+                tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
                 scanning = false;
             }
         }
@@ -76,7 +81,7 @@ public class PackagingIfcoActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvItemDescription);
+            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
             if (selectedItem != null) {
@@ -89,6 +94,7 @@ public class PackagingIfcoActivity extends AppCompatActivity {
         }
     };
 
+    private String ifcoBarcode;
     private ImageButton ivAddIfco, ivDeleteIfco;
     private Button btnScanIfco;
 
@@ -107,15 +113,15 @@ public class PackagingIfcoActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvInventoryIfco.setLayoutManager(layoutManager);
         rvInventoryIfco.setItemAnimator(new DefaultItemAnimator());
         adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
         rvInventoryIfco.setAdapter(adapterIfco);
         rvInventoryIfco.setNestedScrollingEnabled(false);
+
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
 
         // initiate raw sound
         SoundUtil.initSoundPool(this);
@@ -152,9 +158,9 @@ public class PackagingIfcoActivity extends AppCompatActivity {
             }
         });
 
-       /* ivAddItem.setOnClickListener(view -> {
+        ivAddIfco.setOnClickListener(view -> {
             showAddDialog();
-        });*/
+        });
 
         btnScanIfco.setOnClickListener(view -> {
             clearSelectedItem();
@@ -197,8 +203,14 @@ public class PackagingIfcoActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackagingConfirmActivity.class);
-            startActivity(i);
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
+                Intent i = new Intent(getApplicationContext(), PackagingConfirmActivity.class);
+                startActivity(i);
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToPackagingLot);
@@ -216,7 +228,7 @@ public class PackagingIfcoActivity extends AppCompatActivity {
             adapterIfco.notifyDataSetChanged();
             //Get reference of binsCount textView
             //TextView tvBinsCount = findViewById(R.id.tvBinsCount);
-            tvIfcoCount.setText(String.valueOf(trns.totesForPackaging.size()));
+            tvIfcoCount.setText(String.valueOf(trns.packagedIfco.size()));
         }
     }
 
@@ -226,8 +238,19 @@ public class PackagingIfcoActivity extends AppCompatActivity {
         packagingRecord.packagedIfco = new LinkedList<>(adapterIfco.getValues());
 
         if (tvIfcoCount.getText() != null && !Strings.isEmptyOrWhitespace(tvIfcoCount.getText().toString())) {
-            packagingRecord.totalPackagedIfco = Short.valueOf(tvIfcoCount.getText().toString());
+            packagingRecord.totalPackagedIfco = Integer.valueOf(tvIfcoCount.getText().toString());
         }
+    }
+
+    private String validate() {
+        StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (recPackaging.packagedIfco == null || recPackaging.packagedIfco.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Packaged IFCO'"));
+            }
+        }
+
+        return sb.toString();
     }
 
     private void assignCtrlVars() {
@@ -263,5 +286,35 @@ public class PackagingIfcoActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+    }
+
+    private void showAddDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Type item BARCODE");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ifcoBarcode = input.getText().toString();
+                adapterIfco.addItem(ifcoBarcode);
+                adapterIfco.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
     }
 }

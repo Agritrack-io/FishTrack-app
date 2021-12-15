@@ -8,6 +8,7 @@ import io.agritrack.data.dto.tx.ConsumableTxDTO;
 import io.agritrack.data.dto.tx.PackageTxDTO;
 import io.agritrack.data.dto.tx.PlantTxDTO;
 import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
+import io.agritrack.data.dto.tx.ShippingTxDTO;
 import io.agritrack.data.dto.tx.StorageTxDTO;
 import io.agritrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.data.dto.tx.AssetTxDTO;
@@ -35,6 +36,10 @@ public interface TransactionApi {
     Call<TransportTxDTO> syncTransportTx(@Body TransportTxDTO transportTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/transport/shipping")
+    Call<ShippingTxDTO> syncShippingTx(@Body ShippingTxDTO shippingTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/receipt")
     Call<ProcessingTxDTO> syncProcessingTx(@Body ProcessingTxDTO processTx, @Header("Authorization") String token);
 
@@ -55,7 +60,7 @@ public interface TransactionApi {
     Call<StorageTxDTO> syncStorageTx(@Body StorageTxDTO storageTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/package")
+    @POST("/packaging/fruit")
     Call<PackageTxDTO> syncPackageTx(@Body PackageTxDTO packageTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")

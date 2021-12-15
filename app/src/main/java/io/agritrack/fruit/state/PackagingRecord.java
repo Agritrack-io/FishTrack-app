@@ -7,12 +7,12 @@ public class PackagingRecord {
 
     public String poleRFID;
     public List<String> totesForPackaging;
-    public Short totalTotesForPackaging;
+    public Integer totalTotesForPackaging;
     public String warehouse;
     public String collectionLot;
 
     public List<String> packagedIfco;
-    public Short totalPackagedIfco;
+    public Integer totalPackagedIfco;
 
     public Double longitude;
     public Double latitude;

@@ -17,9 +17,10 @@ public class GetTempDataDialog {
     private TextView txtData;
     private Button btnOk;
     private Dialog dialog;
-    private final String temperature, binEPC;
+    private final String binEPC;
+    private Double temperature;
 
-    public GetTempDataDialog(Activity activity, String temperature, String binEPC) {
+    public GetTempDataDialog(Activity activity, Double temperature, String binEPC) {
         this.activity = activity;
         this.temperature = temperature;
         this.binEPC = binEPC;
@@ -36,11 +37,11 @@ public class GetTempDataDialog {
 
     public void showDialog() {
         dialog.show();
-        if (Double.valueOf(temperature) <=  Double.valueOf(4)) {
-            String text = "The temperature " + temperature + "\u2103" + " in the bin "+binEPC+" is acceptable.";
+        if (temperature <=  Double.valueOf(4)) {
+            String text = String.format("The temperature %.2f \u2103 in the bin %s is acceptable.", temperature, binEPC);
             txtData.setText(text);
         } else {
-            String text = "The temperature " + temperature + "\u2103" + " in the bin "+binEPC+" is not acceptable. Please check ice adequacy.";
+            String text = String.format("The temperature %.2f \u2103 in the bin %s is not acceptable. Please check ice adequacy.", temperature, binEPC);
             txtData.setText(text);
         }
     }

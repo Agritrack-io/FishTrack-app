@@ -92,6 +92,9 @@ public class FishingTransaction {
     @ColumnInfo(name = "packaging_plant")
     public String packagingPlant;
 
+    @ColumnInfo(name = "temp_data")
+    public String tempData;
+
     @ColumnInfo(name = "user_name")
     public String user;
 

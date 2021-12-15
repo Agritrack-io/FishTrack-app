@@ -81,7 +81,7 @@ public class PackagingStartActivity extends AppCompatActivity {
     private TextView tvTotesCount;
     private ImageButton ivAddTote, ivDeleteTote;
     private String toteBarcode;
-    private String warehouse, firstToteRfid;
+    private String warehouse, firstToteRfid, collectionLot;
     private Optional<String> optToteRfid;
     private ConstraintLayout selectedItem;
     private String selectedBarcode;
@@ -136,6 +136,7 @@ public class PackagingStartActivity extends AppCompatActivity {
             adapterTotes.notifyDataSetChanged();
             optToteRfid = response.stream().findFirst();
             firstToteRfid = optToteRfid.get();
+            invokeEnquiryLot();
         });
 
         enquiryResult.observe(this, response -> {
@@ -143,7 +144,7 @@ public class PackagingStartActivity extends AppCompatActivity {
                 CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
                 return;
             }
-            recPackaging.collectionLot = response;
+            collectionLot = response;
         });
 
         // set (any?) previously selected values to activity Controls.
@@ -217,8 +218,6 @@ public class PackagingStartActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
-        invokeEnquiryLot();
-
         // create Footer
         configFooter();
     }
@@ -291,10 +290,14 @@ public class PackagingStartActivity extends AppCompatActivity {
             packagingRecord.warehouse = this.warehouse;
         }
 
+        if (!Strings.isEmptyOrWhitespace(this.collectionLot)) {
+            packagingRecord.collectionLot = this.collectionLot;
+        }
+
         packagingRecord.totesForPackaging = new LinkedList<>(adapterTotes.getValues());
 
         if (tvTotesCount.getText() != null && !Strings.isEmptyOrWhitespace(tvTotesCount.getText().toString())) {
-            packagingRecord.totalTotesForPackaging = Short.valueOf(tvTotesCount.getText().toString());
+            packagingRecord.totalTotesForPackaging = Integer.valueOf(tvTotesCount.getText().toString());
         }
 
         return packagingRecord;
@@ -303,7 +306,7 @@ public class PackagingStartActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(recHarvest.poleRFID)) {
+            if (Strings.isEmptyOrWhitespace(recPackaging.poleRFID)) {
                 sb.append(String.format("\n%s is missing", "'Warehouse tag'"));
             }
             if (recPackaging.totesForPackaging == null || recPackaging.totesForPackaging.isEmpty()) {

@@ -43,7 +43,7 @@ tools:context=".fruit.ui.shipping.ShippingConfirmActivity">
         android:layout_marginBottom="32dp"
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
-        android:text="@string/title_storage"
+        android:text="@string/title_shipping"
         android:textColor="@color/yellow"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -116,7 +116,7 @@ tools:context=".fruit.ui.shipping.ShippingConfirmActivity">
 
             <TextView
                 android:id="@+id/tvCustomer"
-                android:layout_width="186dp"
+                android:layout_width="206dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"

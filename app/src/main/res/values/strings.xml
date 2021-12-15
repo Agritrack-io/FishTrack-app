@@ -295,6 +295,7 @@
     <string name="synch_failed">Synchronization failed. Plz check your Internet connection!!!</string>
     <string name="no_users_found_alert">No User Info found!!!</string>
     <string name="no_employees_found_alert">No Employees Info found!!!</string>
+    <string name="no_customers_found_alert">No Customers Info found!!!</string>
     <string name="no_species_found_alert">No Fish Species Info found!!!</string>
     <string name="stop_scan">STOP Scanning</string>
     <string name="stop_search">STOP Searching</string>
@@ -306,6 +307,7 @@
     <string name="error_cancelled_call">Call was cancelled forcefully!!!</string>
     <string name="error_fishing_tx_update_failure">Fishing transaction update failure!!!</string>
     <string name="error_transport_tx_update_failure">Failed to update Transport transaction!!!</string>
+    <string name="error_shipping_tx_update_failure">Failed to update Shipping transaction!!!</string>
     <string name="error_processing_tx_update_failure">Failed to update Packaging transaction!!!</string>
     <string name="no_epc_filter_selected">Please enter the tag to search for...</string>
     <string name="scan_asset_tag">Scan Asset</string>
@@ -327,6 +329,7 @@
     <string name="cage_details_sync_completed">Cage details sync completed!</string>
     <string name="assets_sync_completed">Assets sync completed!</string>
     <string name="employees_sync_completed">Employees sync completed!</string>
+    <string name="customers_sync_completed">Customers sync completed!</string>
     <string name="users_sync_completed">Users sync completed!</string>
     <string name="delete_selected_item">"About to delete: "</string>
     <string name="select_site">Please select site</string>

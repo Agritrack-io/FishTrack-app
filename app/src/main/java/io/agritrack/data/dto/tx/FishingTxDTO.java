@@ -27,6 +27,7 @@ public class FishingTxDTO {
     public List<String> harvest_bins = new LinkedList<String>();
     public List<String> team_members = new LinkedList<String>();
     public String status;
+    public String temp_data;
     public String user;
     public String site;
     public String packaging_plant;
@@ -57,6 +58,7 @@ public class FishingTxDTO {
         fishingTxDTO.team_members = fishing.team;
         fishingTxDTO.status = fishing.txStatus.name();
         fishingTxDTO.user = fishing.user;
+        fishingTxDTO.temp_data = fishing.tempData;
         fishingTxDTO.site = fishing.site;
         fishingTxDTO.packaging_plant = fishing.packagingPlant;
         fishingTxDTO.timestamp = fishing.timestamp;

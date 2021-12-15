@@ -3,26 +3,12 @@ package io.agritrack.fruit.ui.storage_semi_ready;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
-import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
-import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -36,20 +22,15 @@ import java.net.SocketTimeoutException;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.tx.PlantTxDTO;
 import io.agritrack.data.dto.tx.StorageTxDTO;
-import io.agritrack.data.model.tx.PlantTransaction;
 import io.agritrack.data.model.tx.StorageTransaction;
+import io.agritrack.data.model.tx.items.StorageTxWithItems;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TimeOutProgressDlg;
+import io.agritrack.enums.TxStatus;
 import io.agritrack.enums.WarehouseTxState;
-import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.state.PlantRecord;
 import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
-import io.agritrack.fruit.ui.harvesting.HarvestingConfirmActivity;
-import io.agritrack.fruit.ui.planting.PlantingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
@@ -149,7 +130,7 @@ public class SemiReadyStorageConfirmActivity extends LocationAwareActivity {
     }
 
     private boolean updateState(){
-        recStorage.state = WarehouseTxState.Incoming;
+        recStorage.category = TxStatus.SEMI_READY;
 
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
@@ -172,7 +153,7 @@ public class SemiReadyStorageConfirmActivity extends LocationAwareActivity {
                     String token = LocalPreferences.getToken();
 
                     // persist Planting Record data to local DB.
-                    StorageTransaction tx = FruitGlobalState.commitSemiStorage(db);
+                    StorageTxWithItems tx = FruitGlobalState.commitSemiStorage(db);
 
                     // sync fish species
                     Call<StorageTxDTO> syncTxAsyncCall = updService.syncStorageTx(StorageTxDTO.convert(tx), "Bearer " + token);

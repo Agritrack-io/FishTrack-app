@@ -22,10 +22,12 @@ import com.google.android.gms.common.util.Strings;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
+import io.agritrack.data.model.common.Customer;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
@@ -60,10 +62,10 @@ public class ShippingDetailsActivity extends AppCompatActivity {
         assignCtrlVars();
 
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
-        List<Site> packagingSites = db.siteDAO().getAllProcessingPlants();
-        if (packagingSites != null && !packagingSites.isEmpty()) {
-            String[] packagingSite = packagingSites.stream().map(x -> x.name).toArray(String[]::new);
-            ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, packagingSite);
+        List<Customer> customers = db.customerDAO().getAll();
+        if (customers != null && !customers.isEmpty()) {
+            List<String> customerList = customers.stream().map(s -> s.name).collect(Collectors.toList());
+            ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, customerList);
             hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
             spCustomer.setAdapter(hrAdapter);
         }

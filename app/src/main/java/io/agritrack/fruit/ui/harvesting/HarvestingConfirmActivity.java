@@ -24,6 +24,7 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CollectTxDTO;
 import io.agritrack.data.model.tx.CollectTransaction;
+import io.agritrack.data.model.tx.items.CollectionTxWithItems;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.HarvestRecord;
@@ -150,7 +151,7 @@ public class HarvestingConfirmActivity extends LocationAwareActivity {
                     String token = LocalPreferences.getToken();
 
                     // persist Planting Record data to local DB.
-                    CollectTransaction tx = FruitGlobalState.commitCollecting(db);
+                    CollectionTxWithItems tx = FruitGlobalState.commitCollecting(db);
 
                     // sync fish species
                     Call<CollectTxDTO> syncTxAsyncCall = updService.syncCollectingTx(CollectTxDTO.convert(tx), "Bearer " + token);

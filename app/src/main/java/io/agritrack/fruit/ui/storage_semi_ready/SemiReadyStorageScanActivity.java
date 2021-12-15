@@ -301,7 +301,7 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
         storageRecord.receivedTotes = new LinkedList<>(adapterTotes.getValues());
 
         if (tvTotesCount.getText() != null && !Strings.isEmptyOrWhitespace(tvTotesCount.getText().toString())) {
-            storageRecord.totalTotesReceived = Short.valueOf(tvTotesCount.getText().toString());
+            storageRecord.totalTotesReceived = Integer.valueOf(tvTotesCount.getText().toString());
         }
 
         return storageRecord;

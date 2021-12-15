@@ -22,7 +22,7 @@ public class ProcessingTxDTO {
     public Long timestamp;
     public Double longitude;
     public Double latitude;
-    public List<ShipItemTxDTO> items;
+    public List<TotesTxDTO> items;
 
     public static ProcessingTxDTO convert(ProcessingTransaction processing) {
         ProcessingTxDTO processingTxDto = new ProcessingTxDTO();

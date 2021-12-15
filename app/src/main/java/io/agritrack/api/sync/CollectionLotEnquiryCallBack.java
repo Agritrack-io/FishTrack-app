@@ -12,7 +12,7 @@ import io.agritrack.data.dto.tx.CollectTxDTO;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class CollectionLotEnquiryCallBack extends BaseSyncCallBack<String>{
+public class CollectionLotEnquiryCallBack extends BaseEnquiryCallBack<String>{
 
     public CollectionLotEnquiryCallBack(MutableLiveData<String> syncResult) {
         super(syncResult);

@@ -14,22 +14,20 @@ public class StorageTransaction {
     @PrimaryKey
     public Long id;
 
-    @ColumnInfo(name = "user_id")
-    public String userId;
+    @ColumnInfo(name = "user")
+    public String user;
 
-    @TypeConverters(StringListConverter.class)
-    @ColumnInfo(name = "totes_for_storage")
-    public List<String> totesForStorage;
+    @ColumnInfo(name = "number_totes")
+    public Integer totesCnt;
 
-    @TypeConverters(StringListConverter.class)
-    @ColumnInfo(name = "ifco_for_storage")
-    public List<String> ifcoForStorage;
+    @ColumnInfo(name = "ifco_cnt")
+    public Integer ifcoCnt;
 
     @ColumnInfo(name = "current_site")
     public String site;
 
-    @ColumnInfo(name = "state")
-    public String state;
+    @ColumnInfo(name = "category")
+    public String category;
 
     @ColumnInfo(name = "source")
     public String from;

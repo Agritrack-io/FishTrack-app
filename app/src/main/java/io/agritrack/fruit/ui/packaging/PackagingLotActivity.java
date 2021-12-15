@@ -1,6 +1,7 @@
 package io.agritrack.fruit.ui.packaging;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fruit.state.FruitGlobalState.recPackaging;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,9 +11,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.util.Strings;
+
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.fruit.state.PackagingRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -66,7 +70,11 @@ public class PackagingLotActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
+        PackagingRecord trns = recPackaging;
 
+        if (!Strings.isEmptyOrWhitespace(trns.collectionLot)) {
+            tvHarvestLot.setText(trns.collectionLot);
+        }
     }
 
     private void assignCtrlVars() {

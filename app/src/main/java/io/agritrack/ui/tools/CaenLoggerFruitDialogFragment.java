@@ -1,6 +1,6 @@
 package io.agritrack.ui.tools;
 
-import static io.agritrack.caen.api.EncodingUtils.parseTemperature;
+import static io.agritrack.caen.api.EncodingUtils.parseTemperatureText;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.animation.TimeAnimator;
@@ -250,7 +250,7 @@ public class CaenLoggerFruitDialogFragment extends DialogFragment implements Tim
     private String enableLogger(CAENCommander cmd) {
         try {
             short lastTemperature = cmd.START_LOGGING();
-            return parseTemperature(lastTemperature) + "\u2103";
+            return parseTemperatureText(lastTemperature) + "\u2103";
         } catch (Exception e) {
             e.printStackTrace();
         }

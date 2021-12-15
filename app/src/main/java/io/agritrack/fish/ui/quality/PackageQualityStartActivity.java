@@ -2,7 +2,7 @@ package io.agritrack.fish.ui.quality;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.caen.api.EncodingUtils.parseTemperature;
+import static io.agritrack.caen.api.EncodingUtils.parseTemperatureText;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -217,7 +217,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
     private String initializeLogger(CAENCommander cmd) {
         try {
             short lastTemperature = cmd.INIT();
-            return parseTemperature(lastTemperature) + "\u2103";
+            return parseTemperatureText(lastTemperature) + "\u2103";
         } catch (Exception e) {
             e.printStackTrace();
         }

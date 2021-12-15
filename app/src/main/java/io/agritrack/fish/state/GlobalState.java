@@ -143,6 +143,7 @@ public class GlobalState {
             txFishing.harvestBins = recFishing.availBins;
             txFishing.team = recFishing.fishingTeam;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
+            txFishing.tempData = recFishing.binTemperatureRecord.toJSONText();
             txFishing.user = LocalPreferences.getLoggedInUser("N/A");
             txFishing.site = LocalPreferences.getCurrentSiteId().toString();
             txFishing.longitude = recFishing.longitude;

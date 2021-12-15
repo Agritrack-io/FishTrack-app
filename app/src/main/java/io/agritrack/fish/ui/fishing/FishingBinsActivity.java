@@ -2,7 +2,6 @@ package io.agritrack.fish.ui.fishing;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.caen.api.EncodingUtils.parseTemperature;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -24,8 +23,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,18 +32,14 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.text.DateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import io.agritrack.R;
 import io.agritrack.barcode.SoundUtil;
-import io.agritrack.caen.api.CAENCommander;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.IotLogger;
@@ -182,12 +175,11 @@ public class FishingBinsActivity extends AppCompatActivity {
         });
 
         loggerReading = new ViewModelProvider(this).get(LoggerReading.class);
-        loggerReading.getReading().observe(this, reading ->{
-            String temp = (String) reading.get("LastValue");
+        loggerReading.getReading().observe(this, reading -> {
+            Double temp = (Double) reading.get("LastValue");
             Long ts = (Long) reading.get("timestamp");
 
-            GlobalState.recFishing.temperatureTime = ts;
-            GlobalState.recFishing.temperature = temp;
+            GlobalState.recFishing.binTemperatureRecord.addRecord(binEPC, ts, temp);
 
             tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);
             tempLoggerDialog.showDialog();
@@ -220,24 +212,6 @@ public class FishingBinsActivity extends AppCompatActivity {
                     CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_LONG);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private CAENCommander.Response resetLogger(CAENCommander cmd) {
-        return cmd.RESET();
-    }
-
-    private CAENCommander.Response setupLogger(CAENCommander cmd) {
-        return cmd.SETUP(CAENCommander.DefaultInterval);
-    }
-
-    private String enableLogger(CAENCommander cmd) {
-        try {
-            short lastTemperature = cmd.START_LOGGING();
-            return parseTemperature(lastTemperature) + "\u2103";
         } catch (Exception e) {
             e.printStackTrace();
         }

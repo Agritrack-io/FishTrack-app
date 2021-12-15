@@ -42,7 +42,7 @@ public class CaenLoggerReadTemperatureDialogFragment extends DialogFragment impl
     private TextView tvTitle;
     private TaskRunner taskRunner;
 
-    private List<String[]> values = null;
+    private List<Double> values = null;
 
     protected final View.OnClickListener resetBtnListener = v -> {
         btnReset.setBackgroundResource(R.drawable.button_background);
@@ -79,9 +79,9 @@ public class CaenLoggerReadTemperatureDialogFragment extends DialogFragment impl
 
         startAnimation(v, btnRead);
         //Task for read button
-        Callable<List<String[]>> readLoggerTask = new Callable<List<String[]>>() {
+        Callable<List<Double>> readLoggerTask = new Callable<List<Double>>() {
             @Override
-            public List<String[]> call() throws Exception {
+            public List<Double> call() throws Exception {
                 return readLogger(loggerCommander);
             }
         };
@@ -91,7 +91,7 @@ public class CaenLoggerReadTemperatureDialogFragment extends DialogFragment impl
                 btnRead.setText("Success");
                 btnRead.setOnClickListener(null);
                 getDialog().dismiss();
-                displayMeasurementsDialog(values);
+                displayMeasurementsDialogWithoutTimestamp(values);
 
                 //btnReset.setOnClickListener(resetBtnListener);
                 //btnReset.callOnClick();
@@ -187,14 +187,14 @@ public class CaenLoggerReadTemperatureDialogFragment extends DialogFragment impl
         return cmd.RESET();
     }
 
-    private List<String[]> readLogger(CAENCommander cmd) {
+    private List<Double> readLogger(CAENCommander cmd) {
         //List<String[]> values = null;
         try {
             cmd.HighSensitivity();
             short cnt = cmd.READ_SAMPLES_COUNT();
             if (cnt > 0) {
                 try {
-                    values = cmd.READ_SAMPLES(cnt);
+                    values = cmd.READ_SAMPLES_WITHOUT_TIMESTAMP(cnt);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -218,6 +218,22 @@ public class CaenLoggerReadTemperatureDialogFragment extends DialogFragment impl
         int idx = 1;
         for (String[] value : values) {
             arrayAdapter.add(String.format("%3d. [%s] --> %s", idx++, value[0], value[1]));
+        }
+        dlgBuilder.setAdapter(arrayAdapter, null);
+        dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
+        dlgBuilder.create().show();
+    }
+
+    private void displayMeasurementsDialogWithoutTimestamp(List<Double> values) {
+
+        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(getActivity());
+        dlgBuilder.setTitle("Logger Data");
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.agri_list_item_12dp);
+
+        int idx = 1;
+        for (Double value : values) {
+            arrayAdapter.add(String.format("%s:/t%.2f", idx++, value));
         }
         dlgBuilder.setAdapter(arrayAdapter, null);
         dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());

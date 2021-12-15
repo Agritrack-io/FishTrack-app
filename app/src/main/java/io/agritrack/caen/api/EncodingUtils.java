@@ -88,17 +88,25 @@ public class EncodingUtils {
 
                 byte[] bytes = new byte[]{data[i + 4], data[i + 5], data[i + 2], data[i + 3]};
                 String ts = BytesToHex(bytes);
-                sb.append(parseTemperature(t) + "\u2103, " + "\t" + parseTimestamp(bytes) + "\n");
+                sb.append(parseTemperatureText(t) + "\u2103, " + "\t" + parseTimestamp(bytes) + "\n");
             }
         }
         return sb.toString();
     }
 
-    public static String parseTemperature(short t) {
+    public static String parseTemperatureText(short t) {
         if (t > 2240) {
             return String.format("%.2f",(double)(t - 8192) / 32d);
         } else {
             return String.format("%.2f",(double)(t / 32d));
+        }
+    }
+
+    public static Double parseTemperatureNumeric(short t) {
+        if (t > 2240) {
+            return ((double)(t - 8192) / 32d);
+        } else {
+            return ((double)(t / 32d));
         }
     }
 

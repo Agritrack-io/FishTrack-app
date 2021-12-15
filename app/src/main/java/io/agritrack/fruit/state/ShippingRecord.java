@@ -13,7 +13,7 @@ public class ShippingRecord {
     public Double latitude;
     public String warehouse;
     public List<String> packagedIfco;
-    public Short totalIfcoCnt;
+    public Integer totalIfcoCnt;
     public WarehouseTxState state;
     public int customerPos = -1;
     public String driverName;

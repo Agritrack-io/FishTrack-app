@@ -1,35 +1,48 @@
 package io.agritrack.data.dto.tx;
 
+import com.google.android.gms.common.util.CollectionUtils;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import io.agritrack.data.model.tx.CollectTransaction;
+import io.agritrack.data.model.tx.items.CollectionTxWithItems;
 
 public class CollectTxDTO {
 
     public Long id;
     public String site;
-    public String user_id;
+    public String user;
+    public List<String> totes = new LinkedList<String>();
     public String plant_lot;
     public String asset_rfid;
     public String species;
-    private String collection_lot;
-    private Integer totes_cnt;
+    public String collection_lot;
+    public Integer totes_cnt;
     public Double longitude;
     public Double latitude;
     public Long created_at;
 
-    public static CollectTxDTO convert(CollectTransaction collectTransaction) {
+    public static CollectTxDTO convert(CollectionTxWithItems collectTransaction) {
         CollectTxDTO collectTxDTO = new CollectTxDTO();
-
-        collectTxDTO.id = collectTransaction.id;
-        collectTxDTO.site = collectTransaction.site;
-        collectTxDTO.user_id = collectTransaction.userId;
-        collectTxDTO.plant_lot = collectTransaction.plantLot;
-        collectTxDTO.asset_rfid = collectTransaction.assetRFID;
-        collectTxDTO.species = collectTransaction.species;
-        collectTxDTO.collection_lot = collectTransaction.collectionLot;
-        collectTxDTO.totes_cnt = collectTransaction.totesCnt;
-        collectTxDTO.longitude = collectTransaction.longitude;
-        collectTxDTO.latitude = collectTransaction.latitude;
-        collectTxDTO.created_at = collectTransaction.createdAt;
+        if (collectTransaction.collectTx != null){
+            CollectTransaction collectTx = collectTransaction.collectTx;
+            collectTxDTO.id = collectTx.id;
+            collectTxDTO.site = collectTx.site;
+            collectTxDTO.user = collectTx.userId;
+            if (!CollectionUtils.isEmpty(collectTransaction.items)){
+                collectTxDTO.totes = collectTransaction.items.stream().map(x-> x.epc).collect(Collectors.toList());
+            }
+            collectTxDTO.plant_lot = collectTx.plantLot;
+            collectTxDTO.asset_rfid = collectTx.assetRFID;
+            collectTxDTO.species = collectTx.species;
+            collectTxDTO.collection_lot = collectTx.collectionLot;
+            collectTxDTO.totes_cnt = collectTx.totesCnt;
+            collectTxDTO.longitude = collectTx.longitude;
+            collectTxDTO.latitude = collectTx.latitude;
+            collectTxDTO.created_at = collectTx.createdAt;
+        }
 
         return collectTxDTO;
     }

@@ -18,7 +18,8 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ONE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_TWO;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ZERO;
 import static io.agritrack.caen.api.EncodingUtils.ToShort;
-import static io.agritrack.caen.api.EncodingUtils.parseTemperature;
+import static io.agritrack.caen.api.EncodingUtils.parseTemperatureNumeric;
+import static io.agritrack.caen.api.EncodingUtils.parseTemperatureText;
 import static io.agritrack.caen.api.EncodingUtils.parseTimestamp;
 
 import com.android.hdhe.uhf.reader.UhfReader;
@@ -64,9 +65,8 @@ public class CAENCommander {
     }
 
     public Response SETUP(short interval) {
-        WriteTimeBin_ONE();
-        WriteInterval(interval);
-        return WriteCurrentDatetime();
+        //WriteTimeBin_ONE();
+        return WriteInterval(interval);
     }
 
     public short START_LOGGING() throws Exception {
@@ -220,6 +220,21 @@ public class CAENCommander {
         }
     }
 
+    public List<Double> READ_SAMPLES_WITHOUT_TIMESTAMP(int samplesCnt) throws Exception {
+        if (samplesCnt <= SampleBatchSize) {
+            return READ_SAMPLES_BATCH_WITHOUT_TIMESTAMP(SHORT_ZERO, samplesCnt);
+        } else {
+            List<Double> result = new LinkedList<>();
+            for (short batchStart = 0; batchStart < samplesCnt; batchStart += SampleBatchSize) {
+                short batchSize = (samplesCnt - batchStart) >= SampleBatchSize ? SampleBatchSize : (short) (samplesCnt % SampleBatchSize);
+                List<Double> batch = READ_SAMPLES_BATCH_WITHOUT_TIMESTAMP((short) (batchStart * 3), batchSize);
+                result.addAll(batch);
+                Thread.sleep(200l);
+            }
+            return result;
+        }
+    }
+
     private List<String[]> READ_SAMPLES_BATCH(short start, int samplesCnt) throws Exception {
         byte[] reply = CAENRegistersIO.ReadRegisters(uhfReader, (short) (ADDR_LOGS + start), (short) (samplesCnt * 3), accessPassword);
         if (reply != null && reply.length > 0 && reply[0] == REPLY_NACK)
@@ -228,6 +243,16 @@ public class CAENCommander {
             return new LinkedList<>();
 
         return parseData(reply);
+    }
+
+    private List<Double> READ_SAMPLES_BATCH_WITHOUT_TIMESTAMP(short start, int samplesCnt) throws Exception {
+        byte[] reply = CAENRegistersIO.ReadRegisters(uhfReader, (short) (ADDR_LOGS + start), (short) (samplesCnt * 3), accessPassword);
+        if (reply != null && reply.length > 0 && reply[0] == REPLY_NACK)
+            throw new Exception("Failed to read sample data.");
+        else if (reply.length < 2)
+            return new LinkedList<>();
+
+        return parseDataWithoutTimestamp(reply);
     }
 
     public short READ_TIME_BIN() throws Exception {
@@ -267,12 +292,22 @@ public class CAENCommander {
         for (int i = 0; i < data.length - 5; i += 6) {
             short t = ToShort(new byte[]{data[i], data[i + 1]});
             byte[] bytes = new byte[]{data[i + 4], data[i + 5], data[i + 2], data[i + 3]};
-            measurements.add(new String[]{parseTimestamp(bytes), parseTemperature(t) + "\u2103"});
+            measurements.add(new String[]{parseTimestamp(bytes), parseTemperatureText(t) + "\u2103"});
         }
 
         return measurements;
     }
 
+    private List<Double> parseDataWithoutTimestamp(byte[] data) {
+        List<Double> measurements = new LinkedList<>();
+
+        for (int i = 0; i < data.length - 5; i += 6) {
+            short t = ToShort(new byte[]{data[i], data[i + 1]});
+            measurements.add(parseTemperatureNumeric(t));
+        }
+
+        return measurements;
+    }
 
     public class Response {
         public byte code;

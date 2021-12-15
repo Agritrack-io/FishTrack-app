@@ -6,6 +6,7 @@ import io.agritrack.data.dto.AppUserDTO;
 import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
+import io.agritrack.data.dto.common.CustomerDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
@@ -56,6 +57,10 @@ public interface SyncApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/suppliers/{siteId}")
     Call<List<SupplierDTO>> getSuppliersBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/customer/{siteId}")
+    Call<List<CustomerDTO>> getCustomersBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/species")

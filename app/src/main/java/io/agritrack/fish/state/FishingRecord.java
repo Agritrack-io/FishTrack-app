@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.fish.ui.bo.BinTemperatureRecord;
 
 public class FishingRecord {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
@@ -36,8 +37,7 @@ public class FishingRecord {
     public Double latitude;
     public String notes;
     public String packagingPlant;
-    public Long temperatureTime;
-    public String temperature;
+    public BinTemperatureRecord binTemperatureRecord = new BinTemperatureRecord();
 
     public FishingRecord() {
     }

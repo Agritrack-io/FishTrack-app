@@ -40,6 +40,7 @@ import io.agritrack.data.dto.tx.CollectTxDTO;
 import io.agritrack.data.dto.tx.PackageTxDTO;
 import io.agritrack.data.model.tx.CollectTransaction;
 import io.agritrack.data.model.tx.PackageTransaction;
+import io.agritrack.data.model.tx.items.PackageTxWithItems;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.fruit.state.FruitGlobalState;
@@ -161,7 +162,7 @@ public class PackagingConfirmActivity extends LocationAwareActivity {
                     String token = LocalPreferences.getToken();
 
                     // persist Planting Record data to local DB.
-                    PackageTransaction tx = FruitGlobalState.commitPackaging(db);
+                    PackageTxWithItems tx = FruitGlobalState.commitPackaging(db);
 
                     // sync fish species
                     Call<PackageTxDTO> syncTxAsyncCall = updService.syncPackageTx(PackageTxDTO.convert(tx), "Bearer " + token);

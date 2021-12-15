@@ -20,19 +20,17 @@ public class PackageTransaction {
     @ColumnInfo(name = "site")
     public String site;
 
-    @ColumnInfo(name = "user_id")
-    public String userId;
+    @ColumnInfo(name = "user")
+    public String user;
 
     @ColumnInfo(name = "collection_lot")
     public String collectionLot;
 
-    @TypeConverters(StringListConverter.class)
-    @ColumnInfo(name = "totes_for_process")
-    public List<String> totesForProcess;
+    @ColumnInfo(name = "totes_cnt")
+    public Integer totesCnt;
 
-    @TypeConverters(StringListConverter.class)
-    @ColumnInfo(name = "packaged_ifco")
-    public List<String> packagedIfco;
+    @ColumnInfo(name = "ifco_cnt")
+    public Integer ifcoCnt;
 
     @ColumnInfo(name = "longitude")
     public Double longitude;

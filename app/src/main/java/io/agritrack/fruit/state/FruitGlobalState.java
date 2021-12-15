@@ -2,6 +2,8 @@ package io.agritrack.fruit.state;
 
 import static io.agritrack.enums.AssetType.ALL;
 
+import com.google.android.gms.common.util.CollectionUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +15,17 @@ import io.agritrack.data.model.tx.AssetTransaction;
 import io.agritrack.data.model.tx.CollectTransaction;
 import io.agritrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.data.model.tx.CorrelationTransaction;
+import io.agritrack.data.model.tx.IfcoTransaction;
 import io.agritrack.data.model.tx.PackageTransaction;
 import io.agritrack.data.model.tx.PlantTransaction;
+import io.agritrack.data.model.tx.ShippingTransaction;
+import io.agritrack.data.model.tx.TotesTransaction;
 import io.agritrack.data.model.tx.StorageTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
+import io.agritrack.data.model.tx.items.CollectionTxWithItems;
+import io.agritrack.data.model.tx.items.PackageTxWithItems;
+import io.agritrack.data.model.tx.items.ShippingTxWithItems;
+import io.agritrack.data.model.tx.items.StorageTxWithItems;
 import io.agritrack.data.model.wh.CoInventory;
 import io.agritrack.data.model.wh.CoInventoryItem;
 import io.agritrack.data.model.wh.RFIDInventory;
@@ -132,108 +141,185 @@ public class FruitGlobalState {
         }
     }
 
-    public static CollectTransaction commitCollecting(MobileDB db) {
+    public static CollectionTxWithItems commitCollecting(MobileDB db) {
         try {
             CollectTransaction txCollecting = new CollectTransaction();
 
             txCollecting.assetRFID = recHarvest.poleRFID;
             txCollecting.site = recHarvest.greenhouse;
             txCollecting.collectionLot = recHarvest.harvestLot;
+            txCollecting.species = recHarvest.speciesName;
             txCollecting.totesCnt = recHarvest.totalTotesUsed;
             txCollecting.userId = LocalPreferences.getLoggedInUser("N/A");
             txCollecting.longitude = recHarvest.longitude;
             txCollecting.latitude = recHarvest.latitude;
             txCollecting.createdAt = System.currentTimeMillis();
 
-            db.collectingTransactionDAO().insert(txCollecting);
+            Long[] ids = db.collectingTransactionDAO().insert(txCollecting);
+            if (!CollectionUtils.isEmpty(recHarvest.totes)) {
+                TotesTransaction[] items = new TotesTransaction[recHarvest.totes.size()];
+                int i =0;
+                for (String tote : recHarvest.totes) {
+                    TotesTransaction itemTx = new TotesTransaction();
+                    itemTx.collectionTxId = ids[0];
+                    itemTx.epc = tote;
+                    items[i] = itemTx;
+                    i++;
+                }
+                db.totesTransactionDAO().insert(items);
+            }
 
-            return txCollecting;
+            return db.collectingTransactionDAO().getById(ids[0]);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
     }
 
-    public static StorageTransaction commitSemiStorage(MobileDB db) {
+    public static StorageTxWithItems commitSemiStorage(MobileDB db) {
         try {
             StorageTransaction txSemiStorage = new StorageTransaction();
 
-            txSemiStorage.totesForStorage = recStorage.receivedTotes;
+            txSemiStorage.totesCnt = recStorage.totalTotesReceived;
             txSemiStorage.totalWeight = recStorage.totalWeight;
             txSemiStorage.collectionLot = recStorage.harvestLot;
-            txSemiStorage.state = recStorage.state.name();
+            txSemiStorage.site = LocalPreferences.getCurrentSiteName();
+            txSemiStorage.category = recStorage.category.name();
             txSemiStorage.to = recStorage.warehouse;
-            txSemiStorage.userId = LocalPreferences.getLoggedInUser("N/A");
+            txSemiStorage.user = LocalPreferences.getLoggedInUser("N/A");
             txSemiStorage.longitude = recStorage.longitude;
             txSemiStorage.latitude = recStorage.latitude;
             txSemiStorage.createdAt = System.currentTimeMillis();
 
-            db.storageTransactionDAO().insert(txSemiStorage);
-            return txSemiStorage;
+            Long[] ids = db.storageTransactionDAO().insert(txSemiStorage);
+            if (!CollectionUtils.isEmpty(recStorage.receivedTotes)) {
+                TotesTransaction[] items = new TotesTransaction[recStorage.receivedTotes.size()];
+                int i =0;
+                for (String tote : recStorage.receivedTotes) {
+                    TotesTransaction itemTx = new TotesTransaction();
+                    itemTx.storageTxId = ids[0];
+                    itemTx.epc = tote;
+                    items[i] = itemTx;
+                    i++;
+                }
+                db.totesTransactionDAO().insert(items);
+            }
+
+            return db.storageTransactionDAO().getById(ids[0]);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
     }
 
-    public static PackageTransaction commitPackaging(MobileDB db) {
+    public static PackageTxWithItems commitPackaging(MobileDB db) {
         try {
             PackageTransaction txPackage = new PackageTransaction();
 
-            txPackage.totesForProcess = recPackaging.totesForPackaging;
-            txPackage.packagedIfco = recPackaging.packagedIfco;
+            txPackage.totesCnt = recPackaging.totalTotesForPackaging;
+            txPackage.ifcoCnt = recPackaging.totalPackagedIfco;
             txPackage.collectionLot = recPackaging.collectionLot;
-            txPackage.userId = LocalPreferences.getLoggedInUser("N/A");
+            txPackage.user = LocalPreferences.getLoggedInUser("N/A");
             txPackage.longitude = recPackaging.longitude;
             txPackage.latitude = recPackaging.latitude;
             txPackage.createdAt = System.currentTimeMillis();
 
-            db.packageTransactionDAO().insert(txPackage);
+            Long[] ids = db.packageTransactionDAO().insert(txPackage);
+            if (!CollectionUtils.isEmpty(recPackaging.totesForPackaging)) {
+                TotesTransaction[] totes = new TotesTransaction[recPackaging.totesForPackaging.size()];
+                int i =0;
+                for (String tote : recPackaging.totesForPackaging) {
+                    TotesTransaction itemTx = new TotesTransaction();
+                    itemTx.packageTxId = ids[0];
+                    itemTx.epc = tote;
+                    totes[i] = itemTx;
+                    i++;
+                }
+                db.totesTransactionDAO().insert(totes);
+            }
 
-            return txPackage;
+            if (!CollectionUtils.isEmpty(recPackaging.packagedIfco)) {
+                IfcoTransaction[] ifcos = new IfcoTransaction[recPackaging.packagedIfco.size()];
+                int i =0;
+                for (String ifco : recPackaging.packagedIfco) {
+                    IfcoTransaction itemTx = new IfcoTransaction();
+                    itemTx.packageTxId = ids[0];
+                    itemTx.barcode = ifco;
+                    ifcos[i] = itemTx;
+                    i++;
+                }
+                db.ifcoTransactionDAO().insert(ifcos);
+            }
+
+            return db.packageTransactionDAO().getById(ids[0]);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
     }
 
-    public static StorageTransaction commitReadyStorage(MobileDB db) {
+    public static StorageTxWithItems commitReadyStorage(MobileDB db) {
         try {
             StorageTransaction txReadyStorage = new StorageTransaction();
 
-            txReadyStorage.ifcoForStorage = recStorage.packagedIfco;
+            txReadyStorage.ifcoCnt = recStorage.totalIfcoCnt;
             txReadyStorage.collectionLot = recStorage.harvestLot;
-            txReadyStorage.state = recStorage.state.name();
+            txReadyStorage.category = recStorage.category.name();
             txReadyStorage.to = recStorage.warehouse;
-            txReadyStorage.userId = LocalPreferences.getLoggedInUser("N/A");
+            txReadyStorage.user = LocalPreferences.getLoggedInUser("N/A");
             txReadyStorage.longitude = recStorage.longitude;
             txReadyStorage.latitude = recStorage.latitude;
             txReadyStorage.createdAt = System.currentTimeMillis();
 
-            db.storageTransactionDAO().insert(txReadyStorage);
-            return txReadyStorage;
+            Long[] ids = db.storageTransactionDAO().insert(txReadyStorage);
+            if (!CollectionUtils.isEmpty(recStorage.packagedIfco)) {
+                IfcoTransaction[] items = new IfcoTransaction[recStorage.packagedIfco.size()];
+                int i =0;
+                for (String ifco : recStorage.packagedIfco) {
+                    IfcoTransaction itemTx = new IfcoTransaction();
+                    itemTx.storageTxId = ids[0];
+                    itemTx.barcode = ifco;
+                    items[i] = itemTx;
+                    i++;
+                }
+                db.ifcoTransactionDAO().insert(items);
+            }
+
+            return db.storageTransactionDAO().getById(ids[0]);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
     }
 
-    public static TransportTransaction commitTransport(MobileDB db) {
+    public static ShippingTxWithItems commitShipping(MobileDB db) {
         try {
-            TransportTransaction txTransport = new TransportTransaction();
+            ShippingTransaction txShipping = new ShippingTransaction();
 
-            txTransport.siteCode = LocalPreferences.getCurrentSiteName();
-            txTransport.destination = recShipping.customer;
-            txTransport.driverName = recShipping.driverName;
-            txTransport.truckLicensePlate = recShipping.licensePlate;
-            txTransport.timestamp = System.currentTimeMillis();
-            txTransport.loadedBins = recShipping.packagedIfco;
-            txTransport.user = LocalPreferences.getLoggedInUser("N/A");
-            txTransport.longitude = recShipping.longitude;
-            txTransport.latitude = recShipping.latitude;
+            txShipping.driverName = recShipping.driverName;
+            txShipping.truckLicensePlate = recShipping.licensePlate;
+            txShipping.timestamp = System.currentTimeMillis();
+            txShipping.user = LocalPreferences.getLoggedInUser("N/A");
+            txShipping.customer = recShipping.customer;
+            txShipping.ifcoCnt = recShipping.totalIfcoCnt;
+            txShipping.longitude = recShipping.longitude;
+            txShipping.latitude = recShipping.latitude;
 
-            db.transportTransactionDAO().insert(txTransport);
-            return txTransport;
+            Long[] ids = db.shippingTransactionDAO().insert(txShipping);
+            if (!CollectionUtils.isEmpty(recShipping.packagedIfco)) {
+                IfcoTransaction[] items = new IfcoTransaction[recShipping.packagedIfco.size()];
+                int i =0;
+                for (String ifco : recShipping.packagedIfco) {
+                    IfcoTransaction itemTx = new IfcoTransaction();
+                    itemTx.shippingTxId = ids[0];
+                    itemTx.barcode = ifco;
+                    items[i] = itemTx;
+                    i++;
+                }
+                db.ifcoTransactionDAO().insert(items);
+            }
+
+            return db.shippingTransactionDAO().getById(ids[0]);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

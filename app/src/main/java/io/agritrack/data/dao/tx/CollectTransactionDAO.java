@@ -6,23 +6,27 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import java.util.List;
 
 import io.agritrack.data.model.tx.CollectTransaction;
+import io.agritrack.data.model.tx.items.CollectionTxWithItems;
 
 @Dao
 public interface CollectTransactionDAO {
 
+    @Transaction
     @Query("SELECT * from collect_transaction")
-    LiveData<List<CollectTransaction>> getAll();
+    LiveData<List<CollectionTxWithItems>> getAll();
 
+    @Transaction
     @Query("SELECT * from collect_transaction where id=:collectingTransactionId LIMIT 1")
-    CollectTransaction getById(Long collectingTransactionId);
+    CollectionTxWithItems getById(Long collectingTransactionId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(CollectTransaction... collectTransactions);
+    Long[] insert(CollectTransaction... collectTransactions);
 
     @Delete
     void delete(CollectTransaction collectTransaction);
