@@ -6,6 +6,9 @@
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_fruit_inventory_start.xml" value="0.2526041666666667" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_harvesting_start.xml" value="0.153125" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_harvesting_totes.xml" value="0.153125" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_ifco_inventory.xml" value="0.2630208333333333" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_incoming_consumable.xml" value="0.2630208333333333" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_incoming_ifco.xml" value="0.2630208333333333" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_inventory_consumable.xml" value="0.264" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_packaging_ifco.xml" value="0.27447916666666666" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_planting_start.xml" value="0.153125" />
@@ -19,4 +22,5 @@
       </map>
     </option>
   </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

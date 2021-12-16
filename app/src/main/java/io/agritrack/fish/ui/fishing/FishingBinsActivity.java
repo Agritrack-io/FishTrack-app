@@ -30,12 +30,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
-
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.Set;
 
 import io.agritrack.R;
@@ -53,7 +51,7 @@ import io.agritrack.fish.ui.bo.LoggerReading;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.CaenLoggerDialogFragment;
+import io.agritrack.ui.tools.LoggerInitFishDialogFragment;
 
 public class FishingBinsActivity extends AppCompatActivity {
 
@@ -95,7 +93,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     private InfoDialog infoDialog;
     private ImageView ivInfo;
 
-    private DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.UK);
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     @SuppressLint("NewApi")
     @Override
@@ -183,8 +181,6 @@ public class FishingBinsActivity extends AppCompatActivity {
 
             tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);
             tempLoggerDialog.showDialog();
-
-            //CToast(getApplicationContext(), String.format("%s:%s",dateFormat.format(new Date(ts)), temp), Toast.LENGTH_LONG);
         });
 
         // create Footer
@@ -283,6 +279,7 @@ public class FishingBinsActivity extends AppCompatActivity {
                 binBarcode = input.getText().toString();
                 adapterBins.addUniqueItem(binBarcode);
                 adapterBins.notifyDataSetChanged();
+                tvBinsCount.setText(String.valueOf(adapterBins.getValues().size()));
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -326,8 +323,8 @@ public class FishingBinsActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(strEPC)) {
             FragmentManager fm = getSupportFragmentManager();
-            CaenLoggerDialogFragment loggerDlg = CaenLoggerDialogFragment.newInstance(strEPC);
-            loggerDlg.show(fm, CaenLoggerDialogFragment.TAG);
+            LoggerInitFishDialogFragment loggerDlg = LoggerInitFishDialogFragment.newInstance(strEPC);
+            loggerDlg.show(fm, LoggerInitFishDialogFragment.TAG);
         } else {
             CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
         }

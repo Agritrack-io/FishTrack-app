@@ -30,11 +30,12 @@ import io.agritrack.caen.api.CAENCommander;
 import io.agritrack.fish.ui.bo.LoggerReading;
 
 
-public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
+public class LoggerInitFishDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
+    public static String TAG = "CAENInitFishDialogFragment";
+
     private static final int LEVEL_INCREMENT = 1000;
     private static final int MAX_LEVEL = 10000;
     private static final String LOGGER_EPC = "loggerEPC";
-    public static String TAG = "CaenLoggerDialogFragment";
 
     private CAENCommander loggerCommander;
     private LoggerReading reading;
@@ -72,7 +73,7 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
                 getDialog().dismiss();
                 reading.setReading(m);
             } else {
-                btnInit.setText("Failed");
+                btnInit.setText("Init:: Failed");
             }
         });
     };
@@ -94,13 +95,13 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
 
         taskRunner.executeAsync(setUpTask, (rs) -> {
             if (rs.succeeded()) {
-                btnSetup.setText("Success");
+                btnSetup.setText("Setup:: OK");
                 btnSetup.setOnClickListener(null);
 
                 btnInit.setOnClickListener(initBtnListener);
                 btnInit.callOnClick();
             } else {
-                btnSetup.setText("Failed");
+                btnSetup.setText("Setup:: Failed");
             }
         });
     };
@@ -121,7 +122,7 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
 
         taskRunner.executeAsync(resetTask, (rs) -> {
             if (rs.succeeded()) {
-                btnReset.setText("Success");
+                btnReset.setText("Reset:: OK");
                 btnReset.setOnClickListener(null);
 
                 stopAnimation();
@@ -129,20 +130,20 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
                 btnSetup.setOnClickListener(setupBtnListener);
                 btnSetup.callOnClick();
             } else {
-                btnReset.setText("Failed");
+                btnReset.setText("Reset:: Failed");
             }
         });
     };
 
-    public CaenLoggerDialogFragment() {
+    public LoggerInitFishDialogFragment() {
         // Empty constructor is required for DialogFragment
         // Make sure not to add arguments to the constructor
         // Use `newInstance` instead as shown below
         taskRunner = new TaskRunner();
     }
 
-    public static CaenLoggerDialogFragment newInstance(String epc) {
-        CaenLoggerDialogFragment frag = new CaenLoggerDialogFragment();
+    public static LoggerInitFishDialogFragment newInstance(String epc) {
+        LoggerInitFishDialogFragment frag = new LoggerInitFishDialogFragment();
         Bundle args = new Bundle();
         args.putString(LOGGER_EPC, epc);
         frag.setArguments(args);
@@ -162,7 +163,7 @@ public class CaenLoggerDialogFragment extends DialogFragment implements TimeAnim
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_dialog_caen_logger, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_dialog_fish_init_logger, container, false);
 
         btnReset = rootView.findViewById(R.id.btnReset);
         btnSetup = rootView.findViewById(R.id.btnSetup);

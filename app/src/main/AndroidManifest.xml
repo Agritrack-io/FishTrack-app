@@ -25,19 +25,21 @@
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
-
+        <activity
+            android:name=".fruit.ui.warehouse.incoming.IncomingIfcoActivity"
+            android:exported="false" />
         <activity
             android:name=".fish.ui.quality.PackageQualityConfirmActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.quality.PackageQualityStartActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.quality.PackageQualityInfoActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.tools.CAENLoggerActivity"
             android:exported="false"
@@ -45,19 +47,19 @@
         <activity
             android:name=".fruit.ui.packaging.PackagingSelectOrderActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.warehouse.measurements.DailyTemperatureMeasurementsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.shipping.ShippingConfirmActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.shipping.ShippingDetailsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.shipping.ShippingStartActivity"
             android:exported="false"

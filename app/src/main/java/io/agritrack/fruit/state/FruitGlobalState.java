@@ -23,6 +23,7 @@ import io.agritrack.data.model.tx.TotesTransaction;
 import io.agritrack.data.model.tx.StorageTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.data.model.tx.items.CollectionTxWithItems;
+import io.agritrack.data.model.tx.items.IncomingTxWithItems;
 import io.agritrack.data.model.tx.items.PackageTxWithItems;
 import io.agritrack.data.model.tx.items.ShippingTxWithItems;
 import io.agritrack.data.model.tx.items.StorageTxWithItems;
@@ -46,8 +47,9 @@ public class FruitGlobalState {
     public static ShippingRecord recShipping = new ShippingRecord();
     public static CorrelationRecord recCorrelation = new CorrelationRecord();
     public static InventoryRecord recInventory = new InventoryRecord();
+    public static IncomingRecord recIncoming = new IncomingRecord();
 
-    public static WHTxRecord recWHIncoming = new WHTxRecord();
+
     public static WHTxRecord recWHOutgoing = new WHTxRecord();
 
 
@@ -95,9 +97,9 @@ public class FruitGlobalState {
         return recInventory;
     }
 
-    public static WHTxRecord initWHIncomingRecord() {
-        recWHIncoming = new WHTxRecord();
-        return recWHIncoming;
+    public static IncomingRecord initIncomingRecord() {
+        recIncoming = new IncomingRecord();
+        return recIncoming;
     }
 
     public static WHTxRecord initWHOutgoingRecord() {
@@ -326,52 +328,31 @@ public class FruitGlobalState {
         }
     }
 
-    public static AssetTransaction commitWHRFIDIncoming(MobileDB db) {
+    public static IncomingTxWithItems commitIncomingIfco(MobileDB db) {
         try {
-            AssetTransaction txWHIncoming = new AssetTransaction();
-            txWHIncoming.state = recWHIncoming.state.name();
-            txWHIncoming.assetType = (recWHIncoming.assetType != null) ? recWHIncoming.assetType.name() : ALL.name();
-            txWHIncoming.itemRFIDs = recWHIncoming.items;
-            txWHIncoming.from = recWHIncoming.from;
-            txWHIncoming.to = recWHIncoming.to;
-            txWHIncoming.site = recWHIncoming.site;
+            ConsumableTransaction txWHIncoming = new ConsumableTransaction();
+            txWHIncoming.state = recIncoming.state.name();
+            txWHIncoming.consumableType = (recIncoming.consumableType != null) ? recIncoming.consumableType.name() : ALL.name();
+            txWHIncoming.site = recIncoming.site;
             txWHIncoming.timestamp = System.currentTimeMillis();
-            txWHIncoming.longitude = recWHIncoming.longitude;
-            txWHIncoming.latitude = recWHIncoming.latitude;
+            txWHIncoming.longitude = recIncoming.longitude;
+            txWHIncoming.latitude = recIncoming.latitude;
 
-            db.assetTransactionDAO().insert(txWHIncoming);
-
-            return txWHIncoming;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    public static List<ConsumableTransaction> commitWHBarcodeIncoming(MobileDB db) {
-        try {
-            List<ConsumableTransaction> consumablesList = new ArrayList<>();
-            Set<Map.Entry<String, Integer>> barcodeEntries = recWHIncoming.barcodeItems.entrySet();
-
-            for (Map.Entry<String, Integer> entry : barcodeEntries) {
-                ConsumableTransaction txWHIncoming = new ConsumableTransaction();
-
-                txWHIncoming.state = recWHIncoming.state.name();
-                txWHIncoming.consumableType = (recWHIncoming.consumableType != null) ? recWHIncoming.consumableType.name() : ALL.name();
-                txWHIncoming.barcode = entry.getKey();
-                txWHIncoming.quantity = entry.getValue();
-                txWHIncoming.timestamp = System.currentTimeMillis();
-                txWHIncoming.from = recWHIncoming.from;
-                txWHIncoming.to = recWHIncoming.to;
-                txWHIncoming.site = recWHIncoming.site;
-                txWHIncoming.longitude = recWHIncoming.longitude;
-                txWHIncoming.latitude = recWHIncoming.latitude;
-
-                consumablesList.add(txWHIncoming);
+            Long[] ids = db.consumableTransactionDAO().insertIncoming(txWHIncoming);
+            if (!CollectionUtils.isEmpty(recIncoming.ifcoItems)) {
+                IfcoTransaction[] items = new IfcoTransaction[recIncoming.ifcoItems.size()];
+                int i =0;
+                for (String ifco : recIncoming.ifcoItems) {
+                    IfcoTransaction itemTx = new IfcoTransaction();
+                    itemTx.incomingTxId = ids[0];
+                    itemTx.barcode = ifco;
+                    items[i] = itemTx;
+                    i++;
+                }
+                db.ifcoTransactionDAO().insert(items);
             }
-            db.consumableTransactionDAO().insert(consumablesList.toArray(new ConsumableTransaction[consumablesList.size()]));
 
-            return consumablesList;
+            return db.consumableTransactionDAO().getByIdIncoming(ids[0]);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

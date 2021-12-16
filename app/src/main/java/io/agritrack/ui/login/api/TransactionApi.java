@@ -64,6 +64,10 @@ public interface TransactionApi {
     Call<PackageTxDTO> syncPackageTx(@Body PackageTxDTO packageTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/consumable/fruit/tx")
+    Call<ConsumableTxDTO> syncIncomingTx(@Body ConsumableTxDTO consumableTxs, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/asset/tx")
     Call<AssetTxDTO> syncRFIDIOTx(@Body AssetTxDTO assetTx, @Header("Authorization") String token);
 

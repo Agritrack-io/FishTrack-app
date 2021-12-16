@@ -19,6 +19,9 @@ public class IfcoTransaction {
         @ColumnInfo(name = "storage_tx_id")
         public Long storageTxId;
 
+        @ColumnInfo(name = "incoming_tx_id")
+        public Long incomingTxId;
+
         @ColumnInfo(name = "barcode")
         public String barcode;
 }

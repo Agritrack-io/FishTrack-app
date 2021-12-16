@@ -151,7 +151,7 @@
     <string name="processing_details">Receipt details</string>
 
     <string name="title_quality">QUALITY</string>
-    
+
     <string name="dispatch_note">Type dispatch note</string>
     <string name="enter_lot">Type LOT</string>
     <string name="enter_security_clip">Type security clip number</string>
@@ -392,6 +392,7 @@
     <string name="title_fruit_wh_menu">WH MENU</string>
     <string name="title_inventory_totes">INVENTORY TOTES</string>
     <string name="title_inventory_ifco">INVENTORY IFCO</string>
+    <string name="title_incoming_ifco">INCOMING IFCO</string>
     <string name="item_inventory_totes">TOTES</string>
     <string name="item_inventory_ifco">IFCO</string>
     <string name="items">Items</string>
