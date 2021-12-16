@@ -19,6 +19,9 @@ public class TotesTransaction {
     @ColumnInfo(name = "storage_tx_id")
     public Long storageTxId;
 
+    @ColumnInfo(name = "inv_tx_id")
+    public Long invTxId;
+
     @ColumnInfo(name = "epc")
     public String epc;
 }

@@ -46,6 +46,7 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.RFIDInventoryDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
+import io.agritrack.data.model.tx.items.RFIDInventoryTxWithItems;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.dialog.SupportDialog;
@@ -338,14 +339,11 @@ public class TotesInventoryActivity extends LocationAwareActivity {
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
-            RFIDInventory invtx = FruitGlobalState.commitWHRFIDInventory(db);
-            List<RFIDInventoryItem> invItemtxs = FruitGlobalState.commitWHRFIDInventoryItem(db, invtx);
+            RFIDInventoryTxWithItems invtx = FruitGlobalState.commitWHRFIDInventory(db);
 
             // sync WH Inventory Tx
             Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(RFIDInventoryDTO.convert(invtx), "Bearer " + token);
-            Call<List<RFIDInventoryItemDTO>> syncInvItemTxCallBack = updService.syncRFIDInventoryItemTx(RFIDInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
             syncInvTxCallBack.enqueue(new TotesInventoryActivity.SyncInvTxCallBack());
-            syncInvItemTxCallBack.enqueue(new TotesInventoryActivity.SyncInvItemTxCallBack());
 
             return true;
         } catch (Exception e) {
@@ -370,36 +368,6 @@ public class TotesInventoryActivity extends LocationAwareActivity {
 
         @Override
         public void onFailure(Call<RFIDInventoryDTO> call, Throwable error) {
-            if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
-            } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
-            } else {
-                if (call.isCanceled()) {
-                    //Call was cancelled by user
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
-                } else {
-                    //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
-                }
-            }
-        }
-    }
-    public class SyncInvItemTxCallBack implements Callback<List<RFIDInventoryItemDTO>> {
-        @Override
-        public void onResponse(Call<List<RFIDInventoryItemDTO>> call, Response<List<RFIDInventoryItemDTO>> response) {
-            List<RFIDInventoryItemDTO> rs = response.body();
-
-            if (rs != null || IsDemo) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
-            } else {
-                // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Inventory items update failure!!!!!!"), Toast.LENGTH_LONG));
-            }
-        }
-
-        @Override
-        public void onFailure(Call<List<RFIDInventoryItemDTO>> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

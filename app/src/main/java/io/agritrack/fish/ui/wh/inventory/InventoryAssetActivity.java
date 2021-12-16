@@ -309,7 +309,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
             String token = LocalPreferences.getToken();
 
-            // persist WHIncomingAssetTX Record data to local DB.
+            /*// persist WHIncomingAssetTX Record data to local DB.
             RFIDInventory invtx = GlobalState.commitWHRFIDInventory(db);
             List<RFIDInventoryItem> invItemtxs = GlobalState.commitWHRFIDInventoryItem(db, invtx);
 
@@ -317,7 +317,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
             Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(RFIDInventoryDTO.convert(invtx), "Bearer " + token);
             Call<List<RFIDInventoryItemDTO>> syncInvItemTxCallBack = updService.syncRFIDInventoryItemTx(RFIDInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
             syncInvTxCallBack.enqueue(new SyncInvTxCallBack());
-            syncInvItemTxCallBack.enqueue(new SyncInvItemTxCallBack());
+            syncInvItemTxCallBack.enqueue(new SyncInvItemTxCallBack());*/
 
             return true;
         } catch (Exception e) {

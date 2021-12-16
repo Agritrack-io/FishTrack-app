@@ -45,6 +45,7 @@ import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.CoInventoryDTO;
 import io.agritrack.data.dto.wh.CoInventoryItemDTO;
+import io.agritrack.data.model.tx.items.CoInventoryTxWithItems;
 import io.agritrack.data.model.wh.CoInventory;
 import io.agritrack.data.model.wh.CoInventoryItem;
 import io.agritrack.dialog.SupportDialog;
@@ -174,9 +175,9 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
             }
         });
 
-       /* ivAddItem.setOnClickListener(view -> {
+        ivAddIfco.setOnClickListener(view -> {
             showAddDialog();
-        });*/
+        });
 
         btnScanIfco.setOnClickListener(view -> {
             clearSelectedItem();
@@ -276,6 +277,7 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
                 toteBarcode = input.getText().toString();
                 adapterIfco.addItem(toteBarcode);
                 adapterIfco.notifyDataSetChanged();
+                tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -308,14 +310,11 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
-            CoInventory invtx = FruitGlobalState.commitWHCoInventory(db);
-            List<CoInventoryItem> invItemtxs = FruitGlobalState.commitWHCoInventoryItem(db, invtx);
+            CoInventoryTxWithItems invtx = FruitGlobalState.commitWHCoInventory(db);
 
             // sync WH Inventory Tx
             Call<CoInventoryDTO> syncInvTxCallBack = updService.syncCoInventoryTx(CoInventoryDTO.convert(invtx), "Bearer " + token);
-            Call<List<CoInventoryItemDTO>> syncInvItemTxCallBack = updService.syncCoInventoryItemTx(CoInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
             syncInvTxCallBack.enqueue(new IfcoInventoryActivity.SyncInvTxCallBack());
-            syncInvItemTxCallBack.enqueue(new IfcoInventoryActivity.SyncInvItemTxCallBack());
 
             return true;
         } catch (Exception e) {
@@ -377,37 +376,6 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
 
         @Override
         public void onFailure(Call<CoInventoryDTO> call, Throwable error) {
-            if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
-            } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
-            } else {
-                if (call.isCanceled()) {
-                    //Call was cancelled by user
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
-                } else {
-                    //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
-                }
-            }
-        }
-    }
-
-    public class SyncInvItemTxCallBack implements Callback<List<CoInventoryItemDTO>> {
-        @Override
-        public void onResponse(Call<List<CoInventoryItemDTO>> call, Response<List<CoInventoryItemDTO>> response) {
-            List<CoInventoryItemDTO> rs = response.body();
-
-            if (rs != null || IsDemo) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
-            } else {
-                // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
-            }
-        }
-
-        @Override
-        public void onFailure(Call<List<CoInventoryItemDTO>> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

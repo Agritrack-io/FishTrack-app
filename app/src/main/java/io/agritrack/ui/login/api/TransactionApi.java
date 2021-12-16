@@ -76,7 +76,7 @@ public interface TransactionApi {
     Call<List<ConsumableTxDTO>> syncBarcodeIOTx(@Body List<ConsumableTxDTO> consumableTxs, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/asset/correlate")
+    @POST("/iot-logger/correlate")
     Call<CorrelationTxDTO> syncCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")

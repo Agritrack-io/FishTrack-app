@@ -333,7 +333,7 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
 
             String token = LocalPreferences.getToken();
 
-            // persist WHIncomingAssetTX Record data to local DB.
+            /*// persist WHIncomingAssetTX Record data to local DB.
             CoInventory invtx = GlobalState.commitWHCoInventory(db);
             List<CoInventoryItem> invItemtxs = GlobalState.commitWHCoInventoryItem(db, invtx);
 
@@ -341,7 +341,7 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
             Call<CoInventoryDTO> syncInvTxCallBack = updService.syncCoInventoryTx(CoInventoryDTO.convert(invtx), "Bearer " + token);
             Call<List<CoInventoryItemDTO>> syncInvItemTxCallBack = updService.syncCoInventoryItemTx(CoInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
             syncInvTxCallBack.enqueue(new InventoryConsumableActivity.SyncInvTxCallBack());
-            syncInvItemTxCallBack.enqueue(new InventoryConsumableActivity.SyncInvItemTxCallBack());
+            syncInvItemTxCallBack.enqueue(new InventoryConsumableActivity.SyncInvItemTxCallBack());*/
 
             return true;
         } catch (Exception e) {

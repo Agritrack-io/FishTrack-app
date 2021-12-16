@@ -22,6 +22,9 @@ public class IfcoTransaction {
         @ColumnInfo(name = "incoming_tx_id")
         public Long incomingTxId;
 
+        @ColumnInfo(name = "inv_tx_id")
+        public Long invTxId;
+
         @ColumnInfo(name = "barcode")
         public String barcode;
 }

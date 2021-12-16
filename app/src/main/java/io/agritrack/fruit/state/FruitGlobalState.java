@@ -22,9 +22,11 @@ import io.agritrack.data.model.tx.ShippingTransaction;
 import io.agritrack.data.model.tx.TotesTransaction;
 import io.agritrack.data.model.tx.StorageTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
+import io.agritrack.data.model.tx.items.CoInventoryTxWithItems;
 import io.agritrack.data.model.tx.items.CollectionTxWithItems;
 import io.agritrack.data.model.tx.items.IncomingTxWithItems;
 import io.agritrack.data.model.tx.items.PackageTxWithItems;
+import io.agritrack.data.model.tx.items.RFIDInventoryTxWithItems;
 import io.agritrack.data.model.tx.items.ShippingTxWithItems;
 import io.agritrack.data.model.tx.items.StorageTxWithItems;
 import io.agritrack.data.model.wh.CoInventory;
@@ -328,6 +330,66 @@ public class FruitGlobalState {
         }
     }
 
+    public static RFIDInventoryTxWithItems commitWHRFIDInventory(MobileDB db) {
+        try {
+            RFIDInventory txWHRFIDInventory = new RFIDInventory();
+            txWHRFIDInventory.site = recInventory.subSite;
+            txWHRFIDInventory.user = LocalPreferences.getLoggedInUser("N/A");
+            txWHRFIDInventory.performedAt = System.currentTimeMillis();
+            txWHRFIDInventory.longitude = recInventory.longitude;
+            txWHRFIDInventory.latitude = recInventory.latitude;
+
+            Long[] ids = db.rFIDInventoryDAO().insertInvTotes(txWHRFIDInventory);
+            if (!CollectionUtils.isEmpty(recInventory.totesItems)) {
+                TotesTransaction[] items = new TotesTransaction[recInventory.totesItems.size()];
+                int i =0;
+                for (String tote : recInventory.totesItems) {
+                    TotesTransaction itemTx = new TotesTransaction();
+                    itemTx.invTxId = ids[0];
+                    itemTx.epc = tote;
+                    items[i] = itemTx;
+                    i++;
+                }
+                db.totesTransactionDAO().insert(items);
+            }
+
+            return db.rFIDInventoryDAO().getInvTotesById(ids[0]);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static CoInventoryTxWithItems commitWHCoInventory(MobileDB db) {
+        try {
+            CoInventory txWHCoInventory = new CoInventory();
+            txWHCoInventory.site = recInventory.subSite;
+            txWHCoInventory.user = LocalPreferences.getLoggedInUser("N/A");
+            txWHCoInventory.performedAt = System.currentTimeMillis();
+            txWHCoInventory.longitude = recInventory.longitude;
+            txWHCoInventory.latitude = recInventory.latitude;
+
+            Long[] ids = db.coInventoryDAO().insertInvIfco(txWHCoInventory);
+            if (!CollectionUtils.isEmpty(recInventory.ifcoItems)) {
+                IfcoTransaction[] items = new IfcoTransaction[recInventory.ifcoItems.size()];
+                int i =0;
+                for (String ifco : recInventory.ifcoItems) {
+                    IfcoTransaction itemTx = new IfcoTransaction();
+                    itemTx.invTxId = ids[0];
+                    itemTx.barcode = ifco;
+                    items[i] = itemTx;
+                    i++;
+                }
+                db.ifcoTransactionDAO().insert(items);
+            }
+
+            return db.coInventoryDAO().getInvIfcoById(ids[0]);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     public static IncomingTxWithItems commitIncomingIfco(MobileDB db) {
         try {
             ConsumableTransaction txWHIncoming = new ConsumableTransaction();
@@ -411,24 +473,6 @@ public class FruitGlobalState {
         }
     }
 
-    public static RFIDInventory commitWHRFIDInventory(MobileDB db) {
-        try {
-            RFIDInventory txWHRFIDInventory = new RFIDInventory();
-            txWHRFIDInventory.site = recInventory.subSite;
-            txWHRFIDInventory.user = LocalPreferences.getLoggedInUser("N/A");
-            txWHRFIDInventory.performedAt = System.currentTimeMillis();
-            txWHRFIDInventory.longitude = recInventory.longitude;
-            txWHRFIDInventory.latitude = recInventory.latitude;
-            long _id = db.rFIDInventoryDAO().insert(txWHRFIDInventory);
-            txWHRFIDInventory.id = _id;
-
-            return txWHRFIDInventory;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
     public static List<RFIDInventoryItem> commitWHRFIDInventoryItem(MobileDB db, RFIDInventory inventory) {
         try {
             List<RFIDInventoryItem> items = new ArrayList<>();
@@ -445,24 +489,6 @@ public class FruitGlobalState {
 
             db.rFIDInventoryItemDAO().insert(items.toArray(new RFIDInventoryItem[items.size()]));
             return items;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    public static CoInventory commitWHCoInventory(MobileDB db) {
-        try {
-            CoInventory txWHCoInventory = new CoInventory();
-            txWHCoInventory.site = recInventory.subSite;
-            txWHCoInventory.user = LocalPreferences.getLoggedInUser("N/A");
-            txWHCoInventory.performedAt = System.currentTimeMillis();
-            txWHCoInventory.longitude = recInventory.longitude;
-            txWHCoInventory.latitude = recInventory.latitude;
-            long _id = db.coInventoryDAO().insert(txWHCoInventory);
-            txWHCoInventory.id = _id;
-
-            return txWHCoInventory;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
