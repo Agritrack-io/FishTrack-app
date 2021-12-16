@@ -305,6 +305,7 @@ public class PackagingIfcoActivity extends AppCompatActivity {
                 ifcoBarcode = input.getText().toString();
                 adapterIfco.addItem(ifcoBarcode);
                 adapterIfco.notifyDataSetChanged();
+                tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

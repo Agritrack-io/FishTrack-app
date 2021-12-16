@@ -8,16 +8,15 @@ import java.util.stream.Collectors;
 
 import io.agritrack.data.model.tx.items.CoInventoryTxWithItems;
 import io.agritrack.data.model.wh.CoInventory;
-import io.agritrack.data.model.wh.RFIDInventory;
 
 public class CoInventoryDTO {
 
     public Long id;
-    public String coInvType;
+    public String inventory_type;
     public String site;
     public String user;
     public List<String> ifco = new LinkedList<String>();
-    public Long performedAt;
+    public Long created_at;
     public Double longitude;
     public Double latitude;
 
@@ -26,13 +25,13 @@ public class CoInventoryDTO {
         if (inventory.coInventoryTx != null) {
             CoInventory coInventoryTx = inventory.coInventoryTx;
             coInventoryDTO.id = coInventoryTx.id;
-            coInventoryDTO.coInvType = coInventoryTx.coInvType;
+            coInventoryDTO.inventory_type = coInventoryTx.coInvType;
             coInventoryDTO.site = coInventoryTx.site;
             coInventoryDTO.user = coInventoryTx.user;
             if (!CollectionUtils.isEmpty(inventory.ifco)){
                 coInventoryDTO.ifco = inventory.ifco.stream().map(x-> x.barcode).collect(Collectors.toList());
             }
-            coInventoryDTO.performedAt = coInventoryTx.performedAt;
+            coInventoryDTO.created_at = coInventoryTx.performedAt;
             coInventoryDTO.longitude = coInventoryTx.longitude;
             coInventoryDTO.latitude = coInventoryTx.latitude;
         }

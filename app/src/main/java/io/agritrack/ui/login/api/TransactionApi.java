@@ -80,7 +80,7 @@ public interface TransactionApi {
     Call<CorrelationTxDTO> syncCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/inventory/asset")
+    @POST("/inventory/totes")
     Call<RFIDInventoryDTO> syncRFIDInventoryTx(@Body RFIDInventoryDTO rFIDInventory, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
@@ -88,7 +88,7 @@ public interface TransactionApi {
     Call<List<RFIDInventoryItemDTO>> syncRFIDInventoryItemTx(@Body List<RFIDInventoryItemDTO> rFIDInventoryItems, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/inventory/consumable")
+    @POST("/inventory/ifco")
     Call<CoInventoryDTO> syncCoInventoryTx(@Body CoInventoryDTO coInventory, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")

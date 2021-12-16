@@ -14,10 +14,11 @@ public class RFIDInventoryDTO {
 
     public Long id;
     public String inventory_type;
-    public String site;
     public String user;
+    public String site;
     public List<String> totes = new LinkedList<String>();
     public Long created_at;
+    public List<String> ifco = new LinkedList<String>();
     public Double longitude;
     public Double latitude;
 
@@ -33,6 +34,9 @@ public class RFIDInventoryDTO {
                 inventoryDTO.totes = inventory.totes.stream().map(x-> x.epc).collect(Collectors.toList());
             }
             inventoryDTO.created_at = rfidInventoryTx.performedAt;
+            if (!CollectionUtils.isEmpty(inventory.ifco)){
+                inventoryDTO.ifco = inventory.ifco.stream().map(x-> x.barcode).collect(Collectors.toList());
+            }
             inventoryDTO.longitude = rfidInventoryTx.longitude;
             inventoryDTO.latitude = rfidInventoryTx.latitude;
         }

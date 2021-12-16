@@ -19,4 +19,10 @@ public class RFIDInventoryTxWithItems {
             entityColumn = "inv_tx_id"
     )
     public List<TotesTransaction> totes;
+
+    @Relation(
+            parentColumn = "id",
+            entityColumn = "inv_tx_id"
+    )
+    public List<IfcoTransaction> ifco;
 }
