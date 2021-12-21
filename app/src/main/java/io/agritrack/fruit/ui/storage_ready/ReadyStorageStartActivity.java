@@ -14,17 +14,22 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.TypeConverter;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -90,7 +95,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
             if (data != null) {
                 String barcode = new String(data);
                 invokeEnquiryIfcoBatch(barcode);
-           /*     adapterIfco.addItem(barcode);
+                /*adapterIfco.addUniqueItem(barcode);
                 adapterIfco.notifyDataSetChanged();*/
                 tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
                 scanning = false;
@@ -118,6 +123,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
         }
     };
 
+    private String ifcoBarcode;
     private ImageButton ivAddIfco, ivDeleteIfco;
     private Button btnScanIfco;
     
@@ -210,9 +216,9 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
             }
         });
 
-       /* ivAddItem.setOnClickListener(view -> {
+        ivAddIfco.setOnClickListener(view -> {
             showAddDialog();
-        });*/
+        });
 
         btnScanIfco.setOnClickListener(view -> {
             clearSelectedItem();
@@ -231,11 +237,12 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
 
         enquiryResult.observe(this, response -> {
             if (response == null) {
-                CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render("No ifco batch returned for this ifco"), Toast.LENGTH_LONG);
                 return;
             }
             adapterIfco.setValues(response);
             adapterIfco.notifyDataSetChanged();
+            tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
         });
 
         // create Footer
@@ -268,8 +275,8 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
             String token = LocalPreferences.getToken();
 
             // sync collection lot for current Site
-            Call<List<String>> enquiryCollectionLotAsyncCall = enquiryService.getIfcoBatch(ifcoBarcode, "Bearer " + token);
-            enquiryCollectionLotAsyncCall.enqueue(new IfcoBatchByIfcoBarcode(this.enquiryResult));
+            Call<List<String>> enquiryIfcoBatchByIfcoBarcodeAsyncCall = enquiryService.getIfcoBatch(ifcoBarcode, "Bearer " + token);
+            enquiryIfcoBatchByIfcoBarcodeAsyncCall.enqueue(new IfcoBatchByIfcoBarcode(this.enquiryResult));
 
 
         } catch (Exception e) {
@@ -381,5 +388,36 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+    }
+
+    private void showAddDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Type item BARCODE");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ifcoBarcode = input.getText().toString();
+                adapterIfco.addUniqueItem(ifcoBarcode);
+                adapterIfco.notifyDataSetChanged();
+                tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
     }
 }

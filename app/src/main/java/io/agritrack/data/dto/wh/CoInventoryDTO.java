@@ -11,7 +11,6 @@ import io.agritrack.data.model.wh.CoInventory;
 
 public class CoInventoryDTO {
 
-    public Long id;
     public String inventory_type;
     public String site;
     public String user;
@@ -24,7 +23,6 @@ public class CoInventoryDTO {
         CoInventoryDTO coInventoryDTO = new CoInventoryDTO();
         if (inventory.coInventoryTx != null) {
             CoInventory coInventoryTx = inventory.coInventoryTx;
-            coInventoryDTO.id = coInventoryTx.id;
             coInventoryDTO.inventory_type = coInventoryTx.coInvType;
             coInventoryDTO.site = coInventoryTx.site;
             coInventoryDTO.user = coInventoryTx.user;

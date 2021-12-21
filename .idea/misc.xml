@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/drawable/bg_rounded_btn_login.xml" value="0.2557291666666667" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/drawable/bg_rounded_button.xml" value="0.2557291666666667" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_fruit_correlation.xml" value="0.2677083333333333" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_fruit_home.xml" value="0.23958333333333334" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_fruit_inventory_start.xml" value="0.2526041666666667" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_harvesting_start.xml" value="0.153125" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_harvesting_totes.xml" value="0.153125" />
@@ -19,6 +23,7 @@
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/barcode_recycler_view_item.xml" value="0.2713541666666667" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/fragment_dialog_caen_logger.xml" value="0.15625" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/get_temp_data_dialog.xml" value="0.25052083333333336" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.17135416666666667" />
       </map>
     </option>
   </component>

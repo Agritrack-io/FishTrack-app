@@ -10,6 +10,7 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,12 +39,15 @@ import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
+import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.sync.IfcoBatchByIfcoBarcode;
 import io.agritrack.barcode.BarcodeScanService;
 import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
@@ -60,7 +64,9 @@ import io.agritrack.fruit.ui.storage_ready.ReadyStorageConfirmActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
+import retrofit2.Call;
 
 public class ShippingStartActivity extends AppCompatActivity {
 
@@ -72,6 +78,7 @@ public class ShippingStartActivity extends AppCompatActivity {
     private Button btnScanPole;
     private final SingleShotScanner scanner = new SingleShotScanner();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final MutableLiveData<List<String>> enquiryResult = new MutableLiveData<>();
 
     private RecyclerView rvIfcoForShipping;
     private TextView tvIfcoCount;
@@ -86,8 +93,9 @@ public class ShippingStartActivity extends AppCompatActivity {
             byte[] data = intent.getByteArrayExtra("data");
             if (data != null) {
                 String barcode = new String(data);
-                adapterIfco.addItem(barcode);
-                adapterIfco.notifyDataSetChanged();
+                invokeEnquiryIfcoBatch(barcode);
+                /*adapterIfco.addItem(barcode);
+                adapterIfco.notifyDataSetChanged();*/
                 tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
                 scanning = false;
             }
@@ -225,6 +233,16 @@ public class ShippingStartActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
+        enquiryResult.observe(this, response -> {
+            if (response == null) {
+                CToast(getApplicationContext(), render("No ifco batch returned for this ifco"), Toast.LENGTH_LONG);
+                return;
+            }
+            adapterIfco.setValues(response);
+            adapterIfco.notifyDataSetChanged();
+            tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
+        });
+
         // create Footer
         configFooter();
     }
@@ -246,6 +264,23 @@ public class ShippingStartActivity extends AppCompatActivity {
         if (scanService != null) {
             scanService.stopScan();
             scanning = false;
+        }
+    }
+
+    private void invokeEnquiryIfcoBatch(String ifcoBarcode) {
+        try {
+            EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
+            String token = LocalPreferences.getToken();
+
+            // sync collection lot for current Site
+            Call<List<String>> enquiryIfcoBatchByIfcoBarcodeAsyncCall = enquiryService.getIfcoBatch(ifcoBarcode, "Bearer " + token);
+            enquiryIfcoBatchByIfcoBarcodeAsyncCall.enqueue(new IfcoBatchByIfcoBarcode(this.enquiryResult));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
         }
     }
 
@@ -370,7 +405,7 @@ public class ShippingStartActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ifcoBarcode = input.getText().toString();
-                adapterIfco.addItem(ifcoBarcode);
+                adapterIfco.addUniqueItem(ifcoBarcode);
                 adapterIfco.notifyDataSetChanged();
                 tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
             }

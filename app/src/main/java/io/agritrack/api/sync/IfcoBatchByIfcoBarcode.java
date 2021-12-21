@@ -16,12 +16,12 @@ public class IfcoBatchByIfcoBarcode extends BaseEnquiryCallBack<List<String>>{
 
     @Override
     public void onResponse(Call<List<String>> call, Response<List<String>> response) {
-        List<String> speciesDTO = response.body();
+        List<String> ifcoBatch = response.body();
 
-        if (speciesDTO != null) {
+        if (ifcoBatch != null) {
 
             // Species name got successfully.
-            syncResult.setValue(speciesDTO);
+            syncResult.setValue(ifcoBatch);
         } else {
             // no species found for this pole
             syncResult.setValue(null);

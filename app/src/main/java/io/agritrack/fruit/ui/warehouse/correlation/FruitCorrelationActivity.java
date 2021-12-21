@@ -44,7 +44,6 @@ import io.agritrack.data.model.Site;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.AssetType;
-import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
@@ -94,7 +93,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         db = MobileDB.getInstance(getAppContext());
 
         // load employees belonging to current Site and fill in the spFishingTeam Spinner.
-        List<Site> ghouses = db.siteDAO().getAllGreenhouses();
+        List<Site> ghouses = db.siteDAO().getCurrentSiteSubSites(LocalPreferences.getCurrentSiteLevel3());
         if (ghouses != null && !ghouses.isEmpty()) {
             this.greenhouse = ghouses.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.name)).collect(Collectors.toList());
             greenhouseAdapter = new ArrayAdapter<io.agritrack.ui.bo.GenericListModel>(this, android.R.layout.simple_list_item_checked, greenhouse) {
@@ -130,10 +129,15 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
                         public void run() {
                             String[] epcs = epcStr.split(",");
                             for (String epc : epcs) {
-                                if (epc.indexOf(Filters.RFID_POLE) > 0)
+                                if (epc.indexOf(Filters.RFID_POLE) > 0) {
+                                    FruitGlobalState.recCorrelation.poleRFID = epc;
                                     tvCorrPoleBarcode.setText(epc.substring(11));
-                                else if (epc.indexOf(Filters.RFID_LOGGER) > 0)
+                                }
+                                else if (epc.indexOf(Filters.RFID_LOGGER) > 0){
+                                    FruitGlobalState.recCorrelation.loggerRFID = epc;
                                     tvCorrTempLoggerBarcode.setText(epc.substring(11));
+                                }
+
                             }
 
                         }
@@ -145,10 +149,10 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         });
 
         btnCorrelate.setOnClickListener(view -> {
-            FruitGlobalState.recCorrelation.parentType = AssetType.valueOf(Constants.ftPole);
-            FruitGlobalState.recCorrelation.poleRFID = tvCorrPoleBarcode.getText() != null ? tvCorrPoleBarcode.getText().toString() : null;
-            FruitGlobalState.recCorrelation.assetType = AssetType.valueOf(Constants.ftDataLogger);
-            FruitGlobalState.recCorrelation.loggerRFID = tvCorrTempLoggerBarcode.getText() != null ? tvCorrTempLoggerBarcode.getText().toString() : null;
+            FruitGlobalState.recCorrelation.assetType = AssetType.valueOf(Constants.ftPole);
+            FruitGlobalState.recCorrelation.poleBarcode = tvCorrPoleBarcode.getText() != null ? tvCorrPoleBarcode.getText().toString() : null;
+            FruitGlobalState.recCorrelation.loggerType = AssetType.valueOf(Constants.ftDataLogger);
+            //FruitGlobalState.recCorrelation.loggerRFID = tvCorrTempLoggerBarcode.getText() != null ? tvCorrTempLoggerBarcode.getText().toString() : null;
 
             if (mLastLocation != null) {
                 recCorrelation.longitude = mLastLocation.getLongitude();
@@ -229,7 +233,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (FruitGlobalState.recCorrelation.site == null || FruitGlobalState.recCorrelation.site.isEmpty()) {
+            if (FruitGlobalState.recCorrelation.subSite == null || FruitGlobalState.recCorrelation.subSite.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Site'"));
             }
             if (Strings.isEmptyOrWhitespace(recCorrelation.poleRFID)) {
@@ -251,7 +255,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         member.setChecked(!currentCheck);
 
         int sp = this.lvGreenhouse.getCheckedItemPosition();
-        FruitGlobalState.recCorrelation.site = this.lvGreenhouse.getAdapter().getItem(sp).toString();
+        FruitGlobalState.recCorrelation.subSite = this.lvGreenhouse.getAdapter().getItem(sp).toString();
     }
 
     public class SyncTxCallBack implements Callback<CorrelationTxDTO> {

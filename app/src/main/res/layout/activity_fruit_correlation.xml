@@ -84,7 +84,7 @@
         <RelativeLayout
             android:id="@+id/correlateALayout"
             android:layout_width="0dp"
-            android:layout_height="280dp"
+            android:layout_height="250dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
@@ -128,7 +128,7 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_semi_green"
                 android:paddingHorizontal="8dp"
-                android:text="@string/select_greenhouse"
+                android:text="@string/select_site"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
         </RelativeLayout>
@@ -136,7 +136,7 @@
         <RelativeLayout
             android:id="@+id/correlateBLayout"
             android:layout_width="230dp"
-            android:layout_height="360dp"
+            android:layout_height="320dp"
             android:layout_marginStart="4dp"
             android:layout_marginBottom="4dp"
             app:layout_constraintBottom_toBottomOf="parent"

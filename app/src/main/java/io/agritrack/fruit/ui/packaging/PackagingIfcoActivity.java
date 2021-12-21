@@ -66,7 +66,7 @@ public class PackagingIfcoActivity extends AppCompatActivity {
             byte[] data = intent.getByteArrayExtra("data");
             if (data != null) {
                 String barcode = new String(data);
-                adapterIfco.addItem(barcode);
+                adapterIfco.addUniqueItem(barcode);
                 adapterIfco.notifyDataSetChanged();
                 tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
                 scanning = false;
@@ -303,7 +303,7 @@ public class PackagingIfcoActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ifcoBarcode = input.getText().toString();
-                adapterIfco.addItem(ifcoBarcode);
+                adapterIfco.addUniqueItem(ifcoBarcode);
                 adapterIfco.notifyDataSetChanged();
                 tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
             }
