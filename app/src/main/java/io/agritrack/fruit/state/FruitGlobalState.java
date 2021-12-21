@@ -21,11 +21,11 @@ import io.agritrack.data.model.tx.PlantTransaction;
 import io.agritrack.data.model.tx.ShippingTransaction;
 import io.agritrack.data.model.tx.TotesTransaction;
 import io.agritrack.data.model.tx.StorageTransaction;
-import io.agritrack.data.model.tx.items.CoInventoryTxWithItems;
+import io.agritrack.data.model.tx.items.IfcoInventoryTxWithItems;
 import io.agritrack.data.model.tx.items.CollectionTxWithItems;
 import io.agritrack.data.model.tx.items.IncomingTxWithItems;
 import io.agritrack.data.model.tx.items.PackageTxWithItems;
-import io.agritrack.data.model.tx.items.RFIDInventoryTxWithItems;
+import io.agritrack.data.model.tx.items.TotesInventoryTxWithItems;
 import io.agritrack.data.model.tx.items.ShippingTxWithItems;
 import io.agritrack.data.model.tx.items.StorageTxWithItems;
 import io.agritrack.data.model.wh.CoInventory;
@@ -329,7 +329,7 @@ public class FruitGlobalState {
         }
     }
 
-    public static RFIDInventoryTxWithItems commitWHRFIDInventory(MobileDB db) {
+    public static TotesInventoryTxWithItems commitWHRFIDInventory(MobileDB db) {
         try {
             RFIDInventory txWHRFIDInventory = new RFIDInventory();
             txWHRFIDInventory.site = recInventory.subSite;
@@ -359,7 +359,7 @@ public class FruitGlobalState {
         }
     }
 
-    public static CoInventoryTxWithItems commitWHCoInventory(MobileDB db) {
+    public static IfcoInventoryTxWithItems commitWHCoInventory(MobileDB db) {
         try {
             CoInventory txWHCoInventory = new CoInventory();
             txWHCoInventory.site = recInventory.subSite;

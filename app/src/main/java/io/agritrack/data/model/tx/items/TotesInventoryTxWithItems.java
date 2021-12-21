@@ -10,7 +10,7 @@ import io.agritrack.data.model.tx.PackageTransaction;
 import io.agritrack.data.model.tx.TotesTransaction;
 import io.agritrack.data.model.wh.RFIDInventory;
 
-public class RFIDInventoryTxWithItems {
+public class TotesInventoryTxWithItems {
 
     @Embedded
     public RFIDInventory rfidInventoryTx;

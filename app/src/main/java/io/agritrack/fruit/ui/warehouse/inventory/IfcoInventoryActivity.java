@@ -35,7 +35,6 @@ import com.google.android.gms.common.util.Strings;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -43,16 +42,11 @@ import io.agritrack.barcode.BarcodeScanService;
 import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.wh.CoInventoryDTO;
-import io.agritrack.data.dto.wh.CoInventoryItemDTO;
-import io.agritrack.data.model.tx.items.CoInventoryTxWithItems;
-import io.agritrack.data.model.wh.CoInventory;
-import io.agritrack.data.model.wh.CoInventoryItem;
+import io.agritrack.data.dto.wh.IfcoInventoryDTO;
+import io.agritrack.data.model.tx.items.IfcoInventoryTxWithItems;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.enums.AssetType;
 import io.agritrack.enums.ConsumableType;
-import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.ui.LocationAwareActivity;
@@ -310,10 +304,10 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
-            CoInventoryTxWithItems invtx = FruitGlobalState.commitWHCoInventory(db);
+            IfcoInventoryTxWithItems invtx = FruitGlobalState.commitWHCoInventory(db);
 
             // sync WH Inventory Tx
-            Call<CoInventoryDTO> syncInvTxCallBack = updService.syncCoInventoryTx(CoInventoryDTO.convert(invtx), "Bearer " + token);
+            Call<IfcoInventoryDTO> syncInvTxCallBack = updService.syncIfcoInventoryTx(IfcoInventoryDTO.convert(invtx), "Bearer " + token);
             syncInvTxCallBack.enqueue(new IfcoInventoryActivity.SyncInvTxCallBack());
 
             return true;
@@ -361,10 +355,10 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
         unregisterReceiver(receiver);
     }
 
-    public class SyncInvTxCallBack implements Callback<CoInventoryDTO> {
+    public class SyncInvTxCallBack implements Callback<IfcoInventoryDTO> {
         @Override
-        public void onResponse(Call<CoInventoryDTO> call, Response<CoInventoryDTO> response) {
-            CoInventoryDTO rs = response.body();
+        public void onResponse(Call<IfcoInventoryDTO> call, Response<IfcoInventoryDTO> response) {
+            IfcoInventoryDTO rs = response.body();
 
             if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
@@ -375,7 +369,7 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<CoInventoryDTO> call, Throwable error) {
+        public void onFailure(Call<IfcoInventoryDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
