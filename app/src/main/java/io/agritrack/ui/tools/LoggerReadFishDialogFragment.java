@@ -21,12 +21,14 @@ import androidx.fragment.app.DialogFragment;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
+import com.uhf.api.cls.Reader;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.agritrack.R;
-import io.agritrack.caen.api.CAENCommander;
+import io.agritrack.caen.api.ICAEN_API;
+import io.agritrack.caen.api.RFIDModuleFactory;
 
 public class LoggerReadFishDialogFragment extends DialogFragment implements TimeAnimator.TimeListener{
     public static String TAG = "CaenLoggerDialogFragment";
@@ -35,7 +37,7 @@ public class LoggerReadFishDialogFragment extends DialogFragment implements Time
     private static final int MAX_LEVEL = 10000;
     private static final String LOGGER_EPC = "loggerEPC";
 
-    private CAENCommander loggerCommander;
+    private ICAEN_API cmd;
 
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0;
@@ -49,9 +51,6 @@ public class LoggerReadFishDialogFragment extends DialogFragment implements Time
 
 
 
-
-
-
     protected final View.OnClickListener resetBtnListener = v -> {
 
         btnReset.setBackgroundResource(R.drawable.button_background);
@@ -59,15 +58,15 @@ public class LoggerReadFishDialogFragment extends DialogFragment implements Time
 
         startAnimation(v, btnReset);
 
-        Callable<CAENCommander.Response> resetTask = new Callable<CAENCommander.Response>() {
+        Callable<Reader.READER_ERR> resetTask = new Callable<Reader.READER_ERR>() {
             @Override
-            public CAENCommander.Response call() throws Exception {
-                return resetLogger(loggerCommander);
+            public Reader.READER_ERR call() throws Exception {
+                return resetLogger(cmd);
             }
         };
 
         taskRunner.executeAsync(resetTask, (rs) -> {
-            if (rs.succeeded()) {
+            if (Reader.READER_ERR.MT_OK_ERR.equals(rs)) {
                 btnReset.setText("Success");
                 btnReset.setOnClickListener(null);
 
@@ -88,7 +87,7 @@ public class LoggerReadFishDialogFragment extends DialogFragment implements Time
         Callable<List<Double>> readLoggerTask = new Callable<List<Double>>() {
             @Override
             public List<Double> call() throws Exception {
-                return readLogger(loggerCommander);
+                return readLogger(cmd);
             }
         };
 
@@ -139,7 +138,8 @@ public class LoggerReadFishDialogFragment extends DialogFragment implements Time
             _uhfReader.setWorkArea(3);
             _uhfReader.setOutputPower(24);
 
-            loggerCommander = new CAENCommander(_uhfReader, loggerEPC);
+            cmd = RFIDModuleFactory.getInstance();//new CAENCommander(_uhfReader, loggerEPC);
+            cmd.setFilterEPC(loggerEPC);
 
             btnRead.setText("Press to Start.");
             btnRead.setOnClickListener(readBtnListener);
@@ -190,18 +190,19 @@ public class LoggerReadFishDialogFragment extends DialogFragment implements Time
         }
     }
 
-    private CAENCommander.Response resetLogger(CAENCommander cmd) {
-        return cmd.RESET();
+    private Reader.READER_ERR resetLogger(ICAEN_API cmd) {
+        return cmd.Reset();
     }
 
-    private List<Double> readLogger(CAENCommander cmd) {
+    private List<Double> readLogger(ICAEN_API cmd) {
         //List<String[]> values = null;
         try {
             cmd.HighSensitivity();
-            short cnt = cmd.READ_SAMPLES_COUNT();
+            short cnt = cmd.ReadSamplesCount();
             if (cnt > 0) {
                 try {
-                    values = cmd.READ_SAMPLES_WITHOUT_TIMESTAMP(cnt);
+                    //values = cmd.READ_SAMPLES_WITHOUT_TIMESTAMP(cnt);
+                    values = null;// cmd.ReadSamples(cnt);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

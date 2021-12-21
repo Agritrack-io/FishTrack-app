@@ -2,7 +2,6 @@ package io.agritrack.fish.ui.quality;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.caen.api.EncodingUtils.parseTemperatureText;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -30,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
+import com.uhf.api.cls.Reader;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -41,7 +41,7 @@ import java.util.concurrent.Executors;
 
 import io.agritrack.R;
 import io.agritrack.barcode.SoundUtil;
-import io.agritrack.caen.api.CAENCommander;
+import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.IotLogger;
@@ -210,14 +210,14 @@ public class PackageQualityStartActivity extends AppCompatActivity {
         return null;
     }
 
-    private CAENCommander.Response resetLogger(CAENCommander cmd) {
-        return cmd.RESET();
+    private Reader.READER_ERR resetLogger(ICAEN_API cmd) {
+        return cmd.Reset();
     }
 
-    private String initializeLogger(CAENCommander cmd) {
+    private String initializeLogger(ICAEN_API cmd) {
         try {
-            short lastTemperature = cmd.INIT();
-            return parseTemperatureText(lastTemperature) + "\u2103";
+            Double lastTemperature = cmd.Init();
+            return String.format("%.2f\u2103", lastTemperature);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,6 +1,5 @@
 package io.agritrack.ui.tools;
 
-import static io.agritrack.caen.api.EncodingUtils.parseTemperatureText;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
@@ -16,94 +15,91 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
+import com.uhf.api.cls.Reader;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.agritrack.R;
-import io.agritrack.caen.api.CAENCommander;
-import io.agritrack.common.Filters;
-import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.caen.api.ICAEN_API;
+import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.ui.login.LoginActivity;
 
 public class CAENLoggerActivity extends AppCompatActivity {
-    private UhfReader uhfReader;
-
     private TextView tvFWRevision, tvHWRevision, tvTimeBIN, tvDateTime, tvLastSampleValue, tvCurrentEPC, tvMemory, tvBattery;
     private EditText etInterval;
     private Button btnRead, btnReset, btnInit, btnSamplesCnt, btnControlReg;
 
-    private CAENCommander cmd;
+    private ICAEN_API cmd;
     Callable<String> readFWRevisionTask = new Callable<String>() {
         @Override
         public String call() throws Exception {
-            return cmd.READ_FW_REVISION();
+            return cmd.ReadFWRevision();
         }
     };
     Callable<String> readHWRevisionTask = new Callable<String>() {
         @Override
         public String call() throws Exception {
-            return cmd.READ_HW_REVISION();
+            return cmd.ReadHWRevision();
         }
     };
     Callable<String> readCTRLRegisterTask = new Callable<String>() {
         @Override
         public String call() throws Exception {
-            return cmd.READ_CONTROL_REGISTER();
+            return cmd.ReadControlRegister();
         }
     };
     Callable<String> readSTATUSRegisterTask = new Callable<String>() {
         @Override
         public String call() throws Exception {
-            return cmd.READ_STATUS_REGISTER();
+            return cmd.ReadStatusRegister();
         }
     };
     Callable<Short> readTimeBINTask = new Callable<Short>() {
         @Override
         public Short call() throws Exception {
-            return cmd.READ_TIME_BIN();
+            return cmd.ReadTimeBIN();
         }
     };
     Callable<Short> readSampleCNTTask = new Callable<Short>() {
         @Override
         public Short call() throws Exception {
-            return cmd.READ_SAMPLES_COUNT();
+            return cmd.ReadSamplesCount();
         }
     };
     Callable<Short> readIntervalTask = new Callable<Short>() {
         @Override
         public Short call() throws Exception {
-            return cmd.READ_INTERVAL();
+            return cmd.ReadInterval();
         }
     };
     Callable<String> readInitTSTask = new Callable<String>() {
         @Override
         public String call() throws Exception {
-            return cmd.READ_INIT_DATETIME();
+            return cmd.ReadInitDatetime();
         }
     };
-    Callable<Short> readLastTemperatureTask = new Callable<Short>() {
+    Callable<Double> readLastTemperatureTask = new Callable<Double>() {
         @Override
-        public Short call() throws Exception {
-            return cmd.READ_LAST_SAMPLE();
+        public Double call() throws Exception {
+            return cmd.ReadLastSample();
         }
     };
-    Callable<CAENCommander.Response> resetTask = new Callable<CAENCommander.Response>() {
+    Callable<Reader.READER_ERR> resetTask = new Callable<Reader.READER_ERR>() {
         @Override
-        public CAENCommander.Response call() throws Exception {
-            return cmd.RESET();
+        public Reader.READER_ERR call() throws Exception {
+            return cmd.Reset();
         }
     };
-    Callable<Short> readInitTask = new Callable<Short>() {
+    Callable<Double> readInitTask = new Callable<Double>() {
         @Override
-        public Short call() throws Exception {
-            short lastTemperature = Short.valueOf("-99");
+        public Double call() throws Exception {
+            Double lastTemperature = Double.valueOf("-99");
             if (etInterval.getText() != null && !Strings.isEmptyOrWhitespace(etInterval.getText().toString())) {
-                lastTemperature = cmd.INIT(Short.valueOf(etInterval.getText().toString()));
+                lastTemperature = cmd.Init(Short.valueOf(etInterval.getText().toString()));
             } else {
-                lastTemperature = cmd.INIT();
+                lastTemperature = cmd.Init();
             }
 
             return lastTemperature;
@@ -122,7 +118,8 @@ public class CAENLoggerActivity extends AppCompatActivity {
             return;
         }
 
-        this.cmd = new CAENCommander(uhfReader, loggerEpc);
+        // detects which RFID module is installed on device.
+        this.cmd.setFilterEPC(loggerEpc);
 
         tvCurrentEPC.setText(loggerEpc);
         btnReset.setEnabled(true);
@@ -163,20 +160,20 @@ public class CAENLoggerActivity extends AppCompatActivity {
         });
 
         taskRunner.executeAsync(readTimeBINTask, (rs) -> {
-            if (rs >= 0) {
-                btnControlReg.setText(String.valueOf(rs));
+            if (rs != null && rs >= 0) {
+                tvTimeBIN.setText(String.valueOf(rs));
             } else {
                 tvTimeBIN.setText("ERR");
             }
         });
 
         taskRunner.executeAsync(readSampleCNTTask, (rs) -> {
-            if (rs >= 0) {
+            if (rs != null && rs >= 0) {
                 this.valuesCnt = rs;
                 btnSamplesCnt.setOnClickListener(view -> {
                     if (this.valuesCnt > 0) {
                         try {
-                            List<String[]> values = this.cmd.READ_SAMPLES(this.valuesCnt);
+                            List<String[]> values = this.cmd.ReadSamples(this.valuesCnt);
                             displayMeasurementsDialog(values);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -190,25 +187,16 @@ public class CAENLoggerActivity extends AppCompatActivity {
         });
 
         taskRunner.executeAsync(readIntervalTask, (rs) -> {
-            if (rs >= 0) {
+            if (rs != null && rs >= 0) {
                 etInterval.setText(String.valueOf(rs));
             } else {
                 etInterval.setText("ERR");
             }
         });
 
-        /*taskRunner.executeAsync(readInitTSTask, (rs) -> {
-            if (!Strings.isEmptyOrWhitespace(rs)) {
-                tvDateTime.setText(rs);
-            } else {
-                tvDateTime.setText("ERR");
-            }
-        });*/
-
         taskRunner.executeAsync(readLastTemperatureTask, (rs) -> {
-            if (rs >= 0) {
-                String value = parseTemperatureText(rs) + "\u2103";
-                tvLastSampleValue.setText(value);
+            if (rs != null && rs >= 0) {
+                tvLastSampleValue.setText(String.format("%.2f\u2103", rs));
             } else {
                 tvLastSampleValue.setText("ERR");
             }
@@ -231,8 +219,8 @@ public class CAENLoggerActivity extends AppCompatActivity {
                 btnSamplesCnt.setText("");
 
                 taskRunner.executeAsync(resetTask, (rs) -> {
-                    if (!rs.succeeded()) {
-                        CToast(getApplicationContext(), "Reset Failed!\n" + rs.message, Toast.LENGTH_SHORT);
+                    if (!Reader.READER_ERR.MT_OK_ERR.equals(rs)) {
+                        CToast(getApplicationContext(), "Reset Failed!\n", Toast.LENGTH_SHORT);
                     }
                 });
             } catch (Exception e) {
@@ -250,8 +238,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
                     if (rs==-99) {
                         tvLastSampleValue.setText("ERR");
                     } else {
-                        String value = parseTemperatureText(rs) + "\u2103";
-                        tvLastSampleValue.setText(value);
+                        tvLastSampleValue.setText(String.format("%.2f\u2103", rs));
                     }
                 });
             } catch (Exception e) {
@@ -262,6 +249,13 @@ public class CAENLoggerActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // instantiate Reader Module
+        this.cmd = RFIDModuleFactory.getInstance();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -274,10 +268,6 @@ public class CAENLoggerActivity extends AppCompatActivity {
         assignCtrlVars();
 
         this.valuesCnt = 0;
-
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setWorkArea(3);
-        uhfReader.setOutputPower(24);
 
         btnRead.setOnClickListener(btnReadListener);
 
@@ -296,7 +286,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
                         this.cmd.HighSensitivity();
                     }
 
-                    String controlReg = cmd.READ_CONTROL_REGISTER();
+                    String controlReg = cmd.ReadControlRegister();
                     btnControlReg.setText(controlReg);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -311,78 +301,21 @@ public class CAENLoggerActivity extends AppCompatActivity {
     }
 
     private String scanClosestEPC() {
-        SingleShotScanner scanner = new SingleShotScanner();
-        scanner.setUhfReader(uhfReader);
-        scanner.setFilter(Filters.RFID_LOGGER);
-
-        try {
-            String epcStr = scanner.call();
-            if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                return epcStr;
-//                loggerEpc = epcStr;
-//                tvCurrentEPC.setText(epcStr);
-//                btnReset.setEnabled(true);
-//                btnInit.setEnabled(true);
+//        SingleShotScanner scanner = new SingleShotScanner();
+//        scanner.setUhfReader(uhfReader);
+//        scanner.setFilter(Filters.RFID_LOGGER);
 //
-//                taskRunner.executeAsync(readLoggerTask, (rs) -> {
-//                    //Code after read logger task is completed
-//                });
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    private void ReadLogger(String selectedEPC) {
-        try {
-            this.cmd = new CAENCommander(uhfReader, selectedEPC);
-            String revFW = cmd.READ_FW_REVISION();
-            tvFWRevision.setText(revFW);
-
-            String revHW = cmd.READ_HW_REVISION();
-            tvHWRevision.setText(revHW);
-
-            String controlReg = cmd.READ_CONTROL_REGISTER();
-            btnControlReg.setText(controlReg);
-
-            String statusReg = cmd.READ_STATUS_REGISTER();
-            tvBattery.setText(statusReg.substring(statusReg.length() - 2));
-            tvMemory.setText(statusReg.charAt(2) + "");
-
-            short timeBin = cmd.READ_TIME_BIN();
-            tvTimeBIN.setText("Bin " + timeBin);
-
-            short cnt = cmd.READ_SAMPLES_COUNT();
-            this.valuesCnt = cnt;
-            btnSamplesCnt.setOnClickListener(view -> {
-                if (this.valuesCnt > 0) {
-                    try {
-                        List<String[]> values = this.cmd.READ_SAMPLES(this.valuesCnt);
-                        displayMeasurementsDialog(values);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            btnSamplesCnt.setText(cnt + " measurements.");
-
-            short interval = cmd.READ_INTERVAL();
-            etInterval.setText(String.valueOf(interval));
-
-            /*String epoch = cmd.READ_INIT_DATETIME();
-            tvDateTime.setText(epoch);*/
-
-            short lastTemperature = cmd.READ_LAST_SAMPLE();
-            String value = parseTemperatureText(lastTemperature) + "\u2103";
-            tvLastSampleValue.setText(value);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            String epcStr = scanner.call();
+//            if (!Strings.isEmptyOrWhitespace(epcStr)) {
+//                return epcStr;
+//            } else {
+//                return null;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        return "300EFE2F94D01C02540BE8BB"; //null;
     }
 
     private void assignCtrlVars() {
@@ -424,5 +357,11 @@ public class CAENLoggerActivity extends AppCompatActivity {
         dlgBuilder.setAdapter(arrayAdapter, null);
         dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
         dlgBuilder.create().show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cmd.CloseReader();
     }
 }

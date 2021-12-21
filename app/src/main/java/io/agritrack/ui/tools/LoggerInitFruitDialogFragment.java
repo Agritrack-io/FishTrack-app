@@ -1,6 +1,5 @@
 package io.agritrack.ui.tools;
 
-import static io.agritrack.caen.api.EncodingUtils.parseTemperatureText;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.animation.TimeAnimator;
@@ -19,12 +18,14 @@ import androidx.fragment.app.DialogFragment;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
+import com.uhf.api.cls.Reader;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.agritrack.R;
-import io.agritrack.caen.api.CAENCommander;
+import io.agritrack.caen.api.ICAEN_API;
+import io.agritrack.caen.api.RFIDModuleFactory;
 
 public class LoggerInitFruitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
     public static String TAG = "CaenLoggerDialogFragment";
@@ -33,7 +34,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     private static final int MAX_LEVEL = Integer.MAX_VALUE;
     private static final String LOGGER_EPC = "loggerEPC";
 
-    private CAENCommander loggerCommander;
+    private ICAEN_API cmd;
 
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0;
@@ -48,15 +49,15 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
         startAnimation(v, btnInit);
         //Task for init button
-        Callable<String> enableLoggerTask = new Callable<String>() {
+        Callable<Reader.READER_ERR> enableLoggerTask = new Callable<Reader.READER_ERR>() {
             @Override
-            public String call() throws Exception {
-                return enableLogger(loggerCommander);
+            public Reader.READER_ERR call() throws Exception {
+                return cmd.EnableLogging();
             }
         };
 
         taskRunner.executeAsync(enableLoggerTask, (rs) -> {
-            if (!Strings.isEmptyOrWhitespace(rs)) {
+            if (Reader.READER_ERR.MT_OK_ERR.equals(rs)) {
                 btnInit.setText("Success");
                 btnInit.setOnClickListener(null);
 
@@ -74,15 +75,15 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         startAnimation(v, btnSetup);
 
         //CAENCommander.Response rs = setupLogger(loggerCommander);
-        Callable<CAENCommander.Response> setUpTask = new Callable<CAENCommander.Response>() {
+        Callable<Reader.READER_ERR> setUpTask = new Callable<Reader.READER_ERR>() {
             @Override
-            public CAENCommander.Response call() throws Exception {
-                return setupLogger(loggerCommander);
+            public Reader.READER_ERR call() throws Exception {
+                return setupLogger(cmd);
             }
         };
 
         taskRunner.executeAsync(setUpTask, (rs) -> {
-            if (rs.succeeded()) {
+            if (Reader.READER_ERR.MT_OK_ERR.equals(rs)) {
                 btnSetup.setText("Success");
                 btnSetup.setOnClickListener(null);
 
@@ -100,15 +101,15 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
         startAnimation(v, btnReset);
 
-        Callable<CAENCommander.Response> resetTask = new Callable<CAENCommander.Response>() {
+        Callable<Reader.READER_ERR> resetTask = new Callable<Reader.READER_ERR>() {
             @Override
-            public CAENCommander.Response call() throws Exception {
-                return resetLogger(loggerCommander);
+            public Reader.READER_ERR call() throws Exception {
+                return resetLogger(cmd);
             }
         };
 
         taskRunner.executeAsync(resetTask, (rs) -> {
-            if (rs.succeeded()) {
+            if (Reader.READER_ERR.MT_OK_ERR.equals(rs)) {
                 btnReset.setText("Success");
                 btnReset.setOnClickListener(null);
 
@@ -130,7 +131,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         Callable<List<String[]>> readLoggerTask = new Callable<List<String[]>>() {
             @Override
             public List<String[]> call() throws Exception {
-                return readLogger(loggerCommander);
+                return readLogger(cmd);
             }
         };
 
@@ -182,7 +183,8 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
             _uhfReader.setWorkArea(3);
             _uhfReader.setOutputPower(24);
 
-            loggerCommander = new CAENCommander(_uhfReader, loggerEPC);
+            cmd = RFIDModuleFactory.getInstance();  //new CAENCommander(_uhfReader, loggerEPC);
+            cmd.setFilterEPC(loggerEPC);
 
             btnRead.setText("Press to Start.");
             btnRead.setOnClickListener(resetBtnListener);
@@ -233,32 +235,31 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         }
     }
 
-    private CAENCommander.Response resetLogger(CAENCommander cmd) {
-        return cmd.RESET();
+    private Reader.READER_ERR resetLogger(ICAEN_API cmd) {
+        return cmd.Reset();
     }
 
-    private CAENCommander.Response setupLogger(CAENCommander cmd) {
-        return cmd.SETUP(CAENCommander.DefaultInterval);
+    private Reader.READER_ERR setupLogger(ICAEN_API cmd) {
+        return cmd.Setup(ICAEN_API.DefaultInterval);
     }
 
-    private String enableLogger(CAENCommander cmd) {
+    private String enableLogger(ICAEN_API cmd) {
         try {
-            short lastTemperature = cmd.START_LOGGING();
-            return parseTemperatureText(lastTemperature) + "\u2103";
+            Double lastTemperature = cmd.StartLogging();
+            return String.format("%.2f\u2103", lastTemperature);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private List<String[]> readLogger(CAENCommander cmd) {
-        //List<String[]> values = null;
+    private List<String[]> readLogger(ICAEN_API cmd) {
         try {
             cmd.HighSensitivity();
-            short cnt = cmd.READ_SAMPLES_COUNT();
+            short cnt = cmd.ReadSamplesCount();
             if (cnt > 0) {
                 try {
-                    values = cmd.READ_SAMPLES(cnt);
+                    values = cmd.ReadSamples(cnt);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

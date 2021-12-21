@@ -1,15 +1,15 @@
 package io.agritrack.caen.common;
 
-import com.android.hdhe.uhf.reader.UhfReader;
-
-import io.agritrack.caen.api.EncodingUtils;
-
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_COMMAND;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_DATA;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_REPLY;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TRIGGER;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.CMDBANK;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.TRIGBANK;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.USERBANK;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.EPCBANK;
+
+import com.android.hdhe.uhf.reader.UhfReader;
+
+import io.agritrack.caen.api.EncodingUtils;
 
 public class INTERFACEMEM {
 
@@ -25,7 +25,7 @@ public class INTERFACEMEM {
         data[5] = (byte) (words & 0xFF);
 
         try {
-            return reader.writeTo6C(accessPassword, CMDBANK, ADDR_COMMAND, (short) data.length, data);
+            return reader.writeTo6C(accessPassword, USERBANK, ADDR_COMMAND, (short) data.length, data);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -72,7 +72,7 @@ public class INTERFACEMEM {
         String cmsTring = EncodingUtils.BytesToHex(data);
 
         try {
-            return cmsTring + ":" + reader.writeTo6C(accessPassword, CMDBANK, ADDR_COMMAND, (short) data.length, data);
+            return cmsTring + ":" + reader.writeTo6C(accessPassword, USERBANK, ADDR_COMMAND, (short) data.length, data);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -83,7 +83,7 @@ public class INTERFACEMEM {
     /* This function triggers the tag parsing and execution of a command */
     public static void Trigger(UhfReader reader, byte[] accessPassword) {
         try {
-            reader.readFrom6C(TRIGBANK, ADDR_TRIGGER, (short) 0x0001, accessPassword);
+            reader.readFrom6C(EPCBANK, ADDR_TRIGGER, (short) 0x0001, accessPassword);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -94,7 +94,7 @@ public class INTERFACEMEM {
     public static byte[] ReadData(UhfReader reader, short address, short bytes, byte[] accessPassword) {
         byte[] data = null;
         try {
-            data = reader.readFrom6C(CMDBANK, (short) (ADDR_DATA + address), bytes, accessPassword);
+            data = reader.readFrom6C(USERBANK, (short) (ADDR_DATA + address), bytes, accessPassword);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -106,7 +106,7 @@ public class INTERFACEMEM {
     public static byte[] ReadReply(UhfReader reader, byte[] accessPassword) {
         byte[] data = null;
         try {
-            data = reader.readFrom6C(CMDBANK, ADDR_REPLY, (short) 1, accessPassword);
+            data = reader.readFrom6C(USERBANK, ADDR_REPLY, (int) 1, accessPassword);
         } catch (Exception e) {
             e.printStackTrace();
         }

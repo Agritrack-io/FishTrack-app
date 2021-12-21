@@ -1,8 +1,5 @@
 package io.agritrack.ui.tools;
 
-import static io.agritrack.caen.api.EncodingUtils.parseTemperatureNumeric;
-import static io.agritrack.caen.api.EncodingUtils.parseTemperatureText;
-
 import android.animation.TimeAnimator;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -18,15 +15,16 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
+import com.uhf.api.cls.Reader;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 import io.agritrack.R;
-import io.agritrack.caen.api.CAENCommander;
+import io.agritrack.caen.api.ICAEN_API;
+import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.fish.ui.bo.LoggerReading;
 
 
@@ -37,7 +35,7 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
     private static final int MAX_LEVEL = 10000;
     private static final String LOGGER_EPC = "loggerEPC";
 
-    private CAENCommander loggerCommander;
+    private ICAEN_API cmd;
     private LoggerReading reading;
 
     private TimeAnimator mAnimator;
@@ -58,7 +56,7 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
         Callable<Double> enableLoggerTask = new Callable<Double>() {
             @Override
             public Double call() throws Exception {
-                return enableLogger(loggerCommander);
+                return cmd.StartLogging();
             }
         };
 
@@ -86,15 +84,15 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
         startAnimation(v, btnSetup);
 
         //CAENCommander.Response rs = setupLogger(loggerCommander);
-        Callable<CAENCommander.Response> setUpTask = new Callable<CAENCommander.Response>() {
+        Callable<Reader.READER_ERR> setUpTask = new Callable<Reader.READER_ERR>() {
             @Override
-            public CAENCommander.Response call() throws Exception {
-                return setupLogger(loggerCommander);
+            public Reader.READER_ERR call() throws Exception {
+                return setupLogger(cmd);
             }
         };
 
         taskRunner.executeAsync(setUpTask, (rs) -> {
-            if (rs.succeeded()) {
+            if (Reader.READER_ERR.MT_OK_ERR.equals(rs)) {
                 btnSetup.setText("Setup:: OK");
                 btnSetup.setOnClickListener(null);
 
@@ -113,15 +111,15 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
 
         startAnimation(v, btnReset);
 
-        Callable<CAENCommander.Response> resetTask = new Callable<CAENCommander.Response>() {
+        Callable<Reader.READER_ERR> resetTask = new Callable<Reader.READER_ERR>() {
             @Override
-            public CAENCommander.Response call() throws Exception {
-                return resetLogger(loggerCommander);
+            public Reader.READER_ERR call() throws Exception {
+                return resetLogger(cmd);
             }
         };
 
         taskRunner.executeAsync(resetTask, (rs) -> {
-            if (rs.succeeded()) {
+            if (Reader.READER_ERR.MT_OK_ERR.equals(rs)) {
                 btnReset.setText("Reset:: OK");
                 btnReset.setOnClickListener(null);
 
@@ -173,11 +171,13 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
             String loggerEPC = getArguments().getString(LOGGER_EPC);
 
             // get UhfReader instance
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            _uhfReader.setOutputPower(24);
-
-            loggerCommander = new CAENCommander(_uhfReader, loggerEPC);
+//            UhfReader _uhfReader = UhfReader.getInstance();
+//            _uhfReader.setWorkArea(3);
+//            _uhfReader.setOutputPower(24);
+//
+//            cmd = new CAENCommander(_uhfReader, loggerEPC);
+            cmd = RFIDModuleFactory.getInstance();
+            cmd.setFilterEPC(loggerEPC);
 
             btnReset.setText("Press to Start.");
             btnReset.setOnClickListener(resetBtnListener);
@@ -236,18 +236,17 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
         }
     }
 
-    private CAENCommander.Response resetLogger(CAENCommander cmd) {
-        return cmd.RESET();
+    private Reader.READER_ERR resetLogger(ICAEN_API cmd) {
+        return cmd.Reset();
     }
 
-    private CAENCommander.Response setupLogger(CAENCommander cmd) {
-        return cmd.SETUP(CAENCommander.DefaultInterval);
+    private Reader.READER_ERR setupLogger(ICAEN_API cmd) {
+        return cmd.Setup(ICAEN_API.DefaultInterval);
     }
 
-    private Double enableLogger(CAENCommander cmd) {
+    private Double enableLogger(ICAEN_API cmd) {
         try {
-            short lastTemperature = cmd.START_LOGGING();
-            return parseTemperatureNumeric(lastTemperature);
+            return cmd.StartLogging();
         } catch (Exception e) {
             e.printStackTrace();
         }

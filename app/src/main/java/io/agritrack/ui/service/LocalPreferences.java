@@ -1,5 +1,7 @@
 package io.agritrack.ui.service;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -14,8 +16,6 @@ import java.util.Locale;
 import java.util.Set;
 
 import io.agritrack.data.dto.SiteDTO;
-
-import static io.agritrack.FishTrackApplication.getAppContext;
 
 public class LocalPreferences {
     public static final String Pref_Name = "agritrack";
@@ -35,6 +35,8 @@ public class LocalPreferences {
     public static final String Driver_Names_Key = "DriverNames";
     public static final String Driver_Phones_Key = "DriverPhones";
     public static final String License_Plates_Key = "LicensePlates";
+
+    public static final String Device_Key = "DeviceModel";
 
     private static SharedPreferences pref;
 
@@ -205,5 +207,9 @@ public class LocalPreferences {
     public static List<String> getUserRoles() {
         Set<String> rolesSet = pref.getStringSet(Logged_User_Roles_Key, new HashSet<>());
         return new ArrayList<String>(rolesSet);
+    }
+
+    public static String getDeviceModel() {
+        return pref.getString(Device_Key, null);
     }
 }

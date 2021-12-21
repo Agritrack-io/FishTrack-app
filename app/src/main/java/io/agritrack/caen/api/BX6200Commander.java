@@ -1,0 +1,182 @@
+package io.agritrack.caen.api;
+
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_CONTROL;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.CMD_READ;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.CMD_WRITE;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.MAXBYTESIZEDATA;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.REPLY_NACK;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ONE;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_TWO;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.TIME_WAITTAG_CMDREADBASE;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.TIME_WAITTAG_CMDWRITE;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.TIME_WAITTAG_WRITEPAGE;
+
+import android.widget.Toast;
+
+import com.android.hdhe.uhf.reader.UhfReader;
+import com.uhf.api.cls.Reader;
+
+import cn.pda.serialport.Tools;
+import io.agritrack.caen.common.INTERFACEMEM;
+
+public class BX6200Commander extends AbstractCAENCommander  {
+    private final UhfReader uhfReader;
+    private byte[] epcBytes;
+
+    public BX6200Commander() {
+        uhfReader = UhfReader.getInstance();
+
+        if (uhfReader != null) {
+            uhfReader.setWorkArea(3);
+            uhfReader.setOutputPower(24);
+        } else {
+            Toast.makeText(getAppContext(), "Failed to initialize UHF Reader", Toast.LENGTH_LONG);
+        }
+    }
+
+    @Override
+    public void setFilterEPC(String epc) {
+        this.epcBytes = Tools.HexString2Bytes(epc);
+        this.uhfReader.selectEPC(epcBytes);
+    }
+
+
+    // #########################
+    // ###  Private Methods  ###
+    // #########################
+    @Override
+    protected byte[] ReadRegisters(short address, short length) throws Exception {
+        short command;
+        byte msgID = 0x00;
+        short numBytes = (short) (length * 1);
+        byte reply = REPLY_NACK;
+
+        if (numBytes > MAXBYTESIZEDATA) {
+            throw new Exception("Requested Read length exceeds max limit (200 words)!");
+        }
+
+        // check current msgID value written in reply word and adjust msgID of next command accordingly
+        msgID = adjustReplyId(msgID);
+
+        command = (short) (msgID << 8 | CMD_READ);
+
+        //load command parameters in user memory
+        boolean b = INTERFACEMEM.SetReadCommand(this.uhfReader, command, address, numBytes, accessPassword);
+
+        //trigger tag command reception+execution
+        INTERFACEMEM.Trigger(this.uhfReader, accessPassword);
+
+        // wait for tag to parse command, execute it, and reply
+        Thread.sleep(TIME_WAITTAG_CMDREADBASE + TIME_WAITTAG_WRITEPAGE * (numBytes / 4 + 1));
+
+        //check if tag replied
+        reply = adjustReplyId(msgID);
+
+        //check reply
+        if (reply == REPLY_NACK) {
+            throw new Exception("Tag replied NACK");
+        }
+
+        //tag replied ACK, now we can read the data
+        byte[] data = INTERFACEMEM.ReadData(this.uhfReader, (short) 0, numBytes, accessPassword);
+        return data;
+    }
+
+    @Override
+    protected Reader.READER_ERR WriteRegisters(short address, Object data) throws Exception {
+        byte msgID = 0x00;
+        short command;
+        //short size = (short) (length * 2);
+        short size = data instanceof Long ? SHORT_TWO : SHORT_ONE;
+        byte reply = REPLY_NACK;
+
+        if (size > MAXBYTESIZEDATA) {
+            throw new Exception("Requested Read length exceeds max limit (200 words)!");
+        }
+
+        // check current msgID value written in reply word and adjust msgID of next command accordingly
+        msgID = adjustReplyId(msgID);
+
+        command = (short) (msgID << 8 | CMD_WRITE);
+
+        // Fill the 5 Registers with the required command parameters.
+        String outcome = INTERFACEMEM.SetWriteCommand(this.uhfReader, command, address, (short)(size * 2), msgID, data, accessPassword);
+
+        //trigger tag command reception+execution
+        INTERFACEMEM.Trigger(this.uhfReader, accessPassword);
+
+        //wait for tag to parse command, execute it, and reply
+        Thread.sleep(TIME_WAITTAG_CMDWRITE);
+
+        //check if tag replied
+        reply = adjustReplyId(msgID);
+
+        //check reply
+        if (reply != msgID + 1) {
+            return Reader.READER_ERR.MT_CMD_FAILED_ERR;
+        }
+
+        return Reader.READER_ERR.MT_OK_ERR;
+    }
+
+    @Override
+    public byte CheckReply() {
+        int retries = 0;
+
+        // check current idmsg value written in reply word and adjust idmsg of next command accordingly
+        byte[] replyVal = INTERFACEMEM.ReadReply(uhfReader, accessPassword);
+
+        try {
+            while ((replyVal.length==1 ||  REPLY_NACK == replyVal[1]) && retries < 10) {
+                // wait for tag to parse command, execute it, and reply
+                Thread.sleep(TIME_WAITTAG_CMDREADBASE + TIME_WAITTAG_WRITEPAGE);
+                replyVal = INTERFACEMEM.ReadReply(uhfReader, accessPassword);
+                retries++;
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return replyVal[0];
+    }
+
+    // ########################
+    // ###  public methods  ###
+    // ########################
+    @Override
+    public Double Init() throws Exception {
+        return Init(DefaultInterval);
+    }
+
+    @Override
+    public Double Init(short interval) throws Exception {
+        WriteTimeBinONE();
+        WriteInterval(interval);
+        WriteCurrentDatetime();
+        EnableLogging();
+        return ReadLastSample();
+    }
+
+    @Override
+    public Reader.READER_ERR Reset() {
+        try {
+            return WriteRegisters(ADDR_CONTROL, SHORT_ONE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return Reader.READER_ERR.MT_CMD_FAILED_ERR;
+    }
+
+    @Override
+    public byte[] Trigger() {
+        INTERFACEMEM.Trigger(this.uhfReader, accessPassword);
+        return null;
+    }
+
+    @Override
+    public void CloseReader() {
+        this.uhfReader.close();
+        this.Status(Boolean.FALSE);
+    }
+}

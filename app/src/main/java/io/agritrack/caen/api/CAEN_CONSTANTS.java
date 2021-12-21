@@ -1,8 +1,8 @@
 package io.agritrack.caen.api;
 
 public class CAEN_CONSTANTS {
-    public final static short CMDBANK = 3;
-    public final static short TRIGBANK = 1;
+    public final static short USERBANK = 3;
+    public final static short EPCBANK = 1;
 
     public final static short ADDR_TRIGGER = 0x001F; /* byte address */
     public final static short ADDR_COMMAND = 0x0000;

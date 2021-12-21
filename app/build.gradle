@@ -10,8 +10,8 @@ android {
         applicationId "io.agritrack.fishtrack"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -121,7 +121,8 @@ dependencies {
 
     // RFID libs
     implementation files('libs/uhfcom13_v20.2.jar')
-    implementation files('libs/SerialPort.jar')
+    implementation files('libs/uhfr_v1.9.jar')
+    implementation files('libs/ModuleAPI_J.jar')
     implementation files('libs/CAENRFIDLibrary-release.aar')
 
     // browse local db
