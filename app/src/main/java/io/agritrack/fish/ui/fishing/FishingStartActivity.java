@@ -38,7 +38,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class FishingStartActivity extends AppCompatActivity {
 
-    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final SingleShotScanner scanner = null; //new SingleShotScanner();   //TODO: remove comment
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private MobileDB db;
     private Spinner harvestSpinner, speciesSpinner;
@@ -124,7 +124,7 @@ public class FishingStartActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            if(IsDemo){
+            if (IsDemo) {
                 db.fishingTransactionDAO().deleteAll();
             }
 
@@ -160,15 +160,15 @@ public class FishingStartActivity extends AppCompatActivity {
             etQty.setText(hvst.reqWeight);
         }
 
-        if (!Strings.isEmptyOrWhitespace(hvst.cageCode)){
+        if (!Strings.isEmptyOrWhitespace(hvst.cageCode)) {
             tvCageName.setText(hvst.cageCode);
         }
 
-        if (!Strings.isEmptyOrWhitespace(hvst.fishSize)){
+        if (!Strings.isEmptyOrWhitespace(hvst.fishSize)) {
             tvFishSize.setText(hvst.fishSize);
         }
 
-        if (!Strings.isEmptyOrWhitespace(hvst.notes)){
+        if (!Strings.isEmptyOrWhitespace(hvst.notes)) {
             tvNotes.setText(hvst.notes);
         }
         //harvestSpinner.setSelection(arrayAdapter.getPosition("Category 2"));
@@ -206,7 +206,7 @@ public class FishingStartActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if(!IsDemo) {
+        if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.requesterName)) {
                 sb.append(String.format("\n%s is missing", "'Harvest initiator'"));
             }
@@ -241,7 +241,8 @@ public class FishingStartActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (executor != null)
+        if (executor != null) {
             executor.shutdown();
+        }
     }
 }

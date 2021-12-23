@@ -3,24 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_fruit_inventory_start.xml" value="0.2526041666666667" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_harvesting_start.xml" value="0.153125" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_harvesting_totes.xml" value="0.153125" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_ifco_inventory.xml" value="0.2630208333333333" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_incoming_consumable.xml" value="0.2630208333333333" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_incoming_ifco.xml" value="0.2630208333333333" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_inventory_consumable.xml" value="0.264" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_packaging_ifco.xml" value="0.27447916666666666" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_planting_start.xml" value="0.153125" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_process_info.xml" value="0.2375" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_shipping_confirm.xml" value="0.2375" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_shipping_details.xml" value="0.2375" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/agri_list_item_12dp.xml" value="0.3625" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/barcode_recycler_view_item.xml" value="0.2713541666666667" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/fragment_dialog_caen_logger.xml" value="0.15625" />
-        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/get_temp_data_dialog.xml" value="0.25052083333333336" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/activity_caen_logger.xml" value="0.26132246376811596" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/activity_fishing_bins.xml" value="0.2942708333333333" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/activity_fishing_cage.xml" value="0.25729166666666664" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/activity_fishing_start.xml" value="0.29739583333333336" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/activity_fishing_team.xml" value="0.2942708333333333" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/activity_template.xml" value="0.2375" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/fragment_dialog_caen_logger.xml" value="0.10507246376811594" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/fragment_dialog_fish_init_logger.xml" value="0.1" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/fragment_dialog_fruit_caen_logger.xml" value="0.1515625" />
+        <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/fragment_dialog_read_temperatures_caen_logger.xml" value="0.1515625" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

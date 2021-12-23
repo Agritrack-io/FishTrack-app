@@ -24,10 +24,14 @@ import android.widget.Toast;
 import com.handheld.uhfr.UHFRManager;
 import com.uhf.api.cls.Reader;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import cn.pda.serialport.Tools;
+import io.agritrack.caen.pojo.RFIDTag;
 
 public class BX6100Commander extends AbstractCAENCommander {
-    private final short timeout = 1000;
+    private final short timeout = 10000;
     private final int filterStartAddress = 2;
     private final UHFRManager mUhfRManager;
     private byte[] epcBytes;
@@ -199,5 +203,27 @@ public class BX6100Commander extends AbstractCAENCommander {
     public void CloseReader() {
         this.mUhfRManager.close();
         this.Status(Boolean.FALSE);
+        RFIDModuleFactory.Reset();
+    }
+
+    @Override
+    public void StopReading() {
+        this.mUhfRManager.setCancleInventoryFilter();
+        this.mUhfRManager.asyncStopReading();
+        this.mUhfRManager.stopTagInventory();
+    }
+
+    @Override
+    public List<RFIDTag> inventoryRealTime() {
+        this.mUhfRManager.setCancleInventoryFilter();
+        this.mUhfRManager.setGen2session(false);
+        List<Reader.TAGINFO> inventory = this.mUhfRManager.tagEpcTidInventoryByTimer((short) 200);//  tagInventoryRealTime();
+        return inventory.stream().map(x->new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean startReading() {
+        //Reader.READER_ERR res = this.mUhfRManager.asyncStartReading();
+        return false;// Reader.READER_ERR.MT_OK_ERR.equals(res);
     }
 }

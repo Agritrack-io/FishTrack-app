@@ -49,4 +49,8 @@ public class RFIDModuleFactory {
         }
         return instance;
     }
+
+    public static void Reset() {
+        instance = null;
+    }
 }

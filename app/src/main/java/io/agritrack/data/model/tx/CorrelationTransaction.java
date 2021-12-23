@@ -32,11 +32,11 @@ public class CorrelationTransaction {
     public String assetRFID;
 
     @TypeConverters(AssetTypeConverter.class)
-    @ColumnInfo(name = "parent_type")
-    public String parentType;
+    @ColumnInfo(name = "logger_type")
+    public String loggerType;
 
-    @ColumnInfo(name = "parent_rfid")
-    public String parentRFID;
+    @ColumnInfo(name = "logger_rfid")
+    public String loggerRFID;
 
     @ColumnInfo(name = "longitude")
     public Double longitude;

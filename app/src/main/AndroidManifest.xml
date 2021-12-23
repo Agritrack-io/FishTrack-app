@@ -26,6 +26,9 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
+            android:name=".ui.TriggerKeyAwareActivity"
+            android:exported="false" />
+        <activity
             android:name=".fruit.ui.warehouse.incoming.IncomingIfcoActivity"
             android:exported="false" />
         <activity

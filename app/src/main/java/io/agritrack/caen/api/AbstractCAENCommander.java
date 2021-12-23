@@ -20,12 +20,19 @@ import static io.agritrack.caen.api.EncodingUtils.ToShort;
 import static io.agritrack.caen.api.EncodingUtils.parseTemperatureNumeric;
 import static io.agritrack.caen.api.EncodingUtils.parseTimestamp;
 
+import com.android.hdhe.uhf.readerInterface.TagModel;
 import com.uhf.api.cls.Reader;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
+
+import cn.pda.serialport.Tools;
+import io.agritrack.caen.pojo.RFIDTag;
 
 public abstract class AbstractCAENCommander implements ICAEN_API {
+    protected final Function<TagModel, String> TagToString = t -> Tools.Bytes2HexString(t.getmEpcBytes(), t.getmEpcBytes().length);
+    protected final Function<Reader.TAGINFO, String> TagInfoToString = t -> Tools.Bytes2HexString(t.EpcId, t.Epclen);
     private static boolean LoggerIsOpen = Boolean.FALSE;
 
     // ##########################
@@ -40,6 +47,12 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     abstract public byte CheckReply();
 
     abstract public void CloseReader();
+
+    abstract public void StopReading();
+
+    abstract public List<RFIDTag> inventoryRealTime();
+
+    abstract public boolean startReading();
 
     //########################################################
     //###  Protected Methods called by several subclasses ####

@@ -84,7 +84,7 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
         FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class, PackageTransaction.class, TotesTransaction.class, IfcoTransaction.class,
         AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class, RepairTransaction.class, SeaTemperatureTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class, Measurements.class},
-        version = 44, exportSchema = false)
+        version = 4, exportSchema = false)
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class, ConsumableTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();

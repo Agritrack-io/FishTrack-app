@@ -40,7 +40,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
 
     private TextView tvPoleName;
     private Button btnScanPole;
-    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final SingleShotScanner scanner = null; //new SingleShotScanner(); //TODO: remove comment
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
@@ -87,12 +87,12 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
     }
 
     private String scanCloserEPC(UhfReader uhfReader) {
-        SingleShotScanner scanner = new SingleShotScanner();
-        scanner.setUhfReader(uhfReader);
+        SingleShotScanner scanner = null;// new SingleShotScanner();  //TODO: remove comment
+        //scanner.setUhfReader(uhfReader);
         scanner.setFilter(Filters.RFID_POLE);
 
         try {
-            String epcStr = scanner.call();
+            String epcStr = null; //scanner.call();  //TODO: remove comment
             if (!Strings.isEmptyOrWhitespace(epcStr)) {
                 // after bin is identified, initialize the temperatures logger.
                 IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);

@@ -37,7 +37,6 @@ import io.agritrack.data.model.common.Species;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.state.HarvestRecord;
 import io.agritrack.fruit.state.PlantRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
@@ -53,7 +52,7 @@ public class PlantingStartActivity extends AppCompatActivity {
     private Button btnScanPole;
     private String greenhouse;
 
-    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final SingleShotScanner scanner = null; //new SingleShotScanner(); //TODO: remove comment
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
@@ -93,7 +92,7 @@ public class PlantingStartActivity extends AppCompatActivity {
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
-            scanner.setUhfReader(_uhfReader);
+            //scanner.setUhfReader(_uhfReader);
             scanner.setFilter(Filters.RFID_POLE);
 
             Future<?> future = executor.submit(scanner);

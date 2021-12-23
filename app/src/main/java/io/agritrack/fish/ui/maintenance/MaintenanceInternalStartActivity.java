@@ -1,5 +1,10 @@
 package io.agritrack.fish.ui.maintenance;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.common.FishTrackUtils.detectAssetType;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,16 +34,11 @@ import java.util.concurrent.TimeUnit;
 import io.agritrack.R;
 import io.agritrack.common.Constants;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.RepairRecord;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.common.FishTrackUtils.detectAssetType;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class MaintenanceInternalStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -51,7 +51,7 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
     private EditText etIMtNextMaintenance, etIMtEstWithdrawal;
     private final Calendar calendar = Calendar.getInstance();
 
-    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final SingleShotScanner scanner = null; //new SingleShotScanner(); //TODO: remove comment
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private String selectedOperation;
@@ -96,7 +96,7 @@ public class MaintenanceInternalStartActivity extends AppCompatActivity implemen
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
-            scanner.setUhfReader(_uhfReader);
+            //scanner.setUhfReader(_uhfReader);
 
             Future<?> future = executor.submit(scanner);
             try {

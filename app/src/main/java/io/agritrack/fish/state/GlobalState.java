@@ -1,5 +1,7 @@
 package io.agritrack.fish.state;
 
+import static io.agritrack.enums.AssetType.ALL;
+
 import com.google.android.gms.common.util.Strings;
 
 import java.nio.charset.StandardCharsets;
@@ -28,8 +30,6 @@ import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.enums.TxStatus;
 import io.agritrack.ui.service.LocalPreferences;
-
-import static io.agritrack.enums.AssetType.ALL;
 
 public class GlobalState {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
@@ -121,8 +121,10 @@ public class GlobalState {
             txFishing.harvestRq = recFishing.harvestRq;
             txFishing.platformRFID = recFishing.platformRFID;
             txFishing.cageRFID = recFishing.cageRFID;
+            txFishing.cageCode = recFishing.cageCode;
             txFishing.netRFID = recFishing.netRFID;
             txFishing.fishType = recFishing.speciesName;
+            txFishing.fishSize = recFishing.fishSize;
             txFishing.ichthyopathologist = recFishing.pathologist;
             txFishing.packagingPlant = recFishing.packagingPlant;
             if (!Strings.isEmptyOrWhitespace(recFishing.lastFed)) {

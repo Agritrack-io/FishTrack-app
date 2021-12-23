@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.text.InputType;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -22,21 +23,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -48,14 +44,15 @@ import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.bo.BinLoadsMap;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
 
-public class FishingFillBinsActivity extends AppCompatActivity {
+public class FishingFillBinsActivity extends TriggerKeyAwareActivity {
+    // Local handler that receives the RFID scanner results.
+    private final ScanHandler mScanHandler = new ScanHandler(this);
 
-    private final SingleShotScanner scanner = new SingleShotScanner();
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private Button btnCurrentBinScan, btnNextCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
     private RecyclerView rvWeightBatchesBin;
@@ -123,36 +120,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         // =================================
         // RFID scanning functionality
-        btnCurrentBinScan.setOnClickListener(view -> {
-
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_BIN);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        String epc = epcStr.substring(11);
-                        tvCurrentBin.setText(epc);
-                        currentBin = epc;
-                        adapterCatches.setValues(loadsMap.getLoads(currentBin));
-                        adapterCatches.notifyDataSetChanged();
-                        tvUsedBinsCount.setText(loadsMap.loadsCnt());
-                    });
-
-                    btnNextCatch.setEnabled(true);
-                    btnNextCatch.setTextColor(getColor(R.color.aqua));
-                    tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
-        });
-
+        btnCurrentBinScan.setOnClickListener(this::onClick);
 
         // =================================
         // Adding fish catch functionality
@@ -196,7 +164,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                         adapterCatches.notifyDataSetChanged();
 
                         tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-                        tvTotalWeightCount.setText(String.format("%s (%s)",  loadsMap.totalWeight().toString(), recFishing.reqWeight));
+                        tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
 
                         //tvInventoryItemsCount.setText(String.valueOf(adapterIncomingItems.getItemCount()));
                         selectedCatch = null;
@@ -235,6 +203,14 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         // ============
         configFooter();
+    }
+
+    @Override
+    protected void onClick(View view) {
+        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(Filters.RFID_BIN);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     private void assignCtrlVars() {
@@ -295,7 +271,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         if (tvUsedBinsCount.getText() != null && !Strings.isEmptyOrWhitespace(tvUsedBinsCount.getText().toString())) {
             recFishing.totalBinsUsed = Short.valueOf(tvUsedBinsCount.getText().toString());
         }
-
         GlobalState.commitFishing(db, Boolean.FALSE);
 
         return recFishing;
@@ -308,7 +283,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                 sb.append(String.format("\n%s is missing", "'Harvest bins'"));
             }
         }
-
         return sb.toString();
     }
 
@@ -349,8 +323,48 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             }
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-
         builder.show();
+    }
 
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<FishingFillBinsActivity> mActivity;
+
+        public ScanHandler(FishingFillBinsActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+//            FishingFillBinsActivity activity = mActivity.get();
+//            if (activity != null) {
+//            }
+            switch (msg.what) {
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            String epc = epcStr.substring(11);
+                            tvCurrentBin.setText(epc);
+                            currentBin = epc;
+                            adapterCatches.setValues(loadsMap.getLoads(currentBin));
+                            adapterCatches.notifyDataSetChanged();
+                            tvUsedBinsCount.setText(loadsMap.loadsCnt());
+                        });
+
+                        btnNextCatch.setEnabled(true);
+                        btnNextCatch.setTextColor(getColor(R.color.aqua));
+                        tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
+                    }
+
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("No BIN was found!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
 }

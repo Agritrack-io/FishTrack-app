@@ -6,9 +6,6 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +15,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
@@ -40,8 +40,8 @@ import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.HarvestRecord;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fruit.ui.FruitHomeActivity;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -56,7 +56,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
     private Button btnScanPole;
     private String greenhouse, poleRFID, speciesName;
 
-    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final SingleShotScanner scanner = null; //new SingleShotScanner(); //TODO: remove comment
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
@@ -86,7 +86,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
-            scanner.setUhfReader(_uhfReader);
+            //scanner.setUhfReader(_uhfReader);
             scanner.setFilter(Filters.RFID_POLE);
 
             Future<?> future = executor.submit(scanner);

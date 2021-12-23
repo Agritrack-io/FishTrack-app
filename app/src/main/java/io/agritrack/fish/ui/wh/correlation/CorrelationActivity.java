@@ -1,30 +1,25 @@
 package io.agritrack.fish.ui.wh.correlation;
 
-import android.Manifest;
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recWHCorrelation;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,13 +46,10 @@ import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.enums.AssetType;
-import io.agritrack.fish.ui.transport.TransportSupervisorConfirmActivity;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.bo.GenericListModel;
@@ -68,17 +60,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recTransport;
-import static io.agritrack.fish.state.GlobalState.recWHCorrelation;
-import static io.agritrack.ui.custom.CustomToast.CToast;
-
 public class CorrelationActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener{
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final SingleShotScanner scanner = null; //new SingleShotScanner(); //TODO: remove comment
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private ToggleGroup tgSearchAssetType;
     private SearchView svSearchAsset;
@@ -142,7 +127,7 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
-            scanner.setUhfReader(_uhfReader);
+            //scanner.setUhfReader(_uhfReader);
             scanner.setFilter(activeFilter);
 
             Future<?> future = executor.submit(scanner);

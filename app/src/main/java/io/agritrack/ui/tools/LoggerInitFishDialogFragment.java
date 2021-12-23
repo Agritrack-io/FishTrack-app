@@ -56,7 +56,7 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
         Callable<Double> enableLoggerTask = new Callable<Double>() {
             @Override
             public Double call() throws Exception {
-                return cmd.StartLogging();
+                return enableLogger();// cmd.StartLogging();
             }
         };
 
@@ -83,11 +83,10 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
 
         startAnimation(v, btnSetup);
 
-        //CAENCommander.Response rs = setupLogger(loggerCommander);
         Callable<Reader.READER_ERR> setUpTask = new Callable<Reader.READER_ERR>() {
             @Override
             public Reader.READER_ERR call() throws Exception {
-                return setupLogger(cmd);
+                return setupLogger();
             }
         };
 
@@ -114,7 +113,7 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
         Callable<Reader.READER_ERR> resetTask = new Callable<Reader.READER_ERR>() {
             @Override
             public Reader.READER_ERR call() throws Exception {
-                return resetLogger(cmd);
+                return resetLogger();
             }
         };
 
@@ -170,12 +169,6 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
         if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
             String loggerEPC = getArguments().getString(LOGGER_EPC);
 
-            // get UhfReader instance
-//            UhfReader _uhfReader = UhfReader.getInstance();
-//            _uhfReader.setWorkArea(3);
-//            _uhfReader.setOutputPower(24);
-//
-//            cmd = new CAENCommander(_uhfReader, loggerEPC);
             cmd = RFIDModuleFactory.getInstance();
             cmd.setFilterEPC(loggerEPC);
 
@@ -215,7 +208,6 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
 
     private void stopAnimation() {
         mCurrentLevel = MAX_LEVEL;
-        //mClipDrawable.setLevel(MAX_LEVEL);
         onTimeUpdate(mAnimator, MAX_LEVEL, LEVEL_INCREMENT);
     }
 
@@ -236,17 +228,17 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
         }
     }
 
-    private Reader.READER_ERR resetLogger(ICAEN_API cmd) {
-        return cmd.Reset();
+    private Reader.READER_ERR resetLogger() {
+        return this.cmd.Reset();
     }
 
-    private Reader.READER_ERR setupLogger(ICAEN_API cmd) {
-        return cmd.Setup(ICAEN_API.DefaultInterval);
+    private Reader.READER_ERR setupLogger() {
+        return this.cmd.Setup(ICAEN_API.DefaultInterval);
     }
 
-    private Double enableLogger(ICAEN_API cmd) {
+    private Double enableLogger() {
         try {
-            return cmd.StartLogging();
+            return this.cmd.StartLogging();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -15,10 +15,15 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.TIME_WAITTAG_WRITEPAGE;
 import android.widget.Toast;
 
 import com.android.hdhe.uhf.reader.UhfReader;
+import com.android.hdhe.uhf.readerInterface.TagModel;
 import com.uhf.api.cls.Reader;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import cn.pda.serialport.Tools;
 import io.agritrack.caen.common.INTERFACEMEM;
+import io.agritrack.caen.pojo.RFIDTag;
 
 public class BX6200Commander extends AbstractCAENCommander  {
     private final UhfReader uhfReader;
@@ -178,5 +183,23 @@ public class BX6200Commander extends AbstractCAENCommander  {
     public void CloseReader() {
         this.uhfReader.close();
         this.Status(Boolean.FALSE);
+        RFIDModuleFactory.Reset();
+    }
+
+    @Override
+    public void StopReading() {
+        this.uhfReader.unSelectEPC();
+        //this.uhfReader.close();
+    }
+
+    public List<RFIDTag> inventoryRealTime() {
+        List<TagModel> inventory = this.uhfReader.inventoryRealTime();
+        return inventory.stream().map(x->new RFIDTag(TagToString.apply(x), x.getmRssi())).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean startReading() {
+        //Reader.READER_ERR res = this.uhfReader.asyncStartReading();
+        return false; //Reader.READER_ERR.MT_OK_ERR.equals(res);
     }
 }

@@ -3,11 +3,8 @@ package io.agritrack.fruit.ui.storage_semi_ready;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
 import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
 import static io.agritrack.ui.custom.CustomToast.CToast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
@@ -33,8 +32,6 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.rfid.SingleShotScanner;
@@ -51,7 +48,7 @@ public class SemiReadyStorageWeightActivity extends AppCompatActivity {
     private EditText etTotalWeight;
     private String warehouse;
 
-    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final SingleShotScanner scanner = null; // new SingleShotScanner(); //TODO: remove comment
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
 
@@ -79,7 +76,7 @@ public class SemiReadyStorageWeightActivity extends AppCompatActivity {
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
-            scanner.setUhfReader(_uhfReader);
+            //scanner.setUhfReader(_uhfReader);
             scanner.setFilter(Filters.RFID_POLE);
 
             Future<?> future = executor.submit(scanner);

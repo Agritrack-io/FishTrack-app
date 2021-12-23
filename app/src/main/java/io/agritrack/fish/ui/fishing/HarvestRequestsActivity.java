@@ -26,9 +26,7 @@ import java.util.List;
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.HarvestRequest;
-import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.bo.GenericListModel;
@@ -100,11 +98,6 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render(v), Toast.LENGTH_LONG);
             } else {
-                // NO open FishingTx exists, instantiate a new.
-                FishingTransaction openTx = new FishingTransaction();
-                openTx.txStatus = TxStatus.PENDING;
-                GlobalState.recFishing.txKey = db.fishingTransactionDAO().insert(openTx);
-
                 // transfer existing Record Data to Entity and persist to db.
                 GlobalState.commitFishing(this.db, false);
 
@@ -146,7 +139,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         StringBuilder sb = new StringBuilder();
         if (this.harvestRQcnt == 0) {
             sb.append("No Harvest Requests available. \nPlz contact Harvest Dept.");
-        } else if(!IsDemo) {
+        } else if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.speciesName)) {
                 sb.append(String.format("Please Select a Harvest Request to proceed", ""));
             }

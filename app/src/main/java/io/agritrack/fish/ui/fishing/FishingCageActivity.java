@@ -8,21 +8,17 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -32,13 +28,13 @@ import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.rfid.MultipleFilterSingleShotScanner;
+import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class FishingCageActivity extends AppCompatActivity {
-
-    private final SingleShotScanner scanner = new SingleShotScanner();
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+public class FishingCageActivity extends TriggerKeyAwareActivity {
+    // Local handler that receives the RFID scanner results.
+    private final ScanHandler mScanHandler = new ScanHandler(this);
     private MobileDB db;
     private Button scanPlatformButton, scanCageButton;
     private TextView tvPlatformRFID, tvCageRFID;
@@ -59,57 +55,24 @@ public class FishingCageActivity extends AppCompatActivity {
         TextView tvHeader = findViewById(R.id.tvHeaderFishingCage);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
-        // get  references of the controls
+        // get references of the controls
         assignCtrlVars();
 
         // =================================
         // RFID scanning functionality
         scanPlatformButton.setOnClickListener(view -> {
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_PLATFORM);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            tvPlatformRFID.setText(epcStr);
-                        }
-                    });
-                    //tvCageName.setText(result);
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
+            MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
+            scanner_runnable.setFilter(new String[]{Filters.RFID_PLATFORM});
+            scanner_runnable.startReading();
+            mScanHandler.postDelayed(scanner_runnable, 0);
         });
 
         scanCageButton.setOnClickListener(view -> {
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_CAGE);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            tvCageRFID.setText(epcStr);
-                        }
-                    });
-                    //tvCageName.setText(result);
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
+            MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
+            scanner_runnable.setFilter(new String[]{Filters.RFID_CAGE});
+            scanner_runnable.startReading();
+            mScanHandler.postDelayed(scanner_runnable, 0);
         });
-
         // =================================
 
         // set (any?) previously selected values to activity Controls.
@@ -127,6 +90,14 @@ public class FishingCageActivity extends AppCompatActivity {
 
         // create Footer
         configFooter();
+    }
+
+    @Override
+    protected void onClick(View view) {
+        MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(new String[]{Filters.RFID_PLATFORM, Filters.RFID_CAGE});
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     protected void configFooter() {
@@ -185,7 +156,7 @@ public class FishingCageActivity extends AppCompatActivity {
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if(!IsDemo) {
+        if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.platformRFID)) {
                 sb.append(String.format("\n%s is missing", "'Platform tag'"));
             }
@@ -199,21 +170,48 @@ public class FishingCageActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        if (executor != null)
-            executor.shutdown();
-        super.onDestroy();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (executor != null)
-            executor.shutdown();
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<FishingCageActivity> mActivity;
+
+        public ScanHandler(FishingCageActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+//            FishingCageActivity activity = mActivity.get();
+//            if (activity != null) {
+//            }
+            switch (msg.what) {
+                case 1:
+                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
+                    try {
+                        if (!epcList.isEmpty()) {
+                            for (CharSequence epcCharSeq : epcList) {
+                                String epc = epcCharSeq.toString();
+                                if (epc.startsWith(Filters.RFID_PLATFORM)) {
+                                    tvPlatformRFID.setText(epc);
+                                } else if (epc.startsWith(Filters.RFID_CAGE)) {
+                                    tvCageRFID.setText(epc);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("Neither Platform nor Cage were detected!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
+
 }

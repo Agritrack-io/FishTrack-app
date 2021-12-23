@@ -5,9 +5,9 @@ import java.util.Objects;
 public class RFIDTag {
 
     private String epc;
-    private String rssi;
+    private int rssi;
 
-    public RFIDTag(String epc, String rssi) {
+    public RFIDTag(String epc, int rssi) {
         this.epc = epc;
         this.rssi = rssi;
     }
@@ -20,11 +20,11 @@ public class RFIDTag {
         this.epc = epc;
     }
 
-    public String getRssi() {
+    public int getRssi() {
         return rssi;
     }
 
-    public void setRssi(String rssi) {
+    public void setRssi(int rssi) {
         this.rssi = rssi;
     }
 

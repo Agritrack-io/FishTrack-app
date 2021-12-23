@@ -21,7 +21,6 @@ import io.agritrack.data.model.tx.PlantTransaction;
 import io.agritrack.data.model.tx.ShippingTransaction;
 import io.agritrack.data.model.tx.TotesTransaction;
 import io.agritrack.data.model.tx.StorageTransaction;
-import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.data.model.tx.items.CoInventoryTxWithItems;
 import io.agritrack.data.model.tx.items.CollectionTxWithItems;
 import io.agritrack.data.model.tx.items.IncomingTxWithItems;
@@ -521,12 +520,12 @@ public class FruitGlobalState {
         try {
             CorrelationTransaction txCorrelation = new CorrelationTransaction();
 
-            txCorrelation.site = recCorrelation.site;
+            txCorrelation.site = recCorrelation.subSite;
             txCorrelation.assetType = (recCorrelation.assetType != null) ? recCorrelation.assetType.name() : null;
-            txCorrelation.assetRFID = recCorrelation.loggerRFID;
-            txCorrelation.parentType = (recCorrelation.parentType != null) ? recCorrelation.parentType.name() : null;
-            txCorrelation.parentRFID = recCorrelation.poleRFID;
-            txCorrelation.site = recCorrelation.site;
+            txCorrelation.assetRFID = recCorrelation.poleRFID;
+            txCorrelation.loggerType = (recCorrelation.loggerType != null) ? recCorrelation.loggerType.name() : null;
+            txCorrelation.loggerRFID = recCorrelation.loggerRFID;
+            txCorrelation.barcode = recCorrelation.poleBarcode;
             txCorrelation.user = LocalPreferences.getLoggedInUser("N/A");
             txCorrelation.timestamp = System.currentTimeMillis();
             txCorrelation.longitude = recCorrelation.longitude;

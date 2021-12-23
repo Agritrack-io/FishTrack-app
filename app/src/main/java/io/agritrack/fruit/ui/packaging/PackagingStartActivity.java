@@ -3,7 +3,6 @@ package io.agritrack.fruit.ui.packaging;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.fruit.state.FruitGlobalState.recPackaging;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -64,7 +63,7 @@ import retrofit2.Call;
 
 public class PackagingStartActivity extends AppCompatActivity {
 
-    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final SingleShotScanner scanner = null; //new SingleShotScanner(); //TODO: remove comment
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private final MutableLiveData<String> enquiryResult = new MutableLiveData<>();
@@ -156,7 +155,7 @@ public class PackagingStartActivity extends AppCompatActivity {
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
-            scanner.setUhfReader(_uhfReader);
+            //scanner.setUhfReader(_uhfReader);
             scanner.setFilter(Filters.RFID_POLE);
 
             Future<?> future = executor.submit(scanner);

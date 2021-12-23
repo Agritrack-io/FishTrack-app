@@ -3,9 +3,27 @@ package io.agritrack.fruit.ui.storage_ready;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
 import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
 import static io.agritrack.ui.custom.CustomToast.CToast;
+
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.InputType;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -15,26 +33,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -44,7 +46,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.api.sync.CollectionLotEnquiryCallBack;
 import io.agritrack.api.sync.IfcoBatchByIfcoBarcode;
 import io.agritrack.barcode.BarcodeScanService;
 import io.agritrack.barcode.SoundUtil;
@@ -58,7 +59,6 @@ import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
@@ -72,7 +72,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
 
     private TextView tvPoleName;
     private Button btnScanPole;
-    private final SingleShotScanner scanner = new SingleShotScanner();
+    private final SingleShotScanner scanner = null; //new SingleShotScanner(); //TODO: remove comment
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final MutableLiveData<List<String>> enquiryResult = new MutableLiveData<>();
 
@@ -90,7 +90,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
             if (data != null) {
                 String barcode = new String(data);
                 invokeEnquiryIfcoBatch(barcode);
-           /*     adapterIfco.addItem(barcode);
+                /*adapterIfco.addUniqueItem(barcode);
                 adapterIfco.notifyDataSetChanged();*/
                 tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
                 scanning = false;
@@ -118,6 +118,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
         }
     };
 
+    private String ifcoBarcode;
     private ImageButton ivAddIfco, ivDeleteIfco;
     private Button btnScanIfco;
     
@@ -160,7 +161,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
-            scanner.setUhfReader(_uhfReader);
+            //scanner.setUhfReader(_uhfReader);
             scanner.setFilter(Filters.RFID_POLE);
 
             Future<?> future = executor.submit(scanner);
@@ -210,9 +211,9 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
             }
         });
 
-       /* ivAddItem.setOnClickListener(view -> {
+        ivAddIfco.setOnClickListener(view -> {
             showAddDialog();
-        });*/
+        });
 
         btnScanIfco.setOnClickListener(view -> {
             clearSelectedItem();
@@ -231,11 +232,12 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
 
         enquiryResult.observe(this, response -> {
             if (response == null) {
-                CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render("No ifco batch returned for this ifco"), Toast.LENGTH_LONG);
                 return;
             }
             adapterIfco.setValues(response);
             adapterIfco.notifyDataSetChanged();
+            tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
         });
 
         // create Footer
@@ -268,8 +270,8 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
             String token = LocalPreferences.getToken();
 
             // sync collection lot for current Site
-            Call<List<String>> enquiryCollectionLotAsyncCall = enquiryService.getIfcoBatch(ifcoBarcode, "Bearer " + token);
-            enquiryCollectionLotAsyncCall.enqueue(new IfcoBatchByIfcoBarcode(this.enquiryResult));
+            Call<List<String>> enquiryIfcoBatchByIfcoBarcodeAsyncCall = enquiryService.getIfcoBatch(ifcoBarcode, "Bearer " + token);
+            enquiryIfcoBatchByIfcoBarcodeAsyncCall.enqueue(new IfcoBatchByIfcoBarcode(this.enquiryResult));
 
 
         } catch (Exception e) {
@@ -381,5 +383,36 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+    }
+
+    private void showAddDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Type item BARCODE");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ifcoBarcode = input.getText().toString();
+                adapterIfco.addUniqueItem(ifcoBarcode);
+                adapterIfco.notifyDataSetChanged();
+                tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
     }
 }
