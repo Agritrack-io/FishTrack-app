@@ -9,7 +9,7 @@ import io.agritrack.data.model.tx.IfcoTransaction;
 import io.agritrack.data.model.wh.CoInventory;
 import io.agritrack.data.model.wh.RFIDInventory;
 
-public class CoInventoryTxWithItems {
+public class IfcoInventoryTxWithItems {
 
     @Embedded
     public CoInventory coInventoryTx;

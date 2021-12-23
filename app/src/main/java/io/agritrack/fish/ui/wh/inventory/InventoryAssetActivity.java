@@ -1,11 +1,5 @@
 package io.agritrack.fish.ui.wh.inventory;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recWHInventory;
-import static io.agritrack.ui.custom.CustomToast.CToast;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,29 +30,41 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.RFIDInventoryDTO;
+import io.agritrack.data.dto.wh.TotesInventoryDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
+import io.agritrack.data.model.wh.RFIDInventory;
+import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
+import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
+import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recWHInventory;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 public class InventoryAssetActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private ToggleGroup tgChooseAssetType;
     private MobileDB db;
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private ExpandableListView xvInventoryItems;
     private UhfReader uhfReader;
@@ -239,6 +245,36 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         });
     }
 
+    /*private void showAddDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Type item BARCODE");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                itemBarcode = input.getText().toString();
+                adapterInventoryItems.addItem(itemBarcode);
+                adapterInventoryItems.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
+    }*/
+
     private boolean updateState() {
         if (adapterInventoryItems != null) {
             GlobalState.recWHInventory.items = adapterInventoryItems.getValues();
@@ -257,6 +293,18 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
             progressDialog.setCancelable(false);
             progressDialog.setMessage(render("Synchronizing data..."));
             progressDialog.show();
+
+            String token = LocalPreferences.getToken();
+
+            // persist WHIncomingAssetTX Record data to local DB.
+            RFIDInventory invtx = GlobalState.commitWHRFIDInventory(db);
+            List<RFIDInventoryItem> invItemtxs = GlobalState.commitWHRFIDInventoryItem(db, invtx);
+
+            // sync WH Inventory Tx
+            Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(RFIDInventoryDTO.convert(invtx), "Bearer " + token);
+            Call<List<RFIDInventoryItemDTO>> syncInvItemTxCallBack = updService.syncRFIDInventoryItemTx(RFIDInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
+            syncInvTxCallBack.enqueue(new SyncInvTxCallBack());
+            syncInvItemTxCallBack.enqueue(new SyncInvItemTxCallBack());
 
             return true;
         } catch (Exception e) {
@@ -367,7 +415,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Inventory update failure!!!"), Toast.LENGTH_LONG));
             }
         }
 
@@ -398,7 +446,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Inventory items update failure!!!"), Toast.LENGTH_LONG));
             }
         }
 
@@ -419,7 +467,4 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
             }
         }
     }
-
-
-
 }

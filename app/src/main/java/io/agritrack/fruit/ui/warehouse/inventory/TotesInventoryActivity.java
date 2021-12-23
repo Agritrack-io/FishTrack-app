@@ -36,7 +36,6 @@ import com.google.android.gms.common.util.Strings;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import io.agritrack.R;
@@ -44,15 +43,11 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.wh.RFIDInventoryDTO;
-import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
-import io.agritrack.data.model.tx.items.RFIDInventoryTxWithItems;
-import io.agritrack.data.model.wh.RFIDInventory;
-import io.agritrack.data.model.wh.RFIDInventoryItem;
+import io.agritrack.data.dto.wh.TotesInventoryDTO;
+import io.agritrack.data.model.tx.items.TotesInventoryTxWithItems;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
-import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
@@ -339,10 +334,10 @@ public class TotesInventoryActivity extends LocationAwareActivity {
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
-            RFIDInventoryTxWithItems invtx = FruitGlobalState.commitWHRFIDInventory(db);
+            TotesInventoryTxWithItems invtx = FruitGlobalState.commitWHRFIDInventory(db);
 
             // sync WH Inventory Tx
-            Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(RFIDInventoryDTO.convert(invtx), "Bearer " + token);
+            Call<TotesInventoryDTO> syncInvTxCallBack = updService.syncTotesInventoryTx(TotesInventoryDTO.convert(invtx), "Bearer " + token);
             syncInvTxCallBack.enqueue(new TotesInventoryActivity.SyncInvTxCallBack());
 
             return true;
@@ -353,10 +348,10 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         }
     }
 
-    public class SyncInvTxCallBack implements Callback<RFIDInventoryDTO> {
+    public class SyncInvTxCallBack implements Callback<TotesInventoryDTO> {
         @Override
-        public void onResponse(Call<RFIDInventoryDTO> call, Response<RFIDInventoryDTO> response) {
-            RFIDInventoryDTO rs = response.body();
+        public void onResponse(Call<TotesInventoryDTO> call, Response<TotesInventoryDTO> response) {
+            TotesInventoryDTO rs = response.body();
 
             if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
@@ -367,7 +362,7 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<RFIDInventoryDTO> call, Throwable error) {
+        public void onFailure(Call<TotesInventoryDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

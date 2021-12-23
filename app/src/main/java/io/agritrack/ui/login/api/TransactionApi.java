@@ -16,8 +16,10 @@ import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.data.dto.wh.CoInventoryDTO;
+import io.agritrack.data.dto.wh.IfcoInventoryDTO;
 import io.agritrack.data.dto.wh.CoInventoryItemDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryDTO;
+import io.agritrack.data.dto.wh.TotesInventoryDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -81,6 +83,10 @@ public interface TransactionApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/inventory/totes")
+    Call<TotesInventoryDTO> syncTotesInventoryTx(@Body TotesInventoryDTO rFIDInventory, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/inventory/asset")
     Call<RFIDInventoryDTO> syncRFIDInventoryTx(@Body RFIDInventoryDTO rFIDInventory, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
@@ -89,6 +95,10 @@ public interface TransactionApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/inventory/ifco")
+    Call<IfcoInventoryDTO> syncIfcoInventoryTx(@Body IfcoInventoryDTO coInventory, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/inventory/consumable")
     Call<CoInventoryDTO> syncCoInventoryTx(@Body CoInventoryDTO coInventory, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")

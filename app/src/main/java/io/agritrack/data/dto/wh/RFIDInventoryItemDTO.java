@@ -8,7 +8,7 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
 public class RFIDInventoryItemDTO {
 
     public Long id;
-    public Long inventory_id;
+    public Long inventory;
     public String rfid;
     public String code;
 
@@ -18,7 +18,7 @@ public class RFIDInventoryItemDTO {
         rFIDInventoryItemDTO.id = rFIDInventoryItem.itmId;
         rFIDInventoryItemDTO.rfid = rFIDInventoryItem.itemRFID;
         rFIDInventoryItemDTO.code = rFIDInventoryItem.code;
-        rFIDInventoryItemDTO.inventory_id = rFIDInventoryItem.inventory;
+        rFIDInventoryItemDTO.inventory = rFIDInventoryItem.inventory;
         return rFIDInventoryItemDTO;
     }
 

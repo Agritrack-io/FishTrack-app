@@ -1,18 +1,12 @@
 package io.agritrack.fish.ui.wh.inventory;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -20,11 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,16 +35,15 @@ import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.CoInventoryDTO;
+import io.agritrack.data.dto.wh.IfcoInventoryDTO;
 import io.agritrack.data.dto.wh.CoInventoryItemDTO;
 import io.agritrack.data.model.wh.CoInventory;
 import io.agritrack.data.model.wh.CoInventoryItem;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.ConsumableType;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingConsumableActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -67,7 +56,6 @@ import retrofit2.Response;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recTransport;
 import static io.agritrack.fish.state.GlobalState.recWHInventory;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -333,7 +321,7 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
 
             String token = LocalPreferences.getToken();
 
-            /*// persist WHIncomingAssetTX Record data to local DB.
+            // persist WHIncomingAssetTX Record data to local DB.
             CoInventory invtx = GlobalState.commitWHCoInventory(db);
             List<CoInventoryItem> invItemtxs = GlobalState.commitWHCoInventoryItem(db, invtx);
 
@@ -341,7 +329,7 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
             Call<CoInventoryDTO> syncInvTxCallBack = updService.syncCoInventoryTx(CoInventoryDTO.convert(invtx), "Bearer " + token);
             Call<List<CoInventoryItemDTO>> syncInvItemTxCallBack = updService.syncCoInventoryItemTx(CoInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
             syncInvTxCallBack.enqueue(new InventoryConsumableActivity.SyncInvTxCallBack());
-            syncInvItemTxCallBack.enqueue(new InventoryConsumableActivity.SyncInvItemTxCallBack());*/
+            syncInvItemTxCallBack.enqueue(new InventoryConsumableActivity.SyncInvItemTxCallBack());
 
             return true;
         } catch (Exception e) {
@@ -427,7 +415,7 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Inventory update failure!!!"), Toast.LENGTH_LONG));
             }
         }
 
@@ -458,7 +446,7 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Inventory items update failure!!!"), Toast.LENGTH_LONG));
             }
         }
 

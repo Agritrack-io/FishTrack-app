@@ -11,7 +11,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import io.agritrack.data.model.tx.items.CoInventoryTxWithItems;
+import io.agritrack.data.model.tx.items.IfcoInventoryTxWithItems;
 import io.agritrack.data.model.wh.CoInventory;
 
 @Dao
@@ -22,14 +22,14 @@ public interface CoInventoryDAO {
 
     @Transaction
     @Query("SELECT * from co_Inventory")
-    LiveData<List<CoInventoryTxWithItems>> getAllInvIfco();
+    LiveData<List<IfcoInventoryTxWithItems>> getAllInvIfco();
 
     @Query("SELECT * from co_Inventory where id=:coInventoryId LIMIT 1")
     CoInventory getById(Long coInventoryId);
 
     @Transaction
     @Query("SELECT * from co_Inventory where id=:coInventoryId LIMIT 1")
-    CoInventoryTxWithItems getInvIfcoById(Long coInventoryId);
+    IfcoInventoryTxWithItems getInvIfcoById(Long coInventoryId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(CoInventory... coInventorys);
