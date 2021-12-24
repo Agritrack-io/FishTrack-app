@@ -1,18 +1,17 @@
 package io.agritrack.fish.ui.wh.outgoing;
 
-import android.Manifest;
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recWHOutgoing;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -21,11 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 
@@ -48,12 +43,9 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.model.tx.AssetTransaction;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
 import io.agritrack.enums.WarehouseTxState;
-import io.agritrack.fish.ui.wh.inventory.InventoryConsumableActivity;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.fish.ui.WhMenuActivity;
@@ -66,13 +58,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recTransport;
-import static io.agritrack.fish.state.GlobalState.recWHOutgoing;
-import static io.agritrack.ui.custom.CustomToast.CToast;
-
 public class OutgoingAssetActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private ToggleGroup tgChooseAssetType;
@@ -84,7 +69,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private MobileDB db;
     private UhfReader uhfReader;
-    private ScanInventoryThread processingBinsThread = new ScanInventoryThread();
+    //private ScanInventoryThread processingBinsThread = new ScanInventoryThread();
     private boolean scanning = false;
 
     private TreelikeAdapter adapterOutgoingItems;
@@ -247,7 +232,8 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
         ivBack.setOnClickListener(view -> {
             //Set scanning to false to stop running scan thread
             scanning = false;
-            processingBinsThread.setScanInProgress(scanning);
+            //  TODO::
+//            processingBinsThread.setScanInProgress(scanning);
 
             Intent i = new Intent(getApplicationContext(), OutgoingStartActivity.class);
             startActivity(i);
@@ -375,15 +361,16 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
             clearSelectedItem();
             scanning = !scanning;
 
+            //  TODO::
             // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (processingBinsThread.getState() == Thread.State.TERMINATED) {
-                processingBinsThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            processingBinsThread.setScanInProgress(scanning);
-            processingBinsThread.setUhfReader(uhfReader);
-            processingBinsThread.setScanResult(scanResult);
-            processingBinsThread.setFilter(activeFilter);
+//            if (processingBinsThread.getState() == Thread.State.TERMINATED) {
+//                processingBinsThread = new ScanInventoryThread();
+//            }
+//            //update scanning, uhfReader, tvPlatformName values in thread
+//            processingBinsThread.setScanInProgress(scanning);
+//            processingBinsThread.setUhfReader(uhfReader);
+//            processingBinsThread.setScanResult(scanResult);
+//            processingBinsThread.setFilter(activeFilter);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
@@ -392,9 +379,10 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
                     }
                 });
-                if (processingBinsThread.getState() == Thread.State.NEW) {
-                    processingBinsThread.start();
-                }
+                //  TODO::
+//                if (processingBinsThread.getState() == Thread.State.NEW) {
+//                    processingBinsThread.start();
+//                }
             } else {
                 scanButton.setText(R.string.scan_assets);
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -402,11 +390,12 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
                     }
                 });
-                try {
-                    processingBinsThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//  TODO::
+//                try {
+//                    processingBinsThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
         });
     }

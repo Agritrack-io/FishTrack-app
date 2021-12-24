@@ -1,83 +1,84 @@
 package io.agritrack.rfid;
 
+import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 
-import androidx.lifecycle.MutableLiveData;
-
-import com.android.hdhe.uhf.reader.UhfReader;
-import com.android.hdhe.uhf.readerInterface.TagModel;
-
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import cn.pda.serialport.Tools;
+import io.agritrack.caen.api.ICAEN_API;
+import io.agritrack.caen.api.RFIDModuleFactory;
+import io.agritrack.caen.pojo.RFIDTag;
 
-public class ScanInventoryThread extends Thread {
-    private final Function<TagModel, String> TagToString = t -> Tools.Bytes2HexString(t.getmEpcBytes(), t.getmEpcBytes().length);
-
-    private boolean scanInProgress;
-    private UhfReader uhfReader;
-    private MutableLiveData<Set<String>> scanResult;
-    private final Set<String> epcValues;
+public class ScanInventoryThread implements Runnable {
+    private final Handler mScanHandler;
+    private final ICAEN_API uhfReader;
+    private boolean scanInProgress = false;
     private String RFID_FILTER;
 
-    public ScanInventoryThread() {
-        this.epcValues = new TreeSet<>();
+
+    public ScanInventoryThread(Handler handler) {
+        super();
+        uhfReader = RFIDModuleFactory.getInstance();
+        mScanHandler = handler;
     }
 
-    public void setUhfReader(UhfReader uhfReader) {
-        this.uhfReader = uhfReader;
+    public boolean startReading() {
+        this.scanInProgress = true;
+        return uhfReader.startReading();
     }
 
     public void setFilter(String rfidFilter) {
         this.RFID_FILTER = rfidFilter;
     }
 
-    public void setScanInProgress(Boolean val) {
-        this.scanInProgress = val;
+    public void stopReading() {
+        this.scanInProgress = false;
     }
 
-    public void setScanResult(MutableLiveData<Set<String>> scanResult) {
-        this.scanResult = scanResult;
+    public boolean isReading() {
+        return this.scanInProgress;
     }
 
     @Override
     public void run() {
-        List<TagModel> tagList;
-        while (scanInProgress) {
-            if (uhfReader != null) {
-                try {
-                    tagList = uhfReader.inventoryRealTime();
-                    if (tagList != null && !tagList.isEmpty()) {
-                        Stream<TagModel> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || (TagToString.apply(f)).indexOf(this.RFID_FILTER) == 11);
-                        for (TagModel tag : filteredStream.collect(Collectors.toList())) {
-                            if (tag != null) {
-                                final String epcStr = TagToString.apply(tag);
-                                if (epcStr.length() <= 12) {
-                                    continue;
-                                }
-                                epcValues.add(epcStr.substring(11));
+        ArrayList<CharSequence> epcValues = new ArrayList<>();
+        if (uhfReader != null) {
+            try {
+                final List<RFIDTag> tagList = uhfReader.inventoryRealTime();
+                if (tagList != null && !tagList.isEmpty()) {
+                    Stream<RFIDTag> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || (f.getEpc().indexOf(this.RFID_FILTER) == 11));
+                    List<RFIDTag> filteredList = filteredStream.collect(Collectors.toList());
+                    for (RFIDTag tag : filteredList) {
+                        if (tag != null) {
+                            final String epcStr = tag.getEpc();
+                            if (epcStr.length() <= 12) {
+                                continue;
                             }
-                        }
-
-                        if (scanResult != null) {
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                public void run() {
-                                    scanResult.setValue(epcValues);
-                                }
-                            });
+                            epcValues.add(epcStr.substring(11));
                         }
                     }
-                } catch (NullPointerException ignored) {
+
+                    Message msg = new Message();
+                    msg.what = 1;
+                    Bundle b = new Bundle();
+                    b.putCharSequenceArrayList("epc", epcValues);
+                    msg.setData(b);
+                    mScanHandler.sendMessage(msg);
                 }
-            } else {
-                break;
+            } catch (NullPointerException ignored) {
+                ignored.printStackTrace();
             }
+            mScanHandler.postDelayed(this, 0l);
+        }
+        if (!scanInProgress) {
+            mScanHandler.sendEmptyMessage(1980);
+            uhfReader.StopReading();
+            mScanHandler.removeCallbacks(this);
+            //break;
         }
     }
 }

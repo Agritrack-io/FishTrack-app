@@ -54,7 +54,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         setContentView(R.layout.activity_fishing_confirm);
 
         // activate GPS location update feature.
-        super.findLocation();
+        //super.findLocation();   //TODO:: remove comment
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingConfirm);

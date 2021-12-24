@@ -54,7 +54,6 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.PackagingRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.api.EnquiryApi;
@@ -74,7 +73,7 @@ public class PackagingStartActivity extends AppCompatActivity {
     private Button btnScanPole;
     private UhfReader uhfReader;
     private boolean scanning = false;
-    private ScanInventoryThread inventoryTotesThread = new ScanInventoryThread();
+//    private ScanInventoryThread inventoryTotesThread = new ScanInventoryThread();
     private TemplateRecyclerAdapter adapterTotes;
     private RecyclerView rvTotesForPackage;
     private TextView tvTotesCount;
@@ -337,15 +336,16 @@ public class PackagingStartActivity extends AppCompatActivity {
             clearSelectedItem();
             scanning = !scanning;
 
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (inventoryTotesThread.getState() == Thread.State.TERMINATED) {
-                inventoryTotesThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            inventoryTotesThread.setScanInProgress(scanning);
-            inventoryTotesThread.setUhfReader(uhfReader);
-            inventoryTotesThread.setScanResult(scanResult);
-            inventoryTotesThread.setFilter(Filters.RFID_TOTE);
+            //  TODO::
+//            // Following check is required to instantiate a ScanningThread that was stopped previously.
+//            if (inventoryTotesThread.getState() == Thread.State.TERMINATED) {
+//                inventoryTotesThread = new ScanInventoryThread();
+//            }
+//            //update scanning, uhfReader, tvPlatformName values in thread
+//            inventoryTotesThread.setScanInProgress(scanning);
+//            inventoryTotesThread.setUhfReader(uhfReader);
+//            inventoryTotesThread.setScanResult(scanResult);
+//            inventoryTotesThread.setFilter(Filters.RFID_TOTE);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
@@ -354,9 +354,10 @@ public class PackagingStartActivity extends AppCompatActivity {
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
                     }
                 });
-                if (inventoryTotesThread.getState() == Thread.State.NEW) {
-                    inventoryTotesThread.start();
-                }
+                //  TODO::
+//                if (inventoryTotesThread.getState() == Thread.State.NEW) {
+//                    inventoryTotesThread.start();
+//                }
             } else {
                 scanButton.setText(R.string.scan_totes);
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -364,11 +365,12 @@ public class PackagingStartActivity extends AppCompatActivity {
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
                     }
                 });
-                try {
-                    inventoryTotesThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                //  TODO::
+//                try {
+//                    inventoryTotesThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
         });
     }

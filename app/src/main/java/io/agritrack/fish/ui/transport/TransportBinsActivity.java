@@ -1,12 +1,16 @@
 package io.agritrack.fish.ui.transport;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -16,42 +20,33 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
+import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
-
-public class TransportBinsActivity extends AppCompatActivity {
-
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-
-    private UhfReader uhfReader;
-    private ScanInventoryThread transportationBinsThread = new ScanInventoryThread();
-    private boolean scanning = false;
+public class TransportBinsActivity extends TriggerKeyAwareActivity {
+    private ScanHandler mScanHandler;
+    private ScanInventoryThread scanner_runnable;
 
     private TemplateRecyclerAdapter adapterBins;
 
@@ -59,14 +54,9 @@ public class TransportBinsActivity extends AppCompatActivity {
     private TextView tvBinsCount;
 
     private ImageButton ivAddBin, ivDeleteBin;
+    private Button scanButton;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
-
-    private String binBarcode;
-
-    private ImageView ivSupport;
-    private SupportDialog supportDialog;
-
     // Instantiate a clickListener to be passed to adapterBins.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
@@ -76,7 +66,7 @@ public class TransportBinsActivity extends AppCompatActivity {
             TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if(selectedItem!=null) {
+            if (selectedItem != null) {
                 selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
 
@@ -85,11 +75,17 @@ public class TransportBinsActivity extends AppCompatActivity {
             selectedItem = view;
         }
     };
+    private String binBarcode;
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transport_bins);
+
+        // instantiate Local Handler that will process the scanning stream.
+        mScanHandler = new ScanHandler(this);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderTransportBins);
@@ -105,17 +101,8 @@ public class TransportBinsActivity extends AppCompatActivity {
         rvBinsForTransport.setAdapter(adapterBins);
         rvBinsForTransport.setNestedScrollingEnabled(false);
 
-        scanResult.observe(this, response -> {
-            if (response == null) {
-                return;
-            }
-            tvBinsCount.setText(String.valueOf(response.size()));
-            adapterBins.setValues(new ArrayList<>(response));
-            adapterBins.notifyDataSetChanged();
-        });
-
-        // initialize scanning threads
-        prepareScanAvailableBinsButton();
+        // link trigger/scan button to ClickListener
+        scanButton.setOnClickListener(this::onClick);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -159,8 +146,8 @@ public class TransportBinsActivity extends AppCompatActivity {
         configFooter();
     }
 
-    private void clearSelectedItem(){
-        if(selectedItem!=null) {
+    private void clearSelectedItem() {
+        if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
         }
     }
@@ -168,76 +155,47 @@ public class TransportBinsActivity extends AppCompatActivity {
     private void assignCtrlVars() {
         rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
         tvBinsCount = findViewById(R.id.tvBinsCount);
-        ivDeleteBin = (ImageButton) findViewById(R.id.ivDeleteBin);
-        ivAddBin = (ImageButton) findViewById(R.id.ivAddBin);
+        ivDeleteBin = findViewById(R.id.ivDeleteBin);
+        ivAddBin = findViewById(R.id.ivAddBin);
         ivSupport = findViewById(R.id.ivSupport);
+        scanButton = findViewById(R.id.btnScanBin);
     }
 
-    private void prepareScanAvailableBinsButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setWorkArea(3);
-        uhfReader.setOutputPower(33);
-
-        final Button scanButton = findViewById(R.id.btnScanBin);
-        scanButton.setOnClickListener(view -> {
-            clearSelectedItem();
-            scanning = !scanning;
-
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (transportationBinsThread.getState() == Thread.State.TERMINATED) {
-                transportationBinsThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            transportationBinsThread.setScanInProgress(scanning);
-            transportationBinsThread.setUhfReader(uhfReader);
-            transportationBinsThread.setScanResult(scanResult);
-            transportationBinsThread.setFilter(Filters.RFID_BIN);
-
-            if (scanning) {
-                scanButton.setText(R.string.stop_scan);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                    }
-                });
-                if (transportationBinsThread.getState() == Thread.State.NEW) {
-                    transportationBinsThread.start();
-                }
-            } else {
-                scanButton.setText(R.string.scan_bin);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-                    }
-                });
-                try {
-                    transportationBinsThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    @Override
+    protected void onClick(View view) {
+        if (scanner_runnable == null) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable = new ScanInventoryThread(mScanHandler);
+            scanner_runnable.setFilter(Filters.RFID_NET); //(Filters.RFID_BIN);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else if (!scanner_runnable.isReading()) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable.setFilter(Filters.RFID_NET);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+            scanner_runnable.stopReading();
+            scanButton.setText(R.string.scan_bin);
+        }
+        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     protected void configFooter() {
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartTransport);
+        ImageView ivBack = findViewById(R.id.ivBackToStartTransport);
         ivBack.setOnClickListener(view -> {
-
             //Set scanning to false to stop running scan thread
-            scanning = false;
-            transportationBinsThread.setScanInProgress(scanning);
+            scanner_runnable.stopReading();
 
             Intent i = new Intent(getApplicationContext(), TransportStartActivity.class);
             startActivity(i);
         });
 
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToDriverConfirm);
+        ImageView ivNext = findViewById(R.id.ivToDriverConfirm);
         ivNext.setOnClickListener(view -> {
-
             //Set scanning to false to stop running scan thread
-            scanning = false;
-            transportationBinsThread.setScanInProgress(scanning);
+            scanner_runnable.stopReading();
 
             updateState();
             String v = validate();
@@ -296,7 +254,7 @@ public class TransportBinsActivity extends AppCompatActivity {
         GlobalState.recTransport.availBins = new LinkedList<>(adapterBins.getValues());
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (GlobalState.recTransport.availBins == null || GlobalState.recTransport.availBins.isEmpty()) {
@@ -306,11 +264,33 @@ public class TransportBinsActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-    @Override
-    protected void onDestroy() {
-        if (uhfReader != null)
-            uhfReader.close();
-        scanning = false;
-        super.onDestroy();
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<TransportBinsActivity> mActivity;
+
+        public ScanHandler(TransportBinsActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            int kk = 0;
+            switch (msg.what) {
+                case 1:
+                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
+                    //clearSelectedItem();
+                    if (epcList != null && !epcList.isEmpty()) {
+                        tvBinsCount.setText(String.valueOf(epcList.size()));
+                        adapterBins.setValues(epcList.stream().map(x->x.toString()).collect(Collectors.toList()));
+                        adapterBins.notifyDataSetChanged();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("Scanning is over!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
 }

@@ -6,13 +6,6 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recInventory;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -30,6 +23,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
@@ -41,7 +41,6 @@ import java.util.Set;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Constants;
-import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.TotesInventoryDTO;
 import io.agritrack.data.model.tx.items.TotesInventoryTxWithItems;
@@ -49,7 +48,6 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
 import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
@@ -74,7 +72,7 @@ public class TotesInventoryActivity extends LocationAwareActivity {
 
     private UhfReader uhfReader;
     private boolean scanning = false;
-    private ScanInventoryThread inventoryTotesThread = new ScanInventoryThread();
+//    private ScanInventoryThread inventoryTotesThread = new ScanInventoryThread();
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private TemplateRecyclerAdapter adapterTotes;
     private RecyclerView rvInventoryTotes;
@@ -220,7 +218,8 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         ivBack.setOnClickListener(view -> {
             //Set scanning to false to stop running scan thread
             scanning = false;
-            inventoryTotesThread.setScanInProgress(scanning);
+            //  TODO::
+//            inventoryTotesThread.setScanInProgress(scanning);
 
             Intent i = new Intent(getApplicationContext(), FruitInventoryStartActivity.class);
             startActivity(i);
@@ -238,15 +237,16 @@ public class TotesInventoryActivity extends LocationAwareActivity {
             clearSelectedItem();
             scanning = !scanning;
 
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (inventoryTotesThread.getState() == Thread.State.TERMINATED) {
-                inventoryTotesThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            inventoryTotesThread.setScanInProgress(scanning);
-            inventoryTotesThread.setUhfReader(uhfReader);
-            inventoryTotesThread.setScanResult(scanResult);
-            inventoryTotesThread.setFilter(Filters.RFID_TOTE);
+            //  TODO::
+//            // Following check is required to instantiate a ScanningThread that was stopped previously.
+//            if (inventoryTotesThread.getState() == Thread.State.TERMINATED) {
+//                inventoryTotesThread = new ScanInventoryThread();
+//            }
+//            //update scanning, uhfReader, tvPlatformName values in thread
+//            inventoryTotesThread.setScanInProgress(scanning);
+//            inventoryTotesThread.setUhfReader(uhfReader);
+//            inventoryTotesThread.setScanResult(scanResult);
+//            inventoryTotesThread.setFilter(Filters.RFID_TOTE);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
@@ -255,9 +255,10 @@ public class TotesInventoryActivity extends LocationAwareActivity {
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
                     }
                 });
-                if (inventoryTotesThread.getState() == Thread.State.NEW) {
-                    inventoryTotesThread.start();
-                }
+                //  TODO::
+//                if (inventoryTotesThread.getState() == Thread.State.NEW) {
+//                    inventoryTotesThread.start();
+//                }
             } else {
                 scanButton.setText(R.string.scan_totes);
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -265,11 +266,12 @@ public class TotesInventoryActivity extends LocationAwareActivity {
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
                     }
                 });
-                try {
-                    inventoryTotesThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                //  TODO::
+//                try {
+//                    inventoryTotesThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
         });
     }

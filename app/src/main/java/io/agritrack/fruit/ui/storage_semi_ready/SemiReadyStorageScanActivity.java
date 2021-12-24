@@ -5,14 +5,6 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +21,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
@@ -37,17 +37,12 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import io.agritrack.R;
-import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.state.HarvestRecord;
 import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -56,7 +51,7 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
 
     private UhfReader uhfReader;
-    private ScanInventoryThread harvestTotesThread = new ScanInventoryThread();
+//    private ScanInventoryThread harvestTotesThread = new ScanInventoryThread();
     private boolean scanning = false;
 
     private TemplateRecyclerAdapter adapterTotes;
@@ -211,15 +206,16 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
             clearSelectedItem();
             scanning = !scanning;
 
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (harvestTotesThread.getState() == Thread.State.TERMINATED) {
-                harvestTotesThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            harvestTotesThread.setScanInProgress(scanning);
-            harvestTotesThread.setUhfReader(uhfReader);
-            harvestTotesThread.setScanResult(scanResult);
-            harvestTotesThread.setFilter(Filters.RFID_TOTE);
+            //  TODO::
+//            // Following check is required to instantiate a ScanningThread that was stopped previously.
+//            if (harvestTotesThread.getState() == Thread.State.TERMINATED) {
+//                harvestTotesThread = new ScanInventoryThread();
+//            }
+//            //update scanning, uhfReader, tvPlatformName values in thread
+//            harvestTotesThread.setScanInProgress(scanning);
+//            harvestTotesThread.setUhfReader(uhfReader);
+//            harvestTotesThread.setScanResult(scanResult);
+//            harvestTotesThread.setFilter(Filters.RFID_TOTE);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
@@ -228,9 +224,10 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
                     }
                 });
-                if (harvestTotesThread.getState() == Thread.State.NEW) {
-                    harvestTotesThread.start();
-                }
+                //  TODO::
+//                if (harvestTotesThread.getState() == Thread.State.NEW) {
+//                    harvestTotesThread.start();
+//                }
             } else {
                 scanButton.setText(R.string.scan_totes);
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -238,11 +235,12 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
                     }
                 });
-                try {
-                    harvestTotesThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                //  TODO::
+//                try {
+//                    harvestTotesThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
         });
     }

@@ -7,24 +7,27 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
 
 public class RFIDInventoryItemDTO {
 
-    public Long id;
-    public Long inventory;
     public String rfid;
     public String code;
 
-    public static RFIDInventoryItemDTO convert(RFIDInventoryItem rFIDInventoryItem) {
 
+    public RFIDInventoryItemDTO() { }
+
+    public RFIDInventoryItemDTO(String rfID) {
+        this.rfid = rfID;
+        this.code = rfID.substring(0, 4);
+    }
+
+    public static RFIDInventoryItemDTO convert(RFIDInventoryItem rFIDInventoryItem) {
         RFIDInventoryItemDTO rFIDInventoryItemDTO = new RFIDInventoryItemDTO();
-        rFIDInventoryItemDTO.id = rFIDInventoryItem.itmId;
         rFIDInventoryItemDTO.rfid = rFIDInventoryItem.itemRFID;
         rFIDInventoryItemDTO.code = rFIDInventoryItem.code;
-        rFIDInventoryItemDTO.inventory = rFIDInventoryItem.inventory;
         return rFIDInventoryItemDTO;
     }
 
     public static List<RFIDInventoryItemDTO> convert(List<RFIDInventoryItem> rfidInventoryItems) {
         List<RFIDInventoryItemDTO> result = new ArrayList<>();
-        for(RFIDInventoryItem rfidItem: rfidInventoryItems){
+        for (RFIDInventoryItem rfidItem : rfidInventoryItems) {
             RFIDInventoryItemDTO itemDto = convert(rfidItem);
             result.add(itemDto);
         }

@@ -1,5 +1,11 @@
 package io.agritrack.fish.ui.wh.inventory;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recWHInventory;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,7 +41,6 @@ import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.CoInventoryDTO;
-import io.agritrack.data.dto.wh.IfcoInventoryDTO;
 import io.agritrack.data.dto.wh.CoInventoryItemDTO;
 import io.agritrack.data.model.wh.CoInventory;
 import io.agritrack.data.model.wh.CoInventoryItem;
@@ -52,12 +57,6 @@ import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recWHInventory;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class InventoryConsumableActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -327,9 +326,9 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
 
             // sync WH Inventory Tx
             Call<CoInventoryDTO> syncInvTxCallBack = updService.syncCoInventoryTx(CoInventoryDTO.convert(invtx), "Bearer " + token);
-            Call<List<CoInventoryItemDTO>> syncInvItemTxCallBack = updService.syncCoInventoryItemTx(CoInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
+            //Call<List<CoInventoryItemDTO>> syncInvItemTxCallBack = updService.syncCoInventoryItemTx(CoInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
             syncInvTxCallBack.enqueue(new InventoryConsumableActivity.SyncInvTxCallBack());
-            syncInvItemTxCallBack.enqueue(new InventoryConsumableActivity.SyncInvItemTxCallBack());
+            //syncInvItemTxCallBack.enqueue(new InventoryConsumableActivity.SyncInvItemTxCallBack());
 
             return true;
         } catch (Exception e) {

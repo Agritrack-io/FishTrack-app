@@ -1,7 +1,6 @@
 package io.agritrack.fish.ui.process;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -35,24 +34,14 @@ import com.google.android.gms.common.util.Strings;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
-import io.agritrack.barcode.SoundUtil;
-import io.agritrack.common.Filters;
-import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.common.IotLogger;
-import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -60,7 +49,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
 
     private UhfReader uhfReader;
-    private ScanInventoryThread processingBinsThread = new ScanInventoryThread();
+    private ScanInventoryThread processingBinsThread = null; //new ScanInventoryThread();  //TODO::
     private boolean scanning = false;
 
     private TemplateRecyclerAdapter adapterBins;
@@ -195,14 +184,15 @@ public class ProcessBinsActivity extends AppCompatActivity {
             scanning = !scanning;
 
             // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (processingBinsThread.getState() == Thread.State.TERMINATED) {
-                processingBinsThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            processingBinsThread.setScanInProgress(scanning);
-            processingBinsThread.setUhfReader(uhfReader);
-            processingBinsThread.setScanResult(scanResult);
-            processingBinsThread.setFilter(Filters.RFID_BIN);
+//  TODO::
+//            if (processingBinsThread.getState() == Thread.State.TERMINATED) {
+//                processingBinsThread = new ScanInventoryThread();
+//            }
+//            //update scanning, uhfReader, tvPlatformName values in thread
+//            processingBinsThread.setScanInProgress(scanning);
+//            processingBinsThread.setUhfReader(uhfReader);
+//            processingBinsThread.setScanResult(scanResult);
+//            processingBinsThread.setFilter(Filters.RFID_BIN);
 
             if (scanning) {
                 scanButton.setText(R.string.stop_scan);
@@ -211,9 +201,9 @@ public class ProcessBinsActivity extends AppCompatActivity {
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
                     }
                 });
-                if (processingBinsThread.getState() == Thread.State.NEW) {
-                    processingBinsThread.start();
-                }
+//                if (processingBinsThread.getState() == Thread.State.NEW) {
+//                    processingBinsThread.start();
+//                }
             } else {
                 scanButton.setText(R.string.scan_bin);
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -221,11 +211,11 @@ public class ProcessBinsActivity extends AppCompatActivity {
                         scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
                     }
                 });
-                try {
-                    processingBinsThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+////                    processingBinsThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
         });
     }
@@ -236,7 +226,8 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
             //Set scanning to false to stop running scan thread
             scanning = false;
-            processingBinsThread.setScanInProgress(scanning);
+            //  TODO::
+            //processingBinsThread.setScanInProgress(scanning);
 
             updateState();
             String v = validate();
@@ -253,7 +244,8 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
             //Set scanning to false to stop running scan thread
             scanning = false;
-            processingBinsThread.setScanInProgress(scanning);
+            //  TODO::
+            //processingBinsThread.setScanInProgress(scanning);
 
             Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);

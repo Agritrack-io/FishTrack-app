@@ -22,11 +22,6 @@ public class ScanFilterThread extends Thread {
     public ScanFilterThread() {
     }
 
-    public ScanFilterThread(UhfReader uhfReader, Handler handler) {
-        this.uhfReader = uhfReader;
-        this.handler = handler;
-    }
-
     public void setUhfReader(UhfReader uhfReader) {
         this.uhfReader = uhfReader;
     }

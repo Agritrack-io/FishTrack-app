@@ -3,24 +3,22 @@ package io.agritrack.ui.login.api;
 import java.util.List;
 
 import io.agritrack.data.dto.common.MeasurementsDTO;
+import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.dto.tx.CollectTxDTO;
 import io.agritrack.data.dto.tx.ConsumableTxDTO;
+import io.agritrack.data.dto.tx.CorrelationTxDTO;
+import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.dto.tx.PackageTxDTO;
 import io.agritrack.data.dto.tx.PlantTxDTO;
+import io.agritrack.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
 import io.agritrack.data.dto.tx.ShippingTxDTO;
 import io.agritrack.data.dto.tx.StorageTxDTO;
 import io.agritrack.data.dto.tx.TransportTxDTO;
-import io.agritrack.data.dto.tx.AssetTxDTO;
-import io.agritrack.data.dto.tx.CorrelationTxDTO;
-import io.agritrack.data.dto.tx.FishingTxDTO;
-import io.agritrack.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.data.dto.wh.CoInventoryDTO;
 import io.agritrack.data.dto.wh.IfcoInventoryDTO;
-import io.agritrack.data.dto.wh.CoInventoryItemDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryDTO;
 import io.agritrack.data.dto.wh.TotesInventoryDTO;
-import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
@@ -82,28 +80,28 @@ public interface TransactionApi {
     Call<CorrelationTxDTO> syncCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/inventory/totes")
+    @POST("/inventory/box")
     Call<TotesInventoryDTO> syncTotesInventoryTx(@Body TotesInventoryDTO rFIDInventory, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/inventory/asset")
-    Call<RFIDInventoryDTO> syncRFIDInventoryTx(@Body RFIDInventoryDTO rFIDInventory, @Header("Authorization") String token);
-
-    @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/inventory/asset/items")
-    Call<List<RFIDInventoryItemDTO>> syncRFIDInventoryItemTx(@Body List<RFIDInventoryItemDTO> rFIDInventoryItems, @Header("Authorization") String token);
-
-    @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/inventory/ifco")
+    @POST("/inventory/box")
     Call<IfcoInventoryDTO> syncIfcoInventoryTx(@Body IfcoInventoryDTO coInventory, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/inventory/consumable")
-    Call<CoInventoryDTO> syncCoInventoryTx(@Body CoInventoryDTO coInventory, @Header("Authorization") String token);
+    @POST("/inventory/wh")
+    Call<RFIDInventoryDTO> syncRFIDInventoryTx(@Body RFIDInventoryDTO rFIDInventory, @Header("Authorization") String token);
+
+//    @Headers("Content-Type: application/json; charset=utf-8")
+//    @POST("/inventory/wh")
+//    Call<List<RFIDInventoryItemDTO>> syncRFIDInventoryItemTx(@Body List<RFIDInventoryItemDTO> rFIDInventoryItems, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/inventory/consumable/items")
-    Call<List<CoInventoryItemDTO>> syncCoInventoryItemTx(@Body List<CoInventoryItemDTO> coInventoryItems, @Header("Authorization") String token);
+    @POST("/inventory/wh")
+    Call<CoInventoryDTO> syncCoInventoryTx(@Body CoInventoryDTO coInventory, @Header("Authorization") String token);
+//
+//    @Headers("Content-Type: application/json; charset=utf-8")
+//    @POST("/inventory/consumable/items")
+//    Call<List<CoInventoryItemDTO>> syncCoInventoryItemTx(@Body List<CoInventoryItemDTO> coInventoryItems, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/temperatures/cages")

@@ -1,11 +1,17 @@
 package io.agritrack.fish.ui.wh.inventory;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recWHInventory;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -16,17 +22,15 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -35,16 +39,15 @@ import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.RFIDInventoryDTO;
-import io.agritrack.data.dto.wh.TotesInventoryDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
+import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -54,28 +57,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recWHInventory;
-import static io.agritrack.ui.custom.CustomToast.CToast;
-
 public class InventoryAssetActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
-
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    // Local handler that receives the RFID scanner results.
+    private ScanHandler mScanHandler;
+    private ScanInventoryThread scanner_runnable;
     private ToggleGroup tgChooseAssetType;
     private MobileDB db;
-    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private ExpandableListView xvInventoryItems;
-    private UhfReader uhfReader;
-    private ScanInventoryThread transportationBinsThread = new ScanInventoryThread();
-    private boolean scanning = false;
 
     private TreelikeAdapter adapterInventoryItems;
     private String selectedAssetType = AssetType.ALL.name();
     private String activeFilter = null;
     private int selectedToggleButton = -1;
     private ImageButton ivAddItem, ivDeleteItem;
+    private Button scanButton;
     private Integer selectedParent, selectedChild;
     private ConstraintLayout selectedItem;
     private String selectedBarcode;
@@ -90,6 +86,9 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_asset);
 
+        // instantiate Local Handler that will process the scanning stream.
+        mScanHandler = new ScanHandler(this);
+
         // activate GPS location update feature.
         super.findLocation();
 
@@ -100,19 +99,18 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         // get  references of the controls
         assignCtrlVars();
 
+        // link trigger/scan button to ClickListener
+        scanButton.setOnClickListener(this::onClick);
+
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(InventoryAssetActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        xvInventoryItems.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                clearSelectedItem();
-
-                selectedParent = null;
-                selectedChild = null;
-                return false;
-            }
+        xvInventoryItems.setOnGroupClickListener((parent, v, groupPosition, id) -> {
+            clearSelectedItem();
+            selectedParent = null;
+            selectedChild = null;
+            return false;
         });
 
         xvInventoryItems.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -135,26 +133,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
             }
         });
 
-        // initiate RFID scanner behaviour
-
-        scanResult.observe(this, response -> {
-            if (response == null) {
-                return;
-            }
-            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
-
-            if (adapterInventoryItems == null) {
-                adapterInventoryItems = new TreelikeAdapter(this, values);
-                xvInventoryItems.setAdapter(adapterInventoryItems);
-            } else {
-                adapterInventoryItems.appendItems(values);
-            }
-            adapterInventoryItems.notifyDataSetChanged();
-        });
-
-        // initialize scanning threads
-        prepareScanAvailableBinsButton();
-
+        // onClick button event handling...
         ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
@@ -182,10 +161,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
             }
         });
 
-       /* ivAddItem.setOnClickListener(view -> {
-            showAddDialog();
-        });*/
-
+        // display support dialog
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(InventoryAssetActivity.this);
             supportDialog.showDialog();
@@ -203,11 +179,11 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
     private void assignCtrlVars() {
         tgChooseAssetType = findViewById(R.id.tgChooseAssetType);
         xvInventoryItems = findViewById(R.id.xvInventoryItems);
-        //tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
-        ivDeleteItem = (ImageButton) findViewById(R.id.ivDeleteItem);
-        ivAddItem = (ImageButton) findViewById(R.id.ivAddItem);
+        ivDeleteItem = findViewById(R.id.ivDeleteItem);
+        ivAddItem = findViewById(R.id.ivAddItem);
         ivSupport = findViewById(R.id.ivSupport);
         tgChooseAssetType.setOnCheckedChangeListener(this);
+        scanButton = findViewById(R.id.btnScanAsset);
     }
 
     protected void configFooter() {
@@ -215,7 +191,6 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (mLastLocation != null) {
                     recWHInventory.longitude = mLastLocation.getLongitude();
                     recWHInventory.latitude = mLastLocation.getLatitude();
@@ -234,57 +209,25 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
             }
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToWhMenu);
+        ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             //Set scanning to false to stop running scan thread
-            scanning = false;
-            transportationBinsThread.setScanInProgress(scanning);
-
+            scanner_runnable.stopReading();
             Intent i = new Intent(getApplicationContext(), InventoryStartActivity.class);
             startActivity(i);
         });
     }
 
-    /*private void showAddDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Type item BARCODE");
-
-        // Set up the input
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                itemBarcode = input.getText().toString();
-                adapterInventoryItems.addItem(itemBarcode);
-                adapterInventoryItems.notifyDataSetChanged();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-
-    }*/
-
     private boolean updateState() {
         if (adapterInventoryItems != null) {
-            GlobalState.recWHInventory.items = adapterInventoryItems.getValues();
+            recWHInventory.items = adapterInventoryItems.getValues();
         }
         String v = validate();
         if (!Strings.isEmptyOrWhitespace(v)) {
             CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             return false;
         }
-        GlobalState.recWHInventory.assetType = AssetType.valueOf(this.selectedAssetType);
+        recWHInventory.assetType = AssetType.valueOf(this.selectedAssetType);
 
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
@@ -301,10 +244,12 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
             List<RFIDInventoryItem> invItemtxs = GlobalState.commitWHRFIDInventoryItem(db, invtx);
 
             // sync WH Inventory Tx
-            Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(RFIDInventoryDTO.convert(invtx), "Bearer " + token);
-            Call<List<RFIDInventoryItemDTO>> syncInvItemTxCallBack = updService.syncRFIDInventoryItemTx(RFIDInventoryItemDTO.convert(invItemtxs), "Bearer " + token);
+            RFIDInventoryDTO inventoryDto = RFIDInventoryDTO.convert(invtx);
+            List<RFIDInventoryItemDTO> invItemsDto = RFIDInventoryItemDTO.convert(invItemtxs);
+            inventoryDto.rfid_items = invItemsDto.stream().map(x -> new RFIDInventoryItemDTO(x.rfid)).collect(Collectors.groupingBy(g -> g.code, Collectors.toCollection(ArrayList::new)));
+
+            Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(inventoryDto, "Bearer " + token);
             syncInvTxCallBack.enqueue(new SyncInvTxCallBack());
-            syncInvItemTxCallBack.enqueue(new SyncInvItemTxCallBack());
 
             return true;
         } catch (Exception e) {
@@ -316,51 +261,21 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         }
     }
 
-    private void prepareScanAvailableBinsButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setWorkArea(3);
-        uhfReader.setOutputPower(33);
-
-        final Button scanButton = findViewById(R.id.btnScanAsset);
-        scanButton.setOnClickListener(view -> {
-            clearSelectedItem();
-            scanning = !scanning;
-
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (transportationBinsThread.getState() == Thread.State.TERMINATED) {
-                transportationBinsThread = new ScanInventoryThread();
-            }
-            //update scanning, uhfReader, tvPlatformName values in thread
-            transportationBinsThread.setScanInProgress(scanning);
-            transportationBinsThread.setUhfReader(uhfReader);
-            transportationBinsThread.setScanResult(scanResult);
-            transportationBinsThread.setFilter(activeFilter);
-
-            if (scanning) {
-                scanButton.setText(R.string.stop_scan);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                    }
-                });
-                if (transportationBinsThread.getState() == Thread.State.NEW) {
-                    transportationBinsThread.start();
-                }
-            } else {
-                scanButton.setText(R.string.scan_assets);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-                    }
-                });
-                try {
-                    transportationBinsThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    @Override
+    protected void onClick(View view) {
+        if (scanner_runnable == null) {
+            scanner_runnable = new ScanInventoryThread(mScanHandler);
+            scanner_runnable.setFilter(activeFilter);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else if (!scanner_runnable.isReading()) {
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else {
+            scanner_runnable.stopReading();
+            scanButton.setText(R.string.scan_assets);
+        }
+        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     @Override
@@ -399,7 +314,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (GlobalState.recWHInventory.items == null || GlobalState.recWHInventory.items.isEmpty()) {
+            if (recWHInventory.items == null || recWHInventory.items.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Inventory items'"));
             }
         }
@@ -410,7 +325,6 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         @Override
         public void onResponse(Call<RFIDInventoryDTO> call, Response<RFIDInventoryDTO> response) {
             RFIDInventoryDTO rs = response.body();
-
             if (rs != null) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
@@ -437,33 +351,34 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         }
     }
 
-    public class SyncInvItemTxCallBack implements Callback<List<RFIDInventoryItemDTO>> {
-        @Override
-        public void onResponse(Call<List<RFIDInventoryItemDTO>> call, Response<List<RFIDInventoryItemDTO>> response) {
-            List<RFIDInventoryItemDTO> rs = response.body();
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<InventoryAssetActivity> mActivity;
 
-            if (rs != null) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
-            } else {
-                // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Inventory items update failure!!!"), Toast.LENGTH_LONG));
-            }
+        public ScanHandler(InventoryAssetActivity activity) {
+            mActivity = new WeakReference<>(activity);
         }
 
         @Override
-        public void onFailure(Call<List<RFIDInventoryItemDTO>> call, Throwable error) {
-            if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
-            } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
-            } else {
-                if (call.isCanceled()) {
-                    //Call was cancelled by user
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
-                } else {
-                    //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
-                }
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
+                    clearSelectedItem();
+                    Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
+                    if (adapterInventoryItems == null) {
+                        adapterInventoryItems = new TreelikeAdapter(InventoryAssetActivity.this, values);
+                        xvInventoryItems.setAdapter(adapterInventoryItems);
+                    } else {
+                        adapterInventoryItems.appendItems(values);
+                    }
+                    adapterInventoryItems.notifyDataSetChanged();
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("Inventory scanning is over!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
             }
         }
     }
