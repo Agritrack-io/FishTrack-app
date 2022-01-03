@@ -9,60 +9,62 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.text.Editable;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.common.Constants;
+import io.agritrack.common.Filters;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.RepairRecord;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class MaintenanceExternalStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class MaintenanceExternalStartActivity extends TriggerKeyAwareActivity implements ToggleGroup.OnCheckedChangeListener {
 
-    private final SingleShotScanner scanner = null; //new SingleShotScanner();  //TODO: remove comment
+    // Local handler that receives the RFID scanner results.
+    private final ScanHandler mScanHandler = new ScanHandler(this);
+
     private final String dtFormat = "dd/MM/yyyy";
     private final SimpleDateFormat sdf = new SimpleDateFormat(dtFormat);
     private final Calendar calendar = Calendar.getInstance();
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
     DatePickerDialog.OnDateSetListener withdrawalDate = (view, year, monthOfYear, dayOfMonth) -> {
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, monthOfYear);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         updateEstWithdrawalDate();
     };
+
     private Button btnScanAsset;
     private TextView tvAssetBarcode, tvAssetType;
     private ToggleGroup tgOutMtRepairTypes;
     private EditText etOMtNextMaintenance, etOMtEstWithdrawal;
+
     DatePickerDialog.OnDateSetListener nextDate = (view, year, monthOfYear, dayOfMonth) -> {
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, monthOfYear);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         updateNextMaintenanceDate();
     };
+
     private String selectedOperation;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -82,28 +84,9 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
         setUpNextMaintenanceDate();
         setUpEstWithdrawalDate();
 
+        // =================================
         // RFID scanning functionality
-        btnScanAsset.setOnClickListener(view -> {
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            //scanner.setUhfReader(_uhfReader);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            tvAssetBarcode.setText(epcStr);
-                            tvAssetType.setText(detectAssetType(epcStr));
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
-        });
+        btnScanAsset.setOnClickListener(this::onClick);
         // =================================
 
         // set (any?) previously selected values to activity Controls.
@@ -247,8 +230,6 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
 
     @Override
     protected void onDestroy() {
-        if (executor != null)
-            executor.shutdown();
         super.onDestroy();
     }
 
@@ -260,7 +241,45 @@ public class MaintenanceExternalStartActivity extends AppCompatActivity implemen
     @Override
     protected void onPause() {
         super.onPause();
-        if (executor != null)
-            executor.shutdown();
+    }
+
+    @Override
+    protected void onClick(View view) {
+        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(Filters.RFID_BIN);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<MaintenanceExternalStartActivity> mActivity;
+
+        public ScanHandler(MaintenanceExternalStartActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    String rssi = msg.getData().getString("rssi");
+                    try {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            tvAssetBarcode.setText(epcStr);
+                            tvAssetType.setText(detectAssetType(epcStr));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("No Asset was scanned!!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
 }

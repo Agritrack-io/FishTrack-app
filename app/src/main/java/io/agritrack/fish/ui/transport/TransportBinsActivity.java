@@ -274,7 +274,6 @@ public class TransportBinsActivity extends TriggerKeyAwareActivity {
 
         @Override
         public void handleMessage(Message msg) {
-            int kk = 0;
             switch (msg.what) {
                 case 1:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");

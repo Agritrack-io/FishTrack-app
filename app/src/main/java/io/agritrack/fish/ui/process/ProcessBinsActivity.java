@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
@@ -28,29 +27,31 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.R;
+import io.agritrack.common.Filters;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class ProcessBinsActivity extends AppCompatActivity {
+public class ProcessBinsActivity extends TriggerKeyAwareActivity {
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
 
-    private UhfReader uhfReader;
-    private ScanInventoryThread processingBinsThread = null; //new ScanInventoryThread();  //TODO::
-    private boolean scanning = false;
+    private ScanHandler mScanHandler;
+    private ScanInventoryThread scanner_runnable;
 
     private TemplateRecyclerAdapter adapterBins;
 
@@ -60,12 +61,6 @@ public class ProcessBinsActivity extends AppCompatActivity {
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
-
-    private String binBarcode;
-
-    private ImageView ivSupport;
-    private SupportDialog supportDialog;
-
     // Instantiate a clickListener to be passed to adapterBins.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
@@ -75,7 +70,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
             TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if(selectedItem!=null) {
+            if (selectedItem != null) {
                 selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
 
@@ -84,6 +79,10 @@ public class ProcessBinsActivity extends AppCompatActivity {
             selectedItem = view;
         }
     };
+    private String binBarcode;
+    private ImageView ivSupport;
+    private Button scanButton;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +92,9 @@ public class ProcessBinsActivity extends AppCompatActivity {
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderProcessBins);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // instantiate Local Handler that will process the scanning stream.
+        mScanHandler = new ScanHandler(this);
 
         // get  references of the controls
         assignCtrlVars();
@@ -113,8 +115,8 @@ public class ProcessBinsActivity extends AppCompatActivity {
             adapterBins.notifyDataSetChanged();
         });
 
-        // initialize scanning threads
-        prepareScanAvailableBinsButton();
+        // link trigger/scan button to ClickListener
+        scanButton.setOnClickListener(this::onClick);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -158,8 +160,8 @@ public class ProcessBinsActivity extends AppCompatActivity {
         configFooter();
     }
 
-    private void clearSelectedItem(){
-        if(selectedItem!=null) {
+    private void clearSelectedItem() {
+        if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
         }
     }
@@ -167,67 +169,17 @@ public class ProcessBinsActivity extends AppCompatActivity {
     private void assignCtrlVars() {
         tvBinsCount = findViewById(R.id.tvBinsCount);
         rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
-        ivDeleteBin = (ImageButton) findViewById(R.id.ivDeleteBin);
-        ivAddBin = (ImageButton) findViewById(R.id.ivAddBin);
+        ivDeleteBin = findViewById(R.id.ivDeleteBin);
+        ivAddBin = findViewById(R.id.ivAddBin);
         ivSupport = findViewById(R.id.ivSupport);
-    }
-
-    private void prepareScanAvailableBinsButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setWorkArea(3);
-        uhfReader.setOutputPower(33);
-
-        final Button scanButton = findViewById(R.id.btnScanBin);
-        scanButton.setOnClickListener(view -> {
-            clearSelectedItem();
-            scanning = !scanning;
-
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-//  TODO::
-//            if (processingBinsThread.getState() == Thread.State.TERMINATED) {
-//                processingBinsThread = new ScanInventoryThread();
-//            }
-//            //update scanning, uhfReader, tvPlatformName values in thread
-//            processingBinsThread.setScanInProgress(scanning);
-//            processingBinsThread.setUhfReader(uhfReader);
-//            processingBinsThread.setScanResult(scanResult);
-//            processingBinsThread.setFilter(Filters.RFID_BIN);
-
-            if (scanning) {
-                scanButton.setText(R.string.stop_scan);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                    }
-                });
-//                if (processingBinsThread.getState() == Thread.State.NEW) {
-//                    processingBinsThread.start();
-//                }
-            } else {
-                scanButton.setText(R.string.scan_bin);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-                    }
-                });
-//                try {
-////                    processingBinsThread.join();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-            }
-        });
+        scanButton = findViewById(R.id.btnScanBin);
     }
 
     protected void configFooter() {
-        ImageView ivNext = (ImageView) findViewById(R.id.ivToSupervisorConfirm);
+        ImageView ivNext = findViewById(R.id.ivToSupervisorConfirm);
         ivNext.setOnClickListener(view -> {
-
-            //Set scanning to false to stop running scan thread
-            scanning = false;
-            //  TODO::
-            //processingBinsThread.setScanInProgress(scanning);
+            //Stop scanning since we navigate to next activity
+            scanner_runnable.stopReading();
 
             updateState();
             String v = validate();
@@ -239,13 +191,10 @@ public class ProcessBinsActivity extends AppCompatActivity {
             }
         });
 
-         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToStartProcess);
+        ImageView ivBack = findViewById(R.id.ivBackToStartProcess);
         ivBack.setOnClickListener(view -> {
-
-            //Set scanning to false to stop running scan thread
-            scanning = false;
-            //  TODO::
-            //processingBinsThread.setScanInProgress(scanning);
+            //Stop scanning since we navigate to previous activity
+            scanner_runnable.stopReading();
 
             Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);
@@ -256,12 +205,31 @@ public class ProcessBinsActivity extends AppCompatActivity {
         ProcessingRecord prcRecord = GlobalState.recProcessing;
 
         if (prcRecord.availBins != null) {
-            adapterBins.setValues(new LinkedList<String>(prcRecord.availBins));
+            adapterBins.setValues(new LinkedList<>(prcRecord.availBins));
             adapterBins.notifyDataSetChanged();
-            //Get reference of binsCount textView
-            TextView tvBinsCount = findViewById(R.id.tvBinsCount);
             tvBinsCount.setText(String.valueOf(prcRecord.availBins.size()));
         }
+    }
+
+    @Override
+    protected void onClick(View view) {
+        if (scanner_runnable == null) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable = new ScanInventoryThread(mScanHandler);
+            scanner_runnable.setFilter(Filters.RFID_BIN);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else if (!scanner_runnable.isReading()) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable.setFilter(Filters.RFID_BIN);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+            scanner_runnable.stopReading();
+            scanButton.setText(R.string.scan_bin);
+        }
+        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     private void showAddDialog() {
@@ -300,7 +268,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
         GlobalState.recProcessing.availBins = new LinkedList<>(adapterBins.getValues());
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (GlobalState.recProcessing.availBins == null || GlobalState.recProcessing.availBins.isEmpty()) {
@@ -312,9 +280,35 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (uhfReader != null)
-            uhfReader.close();
-        scanning = false;
         super.onDestroy();
+    }
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<ProcessBinsActivity> mActivity;
+
+        public ScanHandler(ProcessBinsActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
+                    //clearSelectedItem();
+                    if (epcList != null && !epcList.isEmpty()) {
+                        tvBinsCount.setText(String.valueOf(epcList.size()));
+                        adapterBins.setValues(epcList.stream().map(x -> x.toString()).collect(Collectors.toList()));
+                        adapterBins.notifyDataSetChanged();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("Scanning is over!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
 }

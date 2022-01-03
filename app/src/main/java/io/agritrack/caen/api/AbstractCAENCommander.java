@@ -320,7 +320,11 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     public Double ReadLastSample() {
         try {
             byte[] rs = ReadRegisters(ADDR_LAST_SAMPLE, SHORT_ONE);
-            return parseTemperatureNumeric(ToShort(rs));
+            if(rs==null || rs.length==1) {
+                return null;
+            } else {
+                return parseTemperatureNumeric(ToShort(rs));
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

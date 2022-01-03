@@ -37,6 +37,7 @@ public class ScanInventoryThread implements Runnable {
 
     public void stopReading() {
         this.scanInProgress = false;
+        this.RFID_FILTER = null;
     }
 
     public boolean isReading() {

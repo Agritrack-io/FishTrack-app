@@ -13,7 +13,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -25,22 +25,22 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Constants;
+import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.TotesInventoryDTO;
 import io.agritrack.data.model.tx.items.TotesInventoryTxWithItems;
@@ -49,6 +49,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
+import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.api.TransactionApi;
@@ -58,6 +59,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TotesInventoryActivity extends LocationAwareActivity {
+
+    private Button scanButton;
+    private ScanHandler mScanHandler;
+    private ScanInventoryThread scanner_runnable;
 
     private MobileDB db;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
@@ -70,10 +75,6 @@ public class TotesInventoryActivity extends LocationAwareActivity {
     private ImageView ivSupport;
     private SupportDialog supportDialog;
 
-    private UhfReader uhfReader;
-    private boolean scanning = false;
-//    private ScanInventoryThread inventoryTotesThread = new ScanInventoryThread();
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private TemplateRecyclerAdapter adapterTotes;
     private RecyclerView rvInventoryTotes;
     private TextView tvTotesCount;
@@ -114,6 +115,9 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         // get  references of the controls
         assignCtrlVars();
 
+        // instantiate Local Handler that will process the scanning stream.
+        mScanHandler = new ScanHandler(this);
+
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(TotesInventoryActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -124,18 +128,6 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         adapterTotes = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
         rvInventoryTotes.setAdapter(adapterTotes);
         rvInventoryTotes.setNestedScrollingEnabled(false);
-
-        scanResult.observe(this, response -> {
-            if (response == null) {
-                return;
-            }
-            tvTotesCount.setText(String.valueOf(response.size()));
-            adapterTotes.setValues(new ArrayList<>(response));
-            adapterTotes.notifyDataSetChanged();
-        });
-
-        // initialize scanning threads
-        prepareScanAvailableBinsButton();
 
         ivDeleteTote.setOnClickListener(view -> {
             clearSelectedItem();
@@ -186,8 +178,9 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         ivSupport = findViewById(R.id.ivSupport);
         rvInventoryTotes = findViewById(R.id.rvInventoryTotes);
         tvTotesCount = findViewById(R.id.tvTotesCount);
-        ivDeleteTote = (ImageButton) findViewById(R.id.ivDeleteTote);
-        ivAddTote = (ImageButton) findViewById(R.id.ivAddTote);
+        ivDeleteTote = findViewById(R.id.ivDeleteTote);
+        ivAddTote = findViewById(R.id.ivAddTote);
+        scanButton = findViewById(R.id.btnScanTotes);
     }
 
     protected void configFooter() {
@@ -195,6 +188,8 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Stop scanning since we navigate to next activity
+                scanner_runnable.stopReading();
 
                 if (mLastLocation != null) {
                     recInventory.longitude = mLastLocation.getLongitude();
@@ -216,63 +211,11 @@ public class TotesInventoryActivity extends LocationAwareActivity {
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToFruitInventoryStart);
         ivBack.setOnClickListener(view -> {
-            //Set scanning to false to stop running scan thread
-            scanning = false;
-            //  TODO::
-//            inventoryTotesThread.setScanInProgress(scanning);
+            //Stop scanning since we navigate to previous activity
+            scanner_runnable.stopReading();
 
             Intent i = new Intent(getApplicationContext(), FruitInventoryStartActivity.class);
             startActivity(i);
-        });
-    }
-
-    private void prepareScanAvailableBinsButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setWorkArea(3);
-        uhfReader.setOutputPower(33);
-
-        final Button scanButton = findViewById(R.id.btnScanTotes);
-        scanButton.setOnClickListener(view -> {
-            clearSelectedItem();
-            scanning = !scanning;
-
-            //  TODO::
-//            // Following check is required to instantiate a ScanningThread that was stopped previously.
-//            if (inventoryTotesThread.getState() == Thread.State.TERMINATED) {
-//                inventoryTotesThread = new ScanInventoryThread();
-//            }
-//            //update scanning, uhfReader, tvPlatformName values in thread
-//            inventoryTotesThread.setScanInProgress(scanning);
-//            inventoryTotesThread.setUhfReader(uhfReader);
-//            inventoryTotesThread.setScanResult(scanResult);
-//            inventoryTotesThread.setFilter(Filters.RFID_TOTE);
-
-            if (scanning) {
-                scanButton.setText(R.string.stop_scan);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                    }
-                });
-                //  TODO::
-//                if (inventoryTotesThread.getState() == Thread.State.NEW) {
-//                    inventoryTotesThread.start();
-//                }
-            } else {
-                scanButton.setText(R.string.scan_totes);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-                    }
-                });
-                //  TODO::
-//                try {
-//                    inventoryTotesThread.join();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-            }
         });
     }
 
@@ -377,6 +320,56 @@ public class TotesInventoryActivity extends LocationAwareActivity {
                     //Generic error handling
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
+            }
+        }
+    }
+
+    @Override
+    protected void onClick(View view) {
+        if (scanner_runnable == null) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable = new ScanInventoryThread(mScanHandler);
+            scanner_runnable.setFilter(Filters.RFID_TOTE);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else if (!scanner_runnable.isReading()) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable.setFilter(Filters.RFID_TOTE);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+            scanner_runnable.stopReading();
+            scanButton.setText(R.string.scan_totes);
+        }
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<TotesInventoryActivity> mActivity;
+
+        public ScanHandler(TotesInventoryActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
+                    //clearSelectedItem();
+                    if (epcList != null && !epcList.isEmpty()) {
+                        tvTotesCount.setText(String.valueOf(epcList.size()));
+                        adapterTotes.setValues(epcList.stream().map(x->x.toString()).collect(Collectors.toList()));
+                        adapterTotes.notifyDataSetChanged();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("No Assets detected!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
             }
         }
     }

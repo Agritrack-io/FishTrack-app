@@ -21,8 +21,6 @@ import com.google.android.gms.common.util.Strings;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
@@ -33,13 +31,10 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class FishingStartActivity extends AppCompatActivity {
 
-    private final SingleShotScanner scanner = null; //new SingleShotScanner();   //TODO: remove comment
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private MobileDB db;
     private Spinner harvestSpinner, speciesSpinner;
     private EditText etQty;
@@ -228,8 +223,6 @@ public class FishingStartActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (executor != null)
-            executor.shutdown();
         super.onDestroy();
     }
 
@@ -241,8 +234,5 @@ public class FishingStartActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (executor != null) {
-            executor.shutdown();
-        }
     }
 }

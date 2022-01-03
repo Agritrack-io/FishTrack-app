@@ -211,7 +211,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
-            //Set scanning to false to stop running scan thread
+            //Stop scanning since we navigate to previous activity
             scanner_runnable.stopReading();
             Intent i = new Intent(getApplicationContext(), InventoryStartActivity.class);
             startActivity(i);
