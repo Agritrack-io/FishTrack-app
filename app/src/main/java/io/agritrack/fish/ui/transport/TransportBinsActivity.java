@@ -166,12 +166,12 @@ public class TransportBinsActivity extends TriggerKeyAwareActivity {
         if (scanner_runnable == null) {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             scanner_runnable = new ScanInventoryThread(mScanHandler);
-            scanner_runnable.setFilter(Filters.RFID_NET); //(Filters.RFID_BIN);
+            scanner_runnable.setFilter(Filters.RFID_BIN);
             scanner_runnable.startReading();
             scanButton.setText(R.string.stop_scan);
         } else if (!scanner_runnable.isReading()) {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable.setFilter(Filters.RFID_NET);
+            scanner_runnable.setFilter(Filters.RFID_BIN);
             scanner_runnable.startReading();
             scanButton.setText(R.string.stop_scan);
         } else {
