@@ -12,7 +12,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
@@ -30,17 +29,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -55,25 +51,23 @@ import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.PackagingRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
-public class PackagingStartActivity extends AppCompatActivity {
+public class PackagingStartActivity extends TriggerKeyAwareActivity {
 
-    private final SingleShotScanner scanner = null; //new SingleShotScanner(); //TODO: remove comment
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
+    // Local handler that receives the RFID scanner results.
+    private final ScanHandler mScanHandler = new ScanHandler(this);
     private final MutableLiveData<String> enquiryResult = new MutableLiveData<>();
+
+    private Button btnScanPole, btnScanTotes;
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
     private TextView tvPoleName;
-    private Button btnScanPole;
-    private UhfReader uhfReader;
-    private boolean scanning = false;
-//    private ScanInventoryThread inventoryTotesThread = new ScanInventoryThread();
     private TemplateRecyclerAdapter adapterTotes;
     private RecyclerView rvTotesForPackage;
     private TextView tvTotesCount;
@@ -125,18 +119,6 @@ public class PackagingStartActivity extends AppCompatActivity {
         rvTotesForPackage.setAdapter(adapterTotes);
         rvTotesForPackage.setNestedScrollingEnabled(false);
 
-        scanResult.observe(this, response -> {
-            if (response == null) {
-                return;
-            }
-            tvTotesCount.setText(String.valueOf(response.size()));
-            adapterTotes.setValues(new ArrayList<>(response));
-            adapterTotes.notifyDataSetChanged();
-            optToteRfid = response.stream().findFirst();
-            firstToteRfid = optToteRfid.get();
-            invokeEnquiryLot();
-        });
-
         enquiryResult.observe(this, response -> {
             if (response == null) {
                 CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
@@ -148,37 +130,11 @@ public class PackagingStartActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+
         // =================================
         // RFID scanning functionality
-        btnScanPole.setOnClickListener(view -> {
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            //scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_POLE);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            tvPoleName.setText(epcStr);
-                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
-                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
-                            if (tempSite != null) {
-                                warehouse = tempSite.name;
-                            }
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
-        });
-
-        // initialize scanning threads
-        prepareScanAvailableBinsButton();
+        btnScanPole.setOnClickListener(this::onClick);
+        btnScanTotes.setOnClickListener(this::onClick);
 
         ivDeleteTote.setOnClickListener(view -> {
             clearSelectedItem();
@@ -321,58 +277,9 @@ public class PackagingStartActivity extends AppCompatActivity {
         ivSupport = findViewById(R.id.ivSupport);
         rvTotesForPackage = findViewById(R.id.rvTotesForPackage);
         tvTotesCount = findViewById(R.id.tvTotesCount);
-        ivDeleteTote = (ImageButton) findViewById(R.id.ivDeleteTote);
-        ivAddTote = (ImageButton) findViewById(R.id.ivAddTote);
-    }
-
-    private void prepareScanAvailableBinsButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setWorkArea(3);
-        uhfReader.setOutputPower(33);
-
-        final Button scanButton = findViewById(R.id.btnScanTotes);
-        scanButton.setOnClickListener(view -> {
-            clearSelectedItem();
-            scanning = !scanning;
-
-            //  TODO::
-//            // Following check is required to instantiate a ScanningThread that was stopped previously.
-//            if (inventoryTotesThread.getState() == Thread.State.TERMINATED) {
-//                inventoryTotesThread = new ScanInventoryThread();
-//            }
-//            //update scanning, uhfReader, tvPlatformName values in thread
-//            inventoryTotesThread.setScanInProgress(scanning);
-//            inventoryTotesThread.setUhfReader(uhfReader);
-//            inventoryTotesThread.setScanResult(scanResult);
-//            inventoryTotesThread.setFilter(Filters.RFID_TOTE);
-
-            if (scanning) {
-                scanButton.setText(R.string.stop_scan);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                    }
-                });
-                //  TODO::
-//                if (inventoryTotesThread.getState() == Thread.State.NEW) {
-//                    inventoryTotesThread.start();
-//                }
-            } else {
-                scanButton.setText(R.string.scan_totes);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-                    }
-                });
-                //  TODO::
-//                try {
-//                    inventoryTotesThread.join();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-            }
-        });
+        ivDeleteTote = findViewById(R.id.ivDeleteTote);
+        ivAddTote = findViewById(R.id.ivAddTote);
+        btnScanTotes = findViewById(R.id.btnScanTotes);
     }
 
     private void showAddDialog() {
@@ -403,5 +310,62 @@ public class PackagingStartActivity extends AppCompatActivity {
 
         builder.show();
 
+    }
+
+    @Override
+    protected void onClick(View view) {
+        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(Filters.RFID_POLE);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<PackagingStartActivity> mActivity;
+
+        public ScanHandler(PackagingStartActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    String rssi = msg.getData().getString("rssi");
+                    try {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            tvPoleName.setText(epcStr);
+                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
+                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
+                            if (tempSite != null) {
+                                warehouse = tempSite.name;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 100:
+                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
+                    //clearSelectedItem();
+                    if (epcList != null && !epcList.isEmpty()) {
+                        List<String> epcs = epcList.stream().map(x -> x.toString()).collect(Collectors.toList());
+                        tvTotesCount.setText(String.valueOf(epcs.size()));
+                        adapterTotes.setValues(epcs);
+                        adapterTotes.notifyDataSetChanged();
+                        optToteRfid = epcs.stream().findFirst();
+                        firstToteRfid = optToteRfid.get();
+                        invokeEnquiryLot();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
 }

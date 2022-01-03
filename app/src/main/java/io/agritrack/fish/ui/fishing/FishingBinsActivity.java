@@ -293,9 +293,6 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
         @Override
         public void handleMessage(Message msg) {
-//            FishingBinsActivity activity = mActivity.get();
-//            if (activity != null) {
-//            }
             switch (msg.what) {
                 case 1:
                     String epcStr = msg.getData().getString("epc");

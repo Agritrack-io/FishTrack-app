@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -21,38 +21,36 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.R;
+import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
+import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class SemiReadyStorageScanActivity extends AppCompatActivity {
+public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
 
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-
-    private UhfReader uhfReader;
-//    private ScanInventoryThread harvestTotesThread = new ScanInventoryThread();
-    private boolean scanning = false;
+    private ScanHandler mScanHandler;
+    private ScanInventoryThread scanner_runnable;
 
     private TemplateRecyclerAdapter adapterTotes;
 
@@ -60,15 +58,9 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
     private TextView tvTotesCount;
 
     private ImageButton ivAddTote, ivDeleteTote;
+    private Button scanButton;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
-
-    private String toteBarcode;
-
-    private MobileDB db;
-    private ImageView ivSupport;
-    private SupportDialog supportDialog;
-
     // Instantiate a clickListener to be passed to adapterBins.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
@@ -78,7 +70,7 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
             TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if(selectedItem!=null) {
+            if (selectedItem != null) {
                 selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
 
@@ -87,6 +79,11 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
             selectedItem = view;
         }
     };
+    private String toteBarcode;
+    private MobileDB db;
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +96,9 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
         TextView tvHeader = findViewById(R.id.tvHeaderSemiReadyStorageScan);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
+        // instantiate Local Handler that will process the scanning stream.
+        mScanHandler = new ScanHandler(this);
+
         // get  references of the controls
         assignCtrlVars();
 
@@ -109,20 +109,8 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
         rvUsedTotesHarvest.setAdapter(adapterTotes);
         rvUsedTotesHarvest.setNestedScrollingEnabled(false);
 
-        scanResult.observe(this, response -> {
-            if (response == null) {
-                return;
-            }
-            tvTotesCount.setText(String.valueOf(response.size()));
-            adapterTotes.setValues(new ArrayList<>(response));
-            adapterTotes.notifyDataSetChanged();
-        });
-
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
-
-        // initialize scanning threads
-        prepareScanAvailableBinsButton();
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -163,6 +151,9 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
+        // link trigger/scan button to ClickListener
+        scanButton.setOnClickListener(this::onClick);
+
         // create Footer
         configFooter();
     }
@@ -170,6 +161,9 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToSemiReadyStorageWeight);
         ivNext.setOnClickListener(view -> {
+            //Stop scanning since we navigate to next activity
+            scanner_runnable.stopReading();
+
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -182,6 +176,9 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToFruitHome);
         ivBack.setOnClickListener(view -> {
+            //Stop scanning since we navigate to previous activity
+            scanner_runnable.stopReading();
+
             Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             startActivity(i);
         });
@@ -191,62 +188,34 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
         ivSupport = findViewById(R.id.ivSupport);
         rvUsedTotesHarvest = findViewById(R.id.rvUsedTotesHarvest);
         tvTotesCount = findViewById(R.id.tvTotesCount);
-        ivDeleteTote = (ImageButton) findViewById(R.id.ivDeleteTote);
-        ivAddTote = (ImageButton) findViewById(R.id.ivAddTote);
+        ivDeleteTote = findViewById(R.id.ivDeleteTote);
+        ivAddTote = findViewById(R.id.ivAddTote);
+        scanButton = findViewById(R.id.btnScanTotes);
     }
 
-    private void prepareScanAvailableBinsButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setWorkArea(3);
-        uhfReader.setOutputPower(33);
-
-        final Button scanButton = findViewById(R.id.btnScanTotes);
-        scanButton.setOnClickListener(view -> {
-            clearSelectedItem();
-            scanning = !scanning;
-
-            //  TODO::
-//            // Following check is required to instantiate a ScanningThread that was stopped previously.
-//            if (harvestTotesThread.getState() == Thread.State.TERMINATED) {
-//                harvestTotesThread = new ScanInventoryThread();
-//            }
-//            //update scanning, uhfReader, tvPlatformName values in thread
-//            harvestTotesThread.setScanInProgress(scanning);
-//            harvestTotesThread.setUhfReader(uhfReader);
-//            harvestTotesThread.setScanResult(scanResult);
-//            harvestTotesThread.setFilter(Filters.RFID_TOTE);
-
-            if (scanning) {
-                scanButton.setText(R.string.stop_scan);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                    }
-                });
-                //  TODO::
-//                if (harvestTotesThread.getState() == Thread.State.NEW) {
-//                    harvestTotesThread.start();
-//                }
-            } else {
-                scanButton.setText(R.string.scan_totes);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-                    }
-                });
-                //  TODO::
-//                try {
-//                    harvestTotesThread.join();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-            }
-        });
+    @Override
+    protected void onClick(View view) {
+        if (scanner_runnable == null) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable = new ScanInventoryThread(mScanHandler);
+            scanner_runnable.setFilter(Filters.RFID_TOTE);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else if (!scanner_runnable.isReading()) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable.setFilter(Filters.RFID_TOTE);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+            scanner_runnable.stopReading();
+            scanButton.setText(R.string.scan_totes);
+        }
+        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
-    private void clearSelectedItem(){
-        if(selectedItem!=null) {
+    private void clearSelectedItem() {
+        if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
         }
     }
@@ -290,7 +259,6 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
         });
 
         builder.show();
-
     }
 
     private StorageRecord updateState() {
@@ -305,7 +273,7 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
         return storageRecord;
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (FruitGlobalState.recStorage.receivedTotes == null || FruitGlobalState.recStorage.receivedTotes.isEmpty()) {
@@ -313,5 +281,35 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
             }
         }
         return sb.toString();
+    }
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<SemiReadyStorageScanActivity> mActivity;
+
+        public ScanHandler(SemiReadyStorageScanActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            int kk = 0;
+            switch (msg.what) {
+                case 1:
+                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
+                    //clearSelectedItem();
+                    if (epcList != null && !epcList.isEmpty()) {
+                        tvTotesCount.setText(String.valueOf(epcList.size()));
+                        adapterTotes.setValues(epcList.stream().map(x -> x.toString()).collect(Collectors.toList()));
+                        adapterTotes.notifyDataSetChanged();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("Scanning is over!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
 }

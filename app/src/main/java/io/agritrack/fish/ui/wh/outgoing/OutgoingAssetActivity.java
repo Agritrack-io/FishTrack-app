@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -22,17 +22,15 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -49,6 +47,7 @@ import io.agritrack.enums.WarehouseTxState;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.fish.ui.WhMenuActivity;
+import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -60,17 +59,16 @@ import retrofit2.Response;
 
 public class OutgoingAssetActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
 
+    private ScanHandler mScanHandler;
+    private ScanInventoryThread scanner_runnable;
+
     private ToggleGroup tgChooseAssetType;
     private String selectedAssetType = AssetType.ALL.name();
     private String activeFilter = null;
     private  int selectedToggleButton = -1;
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private MobileDB db;
-    private UhfReader uhfReader;
-    //private ScanInventoryThread processingBinsThread = new ScanInventoryThread();
-    private boolean scanning = false;
 
     private TreelikeAdapter adapterOutgoingItems;
 
@@ -78,6 +76,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
     private ExpandableListView xvOutgoingAssets;
 
     private ImageButton ivAddItem, ivDeleteItem;
+    private Button scanButton;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
     private Integer selectedParent, selectedChild;
@@ -137,24 +136,8 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
             }
         });
 
-        //Get reference of binsCount textView
-        scanResult.observe(this, response -> {
-            if (response == null) {
-                return;
-            }
-            Map<String, List<String>> values = response.stream().collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));;//(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
-
-            if (adapterOutgoingItems == null) {
-            adapterOutgoingItems = new TreelikeAdapter(this, values);
-            xvOutgoingAssets.setAdapter(adapterOutgoingItems);
-            } else {
-                adapterOutgoingItems.appendItems(values);
-            }
-            adapterOutgoingItems.notifyDataSetChanged();
-        });
-
-        // initialize scanning threads
-        prepareScanAvailableBinsButton();
+        // instantiate Local Handler that will process the scanning stream.
+        mScanHandler = new ScanHandler(this);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -209,6 +192,8 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Stop scanning since we navigate to next activity
+                scanner_runnable.stopReading();
 
                 if (mLastLocation != null) {
                     recWHOutgoing.longitude = mLastLocation.getLongitude();
@@ -230,10 +215,8 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
 
         ImageView ivBack = findViewById(R.id.ivBackToStartOutgoing);
         ivBack.setOnClickListener(view -> {
-            //Set scanning to false to stop running scan thread
-            scanning = false;
-            //  TODO::
-//            processingBinsThread.setScanInProgress(scanning);
+            //Stop scanning since we navigate to previous activity
+            scanner_runnable.stopReading();
 
             Intent i = new Intent(getApplicationContext(), OutgoingStartActivity.class);
             startActivity(i);
@@ -249,6 +232,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
         ivAddItem = findViewById(R.id.ivAddItem);
         ivSupport = findViewById(R.id.ivSupport);
         tgChooseAssetType.setOnCheckedChangeListener(this);
+        scanButton = findViewById(R.id.btnScanAsset);
     }
 
     private boolean updateState() {
@@ -350,56 +334,6 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
 
     }*/
 
-    private void prepareScanAvailableBinsButton() {
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
-        uhfReader.setWorkArea(3);
-        uhfReader.setOutputPower(33);
-
-        final Button scanButton = findViewById(R.id.btnScanAsset);
-        scanButton.setOnClickListener(view -> {
-            clearSelectedItem();
-            scanning = !scanning;
-
-            //  TODO::
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-//            if (processingBinsThread.getState() == Thread.State.TERMINATED) {
-//                processingBinsThread = new ScanInventoryThread();
-//            }
-//            //update scanning, uhfReader, tvPlatformName values in thread
-//            processingBinsThread.setScanInProgress(scanning);
-//            processingBinsThread.setUhfReader(uhfReader);
-//            processingBinsThread.setScanResult(scanResult);
-//            processingBinsThread.setFilter(activeFilter);
-
-            if (scanning) {
-                scanButton.setText(R.string.stop_scan);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                    }
-                });
-                //  TODO::
-//                if (processingBinsThread.getState() == Thread.State.NEW) {
-//                    processingBinsThread.start();
-//                }
-            } else {
-                scanButton.setText(R.string.scan_assets);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-                    }
-                });
-//  TODO::
-//                try {
-//                    processingBinsThread.join();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-            }
-        });
-    }
-
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
 
@@ -464,4 +398,59 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
         }
     }
 
+    @Override
+    protected void onClick(View view) {
+        if (scanner_runnable == null) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable = new ScanInventoryThread(mScanHandler);
+            scanner_runnable.setFilter(activeFilter);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else if (!scanner_runnable.isReading()) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable.setFilter(activeFilter);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+            scanner_runnable.stopReading();
+            scanButton.setText(R.string.scan_assets);
+        }
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<OutgoingAssetActivity> mActivity;
+
+        public ScanHandler(OutgoingAssetActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
+                    //clearSelectedItem();
+                    if (epcList != null && !epcList.isEmpty()) {
+                        Map<String, List<String>> values = epcList.stream().map(x->x.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
+
+                        if (adapterOutgoingItems == null) {
+                            adapterOutgoingItems = new TreelikeAdapter(mActivity.get(), values);
+                            xvOutgoingAssets.setAdapter(adapterOutgoingItems);
+                        } else {
+                            adapterOutgoingItems.appendItems(values);
+                        }
+                        adapterOutgoingItems.notifyDataSetChanged();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("No Assets detected!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
+    }
 }

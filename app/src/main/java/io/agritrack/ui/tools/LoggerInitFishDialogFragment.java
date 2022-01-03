@@ -61,7 +61,7 @@ public class LoggerInitFishDialogFragment extends DialogFragment implements Time
         };
 
         taskRunner.executeAsync(enableLoggerTask, (rs) -> {
-            if (rs!=-99) {
+            if (rs != null && rs != -99) {
                 btnInit.setText("Success");
                 btnInit.setOnClickListener(null);
                 Map<String, Object> m = new HashMap<>();

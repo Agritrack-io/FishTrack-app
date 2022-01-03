@@ -9,22 +9,17 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.lang.ref.WeakReference;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -35,9 +30,10 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class SemiReadyStorageWeightActivity extends AppCompatActivity {
+public class SemiReadyStorageWeightActivity extends TriggerKeyAwareActivity {
 
     private MobileDB db;
     private ImageView ivSupport;
@@ -48,8 +44,8 @@ public class SemiReadyStorageWeightActivity extends AppCompatActivity {
     private EditText etTotalWeight;
     private String warehouse;
 
-    private final SingleShotScanner scanner = null; // new SingleShotScanner(); //TODO: remove comment
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    // Local handler that receives the RFID scanner results.
+    private final ScanHandler mScanHandler = new ScanHandler(this);
 
 
     @Override
@@ -72,32 +68,7 @@ public class SemiReadyStorageWeightActivity extends AppCompatActivity {
 
         // =================================
         // RFID scanning functionality
-        btnScanPole.setOnClickListener(view -> {
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            //scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_POLE);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            tvPoleName.setText(epcStr);
-                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
-                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
-                            if (tempSite !=null) {
-                                warehouse = tempSite.name;
-                            }
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
-        });
+        btnScanPole.setOnClickListener(this::onClick);
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(SemiReadyStorageWeightActivity.this);
@@ -172,5 +143,50 @@ public class SemiReadyStorageWeightActivity extends AppCompatActivity {
         }
 
         return sb.toString();
+    }
+
+
+    @Override
+    protected void onClick(View view) {
+        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(Filters.RFID_POLE);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<SemiReadyStorageWeightActivity> mActivity;
+
+        public ScanHandler(SemiReadyStorageWeightActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    String rssi = msg.getData().getString("rssi");
+                    try {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            tvPoleName.setText(epcStr);
+                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
+                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
+                            if (tempSite != null) {
+                                warehouse = tempSite.name;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
 }

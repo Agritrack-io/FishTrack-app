@@ -15,7 +15,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
@@ -33,16 +32,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -59,12 +54,16 @@ import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.ShippingRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
-public class ShippingStartActivity extends AppCompatActivity {
+public class ShippingStartActivity extends TriggerKeyAwareActivity {
+
+    // Local handler that receives the RFID scanner results.
+    private final ScanHandler mScanHandler = new ScanHandler(this);
 
     private MobileDB db;
     private ImageView ivSupport;
@@ -72,8 +71,6 @@ public class ShippingStartActivity extends AppCompatActivity {
 
     private TextView tvPoleName;
     private Button btnScanPole;
-    private final SingleShotScanner scanner = null; //new SingleShotScanner(); //TODO: remove comment
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final MutableLiveData<List<String>> enquiryResult = new MutableLiveData<>();
 
     private RecyclerView rvIfcoForShipping;
@@ -155,34 +152,8 @@ public class ShippingStartActivity extends AppCompatActivity {
         filter.addAction("com.rfid.SCAN");
         registerReceiver(receiver, filter);
 
-        // =================================
         // RFID scanning functionality
-        btnScanPole.setOnClickListener(view -> {
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            //scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_POLE);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            tvPoleName.setText(epcStr);
-                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
-                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
-                            if (tempSite !=null) {
-                                warehouse = tempSite.name;
-                            }
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
-        });
+        btnScanPole.setOnClickListener(this::onClick);
 
         ivDeleteIfco.setOnClickListener(view -> {
 
@@ -412,8 +383,50 @@ public class ShippingStartActivity extends AppCompatActivity {
                 dialog.cancel();
             }
         });
-
         builder.show();
+    }
 
+    @Override
+    protected void onClick(View view) {
+        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(Filters.RFID_POLE);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<ShippingStartActivity> mActivity;
+
+        public ScanHandler(ShippingStartActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    String rssi = msg.getData().getString("rssi");
+                    try {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            tvPoleName.setText(epcStr);
+                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
+                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
+                            if (tempSite != null) {
+                                warehouse = tempSite.name;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
 }

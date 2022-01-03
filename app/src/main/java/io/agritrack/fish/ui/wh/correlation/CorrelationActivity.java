@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,17 +24,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -61,10 +57,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CorrelationActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener{
+    // Local handler that receives the RFID scanner results.
+    private final ScanHandler mScanHandler = new ScanHandler(this);
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-    private final SingleShotScanner scanner = null; //new SingleShotScanner(); //TODO: remove comment
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private ToggleGroup tgSearchAssetType;
     private SearchView svSearchAsset;
     private RecyclerView rvAssets;
@@ -80,6 +76,7 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
+
     // Instantiate a clickListener to be passed to adapterAssets.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
@@ -121,32 +118,8 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
-        // =================================
         // RFID scanning functionality
-        btnScanAssetTag.setOnClickListener(view -> {
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            //scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(activeFilter);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            tvCorrAssetBarcode.setText(epcStr);
-                        }
-                    });
-                    //tvCageName.setText(result);
-                } else {
-                    CToast(getApplicationContext(), render(String.format("No item of type %s was found!", selectedAssetType)), Toast.LENGTH_LONG);
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
-        });
+        btnScanAssetTag.setOnClickListener(this::onClick);
 
         btnCorrelate.setOnClickListener(view -> {
             GlobalState.recWHCorrelation.assetType = !Strings.isEmptyOrWhitespace(selectedAssetType) ? AssetType.valueOf(selectedAssetType) : null;
@@ -232,8 +205,6 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
             int kk = 0;
         });
     }
-
-
 
     private boolean correlate() {
         // get an instance of local DB
@@ -344,27 +315,6 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
         }
     }
 
-    /*@Override
-    protected void onDestroy() {
-        if (executor != null)
-            executor.shutdown();
-        if (this.progressDialog != null)
-            this.progressDialog.dismiss();
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (executor != null)
-            executor.shutdown();
-    }*/
-
     public class SyncTxCallBack implements Callback<CorrelationTxDTO> {
         @Override
         public void onResponse(Call<CorrelationTxDTO> call, Response<CorrelationTxDTO> response) {
@@ -393,6 +343,47 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
                     //Generic error handling
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
+            }
+        }
+    }
+
+
+
+    @Override
+    protected void onClick(View view) {
+        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(activeFilter);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<CorrelationActivity> mActivity;
+
+        public ScanHandler(CorrelationActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    String rssi = msg.getData().getString("rssi");
+                    try {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            tvCorrAssetBarcode.setText(epcStr);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render(String.format("No item of type %s was found!", selectedAssetType)), Toast.LENGTH_LONG);
+                    }
+                    break;
             }
         }
     }

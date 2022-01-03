@@ -9,25 +9,20 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -42,22 +37,21 @@ import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.HarvestRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
-public class HarvestingStartActivity extends AppCompatActivity {
-
+public class HarvestingStartActivity extends TriggerKeyAwareActivity {
+    // Local handler that receives the RFID scanner results.
+    private final ScanHandler mScanHandler = new ScanHandler(this);
+    private final MutableLiveData<SpeciesDTO> enquiryResult = new MutableLiveData<>();
     private MobileDB db;
     private ImageView ivSupport;
-    private final MutableLiveData<SpeciesDTO> enquiryResult = new MutableLiveData<>();
     private SupportDialog supportDialog;
     private TextView tvPoleName, tvHarvestLot, tvSpeciesNameLabel, tvSpeciesName;
     private Button btnScanPole;
     private String greenhouse, poleRFID, speciesName;
-
-    private final SingleShotScanner scanner = null; //new SingleShotScanner(); //TODO: remove comment
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,44 +71,18 @@ public class HarvestingStartActivity extends AppCompatActivity {
         tvSpeciesNameLabel.setVisibility(View.INVISIBLE);
         tvSpeciesName.setVisibility(View.INVISIBLE);
 
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
-
         // =================================
         // RFID scanning functionality
-        btnScanPole.setOnClickListener(view -> {
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            //scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_POLE);
+        btnScanPole.setOnClickListener(this::onClick);
+        // =================================
 
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            tvPoleName.setText(epcStr);
-                            poleRFID = epcStr;
-                            invokeEnquirySpecies();
-                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
-                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
-                            if (tempSite !=null) {
-                                greenhouse = tempSite.name;
-                            }
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
-        });
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
 
         Calendar calender = Calendar.getInstance();
         Date date = new Date(System.currentTimeMillis());
         calender.setTime(date);
-        tvHarvestLot.setText(Integer.toString(calender.get(Calendar.WEEK_OF_YEAR)) + Integer.toString(calender.get(Calendar.DAY_OF_WEEK)-1));
+        tvHarvestLot.setText(Integer.toString(calender.get(Calendar.WEEK_OF_YEAR)) + (calender.get(Calendar.DAY_OF_WEEK) - 1));
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(HarvestingStartActivity.this);
@@ -198,10 +166,9 @@ public class HarvestingStartActivity extends AppCompatActivity {
             harvestRecord.speciesName = tvSpeciesName.getText().toString();
         }
 
-        if (!Strings.isEmptyOrWhitespace(this.greenhouse)){
+        if (!Strings.isEmptyOrWhitespace(this.greenhouse)) {
             harvestRecord.greenhouse = this.greenhouse;
         }
-
         return harvestRecord;
     }
 
@@ -212,7 +179,52 @@ public class HarvestingStartActivity extends AppCompatActivity {
                 sb.append(String.format("\n%s is missing", "'Pole tag'"));
             }
         }
-
         return sb.toString();
+    }
+
+    @Override
+    protected void onClick(View view) {
+        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(Filters.RFID_BIN);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<HarvestingStartActivity> mActivity;
+
+        public ScanHandler(HarvestingStartActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    String rssi = msg.getData().getString("rssi");
+                    try {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            tvPoleName.setText(epcStr);
+                            poleRFID = epcStr;
+                            invokeEnquirySpecies();
+                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
+                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
+                            if (tempSite != null) {
+                                greenhouse = tempSite.name;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("No Asset was scanned!!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
 }

@@ -9,7 +9,8 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,17 +18,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -40,10 +35,13 @@ import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.PlantRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class PlantingStartActivity extends AppCompatActivity {
+public class PlantingStartActivity extends TriggerKeyAwareActivity {
 
+    // Local handler that receives the RFID scanner results.
+    private final ScanHandler mScanHandler = new ScanHandler(this);
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -51,9 +49,6 @@ public class PlantingStartActivity extends AppCompatActivity {
     private TextView tvPoleName;
     private Button btnScanPole;
     private String greenhouse;
-
-    private final SingleShotScanner scanner = null; //new SingleShotScanner(); //TODO: remove comment
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,32 +83,7 @@ public class PlantingStartActivity extends AppCompatActivity {
 
         // =================================
         // RFID scanning functionality
-        btnScanPole.setOnClickListener(view -> {
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            //scanner.setUhfReader(_uhfReader);
-            scanner.setFilter(Filters.RFID_POLE);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            tvPoleName.setText(epcStr);
-                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
-                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
-                            if (tempSite !=null) {
-                                greenhouse = tempSite.name;
-                            }
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
-        });
+        btnScanPole.setOnClickListener(this::onClick);
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(PlantingStartActivity.this);
@@ -169,7 +139,7 @@ public class PlantingStartActivity extends AppCompatActivity {
         }
         plantRecord.speciesPos = spTomatoType.getSelectedItemPosition();
 
-        if (!Strings.isEmptyOrWhitespace(this.greenhouse)){
+        if (!Strings.isEmptyOrWhitespace(this.greenhouse)) {
             plantRecord.greenhouse = this.greenhouse;
         }
 
@@ -189,5 +159,50 @@ public class PlantingStartActivity extends AppCompatActivity {
         }
 
         return sb.toString();
+    }
+
+
+    @Override
+    protected void onClick(View view) {
+        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(Filters.RFID_POLE);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<PlantingStartActivity> mActivity;
+
+        public ScanHandler(PlantingStartActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    String rssi = msg.getData().getString("rssi");
+                    try {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            tvPoleName.setText(epcStr);
+                            Asset pole = db.assetDAO().getAssetByEpc(epcStr);
+                            Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
+                            if (tempSite != null) {
+                                greenhouse = tempSite.name;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
 }
