@@ -139,6 +139,9 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
 
+        // link trigger/scan button to ClickListener
+        scanButton.setOnClickListener(this::onClick);
+
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 

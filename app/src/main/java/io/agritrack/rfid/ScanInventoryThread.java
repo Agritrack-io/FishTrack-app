@@ -47,7 +47,7 @@ public class ScanInventoryThread implements Runnable {
     @Override
     public void run() {
         ArrayList<CharSequence> epcValues = new ArrayList<>();
-        if (uhfReader != null) {
+        if (uhfReader != null && this.scanInProgress) {
             try {
                 final List<RFIDTag> tagList = uhfReader.inventoryRealTime();
                 if (tagList != null && !tagList.isEmpty()) {

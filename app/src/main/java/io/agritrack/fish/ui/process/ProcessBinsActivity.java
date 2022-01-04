@@ -298,8 +298,8 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        tvBinsCount.setText(String.valueOf(epcList.size()));
-                        adapterBins.setValues(epcList.stream().map(x -> x.toString()).collect(Collectors.toList()));
+                        epcList.stream().forEach(x->adapterBins.addUniqueItem(x.toString()));
+                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         adapterBins.notifyDataSetChanged();
                     }
                     break;

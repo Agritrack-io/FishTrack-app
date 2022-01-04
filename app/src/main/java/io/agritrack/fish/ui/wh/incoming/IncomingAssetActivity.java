@@ -98,11 +98,14 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
         TextView tvHeader = findViewById(R.id.tvHeaderIncomingProcess);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
+        // get  references of the controls
+        assignCtrlVars();
+
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
 
-        // get  references of the controls
-        assignCtrlVars();
+        // link trigger/scan button to ClickListener
+        scanButton.setOnClickListener(this::onClick);
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(IncomingAssetActivity.this);
@@ -443,7 +446,7 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        CToast(getApplicationContext(), render("No Assets detected!!"), Toast.LENGTH_SHORT);
+                        CToast(getApplicationContext(), render("Scanning is finished!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }

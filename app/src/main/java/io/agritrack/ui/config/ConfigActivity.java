@@ -162,6 +162,11 @@ public class ConfigActivity extends LocationAwareActivity {
         configFooter();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
     protected void configFooter() {
         ImageView ivBack = findViewById(R.id.ivBackToLogin);
         ivBack.setOnClickListener(view -> {
@@ -272,4 +277,5 @@ public class ConfigActivity extends LocationAwareActivity {
 
         return String.format("%s°%02d'%.3f\" %s", deg, min, sec, hemisphere);
     }
+
 }

@@ -31,7 +31,6 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -277,10 +276,9 @@ public class TransportBinsActivity extends TriggerKeyAwareActivity {
             switch (msg.what) {
                 case 1:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
-                    //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        tvBinsCount.setText(String.valueOf(epcList.size()));
-                        adapterBins.setValues(epcList.stream().map(x->x.toString()).collect(Collectors.toList()));
+                        epcList.stream().forEach(x->adapterBins.addUniqueItem(x.toString()));
+                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         adapterBins.notifyDataSetChanged();
                     }
                     break;

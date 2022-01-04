@@ -267,12 +267,15 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
             scanner_runnable = new ScanInventoryThread(mScanHandler);
             scanner_runnable.setFilter(activeFilter);
             scanner_runnable.startReading();
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             scanButton.setText(R.string.stop_scan);
         } else if (!scanner_runnable.isReading()) {
             scanner_runnable.startReading();
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             scanButton.setText(R.string.stop_scan);
         } else {
             scanner_runnable.stopReading();
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
             scanButton.setText(R.string.scan_assets);
         }
         mScanHandler.postDelayed(scanner_runnable, 0);
