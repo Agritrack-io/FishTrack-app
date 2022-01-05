@@ -274,7 +274,7 @@ public class TransportBinsActivity extends TriggerKeyAwareActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
+                case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     if (epcList != null && !epcList.isEmpty()) {
                         epcList.stream().forEach(x->adapterBins.addUniqueItem(x.toString()));
@@ -284,7 +284,7 @@ public class TransportBinsActivity extends TriggerKeyAwareActivity {
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        CToast(getApplicationContext(), render("Scanning is over!!"), Toast.LENGTH_SHORT);
+                        //CToast(getApplicationContext(), render("Scanning is over!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }

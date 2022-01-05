@@ -207,7 +207,7 @@ public class FishingCageActivity extends TriggerKeyAwareActivity {
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        CToast(getApplicationContext(), render("Neither Platform nor Cage were detected!!"), Toast.LENGTH_SHORT);
+                        //CToast(getApplicationContext(), render("Neither Platform nor Cage were detected!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }

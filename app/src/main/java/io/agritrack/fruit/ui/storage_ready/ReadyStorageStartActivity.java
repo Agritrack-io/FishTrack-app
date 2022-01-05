@@ -28,6 +28,7 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -85,8 +86,6 @@ public class ReadyStorageStartActivity extends TriggerKeyAwareActivity {
             if (data != null) {
                 String barcode = new String(data);
                 invokeEnquiryIfcoBatch(barcode);
-                /*adapterIfco.addUniqueItem(barcode);
-                adapterIfco.notifyDataSetChanged();*/
                 tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
                 scanning = false;
             }
@@ -186,7 +185,6 @@ public class ReadyStorageStartActivity extends TriggerKeyAwareActivity {
 
         btnScanIfco.setOnClickListener(view -> {
             clearSelectedItem();
-            invokeEnquiryIfcoBatch("578");
             if (!scanning) {
                 startScanning();
             } else {
@@ -253,6 +251,7 @@ public class ReadyStorageStartActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
+            scanService.stopScan();
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -330,28 +329,35 @@ public class ReadyStorageStartActivity extends TriggerKeyAwareActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         if (scanService == null) {
             scanService = new BarcodeScanService(this);
             //we must set mode to 0 : BroadcastReceiver mode
             scanService.setScanMode(0);
         }
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         if (scanService != null) {
             scanService.setScanMode(1);
             scanService.close();
             scanService = null;
         }
+        super.onPause();
     }
 
     @Override
     protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onDestroy();
-        unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onStop();
     }
 
     private void showAddDialog() {
@@ -422,7 +428,7 @@ public class ReadyStorageStartActivity extends TriggerKeyAwareActivity {
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
+                        //CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }

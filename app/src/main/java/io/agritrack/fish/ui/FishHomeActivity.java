@@ -59,7 +59,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
-import io.agritrack.fish.ui.quality.PackageQualityStartActivity;
+import io.agritrack.fish.ui.quality_arrival.PackageQualityStartActivity;
 import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
 import io.agritrack.fish.ui.transport.TransportStartActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
@@ -70,7 +70,8 @@ import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
 public class FishHomeActivity extends AppCompatActivity {
-    private static final int Fishing_Idx = 0, Transport_Idx = 1, Receiving_Idx = 2, Packaging_Quality_Idx= 3, Warehouse_Idx = 4, /*Maintenance_Idx = 5,*/ SeaTemp_Idx = 6;
+    private static final int Fishing_Idx = 0, Transport_Idx = 1, Receiving_Idx = 2, Packaging_Quality_Idx = 3, Warehouse_Idx = 4, /*Maintenance_Idx = 5,*/
+            SeaTemp_Idx = 6;
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
@@ -303,20 +304,20 @@ public class FishHomeActivity extends AppCompatActivity {
     }
 
     private void assignPrivilegesToRoles() {
-        Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Receiving_Idx, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Packaging_Quality_Idx, new String[]{"ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Transport_Idx, new String[]{"ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Warehouse_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Receiving_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Packaging_Quality_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Transport_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Warehouse_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
 //        Privileges.put(Maintenance_Idx, new String[]{"ROLE_PACKAGING", "ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(SeaTemp_Idx, new String[]{"ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(SeaTemp_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
     }
 
     private boolean roleCanAccessMenu(List<String> roles, Integer menuId) {
         String[] privileges = Privileges.get(menuId);
-        if (privileges != null && privileges.length>0) {
-            for (String role:roles){
-                if (Arrays.stream(privileges).anyMatch(role::equalsIgnoreCase)){
+        if (privileges != null && privileges.length > 0) {
+            for (String role : roles) {
+                if (Arrays.stream(privileges).anyMatch(role::equalsIgnoreCase)) {
                     return true;
                 }
             }

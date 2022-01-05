@@ -175,7 +175,7 @@ public class IncomingIfcoActivity extends LocationAwareActivity {
         });
 
         btnScanIfco.setOnClickListener(view -> {
-            clearSelectedItem();
+            //clearSelectedItem();
             if (!scanning) {
                 startScanning();
             } else {

@@ -1,4 +1,4 @@
-package io.agritrack.fish.ui.quality;
+package io.agritrack.fish.ui.quality_arrival;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
@@ -112,21 +112,21 @@ public class PackageQualityInfoActivity extends AppCompatActivity implements  To
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToConfirm);
+        ImageView ivNext = findViewById(R.id.ivToPackageQualityMoreInfo);
         ivNext.setOnClickListener(view -> {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), PackageQualityConfirmActivity.class);
+                Intent i = new Intent(getApplicationContext(), PackageQualityMoreInfoActivity.class);
                 startActivity(i);
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToPackageQualityStart);
+        ImageView ivBack = findViewById(R.id.ivBackToPackageQualityTempProfiles);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackageQualityStartActivity.class);
+            Intent i = new Intent(getApplicationContext(), PackageQualityTemperatureProfilesActivity.class);
             startActivity(i);
         });
     }

@@ -50,6 +50,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.PackagingRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
+import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
@@ -61,6 +62,7 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+    private ScanInventoryThread scanner_runnable;
     private final MutableLiveData<String> enquiryResult = new MutableLiveData<>();
 
     private Button btnScanPole, btnScanTotes;
@@ -179,6 +181,9 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToPackagingLot);
         ivNext.setOnClickListener(view -> {
+            //Stop scanning since we navigate to next activity
+            scanner_runnable.stopReading();
+
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -191,6 +196,9 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToFruitHome);
         ivBack.setOnClickListener(view -> {
+            //Stop scanning since we navigate to previous activity
+            scanner_runnable.stopReading();
+
             Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             startActivity(i);
         });
@@ -314,10 +322,30 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
 
     @Override
     protected void onClick(View view) {
-        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
-        scanner_runnable.setFilter(Filters.RFID_POLE);
-        scanner_runnable.startReading();
-        mScanHandler.postDelayed(scanner_runnable, 0);
+        if(view!=null && view.getId()==R.id.btnScanPole) {
+            SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+            scanner_runnable.setFilter(Filters.RFID_POLE);
+            scanner_runnable.startReading();
+            mScanHandler.postDelayed(scanner_runnable, 0);
+        } else if(view!=null && view.getId()==R.id.btnScanTotes){
+            if (scanner_runnable == null) {
+                btnScanTotes.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                scanner_runnable = new ScanInventoryThread(mScanHandler);
+                scanner_runnable.setFilter(Filters.RFID_TOTE);
+                scanner_runnable.startReading();
+                btnScanTotes.setText(R.string.stop_scan);
+            } else if (!scanner_runnable.isReading()) {
+                btnScanTotes.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                scanner_runnable.setFilter(Filters.RFID_TOTE);
+                scanner_runnable.startReading();
+                btnScanTotes.setText(R.string.stop_scan);
+            } else {
+                btnScanTotes.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+                scanner_runnable.stopReading();
+                btnScanTotes.setText(R.string.scan_totes);
+            }
+            mScanHandler.postDelayed(scanner_runnable, 0);
+        }
     }
 
     // ###################################################
@@ -352,17 +380,17 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
                         List<String> epcs = epcList.stream().map(x -> x.toString()).collect(Collectors.toList());
-                        tvTotesCount.setText(String.valueOf(epcs.size()));
-                        adapterTotes.setValues(epcs);
+                        epcList.stream().forEach(x->adapterTotes.addUniqueItem(x.toString()));
+                        tvTotesCount.setText(String.valueOf(adapterTotes.getItemCount()));
                         adapterTotes.notifyDataSetChanged();
-                        optToteRfid = epcs.stream().findFirst();
-                        firstToteRfid = optToteRfid.get();
-                        invokeEnquiryLot();
                     }
                     break;
                 case 1980:
-                    if (!IsDemo) {
-                        CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
+                    if (!IsDemo && adapterTotes.getValues()!=null) {
+                        optToteRfid = adapterTotes.getValues().stream().findFirst();
+                        firstToteRfid = optToteRfid.get();
+                        invokeEnquiryLot();
+                        //CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }

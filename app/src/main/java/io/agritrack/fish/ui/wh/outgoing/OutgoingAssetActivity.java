@@ -433,7 +433,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
+                case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
@@ -450,7 +450,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        CToast(getApplicationContext(), render("No Assets detected!!"), Toast.LENGTH_SHORT);
+                        //CToast(getApplicationContext(), render("No Assets detected!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }

@@ -6,6 +6,7 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,8 +22,12 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
+import java.time.LocalDate;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -54,6 +59,7 @@ public class HarvestingStartActivity extends TriggerKeyAwareActivity {
     private String greenhouse, poleRFID, speciesName;
 
     @Override
+    @SuppressLint("NewApi")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_harvesting_start);
@@ -79,10 +85,10 @@ public class HarvestingStartActivity extends TriggerKeyAwareActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-        Calendar calender = Calendar.getInstance();
-        Date date = new Date(System.currentTimeMillis());
-        calender.setTime(date);
-        tvHarvestLot.setText(Integer.toString(calender.get(Calendar.WEEK_OF_YEAR)) + (calender.get(Calendar.DAY_OF_WEEK) - 1));
+        LocalDate date = LocalDate.now();
+        TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
+        int weekNumber = date.get(woy);
+        tvHarvestLot.setText(String.format("%02d%s",weekNumber, date.getDayOfWeek().ordinal()+1));
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(HarvestingStartActivity.this);
@@ -185,7 +191,7 @@ public class HarvestingStartActivity extends TriggerKeyAwareActivity {
     @Override
     protected void onClick(View view) {
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
-        scanner_runnable.setFilter(Filters.RFID_BIN);
+        scanner_runnable.setFilter(Filters.RFID_POLE);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
     }

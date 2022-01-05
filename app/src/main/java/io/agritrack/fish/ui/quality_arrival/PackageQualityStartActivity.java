@@ -1,4 +1,4 @@
-package io.agritrack.fish.ui.quality;
+package io.agritrack.fish.ui.quality_arrival;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
@@ -29,7 +29,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
-import com.uhf.api.cls.Reader;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -40,9 +39,9 @@ import java.util.Set;
 
 import io.agritrack.R;
 import io.agritrack.barcode.SoundUtil;
-import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -108,7 +107,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
         setContentView(R.layout.activity_package_quality_start);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderProcessBins);
+        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityStart);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get an instance of local DB
@@ -176,7 +175,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
         configFooter();
     }
 
-    private Reader.READER_ERR resetLogger(ICAEN_API cmd) {
+/*    private Reader.READER_ERR resetLogger(ICAEN_API cmd) {
         return cmd.Reset();
     }
 
@@ -188,7 +187,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
     private void clearSelectedItem() {
         if (selectedItem != null) {
@@ -206,14 +205,14 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToPackageQualityInfo);
+        ImageView ivNext = findViewById(R.id.ivToPackageQualityTempProfiles);
         ivNext.setOnClickListener(view -> {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), PackageQualityInfoActivity.class);
+                Intent i = new Intent(getApplicationContext(), PackageQualityTemperatureProfilesActivity.class);
                 startActivity(i);
             }
         });
@@ -311,7 +310,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
     @Override
     protected void onClick(View view) {
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
-        scanner_runnable.setFilter(Filters.RFID_POLE);
+        scanner_runnable.setFilter(Filters.RFID_BIN);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
     }

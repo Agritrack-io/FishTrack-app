@@ -8,7 +8,7 @@ android:layout_height="match_parent"
 android:background="@color/agri_semi_green"
 android:descendantFocusability="beforeDescendants"
 android:focusableInTouchMode="true"
-tools:context=".fish.ui.quality.PackageQualityInfoActivity">
+tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -345,13 +345,13 @@ tools:context=".fish.ui.quality.PackageQualityInfoActivity">
         android:scaleX="0.7"
         android:scaleY="0.7"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivToConfirm"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToPackageQualityStart"
+        app:layout_constraintEnd_toStartOf="@+id/ivToPackageQualityMoreInfo"
+        app:layout_constraintStart_toEndOf="@+id/ivBackToPackageQualityTempProfiles"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/powered_by_agritrack" />
 
     <ImageView
-        android:id="@+id/ivBackToPackageQualityStart"
+        android:id="@+id/ivBackToPackageQualityTempProfiles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -365,7 +365,7 @@ tools:context=".fish.ui.quality.PackageQualityInfoActivity">
         app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
     <ImageView
-        android:id="@+id/ivToConfirm"
+        android:id="@+id/ivToPackageQualityMoreInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

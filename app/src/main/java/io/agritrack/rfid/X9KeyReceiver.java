@@ -24,11 +24,6 @@ public class X9KeyReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         int keyCode = intent.getIntExtra("keyCode", 0);
-
-        if (keyCode == 0) {
-            keyCode = intent.getIntExtra("keycode", 0);
-        }
-
         boolean keyDown = intent.getBooleanExtra("keydown", false);
 
         if ((keyCode == KeyEvent.KEYCODE_F3 || keyCode == KeyEvent.KEYCODE_F4  || keyCode == KeyEvent.KEYCODE_F5)) {
