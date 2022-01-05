@@ -197,12 +197,12 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
         if (scanner_runnable == null) {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             scanner_runnable = new ScanInventoryThread(mScanHandler);
-            scanner_runnable.setFilter(Filters.RFID_BIN);
+            scanner_runnable.setFilter(Filters.RFID_TOTE);
             scanner_runnable.startReading();
             scanButton.setText(R.string.stop_scan);
         } else if (!scanner_runnable.isReading()) {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable.setFilter(Filters.RFID_BIN);
+            scanner_runnable.setFilter(Filters.RFID_TOTE);
             scanner_runnable.startReading();
             scanButton.setText(R.string.stop_scan);
         } else {
@@ -287,18 +287,18 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
+                case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        tvTotesCount.setText(String.valueOf(epcList.size()));
-                        adapterTotes.setValues(epcList.stream().map(x -> x.toString()).collect(Collectors.toList()));
+                        epcList.stream().forEach(x->adapterTotes.addUniqueItem(x.toString()));
+                        tvTotesCount.setText(String.valueOf(adapterTotes.getItemCount()));
                         adapterTotes.notifyDataSetChanged();
                     }
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        CToast(getApplicationContext(), render("Scanning is over!!"), Toast.LENGTH_SHORT);
+                        //CToast(getApplicationContext(), render("Scanning is over!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }

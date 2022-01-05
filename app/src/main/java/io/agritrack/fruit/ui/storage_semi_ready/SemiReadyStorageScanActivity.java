@@ -299,14 +299,14 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        tvTotesCount.setText(String.valueOf(epcList.size()));
-                        adapterTotes.setValues(epcList.stream().map(x -> x.toString()).collect(Collectors.toList()));
+                        epcList.stream().forEach(x->adapterTotes.addUniqueItem(x.toString()));
+                        tvTotesCount.setText(String.valueOf(adapterTotes.getItemCount()));
                         adapterTotes.notifyDataSetChanged();
                     }
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        CToast(getApplicationContext(), render("Scanning is over!!"), Toast.LENGTH_SHORT);
+                        //CToast(getApplicationContext(), render("Scanning is over!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }

@@ -63,7 +63,7 @@ public class ScanInventoryThread implements Runnable {
                     }
 
                     Message msg = new Message();
-                    msg.what = 1;
+                    msg.what = 100;
                     Bundle b = new Bundle();
                     b.putCharSequenceArrayList("epc", epcValues);
                     msg.setData(b);

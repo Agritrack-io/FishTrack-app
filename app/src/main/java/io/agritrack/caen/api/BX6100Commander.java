@@ -43,12 +43,12 @@ public class BX6100Commander extends AbstractCAENCommander {
 
             if (err == Reader.READER_ERR.MT_OK_ERR) {
                 mUhfRManager.setRegion(Reader.Region_Conf.RG_EU3);
-                Toast.makeText(getAppContext(), "FreRegion:" + Reader.Region_Conf.RG_EU3 + "\n" + "Read Power:" + 33 + "\n" + "Write Power:" + 33, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getAppContext(), "FreRegion:" + Reader.Region_Conf.RG_EU3 + "\n" + "Read Power:" + 33 + "\n" + "Write Power:" + 33, Toast.LENGTH_LONG).show();
             } else {
                 Reader.READER_ERR err1 = mUhfRManager.setPower(30, 30);//set uhf module power
                 if (err1 == Reader.READER_ERR.MT_OK_ERR) {
                     mUhfRManager.setRegion(Reader.Region_Conf.RG_EU3);
-                    Toast.makeText(getAppContext(), "FreRegion:" + Reader.Region_Conf.RG_EU3 + "\n" + "Read Power:" + 30 + "\n" + "Write Power:" + 30, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getAppContext(), "FreRegion:" + Reader.Region_Conf.RG_EU3 + "\n" + "Read Power:" + 30 + "\n" + "Write Power:" + 30, Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getAppContext(), "Failed to initialize UHFR manager", Toast.LENGTH_LONG);
                 }

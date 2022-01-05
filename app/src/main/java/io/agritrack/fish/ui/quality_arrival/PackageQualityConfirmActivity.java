@@ -1,4 +1,4 @@
-package io.agritrack.fish.ui.quality;
+package io.agritrack.fish.ui.quality_arrival;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;

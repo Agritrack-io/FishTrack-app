@@ -118,6 +118,9 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
 
+        // link trigger/scan button to ClickListener
+        scanButton.setOnClickListener(this::onClick);
+
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(TotesInventoryActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -356,18 +359,18 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
+                case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        tvTotesCount.setText(String.valueOf(epcList.size()));
-                        adapterTotes.setValues(epcList.stream().map(x->x.toString()).collect(Collectors.toList()));
+                        epcList.stream().forEach(x->adapterTotes.addUniqueItem(x.toString()));
+                        tvTotesCount.setText(String.valueOf(adapterTotes.getItemCount()));
                         adapterTotes.notifyDataSetChanged();
                     }
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        CToast(getApplicationContext(), render("No Assets detected!!"), Toast.LENGTH_SHORT);
+                        //CToast(getApplicationContext(), render("No Assets detected!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }

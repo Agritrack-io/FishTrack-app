@@ -202,7 +202,7 @@
     <string name="title_inventory_consumable">INVENTORY CONSUMABLE</string>
     <string name="item_inventory_asset">ASSET</string>
     <string name="item_inventory_consumable">CONSUMABLE</string>
-    <string name="up_item_inventory_asset">[Scan rfid]</string>
+    <string name="up_item_inventory_asset">[Scan RFID]</string>
     <string name="down_item_inventory_consumable">[Scan barcode]</string>
     <string name="inventory_details">Inventory details</string>
     <string name="inventory">Inventory</string>
@@ -344,7 +344,7 @@
     <string name="urgent_request">For urgent request</string>
     <string name="contact_immediately">Contact me immediately</string>
     <string name="request_description">Please describe your request</string>
-    <string name="describe">Describe</string>
+    <string name="describe">Description</string>
     <string name="enter_pin_support">PIN</string>
 
     <string name="init_temp_logger">Initialize temperature logger...</string>

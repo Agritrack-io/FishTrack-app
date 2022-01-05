@@ -365,7 +365,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
+                case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     clearSelectedItem();
                     Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
@@ -379,7 +379,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        CToast(getApplicationContext(), render("Inventory scanning is over!!"), Toast.LENGTH_SHORT);
+                        //CToast(getApplicationContext(), render("Inventory scanning is over!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }

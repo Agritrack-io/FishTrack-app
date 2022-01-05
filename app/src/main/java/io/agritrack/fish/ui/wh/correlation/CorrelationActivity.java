@@ -381,7 +381,7 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        CToast(getApplicationContext(), render(String.format("No item of type %s was found!", selectedAssetType)), Toast.LENGTH_LONG);
+                        //CToast(getApplicationContext(), render(String.format("No item of type %s was found!", selectedAssetType)), Toast.LENGTH_LONG);
                     }
                     break;
             }

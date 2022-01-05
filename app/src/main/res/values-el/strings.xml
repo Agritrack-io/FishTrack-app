@@ -2,6 +2,7 @@
 <resources>
     <string name="empty"/>
     <string name="app_name">FishTrack</string>
+    <string name="app_name_tomato">TomatoTrack</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
 
     <string name="label_copyright_splash">Copyright AgriTrack v1.0.0</string>
@@ -26,9 +27,11 @@
 
     <string name="menu_title_fishing">Αλίευση</string>
     <string name="menu_title_transport">Μεταφορά</string>
-    <string name="menu_title_fish_packaging">Παραλαβή</string>
+    <string name="menu_title_fish_receiving">Παραλαβή</string>
+    <string name="menu_title_fish_packaging">Ποιοτικός έλεγχος</string>
     <string name="menu_title_warehouse">Αποθήκη</string>
     <string name="menu_title_maintenance">Συντήρηση</string>
+    <string name="menu_title_sea_temp">Θερμοκρασία θάλασσας</string>
 
     <string name="menu_title_incoming">Εισερχόμενα</string>
     <string name="menu_title_outgoing">Εξερχόμενα</string>
@@ -44,14 +47,18 @@
     <string name="menu_title_platform">Πλατφόρμα</string>
 
     <string name="title_config">Διαμόρφωση εφαρμογής</string>
+    <string name="title_Tools">IOT Καταγραφικό</string>
 
     <string name="title_user_date">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ</string>
     <string name="title_fishing">ΑΛΙΕΥΣΗ</string>
     <string name="start_fishing">Έναρξη αλίευσης</string>
     <string name="choose_harvest">Επιλέξτε εντολέα συγκομιδής</string>
+    <string name="harvest_initiator">Εντολέας συγκομιδής</string>
+    <string name="harvest_details">Λεπτομέρειες συγκομιδής</string>
     <string name="fish_type">Τύπος ψαριού</string>
     <string name="requested_quantity">Ζητούμενη ποσότητα</string>
     <string name="scan_platform">Σκανάρετε πλατφόρμα</string>
+    <string name="packaging_plant">Συσκευαστήριο</string>
     <string name="barcode_platform">Barcode Πλατφόρμας</string>
 
     <string name="title_user_date_platform">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ / ΠΛΑΤΦΟΡΜΑ</string>
@@ -146,6 +153,8 @@
     <string name="processing_details">Πληροφορίες παραλαβής</string>
     <string name="title_date_lot_dispatch_note">ΗΜΕΡΟΜΗΝΙΑ / LOT / ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ</string>
 
+    <string name="title_quality">ΠΟΙΟΤΙΚΟΣ ΕΛΕΓΧΟΣ</string>
+
     <string name="dispatch_note">Εισάγετε δελτίο αποστολής</string>
     <string name="enter_lot">Εισάγετε LOT</string>
     <string name="enter_security_clip">Εισάγετε αριθμό ασφαλείας</string>
@@ -164,6 +173,8 @@
 
     <string name="title_date_type_of_asset">ΗΜΕΡΟΜΗΝΙΑ / ΤΥΠΟΣ ΠΑΓΙΟΥ</string>
     <string name="title_outgoing">ΕΞΕΡΧΟΜΕΝΑ</string>
+    <string name="title_outgoing_asset">ΕΞΕΡΧΟΜΕΝΑ ΠΑΓΙΑ</string>
+    <string name="title_outgoing_consumable">ΕΞΕΡΧΟΜΕΝΑ ΑΝΑΛΩΣΙΜΑ</string>
     <string name="outgoing_details">Πληροφορίες εξερχομένων</string>
     <string name="outgoing">Εξερχόμενα</string>
 
@@ -175,6 +186,8 @@
 
     <string name="title_main_menu">ΚΕΝΤΡΙΚΟ ΜΕΝΟΥ</string>
     <string name="title_incoming">ΕΙΣΕΡΧΟΜΕΝΑ</string>
+    <string name="title_incoming_asset">ΕΙΣΕΡΧΟΜΕΝΑ ΠΑΓΙΑ</string>
+    <string name="title_incoming_consumable">ΕΙΣΕΡΧΟΜΕΝΑ ΑΝΑΛΩΣΙΜΑ</string>
     <string name="incoming_details">Πληροφορίες εισερχομένων</string>
     <string name="from">Από</string>
     <string name="to">Σε</string>
@@ -186,6 +199,12 @@
     <string name="title_inventory">ΑΠΟΓΡΑΦΗ</string>
     <string name="inventory_details">Πληροφορίες απογραφής</string>
     <string name="inventory">Απογραφή</string>
+    <string name="title_inventory_asset">ΑΠΟΓΡΑΦΗ ΠΑΓΙΑ</string>
+    <string name="title_inventory_consumable">ΑΠΟΓΡΑΦΗ ΑΝΑΛΩΣΙΜΑ</string>
+    <string name="item_inventory_asset">ΠΑΓΙΑ</string>
+    <string name="item_inventory_consumable">ΑΝΑΛΩΣΙΜΑ</string>
+    <string name="up_item_inventory_asset">[Σκάναρε RFID]</string>
+    <string name="down_item_inventory_consumable">[Σκάναρε barcode]</string>
     <string name="inventory_item_label">Είδη απογραφής</string>
     <string name="choose_inventory_type">Επιλέξτε τύπο αντικειμένου</string>
     <string name="asset_type">Συνεχίστε για να σκανάρετε RFID</string>
@@ -242,6 +261,12 @@
     <string name="details">Πληροφορίες</string>
     <string name="remarks">Παρατηρήσεις</string>
 
+    <string name="title_sea_temp">ΘΕΡΜΟΚΡΑΣΙΑ ΘΑΛΑΣΣΑΣ</string>
+    <string name="current_date_msg">Ημερομηνία καταγραφής θερμοκρασιών:</string>
+    <string name="current_site">Τοποθεσία</string>
+    <string name="reference_point_temp">Θερμοκρασία σημείου αναφοράς</string>
+    <string name="cage_temp">Θερμοκρασία κλωβού</string>
+
     <string name="site_label">Χώρος:</string>
     <string name="asset_code_label">Barcode:</string>
     <string name="job_type_label">Τύπος συντήρησης:</string>
@@ -262,5 +287,152 @@
     <string name="dialog_deny">Όχι</string>
     <string name="accept_selected_site">Ο επιλεγμένος χώρος θα είναι:</string>
     <string name="confirm_selection">Παρακαλώ επιβεβαιώστε την επιλογή σας</string>
+
+
+    <string name="incoming_assets">Εισερχόμενα πάγια</string>
+    <string name="number_of_assets">Αριθμός παγίων:</string>
+    <string name="outgoing_assets">Εξερχόμενα πάγια</string>
+    <string name="acquire_cluster_info">Παρακαλώ περιμένετε, ανάκτηση δεδομένων...</string>
+    <string name="no_sites_found_alert">Δεν βρέθηκαν χώροι!!!</string>
+    <string name="synch_failed">Ο συγχρονισμός απέτυχε, παρακαλώ ελέγξτε τη σύνδεση στο internet!!!</string>
+    <string name="no_users_found_alert">Δεν βρέθηκαν χρήστες!!!</string>
+    <string name="no_employees_found_alert">Δεν βρέθηκαν εργαζόμενοι!!!</string>
+    <string name="no_customers_found_alert">Δεν βρέθηκαν πελάτες!!!</string>
+    <string name="no_species_found_alert">Δεν βρέθηκαν είδη ψαριών!!!</string>
+    <string name="stop_scan">Ληξη σκαναρίσματος</string>
+    <string name="stop_search">Λήξη αναζήτησης</string>
+    <string name="no_cage_details_found_alert">Δεν βρέθηκαν δεδομένα για τον κλωβό...</string>
+    <string name="missing_pin">Παρακαλώ πληκτρολογήστε το PIN σας!!</string>
+    <string name="invalid_password">Λάθος PIN!!!</string>
+    <string name="error_connection_timeout">Λήξη σύνδεσης!!!</string>
+    <string name="error_timeout">Αποτυχία σύνδεσης!!!</string>
+    <string name="error_cancelled_call">Αναγκαστική ακύρωση κλήσης!!!</string>
+    <string name="error_fishing_tx_update_failure">Η αλίευση απέτυχε να συγχρονιστεί!!!</string>
+    <string name="error_transport_tx_update_failure">Η μεταφορά απέτυχε να συγχρονιστεί!!!</string>
+    <string name="error_shipping_tx_update_failure">Η μεταφορά απέτυχε να συγχρονιστεί!!!</string>
+    <string name="error_processing_tx_update_failure">Η παραλάβή απέτυχε να συγχρονιστεί!!!</string>
+    <string name="no_epc_filter_selected">Παρακαλώ είσαγετε την ετικέτα την οποία αναζητάτε...</string>
+    <string name="scan_asset_tag">Σκαναρε πάγιο</string>
+    <string name="button_correlate">Συσχέτισε</string>
+    <string name="title_correlate_asset">Συσχέτισε πάγιο</string>
+    <string name="scan_rfid_rag">RFID παγίου</string>
+    <string name="title_select_asset_barcode">BARCODE παγίου</string>
+    <string name="error_AssetTx_tx_update_failure">Η διαδικασία απέτυχε να συγχρονιστεί!!!</string>
+    <string name="error_CorrelationTx_update_failure">Η συσχέτιση απέτυχε να συγχρονιστεί!!!</string>
+    <string name="title_harvest_requests">ΕΝΤΟΛΕΣ ΣΥΓΚΟΜΙΔΗΣ</string>
+    <string name="select_open_harvest_request">Ανοικτες εντολές συγκομιδής</string>
+    <string name="pick_harvest_request">Παρακαλώ επιλέξτε μία...</string>
+    <string name="no_harvest_requests_found_alert">Δεν βρέθηκαν εντολές συγκομιδής!!!</string>
+    <string name="harvest_requests_sync_completed">Οι εντολές συγκομιδής συγχονίστηκαν επιτυχώς!</string>
+    <string name="no_collection_tx_found_alert">Δεν βρέθηκαν συγκομιδές!!!</string>
+    <string name="collection_tx_sync_completed">Οι συγκομιδές συγχονίστηκαν επιτυχώς!</string>
+    <string name="sites_sync_completed">Οι χώροι συγχονίστηκαν επιτυχώς!</string>
+    <string name="species_sync_completed">Τα είδη ψαριών συγχονίστηκαν επιτυχώς!</string>
+    <string name="cage_details_sync_completed">Οι λεπτομέρειες κλωβών συγχονίστηκαν επιτυχώς!</string>
+    <string name="assets_sync_completed">Τα πάγια συγχονίστηκαν επιτυχώς!</string>
+    <string name="employees_sync_completed">Οι εργαζόμενοι συγχονίστηκαν επιτυχώς!</string>
+    <string name="customers_sync_completed">Οι πελάτες συγχονίστηκαν επιτυχώς!</string>
+    <string name="users_sync_completed">Οι χρήστες συγχονίστηκαν επιτυχώς!</string>
+    <string name="delete_selected_item">"Προς διαγραφή: "</string>
+    <string name="select_site">Παρακαλώ επιλέξτε χώρο</string>
+    <string name="select_supplier">Παρακαλώ επιλέξτε προμηθευτή</string>
+    <string name="select_customer">Παρακαλώ επιλέξτε πελάτη</string>
+    <string name="select_subsite">Παρακαλώ επιλέξτε υποχώρο</string>
+
+    <string name="agritrack_info">Agritrack Info</string>
+    <string name="agritrack_adr">Λεωφ. Μαραθώνος 50, Άνοιξη \n14569, Ελλάδα</string>
+    <string name="agritrack_tel">Τηλ: +30 21 0814 4474</string>
+    <string name="agritrack_hours">Ωράριο τηλ. κέντρου: 09:00 - 17:00</string>
+    <string name="urgent_request">Για επείγουσα εξηπυρέτηση</string>
+    <string name="contact_immediately">Καλέστε με άμεσα</string>
+    <string name="request_description">Παρακαλώ περιγράψτε το θέμα σας</string>
+    <string name="describe">Περιγραφή</string>
+    <string name="enter_pin_support">PIN</string>
+
+    <string name="init_temp_logger">Αρχικοποίηση καταγραφλεα θερμοκρασίας...</string>
+    <string name="get_temp_data">Ανάκτηση θερμοκρασιών...</string>
+
+    <string name="hello">Hello World, CamTestActivity!</string>
+
+    <!-- UI Elements -->
+    <string name="btn_capture">Click</string>
+
+    <!-- Toast Messages -->
+    <string name="camera_not_found">No cameraTest harware found</string>
+    <string name="photo_taken">Η φωτογραφία</string>
+    <!-- End of Fish strings -->
+
+
+    <!-- Tomato strings -->
+    <string name="menu_title_planting">Φύτευση</string>
+    <string name="menu_title_harvest">Συγκομιδή</string>
+    <string name="menu_title_semi_storage">Αποθήκευση ημιετοίμων</string>
+    <string name="menu_title_packaging">Συσκευασία</string>
+    <string name="menu_title_storage">Αποθήκευση ετοίμων</string>
+    <string name="menu_title_shipping">Αποστολή</string>
+    <string name="menu_title_measurements">Μετρήσεις</string>
+
+
+    <string name="title_seeding">ΦΥΤΕΥΣΗ</string>
+    <string name="start_seeding">Έναρξη φύτευσης</string>
+    <string name="scan_pole">Σκάναρε κολόνα</string>
+    <string name="tomato_type">Ποικιλία τομάτας</string>
+    <string name="greenhouse">Θερμοκήπιο:</string>
+    <string name="pole">Κολόνα:</string>
+    <string name="confirm_tomato_type">Ποικιλία τομάτας:</string>
+    <string name="error_plant_tx_update_failure">Η φύτευση απέτυχε να συγχρονιστεί!!!</string>
+
+    <string name="title_harvesting">ΣΥΓΚΟΜΙΔΗ</string>
+    <string name="harvest_lot">LOT συγκομιδής</string>
+    <string name="select_totes">Επιλέξτε τελάρα</string>
+    <string name="totes_for_harvest">Τελάρα</string>
+    <string name="number_of_totes">Αριθμός τελάρων:</string>
+    <string name="scan_totes">Σκάναρε</string>
+    <string name="confirm_harvest_lot">LOT συγκομιδής:</string>
+    <string name="error_harvest_tx_update_failure">Η συγκομιδή απέτυχε να συγχρονιστεί!!!</string>
+
+    <string name="title_fruit_wh_menu">MENU ΑΠΟΘΗΚΗΣ</string>
+    <string name="title_inventory_totes">ΑΠΟΓΡΑΦΗ ΤΕΛΑΡΩΝ</string>
+    <string name="title_inventory_ifco">ΑΠΟΓΡΑΦΗ IFCO</string>
+    <string name="title_incoming_ifco">ΕΙΣΕΡΧΟΜΕΝΑ IFCO</string>
+    <string name="item_inventory_totes">ΤΕΛΑΡΑ</string>
+    <string name="item_inventory_ifco">IFCO</string>
+    <string name="items">Τεμάχια</string>
+    <string name="scan_ifco">Σκάναρε IFCO</string>
+    <string name="number_of_ifco">Αριθμός IFCO:</string>
+
+    <string name="scan_rfid">Σκάναρε RFID</string>
+    <string name="pole_barcode">Κολόνα</string>
+    <string name="temp_logger_barcode">Καταγραφικό θερμοκρασίας</string>
+
+    <string name="title_semi_storage">ΑΠΟΘΗΚΕΥΣΗ ΗΜΙΕΤΟΙΜΩΝ</string>
+    <string name="totes_for_semi_storage">Εισερχόμενα τελάρα</string>
+    <string name="type_total_weight">Συνολικό βάρος</string>
+    <string name="scan_warehouse">Σκάναρε αποθήκη</string>
+    <string name="scan_tag">Σκάναρε</string>
+    <string name="warehouse">Αποθήκη:</string>
+    <string name="weight">Βάρος:</string>
+
+    <string name="title_package">ΣΥΣΚΕΥΑΣΙΑ</string>
+    <string name="title_open_orders">ΑΝΟΙΚΤΕΣ ΠΑΡΑΓΓΕΛΙΕΣ</string>
+    <string name="select_open_order">Ανοικτες παραγγελίες</string>
+    <string name="totes_for_package">Τελάρα προς συσκευασία</string>
+    <string name="enter_lot_on_printer">Παρακαλώ εισάγετε το ακόλουθο LOT συγκομιδής στον εκτυπωτή</string>
+    <string name="trays_qty">Ποσότητα δισκίων</string>
+
+    <string name="title_storage">ΑΠΟΘΗΚΕΥΣΗ ΕΤΟΙΜΩΝ</string>
+    <string name="select_ifco">Επιλέξτε IFCO</string>
+
+    <string name="title_shipping">ΑΠΟΣΤΟΛΗ</string>
+    <string name="shipping_details">Λεπτομέρειες αποστολής</string>
+    <string name="confirm_customer">Πελάτης:</string>
+
+    <string name="title_measurements">ΜΕΤΡΉΣΕΙΣ</string>
+    <string name="scan_temp_logger">Καταγραφικό θερμοκρασίας</string>
+    <string name="IOTLoggers_sync_completed">Τα καταγραφικά συγχρονίστηκαν επιτυχώς!</string>
+    <string name="no_IOTLoggers_found_alert">Δεν βρέθηκαν καταγραφικά!!!</string>
+    <string name="menu_title_tools">Εργαλεία καταγραφικών</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

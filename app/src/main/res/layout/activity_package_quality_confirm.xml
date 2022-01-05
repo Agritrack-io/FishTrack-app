@@ -6,7 +6,7 @@ android:id="@+id/fishingStartActivityLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_semi_green"
-tools:context=".fish.ui.quality.PackageQualityConfirmActivity">
+tools:context=".fish.ui.quality_arrival.PackageQualityConfirmActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
