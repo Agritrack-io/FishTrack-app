@@ -94,8 +94,6 @@ public interface ICAEN_API {
     /* This function returns first 'samplesCnt' temperature measurements */
     List<String[]> ReadSamples(int samplesCnt) throws Exception;
 
-    //public List<Double[]> ReadNumericSamples(int samplesCnt) throws Exception;
-
     void CloseReader();
 
     void StopReading();
@@ -105,6 +103,8 @@ public interface ICAEN_API {
     boolean IsOpen();
 
     List<RFIDTag> inventoryRealTime();
+
+    List<RFIDTag> inventoryWithFilter();
 
     boolean startReading();
 }

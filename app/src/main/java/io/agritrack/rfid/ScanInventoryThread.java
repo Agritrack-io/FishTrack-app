@@ -21,7 +21,6 @@ public class ScanInventoryThread implements Runnable {
 
 
     public ScanInventoryThread(Handler handler) {
-        super();
         uhfReader = RFIDModuleFactory.getInstance();
         mScanHandler = handler;
     }
@@ -79,7 +78,6 @@ public class ScanInventoryThread implements Runnable {
             mScanHandler.sendEmptyMessage(1980);
             uhfReader.StopReading();
             mScanHandler.removeCallbacks(this);
-            //break;
         }
     }
 }

@@ -211,19 +211,28 @@ public class BX6100Commander extends AbstractCAENCommander {
         this.mUhfRManager.setCancleInventoryFilter();
         this.mUhfRManager.asyncStopReading();
         this.mUhfRManager.stopTagInventory();
+        this.mUhfRManager.setGen2session(false);
     }
 
     @Override
     public List<RFIDTag> inventoryRealTime() {
         this.mUhfRManager.setCancleInventoryFilter();
         this.mUhfRManager.setGen2session(false);
-        List<Reader.TAGINFO> inventory = this.mUhfRManager.tagEpcTidInventoryByTimer((short) 200);//  tagInventoryRealTime();
+        List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryRealTime();
+        //List<Reader.TAGINFO> inventory = this.mUhfRManager.tagEpcTidInventoryByTimer((short) 200);//  tagInventoryRealTime();
+        return inventory.stream().map(x->new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RFIDTag> inventoryWithFilter() {
+        List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryRealTime();
         return inventory.stream().map(x->new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
     }
 
     @Override
     public boolean startReading() {
-        //Reader.READER_ERR res = this.mUhfRManager.asyncStartReading();
+        this.mUhfRManager.setGen2session(true);
+        Reader.READER_ERR result = this.mUhfRManager.asyncStartReading();
         return false;// Reader.READER_ERR.MT_OK_ERR.equals(res);
     }
 }

@@ -4,68 +4,71 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import com.android.hdhe.uhf.reader.UhfReader;
-import com.android.hdhe.uhf.readerInterface.TagModel;
-
 import java.util.List;
 
-import cn.pda.serialport.Tools;
+import io.agritrack.caen.api.ICAEN_API;
+import io.agritrack.caen.api.RFIDModuleFactory;
+import io.agritrack.caen.pojo.RFIDTag;
 
-public class ScanFilterThread extends Thread {
+public class ScanFilterThread implements Runnable {
     public static final String RFID_PREFIX = "BE0019A0000";
 
-    private boolean scanInProgress;
-    private UhfReader uhfReader;
-    private Handler handler;
+    private final Handler mScanHandler;
+    private final ICAEN_API uhfReader;
+    private boolean scanInProgress = false;
     private String filterEPC;
 
-    public ScanFilterThread() {
-    }
-
-    public void setUhfReader(UhfReader uhfReader) {
-        this.uhfReader = uhfReader;
-    }
-
-    public void setHandler(Handler handler) {
-        this.handler = handler;
+    public ScanFilterThread(Handler handler) {
+        uhfReader = RFIDModuleFactory.getInstance();
+        mScanHandler = handler;
     }
 
     public void setFilterEPC(String filterTag) {
         this.filterEPC = filterTag;
+        uhfReader.setFilterEPC(RFID_PREFIX + filterEPC);
     }
 
-    public void setScanInProgress(Boolean val) {
-        this.scanInProgress = val;
+    public boolean startReading() {
+        this.scanInProgress = true;
+        return uhfReader.startReading();
+    }
+
+    public void stopReading() {
+        this.scanInProgress = false;
+        this.filterEPC = null;
+        uhfReader.StopReading();
+    }
+
+    public boolean isReading() {
+        return this.scanInProgress;
     }
 
     @Override
     public void run() {
-        List<TagModel> tagList;
-        uhfReader.setWorkArea(3);
-        uhfReader.setOutputPower(24);
-        while (scanInProgress) {
-            if (uhfReader != null) {
-                try {
-                    tagList = uhfReader.inventorySingle(RFID_PREFIX + filterEPC);
+        List<RFIDTag> tagList;
+        if (uhfReader != null && scanInProgress) {
+            try {
+                tagList = uhfReader.inventoryRealTime();
 
-                    if (tagList != null && !tagList.isEmpty()) {
-                        TagModel tag = tagList.get(0);
-                        final String epcStr = Tools.Bytes2HexString(tag.getmEpcBytes(), tag.getmEpcBytes().length);
-                        final byte rssi = tag.getmRssi();
-                        Message msg = new Message();
-                        msg.what = 1;
-                        Bundle b = new Bundle();
-                        b.putInt("rssi", rssi);
-                        b.putString("epc", epcStr);
-                        msg.setData(b);
-                        handler.sendMessage(msg);
-                    }
-                } catch (Exception ignored) {
-                    ignored.printStackTrace();
+                if (tagList != null && !tagList.isEmpty()) {
+                    RFIDTag tag = tagList.get(0);
+                    Message msg = new Message();
+                    msg.what = 10;
+                    Bundle b = new Bundle();
+                    b.putInt("rssi", tag.getRssi());
+                    b.putString("epc", tag.getEpc());
+                    msg.setData(b);
+                    mScanHandler.sendMessage(msg);
                 }
-            } else {
-                break;
+            } catch (Exception ignored) {
+                ignored.printStackTrace();
             }
         }
+        if (!scanInProgress) {
+            uhfReader.StopReading();
+            mScanHandler.sendEmptyMessage(1980);
+            mScanHandler.removeCallbacks(this);
+        }
+        mScanHandler.postDelayed(this, 0);
     }
 }

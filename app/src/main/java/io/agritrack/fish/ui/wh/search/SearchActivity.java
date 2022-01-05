@@ -1,12 +1,15 @@
 package io.agritrack.fish.ui.wh.search;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
@@ -16,16 +19,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,23 +38,21 @@ import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.rfid.ScanFilterThread;
 import io.agritrack.fish.ui.WhMenuActivity;
+import io.agritrack.rfid.ScanFilterThread;
+import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
-
-public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-    private UhfReader uhfReader;
-    private ScanFilterThread assetSearchThread = new ScanFilterThread();
-    private boolean scanning = false;
+
+    private ScanHandler mScanHandler;
+    private ScanFilterThread search_runnable;
+
     private ProgressBar pbProximity;
     private MobileDB db;
     private FilterableAdapter adapterAssets;
@@ -63,56 +63,6 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
-
-    private final Handler handler = new Handler(Looper.getMainLooper()) {
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1: {
-                    int rssi_from_tag = msg.getData().getInt("rssi");
-                    System.out.println("RSSI:" + rssi_from_tag);
-                    int rssi_norm = normalize(rssi_from_tag);
-
-                    if (rssi_norm > 5 && rssi_norm < 95) {
-                        tvProximity.setText(String.valueOf(rssi_norm));
-                        pbProximity.setProgress(rssi_norm);
-                        if (rssi_norm < 95 && rssi_norm >= 80) {
-//                            SoundUtil.play(5, 5, 0, 2.0f);
-                            toneG.startTone(ToneGenerator.TONE_DTMF_D, 200);
-                        } else if (rssi_norm < 80 && rssi_norm >= 60) {
-//                            SoundUtil.play(4, 4, 0, 1.5f);
-                            toneG.startTone(ToneGenerator.TONE_DTMF_9, 130);
-                        } else if (rssi_norm < 60 && rssi_norm >= 40) {
-//                            SoundUtil.play(3, 3, 0, 1.0f);
-                            toneG.startTone(ToneGenerator.TONE_DTMF_5, 100);
-                        } else {
-//                            SoundUtil.play(3, 2, 0, 0.5f);
-                            toneG.startTone(ToneGenerator.TONE_DTMF_1, 50);
-                        }
-                    } else if (rssi_norm >= 95) {
-//                        SoundUtil.play(5, 6, 0, 2.5f);
-                        toneG.startTone(ToneGenerator.TONE_DTMF_D, 300);
-                        tvProximity.setText(">= 95%");
-                        pbProximity.setProgress(100);
-                    } else {
-//                        SoundUtil.play(3, 2, 0, 0.5f);
-                        toneG.startTone(ToneGenerator.TONE_DTMF_1, 10);
-                        tvProximity.setText("<= 5%");
-                        pbProximity.setProgress(0);
-                    }
-                }
-            }
-        }
-
-        private int normalize(double rssi) {
-            final double MAX_RSSI = -35d;
-            final double MIN_RSSI = -70;
-            rssi = rssi > MAX_RSSI ? MAX_RSSI : rssi;
-            rssi = rssi < MIN_RSSI ? MIN_RSSI : rssi;
-            return (int) (Math.abs(rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI) * 100);
-        }
-    };
 
     private RecyclerView rvAssets;
     private Button btnSearchAsset;
@@ -157,8 +107,11 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
         // get  references of the controls
         assignCtrlVars();
 
-        // initialize scanning threads
-        prepareScanAvailableBinsButton();
+        // instantiate Local Handler that will process the scanning stream.
+        mScanHandler = new ScanHandler(this);
+
+        // link trigger/scan button to ClickListener
+        btnSearchAsset.setOnClickListener(this::onClick);
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(SearchActivity.this);
@@ -259,57 +212,88 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
         }
     }
 
-    private void prepareScanAvailableBinsButton() {
-        assetSearchThread.setHandler(this.handler);
+    @Override
+    protected void onClick(View view) {
+        selectedBarcode = etAssetBarcode.getText().toString();
+        if (Strings.isEmptyOrWhitespace(selectedBarcode)) {
+            runOnUiThread(() -> CToast(getAppContext(), render(R.string.no_epc_filter_selected), Toast.LENGTH_LONG));
+            return;
+        }
 
-        // RFID scanning functionality
-        uhfReader = UhfReader.getInstance();
+        if (search_runnable == null) {
+            btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            search_runnable = new ScanFilterThread(mScanHandler);
+            search_runnable.setFilterEPC(selectedBarcode);
+            search_runnable.startReading();
+            btnSearchAsset.setText(R.string.stop_search);
+            mScanHandler.postDelayed(search_runnable, 0);
+        } else if (!search_runnable.isReading()) {
+            btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            search_runnable.setFilterEPC(selectedBarcode);
+            search_runnable.startReading();
+            btnSearchAsset.setText(R.string.stop_search);
+            mScanHandler.postDelayed(search_runnable, 0);
+        } else {
+            btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+            search_runnable.stopReading();
+            btnSearchAsset.setText(R.string.scan_bin);
+            pbProximity.setProgress(0);
+            tvProximity.setText(R.string.proximity);
+            mScanHandler.removeCallbacks(search_runnable);
+        }
 
-        final Button scanButton = findViewById(R.id.btnSearchAsset);
-        scanButton.setOnClickListener(view -> {
-            scanning = !scanning;
+    }
 
-            selectedBarcode = etAssetBarcode.getText().toString();
-            if (Strings.isEmptyOrWhitespace(selectedBarcode)) {
-                runOnUiThread(() -> CToast(getAppContext(), render(R.string.no_epc_filter_selected), Toast.LENGTH_LONG));
-            }
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<SearchActivity> mActivity;
 
-            // Following check is required to instantiate a ScanningThread that was stopped previously.
-            if (assetSearchThread.getState() == Thread.State.TERMINATED) {
-                assetSearchThread = new ScanFilterThread();
-            }
+        public ScanHandler(SearchActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
 
-            //update scanning, uhfReader, tvPlatformName values in thread
-            assetSearchThread.setScanInProgress(scanning);
-            assetSearchThread.setUhfReader(uhfReader);
-            assetSearchThread.setHandler(this.handler);
-            assetSearchThread.setFilterEPC(selectedBarcode);
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 10:
+                    int rssi_from_tag = msg.getData().getInt("rssi");
+                    System.out.println("RSSI:" + rssi_from_tag);
+                    int rssi_norm = normalize(rssi_from_tag);
 
-            if (scanning) {
-                scanButton.setText(R.string.stop_search);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-                    }
-                });
-                if (assetSearchThread.getState() == Thread.State.NEW) {
-                    assetSearchThread.start();
-                }
-            } else {
-                scanButton.setText(R.string.title_search);
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    public void run() {
-                        scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+                    if (rssi_norm > 5 && rssi_norm < 95) {
+                        tvProximity.setText(String.valueOf(rssi_norm));
+                        pbProximity.setProgress(rssi_norm);
+                        if (rssi_norm < 95 && rssi_norm >= 80) {
+                            toneG.startTone(ToneGenerator.TONE_DTMF_D, 200);
+                        } else if (rssi_norm < 80 && rssi_norm >= 60) {
+                            toneG.startTone(ToneGenerator.TONE_DTMF_9, 130);
+                        } else if (rssi_norm < 60 && rssi_norm >= 40) {
+                            toneG.startTone(ToneGenerator.TONE_DTMF_5, 100);
+                        } else {
+                            toneG.startTone(ToneGenerator.TONE_DTMF_1, 50);
+                        }
+                    } else if (rssi_norm >= 95) {
+                        toneG.startTone(ToneGenerator.TONE_DTMF_D, 300);
+                        tvProximity.setText(">= 95%");
+                        pbProximity.setProgress(100);
+                    } else {
+                        toneG.startTone(ToneGenerator.TONE_DTMF_1, 10);
+                        tvProximity.setText("<= 5%");
                         pbProximity.setProgress(0);
-                        tvProximity.setText(R.string.proximity);
                     }
-                });
-                try {
-                    assetSearchThread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                    break;
+                case 1980:
+                    tvProximity.setText("");
+                    pbProximity.setProgress(0);
             }
-        });
+        }
+
+        private int normalize(double rssi) {
+            final double MAX_RSSI = -35d;
+            final double MIN_RSSI = -70;
+            rssi = rssi > MAX_RSSI ? MAX_RSSI : rssi;
+            rssi = rssi < MIN_RSSI ? MIN_RSSI : rssi;
+            return (int) (Math.abs(rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI) * 100);
+        }
     }
 }

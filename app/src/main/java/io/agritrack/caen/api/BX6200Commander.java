@@ -192,9 +192,15 @@ public class BX6200Commander extends AbstractCAENCommander  {
         //this.uhfReader.close();
     }
 
+    @Override
     public List<RFIDTag> inventoryRealTime() {
         List<TagModel> inventory = this.uhfReader.inventoryRealTime();
         return inventory.stream().map(x->new RFIDTag(TagToString.apply(x), x.getmRssi())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RFIDTag> inventoryWithFilter() {
+        return inventoryRealTime();
     }
 
     @Override
