@@ -206,11 +206,11 @@
                         android:layout_height="34dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
+                        android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="CAGE"
-                        android:textOn="CAGE"
+                        android:textOff="@string/cage"
+                        android:textOn="@string/cage"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton
@@ -219,11 +219,11 @@
                         android:layout_height="34dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
+                        android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="NET"
-                        android:textOn="NET"
+                        android:textOff="@string/net"
+                        android:textOn="@string/net"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton
@@ -232,11 +232,11 @@
                         android:layout_height="34dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
+                        android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="BIN"
-                        android:textOn="BIN"
+                        android:textOff="@string/bin"
+                        android:textOn="@string/bin"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton
@@ -245,11 +245,11 @@
                         android:layout_height="34dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
+                        android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="PLATFORM"
-                        android:textOn="PLATFORM"
+                        android:textOff="@string/platform"
+                        android:textOn="@string/platform"
                         android:textSize="@dimen/text_view_font_size_medium" />
                 </io.agritrack.ui.custom.ToggleGroup>
 

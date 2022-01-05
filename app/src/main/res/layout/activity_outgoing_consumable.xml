@@ -206,11 +206,11 @@ tools:context=".fish.ui.wh.outgoing.OutgoingConsumableActivity">
                     android:layout_height="34dp"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@drawable/tooglebutton_selector"
+                    android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="FOOD"
-                    android:textOn="FOOD"
+                    android:textOff="@string/food"
+                    android:textOn="@string/food"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
                 <ToggleButton
@@ -219,11 +219,11 @@ tools:context=".fish.ui.wh.outgoing.OutgoingConsumableActivity">
                     android:layout_height="34dp"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@drawable/tooglebutton_selector"
+                    android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="VACCINE"
-                    android:textOn="VACCINE"
+                    android:textOff="@string/vaccine"
+                    android:textOn="@string/vaccine"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
                 <ToggleButton
@@ -232,11 +232,11 @@ tools:context=".fish.ui.wh.outgoing.OutgoingConsumableActivity">
                     android:layout_height="34dp"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@drawable/tooglebutton_selector"
+                    android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="ANTIBIOTIC"
-                    android:textOn="ANTIBIOTIC"
+                    android:textOff="@string/antibiotic"
+                    android:textOn="@string/antibiotic"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
             </io.agritrack.ui.custom.ToggleGroup>

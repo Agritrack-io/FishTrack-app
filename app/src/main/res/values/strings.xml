@@ -56,6 +56,9 @@
     <string name="harvest_initiator">Harvest initiator</string>
     <string name="harvest_details">Harvest details</string>
     <string name="fish_type">Fish Type</string>
+    <string name="cage">Cage</string>
+    <string name="fish_size">Fish Size</string>
+    <string name="notes">Notes</string>
     <string name="requested_quantity">Requested Quantity</string>
     <string name="packaging_plant">Packaging Plant</string>
     <string name="scan_platform">Scan Platform tag</string>
@@ -78,6 +81,7 @@
     <string name="title_platform_quantity_no_bins">PLATFORM / REQUESTED QUANTITY / # BINS</string>
     <string name="scan_cage_nets">Please scan cage and net</string>
     <string name="name_cage">Name Cage</string>
+    <string name="platform">Platform</string>
     <string name="scan_cage">Scan Cage tag</string>
     <string name="name_net">Name Net</string>
     <string name="scan_net">Scan Net tag</string>
@@ -432,4 +436,13 @@
     <string name="menu_title_tools">Logger Tools</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="asset">ASSET</string>
+    <string name="supplier">SUPPLIER</string>
+    <string name="site">SITE</string>
+    <string name="customer">CUSTOMER</string>
+    <string name="net">NET</string>
+    <string name="bin">BIN</string>
+    <string name="food">FOOD</string>
+    <string name="vaccine">VACCINE</string>
+    <string name="antibiotic">ANTIBIOTIC</string>
 </resources>

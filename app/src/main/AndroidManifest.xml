@@ -26,21 +26,29 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
-            android:name=".fish.ui.quality_arrival.PackageQualityTemperatureProfilesActivity"
+            android:name=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity"
             android:exported="false"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".fish.ui.quality_arrival.PackageQualityMoreInfo2Activity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".fish.ui.quality_arrival.PackageQualityTemperatureProfilesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.TriggerKeyAwareActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.warehouse.incoming.IncomingIfcoActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.quality_arrival.PackageQualityConfirmActivity"
             android:exported="false"

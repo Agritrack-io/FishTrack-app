@@ -8,9 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,22 +21,20 @@ import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class PackageQualityMoreInfoActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class PackageQualityMoreInfo2Activity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
-    private ToggleGroup tgBinCondition;
+    private ToggleGroup tgSmellCondition;
     private String selectedBinCondition;
-    private ToggleGroup tgIceCondition;
-    private String selectedIceCondition;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package_quality_more_info);
+        setContentView(R.layout.activity_package_quality_more_info2);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityMoreInfo);
+        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityMoreInfo2);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
@@ -49,7 +44,7 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
         initControlsFromState();
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(PackageQualityMoreInfoActivity.this);
+            supportDialog = new SupportDialog(PackageQualityMoreInfo2Activity.this);
             supportDialog.showDialog();
         });
 
@@ -57,31 +52,29 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToPackageQualityMoreInfo2);
+        ImageView ivNext = findViewById(R.id.ivToPackageQualityMoreInfo3);
         ivNext.setOnClickListener(view -> {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), PackageQualityMoreInfo2Activity.class);
+                Intent i = new Intent(getApplicationContext(), PackageQualityMoreInfo3Activity.class);
                 startActivity(i);
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToPackageQualityInfo);
+        ImageView ivBack = findViewById(R.id.ivBackToPackageQualityMoreInfo);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackageQualityInfoActivity.class);
+            Intent i = new Intent(getApplicationContext(), PackageQualityMoreInfoActivity.class);
             startActivity(i);
         });
     }
 
     private void assignCtrlVars() {
         //etPlot = findViewById(R.id.etPlot);
-        tgBinCondition = findViewById(R.id.tgBinCondition);
-        tgBinCondition.setOnCheckedChangeListener(this);
-        tgIceCondition = findViewById(R.id.tgIceCondition);
-        tgIceCondition.setOnCheckedChangeListener(this);
+        tgSmellCondition = findViewById(R.id.tgSmellCondition);
+        tgSmellCondition.setOnCheckedChangeListener(this);
         /*mtvRemarks = findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);

@@ -123,11 +123,11 @@
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
+                        android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="ASSET"
-                        android:textOn="ASSET"
+                        android:textOff="@string/item_inventory_asset"
+                        android:textOn="@string/item_inventory_asset"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton
@@ -136,11 +136,11 @@
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
+                        android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="CONSUMABLE"
-                        android:textOn="CONSUMABLE"
+                        android:textOff="@string/item_inventory_consumable"
+                        android:textOn="@string/item_inventory_consumable"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                 </io.agritrack.ui.custom.ToggleGroup>
@@ -201,7 +201,7 @@
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
+                        android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
                         android:textOff="AVRAMAR"
@@ -214,11 +214,11 @@
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
+                        android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="CUSTOMER"
-                        android:textOn="CUSTOMER"
+                        android:textOff="@string/customer"
+                        android:textOn="@string/customer"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
 
@@ -228,11 +228,11 @@
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
+                        android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="ASSET"
-                        android:textOn="ASSET"
+                        android:textOff="@string/asset"
+                        android:textOn="@string/asset"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
 
@@ -318,11 +318,11 @@
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
+                        android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="SITE"
-                        android:textOn="SITE"
+                        android:textOff="@string/site"
+                        android:textOn="@string/site"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton
@@ -331,11 +331,11 @@
                         android:layout_height="60dp"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/tooglebutton_selector"
+                        android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="ASSET"
-                        android:textOn="ASSET"
+                        android:textOff="@string/asset"
+                        android:textOn="@string/asset"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                 </io.agritrack.ui.custom.ToggleGroup>

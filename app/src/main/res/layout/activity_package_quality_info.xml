@@ -183,11 +183,11 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
                     android:layout_height="70dp"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@drawable/tooglebutton_selector"
+                    android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="GOOD"
-                    android:textOn="GOOD"
+                    android:textOff="ΚΑΛΗ"
+                    android:textOn="ΚΑΛΗ"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
                 <ToggleButton
@@ -196,11 +196,11 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
                     android:layout_height="70dp"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@drawable/tooglebutton_selector"
+                    android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="ACCEPTABLE"
-                    android:textOn="ACCEPTABLE"
+                    android:textOff="ΑΠΟΔΕΚΤΗ"
+                    android:textOn="ΑΠΟΔΕΚΤΗ"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
                 <ToggleButton
@@ -209,11 +209,11 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
                     android:layout_height="70dp"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:background="@drawable/tooglebutton_selector"
+                    android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="NOT ACCEPTABLE"
-                    android:textOn="NOT ACCEPTABLE"
+                    android:textOff="ΜΗ ΑΠΟΔΕΚΤΗ"
+                    android:textOn="ΜΗ ΑΠΟΔΕΚΤΗ"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
             </io.agritrack.ui.custom.ToggleGroup>

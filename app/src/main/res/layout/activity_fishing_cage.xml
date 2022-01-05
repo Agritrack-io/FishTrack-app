@@ -161,7 +161,7 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_semi_green"
                 android:paddingHorizontal="8dp"
-                android:text="Scan platform"
+                android:text="@string/platform"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 
@@ -235,7 +235,7 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_semi_green"
                 android:paddingHorizontal="8dp"
-                android:text="Scan cage"
+                android:text="@string/cage"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 
