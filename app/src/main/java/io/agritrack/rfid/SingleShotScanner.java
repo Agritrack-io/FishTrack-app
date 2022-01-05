@@ -31,6 +31,10 @@ public class SingleShotScanner implements Runnable {
         return uhfReader.startReading();
     }
 
+    public void stopReading() {
+        uhfReader.StopReading();
+    }
+
     public void setFilter(String rfidFilter) {
         this.RFID_FILTER = rfidFilter;
         this.trimEPCFlag = (RFID_BIN.equalsIgnoreCase(rfidFilter) || RFID_LOGGER.equalsIgnoreCase(rfidFilter)) ? Boolean.FALSE : Boolean.TRUE;
@@ -73,7 +77,7 @@ public class SingleShotScanner implements Runnable {
             }
             // to avoid possible endless loop.
             if (idx > 10) {
-                mScanHandler.sendEmptyMessage(1980);
+                //mScanHandler.sendEmptyMessage(1980);
                 uhfReader.StopReading();
                 mScanHandler.removeCallbacks(this);
                 break;

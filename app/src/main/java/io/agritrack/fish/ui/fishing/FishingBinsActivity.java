@@ -58,6 +58,7 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+    private SingleShotScanner scanner_runnable;
     private MobileDB db;
     private TemplateRecyclerAdapter adapterBins;
     private RecyclerView rvBins;
@@ -184,6 +185,12 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
         configFooter();
     }
 
+    @Override
+    protected void onStop() {
+        this.stopScanner();
+        super.onStop();
+    }
+
     private void clearSelectedItem() {
         if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
@@ -193,6 +200,7 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToTeam);
         ivNext.setOnClickListener(view -> {
+            this.stopScanner();
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -205,6 +213,7 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToMain);
         ivBack.setOnClickListener(view -> {
+            this.stopScanner();
             Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
             startActivity(i);
         });
@@ -277,13 +286,20 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
     @Override
     protected void onClick(View view) {
-        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_BIN);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     // ###################################################
+    private void stopScanner() {
+        if(this.scanner_runnable!=null) {
+            //this.scanner_runnable.stopReading();
+        }
+    }
+
+
     private class ScanHandler extends Handler {
         private final WeakReference<FishingBinsActivity> mActivity;
 
@@ -310,7 +326,7 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
                                 if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, false);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, false, true);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {
