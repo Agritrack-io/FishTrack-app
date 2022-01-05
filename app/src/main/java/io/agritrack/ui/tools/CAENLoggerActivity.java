@@ -315,7 +315,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        return "300EFE2F94D01C02540BE8BB"; //null;
+        return "300EFE2F94D01C02540BE47B"; //null;
     }
 
     private void assignCtrlVars() {
@@ -352,7 +352,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
 
         int idx = 1;
         for (String[] value : values) {
-            arrayAdapter.add(String.format("%3d. [%s] --> %s", idx++, value[0], value[1]));
+            arrayAdapter.add(String.format("%04d. [%s] --> %s", idx++, value[0], value[1]));
         }
         dlgBuilder.setAdapter(arrayAdapter, null);
         dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());

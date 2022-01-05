@@ -117,7 +117,7 @@ public class BX6100Commander extends AbstractCAENCommander {
 
     @Override
     protected Reader.READER_ERR WriteRegisters(short address, Object data) throws Exception {
-        byte msgID = 0x10;
+        byte msgID = 0x00;
         short command;
         byte reply = REPLY_NACK;
         short size = data instanceof Long ? SHORT_TWO : SHORT_ONE;

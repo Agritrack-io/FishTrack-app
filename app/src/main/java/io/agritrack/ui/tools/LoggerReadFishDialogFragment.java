@@ -195,7 +195,6 @@ public class LoggerReadFishDialogFragment extends DialogFragment implements Time
     }
 
     private List<Double> readLogger(ICAEN_API cmd) {
-        //List<String[]> values = null;
         try {
             cmd.HighSensitivity();
             short cnt = cmd.ReadSamplesCount();

@@ -52,7 +52,7 @@ import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.LoggerInitFishDialogFragment;
+import io.agritrack.ui.tools.LoggerInitDialogFragment;
 
 public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
@@ -224,7 +224,7 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
         FishingRecord hvst = GlobalState.recFishing;
 
         if (hvst.availBins != null) {
-            adapterBins.setValues(new LinkedList<String>(hvst.availBins));
+            adapterBins.setValues(new LinkedList<>(hvst.availBins));
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             tvBinsCount.setText(String.valueOf(hvst.availBins.size()));
@@ -310,8 +310,8 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
                                 if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitFishDialogFragment loggerDlg = LoggerInitFishDialogFragment.newInstance(logger.rfid);
-                                    loggerDlg.show(fm, LoggerInitFishDialogFragment.TAG);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, false);
+                                    loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {
                                 CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);

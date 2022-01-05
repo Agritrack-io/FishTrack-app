@@ -362,7 +362,8 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     @Override
     public Reader.READER_ERR Setup(short interval) {
         WriteTimeBinONE();
-        return WriteInterval(interval);
+        WriteInterval(interval);
+        return WriteCurrentDatetime();
     }
 
     @Override
@@ -399,7 +400,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
         for (int i = 0; i < data.length - 5; i += 6) {
             short t = ToShort(new byte[]{data[i], data[i + 1]});
             byte[] bytes = new byte[]{data[i + 4], data[i + 5], data[i + 2], data[i + 3]};
-            measurements.add(new String[]{parseTimestamp(bytes), parseTemperatureNumeric(t) + "\u2103"});
+            measurements.add(new String[]{parseTimestamp(bytes), String.format("%.2f\u2103",parseTemperatureNumeric(t))});
         }
         return measurements;
     }

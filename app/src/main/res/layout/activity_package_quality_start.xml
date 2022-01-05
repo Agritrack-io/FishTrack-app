@@ -194,19 +194,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityStartActivity">
                 android:background="@color/transparent"
                 app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvSelectBins"
                 app:srcCompat="@drawable/ic_delete" />
-
-            <ImageButton
-                android:id="@+id/ivAddBin"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:background="@color/transparent"
-                app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
-                app:layout_constraintEnd_toStartOf="@+id/tvSelectBins"
-                app:layout_constraintStart_toStartOf="parent"
-                app:srcCompat="@drawable/ic_add_stock_opname" />
 
             <RelativeLayout
                 android:id="@+id/loadingPanel"

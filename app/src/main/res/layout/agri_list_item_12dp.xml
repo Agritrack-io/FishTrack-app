@@ -6,6 +6,6 @@
     android:background="@color/color_gray_border_dialog"
     android:minHeight="12dp"
     android:paddingEnd="25dp"
-    android:textAlignment="textEnd"
+    android:textAlignment="textStart"
     android:textAppearance="?android:attr/textAppearanceListItemSmall"
     android:textSize="17sp" />

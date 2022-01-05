@@ -5,18 +5,13 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.InputType;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,7 +36,7 @@ import io.agritrack.R;
 import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
-
+import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -52,7 +47,7 @@ import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.LoggerReadFishDialogFragment;
+import io.agritrack.ui.tools.LoggerInitDialogFragment;
 
 public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
 
@@ -73,7 +68,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
 
     private TemplateRecyclerAdapter adapterBins;
 
-    private ImageButton ivAddBin, ivDeleteBin;
+    private ImageButton ivDeleteBin;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
     // Instantiate a clickListener to be passed to adapterBins.
@@ -163,10 +158,6 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
             }
         });
 
-        ivAddBin.setOnClickListener(view -> {
-            showAddDialog();
-        });
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(PackageQualityStartActivity.this);
             supportDialog.showDialog();
@@ -200,7 +191,6 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
         tvBinsCount = findViewById(R.id.tvBinsCount);
         rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
         ivDeleteBin = findViewById(R.id.ivDeleteBin);
-        ivAddBin = findViewById(R.id.ivAddBin);
         ivSupport = findViewById(R.id.ivSupport);
     }
 
@@ -236,36 +226,6 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
         }*/
     }
 
-    private void showAddDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Type bin BARCODE");
-
-        // Set up the input
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                binBarcode = input.getText().toString();
-                adapterBins.addUniqueItem(binBarcode);
-                adapterBins.notifyDataSetChanged();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-
-    }
-
     private void updateState() {
         GlobalState.initProcessingRecord();
 
@@ -290,21 +250,21 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
         super.onDestroy();
     }
 
-    private void displayMeasurementsDialog(List<String[]> values) {
-
-        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(PackageQualityStartActivity.this);
-        dlgBuilder.setTitle("Logger Data");
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(PackageQualityStartActivity.this, R.layout.agri_list_item_12dp);
-
-        int idx = 1;
-        for (String[] value : values) {
-            arrayAdapter.add(String.format("%3d. [%s] --> %s", idx++, value[0], value[1]));
-        }
-        dlgBuilder.setAdapter(arrayAdapter, null);
-        dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
-        dlgBuilder.create().show();
-    }
+//    private void displayMeasurementsDialog(List<String[]> values) {
+//
+//        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(PackageQualityStartActivity.this);
+//        dlgBuilder.setTitle("Logger Data");
+//
+//        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(PackageQualityStartActivity.this, R.layout.agri_list_item_12dp);
+//
+//        int idx = 1;
+//        for (String[] value : values) {
+//            arrayAdapter.add(String.format("%3d. [%s] --> %s", idx++, value[0], value[1]));
+//        }
+//        dlgBuilder.setAdapter(arrayAdapter, null);
+//        dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
+//        dlgBuilder.create().show();
+//    }
 
 
     @Override
@@ -327,14 +287,27 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    String strEPC = msg.getData().getString("epc");
+                    String epcStr = msg.getData().getString("epc");
                     String rssi = msg.getData().getString("rssi");
                     try {
-                        if (!Strings.isEmptyOrWhitespace(strEPC)) {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            //binEPC = epcStr.substring(11);
+                            // after bin is identified, initialize the temperatures logger.
+                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
+                            if (logger != null) {
+                                scannedBinEPCs.add(epcStr.substring(11));
+                                tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
+                                adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
+                                adapterBins.notifyDataSetChanged();
 
-                            FragmentManager fm = getSupportFragmentManager();
-                            LoggerReadFishDialogFragment loggerDlg = LoggerReadFishDialogFragment.newInstance(strEPC);
-                            loggerDlg.show(fm, LoggerReadFishDialogFragment.TAG);
+                                if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
+                                    FragmentManager fm = getSupportFragmentManager();
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, true);
+                                    loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
+                                }
+                            } else if (!IsDemo) {
+                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -342,10 +315,11 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
+                        //CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }
+
         }
     }
 }
