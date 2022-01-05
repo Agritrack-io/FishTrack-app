@@ -4,36 +4,29 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.common.util.Strings;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import io.agritrack.R;
-import io.agritrack.data.model.common.Employee;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
+import io.agritrack.ui.adapter.TemperatureProfileAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity {
 
-    private ListView lvTempProfiles;
-    private ArrayAdapter<io.agritrack.ui.bo.GenericListModel> tempProfileAdapter;
+    private RecyclerView lvTempProfiles;
+    private TemperatureProfileAdapter tempProfileAdapter;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -52,6 +45,15 @@ public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity
 
         // get main controls references
         this.lvTempProfiles = findViewById(R.id.lvTempProfiles);
+
+        tempProfileAdapter = new TemperatureProfileAdapter(this);
+        lvTempProfiles.setAdapter(tempProfileAdapter);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(PackageQualityTemperatureProfilesActivity.this);
+        lvTempProfiles.setLayoutManager(layoutManager);
+        lvTempProfiles.setHasFixedSize(false);
+
+        tempProfileAdapter.notifyDataSetChanged();
+
 
         /*// load employees belonging to current Site and fill in the spFishingTeam Spinner.
         List<Employee> teamCandidates = db.employeeDAO().getBySite(LocalPreferences.getCurrentSiteId());

@@ -101,7 +101,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityTemperatureProfilesActivit
             android:orientation="vertical"
             android:padding="1dp">
 
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/lvTempProfiles"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -115,7 +115,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityTemperatureProfilesActivit
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-            </ListView>
+            </androidx.recyclerview.widget.RecyclerView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

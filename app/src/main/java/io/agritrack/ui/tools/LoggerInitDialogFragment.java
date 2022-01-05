@@ -36,11 +36,12 @@ import io.agritrack.fish.ui.bo.LoggerReading;
 
 public class LoggerInitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
     public static String TAG = "CAENInitDialogFragment";
+    private static final String SHOW_READ_BUTTON = "ShowReadButton";
+    private static final String SHOW_INIT_BUTTON = "ShowInitButton";
 
-    private static final int LEVEL_INCREMENT = 500;
+    private static final int LEVEL_INCREMENT = 200;
     private static final int MAX_LEVEL = 10000;
     private static final String LOGGER_EPC = "loggerEPC";
-    private static final String SHOW_READ_BUTTON = "ShowReadButton";
 
     private ICAEN_API cmd;
     private LoggerReading reading;
@@ -54,7 +55,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
 
     private List<String[]> values = null;
     private boolean showReadButton = false;
-
+    private boolean showInitButton = false;
 
     protected final View.OnClickListener readBtnListener = v -> {
 
@@ -79,7 +80,9 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                 m.put("timestamp", System.currentTimeMillis());
                 m.put("Measurements", values);
 
-                getDialog().dismiss();
+                if(getDialog()!=null) {
+                    getDialog().dismiss();
+                }
                 reading.setReading(m);
 
                 displayMeasurementsDialog(values);
@@ -178,11 +181,12 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         taskRunner = new TaskRunner();
     }
 
-    public static LoggerInitDialogFragment newInstance(String epc, boolean showReadButton) {
+    public static LoggerInitDialogFragment newInstance(String epc, boolean showReadButton, boolean showInitButton) {
         LoggerInitDialogFragment frag = new LoggerInitDialogFragment();
         Bundle args = new Bundle();
         args.putString(LOGGER_EPC, epc);
         args.putBoolean(SHOW_READ_BUTTON, showReadButton);
+        args.putBoolean(SHOW_INIT_BUTTON, showInitButton);
         frag.setArguments(args);
 
         return frag;
@@ -210,18 +214,34 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
 
         if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
             showReadButton = getArguments().getBoolean(SHOW_READ_BUTTON);
+            showInitButton = getArguments().getBoolean(SHOW_INIT_BUTTON);
             String loggerEPC = getArguments().getString(LOGGER_EPC);
 
             cmd = RFIDModuleFactory.getInstance();
             cmd.setFilterEPC(loggerEPC);
 
-            btnReset.setText("Press to Start.");
-            btnReset.setOnClickListener(resetBtnListener);
             if (showReadButton) {
                 btnRead.setVisibility(View.VISIBLE);
                 btnRead.setText("Press to Read data.");
                 btnRead.setOnClickListener(readBtnListener);
+            } else {
+                btnRead.setVisibility(View.GONE);
             }
+
+            if (showInitButton) {
+                btnReset.setVisibility(View.VISIBLE);
+                btnSetup.setVisibility(View.VISIBLE);
+                btnInit.setVisibility(View.VISIBLE);
+
+                btnReset.setText("Press to Start.");
+                btnReset.setOnClickListener(resetBtnListener);
+
+            } else {
+                btnReset.setVisibility(View.GONE);
+                btnSetup.setVisibility(View.GONE);
+                btnInit.setVisibility(View.GONE);
+            }
+
         }
 
         getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
