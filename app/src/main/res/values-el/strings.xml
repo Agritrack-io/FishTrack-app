@@ -56,6 +56,9 @@
     <string name="harvest_initiator">Εντολέας συγκομιδής</string>
     <string name="harvest_details">Λεπτομέρειες συγκομιδής</string>
     <string name="fish_type">Τύπος ψαριού</string>
+    <string name="cage">Κλωβός</string>
+    <string name="fish_size">Μέγεθος ψαριού</string>
+    <string name="notes">Σημειώσεις</string>
     <string name="requested_quantity">Ζητούμενη ποσότητα</string>
     <string name="scan_platform">Σκανάρετε πλατφόρμα</string>
     <string name="packaging_plant">Συσκευαστήριο</string>
@@ -78,6 +81,7 @@
     <string name="title_platform_quantity_no_bins">ΠΛΑΤΦΟΡΜΑ / ΖΗΤΟΥΜΕΝΗ ΠΟΣΟΤΗΤΑ / # ΒΟΥΤΩΝ</string>
     <string name="scan_cage_nets">Σκανάρετε κλωβό και δίχτυ</string>
     <string name="name_cage">Κλωβός</string>
+    <string name="platform">Πλατφόρμα</string>
     <string name="scan_cage">Σκανάρετε κλωβό</string>
     <string name="name_net">Δίχτυ</string>
     <string name="scan_net">Σκανάρετε δίχτυ</string>
@@ -320,7 +324,7 @@
     <string name="error_AssetTx_tx_update_failure">Η διαδικασία απέτυχε να συγχρονιστεί!!!</string>
     <string name="error_CorrelationTx_update_failure">Η συσχέτιση απέτυχε να συγχρονιστεί!!!</string>
     <string name="title_harvest_requests">ΕΝΤΟΛΕΣ ΣΥΓΚΟΜΙΔΗΣ</string>
-    <string name="select_open_harvest_request">Ανοικτες εντολές συγκομιδής</string>
+    <string name="select_open_harvest_request">Ανοικτές εντολές συγκομιδής</string>
     <string name="pick_harvest_request">Παρακαλώ επιλέξτε μία...</string>
     <string name="no_harvest_requests_found_alert">Δεν βρέθηκαν εντολές συγκομιδής!!!</string>
     <string name="harvest_requests_sync_completed">Οι εντολές συγκομιδής συγχονίστηκαν επιτυχώς!</string>
@@ -434,5 +438,14 @@
     <string name="menu_title_tools">Εργαλεία καταγραφικών</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="asset">ΠΑΓΙΟ</string>
+    <string name="supplier">ΠΡΟΜΗΘΕΥΤΗΣ</string>
+    <string name="site">ΧΩΡΟΣ</string>
+    <string name="customer">ΠΕΛΑΤΗΣ</string>
+    <string name="net">ΔΙΧΤΥ</string>
+    <string name="bin">ΒΟΥΤΑ</string>
+    <string name="food">ΤΡΟΦΗ</string>
+    <string name="vaccine">ΕΜΒΟΛΙΟ</string>
+    <string name="antibiotic">ΑΝΤΙΒΙΟΤΙΚΑ</string>
 
 </resources>

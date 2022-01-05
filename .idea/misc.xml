@@ -19,11 +19,24 @@
         <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/fragment_dialog_fish_init_logger.xml" value="0.1" />
         <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/fragment_dialog_fruit_caen_logger.xml" value="0.1515625" />
         <entry key="..\:/agritrack_ws/FishtrackSuite/fishtrack-app/app/src/main/res/layout/fragment_dialog_read_temperatures_caen_logger.xml" value="0.1515625" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/drawable/togglebutton_selector.xml" value="0.36302083333333335" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/drawable/tooglebutton_selector.xml" value="0.36302083333333335" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_correlation.xml" value="0.2838541666666667" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_fishing_cage.xml" value="0.346875" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_fishing_start.xml" value="0.24895833333333334" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_fishing_team.xml" value="0.3625" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_incoming_asset.xml" value="0.2838541666666667" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_incoming_consumable.xml" value="0.2838541666666667" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_incoming_start.xml" value="0.2838541666666667" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_inventory_asset.xml" value="0.24895833333333334" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_inventory_consumable.xml" value="0.2838541666666667" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_outgoing_asset.xml" value="0.2838541666666667" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_outgoing_consumable.xml" value="0.2838541666666667" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_outgoing_start.xml" value="0.2838541666666667" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_package_quality_info.xml" value="0.24895833333333334" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_package_quality_more_info.xml" value="0.3625" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_package_quality_more_info2.xml" value="0.346875" />
+        <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_package_quality_more_info3.xml" value="0.27447916666666666" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_package_quality_start.xml" value="0.24895833333333334" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_package_quality_temperature_profiles.xml" value="0.23489583333333333" />
         <entry key="..\:/workspace/fishtrack-app/app/src/main/res/layout/activity_search.xml" value="0.3625" />

@@ -8,9 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,25 +18,20 @@ import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
-import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class PackageQualityMoreInfoActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class PackageQualityMoreInfo3Activity extends AppCompatActivity {
 
-    private ToggleGroup tgBinCondition;
-    private String selectedBinCondition;
-    private ToggleGroup tgIceCondition;
-    private String selectedIceCondition;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package_quality_more_info);
+        setContentView(R.layout.activity_package_quality_more_info3);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityMoreInfo);
+        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityMoreInfo3);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
@@ -49,7 +41,7 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
         initControlsFromState();
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(PackageQualityMoreInfoActivity.this);
+            supportDialog = new SupportDialog(PackageQualityMoreInfo3Activity.this);
             supportDialog.showDialog();
         });
 
@@ -57,31 +49,27 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToPackageQualityMoreInfo2);
+        ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), PackageQualityMoreInfo2Activity.class);
+                Intent i = new Intent(getApplicationContext(), PackageQualityConfirmActivity.class);
                 startActivity(i);
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToPackageQualityInfo);
+        ImageView ivBack = findViewById(R.id.ivBackToPackageQualityMoreInfo2);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackageQualityInfoActivity.class);
+            Intent i = new Intent(getApplicationContext(), PackageQualityMoreInfo2Activity.class);
             startActivity(i);
         });
     }
 
     private void assignCtrlVars() {
         //etPlot = findViewById(R.id.etPlot);
-        tgBinCondition = findViewById(R.id.tgBinCondition);
-        tgBinCondition.setOnCheckedChangeListener(this);
-        tgIceCondition = findViewById(R.id.tgIceCondition);
-        tgIceCondition.setOnCheckedChangeListener(this);
         /*mtvRemarks = findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
@@ -129,16 +117,5 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
         }
 
         return sb.toString();
-    }
-
-    @Override
-    public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        if (checkedId == R.id.tbGoodBin) {
-            selectedBinCondition = "GOOD";
-        } else if (checkedId == R.id.tbMediumBin) {
-            selectedBinCondition = "ACCEPTABLE";
-        } else if (checkedId == R.id.tbBadBin) {
-            selectedBinCondition = "NOT ACCEPTABLE";
-        }
     }
 }

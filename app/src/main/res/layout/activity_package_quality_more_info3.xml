@@ -6,7 +6,7 @@ android:id="@+id/fishingBinsLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_semi_green"
-tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
+tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -53,7 +53,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
         tools:ignore="MissingPrefix" />
 
     <TextView
-        android:id="@+id/tvHeaderPackageQualityMoreInfo"
+        android:id="@+id/tvHeaderPackageQualityMoreInfo3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -83,7 +83,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
     <RelativeLayout
         android:id="@+id/moreInfoALayout"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="0dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -101,56 +101,101 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <io.agritrack.ui.custom.ToggleGroup
-                android:id="@+id/tgBinCondition"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
+            <TextView
+                android:id="@+id/tvLightLabel"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
                 android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Ελαφριά"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/tvHeavyLabel"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ToggleButton
-                    android:id="@+id/tbGoodBin"
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="ΚΑΛΗ"
-                    android:textOn="ΚΑΛΗ"
-                    android:textSize="@dimen/text_view_font_size_medium" />
+            <EditText
+                android:id="@+id/etLight"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_rounded_dialog_input"
+                android:ems="10"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/etHeavy"
+                app:layout_constraintStart_toEndOf="@+id/tvLightLabel"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ToggleButton
-                    android:id="@+id/tbMediumBin"
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="ΜΕΤΡΙΑ"
-                    android:textOn="ΜΕΤΡΙΑ"
-                    android:textSize="@dimen/text_view_font_size_medium" />
+            <TextView
+                android:id="@+id/tvLight"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="%"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/etLight"
+                app:layout_constraintStart_toEndOf="@+id/etLight"
+                app:layout_constraintTop_toTopOf="@+id/etLight" />
 
-                <ToggleButton
-                    android:id="@+id/tbBadBin"
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="ΚΑΚΗ"
-                    android:textOn="ΚΑΚΗ"
-                    android:textSize="@dimen/text_view_font_size_medium" />
-            </io.agritrack.ui.custom.ToggleGroup>
+            <TextView
+                android:id="@+id/tvHeavyLabel"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Έντονα"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvLightLabel" />
+
+            <EditText
+                android:id="@+id/etHeavy"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_rounded_dialog_input"
+                android:ems="10"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvHeavyLabel"
+                app:layout_constraintTop_toBottomOf="@+id/etLight" />
+
+            <TextView
+                android:id="@+id/tvHeavy"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="%"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/etHeavy"
+                app:layout_constraintStart_toEndOf="@+id/etHeavy"
+                app:layout_constraintTop_toTopOf="@+id/etHeavy" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -161,7 +206,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="Κατάσταση Δεξαμενής κατά την άφιξη"
+            android:text="Αιματώματα"
             android:textColor="@color/label_blue"
             android:textSize="16sp" />
 
@@ -170,7 +215,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
     <RelativeLayout
         android:id="@+id/moreInfoBLayout"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="350dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -188,56 +233,291 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <io.agritrack.ui.custom.ToggleGroup
-                android:id="@+id/tgIceCondition"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
+            <TextView
+                android:id="@+id/tvPinkLabel"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
                 android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Ρόδινα"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/tvDarkLabel"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ToggleButton
-                    android:id="@+id/tbGoodIce"
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="ΚΑΛΗ"
-                    android:textOn="ΚΑΛΗ"
-                    android:textSize="@dimen/text_view_font_size_medium" />
+            <EditText
+                android:id="@+id/etPink"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_rounded_dialog_input"
+                android:ems="10"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/etDark"
+                app:layout_constraintStart_toEndOf="@+id/tvPinkLabel"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ToggleButton
-                    android:id="@+id/tbMediumIce"
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="ΜΕΤΡΙΑ"
-                    android:textOn="ΜΕΤΡΙΑ"
-                    android:textSize="@dimen/text_view_font_size_medium" />
+            <TextView
+                android:id="@+id/tvPink"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="%"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/etPink"
+                app:layout_constraintStart_toEndOf="@+id/etPink"
+                app:layout_constraintTop_toTopOf="@+id/etPink" />
 
-                <ToggleButton
-                    android:id="@+id/tbBadIce"
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="ΚΑΚΗ"
-                    android:textOn="ΚΑΚΗ"
-                    android:textSize="@dimen/text_view_font_size_medium" />
-            </io.agritrack.ui.custom.ToggleGroup>
+            <TextView
+                android:id="@+id/tvDarkLabel"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Σκούρα"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/tvWhiteLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPinkLabel" />
+
+            <EditText
+                android:id="@+id/etDark"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_rounded_dialog_input"
+                android:ems="10"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/etWhite"
+                app:layout_constraintStart_toEndOf="@+id/tvDarkLabel"
+                app:layout_constraintTop_toBottomOf="@+id/etPink" />
+
+            <TextView
+                android:id="@+id/tvDark"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="%"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/etDark"
+                app:layout_constraintStart_toEndOf="@+id/etDark"
+                app:layout_constraintTop_toTopOf="@+id/etDark" />
+
+            <TextView
+                android:id="@+id/tvWhiteLabel"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Ξέσπρια"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/tvUncoloredLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDarkLabel" />
+
+            <EditText
+                android:id="@+id/etWhite"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_rounded_dialog_input"
+                android:ems="10"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/etUncolored"
+                app:layout_constraintStart_toEndOf="@+id/tvWhiteLabel"
+                app:layout_constraintTop_toBottomOf="@+id/etDark" />
+
+            <TextView
+                android:id="@+id/tvWhite"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="%"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/etWhite"
+                app:layout_constraintStart_toEndOf="@+id/etWhite"
+                app:layout_constraintTop_toTopOf="@+id/etWhite" />
+
+            <TextView
+                android:id="@+id/tvUncoloredLabel"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Αποχρωματισμένα"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/tvHematomasLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvWhiteLabel" />
+
+            <EditText
+                android:id="@+id/etUncolored"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_rounded_dialog_input"
+                android:ems="10"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/etHematomas"
+                app:layout_constraintStart_toEndOf="@+id/tvUncoloredLabel"
+                app:layout_constraintTop_toBottomOf="@+id/etWhite" />
+
+            <TextView
+                android:id="@+id/tvUncolored"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="%"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/etUncolored"
+                app:layout_constraintStart_toEndOf="@+id/etUncolored"
+                app:layout_constraintTop_toTopOf="@+id/etUncolored" />
+
+            <TextView
+                android:id="@+id/tvHematomasLabel"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Αιματώματα"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/tvMucusLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvUncoloredLabel" />
+
+            <EditText
+                android:id="@+id/etHematomas"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_rounded_dialog_input"
+                android:ems="10"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/etMucus"
+                app:layout_constraintStart_toEndOf="@+id/tvHematomasLabel"
+                app:layout_constraintTop_toBottomOf="@+id/etUncolored" />
+
+            <TextView
+                android:id="@+id/tvHematomas"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="%"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/etHematomas"
+                app:layout_constraintStart_toEndOf="@+id/etHematomas"
+                app:layout_constraintTop_toTopOf="@+id/etHematomas" />
+
+            <TextView
+                android:id="@+id/tvMucusLabel"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Βλέννα"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvHematomasLabel" />
+
+            <EditText
+                android:id="@+id/etMucus"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_rounded_dialog_input"
+                android:ems="10"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvMucusLabel"
+                app:layout_constraintTop_toBottomOf="@+id/etHematomas" />
+
+            <TextView
+                android:id="@+id/tvMucus"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="%"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/etMucus"
+                app:layout_constraintStart_toEndOf="@+id/etMucus"
+                app:layout_constraintTop_toTopOf="@+id/etMucus" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -248,7 +528,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="Κατάσταση Πάγου κατά την άφιξη"
+            android:text="Βράγχια"
             android:textColor="@color/label_blue"
             android:textSize="16sp" />
 
@@ -257,209 +537,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
     <RelativeLayout
         android:id="@+id/moreInfoCLayout"
         android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/moreInfoDLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/moreInfoBLayout">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="vertical"
-            android:padding="1dp">
-
-            <TextView
-                android:id="@+id/tvTempBinLabel"
-                android:layout_width="220dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="Θερμοκρασία βούτας"
-                android:textAlignment="viewStart"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvTempFishLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvTempBin"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/bg_rounded_dialog_non_input"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/etTempFish"
-                app:layout_constraintStart_toEndOf="@+id/tvTempBinLabel"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvBin"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/tvTempBin"
-                app:layout_constraintStart_toEndOf="@+id/tvTempBin"
-                app:layout_constraintTop_toTopOf="@+id/tvTempBin" />
-
-            <TextView
-                android:id="@+id/tvTempFishLabel"
-                android:layout_width="220dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="Θερμοκρασία ψαριών"
-                android:textAlignment="viewStart"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvTempBinLabel" />
-
-            <EditText
-                android:id="@+id/etTempFish"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:inputType="number"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvTempFishLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvTempBin" />
-
-            <TextView
-                android:id="@+id/tvTempFish"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etTempFish"
-                app:layout_constraintStart_toEndOf="@+id/etTempFish"
-                app:layout_constraintTop_toTopOf="@+id/etTempFish" />
-
-            <!--<TextView
-                android:id="@+id/tvTempBin"
-                android:layout_width="100dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="50dp"
-                android:background="@drawable/bg_rounded_dialog_non_input"
-                android:ems="10"
-                android:hint="Βούτας"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvBin"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/tvTempBin"
-                app:layout_constraintStart_toEndOf="@+id/tvTempBin"
-                app:layout_constraintTop_toTopOf="@+id/tvTempBin" />-->
-
-            <!--<EditText
-                android:id="@+id/etTempFish"
-                android:layout_width="100dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="50dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:hint="Ψαριών"
-                android:inputType="number"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvFish"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etTempFish"
-                app:layout_constraintStart_toEndOf="@+id/etTempFish"
-                app:layout_constraintTop_toTopOf="@+id/etTempFish" />-->
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="16dp"
-            android:background="@color/agri_semi_green"
-            android:paddingHorizontal="8dp"
-            android:text="Θερμοκρασίες κατά την άφιξη"
-            android:textColor="@color/label_blue"
-            android:textSize="16sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/moreInfoDLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="70dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -467,7 +545,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/moreInfoCLayout">
+        app:layout_constraintTop_toBottomOf="@+id/moreInfoBLayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -482,15 +560,15 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
                 android:layout_width="220dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Νεκρική ακαμψία"
+                android:text="Προβληματικά ψάρια"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvEliminationFoodLabel"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -499,7 +577,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
                 android:layout_width="70dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/bg_rounded_dialog_input"
                 android:ems="10"
                 android:inputType="number"
@@ -508,7 +586,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
                 android:textAlignment="viewEnd"
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/etEliminationFood"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvRigorMortisLabel"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -525,204 +603,6 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
                 app:layout_constraintBottom_toBottomOf="@+id/etRigorMortis"
                 app:layout_constraintStart_toEndOf="@+id/etRigorMortis"
                 app:layout_constraintTop_toTopOf="@+id/etRigorMortis" />
-
-            <TextView
-                android:id="@+id/tvEliminationFoodLabel"
-                android:layout_width="220dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="Αποβολή τροφών"
-                android:textAlignment="viewStart"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvEliminationSpermLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvRigorMortisLabel" />
-
-            <EditText
-                android:id="@+id/etEliminationFood"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:inputType="number"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/etEliminationSperm"
-                app:layout_constraintStart_toEndOf="@+id/tvEliminationFoodLabel"
-                app:layout_constraintTop_toBottomOf="@+id/etRigorMortis" />
-
-            <TextView
-                android:id="@+id/tvEliminationFood"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:paddingLeft="4dp"
-                android:text="%"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etEliminationFood"
-                app:layout_constraintStart_toEndOf="@+id/etEliminationFood"
-                app:layout_constraintTop_toTopOf="@+id/etEliminationFood" />
-
-            <TextView
-                android:id="@+id/tvEliminationSpermLabel"
-                android:layout_width="220dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="Αποβολή σπέρματος"
-                android:textAlignment="viewStart"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvParasitesLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvEliminationFoodLabel" />
-
-            <EditText
-                android:id="@+id/etEliminationSperm"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:inputType="number"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/etParasites"
-                app:layout_constraintStart_toEndOf="@+id/tvEliminationSpermLabel"
-                app:layout_constraintTop_toBottomOf="@+id/etEliminationFood" />
-
-            <TextView
-                android:id="@+id/tvEliminationSperm"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:paddingLeft="4dp"
-                android:text="%"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etEliminationSperm"
-                app:layout_constraintStart_toEndOf="@+id/etEliminationSperm"
-                app:layout_constraintTop_toTopOf="@+id/etEliminationSperm" />
-
-            <TextView
-                android:id="@+id/tvParasitesLabel"
-                android:layout_width="220dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="Παράσιτα"
-                android:textAlignment="viewStart"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvPeelingLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvEliminationSpermLabel" />
-
-            <EditText
-                android:id="@+id/etParasites"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:inputType="number"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/etPeeling"
-                app:layout_constraintStart_toEndOf="@+id/tvParasitesLabel"
-                app:layout_constraintTop_toBottomOf="@+id/etEliminationSperm" />
-
-            <TextView
-                android:id="@+id/tvParasites"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:paddingLeft="4dp"
-                android:text="%"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etParasites"
-                app:layout_constraintStart_toEndOf="@+id/etParasites"
-                app:layout_constraintTop_toTopOf="@+id/etParasites" />
-
-            <TextView
-                android:id="@+id/tvPeelingLabel"
-                android:layout_width="220dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="Απολέπιση"
-                android:textAlignment="viewStart"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvParasitesLabel" />
-
-            <EditText
-                android:id="@+id/etPeeling"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:inputType="number"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvPeelingLabel"
-                app:layout_constraintTop_toBottomOf="@+id/etParasites" />
-
-            <TextView
-                android:id="@+id/tvPeeling"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:paddingLeft="4dp"
-                android:text="%"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etPeeling"
-                app:layout_constraintStart_toEndOf="@+id/etPeeling"
-                app:layout_constraintTop_toTopOf="@+id/etPeeling" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -760,13 +640,13 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
         android:scaleX="0.7"
         android:scaleY="0.7"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivToPackageQualityMoreInfo2"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToPackageQualityInfo"
+        app:layout_constraintEnd_toStartOf="@+id/ivToConfirm"
+        app:layout_constraintStart_toEndOf="@+id/ivBackToPackageQualityMoreInfo2"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/powered_by_agritrack" />
 
     <ImageView
-        android:id="@+id/ivBackToPackageQualityInfo"
+        android:id="@+id/ivBackToPackageQualityMoreInfo2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -780,7 +660,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
         app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
     <ImageView
-        android:id="@+id/ivToPackageQualityMoreInfo2"
+        android:id="@+id/ivToConfirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

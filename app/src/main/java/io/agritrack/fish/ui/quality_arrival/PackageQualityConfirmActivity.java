@@ -107,7 +107,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToPackageQualityInfo);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackageQualityInfoActivity.class);
+            Intent i = new Intent(getApplicationContext(), PackageQualityMoreInfo3Activity.class);
             startActivity(i);
         });
     }
