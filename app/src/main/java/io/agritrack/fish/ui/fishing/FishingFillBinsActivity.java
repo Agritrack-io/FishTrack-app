@@ -361,7 +361,7 @@ public class FishingFillBinsActivity extends TriggerKeyAwareActivity {
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        CToast(getApplicationContext(), render("No BIN was found!!"), Toast.LENGTH_SHORT);
+                        //CToast(getApplicationContext(), render("No BIN was found!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }

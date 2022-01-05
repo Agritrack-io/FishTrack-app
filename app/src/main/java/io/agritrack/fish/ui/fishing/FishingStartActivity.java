@@ -36,9 +36,9 @@ import io.agritrack.ui.service.LocalPreferences;
 public class FishingStartActivity extends AppCompatActivity {
 
     private MobileDB db;
-    private Spinner harvestSpinner, speciesSpinner;
+    private Spinner tvHarvestSpinner, speciesSpinner;
     private EditText etQty;
-    private TextView tvCageName, tvFishSize, tvNotes;
+    private TextView tvCageName, tvFishSize, tvNotes, tvHarvest, tvFishType, tvRequestedQuantity;
 
     private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
@@ -59,7 +59,7 @@ public class FishingStartActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        // load users with Harvest role and fill in the spHarvest Spinner.
+        /*// load users with Harvest role and fill in the spHarvest Spinner.
         List<AppUser> harvestRequestUsers = db.userDAO().getByRole("ROLE_HARVEST");
         if (harvestRequestUsers != null && !harvestRequestUsers.isEmpty()) {
             String[] harvestRequester = harvestRequestUsers.stream().map(x -> x.email).toArray(String[]::new);
@@ -83,7 +83,7 @@ public class FishingStartActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(recFishing.speciesName)) {
                 recFishing.speciesPos = Arrays.asList(species).indexOf(recFishing.speciesName);
             }
-        }
+        }*/
         // =================================
 
         // set (any?) previously selected values to activity Controls.
@@ -129,13 +129,15 @@ public class FishingStartActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
-        harvestSpinner = findViewById(R.id.spHarvest);
-        speciesSpinner = findViewById(R.id.spFishType);
-        etQty = findViewById(R.id.etRequestedQuantity);
+        /*harvestSpinner = findViewById(R.id.spHarvest);
+        speciesSpinner = findViewById(R.id.spFishType);*/
         ivSupport = findViewById(R.id.ivSupport);
         tvCageName = findViewById(R.id.tvCageName);
         tvFishSize = findViewById(R.id.tvFishSize);
         tvNotes = findViewById(R.id.tvNotes);
+        tvHarvest = findViewById(R.id.tvHarvest);
+        tvFishType = findViewById(R.id.tvFishType);
+        tvRequestedQuantity = findViewById(R.id.tvRequestedQuantity);
         ivInfo = findViewById(R.id.ivInfo);
     }
 
@@ -143,7 +145,7 @@ public class FishingStartActivity extends AppCompatActivity {
 
         FishingRecord hvst = recFishing;
 
-        if (hvst.requesterPos > -1) {
+        /*if (hvst.requesterPos > -1) {
             harvestSpinner.setSelection(hvst.requesterPos);
         }
 
@@ -153,6 +155,18 @@ public class FishingStartActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(hvst.reqWeight)) {
             etQty.setText(hvst.reqWeight);
+        }*/
+
+        if (!Strings.isEmptyOrWhitespace(hvst.requesterName)) {
+            tvHarvest.setText(hvst.requesterName);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(hvst.speciesName)) {
+            tvFishType.setText(hvst.speciesName);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(hvst.reqWeight)) {
+            tvRequestedQuantity.setText(hvst.reqWeight);
         }
 
         if (!Strings.isEmptyOrWhitespace(hvst.cageCode)) {
@@ -172,7 +186,7 @@ public class FishingStartActivity extends AppCompatActivity {
     private FishingRecord updateState() {
         FishingRecord fishingRecord = recFishing;
 
-        if (harvestSpinner.getSelectedItem() != null) {
+        /*if (harvestSpinner.getSelectedItem() != null) {
             fishingRecord.requesterName = harvestSpinner.getSelectedItem().toString();
         }
         fishingRecord.requesterPos = harvestSpinner.getSelectedItemPosition();
@@ -182,7 +196,7 @@ public class FishingStartActivity extends AppCompatActivity {
         fishingRecord.speciesPos = speciesSpinner.getSelectedItemPosition();
         if (etQty.getText() != null) {
             fishingRecord.reqWeight = etQty.getText().toString();
-        }
+        }*/
 
         if (tvCageName.getText() != null) {
             fishingRecord.cageCode = tvCageName.getText().toString();
@@ -201,7 +215,7 @@ public class FishingStartActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        if (!IsDemo) {
+        /*if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.requesterName)) {
                 sb.append(String.format("\n%s is missing", "'Harvest initiator'"));
             }
@@ -217,7 +231,7 @@ public class FishingStartActivity extends AppCompatActivity {
             if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.cageCode)) {
                 sb.append(String.format("\n%s is missing", "'Cage code'"));
             }
-        }
+        }*/
         return sb.toString();
     }
 

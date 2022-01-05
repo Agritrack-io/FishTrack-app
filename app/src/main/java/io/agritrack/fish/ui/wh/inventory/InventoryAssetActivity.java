@@ -191,6 +191,11 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (scanner_runnable != null) {
+                    //Stop scanning since we navigate to next activity
+                    scanner_runnable.stopReading();
+                }
+
                 if (mLastLocation != null) {
                     recWHInventory.longitude = mLastLocation.getLongitude();
                     recWHInventory.latitude = mLastLocation.getLatitude();
@@ -211,8 +216,10 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
-            //Stop scanning since we navigate to previous activity
-            scanner_runnable.stopReading();
+            if (scanner_runnable != null) {
+                //Stop scanning since we navigate to previous activity
+                scanner_runnable.stopReading();
+            }
             Intent i = new Intent(getApplicationContext(), InventoryStartActivity.class);
             startActivity(i);
         });

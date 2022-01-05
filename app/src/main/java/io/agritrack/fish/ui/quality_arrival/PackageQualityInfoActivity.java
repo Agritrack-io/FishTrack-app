@@ -30,13 +30,11 @@ import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class PackageQualityInfoActivity extends AppCompatActivity implements  ToggleGroup.OnCheckedChangeListener {
+public class PackageQualityInfoActivity extends AppCompatActivity {
     private static final int pic_id = 123;
     private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
-    private ToggleGroup tgChooseFishCondition;
     private EditText mtvRemarks, etPlot;
     private PhotoDialog photoDialog;
-    private String selectedFishCondition;
     private ImageView ivTakenPhoto;
 
     private ImageView ivSupport;
@@ -133,8 +131,6 @@ public class PackageQualityInfoActivity extends AppCompatActivity implements  To
 
     private void assignCtrlVars() {
         etPlot = findViewById(R.id.etPlot);
-        tgChooseFishCondition = findViewById(R.id.tgChooseFishCondition);
-        tgChooseFishCondition.setOnCheckedChangeListener(this);
         mtvRemarks = findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
@@ -160,9 +156,7 @@ public class PackageQualityInfoActivity extends AppCompatActivity implements  To
         if (etPlot.getText() != null) {
             processingRecord.pLot = etPlot.getText().toString();
         }
-        if (!Strings.isEmptyOrWhitespace(selectedFishCondition)) {
-            processingRecord.fishCondition = selectedFishCondition;
-        }
+
         if (mtvRemarks.getText() != null) {
             processingRecord.remarks = mtvRemarks.getText().toString();
         }
@@ -175,23 +169,8 @@ public class PackageQualityInfoActivity extends AppCompatActivity implements  To
             if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.pLot)) {
                 sb.append(String.format("\n%s is missing", "'LOT'"));
             }
-
-            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)) {
-                sb.append(String.format("\n%s is missing", "'Fish condition'"));
-            }
         }
 
         return sb.toString();
-    }
-
-    @Override
-    public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        if (checkedId == R.id.tbGood) {
-            selectedFishCondition = "GOOD";
-        } else if (checkedId == R.id.tbAcceptable) {
-            selectedFishCondition = "ACCEPTABLE";
-        } else if (checkedId == R.id.tbNotAcceptable) {
-            selectedFishCondition = "NOT ACCEPTABLE";
-        }
     }
 }

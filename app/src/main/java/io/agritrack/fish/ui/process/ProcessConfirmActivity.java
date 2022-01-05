@@ -59,7 +59,7 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
     private MobileDB db;
 
     private ProgressDialog progressDialog;
-    private TextView tvNumberOfBinsCount, tvDispatchNote, tvPackagingLot, tvSecurityClipNumber, tvFishCondition, tvUsername;
+    private TextView tvNumberOfBinsCount, tvDispatchNote, tvPackagingLot, tvSecurityClipNumber, tvUsername;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -130,7 +130,6 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
         tvDispatchNote = findViewById(R.id.tvDispatchNote);
         tvPackagingLot = findViewById(R.id.tvPackagingLot);
         tvSecurityClipNumber = findViewById(R.id.tvSecurityClipNumber);
-        tvFishCondition = findViewById(R.id.tvFishCondition);
         tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
     }
@@ -148,10 +147,6 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
 
         if (prcRecord.availBins != null) {
             tvNumberOfBinsCount.setText(String.valueOf(prcRecord.availBins.size()));
-        }
-
-        if (!Strings.isEmptyOrWhitespace(prcRecord.fishCondition)) {
-            tvFishCondition.setText(prcRecord.fishCondition);
         }
 
         if (!Strings.isEmptyOrWhitespace(prcRecord.securityClip)) {

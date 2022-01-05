@@ -229,7 +229,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
     private void updateState() {
         GlobalState.initProcessingRecord();
 
-        GlobalState.recProcessing.availBins = new LinkedList<>(adapterBins.getValues());
+        GlobalState.recProcessing.qualityBins = new LinkedList<>(adapterBins.getValues());
         GlobalState.recProcessing.tempValues = listMeasurements;
         GlobalState.recProcessing.retrievedAt = System.currentTimeMillis();
         GlobalState.recProcessing.logger_rfid = logger_rfid;
@@ -238,7 +238,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (GlobalState.recProcessing.availBins == null || GlobalState.recProcessing.availBins.isEmpty()) {
+            if (GlobalState.recProcessing.qualityBins == null || GlobalState.recProcessing.qualityBins.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Received bins'"));
             }
         }

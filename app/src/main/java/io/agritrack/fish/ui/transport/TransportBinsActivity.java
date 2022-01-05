@@ -184,8 +184,10 @@ public class TransportBinsActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivBack = findViewById(R.id.ivBackToStartTransport);
         ivBack.setOnClickListener(view -> {
-            //Set scanning to false to stop running scan thread
-            scanner_runnable.stopReading();
+            if (this.scanner_runnable != null) {
+                //Set scanning to false to stop running scan thread
+                scanner_runnable.stopReading();
+            }
 
             Intent i = new Intent(getApplicationContext(), TransportStartActivity.class);
             startActivity(i);
@@ -193,8 +195,10 @@ public class TransportBinsActivity extends TriggerKeyAwareActivity {
 
         ImageView ivNext = findViewById(R.id.ivToDriverConfirm);
         ivNext.setOnClickListener(view -> {
-            //Set scanning to false to stop running scan thread
-            scanner_runnable.stopReading();
+            if (this.scanner_runnable != null) {
+                //Set scanning to false to stop running scan thread
+                scanner_runnable.stopReading();
+            }
 
             updateState();
             String v = validate();

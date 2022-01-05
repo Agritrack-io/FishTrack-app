@@ -102,7 +102,7 @@ tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
 
             <TextView
                 android:id="@+id/tvSecurityClipNumber"
-                android:layout_width="180dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:layout_marginBottom="8dp"
@@ -117,7 +117,7 @@ tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
 
             <TextView
                 android:id="@+id/tvSecurityClipNumberLabel"
-                android:layout_width="0dp"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="@string/security_clip_label_confirm"
@@ -174,7 +174,7 @@ tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
 
             <TextView
                 android:id="@+id/tvDriverNameLabel"
-                android:layout_width="0dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="@string/driver_name_label"
@@ -203,7 +203,7 @@ tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
 
             <TextView
                 android:id="@+id/tvDriverName"
-                android:layout_width="180dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:layout_marginBottom="8dp"
@@ -218,7 +218,7 @@ tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
 
             <TextView
                 android:id="@+id/tvLicensePlateLabel"
-                android:layout_width="0dp"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="@string/license_plate_label"
@@ -231,7 +231,7 @@ tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
 
             <TextView
                 android:id="@+id/tvLicensePlate"
-                android:layout_width="180dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:layout_marginBottom="8dp"

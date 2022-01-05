@@ -175,7 +175,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/moreInfoCLayout"
+        app:layout_constraintBottom_toTopOf="@+id/moreInfoDLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/moreInfoALayout">
@@ -255,211 +255,9 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/moreInfoCLayout"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/moreInfoDLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/moreInfoBLayout">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="vertical"
-            android:padding="1dp">
-
-            <TextView
-                android:id="@+id/tvTempBinLabel"
-                android:layout_width="220dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="Θερμοκρασία βούτας"
-                android:textAlignment="viewStart"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvTempFishLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvTempBin"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/bg_rounded_dialog_non_input"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/etTempFish"
-                app:layout_constraintStart_toEndOf="@+id/tvTempBinLabel"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvBin"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/tvTempBin"
-                app:layout_constraintStart_toEndOf="@+id/tvTempBin"
-                app:layout_constraintTop_toTopOf="@+id/tvTempBin" />
-
-            <TextView
-                android:id="@+id/tvTempFishLabel"
-                android:layout_width="220dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="Θερμοκρασία ψαριών"
-                android:textAlignment="viewStart"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvTempBinLabel" />
-
-            <EditText
-                android:id="@+id/etTempFish"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:inputType="number"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvTempFishLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvTempBin" />
-
-            <TextView
-                android:id="@+id/tvTempFish"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etTempFish"
-                app:layout_constraintStart_toEndOf="@+id/etTempFish"
-                app:layout_constraintTop_toTopOf="@+id/etTempFish" />
-
-            <!--<TextView
-                android:id="@+id/tvTempBin"
-                android:layout_width="100dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="50dp"
-                android:background="@drawable/bg_rounded_dialog_non_input"
-                android:ems="10"
-                android:hint="Βούτας"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvBin"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/tvTempBin"
-                app:layout_constraintStart_toEndOf="@+id/tvTempBin"
-                app:layout_constraintTop_toTopOf="@+id/tvTempBin" />-->
-
-            <!--<EditText
-                android:id="@+id/etTempFish"
-                android:layout_width="100dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="50dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:hint="Ψαριών"
-                android:inputType="number"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvFish"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etTempFish"
-                app:layout_constraintStart_toEndOf="@+id/etTempFish"
-                app:layout_constraintTop_toTopOf="@+id/etTempFish" />-->
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="16dp"
-            android:background="@color/agri_semi_green"
-            android:paddingHorizontal="8dp"
-            android:text="Θερμοκρασίες κατά την άφιξη"
-            android:textColor="@color/label_blue"
-            android:textSize="16sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/moreInfoDLayout"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="380dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -467,7 +265,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/moreInfoCLayout">
+        app:layout_constraintTop_toBottomOf="@+id/moreInfoBLayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

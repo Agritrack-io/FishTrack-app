@@ -121,16 +121,15 @@ public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if (!IsDemo) {
+       /* if (!IsDemo) {
             if (GlobalState.recProcessing.availBins == null || GlobalState.recProcessing.availBins.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Received bins'"));
             }
-        }
+        }*/
         return sb.toString();
     }
 
     private void updateState() {
-        GlobalState.initProcessingRecord();
 
         }
 

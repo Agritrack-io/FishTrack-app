@@ -195,8 +195,10 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Stop scanning since we navigate to next activity
-                scanner_runnable.stopReading();
+                if (scanner_runnable != null) {
+                    //Stop scanning since we navigate to next activity
+                    scanner_runnable.stopReading();
+                }
 
                 if (mLastLocation != null) {
                     recWHIncoming.longitude = mLastLocation.getLongitude();
@@ -218,8 +220,10 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
 
         ImageView ivBack = findViewById(R.id.ivBackToStartIncoming);
         ivBack.setOnClickListener(view -> {
-            //Stop scanning since we navigate to previous activity
-            scanner_runnable.stopReading();
+            if (scanner_runnable != null) {
+                //Stop scanning since we navigate to previous activity
+                scanner_runnable.stopReading();
+            }
 
             Intent i = new Intent(getApplicationContext(), IncomingStartActivity.class);
             startActivity(i);

@@ -135,7 +135,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityConfirmActivity">
                 android:text="@string/product_lot_confirm_label"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvFishConditionLabel"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvPackagingLot"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsLabel" />
@@ -149,38 +149,10 @@ tools:context=".fish.ui.quality_arrival.PackageQualityConfirmActivity">
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvFishCondition"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvPackagingLotLabel"
                 app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsCount" />
-
-            <TextView
-                android:id="@+id/tvFishConditionLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/fish_condition_confirm_label"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvFishCondition"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPackagingLotLabel" />
-
-            <TextView
-                android:id="@+id/tvFishCondition"
-                android:layout_width="180dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:paddingStart="3dp"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvFishConditionLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvPackagingLot" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

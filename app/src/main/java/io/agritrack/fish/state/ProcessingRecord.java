@@ -12,6 +12,7 @@ public class ProcessingRecord {
     public boolean smellyTruck = Boolean.FALSE;
     public String remarks;
     public List<String> availBins;
+    public List<String> qualityBins;
     public List<String> tempValues;
     public Long retrievedAt;
     public String photoPath;

@@ -118,7 +118,7 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if (!IsDemo) {
+        /*if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.pLot)) {
                 sb.append(String.format("\n%s is missing", "'LOT'"));
             }
@@ -126,7 +126,7 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
             if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)) {
                 sb.append(String.format("\n%s is missing", "'Fish condition'"));
             }
-        }
+        }*/
 
         return sb.toString();
     }

@@ -85,12 +85,12 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
     <RelativeLayout
         android:id="@+id/processStartALayout"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="150dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/processStartBLayout"
+        app:layout_constraintBottom_toTopOf="@+id/moreInfoCLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -112,16 +112,16 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_rounded_dialog_input"
+                android:completionThreshold="1"
                 android:ems="10"
                 android:hint="@string/enter_lot"
+                android:imeOptions="actionNext"
                 android:inputType="text"
                 android:padding="5dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                android:completionThreshold="1"
-                android:imeOptions="actionNext"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -142,10 +142,11 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
 
     </RelativeLayout>
 
+
     <RelativeLayout
-        android:id="@+id/processStartBLayout"
+        android:id="@+id/moreInfoCLayout"
         android:layout_width="0dp"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -163,61 +164,104 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <io.agritrack.ui.custom.ToggleGroup
-                android:id="@+id/tgChooseFishCondition"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="24dp"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+            <TextView
+                android:id="@+id/tvTempBinLabel"
+                android:layout_width="280dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Μέση Θερμοκρασία βουτών"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/tvTempFishLabel"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ToggleButton
-                    android:id="@+id/tbGood"
-                    android:layout_width="fill_parent"
-                    android:layout_height="70dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="ΚΑΛΗ"
-                    android:textOn="ΚΑΛΗ"
-                    android:textSize="@dimen/text_view_font_size_medium" />
+            <TextView
+                android:id="@+id/tvTempBin"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_rounded_dialog_non_input"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/etTempFish"
+                app:layout_constraintStart_toEndOf="@+id/tvTempBinLabel"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ToggleButton
-                    android:id="@+id/tbAcceptable"
-                    android:layout_width="fill_parent"
-                    android:layout_height="70dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="ΑΠΟΔΕΚΤΗ"
-                    android:textOn="ΑΠΟΔΕΚΤΗ"
-                    android:textSize="@dimen/text_view_font_size_medium" />
+            <TextView
+                android:id="@+id/tvBin"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="°C"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/tvTempBin"
+                app:layout_constraintStart_toEndOf="@+id/tvTempBin"
+                app:layout_constraintTop_toTopOf="@+id/tvTempBin" />
 
-                <ToggleButton
-                    android:id="@+id/tbNotAcceptable"
-                    android:layout_width="fill_parent"
-                    android:layout_height="70dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="ΜΗ ΑΠΟΔΕΚΤΗ"
-                    android:textOn="ΜΗ ΑΠΟΔΕΚΤΗ"
-                    android:textSize="@dimen/text_view_font_size_medium" />
+            <TextView
+                android:id="@+id/tvTempFishLabel"
+                android:layout_width="280dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Θερμοκρασία ψαριών"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTempBinLabel" />
 
-            </io.agritrack.ui.custom.ToggleGroup>
+            <EditText
+                android:id="@+id/etTempFish"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_rounded_dialog_input"
+                android:ems="10"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvTempFishLabel"
+                app:layout_constraintTop_toBottomOf="@+id/tvTempBin" />
 
+            <TextView
+                android:id="@+id/tvTempFish"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="°C"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/etTempFish"
+                app:layout_constraintStart_toEndOf="@+id/etTempFish"
+                app:layout_constraintTop_toTopOf="@+id/etTempFish" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -228,12 +272,11 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="@string/fish_condition"
+            android:text="Θερμοκρασίες κατά την άφιξη"
             android:textColor="@color/label_blue"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
     </RelativeLayout>
-
 
     <RelativeLayout
         android:id="@+id/processStartCLayout"
@@ -246,7 +289,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/processStartBLayout">
+        app:layout_constraintTop_toBottomOf="@+id/moreInfoCLayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
