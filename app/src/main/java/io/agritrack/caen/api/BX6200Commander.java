@@ -73,7 +73,7 @@ public class BX6200Commander extends AbstractCAENCommander  {
         INTERFACEMEM.Trigger(this.uhfReader, accessPassword);
 
         // wait for tag to parse command, execute it, and reply
-        Thread.sleep(TIME_WAITTAG_CMDREADBASE + TIME_WAITTAG_WRITEPAGE * (numBytes / 4 + 1));
+        Thread.sleep(TIME_WAITTAG_CMDREADBASE + TIME_WAITTAG_WRITEPAGE * (numBytes));
 
         //check if tag replied
         reply = adjustReplyId(msgID);
@@ -100,13 +100,10 @@ public class BX6200Commander extends AbstractCAENCommander  {
             throw new Exception("Requested Read length exceeds max limit (200 words)!");
         }
 
-        // check current msgID value written in reply word and adjust msgID of next command accordingly
-        msgID = adjustReplyId(msgID);
-
         command = (short) (msgID << 8 | CMD_WRITE);
 
         // Fill the 5 Registers with the required command parameters.
-        String outcome = INTERFACEMEM.SetWriteCommand(this.uhfReader, command, address, (short)(size * 2), msgID, data, accessPassword);
+        String outcome = INTERFACEMEM.SetWriteCommand(this.uhfReader, command, address, (short)size, msgID, data, accessPassword);
 
         //trigger tag command reception+execution
         INTERFACEMEM.Trigger(this.uhfReader, accessPassword);

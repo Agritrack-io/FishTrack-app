@@ -195,10 +195,7 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (scanner_runnable != null) {
-                    //Stop scanning since we navigate to next activity
-                    scanner_runnable.stopReading();
-                }
+                stopScanner();
 
                 if (mLastLocation != null) {
                     recWHIncoming.longitude = mLastLocation.getLongitude();
@@ -220,10 +217,7 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
 
         ImageView ivBack = findViewById(R.id.ivBackToStartIncoming);
         ivBack.setOnClickListener(view -> {
-            if (scanner_runnable != null) {
-                //Stop scanning since we navigate to previous activity
-                scanner_runnable.stopReading();
-            }
+            stopScanner();
 
             Intent i = new Intent(getApplicationContext(), IncomingStartActivity.class);
             startActivity(i);
@@ -422,7 +416,20 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
+    @Override
+    protected void onStop() {
+        this.stopScanner();
+        super.onStop();
+    }
+
     // ###################################################
+    private void stopScanner() {
+        if(this.scanner_runnable !=null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.scanner_runnable);
+        }
+    }
+
     private class ScanHandler extends Handler {
         private final WeakReference<IncomingAssetActivity> mActivity;
 

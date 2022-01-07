@@ -315,7 +315,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        return "300EFE2F94D01C02540BE4BE"; //null;
+        return "300EFE2F94D01C02540BE4BE"; //"300EFE2F94D01C02540BE4AC";
     }
 
     private void assignCtrlVars() {

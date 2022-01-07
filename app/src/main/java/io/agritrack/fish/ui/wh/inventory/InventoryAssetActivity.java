@@ -191,10 +191,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (scanner_runnable != null) {
-                    //Stop scanning since we navigate to next activity
-                    scanner_runnable.stopReading();
-                }
+                stopScanner();
 
                 if (mLastLocation != null) {
                     recWHInventory.longitude = mLastLocation.getLongitude();
@@ -216,10 +213,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
-            if (scanner_runnable != null) {
-                //Stop scanning since we navigate to previous activity
-                scanner_runnable.stopReading();
-            }
+            stopScanner();
             Intent i = new Intent(getApplicationContext(), InventoryStartActivity.class);
             startActivity(i);
         });
@@ -361,7 +355,19 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         }
     }
 
+    @Override
+    protected void onStop() {
+        this.stopScanner();
+        super.onStop();
+    }
     // ###################################################
+    private void stopScanner() {
+        if(this.scanner_runnable !=null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.scanner_runnable);
+        }
+    }
+
     private class ScanHandler extends Handler {
         private final WeakReference<InventoryAssetActivity> mActivity;
 

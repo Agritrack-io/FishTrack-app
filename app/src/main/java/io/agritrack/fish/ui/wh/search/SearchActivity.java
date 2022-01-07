@@ -139,6 +139,7 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
     protected void configFooter() {
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
+            stopScanner();
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });
@@ -235,16 +236,27 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
             mScanHandler.postDelayed(search_runnable, 0);
         } else {
             btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-            search_runnable.stopReading();
             btnSearchAsset.setText(R.string.scan_bin);
             pbProximity.setProgress(0);
             tvProximity.setText(R.string.proximity);
-            mScanHandler.removeCallbacks(search_runnable);
+            stopScanner();
         }
+    }
 
+    @Override
+    protected void onStop() {
+        this.stopScanner();
+        super.onStop();
     }
 
     // ###################################################
+    private void stopScanner() {
+        if(this.search_runnable !=null) {
+            this.search_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.search_runnable);
+        }
+    }
+
     private class ScanHandler extends Handler {
         private final WeakReference<SearchActivity> mActivity;
 

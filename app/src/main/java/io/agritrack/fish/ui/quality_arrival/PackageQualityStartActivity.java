@@ -29,7 +29,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import io.agritrack.R;
@@ -37,7 +36,6 @@ import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.IotLogger;
-import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
@@ -53,19 +51,13 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+    private SingleShotScanner scanner_runnable;
 
     private MobileDB db;
 
     private RecyclerView rvBinsForTransport;
     private TextView tvBinsCount;
-
-    private final boolean scanning = false;
-
-    private GetTempDataDialog tempLoggerDialog;
-    private String currentBin;
-    private List<String[]> values;
     private final LinkedList<String> listMeasurements = new LinkedList<>();
-
     private TemplateRecyclerAdapter adapterBins;
 
     private ImageButton ivDeleteBin;
@@ -90,7 +82,6 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
         }
     };
     private Set<String> scannedBinEPCs;
-    private String binBarcode;
     private String logger_rfid;
     private ImageView ivSupport;
     private Button btnScanBin;
@@ -197,6 +188,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToPackageQualityTempProfiles);
         ivNext.setOnClickListener(view -> {
+            stopScanner();
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -209,6 +201,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
+            stopScanner();
             Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);
         });
@@ -247,35 +240,32 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
 
     @Override
     protected void onDestroy() {
+        stopScanner();
         super.onDestroy();
     }
 
-//    private void displayMeasurementsDialog(List<String[]> values) {
-//
-//        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(PackageQualityStartActivity.this);
-//        dlgBuilder.setTitle("Logger Data");
-//
-//        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(PackageQualityStartActivity.this, R.layout.agri_list_item_12dp);
-//
-//        int idx = 1;
-//        for (String[] value : values) {
-//            arrayAdapter.add(String.format("%3d. [%s] --> %s", idx++, value[0], value[1]));
-//        }
-//        dlgBuilder.setAdapter(arrayAdapter, null);
-//        dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
-//        dlgBuilder.create().show();
-//    }
-
+    @Override
+    protected void onStop() {
+        stopScanner();
+        super.onStop();
+    }
 
     @Override
     protected void onClick(View view) {
-        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_BIN);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     // ###################################################
+    private void stopScanner() {
+        if(this.scanner_runnable !=null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.scanner_runnable);
+        }
+    }
+
     private class ScanHandler extends Handler {
         private final WeakReference<PackageQualityStartActivity> mActivity;
 
@@ -301,6 +291,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
                                 adapterBins.notifyDataSetChanged();
 
                                 if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
+                                    logger_rfid = epcStr.substring(11);
                                     FragmentManager fm = getSupportFragmentManager();
                                     LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, true, false);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);

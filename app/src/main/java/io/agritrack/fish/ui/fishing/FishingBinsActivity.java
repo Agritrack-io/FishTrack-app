@@ -58,7 +58,7 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-    private SingleShotScanner scanner_runnable;
+    private SingleShotScanner singleShot_runnable;
     private MobileDB db;
     private TemplateRecyclerAdapter adapterBins;
     private RecyclerView rvBins;
@@ -286,19 +286,19 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
     @Override
     protected void onClick(View view) {
-        scanner_runnable = new SingleShotScanner(mScanHandler);
-        scanner_runnable.setFilter(Filters.RFID_BIN);
-        scanner_runnable.startReading();
-        mScanHandler.postDelayed(scanner_runnable, 0);
+        singleShot_runnable = new SingleShotScanner(mScanHandler);
+        singleShot_runnable.setFilter(Filters.RFID_BIN);
+        singleShot_runnable.startReading();
+        mScanHandler.postDelayed(singleShot_runnable, 0);
     }
 
     // ###################################################
     private void stopScanner() {
-        if(this.scanner_runnable!=null) {
-            //this.scanner_runnable.stopReading();
+        if(this.singleShot_runnable !=null) {
+            this.singleShot_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.singleShot_runnable);
         }
     }
-
 
     private class ScanHandler extends Handler {
         private final WeakReference<FishingBinsActivity> mActivity;

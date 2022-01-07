@@ -1,5 +1,6 @@
 package io.agritrack.ui.tools;
 
+import static io.agritrack.rfid.RFIDUtils.WaitFor;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.animation.TimeAnimator;
@@ -143,6 +144,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                 btnSetup.setOnClickListener(null);
 
                 btnInit.setOnClickListener(initBtnListener);
+                WaitFor(500l);
                 btnInit.callOnClick();
             } else {
                 btnSetup.setText("Setup:: Failed");
@@ -167,6 +169,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                 stopAnimation();
 
                 btnSetup.setOnClickListener(setupBtnListener);
+                WaitFor(500l);
                 btnSetup.callOnClick();
             } else {
                 btnReset.setText("Reset:: Failed");

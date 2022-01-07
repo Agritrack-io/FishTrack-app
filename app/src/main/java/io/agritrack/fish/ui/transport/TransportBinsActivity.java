@@ -184,22 +184,14 @@ public class TransportBinsActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivBack = findViewById(R.id.ivBackToStartTransport);
         ivBack.setOnClickListener(view -> {
-            if (this.scanner_runnable != null) {
-                //Set scanning to false to stop running scan thread
-                scanner_runnable.stopReading();
-            }
-
+            stopScanner();
             Intent i = new Intent(getApplicationContext(), TransportStartActivity.class);
             startActivity(i);
         });
 
         ImageView ivNext = findViewById(R.id.ivToDriverConfirm);
         ivNext.setOnClickListener(view -> {
-            if (this.scanner_runnable != null) {
-                //Set scanning to false to stop running scan thread
-                scanner_runnable.stopReading();
-            }
-
+            stopScanner();
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -267,7 +259,19 @@ public class TransportBinsActivity extends TriggerKeyAwareActivity {
         return sb.toString();
     }
 
+    @Override
+    protected void onStop() {
+        this.stopScanner();
+        super.onStop();
+    }
     // ###################################################
+    private void stopScanner() {
+        if(this.scanner_runnable !=null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.scanner_runnable);
+        }
+    }
+
     private class ScanHandler extends Handler {
         private final WeakReference<TransportBinsActivity> mActivity;
 

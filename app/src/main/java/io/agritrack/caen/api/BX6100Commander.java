@@ -130,6 +130,9 @@ public class BX6100Commander extends AbstractCAENCommander {
         String cmdd = Tools.Bytes2HexString(cmdBytes, cmdBytes.length);
         Reader.READER_ERR outcome = writeTagDataByFilter(USERBANK, ADDR_COMMAND, cmdBytes);
 
+        //wait for tag to process Write command
+        Thread.sleep(TIME_WAITTAG_CMDREADBASE);
+
         //trigger tag command reception+execution
         byte[] triggRS = readTagDataByFilter(EPCBANK, ADDR_TRIGGER, SHORT_ONE);
 
@@ -216,8 +219,8 @@ public class BX6100Commander extends AbstractCAENCommander {
 
     @Override
     public List<RFIDTag> inventoryRealTime() {
-        this.mUhfRManager.setCancleInventoryFilter();
-        this.mUhfRManager.setGen2session(false);
+        //this.mUhfRManager.setCancleInventoryFilter();
+        //this.mUhfRManager.setGen2session(false);
         List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryRealTime();
         //List<Reader.TAGINFO> inventory = this.mUhfRManager.tagEpcTidInventoryByTimer((short) 200);//  tagInventoryRealTime();
         return inventory.stream().map(x->new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
@@ -226,12 +229,13 @@ public class BX6100Commander extends AbstractCAENCommander {
     @Override
     public List<RFIDTag> inventoryWithFilter() {
         List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryRealTime();
+        this.mUhfRManager.setCancleInventoryFilter();
         return inventory.stream().map(x->new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
     }
 
     @Override
     public boolean startReading() {
-        this.mUhfRManager.setGen2session(true);
+        //this.mUhfRManager.setGen2session(true);
         Reader.READER_ERR result = this.mUhfRManager.asyncStartReading();
         return false;// Reader.READER_ERR.MT_OK_ERR.equals(res);
     }

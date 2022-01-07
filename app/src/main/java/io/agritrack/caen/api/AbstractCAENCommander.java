@@ -19,6 +19,7 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ZERO;
 import static io.agritrack.caen.api.EncodingUtils.ToShort;
 import static io.agritrack.caen.api.EncodingUtils.parseTemperatureNumeric;
 import static io.agritrack.caen.api.EncodingUtils.parseTimestamp;
+import static io.agritrack.rfid.RFIDUtils.WaitFor;
 
 import com.android.hdhe.uhf.readerInterface.TagModel;
 import com.uhf.api.cls.Reader;
@@ -369,6 +370,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     @Override
     public Double StartLogging() throws Exception {
         EnableLogging();
+        WaitFor(500l);
         return ReadLastSample();
     }
 
