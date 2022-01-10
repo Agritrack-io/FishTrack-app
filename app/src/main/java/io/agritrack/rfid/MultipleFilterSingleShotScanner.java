@@ -14,6 +14,7 @@ import java.util.Set;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;
+import io.agritrack.common.Filters;
 
 public class MultipleFilterSingleShotScanner implements Runnable {
 
@@ -55,7 +56,10 @@ public class MultipleFilterSingleShotScanner implements Runnable {
                     if(!optionalTags.isEmpty()) {
                         for (Optional<RFIDTag> optionalTag : optionalTags) {
                             if (optionalTag.isPresent())
-                                result.add(optionalTag.get().getEpc().substring(11));
+                                if (optionalTag.get().getEpc().indexOf(Filters.RFID_LOGGER) > -1)
+                                    result.add(optionalTag.get().getEpc());
+                                else
+                                    result.add(optionalTag.get().getEpc().substring(11));
                         }
                         TextUtils.join(",", result);
 

@@ -10,7 +10,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,17 +22,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.hdhe.uhf.reader.UhfReader;
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -44,14 +40,11 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.tx.CorrelationTransaction;
-import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.AssetType;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
-import io.agritrack.fruit.ui.planting.PlantingStartActivity;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
@@ -334,21 +327,19 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    String epcStr = msg.getData().getString("epc");
-                    String rssi = msg.getData().getString("rssi");
+                    ArrayList<CharSequence> tags = msg.getData().getCharSequenceArrayList("epc");
                     try {
-                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            String[] epcs = epcStr.split(",");
-                            for (String epc : epcs) {
-                                if (epc.indexOf(Filters.RFID_POLE) > 0) {
+                        if (!CollectionUtils.isEmpty(tags)) {
+                            for (CharSequence tag : tags) {
+                                String epc = tag.toString();
+                                if (epc.indexOf(Filters.RFID_POLE) > -1) {
                                     FruitGlobalState.recCorrelation.poleRFID = epc;
-                                    tvCorrPoleBarcode.setText(epc.substring(11));
+                                    tvCorrPoleBarcode.setText(epc);
                                 }
-                                else if (epc.indexOf(Filters.RFID_LOGGER) > 0){
+                                else if (epc.indexOf(Filters.RFID_LOGGER) > -1){
                                     FruitGlobalState.recCorrelation.loggerRFID = epc;
-                                    tvCorrTempLoggerBarcode.setText(epc.substring(11));
+                                    tvCorrTempLoggerBarcode.setText(epc);
                                 }
-
                             }
                         }
                     } catch (Exception e) {
