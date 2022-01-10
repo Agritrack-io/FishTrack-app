@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:id="@+id/configRootLayout"
+    android:id="@+id/caenRootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_semi_green"
@@ -388,6 +388,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/formLayout"
+            app:layout_constraintLeft_toLeftOf="@id/formLayout"
+            app:layout_constraintBottom_toBottomOf="@id/formLayout"
+            app:layout_constraintRight_toRightOf="@id/formLayout"
+            app:flow_verticalBias="0.95"
+            app:flow_horizontalBias="0.50"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

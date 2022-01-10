@@ -32,7 +32,6 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -60,13 +59,6 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
     private Button scanButton;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
-
-    private String toteBarcode;
-
-    private MobileDB db;
-    private ImageView ivSupport;
-    private SupportDialog supportDialog;
-
     // Instantiate a clickListener to be passed to adapterBins.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
@@ -76,7 +68,7 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
             TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
             selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if(selectedItem!=null) {
+            if (selectedItem != null) {
                 selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
             }
 
@@ -85,6 +77,10 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
             selectedItem = view;
         }
     };
+    private String toteBarcode;
+    private MobileDB db;
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,8 +156,8 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
-            if (scanner_runnable!=null) {
-                //Stop scanning since we navigate to next activity
+            //Stop scanning since we navigate to next activity
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -177,8 +173,8 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToHarvestingStart);
         ivBack.setOnClickListener(view -> {
-            if (scanner_runnable!=null) {
-                //Stop scanning since we navigate to previous activity
+            //Stop scanning since we navigate to previous activity
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -217,8 +213,8 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
-    private void clearSelectedItem(){
-        if(selectedItem!=null) {
+    private void clearSelectedItem() {
+        if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
         }
     }
@@ -269,7 +265,7 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
         }
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (FruitGlobalState.recHarvest.totes == null || FruitGlobalState.recHarvest.totes.isEmpty()) {
@@ -295,7 +291,7 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        epcList.stream().forEach(x->adapterTotes.addUniqueItem(x.toString()));
+                        epcList.stream().forEach(x -> adapterTotes.addUniqueItem(x.toString()));
                         tvTotesCount.setText(String.valueOf(adapterTotes.getItemCount()));
                         adapterTotes.notifyDataSetChanged();
                     }

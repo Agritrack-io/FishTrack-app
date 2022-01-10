@@ -43,11 +43,11 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.CollectionLotEnquiryCallBack;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.LotDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.PackagingRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
@@ -62,9 +62,8 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+    private final MutableLiveData<LotDTO> enquiryResult = new MutableLiveData<>();
     private ScanInventoryThread scanner_runnable;
-    private final MutableLiveData<String> enquiryResult = new MutableLiveData<>();
-
     private Button btnScanPole, btnScanTotes;
     private MobileDB db;
     private ImageView ivSupport;
@@ -126,7 +125,7 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
                 CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
                 return;
             }
-            collectionLot = response;
+            collectionLot = response.lot;
         });
 
         // set (any?) previously selected values to activity Controls.
@@ -181,8 +180,8 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToPackagingLot);
         ivNext.setOnClickListener(view -> {
-            if (scanner_runnable!=null) {
-                //Stop scanning since we navigate to next activity
+            //Stop scanning since we navigate to next activity
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -198,8 +197,8 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToFruitHome);
         ivBack.setOnClickListener(view -> {
-            if (scanner_runnable!=null) {
-                //Stop scanning since we navigate to previous activity
+            //Stop scanning since we navigate to previous activity
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -220,7 +219,7 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
             String token = LocalPreferences.getToken();
 
             // sync collection lot for current Site
-            Call<String> enquiryCollectionLotAsyncCall = enquiryService.getCollectionLotByToteRfid(firstToteRfid, "Bearer " + token);
+            Call<LotDTO> enquiryCollectionLotAsyncCall = enquiryService.getCollectionLotByToteRfid(firstToteRfid, "Bearer " + token);
             enquiryCollectionLotAsyncCall.enqueue(new CollectionLotEnquiryCallBack(this.enquiryResult));
 
 
@@ -326,12 +325,12 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
 
     @Override
     protected void onClick(View view) {
-        if(view!=null && view.getId()==R.id.btnScanPole) {
+        if (view != null && view.getId() == R.id.btnScanPole) {
             SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
             scanner_runnable.setFilter(Filters.RFID_POLE);
             scanner_runnable.startReading();
             mScanHandler.postDelayed(scanner_runnable, 0);
-        } else if(view!=null && view.getId()==R.id.btnScanTotes){
+        } else if (view != null && view.getId() == R.id.btnScanTotes) {
             if (scanner_runnable == null) {
                 btnScanTotes.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
                 scanner_runnable = new ScanInventoryThread(mScanHandler);
@@ -381,16 +380,15 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
                     break;
                 case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
-                    //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
                         List<String> epcs = epcList.stream().map(x -> x.toString()).collect(Collectors.toList());
-                        epcList.stream().forEach(x->adapterTotes.addUniqueItem(x.toString()));
+                        epcList.stream().forEach(x -> adapterTotes.addUniqueItem(x.toString()));
                         tvTotesCount.setText(String.valueOf(adapterTotes.getItemCount()));
                         adapterTotes.notifyDataSetChanged();
                     }
                     break;
                 case 1980:
-                    if (!IsDemo && adapterTotes.getValues()!=null) {
+                    if (!IsDemo && adapterTotes.getValues() != null) {
                         optToteRfid = adapterTotes.getValues().stream().findFirst();
                         firstToteRfid = optToteRfid.get();
                         invokeEnquiryLot();

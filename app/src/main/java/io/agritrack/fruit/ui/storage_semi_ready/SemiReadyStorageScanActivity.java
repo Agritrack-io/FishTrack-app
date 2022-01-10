@@ -33,14 +33,12 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
@@ -162,8 +160,8 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToSemiReadyStorageWeight);
         ivNext.setOnClickListener(view -> {
-            if (scanner_runnable!=null) {
-                //Stop scanning since we navigate to next activity
+            //Stop scanning since we navigate to next activity
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -179,8 +177,8 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToFruitHome);
         ivBack.setOnClickListener(view -> {
-            if (scanner_runnable!=null) {
-                //Stop scanning since we navigate to previous activity
+            //Stop scanning since we navigate to previous activity
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -304,7 +302,7 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        epcList.stream().forEach(x->adapterTotes.addUniqueItem(x.toString()));
+                        epcList.stream().forEach(x -> adapterTotes.addUniqueItem(x.toString()));
                         tvTotesCount.setText(String.valueOf(adapterTotes.getItemCount()));
                         adapterTotes.notifyDataSetChanged();
                     }

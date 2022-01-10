@@ -245,6 +245,9 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     public String ReadStatusRegister() {
         try {
             byte[] statusRS = ReadRegisters(ADDR_STATUS, SHORT_ONE);
+            if(statusRS==null || statusRS.length==1) {
+                return "N/A";
+            }
             return String.format("%8s", Integer.toBinaryString(ToShort(statusRS))).replace(' ', '0');
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -337,6 +340,8 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     public Short ReadSamplesCount() {
         try {
             byte[] aa = ReadRegisters(ADDR_SAMPLES_CNT, SHORT_ONE);
+            if(aa==null || aa.length==1)
+                return null;
             return ToShort(aa);
         } catch (Exception ex) {
             ex.printStackTrace();
