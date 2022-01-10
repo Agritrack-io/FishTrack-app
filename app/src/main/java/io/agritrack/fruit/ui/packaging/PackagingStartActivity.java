@@ -390,9 +390,10 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
                 case 1980:
                     if (!IsDemo && adapterTotes.getValues() != null) {
                         optToteRfid = adapterTotes.getValues().stream().findFirst();
-                        firstToteRfid = optToteRfid.get();
-                        invokeEnquiryLot();
-                        //CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
+                        if (optToteRfid.isPresent()) {
+                            firstToteRfid = optToteRfid.get();
+                            invokeEnquiryLot();
+                        }
                     }
                     break;
             }

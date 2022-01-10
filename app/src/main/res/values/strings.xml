@@ -414,7 +414,7 @@
     <string name="scan_warehouse">Scan warehouse</string>
     <string name="scan_tag">Scan tag</string>
     <string name="warehouse">Warehouse:</string>
-    <string name="weight">Weight:</string>
+    <string name="weight">Weight (kg):</string>
 
     <string name="title_package">PACKAGING</string>
     <string name="title_open_orders">ORDERS</string>

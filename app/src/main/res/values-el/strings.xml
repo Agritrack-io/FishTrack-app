@@ -374,7 +374,7 @@
     <string name="menu_title_packaging">Συσκευασία</string>
     <string name="menu_title_storage">Αποθήκευση ετοίμων</string>
     <string name="menu_title_shipping">Αποστολή</string>
-    <string name="menu_title_measurements">Μετρήσεις</string>
+    <string name="menu_title_measurements">Θερμοκρασίες</string>
 
 
     <string name="title_seeding">ΦΥΤΕΥΣΗ</string>
@@ -391,7 +391,7 @@
     <string name="harvest_lot">LOT συγκομιδής</string>
     <string name="select_totes">Επιλέξτε τελάρα</string>
     <string name="totes_for_harvest">Τελάρα</string>
-    <string name="number_of_totes">Αριθμός τελάρων:</string>
+    <string name="number_of_totes">Αρ. τελάρων:</string>
     <string name="scan_totes">Σκάναρε</string>
     <string name="confirm_harvest_lot">LOT συγκομιδής:</string>
     <string name="error_harvest_tx_update_failure">Η συγκομιδή απέτυχε να συγχρονιστεί!!!</string>
@@ -416,7 +416,7 @@
     <string name="scan_warehouse">Σκάναρε αποθήκη</string>
     <string name="scan_tag">Σκάναρε</string>
     <string name="warehouse">Αποθήκη:</string>
-    <string name="weight">Βάρος:</string>
+    <string name="weight">Βάρος (kg):</string>
 
     <string name="title_package">ΣΥΣΚΕΥΑΣΙΑ</string>
     <string name="title_open_orders">ΑΝΟΙΚΤΕΣ ΠΑΡΑΓΓΕΛΙΕΣ</string>
@@ -432,7 +432,7 @@
     <string name="shipping_details">Λεπτομέρειες αποστολής</string>
     <string name="confirm_customer">Πελάτης:</string>
 
-    <string name="title_measurements">ΜΕΤΡΗΣΕΙΣ</string>
+    <string name="title_measurements">ΘΕΡΜΟΚΡΑΣΙΕΣ</string>
     <string name="scan_temp_logger">Καταγραφικό θερμοκρασίας</string>
     <string name="IOTLoggers_sync_completed">Τα καταγραφικά συγχρονίστηκαν επιτυχώς!</string>
     <string name="no_IOTLoggers_found_alert">Δεν βρέθηκαν καταγραφικά!!!</string>

@@ -15,7 +15,6 @@ public class CollectTxDTO {
     public String site;
     public String user;
     public List<String> totes = new LinkedList<String>();
-    public String plant_lot;
     public String asset_rfid;
     public String species;
     public String collection_lot;
@@ -34,7 +33,6 @@ public class CollectTxDTO {
             if (!CollectionUtils.isEmpty(collectTransaction.items)){
                 collectTxDTO.totes = collectTransaction.items.stream().map(x-> x.epc).collect(Collectors.toList());
             }
-            collectTxDTO.plant_lot = collectTx.plantLot;
             collectTxDTO.asset_rfid = collectTx.assetRFID;
             collectTxDTO.species = collectTx.species;
             collectTxDTO.collection_lot = collectTx.collectionLot;

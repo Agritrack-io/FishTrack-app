@@ -21,9 +21,6 @@ public class CollectTransaction {
     @ColumnInfo(name = "user_id")
     public String userId;
 
-    @ColumnInfo(name = "plant_lot")
-    public String plantLot;
-
     @ColumnInfo(name = "asset_rfid")
     public String assetRFID;
 

@@ -40,7 +40,7 @@ import io.agritrack.ui.service.LocalPreferences;
 public class ShippingDetailsActivity extends AppCompatActivity {
 
     private MobileDB db;
-    private AutoCompleteTextView etDriverName, etLicensePlate;
+    private AutoCompleteTextView etDriverName, etDriverPhone, etLicensePlate;
     private Spinner spCustomer;
 
     private ImageView ivSupport;
@@ -76,6 +76,11 @@ public class ShippingDetailsActivity extends AppCompatActivity {
         ArrayAdapter<String> driverNamesAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, driverNames.toArray(new String[driverNames.size()]));
         etDriverName.setThreshold(3);
         etDriverName.setAdapter(driverNamesAdapter);
+
+        Set<String> driverPhones = LocalPreferences.getDriverPhones();
+        ArrayAdapter<String> driverPhonesAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, driverPhones.toArray(new String[driverPhones.size()]));
+        etDriverPhone.setThreshold(3);
+        etDriverPhone.setAdapter(driverPhonesAdapter);
 
         Set<String> licensePlates = LocalPreferences.getLicensePlates();
         ArrayAdapter<String> licensePlatesAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, licensePlates.toArray(new String[licensePlates.size()]));
@@ -116,6 +121,7 @@ public class ShippingDetailsActivity extends AppCompatActivity {
     private void assignCtrlVars() {
         spCustomer = findViewById(R.id.spCustomer);
         etDriverName = (AutoCompleteTextView) findViewById(R.id.etDriverName);
+        etDriverPhone = (AutoCompleteTextView) findViewById(R.id.etDriverPhone);
         etLicensePlate = (AutoCompleteTextView) findViewById(R.id.etLicensePlate);
         ivSupport = findViewById(R.id.ivSupport);
     }
@@ -128,6 +134,10 @@ public class ShippingDetailsActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(trns.driverName)) {
             etDriverName.setText(trns.driverName);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(trns.driverPhone)) {
+            etDriverPhone.setText(trns.driverPhone);
         }
 
         if (!Strings.isEmptyOrWhitespace(trns.licensePlate)) {
@@ -146,6 +156,10 @@ public class ShippingDetailsActivity extends AppCompatActivity {
         if (etDriverName.getText() != null) {
             shippingRecord.driverName = etDriverName.getText().toString();
             LocalPreferences.addDriverName(shippingRecord.driverName);
+        }
+        if (etDriverPhone.getText() != null) {
+            shippingRecord.driverPhone = etDriverPhone.getText().toString();
+            LocalPreferences.addDriverPhone(shippingRecord.driverPhone);
         }
         if (etLicensePlate.getText() != null) {
             shippingRecord.licensePlate = etLicensePlate.getText().toString();

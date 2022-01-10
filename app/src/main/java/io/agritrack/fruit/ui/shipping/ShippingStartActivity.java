@@ -313,9 +313,9 @@ public class ShippingStartActivity extends TriggerKeyAwareActivity {
                 sb.append(String.format("\n%s is missing", "'Warehouse'"));
             }
 
-            /*if (FruitGlobalState.recShipping.packagedIfco == null || FruitGlobalState.recStorage.packagedIfco.isEmpty()) {
+            if (FruitGlobalState.recShipping.packagedIfco == null || FruitGlobalState.recShipping.packagedIfco.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'IFCO for shipping'"));
-            }*/
+            }
         }
         return sb.toString();
     }

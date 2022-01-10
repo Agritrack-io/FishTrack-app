@@ -19,4 +19,5 @@ public class ShippingRecord {
     public String driverName;
     public String licensePlate;
     public String customer;
+    public String driverPhone;
 }

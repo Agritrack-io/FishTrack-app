@@ -6,6 +6,7 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,8 +22,12 @@ import android.widget.Toast;
 import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
+import java.time.LocalDate;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -48,9 +53,10 @@ public class PlantingStartActivity extends TriggerKeyAwareActivity {
     private Spinner spTomatoType;
     private TextView tvPoleName;
     private Button btnScanPole;
-    private String greenhouse;
+    private String greenhouse, plantLot;
 
     @Override
+    @SuppressLint("NewApi")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planting_start);
@@ -67,6 +73,11 @@ public class PlantingStartActivity extends TriggerKeyAwareActivity {
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
+
+        LocalDate date = LocalDate.now();
+        TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
+        int weekNumber = date.get(woy);
+        plantLot = (String.format("%02d%s",weekNumber, date.getDayOfWeek().ordinal()+1));
 
         // load fish species and fill in the spFishType Spinner.
         List<Species> tomatoSpecies = db.speciesDAO().getAll();
@@ -148,6 +159,10 @@ public class PlantingStartActivity extends TriggerKeyAwareActivity {
 
         if (!Strings.isEmptyOrWhitespace(this.greenhouse)) {
             plantRecord.greenhouse = this.greenhouse;
+        }
+
+        if (!Strings.isEmptyOrWhitespace(this.plantLot)) {
+            plantRecord.plantLot = this.plantLot;
         }
 
         return plantRecord;

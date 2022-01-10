@@ -80,6 +80,7 @@
         <activity
             android:name=".fruit.ui.shipping.ShippingDetailsActivity"
             android:exported="false"
+            android:windowSoftInputMode="stateAlwaysVisible"
             android:screenOrientation="portrait" />
         <activity
             android:name=".fruit.ui.shipping.ShippingStartActivity"

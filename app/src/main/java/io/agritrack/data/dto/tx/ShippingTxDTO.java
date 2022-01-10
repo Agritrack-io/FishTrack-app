@@ -20,6 +20,7 @@ public class ShippingTxDTO {
     public Long timestamp;
     public String truck_license_plate;
     public String driver_name;
+    public String driver_phone;
     public String user;
     public List<String> bins_loaded = new LinkedList<String>();
     public Integer ifco_cnt;
@@ -34,6 +35,7 @@ public class ShippingTxDTO {
             shippingTxDto.id = shippingTx.id;
             shippingTxDto.truck_license_plate = shippingTx.truckLicensePlate;
             shippingTxDto.driver_name = shippingTx.driverName;
+            shippingTxDto.driver_phone = shippingTx.driverPhone;
             shippingTxDto.user = shippingTx.user;
             shippingTxDto.ifco_cnt = shippingTx.ifcoCnt;
             if (!CollectionUtils.isEmpty(shipping.ifco)){

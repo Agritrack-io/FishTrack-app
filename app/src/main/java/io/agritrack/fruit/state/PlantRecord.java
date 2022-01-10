@@ -9,6 +9,7 @@ public class PlantRecord {
 
     public Double longitude;
     public Double latitude;
+    public String plantLot;
 
     public PlantRecord() {
     }

@@ -33,4 +33,7 @@ public class ShippingTransaction {
 
     @ColumnInfo(name = "latitude")
     public Double latitude;
+
+    @ColumnInfo(name = "driver_phone")
+    public String driverPhone;
 }

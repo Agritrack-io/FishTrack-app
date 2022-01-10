@@ -129,6 +129,7 @@ public class FruitGlobalState {
 
             txPlant.assetRFID = recPlant.poleRFID;
             txPlant.site = recPlant.greenhouse;
+            txPlant.plantLot = recPlant.plantLot;
             txPlant.species = recPlant.speciesName;
             txPlant.userId = LocalPreferences.getLoggedInUser("N/A");
             txPlant.longitude = recPlant.longitude;
@@ -300,6 +301,7 @@ public class FruitGlobalState {
             ShippingTransaction txShipping = new ShippingTransaction();
 
             txShipping.driverName = recShipping.driverName;
+            txShipping.driverPhone = recShipping.driverPhone;
             txShipping.truckLicensePlate = recShipping.licensePlate;
             txShipping.timestamp = System.currentTimeMillis();
             txShipping.user = LocalPreferences.getLoggedInUser("N/A");
