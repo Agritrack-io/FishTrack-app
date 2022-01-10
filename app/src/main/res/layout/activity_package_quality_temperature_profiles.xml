@@ -105,6 +105,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityTemperatureProfilesActivit
                 android:id="@+id/lvTempProfiles"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_margin="16dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/bg_rounded_input_spinner"

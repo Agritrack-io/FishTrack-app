@@ -145,6 +145,12 @@ public class HarvestingStartActivity extends TriggerKeyAwareActivity {
         if (!Strings.isEmptyOrWhitespace(trns.poleRFID)) {
             tvPoleName.setText(trns.poleRFID);
         }
+
+        if (!Strings.isEmptyOrWhitespace(trns.speciesName)) {
+            tvSpeciesNameLabel.setVisibility(View.VISIBLE);
+            tvSpeciesName.setVisibility(View.VISIBLE);
+            tvSpeciesName.setText(trns.speciesName);
+        }
     }
 
     private void invokeEnquirySpecies() {
@@ -164,7 +170,7 @@ public class HarvestingStartActivity extends TriggerKeyAwareActivity {
     }
 
     private HarvestRecord updateState() {
-        HarvestRecord harvestRecord = FruitGlobalState.initHarvestRecord();
+        HarvestRecord harvestRecord = recHarvest;
 
         harvestRecord.poleRFID = tvPoleName.getText().toString();
         harvestRecord.harvestLot = tvHarvestLot.getText().toString();

@@ -53,6 +53,12 @@ import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.tx.CollectTxDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.HarvestRecord;
+import io.agritrack.fruit.state.PackagingRecord;
+import io.agritrack.fruit.state.PlantRecord;
+import io.agritrack.fruit.state.ShippingRecord;
+import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.harvesting.HarvestingStartActivity;
 import io.agritrack.fruit.ui.packaging.PackagingSelectOrderActivity;
 import io.agritrack.fruit.ui.packaging.PackagingStartActivity;
@@ -150,24 +156,30 @@ public class FruitHomeActivity extends AppCompatActivity {
 
                 switch (mi.getLoc()) {
                     case Planting_Idx:
+                        PlantRecord plantRecord = FruitGlobalState.initPlantRecord();
                         i = new Intent(appCtx, PlantingStartActivity.class);
                         break;
                     case Harvest_Idx:
+                        HarvestRecord harvestRecord = FruitGlobalState.initHarvestRecord();
                         i = new Intent(appCtx, HarvestingStartActivity.class);
                         break;
                     case Warehouse_Idx:
                         i = new Intent(appCtx, FruitWhMenuActivity.class);
                         break;
                     case Storage_semi_ready:
+                        StorageRecord semiStorageRecord = FruitGlobalState.initStorageRecord();
                         i = new Intent(appCtx, SemiReadyStorageScanActivity.class);
                         break;
                     case Packaging_Idx:
+                        PackagingRecord packagingRecord = FruitGlobalState.initPackagingRecord();
                         i = new Intent(appCtx, PackagingStartActivity.class);
                         break;
                     case Storage_ready:
+                        StorageRecord storageRecord = FruitGlobalState.initStorageRecord();
                         i = new Intent(appCtx, ReadyStorageStartActivity.class);
                         break;
                     case Shipping_Idx:
+                        ShippingRecord shippingRecord = FruitGlobalState.initShippingRecord();
                         i = new Intent(appCtx, ShippingStartActivity.class);
                         break;
                     default:

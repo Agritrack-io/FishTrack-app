@@ -289,7 +289,7 @@ public class ShippingStartActivity extends TriggerKeyAwareActivity {
     }
 
     private ShippingRecord updateState() {
-        ShippingRecord shippingRecord = FruitGlobalState.initShippingRecord();
+        ShippingRecord shippingRecord = recShipping;
 
         shippingRecord.packagedIfco = new LinkedList<>(adapterIfco.getValues());
 

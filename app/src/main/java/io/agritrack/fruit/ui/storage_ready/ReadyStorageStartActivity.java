@@ -285,7 +285,7 @@ public class ReadyStorageStartActivity extends TriggerKeyAwareActivity {
     }
 
     private StorageRecord updateState() {
-        StorageRecord storageRecord = FruitGlobalState.initStorageRecord();
+        StorageRecord storageRecord = recStorage;
 
         storageRecord.packagedIfco = new LinkedList<>(adapterIfco.getValues());
 

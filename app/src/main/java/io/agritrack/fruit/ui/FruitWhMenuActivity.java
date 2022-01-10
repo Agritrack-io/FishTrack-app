@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.IncomingRecord;
+import io.agritrack.fruit.state.InventoryRecord;
+import io.agritrack.fruit.state.PackagingRecord;
 import io.agritrack.fruit.ui.warehouse.correlation.FruitCorrelationActivity;
 import io.agritrack.fruit.ui.warehouse.incoming.IncomingIfcoActivity;
 import io.agritrack.fruit.ui.warehouse.inventory.FruitInventoryStartActivity;
@@ -60,9 +63,11 @@ public class FruitWhMenuActivity extends AppCompatActivity {
 
                 switch (position) {
                     case Incoming_Idx:
+                        IncomingRecord incomingRecord = FruitGlobalState.initIncomingRecord();
                         i = new Intent(appCtx, IncomingIfcoActivity.class);
                         break;
                     case Inventory_Idx:
+                        InventoryRecord inventoryRecord = FruitGlobalState.initInventoryRecord();
                         i = new Intent(appCtx, FruitInventoryStartActivity.class);
                         break;
                     case Correlation_Idx:

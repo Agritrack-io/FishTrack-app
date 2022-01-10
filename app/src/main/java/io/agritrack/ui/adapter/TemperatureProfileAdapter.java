@@ -53,8 +53,8 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
     public TemperatureProfileAdapter(Context context) {
         this.context = context;
         this.mLayoutInflater = LayoutInflater.from(context);
-        listOfEPCs.add("1410452568525");
-        listOfEPCs.add("1410452568520");
+        listOfEPCs.add("1410000000006");
+        listOfEPCs.add("1410000000004");
     }
 
     @NonNull
@@ -67,9 +67,9 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tvBinEPC.setText("14104525685"+position);
-        holder.tvHigh.setText("High:5.8C");
-        holder.tvAvg.setText("Avg:4.5C");
-        holder.tvLow.setText("Low:3.8C");
+        holder.tvHigh.setText("High:3.8C");
+        holder.tvAvg.setText("Avg:2.1C");
+        holder.tvLow.setText("Low:0.8C");
     }
 
     @Override

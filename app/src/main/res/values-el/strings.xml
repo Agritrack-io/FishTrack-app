@@ -314,7 +314,7 @@
     <string name="error_fishing_tx_update_failure">Η αλίευση απέτυχε να συγχρονιστεί!!!</string>
     <string name="error_transport_tx_update_failure">Η μεταφορά απέτυχε να συγχρονιστεί!!!</string>
     <string name="error_shipping_tx_update_failure">Η μεταφορά απέτυχε να συγχρονιστεί!!!</string>
-    <string name="error_processing_tx_update_failure">Η παραλάβή απέτυχε να συγχρονιστεί!!!</string>
+    <string name="error_processing_tx_update_failure">Η παραλαβή απέτυχε να συγχρονιστεί!!!</string>
     <string name="no_epc_filter_selected">Παρακαλώ είσαγετε την ετικέτα την οποία αναζητάτε...</string>
     <string name="scan_asset_tag">Σκαναρε πάγιο</string>
     <string name="button_correlate">Συσχέτισε</string>
@@ -387,6 +387,7 @@
     <string name="error_plant_tx_update_failure">Η φύτευση απέτυχε να συγχρονιστεί!!!</string>
 
     <string name="title_harvesting">ΣΥΓΚΟΜΙΔΗ</string>
+    <string name="start_harvesting">Έναρξη συγκομιδής</string>
     <string name="harvest_lot">LOT συγκομιδής</string>
     <string name="select_totes">Επιλέξτε τελάρα</string>
     <string name="totes_for_harvest">Τελάρα</string>

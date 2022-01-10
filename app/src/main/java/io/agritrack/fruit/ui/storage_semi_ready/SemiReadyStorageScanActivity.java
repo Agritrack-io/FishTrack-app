@@ -3,6 +3,7 @@ package io.agritrack.fruit.ui.storage_semi_ready;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fruit.state.FruitGlobalState.recStorage;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
@@ -161,8 +162,10 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToSemiReadyStorageWeight);
         ivNext.setOnClickListener(view -> {
-            //Stop scanning since we navigate to next activity
-            scanner_runnable.stopReading();
+            if (scanner_runnable!=null) {
+                //Stop scanning since we navigate to next activity
+                scanner_runnable.stopReading();
+            }
 
             updateState();
             String v = validate();
@@ -176,8 +179,10 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToFruitHome);
         ivBack.setOnClickListener(view -> {
-            //Stop scanning since we navigate to previous activity
-            scanner_runnable.stopReading();
+            if (scanner_runnable!=null) {
+                //Stop scanning since we navigate to previous activity
+                scanner_runnable.stopReading();
+            }
 
             Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             startActivity(i);
@@ -221,7 +226,7 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
     }
 
     private void initControlsFromState() {
-        StorageRecord trns = FruitGlobalState.recStorage;
+        StorageRecord trns = recStorage;
 
         if (trns.receivedTotes != null) {
             adapterTotes.setValues(new LinkedList<>(trns.receivedTotes));
@@ -262,7 +267,7 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
     }
 
     private StorageRecord updateState() {
-        StorageRecord storageRecord = FruitGlobalState.initStorageRecord();
+        StorageRecord storageRecord = recStorage;
 
         storageRecord.receivedTotes = new LinkedList<>(adapterTotes.getValues());
 
@@ -276,7 +281,7 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (FruitGlobalState.recStorage.receivedTotes == null || FruitGlobalState.recStorage.receivedTotes.isEmpty()) {
+            if (recStorage.receivedTotes == null || recStorage.receivedTotes.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Received totes'"));
             }
         }
@@ -295,7 +300,7 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
         public void handleMessage(Message msg) {
             int kk = 0;
             switch (msg.what) {
-                case 1:
+                case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {

@@ -48,6 +48,8 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
 import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.HarvestRecord;
+import io.agritrack.fruit.state.InventoryRecord;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.LocationAwareActivity;
@@ -191,8 +193,10 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Stop scanning since we navigate to next activity
-                scanner_runnable.stopReading();
+                if (scanner_runnable!=null) {
+                    //Stop scanning since we navigate to next activity
+                    scanner_runnable.stopReading();
+                }
 
                 if (mLastLocation != null) {
                     recInventory.longitude = mLastLocation.getLongitude();
@@ -214,8 +218,10 @@ public class TotesInventoryActivity extends LocationAwareActivity {
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToFruitInventoryStart);
         ivBack.setOnClickListener(view -> {
-            //Stop scanning since we navigate to previous activity
-            scanner_runnable.stopReading();
+            if (scanner_runnable!=null) {
+                //Stop scanning since we navigate to previous activity
+                scanner_runnable.stopReading();
+            }
 
             Intent i = new Intent(getApplicationContext(), FruitInventoryStartActivity.class);
             startActivity(i);

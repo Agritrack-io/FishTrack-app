@@ -385,6 +385,7 @@
     <string name="error_plant_tx_update_failure">Plant transaction update failure!!!</string>
 
     <string name="title_harvesting">HARVESTING</string>
+    <string name="start_harvesting">Start Harvesting</string>
     <string name="harvest_lot">Harvest LOT</string>
     <string name="select_totes">Select totes</string>
     <string name="totes_for_harvest">Used Totes</string>

@@ -74,10 +74,13 @@ public class PlantingStartActivity extends TriggerKeyAwareActivity {
             String[] species = tomatoSpecies.stream().map(x -> x.localName).toArray(String[]::new);
             ArrayAdapter<String> spAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, species);
             spAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-            spTomatoType.setAdapter(spAdapter);
 
             if (!Strings.isEmptyOrWhitespace(recPlant.speciesName)) {
-                recPlant.speciesPos = Arrays.asList(species).indexOf(recPlant.speciesName);
+                //recPlant.speciesPos = Arrays.asList(species).indexOf(recPlant.speciesName);
+                spTomatoType.setAdapter(spAdapter);
+                spTomatoType.setSelection(recPlant.speciesPos);
+            } else {
+                spTomatoType.setAdapter(spAdapter);
             }
         }
 
@@ -127,10 +130,14 @@ public class PlantingStartActivity extends TriggerKeyAwareActivity {
         if (!Strings.isEmptyOrWhitespace(trns.poleRFID)) {
             tvPoleName.setText(trns.poleRFID);
         }
+
+        if (trns.speciesPos > -1) {
+            spTomatoType.setSelection(trns.speciesPos);
+        }
     }
 
     private PlantRecord updateState() {
-        PlantRecord plantRecord = FruitGlobalState.initPlantRecord();
+        PlantRecord plantRecord = recPlant;
 
         plantRecord.poleRFID = tvPoleName.getText().toString();
 

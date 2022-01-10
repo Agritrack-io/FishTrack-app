@@ -181,8 +181,10 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToPackagingLot);
         ivNext.setOnClickListener(view -> {
-            //Stop scanning since we navigate to next activity
-            scanner_runnable.stopReading();
+            if (scanner_runnable!=null) {
+                //Stop scanning since we navigate to next activity
+                scanner_runnable.stopReading();
+            }
 
             updateState();
             String v = validate();
@@ -196,8 +198,10 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToFruitHome);
         ivBack.setOnClickListener(view -> {
-            //Stop scanning since we navigate to previous activity
-            scanner_runnable.stopReading();
+            if (scanner_runnable!=null) {
+                //Stop scanning since we navigate to previous activity
+                scanner_runnable.stopReading();
+            }
 
             Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             startActivity(i);
@@ -244,7 +248,7 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
     }
 
     private PackagingRecord updateState() {
-        PackagingRecord packagingRecord = FruitGlobalState.initPackagingRecord();
+        PackagingRecord packagingRecord = recPackaging;
 
         packagingRecord.poleRFID = tvPoleName.getText().toString();
 

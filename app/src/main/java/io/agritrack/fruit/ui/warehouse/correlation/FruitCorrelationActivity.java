@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,6 +27,7 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -42,11 +44,14 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.tx.CorrelationTransaction;
+import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.AssetType;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
+import io.agritrack.fruit.ui.planting.PlantingStartActivity;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
@@ -57,8 +62,7 @@ import retrofit2.Response;
 public class FruitCorrelationActivity extends LocationAwareActivity implements AdapterView.OnItemClickListener {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-    private final MultipleFilterSingleShotScanner scanner = null;//new MultipleFilterSingleShotScanner();
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final ScanHandler mScanHandler = new ScanHandler(this);
     private MobileDB db;
     private ListView lvGreenhouse;
     private List<io.agritrack.ui.bo.GenericListModel> greenhouse;
@@ -114,7 +118,8 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
 
         // =================================
         // RFID scanning functionality
-        btnScanAssetTag.setOnClickListener(view -> {
+        btnScanAssetTag.setOnClickListener(this::onClick);
+        /*btnScanAssetTag.setOnClickListener(view -> {
             //update scanning, uhfReader, tvPlatformName values in thread
             UhfReader _uhfReader = UhfReader.getInstance();
             _uhfReader.setWorkArea(3);
@@ -146,7 +151,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
             } catch (Exception e) {
                 future.cancel(true);
             }
-        });
+        });*/
 
         btnCorrelate.setOnClickListener(view -> {
             FruitGlobalState.recCorrelation.assetType = AssetType.valueOf(Constants.ftPole);
@@ -287,6 +292,56 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
                     //Generic error handling
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
+            }
+        }
+    }
+
+    @Override
+    protected void onClick(View view) {
+        MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
+        scanner_runnable.setFilters(Filters.RFID_POLE, Filters.RFID_LOGGER);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private class ScanHandler extends Handler {
+        private final WeakReference<FruitCorrelationActivity> mActivity;
+
+        public ScanHandler(FruitCorrelationActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    String rssi = msg.getData().getString("rssi");
+                    try {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            String[] epcs = epcStr.split(",");
+                            for (String epc : epcs) {
+                                if (epc.indexOf(Filters.RFID_POLE) > 0) {
+                                    FruitGlobalState.recCorrelation.poleRFID = epc;
+                                    tvCorrPoleBarcode.setText(epc.substring(11));
+                                }
+                                else if (epc.indexOf(Filters.RFID_LOGGER) > 0){
+                                    FruitGlobalState.recCorrelation.loggerRFID = epc;
+                                    tvCorrTempLoggerBarcode.setText(epc.substring(11));
+                                }
+
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        //CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
             }
         }
     }

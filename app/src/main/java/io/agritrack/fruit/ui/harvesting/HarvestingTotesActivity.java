@@ -160,8 +160,10 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
-            //Stop scanning since we navigate to next activity
-            scanner_runnable.stopReading();
+            if (scanner_runnable!=null) {
+                //Stop scanning since we navigate to next activity
+                scanner_runnable.stopReading();
+            }
 
             updateState();
             String v = validate();
@@ -175,8 +177,10 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToHarvestingStart);
         ivBack.setOnClickListener(view -> {
-            //Stop scanning since we navigate to previous activity
-            scanner_runnable.stopReading();
+            if (scanner_runnable!=null) {
+                //Stop scanning since we navigate to previous activity
+                scanner_runnable.stopReading();
+            }
 
             Intent i = new Intent(getApplicationContext(), HarvestingStartActivity.class);
             startActivity(i);

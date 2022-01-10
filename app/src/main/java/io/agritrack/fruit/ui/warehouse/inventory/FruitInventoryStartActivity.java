@@ -3,6 +3,8 @@ package io.agritrack.fruit.ui.warehouse.inventory;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fruit.state.FruitGlobalState.recInventory;
+import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.agritrack.R;
@@ -63,13 +66,23 @@ public class FruitInventoryStartActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
+
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
         List<Site> sites = db.siteDAO().getCurrentSiteSubSites(LocalPreferences.getCurrentSiteLevel3());
         if (sites != null && !sites.isEmpty()) {
             String[] site = sites.stream().map(x -> x.name).toArray(String[]::new);
             ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, site);
             hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-            spSite.setAdapter(hrAdapter);
+
+            if (!Strings.isEmptyOrWhitespace(recInventory.subSite)) {
+                //recInventory.subSitePos = Arrays.asList(sites).indexOf(recInventory.subSite);
+                spSite.setAdapter(hrAdapter);
+                spSite.setSelection(recInventory.subSitePos);
+            } else {
+                spSite.setAdapter(hrAdapter);
+            }
         }
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
@@ -135,7 +148,7 @@ public class FruitInventoryStartActivity extends AppCompatActivity {
     }
 
     private InventoryRecord updateState() {
-        InventoryRecord inventoryRecord = FruitGlobalState.initInventoryRecord();
+        InventoryRecord inventoryRecord = FruitGlobalState.recInventory;
 
         inventoryRecord.selectedSite = LocalPreferences.getCurrentSiteName();
 
@@ -145,6 +158,14 @@ public class FruitInventoryStartActivity extends AppCompatActivity {
         inventoryRecord.subSitePos = spSite.getSelectedItemPosition();
 
         return inventoryRecord;
+    }
+
+    private void initControlsFromState() {
+        InventoryRecord trns = recInventory;
+
+        if (trns.subSitePos > -1) {
+            spSite.setSelection(trns.subSitePos);
+        }
     }
 
     private String validate() {
