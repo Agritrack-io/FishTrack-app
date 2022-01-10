@@ -8,7 +8,7 @@ import cn.pda.serialport.Tools;
 import io.agritrack.caen.pojo.RFIDTag;
 
 public interface ICAEN_API {
-    public static Short DefaultInterval = (short) (30);
+    public static Short DefaultInterval = (short) (3600);
     Short SampleBatchSize = 30;
     byte[] accessPassword = Tools.HexString2Bytes("00000000");
 

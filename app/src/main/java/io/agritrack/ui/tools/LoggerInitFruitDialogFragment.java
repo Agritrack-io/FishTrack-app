@@ -45,8 +45,8 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     // Local handler that receives the RFID scanner results.
     private final CAENCommandsHandler mScanHandler = new CAENCommandsHandler(this);
 
-    private static final int LEVEL_INCREMENT = 100;
-    private static final int MAX_LEVEL = Integer.MAX_VALUE;
+    private static final int LEVEL_INCREMENT = 500;
+    private static final int MAX_LEVEL = 1000;
     private static final String LOGGER_EPC = "loggerEPC";
 
     private ICAEN_API cmd;
@@ -187,6 +187,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
             // Enable Read button
             btnRead.setText("Reading Measurements...");
+            btnRead.setBackgroundResource(R.drawable.button_background);
             btnRead.setOnClickListener(readBtnListener);
         }
 
@@ -223,17 +224,20 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     }
 
     private void stopAnimation() {
-        mAnimator.cancel();
+        mCurrentLevel = MAX_LEVEL;
+        onTimeUpdate(mAnimator, MAX_LEVEL, LEVEL_INCREMENT);
     }
 
     @Override
     public void onTimeUpdate(TimeAnimator animation, long totalTime, long deltaTime) {
-        mClipDrawable.setLevel(mCurrentLevel);
-        if (mCurrentLevel >= MAX_LEVEL) {
-            mAnimator.cancel();
-        } else {
-            mCurrentLevel = Math.min(MAX_LEVEL, mCurrentLevel + LEVEL_INCREMENT);
-        }
+        getActivity().runOnUiThread(() -> {
+            mClipDrawable.setLevel(mCurrentLevel);
+            if (mCurrentLevel >= MAX_LEVEL) {
+                mAnimator.cancel();
+            } else {
+                mCurrentLevel = Math.min(MAX_LEVEL, mCurrentLevel + LEVEL_INCREMENT);
+            }
+        });
     }
 
     public void animateButton(View view) {
@@ -282,6 +286,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                         btnRead.setText(String.format("READ %s measurements.", measurements.size()));
                         btnRead.setOnClickListener(null);
 
+                        //recProcessing.tempValues = measurements;
                         //displayMeasurementsDialog(measurements);
 
                         btnReset.setOnClickListener(resetBtnListener);
@@ -298,6 +303,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                     if (Reader.READER_ERR.MT_OK_ERR.name().equals(value)) {
                         btnInit.setText("Success");
                         btnInit.setOnClickListener(null);
+                        stopAnimation();
                         getDialog().dismiss();
                     } else {
                         btnInit.setText("Failed");
@@ -309,6 +315,8 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                     if (Reader.READER_ERR.MT_OK_ERR.name().equals(result)) {
                         btnReset.setText("Success");
                         btnReset.setOnClickListener(null);
+
+                        stopAnimation();
                         // enable setup button
                         btnSetup.setOnClickListener(setupBtnListener);
                         btnSetup.callOnClick();
@@ -322,6 +330,8 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                     if (Reader.READER_ERR.MT_OK_ERR.name().equals(result2)) {
                         btnSetup.setText("Success");
                         btnSetup.setOnClickListener(null);
+
+                        stopAnimation();
 
                         btnInit.setOnClickListener(initBtnListener);
                         btnInit.callOnClick();

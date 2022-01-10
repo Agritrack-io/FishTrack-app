@@ -3,6 +3,7 @@ package io.agritrack.fruit.ui.warehouse.measurements;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recProcessing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.Intent;
@@ -25,7 +26,9 @@ import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.IotLogger;
+import io.agritrack.data.model.common.Measurements;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.TriggerKeyAwareActivity;
@@ -78,15 +81,21 @@ public class DailyTemperatureMeasurementsActivity extends TriggerKeyAwareActivit
             Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
             startActivity(i);
         });
-    }
 
-
-    private void updateState() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
+            updateState();
             Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
             startActivity(i);
         });
+    }
+
+    private void updateState() {
+
+
+        // persist Measurements Record data to local DB.
+        Measurements val = GlobalState.commitMeasurements(db);
+
     }
 
     private void assignCtrlVars() {
