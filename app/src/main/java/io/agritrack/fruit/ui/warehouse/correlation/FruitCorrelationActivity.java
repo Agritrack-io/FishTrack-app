@@ -67,7 +67,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
     private ListView lvGreenhouse;
     private List<io.agritrack.ui.bo.GenericListModel> greenhouse;
     private ArrayAdapter<io.agritrack.ui.bo.GenericListModel> greenhouseAdapter;
-    private Button btnScanAssetTag, btnCorrelate;
+    private Button btnScanAssetTag;
     private TextView tvCorrPoleBarcode, tvCorrTempLoggerBarcode;
     private ProgressDialog progressDialog;
 
@@ -114,8 +114,6 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
             this.lvGreenhouse.setOnItemClickListener(this);
         }
 
-        ivNext.setEnabled(false);
-
         // =================================
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
@@ -153,7 +151,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
             }
         });*/
 
-        btnCorrelate.setOnClickListener(view -> {
+        /*btnCorrelate.setOnClickListener(view -> {
             FruitGlobalState.recCorrelation.assetType = AssetType.valueOf(Constants.ftPole);
             FruitGlobalState.recCorrelation.poleBarcode = tvCorrPoleBarcode.getText() != null ? tvCorrPoleBarcode.getText().toString() : null;
             FruitGlobalState.recCorrelation.loggerType = AssetType.valueOf(Constants.ftDataLogger);
@@ -176,7 +174,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
             if (proceed) {
                 ivNext.setEnabled(true);
             }
-        });
+        });*/
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(FruitCorrelationActivity.this);
@@ -188,6 +186,27 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
 
     protected void configFooter() {
         ivNext.setOnClickListener(view -> {
+            FruitGlobalState.recCorrelation.assetType = AssetType.valueOf(Constants.ftPole);
+            FruitGlobalState.recCorrelation.poleBarcode = tvCorrPoleBarcode.getText() != null ? tvCorrPoleBarcode.getText().toString() : null;
+            FruitGlobalState.recCorrelation.loggerType = AssetType.valueOf(Constants.ftDataLogger);
+            //FruitGlobalState.recCorrelation.loggerRFID = tvCorrTempLoggerBarcode.getText() != null ? tvCorrTempLoggerBarcode.getText().toString() : null;
+
+            if (mLastLocation != null) {
+                recCorrelation.longitude = mLastLocation.getLongitude();
+                recCorrelation.latitude = mLastLocation.getLatitude();
+            } else {
+                CToast(FruitCorrelationActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
+            }
+
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+
+            // Update state and proceed to next
+            Boolean proceed = correlate();
+
             Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
             startActivity(i);
         });
@@ -204,7 +223,6 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         tvCorrPoleBarcode = findViewById(R.id.tvCorrPoleBarcode);
         tvCorrTempLoggerBarcode = findViewById(R.id.tvCorrTempLoggerBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
-        btnCorrelate = findViewById(R.id.btnCorrelate);
         ivSupport = findViewById(R.id.ivSupport);
         // get main controls references
         lvGreenhouse = findViewById(R.id.lvGreenhouse);

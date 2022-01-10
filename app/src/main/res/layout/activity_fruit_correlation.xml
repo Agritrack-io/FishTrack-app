@@ -135,12 +135,15 @@
 
         <RelativeLayout
             android:id="@+id/correlateBLayout"
-            android:layout_width="230dp"
+            android:layout_width="0dp"
             android:layout_height="320dp"
             android:layout_marginStart="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/correlateALayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -249,7 +252,7 @@
                 android:textSize="18sp" />
         </RelativeLayout>
 
-        <Button
+        <!--<Button
             android:id="@+id/btnCorrelate"
             android:layout_width="0dp"
             android:layout_height="140dp"
@@ -264,7 +267,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/correlateBLayout"
-            app:layout_constraintTop_toBottomOf="@+id/correlateALayout" />
+            app:layout_constraintTop_toBottomOf="@+id/correlateALayout" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
