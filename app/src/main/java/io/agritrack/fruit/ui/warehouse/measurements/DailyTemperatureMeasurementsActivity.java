@@ -24,6 +24,7 @@ import java.lang.ref.WeakReference;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.SingleShotScanner;
@@ -58,9 +59,6 @@ public class DailyTemperatureMeasurementsActivity extends TriggerKeyAwareActivit
         // get  references of the controls
         assignCtrlVars();
 
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
-
         // =================================
         // RFID scanning functionality
         btnScanPole.setOnClickListener(this::onClick);
@@ -82,9 +80,6 @@ public class DailyTemperatureMeasurementsActivity extends TriggerKeyAwareActivit
         });
     }
 
-    private void initControlsFromState() {
-
-    }
 
     private void updateState() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
@@ -124,11 +119,20 @@ public class DailyTemperatureMeasurementsActivity extends TriggerKeyAwareActivit
                     String rssi = msg.getData().getString("rssi");
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            FragmentManager fm = getSupportFragmentManager();
-                            LoggerInitFruitDialogFragment loggerDlg = LoggerInitFruitDialogFragment.newInstance(epcStr);
-                            loggerDlg.show(fm, LoggerInitFruitDialogFragment.TAG);
-                        } else {
-                            CToast(getApplicationContext(), "No Logger Found. Please scan again!!", Toast.LENGTH_LONG);
+                            runOnUiThread(() -> {
+                                tvPoleName.setText(epcStr);
+                            });
+
+                            // after bin is identified, initialize the temperatures logger.
+                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
+
+                            if (logger != null && !Strings.isEmptyOrWhitespace(logger.rfid)) {
+                                FragmentManager fm = getSupportFragmentManager();
+                                LoggerInitFruitDialogFragment loggerDlg = LoggerInitFruitDialogFragment.newInstance(logger.rfid);
+                                loggerDlg.show(fm, LoggerInitFruitDialogFragment.TAG);
+                            } else if (!IsDemo) {
+                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

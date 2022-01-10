@@ -41,4 +41,28 @@ public class CAEN_CONSTANTS {
     public final static short SHORT_THREE = (short) 0x0003;
     public final static short SHORT_FOUR = (short) 0x0004;
     public final static short SHORT_SIX = (short) 0x0006;
+
+
+
+    public final static int ShowProgressBar = 11;
+    public final static int HideProgressBar = 99;
+    public final static int FWRevision = 1000;
+    public final static int HWRevision = 1002;
+    public final static int CTRLReg = 1003;
+    public final static int STATUSReg = 1004;
+    public final static int ReadTimeBIN = 1005;
+    public final static int WriteTimeBIN = 1105;
+    public final static int InitTimeStamp = 1006;
+    public final static int WriteTimeStamp = 1106;
+    public final static int SamplesCnt = 1007;
+    public final static int ReadInterval = 1008;
+    public final static int WriteInterval = 1108;
+    public final static int LastSample = 1009;
+    public final static int CurrentEPC = 1010;
+    public final static int MemoryStatus = 1011;
+    public final static int BatteryLevel = 1012;
+    public final static int CmdRESET = 10013;
+    public final static int CmdENABLE = 10014;
+    public final static int CmdReadData = 10015;
+    public final static int CmdSETUP = 10016;
 }

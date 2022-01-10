@@ -1,6 +1,22 @@
 package io.agritrack.ui.tools;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.CTRLReg;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdENABLE;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.FWRevision;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.HWRevision;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.HideProgressBar;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.InitTimeStamp;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.LastSample;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadInterval;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadTimeBIN;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.STATUSReg;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.SamplesCnt;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ShowProgressBar;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteInterval;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBIN;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeStamp;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -34,26 +50,6 @@ import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.login.LoginActivity;
 
 public class CAENLoggerActivity extends AppCompatActivity {
-    private final int ShowProgressBar = 11;
-    private final int HideProgressBar = 99;
-    private final int FWRevision = 1000;
-    private final int HWRevision = 1002;
-    private final int CTRLReg = 1003;
-    private final int STATUSReg = 1004;
-    private final int ReadTimeBIN = 1005;
-    private final int WriteTimeBIN = 1105;
-    private final int InitTimeStamp = 1006;
-    private final int WriteTimeStamp = 1106;
-    private final int SamplesCnt = 1007;
-    private final int ReadInterval = 1008;
-    private final int WriteInterval = 1108;
-    private final int LastSample = 1009;
-    private final int CurrentEPC = 1010;
-    private final int MemoryStatus = 1011;
-    private final int BatteryLevel = 1012;
-    private final int CmdRESET = 10013;
-    private final int CmdEnableLOG = 10014;
-
     // Local handler that receives the RFID scanner results.
     private final CAENCommandsHandler mScanHandler = new CAENCommandsHandler(this);
 
@@ -265,7 +261,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         @Override
         public void run() {
             Reader.READER_ERR response = cmd.EnableLogging();
-            mScanHandler.sendMessage(createMessage(CmdEnableLOG, response));
+            mScanHandler.sendMessage(createMessage(CmdENABLE, response));
             mScanHandler.removeCallbacks(this);
         }
     };
