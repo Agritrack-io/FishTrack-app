@@ -32,7 +32,6 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -161,7 +160,9 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
             //Stop scanning since we navigate to next activity
-            scanner_runnable.stopReading();
+            if(scanner_runnable!=null) {
+                scanner_runnable.stopReading();
+            }
 
             updateState();
             String v = validate();
@@ -176,7 +177,9 @@ public class HarvestingTotesActivity extends TriggerKeyAwareActivity {
         ImageView ivBack = findViewById(R.id.ivBackToHarvestingStart);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
-            scanner_runnable.stopReading();
+            if(scanner_runnable!=null) {
+                scanner_runnable.stopReading();
+            }
 
             Intent i = new Intent(getApplicationContext(), HarvestingStartActivity.class);
             startActivity(i);

@@ -2,6 +2,7 @@ package io.agritrack.ui.login.api;
 
 import java.util.List;
 
+import io.agritrack.data.dto.LotDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -11,9 +12,9 @@ import retrofit2.http.Path;
 
 public interface EnquiryApi {
 
-    @Headers("Content-Type: text/html; charset=utf-8")
+    @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/collect/lot/{toteRFID}")
-    Call<String> getCollectionLotByToteRfid(@Path("toteRFID") String toteRFID, @Header("Authorization") String token);
+    Call<LotDTO> getCollectionLotByToteRfid(@Path("toteRFID") String toteRFID, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=UTF-8")
     @GET("/plant/species/{poleRFID}")

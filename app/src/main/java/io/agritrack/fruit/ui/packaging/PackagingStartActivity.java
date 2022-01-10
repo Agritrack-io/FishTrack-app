@@ -43,6 +43,7 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.CollectionLotEnquiryCallBack;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.LotDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
@@ -63,7 +64,7 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
     private ScanInventoryThread scanner_runnable;
-    private final MutableLiveData<String> enquiryResult = new MutableLiveData<>();
+    private final MutableLiveData<LotDTO> enquiryResult = new MutableLiveData<>();
 
     private Button btnScanPole, btnScanTotes;
     private MobileDB db;
@@ -126,7 +127,7 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
                 CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
                 return;
             }
-            collectionLot = response;
+            collectionLot = response.lot;
         });
 
         // set (any?) previously selected values to activity Controls.
@@ -182,7 +183,9 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
         ImageView ivNext = findViewById(R.id.ivToPackagingLot);
         ivNext.setOnClickListener(view -> {
             //Stop scanning since we navigate to next activity
-            scanner_runnable.stopReading();
+            if(scanner_runnable!=null) {
+                scanner_runnable.stopReading();
+            }
 
             updateState();
             String v = validate();
@@ -197,7 +200,9 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
         ImageView ivBack = findViewById(R.id.ivBackToFruitHome);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
-            scanner_runnable.stopReading();
+            if(scanner_runnable!=null) {
+                scanner_runnable.stopReading();
+            }
 
             Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             startActivity(i);
@@ -216,7 +221,7 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
             String token = LocalPreferences.getToken();
 
             // sync collection lot for current Site
-            Call<String> enquiryCollectionLotAsyncCall = enquiryService.getCollectionLotByToteRfid(firstToteRfid, "Bearer " + token);
+            Call<LotDTO> enquiryCollectionLotAsyncCall = enquiryService.getCollectionLotByToteRfid(firstToteRfid, "Bearer " + token);
             enquiryCollectionLotAsyncCall.enqueue(new CollectionLotEnquiryCallBack(this.enquiryResult));
 
 
@@ -377,7 +382,6 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
                     break;
                 case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
-                    //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
                         List<String> epcs = epcList.stream().map(x -> x.toString()).collect(Collectors.toList());
                         epcList.stream().forEach(x->adapterTotes.addUniqueItem(x.toString()));

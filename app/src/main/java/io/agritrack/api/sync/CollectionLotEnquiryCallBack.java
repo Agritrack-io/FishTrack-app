@@ -1,26 +1,20 @@
 package io.agritrack.api.sync;
 
-import static io.agritrack.FishTrackApplication.getAppContext;
-
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.List;
-
-import io.agritrack.R;
-import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.tx.CollectTxDTO;
+import io.agritrack.data.dto.LotDTO;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class CollectionLotEnquiryCallBack extends BaseEnquiryCallBack<String>{
+public class CollectionLotEnquiryCallBack extends BaseEnquiryCallBack<LotDTO>{
 
-    public CollectionLotEnquiryCallBack(MutableLiveData<String> syncResult) {
+    public CollectionLotEnquiryCallBack(MutableLiveData<LotDTO> syncResult) {
         super(syncResult);
     }
 
     @Override
-    public void onResponse(Call<String> call, Response<String> response) {
-        String collectionLot = response.body();
+    public void onResponse(Call<LotDTO> call, Response<LotDTO> response) {
+        LotDTO collectionLot = response.body();
 
         if (collectionLot != null) {
 
