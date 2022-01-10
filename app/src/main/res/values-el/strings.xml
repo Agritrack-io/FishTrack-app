@@ -346,10 +346,10 @@
     <string name="agritrack_info">Agritrack Info</string>
     <string name="agritrack_adr">Λεωφ. Μαραθώνος 50, Άνοιξη \n14569, Ελλάδα</string>
     <string name="agritrack_tel">Τηλ: +30 21 0814 4474</string>
-    <string name="agritrack_hours">Ωράριο τηλ. κέντρου: 09:00 - 17:00</string>
+    <string name="agritrack_hours">Ωράριο τηλ. κέντρου: 10:00 - 17:00</string>
     <string name="urgent_request">Για επείγουσα εξηπυρέτηση</string>
     <string name="contact_immediately">Καλέστε με άμεσα</string>
-    <string name="request_description">Παρακαλώ περιγράψτε το θέμα σας</string>
+    <string name="request_description">Περιγράψτε το θέμα σας</string>
     <string name="describe">Περιγραφή</string>
     <string name="enter_pin_support">PIN</string>
 
@@ -432,7 +432,7 @@
     <string name="shipping_details">Λεπτομέρειες αποστολής</string>
     <string name="confirm_customer">Πελάτης:</string>
 
-    <string name="title_measurements">ΜΕΤΡΉΣΕΙΣ</string>
+    <string name="title_measurements">ΜΕΤΡΗΣΕΙΣ</string>
     <string name="scan_temp_logger">Καταγραφικό θερμοκρασίας</string>
     <string name="IOTLoggers_sync_completed">Τα καταγραφικά συγχρονίστηκαν επιτυχώς!</string>
     <string name="no_IOTLoggers_found_alert">Δεν βρέθηκαν καταγραφικά!!!</string>

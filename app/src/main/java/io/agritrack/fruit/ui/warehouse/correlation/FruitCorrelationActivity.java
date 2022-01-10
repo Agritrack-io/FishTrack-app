@@ -182,7 +182,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
             FruitGlobalState.recCorrelation.assetType = AssetType.valueOf(Constants.ftPole);
             FruitGlobalState.recCorrelation.poleBarcode = tvCorrPoleBarcode.getText() != null ? tvCorrPoleBarcode.getText().toString() : null;
             FruitGlobalState.recCorrelation.loggerType = AssetType.valueOf(Constants.ftDataLogger);
-            //FruitGlobalState.recCorrelation.loggerRFID = tvCorrTempLoggerBarcode.getText() != null ? tvCorrTempLoggerBarcode.getText().toString() : null;
+            FruitGlobalState.recCorrelation.loggerRFID = tvCorrTempLoggerBarcode.getText() != null ? tvCorrTempLoggerBarcode.getText().toString() : null;
 
             if (mLastLocation != null) {
                 recCorrelation.longitude = mLastLocation.getLongitude();

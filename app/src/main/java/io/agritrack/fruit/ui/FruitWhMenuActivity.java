@@ -51,7 +51,7 @@ public class FruitWhMenuActivity extends AppCompatActivity {
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), IncomingIfcoActivity.class, R.drawable.incoming));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), FruitInventoryStartActivity.class, R.drawable.inventory));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), FruitCorrelationActivity.class, R.drawable.correlation));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_measurements), DailyTemperatureMeasurementsActivity.class, R.drawable.correlation));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_measurements), DailyTemperatureMeasurementsActivity.class, R.drawable.quality));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvFruitWhMainMenu.setAdapter(adapter);
