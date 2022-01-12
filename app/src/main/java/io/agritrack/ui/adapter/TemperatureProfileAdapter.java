@@ -65,7 +65,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
         LoggerDataRecord.TemperatureModel model = mapOfData.get(key);
 
         if(model!=null) {
-            DoubleSummaryStatistics stats = model.values.stream().mapToDouble(x -> Double.valueOf(x[1])).summaryStatistics();
+            DoubleSummaryStatistics stats = model.values.stream().mapToDouble(x -> Double.valueOf(x[1].replace(',', '.'))).summaryStatistics();
 
             _highT = stats.getMax();
             _lowT = stats.getMin();
