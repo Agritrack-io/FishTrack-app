@@ -82,8 +82,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
     public int getItemCount() {
         if(listOfEPCs == null){
             return  0;
-        }
-        else {
+        } else {
             return listOfEPCs.size();
         }
     }
