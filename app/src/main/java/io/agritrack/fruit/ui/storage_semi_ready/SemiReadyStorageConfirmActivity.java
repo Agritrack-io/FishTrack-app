@@ -181,7 +181,7 @@ public class SemiReadyStorageConfirmActivity extends LocationAwareActivity {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_plant_tx_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_storage_tx_update_failure), Toast.LENGTH_LONG));
             }
         }
 
