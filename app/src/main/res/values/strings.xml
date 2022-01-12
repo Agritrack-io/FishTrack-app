@@ -415,6 +415,7 @@
     <string name="scan_tag">Scan tag</string>
     <string name="warehouse">Warehouse:</string>
     <string name="weight">Weight (kg):</string>
+    <string name="error_storage_tx_update_failure">Storage transaction update failure!!!</string>
 
     <string name="title_package">PACKAGING</string>
     <string name="title_open_orders">ORDERS</string>

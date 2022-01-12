@@ -417,6 +417,7 @@
     <string name="scan_tag">Σκάναρε</string>
     <string name="warehouse">Αποθήκη:</string>
     <string name="weight">Βάρος (kg):</string>
+    <string name="error_storage_tx_update_failure">Η αποθήκευση απέτυχε να συγχρονιστεί!!!</string>
 
     <string name="title_package">ΣΥΣΚΕΥΑΣΙΑ</string>
     <string name="title_open_orders">ΑΝΟΙΚΤΕΣ ΠΑΡΑΓΓΕΛΙΕΣ</string>
