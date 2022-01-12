@@ -25,7 +25,6 @@ import java.lang.ref.WeakReference;
 import java.time.LocalDate;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -188,7 +187,7 @@ public class PlantingStartActivity extends TriggerKeyAwareActivity {
     protected void onClick(View view) {
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_POLE);
-        scanner_runnable.startReading();
+        scanner_runnable.startReading(); //TODO: check if reading has started (startReading should return a boolean..)
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 

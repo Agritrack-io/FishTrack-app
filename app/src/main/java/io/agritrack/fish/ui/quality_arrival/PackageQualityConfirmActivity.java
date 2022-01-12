@@ -20,13 +20,15 @@ import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.common.MeasurementsDTO;
 import io.agritrack.data.dto.tx.ProcessingTxDTO;
-import io.agritrack.data.model.common.Measurements;
+import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
@@ -175,15 +177,21 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
                     ProcessingTransaction tx = GlobalState.commitProcessing(db);
 
                     // persist Measurements Record data to local DB.
-                    Measurements val = GlobalState.commitMeasurements(db);
+                    List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db);
+                    List<MeasurementsDTO> measurementsDTOs = new ArrayList<>();
+                    for(TemperatureTimeSeries ts : measurements) {
+                        measurementsDTOs.add(MeasurementsDTO.convert(ts));
+                    }
 
                     // sync Processing records
                     Call<ProcessingTxDTO> syncTxAsyncCall = updService.syncProcessingTx(ProcessingTxDTO.convert(tx), "Bearer " + token);
                     syncTxAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncTxCallBack());
 
                     // sync Measurements records
-                    Call<MeasurementsDTO> syncMsAsyncCall = updService.syncMeasurements(MeasurementsDTO.convert(val), "Bearer " + token);
-                    syncMsAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncMsCallBack());
+                    if(!measurementsDTOs.isEmpty()) {
+                        Call<List<MeasurementsDTO>> syncMsAsyncCall = updService.syncMeasurements(measurementsDTOs, "Bearer " + token);
+                        syncMsAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncMsCallBack());
+                    }
                     return true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -230,10 +238,10 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         }
     }
 
-    public class SyncMsCallBack implements Callback<MeasurementsDTO> {
+    public class SyncMsCallBack implements Callback<List<MeasurementsDTO>> {
         @Override
-        public void onResponse(Call<MeasurementsDTO> call, Response<MeasurementsDTO> response) {
-            MeasurementsDTO rs = response.body();
+        public void onResponse(Call<List<MeasurementsDTO>> call, Response<List<MeasurementsDTO>> response) {
+            List<MeasurementsDTO> rs = response.body();
 
             if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
@@ -244,7 +252,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<MeasurementsDTO> call, Throwable error) {
+        public void onFailure(Call<List<MeasurementsDTO>> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

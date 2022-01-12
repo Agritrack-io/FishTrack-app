@@ -3,7 +3,6 @@ package io.agritrack.fruit.ui.warehouse.measurements;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recProcessing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.Intent;
@@ -20,25 +19,36 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.agritrack.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.common.MeasurementsDTO;
 import io.agritrack.data.model.common.IotLogger;
-import io.agritrack.data.model.common.Measurements;
+import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.TriggerKeyAwareActivity;
+import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.LoggerInitFruitDialogFragment;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DailyTemperatureMeasurementsActivity extends TriggerKeyAwareActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
 
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -91,11 +101,21 @@ public class DailyTemperatureMeasurementsActivity extends TriggerKeyAwareActivit
     }
 
     private void updateState() {
-
+        String token = LocalPreferences.getToken();
 
         // persist Measurements Record data to local DB.
-        Measurements val = GlobalState.commitMeasurements(db);
+        List<TemperatureTimeSeries> fullMeasurements = GlobalState.commitMeasurements(db);
 
+        // sync Measurements records
+        if (fullMeasurements != null && !fullMeasurements.isEmpty()) {
+            List<MeasurementsDTO> measurementsDTOs = new ArrayList<>();
+            for(TemperatureTimeSeries ts : fullMeasurements) {
+                measurementsDTOs.add(MeasurementsDTO.convert(ts));
+            }
+
+            Call<List<MeasurementsDTO>> syncMsAsyncCall = updService.syncMeasurements(measurementsDTOs, "Bearer " + token);
+            syncMsAsyncCall.enqueue(new DailyTemperatureMeasurementsActivity.SyncMsCallBack());
+        }
     }
 
     private void assignCtrlVars() {
@@ -152,6 +172,38 @@ public class DailyTemperatureMeasurementsActivity extends TriggerKeyAwareActivit
                         //CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
                     }
                     break;
+            }
+        }
+    }
+
+
+    private class SyncMsCallBack implements Callback<List<MeasurementsDTO>> {
+        @Override
+        public void onResponse(Call<List<MeasurementsDTO>> call, Response<List<MeasurementsDTO>> response) {
+            List<MeasurementsDTO> rs = response.body();
+
+            if (rs != null || IsDemo) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+            } else {
+                // could not update Processing TX on backend!!!
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_processing_tx_update_failure), Toast.LENGTH_LONG));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<MeasurementsDTO>> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
             }
         }
     }

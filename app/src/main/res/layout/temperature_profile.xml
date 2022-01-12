@@ -1,79 +1,142 @@
-<androidx.cardview.widget.CardView xmlns:tools="http://schemas.android.com/tools"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/crdlayout"
-    android:background="@color/cardview_light_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_margin="1dp"
+    android:background="@color/cardview_light_background"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/listlayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100sp"
         android:orientation="horizontal"
         android:weightSum="3">
 
         <TextView
             android:id="@+id/tvBinEPC"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="1sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_weight="0.35"
-            android:gravity="center"
+            android:gravity="bottom|center"
             android:singleLine="true"
             android:text=""
-            android:textSize="15dp"
-            android:textStyle="bold" />
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/infoLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tempChart" />
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/tempChart"
-            android:layout_width="130dp"
-            android:layout_height="80dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_gravity="center_vertical"
             android:layout_margin="0dp"
-            android:layout_weight="1"
-            android:layoutDirection="locale" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layoutDirection="locale"
+            app:layout_constraintBottom_toTopOf="@id/tvBinEPC"
+            app:layout_constraintEnd_toStartOf="@id/infoLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="100px"
-            android:layout_height="200px"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/infoLayout"
+            android:layout_width="99dp"
+            android:layout_height="0dp"
             android:layout_margin="0dp"
-            android:layout_weight="1.5"
             android:orientation="vertical"
-            android:weightSum="3">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tempChart"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <TextView
+                android:id="@+id/lbHigh"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center|left"
+                android:text="High:"
+                android:textAlignment="gravity"
+                android:textStyle="normal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvHigh"
-                android:layout_width="wrap_content"
-                android:layout_height="60px"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="bottom"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center|right"
                 android:text="456,99"
-                android:textStyle="bold" />
+                android:textAlignment="gravity"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/lbHigh"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/lbAvg"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="8dp"
+                android:gravity="center|left"
+                android:text="Avg:"
+                android:textAlignment="gravity"
+                android:textStyle="normal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/lbHigh" />
 
             <TextView
                 android:id="@+id/tvAvg"
-                android:layout_width="wrap_content"
-                android:layout_height="60px"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center"
-                android:layout_weight="2"
-                android:gravity="bottom"
+                android:layout_marginEnd="8dp"
+                android:gravity="center|right"
                 android:text="456,99"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/lbAvg"
+                app:layout_constraintTop_toBottomOf="@id/tvHigh" />
+
+            <TextView
+                android:id="@+id/lbLow"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="8dp"
+                android:gravity="center|left"
+                android:text="Low:"
+                android:textAlignment="gravity"
+                android:textStyle="normal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/lbAvg" />
 
             <TextView
                 android:id="@+id/tvLow"
-                android:layout_width="wrap_content"
-                android:layout_height="60px"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center"
-                android:layout_weight="2"
-                android:gravity="bottom"
+                android:layout_marginEnd="8dp"
+                android:gravity="center|right"
                 android:text="456,99"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </LinearLayout>
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/lbLow"
+                app:layout_constraintTop_toBottomOf="@id/tvAvg" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

@@ -12,10 +12,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.HarvestRequest;
-import io.agritrack.data.model.common.Measurements;
+import io.agritrack.data.model.common.Measurement;
+import io.agritrack.data.model.common.TemperatureData;
+import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.AssetTransaction;
 import io.agritrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.data.model.tx.CorrelationTransaction;
@@ -49,6 +52,7 @@ public class GlobalState {
     public static RepairRecord recExternalRepair = new RepairRecord();
 
     public static SeaTemperatureRecord recTools = new SeaTemperatureRecord();
+    public static LoggerDataRecord recLoggerData = new LoggerDataRecord();
 
     private GlobalState() {
     }
@@ -111,6 +115,11 @@ public class GlobalState {
     public static SeaTemperatureRecord initToolsRecord() {
         recTools = new SeaTemperatureRecord();
         return recTools;
+    }
+
+    public static LoggerDataRecord initLoggerDataRecord() {
+        recLoggerData = new LoggerDataRecord();
+        return recLoggerData;
     }
 
     public static FishingTransaction commitFishing(MobileDB db, Boolean finalCommit) {
@@ -214,16 +223,26 @@ public class GlobalState {
         }
     }
 
-    public static Measurements commitMeasurements(MobileDB db) {
+    public static List<TemperatureTimeSeries> commitMeasurements(MobileDB db) {
+        List<TemperatureTimeSeries> result = new ArrayList<>();
         try {
-            Measurements measurements = new Measurements();
-            measurements.loggerRFID = recProcessing.logger_rfid;
-            measurements.retrievedAt = recProcessing.retrievedAt;
-            //measurements.values = recProcessing.tempValues;
+            for(String epc : recLoggerData.data.keySet()) {
+                LoggerDataRecord.TemperatureModel model = recLoggerData.data.get(epc);
+                
+                Measurement measurement = new Measurement();
+                measurement.loggerRFID = model.loggerEPC;
+                measurement.retrievedAt = model.retrievedAt;
 
-            db.measurementsDAO().insert(measurements);
+                long measurementId = db.measurementsDAO().insert(measurement);
+                if (measurementId > 0 && model.values != null && !model.values.isEmpty()) {
+                    List<TemperatureData> data = model.values.stream().map(x -> new TemperatureData(measurementId, x[0], Double.valueOf(x[1].replace(',', '.')))).collect(Collectors.toList());
+                    db.temperatureDataDAO().insert(data.toArray(new TemperatureData[data.size()]));
+                }
 
-            return measurements;
+                result.add(db.measurementsDAO().getById(measurementId));
+            }
+
+            return result;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

@@ -20,11 +20,12 @@ import io.agritrack.data.dao.HarvestRequestDAO;
 import io.agritrack.data.dao.SiteDAO;
 import io.agritrack.data.dao.common.CustomerDAO;
 import io.agritrack.data.dao.common.EmployeeDAO;
-import io.agritrack.data.dao.common.IotLoggerDAO;
-import io.agritrack.data.dao.common.MeasurementsDAO;
 import io.agritrack.data.dao.common.SpeciesDAO;
-import io.agritrack.data.dao.common.ReaderDAO;
 import io.agritrack.data.dao.common.SupplierDAO;
+import io.agritrack.data.dao.iotlogger.IotLoggerDAO;
+import io.agritrack.data.dao.iotlogger.MeasurementsDAO;
+import io.agritrack.data.dao.iotlogger.ReaderDAO;
+import io.agritrack.data.dao.iotlogger.TemperatureDataDAO;
 import io.agritrack.data.dao.tx.AssetTransactionDAO;
 import io.agritrack.data.dao.tx.CollectTransactionDAO;
 import io.agritrack.data.dao.tx.ConsumableTransactionDAO;
@@ -37,8 +38,8 @@ import io.agritrack.data.dao.tx.ProcessingTransactionDAO;
 import io.agritrack.data.dao.tx.RepairTransactionDAO;
 import io.agritrack.data.dao.tx.SeaTemperatureTransactionDAO;
 import io.agritrack.data.dao.tx.ShippingTransactionDAO;
-import io.agritrack.data.dao.tx.TotesTransactionDAO;
 import io.agritrack.data.dao.tx.StorageTransactionDAO;
+import io.agritrack.data.dao.tx.TotesTransactionDAO;
 import io.agritrack.data.dao.tx.TransportTransactionDAO;
 import io.agritrack.data.dao.wh.AssetDAO;
 import io.agritrack.data.dao.wh.CoInventoryDAO;
@@ -53,10 +54,11 @@ import io.agritrack.data.model.Site;
 import io.agritrack.data.model.common.Customer;
 import io.agritrack.data.model.common.Employee;
 import io.agritrack.data.model.common.IotLogger;
-import io.agritrack.data.model.common.Measurements;
-import io.agritrack.data.model.common.Species;
+import io.agritrack.data.model.common.Measurement;
 import io.agritrack.data.model.common.Reader;
+import io.agritrack.data.model.common.Species;
 import io.agritrack.data.model.common.Supplier;
+import io.agritrack.data.model.common.TemperatureData;
 import io.agritrack.data.model.tx.AssetTransaction;
 import io.agritrack.data.model.tx.CollectTransaction;
 import io.agritrack.data.model.tx.ConsumableTransaction;
@@ -69,8 +71,8 @@ import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.data.model.tx.RepairTransaction;
 import io.agritrack.data.model.tx.SeaTemperatureTransaction;
 import io.agritrack.data.model.tx.ShippingTransaction;
-import io.agritrack.data.model.tx.TotesTransaction;
 import io.agritrack.data.model.tx.StorageTransaction;
+import io.agritrack.data.model.tx.TotesTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.data.model.wh.CoInventory;
@@ -80,11 +82,13 @@ import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
 
 @Database(entities = {AppUser.class, Site.class, Asset.class, Supplier.class, HarvestRequest.class, Order.class,
-        CageDetails.class, Employee.class, Species.class, Reader.class, IotLogger.class, PlantTransaction.class, CollectTransaction.class, StorageTransaction.class, ShippingTransaction.class,
-        FishingTransaction.class, TransportTransaction.class, ProcessingTransaction.class, PackageTransaction.class, TotesTransaction.class, IfcoTransaction.class,
-        AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class, RepairTransaction.class, SeaTemperatureTransaction.class,
-        RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class, Measurements.class},
-        version = 4, exportSchema = false)
+        CageDetails.class, Employee.class, Species.class, Reader.class, IotLogger.class, PlantTransaction.class,
+        CollectTransaction.class, StorageTransaction.class, ShippingTransaction.class, FishingTransaction.class,
+        TransportTransaction.class, ProcessingTransaction.class, PackageTransaction.class, TotesTransaction.class,
+        IfcoTransaction.class, AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class,
+        RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class,
+        Measurement.class, TemperatureData.class, SeaTemperatureTransaction.class, RepairTransaction.class},
+        version = 1, exportSchema = false)
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class, ConsumableTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
@@ -168,6 +172,8 @@ public abstract class MobileDB extends RoomDatabase {
     public abstract OrderDAO orderDAO();
 
     public abstract MeasurementsDAO measurementsDAO();
+
+    public abstract TemperatureDataDAO temperatureDataDAO();
 
     public abstract ShippingTransactionDAO shippingTransactionDAO();
 }

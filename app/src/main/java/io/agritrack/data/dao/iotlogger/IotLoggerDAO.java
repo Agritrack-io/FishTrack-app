@@ -1,4 +1,4 @@
-package io.agritrack.data.dao.common;
+package io.agritrack.data.dao.iotlogger;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

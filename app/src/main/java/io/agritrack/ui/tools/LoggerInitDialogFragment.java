@@ -1,7 +1,7 @@
 package io.agritrack.ui.tools;
 
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.rfid.RFIDUtils.WaitFor;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.animation.TimeAnimator;
 import android.app.AlertDialog;
@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -36,14 +35,13 @@ import io.agritrack.fish.ui.bo.LoggerReading;
 
 
 public class LoggerInitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
-    public static String TAG = "CAENInitDialogFragment";
+
     private static final String SHOW_READ_BUTTON = "ShowReadButton";
     private static final String SHOW_INIT_BUTTON = "ShowInitButton";
-
     private static final int LEVEL_INCREMENT = 200;
     private static final int MAX_LEVEL = 10000;
     private static final String LOGGER_EPC = "loggerEPC";
-
+    public static String TAG = "CAENInitDialogFragment";
     private ICAEN_API cmd;
     private LoggerReading reading;
 
@@ -52,47 +50,11 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     private ClipDrawable mClipDrawable;
 
     private Button btnReset, btnSetup, btnInit, btnRead;
-    private TaskRunner taskRunner;
-
     private List<String[]> values = null;
     private boolean showReadButton = false;
     private boolean showInitButton = false;
-
-    protected final View.OnClickListener readBtnListener = v -> {
-
-        // draw btnRead background and text
-        btnRead.setBackgroundResource(R.drawable.button_background);
-
-        startAnimation(v, btnRead);
-        //Task for read button
-        Callable<List<String[]>> readLoggerTask = new Callable<List<String[]>>() {
-            @Override
-            public List<String[]> call() throws Exception {
-                return readLogger(cmd);
-            }
-        };
-
-        taskRunner.executeAsync(readLoggerTask, (rs) -> {
-            if (rs != null) {
-                btnRead.setText("Success");
-                btnRead.setOnClickListener(null);
-
-                Map<String, Object> m = new HashMap<>();
-                m.put("timestamp", System.currentTimeMillis());
-                m.put("Measurements", values);
-
-                if(getDialog()!=null) {
-                    getDialog().dismiss();
-                }
-                reading.setReading(m);
-
-                displayMeasurementsDialog(values);
-                CToast(getActivity(), "Measurements:" + rs.size(), Toast.LENGTH_LONG);
-            } else {
-                btnRead.setText("Failed. Press the button again.");
-            }
-        });
-    };
+    private String loggerEPC;
+    private TaskRunner taskRunner;
 
     protected final View.OnClickListener initBtnListener = v -> {
 
@@ -112,9 +74,10 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                 btnInit.setOnClickListener(null);
                 Map<String, Object> m = new HashMap<>();
                 m.put("timestamp", System.currentTimeMillis());
+                m.put("EPC", loggerEPC);
                 m.put("LastValue", rs);
 
-                if(!showReadButton) {
+                if (!showReadButton) {
                     getDialog().dismiss();
                     reading.setReading(m);
                 }
@@ -123,7 +86,6 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             }
         });
     };
-
     protected final View.OnClickListener setupBtnListener = v -> {
         // draw btnSetup background and text
         btnSetup.setBackgroundResource(R.drawable.button_background);
@@ -151,8 +113,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             }
         });
     };
-
-    private final View.OnClickListener resetBtnListener = v -> {
+    protected final View.OnClickListener resetBtnListener = v -> {
         // draw btnReset background and text
         btnReset.setBackgroundResource(R.drawable.button_background);
         btnReset.setText("Resetting...");
@@ -169,10 +130,46 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                 stopAnimation();
 
                 btnSetup.setOnClickListener(setupBtnListener);
-                WaitFor(500l);
+                WaitFor(300l);
                 btnSetup.callOnClick();
             } else {
                 btnReset.setText("Reset:: Failed");
+            }
+        });
+    };
+    protected final View.OnClickListener readBtnListener = v -> {
+
+        // draw btnRead background and text
+        btnRead.setBackgroundResource(R.drawable.button_background);
+
+        startAnimation(v, btnRead);
+        //Task for read button
+        Callable<List<String[]>> readLoggerTask = new Callable<List<String[]>>() {
+            @Override
+            public List<String[]> call() throws Exception {
+                return readLogger(cmd);
+            }
+        };
+
+        taskRunner.executeAsync(readLoggerTask, (rs) -> {
+            if (rs != null) {
+                btnRead.setText("Success");
+                btnRead.setOnClickListener(null);
+
+                Map<String, Object> m = new HashMap<>();
+                m.put("timestamp", System.currentTimeMillis());
+                m.put("EPC", loggerEPC);
+                m.put("Measurements", values);
+
+                if (getDialog() != null) {
+                    getDialog().dismiss();
+                }
+                reading.setReading(m);
+
+                displayMeasurementsDialog(values);
+                // CToast(getActivity(), "Measurements:" + rs.size(), Toast.LENGTH_LONG);
+            } else {
+                btnRead.setText("Failed. Press the button again.");
             }
         });
     };
@@ -218,10 +215,10 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
             showReadButton = getArguments().getBoolean(SHOW_READ_BUTTON);
             showInitButton = getArguments().getBoolean(SHOW_INIT_BUTTON);
-            String loggerEPC = getArguments().getString(LOGGER_EPC);
+            this.loggerEPC = getArguments().getString(LOGGER_EPC);
 
             cmd = RFIDModuleFactory.getInstance();
-            cmd.setFilterEPC(loggerEPC);
+            cmd.setFilterEPC(this.loggerEPC);
 
             if (showReadButton) {
                 btnRead.setVisibility(View.VISIBLE);
@@ -238,13 +235,11 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
 
                 btnReset.setText("Press to Start.");
                 btnReset.setOnClickListener(resetBtnListener);
-
             } else {
                 btnReset.setVisibility(View.GONE);
                 btnSetup.setVisibility(View.GONE);
                 btnInit.setVisibility(View.GONE);
             }
-
         }
 
         getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
@@ -319,11 +314,12 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     private List<String[]> readLogger(ICAEN_API cmd) {
         try {
             cmd.HighSensitivity();
-            short cnt = cmd.ReadSamplesCount();
-            if (cnt > 0) {
+            Short cnt = cmd.ReadSamplesCount();
+            if (cnt != null && cnt > 0) {
                 try {
                     //values = cmd.READ_SAMPLES_WITHOUT_TIMESTAMP(cnt);
                     values = cmd.ReadSamples(cnt);
+                    recLoggerData.addDataSet(this.loggerEPC, System.currentTimeMillis() / 1000L, values);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

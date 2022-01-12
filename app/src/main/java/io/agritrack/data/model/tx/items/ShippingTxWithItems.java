@@ -7,12 +7,12 @@ import java.util.List;
 
 import io.agritrack.data.model.tx.IfcoTransaction;
 import io.agritrack.data.model.tx.ShippingTransaction;
-import io.agritrack.data.model.tx.TransportTransaction;
 
 public class ShippingTxWithItems {
 
     @Embedded
     public ShippingTransaction shippingTx;
+
     @Relation(
             parentColumn = "id",
             entityColumn = "shipping_tx_id"

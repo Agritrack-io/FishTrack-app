@@ -10,6 +10,7 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.InitTimeStamp;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.LastSample;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ShowProgressBar;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
 
 import android.animation.TimeAnimator;
 import android.app.AlertDialog;
@@ -50,6 +51,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     private static final String LOGGER_EPC = "loggerEPC";
 
     private ICAEN_API cmd;
+    private String loggerEPC;
 
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0;
@@ -179,11 +181,11 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
 
         if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
-            String loggerEPC = getArguments().getString(LOGGER_EPC);
+            this.loggerEPC = getArguments().getString(LOGGER_EPC);
 
             // get UhfReader instance
             cmd = RFIDModuleFactory.getInstance();
-            cmd.setFilterEPC(loggerEPC);
+            cmd.setFilterEPC(this.loggerEPC);
 
             // Enable Read button
             btnRead.setText("Reading Measurements...");
@@ -286,8 +288,10 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                         btnRead.setText(String.format("READ %s measurements.", measurements.size()));
                         btnRead.setOnClickListener(null);
 
-                        //recProcessing.tempValues = measurements;
-                        //displayMeasurementsDialog(measurements);
+                        if (measurements != null) {
+                            //displayMeasurementsDialog(measurements);
+                            recLoggerData.addDataSet(loggerEPC, System.currentTimeMillis() / 1000L, measurements);
+                        }
 
                         btnReset.setOnClickListener(resetBtnListener);
                         btnReset.callOnClick();

@@ -1,7 +1,7 @@
 package io.agritrack.fish.ui.quality_arrival;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.Intent;
@@ -16,10 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.util.Map;
+
 import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.ProcessingRecord;
+import io.agritrack.fish.state.LoggerDataRecord;
 import io.agritrack.ui.adapter.TemperatureProfileAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -53,25 +54,6 @@ public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity
         lvTempProfiles.setHasFixedSize(false);
 
         tempProfileAdapter.notifyDataSetChanged();
-
-
-        /*// load employees belonging to current Site and fill in the spFishingTeam Spinner.
-        List<Employee> teamCandidates = db.employeeDAO().getBySite(LocalPreferences.getCurrentSiteId());
-        if (teamCandidates != null && !teamCandidates.isEmpty()) {
-            this.candidates = teamCandidates.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.fullName())).collect(Collectors.toList());
-            tempProfileAdapter = new ArrayAdapter<io.agritrack.ui.bo.GenericListModel>(this, R.layout.temperature_profile, candidates) {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View view = super.getView(position, convertView, parent);
-                    TextView text = view.findViewById(android.R.id.text1);
-                    text.setTextSize(25);
-                    return view;
-                }
-            };
-
-            this.lvTempProfiles.setAdapter(candidatesAdapter);
-            this.lvTempProfiles.setOnItemClickListener(this);
-        }*/
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -110,15 +92,8 @@ public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity
     }
 
     private void initControlsFromState() {
-        ProcessingRecord prcRecord = GlobalState.recProcessing;
-
-        /*if (prcRecord.availBins != null) {
-            adapterBins.setValues(new LinkedList<String>(prcRecord.availBins));
-            adapterBins.notifyDataSetChanged();
-            //Get reference of binsCount textView
-            TextView tvBinsCount = findViewById(R.id.tvBinsCount);
-            tvBinsCount.setText(String.valueOf(prcRecord.availBins.size()));
-        }*/
+        Map<String, LoggerDataRecord.TemperatureModel> data = recLoggerData.data;
+        tempProfileAdapter.refill(data);
     }
 
     private String validate() {
@@ -133,7 +108,5 @@ public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity
 
     private void updateState() {
 
-        }
-
-
+    }
 }

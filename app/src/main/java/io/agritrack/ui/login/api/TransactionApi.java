@@ -44,8 +44,8 @@ public interface TransactionApi {
     Call<ProcessingTxDTO> syncProcessingTx(@Body ProcessingTxDTO processTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/measurements")
-    Call<MeasurementsDTO> syncMeasurements(@Body MeasurementsDTO measurements, @Header("Authorization") String token);
+    @POST("/logger/temp")
+    Call<List<MeasurementsDTO>> syncMeasurements(@Body List<MeasurementsDTO> measurements, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/plant")

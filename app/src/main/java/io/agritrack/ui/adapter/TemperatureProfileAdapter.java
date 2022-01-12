@@ -20,41 +20,35 @@ import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
+import java.util.Map;
 
 import io.agritrack.R;
+import io.agritrack.fish.state.LoggerDataRecord;
 
 public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureProfileAdapter.ViewHolder>{
     private LayoutInflater mLayoutInflater = null;
     public  Context context;
     private ArrayList<String> listOfEPCs = new ArrayList<>();
     private static LineDataSet set1;
+    private double highT, avgT, lowT;
+    private Map<String, LoggerDataRecord.TemperatureModel> mapOfData;
 
 
+    public TemperatureProfileAdapter(Context ctx, Map<String, LoggerDataRecord.TemperatureModel> data) {
+        this.mapOfData = data;
+        this.context = ctx;
+        this.listOfEPCs = new ArrayList<>(data.keySet());
 
-//    public TemperatureProfileAdapter(Symbol[] marketSymbol, Context ctx) {
-//        this.marketSymbol = marketSymbol;
-//        this.context = ctx;
-//
-//        notifyDataSetChanged();
-//    }
-//
-//    public TemperatureProfileAdapter(Context ctx, ArrayList<MarketFeedBean> arrList) {
-//        this.context = ctx;
-//        this.arrList = arrList;
-//    }
-//
-//    public TemperatureProfileAdapter(Context ctx, Map<String, MarketFeedBean> watchList) {
-//        this.watchList = watchList;
-//        this.context = ctx;
-//
-//        keys.addAll(watchList.keySet());
-//    }
+        DoubleSummaryStatistics stats = data.values().stream().flatMap(y->y.values.stream()).mapToDouble(x -> Double.valueOf(x[1])).summaryStatistics();
+        this.highT = stats.getMax();
+        this.lowT = stats.getMin();
+        this.avgT = stats.getAverage();
+    }
 
     public TemperatureProfileAdapter(Context context) {
         this.context = context;
         this.mLayoutInflater = LayoutInflater.from(context);
-        listOfEPCs.add("1410000000006");
-        listOfEPCs.add("1410000000004");
     }
 
     @NonNull
@@ -66,10 +60,22 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tvBinEPC.setText("14104525685"+position);
-        holder.tvHigh.setText("High:3.8C");
-        holder.tvAvg.setText("Avg:2.1C");
-        holder.tvLow.setText("Low:0.8C");
+        double _highT = 0.0d, _avgT = 0.0d, _lowT = 0.0d;
+        String key = listOfEPCs.get(position);
+        LoggerDataRecord.TemperatureModel model = mapOfData.get(key);
+
+        if(model!=null) {
+            DoubleSummaryStatistics stats = model.values.stream().mapToDouble(x -> Double.valueOf(x[1])).summaryStatistics();
+
+            _highT = stats.getMax();
+            _lowT = stats.getMin();
+            _avgT = stats.getAverage();
+
+            holder.tvBinEPC.setText(key);
+            holder.tvHigh.setText(String.format("%.2f\u2103", _highT));
+            holder.tvAvg.setText(String.format("%.2f\u2103", _avgT));
+            holder.tvLow.setText(String.format("%.2f\u2103", _lowT));
+        }
     }
 
     @Override
@@ -82,9 +88,9 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
         }
     }
 
-    public synchronized void refill(ArrayList<String> data) {
-        this.listOfEPCs.clear();
-        this.listOfEPCs.addAll(data);
+    public synchronized void refill(Map<String, LoggerDataRecord.TemperatureModel> data) {
+        this.listOfEPCs = new ArrayList<>(data.keySet());
+        this.mapOfData = data;
         notifyDataSetChanged();
     }
 
@@ -117,18 +123,17 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
         private void customiseChart()
         {
             temperatureChart.getDescription().setEnabled(false);
-            temperatureChart.setDrawGridBackground(false);
+            temperatureChart.setDrawGridBackground(true);
             temperatureChart.setDragEnabled(false);
             temperatureChart.getLegend().setEnabled(false);
             temperatureChart.setScaleEnabled(true);
             temperatureChart.setScaleYEnabled(false);
             temperatureChart.setScaleXEnabled(true);
-            temperatureChart.setDrawGridBackground(false);
-            temperatureChart.getXAxis().setEnabled(false);
+            temperatureChart.getXAxis().setEnabled(true);
             temperatureChart.getLineData().setDrawValues(false);
             temperatureChart.getXAxis().setDrawGridLines(false);
             temperatureChart.getXAxis().setDrawAxisLine(false);
-            temperatureChart.getAxisLeft().setDrawGridLines(false);
+            temperatureChart.getAxisLeft().setDrawGridLines(true);
             temperatureChart.getAxisRight().setDrawGridLines(false);
             temperatureChart.getAxisRight().setDrawZeroLine(true);
             temperatureChart.getAxisLeft().setDrawZeroLine(true);
@@ -172,7 +177,6 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             set1.setColor(Color.GREEN);
             set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
             set1.setDrawFilled(true);
-            //set1.setFillDrawable(drawablePositive);
             set1.setFillFormatter(new IFillFormatter() {
                 @Override
                 public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {

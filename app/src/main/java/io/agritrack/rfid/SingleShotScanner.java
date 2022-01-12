@@ -28,6 +28,7 @@ public class SingleShotScanner implements Runnable {
     }
 
     public boolean startReading() {
+        //TODO: check if uhfReader is not null
         return uhfReader.startReading();
     }
 

@@ -13,7 +13,7 @@ public class ProcessingRecord {
     public String remarks;
     public List<String> availBins;
     public List<String> qualityBins;
-    public List<String> tempValues;
+    public List<String[]> tempValues;
     public Long retrievedAt;
     public String photoPath;
     public Double longitude;

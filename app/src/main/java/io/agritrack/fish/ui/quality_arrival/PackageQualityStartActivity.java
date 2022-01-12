@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +30,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import io.agritrack.R;
@@ -41,6 +43,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.bo.LoggerReading;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
@@ -57,7 +60,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
 
     private RecyclerView rvBinsForTransport;
     private TextView tvBinsCount;
-    private final LinkedList<String> listMeasurements = new LinkedList<>();
+    private final LinkedList<String[]> listMeasurements = new LinkedList<>();
     private TemplateRecyclerAdapter adapterBins;
 
     private ImageButton ivDeleteBin;
@@ -86,6 +89,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
     private ImageView ivSupport;
     private Button btnScanBin;
     private SupportDialog supportDialog;
+    private LoggerReading loggerReading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,22 +158,22 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
             supportDialog.showDialog();
         });
 
+        // ------- instantiate a ViewModel to fetch Temperature measurements ----
+        loggerReading = new ViewModelProvider(this).get(LoggerReading.class);
+        loggerReading.getReading().observe(this, reading -> {
+            List<String[]> values = (List<String[]>) reading.get("Measurements");
+            String epc = (String) reading.get("EPC");
+            Long ts = (Long) reading.get("timestamp");
+
+            //recLoggerData.addDataSet(this.loggerEPC, System.currentTimeMillis() / 1000L, values);
+
+            //TODO: check if dialog display will be invoked here or in fragment
+//            tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);
+//            tempLoggerDialog.showDialog();
+        });
+
         configFooter();
     }
-
-/*    private Reader.READER_ERR resetLogger(ICAEN_API cmd) {
-        return cmd.Reset();
-    }
-
-    private String initializeLogger(ICAEN_API cmd) {
-        try {
-            Double lastTemperature = cmd.Init();
-            return String.format("%.2f\u2103", lastTemperature);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }*/
 
     private void clearSelectedItem() {
         if (selectedItem != null) {
@@ -314,34 +318,3 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
         }
     }
 }
-
-//    private String scanCloserEPC(UhfReader uhfReader) {
-//        SingleShotScanner scanner = null; //new SingleShotScanner();
-//        //scanner.setUhfReader(uhfReader);
-//        scanner.setFilter(Filters.RFID_BIN);
-//
-//        try {
-//            String epcStr = null; //scanner.call();
-//            if (!Strings.isEmptyOrWhitespace(epcStr)) {
-// after bin is identified, initialize the temperatures logger.
-//                IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
-//                if (logger != null) {
-//                    logger_rfid = logger.rfid;
-//                    scannedBinEPCs.add(epcStr.substring(11));
-//                    tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
-//                    adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
-//                    adapterBins.notifyDataSetChanged();
-//                    if (IsDemo) {
-//                        return logger.rfid;
-//                    } else {
-//                        return epcStr;
-//                    }
-//                } else if (!IsDemo) {
-//                    CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_LONG);
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }

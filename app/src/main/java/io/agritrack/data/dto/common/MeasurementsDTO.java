@@ -1,19 +1,22 @@
 package io.agritrack.data.dto.common;
 
-import io.agritrack.data.model.common.Measurements;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import io.agritrack.data.model.common.TemperatureTimeSeries;
 
 public class MeasurementsDTO {
     public Long id;
-    public Long logger_id;
     public String logger_rfid;
-    public String values;
+    public Long retrieved_at;
+    public List<TemperatureDataDTO> values;
 
-    public static MeasurementsDTO convert(Measurements measurements) {
+    public static MeasurementsDTO convert(TemperatureTimeSeries measurement) {
         MeasurementsDTO measurementsDTO = new MeasurementsDTO();
-        measurementsDTO.id = measurements.id;
-        measurementsDTO.logger_id = measurements.loggerId;
-        measurementsDTO.logger_rfid = measurements.loggerRFID;
-        measurementsDTO.values = measurements.values;
+        measurementsDTO.id = measurement.measurement.id;
+        measurementsDTO.retrieved_at = measurement.measurement.retrievedAt;
+        measurementsDTO.logger_rfid = measurement.measurement.loggerRFID;
+        measurementsDTO.values = measurement.data.stream().map(x-> new TemperatureDataDTO(x.timestamp, x.value)).collect(Collectors.toList());
 
         return measurementsDTO;
     }
