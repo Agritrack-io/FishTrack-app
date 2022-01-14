@@ -35,6 +35,7 @@ import io.agritrack.data.dao.tx.IfcoTransactionDAO;
 import io.agritrack.data.dao.tx.PackageTransactionDAO;
 import io.agritrack.data.dao.tx.PlantTransactionDAO;
 import io.agritrack.data.dao.tx.ProcessingTransactionDAO;
+import io.agritrack.data.dao.tx.QualityTransactionDAO;
 import io.agritrack.data.dao.tx.RepairTransactionDAO;
 import io.agritrack.data.dao.tx.SeaTemperatureTransactionDAO;
 import io.agritrack.data.dao.tx.ShippingTransactionDAO;
@@ -68,6 +69,7 @@ import io.agritrack.data.model.tx.IfcoTransaction;
 import io.agritrack.data.model.tx.PackageTransaction;
 import io.agritrack.data.model.tx.PlantTransaction;
 import io.agritrack.data.model.tx.ProcessingTransaction;
+import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.data.model.tx.RepairTransaction;
 import io.agritrack.data.model.tx.SeaTemperatureTransaction;
 import io.agritrack.data.model.tx.ShippingTransaction;
@@ -84,11 +86,11 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
 @Database(entities = {AppUser.class, Site.class, Asset.class, Supplier.class, HarvestRequest.class, Order.class,
         CageDetails.class, Employee.class, Species.class, Reader.class, IotLogger.class, PlantTransaction.class,
         CollectTransaction.class, StorageTransaction.class, ShippingTransaction.class, FishingTransaction.class,
-        TransportTransaction.class, ProcessingTransaction.class, PackageTransaction.class, TotesTransaction.class,
+        TransportTransaction.class, ProcessingTransaction.class, QualityTransaction.class, PackageTransaction.class, TotesTransaction.class,
         IfcoTransaction.class, AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class,
         Measurement.class, TemperatureData.class, SeaTemperatureTransaction.class, RepairTransaction.class},
-        version = 1, exportSchema = false)
+        version = 15, exportSchema = false)
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class, ConsumableTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
@@ -136,6 +138,8 @@ public abstract class MobileDB extends RoomDatabase {
     public abstract TransportTransactionDAO transportTransactionDAO();
 
     public abstract ProcessingTransactionDAO processingTransactionDAO();
+
+    public abstract QualityTransactionDAO qualityTransactionDAO();
 
     public abstract PackageTransactionDAO packageTransactionDAO();
 

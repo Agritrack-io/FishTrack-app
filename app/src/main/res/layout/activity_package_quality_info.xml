@@ -177,7 +177,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvTempFishLabel"
+                app:layout_constraintBottom_toTopOf="@+id/tvFishTempLabel"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -195,7 +195,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/etTempFish"
+                app:layout_constraintBottom_toTopOf="@+id/etFishTemp"
                 app:layout_constraintStart_toEndOf="@+id/tvTempBinLabel"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -214,7 +214,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
                 app:layout_constraintTop_toTopOf="@+id/tvTempBin" />
 
             <TextView
-                android:id="@+id/tvTempFishLabel"
+                android:id="@+id/tvFishTempLabel"
                 android:layout_width="280dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
@@ -232,7 +232,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
                 app:layout_constraintTop_toBottomOf="@+id/tvTempBinLabel" />
 
             <EditText
-                android:id="@+id/etTempFish"
+                android:id="@+id/etFishTemp"
                 android:layout_width="70dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
@@ -247,11 +247,11 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvTempFishLabel"
+                app:layout_constraintStart_toEndOf="@+id/tvFishTempLabel"
                 app:layout_constraintTop_toBottomOf="@+id/tvTempBin" />
 
             <TextView
-                android:id="@+id/tvTempFish"
+                android:id="@+id/tvFishTemp"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
@@ -260,9 +260,9 @@ tools:context=".fish.ui.quality_arrival.PackageQualityInfoActivity">
                 android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etTempFish"
-                app:layout_constraintStart_toEndOf="@+id/etTempFish"
-                app:layout_constraintTop_toTopOf="@+id/etTempFish" />
+                app:layout_constraintBottom_toBottomOf="@+id/etFishTemp"
+                app:layout_constraintStart_toEndOf="@+id/etFishTemp"
+                app:layout_constraintTop_toTopOf="@+id/etFishTemp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

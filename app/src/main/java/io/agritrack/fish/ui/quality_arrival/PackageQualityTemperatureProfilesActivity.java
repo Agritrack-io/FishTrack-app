@@ -86,7 +86,7 @@ public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity
 
         ImageView ivBack = findViewById(R.id.ivBackToPackageQualityStart);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackageQualityStartActivity.class);
+            Intent i = new Intent(getApplicationContext(), PackageQualityStartReceiptActivity.class);
             startActivity(i);
         });
     }

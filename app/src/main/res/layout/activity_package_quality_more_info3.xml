@@ -102,7 +102,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity">
             android:padding="1dp">
 
             <TextView
-                android:id="@+id/tvLightLabel"
+                android:id="@+id/tvLightHematomaLabel"
                 android:layout_width="220dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
@@ -114,12 +114,12 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity">
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvHeavyLabel"
+                app:layout_constraintBottom_toTopOf="@+id/tvHeavyHematomaLabel"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/etLight"
+                android:id="@+id/etLightHematoma"
                 android:layout_width="70dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
@@ -132,12 +132,12 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity">
                 android:textAlignment="viewEnd"
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/etHeavy"
-                app:layout_constraintStart_toEndOf="@+id/tvLightLabel"
+                app:layout_constraintBottom_toTopOf="@+id/etHeavyHematoma"
+                app:layout_constraintStart_toEndOf="@+id/tvLightHematomaLabel"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvLight"
+                android:id="@+id/tvLightHematoma"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
@@ -146,12 +146,12 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity">
                 android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etLight"
-                app:layout_constraintStart_toEndOf="@+id/etLight"
-                app:layout_constraintTop_toTopOf="@+id/etLight" />
+                app:layout_constraintBottom_toBottomOf="@+id/etLightHematoma"
+                app:layout_constraintStart_toEndOf="@+id/etLightHematoma"
+                app:layout_constraintTop_toTopOf="@+id/etLightHematoma" />
 
             <TextView
-                android:id="@+id/tvHeavyLabel"
+                android:id="@+id/tvHeavyHematomaLabel"
                 android:layout_width="220dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
@@ -164,10 +164,10 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity">
                 android:textSize="@dimen/text_view_font_size_medium"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLightLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/tvLightHematomaLabel" />
 
             <EditText
-                android:id="@+id/etHeavy"
+                android:id="@+id/etHeavyHematoma"
                 android:layout_width="70dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
@@ -180,11 +180,11 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity">
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvHeavyLabel"
-                app:layout_constraintTop_toBottomOf="@+id/etLight" />
+                app:layout_constraintStart_toEndOf="@+id/tvHeavyHematomaLabel"
+                app:layout_constraintTop_toBottomOf="@+id/etLightHematoma" />
 
             <TextView
-                android:id="@+id/tvHeavy"
+                android:id="@+id/tvHeavyHematoma"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
@@ -193,9 +193,9 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity">
                 android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etHeavy"
-                app:layout_constraintStart_toEndOf="@+id/etHeavy"
-                app:layout_constraintTop_toTopOf="@+id/etHeavy" />
+                app:layout_constraintBottom_toBottomOf="@+id/etHeavyHematoma"
+                app:layout_constraintStart_toEndOf="@+id/etHeavyHematoma"
+                app:layout_constraintTop_toTopOf="@+id/etHeavyHematoma" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -556,7 +556,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity">
             android:padding="1dp">
 
             <TextView
-                android:id="@+id/tvRigorMortisLabel"
+                android:id="@+id/tvProblematicFishLabel"
                 android:layout_width="220dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
@@ -573,7 +573,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity">
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/etRigorMortis"
+                android:id="@+id/etProblematicFish"
                 android:layout_width="70dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
@@ -587,11 +587,11 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity">
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvRigorMortisLabel"
+                app:layout_constraintStart_toEndOf="@+id/tvProblematicFishLabel"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvRigorMortis"
+                android:id="@+id/tvProblematicFish"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
@@ -600,9 +600,9 @@ tools:context=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity">
                 android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etRigorMortis"
-                app:layout_constraintStart_toEndOf="@+id/etRigorMortis"
-                app:layout_constraintTop_toTopOf="@+id/etRigorMortis" />
+                app:layout_constraintBottom_toBottomOf="@+id/etProblematicFish"
+                app:layout_constraintStart_toEndOf="@+id/etProblematicFish"
+                app:layout_constraintTop_toTopOf="@+id/etProblematicFish" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -6,7 +6,7 @@ android:id="@+id/fishingBinsLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_semi_green"
-tools:context=".fish.ui.quality_arrival.PackageQualityStartActivity">
+tools:context=".fish.ui.quality_arrival.PackageQualityStartPackageActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -53,7 +53,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityStartActivity">
         tools:ignore="MissingPrefix" />
 
     <TextView
-        android:id="@+id/tvHeaderPackageQualityStart"
+        android:id="@+id/tvHeaderPackageQualityStartPackageActivity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -105,7 +105,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityStartActivity">
                 android:id="@+id/tvSelectBins"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="70dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="8dp"
@@ -115,7 +115,7 @@ tools:context=".fish.ui.quality_arrival.PackageQualityStartActivity">
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
                 app:layout_constraintEnd_toStartOf="@+id/ivDeleteBin"
-                app:layout_constraintStart_toEndOf="@+id/ivAddBin"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button

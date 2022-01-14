@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,13 +19,15 @@ import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
+import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class PackageQualityMoreInfo2Activity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private ToggleGroup tgSmellCondition;
-    private String selectedBinCondition;
+    private String selectedSmellCondition;
+    private EditText etShiny, etBlurred, etHealed, etBlind, etCoherent, etSoft, etSwollen;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
 
@@ -72,18 +75,20 @@ public class PackageQualityMoreInfo2Activity extends AppCompatActivity implement
     }
 
     private void assignCtrlVars() {
-        //etPlot = findViewById(R.id.etPlot);
         tgSmellCondition = findViewById(R.id.tgSmellCondition);
         tgSmellCondition.setOnCheckedChangeListener(this);
-        /*mtvRemarks = findViewById(R.id.mtvRemarks);
-        mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
-        ivTakenPhoto = findViewById(R.id.ivTakenPhoto);*/
+        etShiny = findViewById(R.id.etShiny);
+        etBlurred = findViewById(R.id.etBlurred);
+        etHealed = findViewById(R.id.etHealed);
+        etBlind = findViewById(R.id.etBlind);
+        etCoherent = findViewById(R.id.etCoherent);
+        etSoft = findViewById(R.id.etSoft);
+        etSwollen = findViewById(R.id.etSwollen);
         ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {
-        ProcessingRecord prcTx = GlobalState.recProcessing;
+        QualityRecord qualityRecord = GlobalState.recQuality;
 
         /*if (!Strings.isEmptyOrWhitespace(prcTx.remarks)) {
             mtvRemarks.setText(prcTx.remarks);
@@ -94,19 +99,40 @@ public class PackageQualityMoreInfo2Activity extends AppCompatActivity implement
         }*/
     }
 
-    private ProcessingRecord updateState() {
-        ProcessingRecord processingRecord = GlobalState.recProcessing;
+    private QualityRecord updateState() {
+        QualityRecord qualityRecord = GlobalState.recQuality;
 
-        /*if (etPlot.getText() != null) {
-            processingRecord.pLot = etPlot.getText().toString();
+        if (etShiny.getText() != null && !Strings.isEmptyOrWhitespace(etShiny.getText().toString())) {
+            qualityRecord.shiny = Double.valueOf(etShiny.getText().toString());
         }
-        if (!Strings.isEmptyOrWhitespace(selectedFishCondition)) {
-            processingRecord.fishCondition = selectedFishCondition;
+
+        if (etBlurred.getText() != null && !Strings.isEmptyOrWhitespace(etBlurred.getText().toString())) {
+            qualityRecord.blurred = Double.valueOf(etBlurred.getText().toString());
         }
-        if (mtvRemarks.getText() != null) {
-            processingRecord.remarks = mtvRemarks.getText().toString();
-        }*/
-        return processingRecord;
+
+        if (etHealed.getText() != null && !Strings.isEmptyOrWhitespace(etHealed.getText().toString())) {
+            qualityRecord.healed = Double.valueOf(etHealed.getText().toString());
+        }
+
+        if (etBlind.getText() != null && !Strings.isEmptyOrWhitespace(etBlind.getText().toString())) {
+            qualityRecord.blindEyes = Double.valueOf(etBlind.getText().toString());
+        }
+
+        if (etCoherent.getText() != null && !Strings.isEmptyOrWhitespace(etCoherent.getText().toString())) {
+            qualityRecord.coherent = Double.valueOf(etCoherent.getText().toString());
+        }
+
+        if (etSoft.getText() != null && !Strings.isEmptyOrWhitespace(etSoft.getText().toString())) {
+            qualityRecord.soft = Double.valueOf(etSoft.getText().toString());
+        }
+
+        if (etSwollen.getText() != null && !Strings.isEmptyOrWhitespace(etSwollen.getText().toString())) {
+            qualityRecord.swollen = Double.valueOf(etSwollen.getText().toString());
+        }
+
+        qualityRecord.smellCondition = selectedSmellCondition;
+
+        return qualityRecord;
     }
 
     private String validate() {
@@ -126,12 +152,14 @@ public class PackageQualityMoreInfo2Activity extends AppCompatActivity implement
 
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        if (checkedId == R.id.tbGoodBin) {
-            selectedBinCondition = "GOOD";
-        } else if (checkedId == R.id.tbMediumBin) {
-            selectedBinCondition = "ACCEPTABLE";
-        } else if (checkedId == R.id.tbBadBin) {
-            selectedBinCondition = "NOT ACCEPTABLE";
+        if (checkedId == R.id.tbFreshSmell) {
+            selectedSmellCondition = "FRESH-METALLIC";
+        } else if (checkedId == R.id.tbNoSmell) {
+            selectedSmellCondition = "NO SMELL";
+        } else if (checkedId == R.id.tbLightBadSmell) {
+            selectedSmellCondition = "LIGHT BAD";
+        } else if (checkedId == R.id.tbHeavyBadSmell) {
+            selectedSmellCondition = "HEAVY BAD";
         }
     }
 }

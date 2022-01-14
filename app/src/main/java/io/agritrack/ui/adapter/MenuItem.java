@@ -16,6 +16,11 @@ public class MenuItem {
         this.imgId = imgID;
     }
 
+    public MenuItem(String name, Class activityClass) {
+        this.name = name;
+        this.clazz = activityClass;
+    }
+
     public MenuItem(Integer loc, String name, Class activityClass, int imgID) {
         this.loc = loc;
         this.name = name;

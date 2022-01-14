@@ -24,6 +24,7 @@ import io.agritrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.ProcessingTransaction;
+import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.data.model.tx.RepairTransaction;
 import io.agritrack.data.model.tx.SeaTemperatureTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
@@ -42,6 +43,7 @@ public class GlobalState {
     public static List<HarvestRequest> recHarvestRequests = new LinkedList<>();
     public static TransportationRecord recTransport = new TransportationRecord();
     public static ProcessingRecord recProcessing = new ProcessingRecord();
+    public static QualityRecord recQuality = new QualityRecord();
 
     public static WHTxRecord recWHIncoming = new WHTxRecord();
     public static WHTxRecord recWHOutgoing = new WHTxRecord();
@@ -75,6 +77,11 @@ public class GlobalState {
     public static ProcessingRecord initProcessingRecord() {
         recProcessing = new ProcessingRecord();
         return recProcessing;
+    }
+
+    public static QualityRecord initQualityRecord() {
+        recQuality = new QualityRecord();
+        return recQuality;
     }
 
     public static WHTxRecord initWHIncomingRecord() {
@@ -200,10 +207,8 @@ public class GlobalState {
         try {
             ProcessingTransaction txProcess = new ProcessingTransaction();
             txProcess.dispatchNote = recProcessing.dispatchNote;
-            txProcess.productCondition = recProcessing.fishCondition;
             txProcess.cleanTruck = Boolean.toString(recProcessing.cleanTruck);
             txProcess.smells = Boolean.toString(recProcessing.smellyTruck);
-            txProcess.plot = recProcessing.pLot;
             txProcess.site = recProcessing.packagingSite;
             txProcess.timestamp = System.currentTimeMillis();
             //txProcess.remarks = recProcessing.remarks;
@@ -217,6 +222,52 @@ public class GlobalState {
             db.processingTransactionDAO().insert(txProcess);
 
             return txProcess;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static QualityTransaction commitQuality(MobileDB db) {
+        try {
+            QualityTransaction txQuality = new QualityTransaction();
+            txQuality.plot = recQuality.pLot;
+            txQuality.iceCondition = recQuality.iceCondition;
+            txQuality.binCondition = recQuality.binCondition;
+            txQuality.smellCondition = recQuality.smellCondition;
+            txQuality.fishTemp = recQuality.fishTemp;
+            txQuality.rigorMortis = recQuality.rigorMortis;
+            txQuality.eliminationFood = recQuality.eliminationFood;
+            txQuality.eliminationSperm = recQuality.eliminationSperm;
+            txQuality.parasites = recQuality.parasites;
+            txQuality.peeling = recQuality.peeling;
+            txQuality.shiny = recQuality.shiny;
+            txQuality.blurred = recQuality.blurred;
+            txQuality.healed = recQuality.healed;
+            txQuality.blindEyes = recQuality.blindEyes;
+            txQuality.coherent = recQuality.coherent;
+            txQuality.soft = recQuality.soft;
+            txQuality.swollen = recQuality.swollen;
+            txQuality.lightHematoma = recQuality.lightHematoma;
+            txQuality.heavyHematoma = recQuality.heavyHematoma;
+            txQuality.pink = recQuality.pink;
+            txQuality.dark = recQuality.dark;
+            txQuality.white = recQuality.white;
+            txQuality.uncolored = recQuality.uncolored;
+            txQuality.hematomas = recQuality.hematomas;
+            txQuality.mucus = recQuality.mucus;
+            txQuality.problematicFish = recQuality.problematicFish;
+            //txProcess.remarks = recProcessing.remarks;
+            txQuality.qualityBins = recQuality.qualityBins;
+            txQuality.user = LocalPreferences.getLoggedInUser("N/A");
+            txQuality.site = LocalPreferences.getCurrentSiteId().toString();
+            txQuality.timestamp = System.currentTimeMillis();
+            txQuality.longitude = recQuality.longitude;
+            txQuality.latitude = recQuality.latitude;
+
+            db.qualityTransactionDAO().insert(txQuality);
+
+            return txQuality;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
