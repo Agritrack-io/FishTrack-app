@@ -61,7 +61,6 @@ public class CAENLoggerActivity extends AppCompatActivity {
     private ICAEN_API cmd;
 
     private short valuesCnt;
-    //private TaskRunner taskRunner;
     private String loggerEpc;
 
     final Runnable readFWRevisionThread = new Runnable() {
@@ -154,41 +153,50 @@ public class CAENLoggerActivity extends AppCompatActivity {
             msgShowPB.what = ShowProgressBar;
             mScanHandler.sendMessage(msgShowPB);
 
+            // TimeBIN
+            Short value = cmd.ReadTimeBIN();
+            mScanHandler.sendMessage(createMessage(ReadTimeBIN, value));
+            delay(100l);
+
+            // SampleCNT
+            value = cmd.ReadSamplesCount();
+            mScanHandler.sendMessage(createMessage(SamplesCnt, value));
+            delay(100l);
+
+            // Interval
+            value = cmd.ReadInterval();
+            mScanHandler.sendMessage(createMessage(ReadInterval, value));
+            delay(100l);
+
             // FWRevision
             String response = cmd.ReadFWRevision();
             mScanHandler.sendMessage(createMessage(FWRevision, response));
+            delay(100l);
 
             // HWRevision
             response = cmd.ReadHWRevision();
             mScanHandler.sendMessage(createMessage(HWRevision, response));
+            delay(100l);
 
             // CTRLRegister
             response = cmd.ReadControlRegister();
             mScanHandler.sendMessage(createMessage(CTRLReg, response));
+            delay(100l);
 
             // STATUSRegister
             response = cmd.ReadStatusRegister();
             mScanHandler.sendMessage(createMessage(STATUSReg, response));
-
-            // TimeBIN
-            Short value = cmd.ReadTimeBIN();
-            mScanHandler.sendMessage(createMessage(ReadTimeBIN, response));
-
-            // SampleCNT
-            value = cmd.ReadSamplesCount();
-            mScanHandler.sendMessage(createMessage(SamplesCnt, response));
-
-            // Interval
-            value = cmd.ReadInterval();
-            mScanHandler.sendMessage(createMessage(ReadInterval, response));
+            delay(100l);
 
             // InitTS
             response = cmd.ReadInitDatetime();
             mScanHandler.sendMessage(createMessage(InitTimeStamp, response));
+            delay(100l);
 
             // LastTemperature
             Double temp = cmd.ReadLastSample();
             mScanHandler.sendMessage(createMessage(LastSample, String.valueOf(temp)));
+            delay(100l);
 
             // Hide ProgressBar
             Message msgHidePB = new Message();
@@ -328,15 +336,21 @@ public class CAENLoggerActivity extends AppCompatActivity {
         btnReset.setEnabled(true);
         btnInit.setEnabled(true);
         // -------------------------------------
-        mScanHandler.postDelayed(readFWRevisionThread, 50l);
-        mScanHandler.postDelayed(readHWRevisionThread, 100l);
-        mScanHandler.postDelayed(readCTRLRegisterThread, 150l);
-        mScanHandler.postDelayed(readSTATUSRegisterThread, 200l);
-        mScanHandler.postDelayed(readTimeBINThread, 250l);
-        mScanHandler.postDelayed(readInitTSThread, 300l);
-        mScanHandler.postDelayed(readSampleCNTThread, 350l);
-        mScanHandler.postDelayed(readIntervalThread, 400l);
-        mScanHandler.postDelayed(readLastTemperatureThread, 450l);
+        if(!Strings.isEmptyOrWhitespace(loggerEpc)) {
+            cmd.setFilterEPC(loggerEpc);
+            mScanHandler.postDelayed(readThread, 100l);
+        }
+        // -------------------------------------
+
+//        mScanHandler.postDelayed(readFWRevisionThread, 50l);
+//        mScanHandler.postDelayed(readHWRevisionThread, 100l);
+//        mScanHandler.postDelayed(readCTRLRegisterThread, 150l);
+//        mScanHandler.postDelayed(readSTATUSRegisterThread, 200l);
+//        mScanHandler.postDelayed(readTimeBINThread, 250l);
+//        mScanHandler.postDelayed(readInitTSThread, 300l);
+//        mScanHandler.postDelayed(readSampleCNTThread, 350l);
+//        mScanHandler.postDelayed(readIntervalThread, 400l);
+//        mScanHandler.postDelayed(readLastTemperatureThread, 450l);
         // -------------------------------------
         // Hide ProgressBar
         mScanHandler.postDelayed(hideProgressThread, 800l);
@@ -602,4 +616,10 @@ public class CAENLoggerActivity extends AppCompatActivity {
         });
     }
 
+
+    private void delay(long delay) {
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {}
+    }
 }

@@ -57,7 +57,7 @@ import io.agritrack.ui.tools.LoggerInitDialogFragment;
 public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
     // Local handler that receives the RFID scanner results.
-    private final ScanHandler mScanHandler = new ScanHandler(this);
+    private ScanHandler mScanHandler = new ScanHandler(this);
     private SingleShotScanner singleShot_runnable;
     private MobileDB db;
     private TemplateRecyclerAdapter adapterBins;
@@ -294,9 +294,9 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
     // ###################################################
     private void stopScanner() {
-        if(this.singleShot_runnable !=null) {
-            this.singleShot_runnable.stopReading();
-            mScanHandler.removeCallbacks(this.singleShot_runnable);
+        if(singleShot_runnable !=null) {
+            mScanHandler.removeCallbacks(singleShot_runnable);
+            singleShot_runnable.stopReading();
         }
     }
 
@@ -333,6 +333,7 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
                                 CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
                             }
                         }
+                        this.removeCallbacks(singleShot_runnable);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -341,6 +342,7 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
                     if (!IsDemo) {
                         //CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
                     }
+                    this.removeCallbacks(singleShot_runnable);
                     break;
             }
         }

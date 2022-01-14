@@ -33,7 +33,7 @@ import io.agritrack.caen.pojo.RFIDTag;
 public class BX6100Commander extends AbstractCAENCommander {
     private final short timeout = 10000;
     private final int filterStartAddress = 2;
-    private final UHFRManager mUhfRManager;
+    private UHFRManager mUhfRManager;
     private byte[] epcBytes;
 
     public BX6100Commander() {
@@ -210,20 +210,15 @@ public class BX6100Commander extends AbstractCAENCommander {
     }
 
     @Override
-    public void StopReading() {
-        this.mUhfRManager.setCancleInventoryFilter();
-        this.mUhfRManager.asyncStopReading();
-        this.mUhfRManager.stopTagInventory();
-        this.mUhfRManager.setGen2session(false);
-    }
-
-    @Override
     public List<RFIDTag> inventoryRealTime() {
         //this.mUhfRManager.setCancleInventoryFilter();
         //this.mUhfRManager.setGen2session(false);
-        List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryRealTime();
-        //List<Reader.TAGINFO> inventory = this.mUhfRManager.tagEpcTidInventoryByTimer((short) 200);//  tagInventoryRealTime();
-        return inventory.stream().map(x->new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
+        //List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryRealTime();
+        if (this.mUhfRManager == null) {
+            this.mUhfRManager = UHFRManager.getInstance();
+        }
+        List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryByTimer((short) 50);//  tagInventoryRealTime();
+        return inventory.stream().map(x -> new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
     }
 
     @Override
@@ -236,7 +231,19 @@ public class BX6100Commander extends AbstractCAENCommander {
     @Override
     public boolean startReading() {
         //this.mUhfRManager.setGen2session(true);
-        Reader.READER_ERR result = this.mUhfRManager.asyncStartReading();
+        //Reader.READER_ERR result = this.mUhfRManager.asyncStartReading();
         return false;// Reader.READER_ERR.MT_OK_ERR.equals(res);
+    }
+
+
+    @Override
+    public void StopReading() {
+        if (this.mUhfRManager != null) {
+            this.mUhfRManager.setCancleInventoryFilter();
+            this.mUhfRManager.asyncStopReading();
+            this.mUhfRManager.stopTagInventory();
+            this.mUhfRManager.setGen2session(false);
+            this.mUhfRManager = null;
+        }
     }
 }
