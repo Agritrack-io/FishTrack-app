@@ -27,13 +27,14 @@ import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
+import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class PackageQualityInfoActivity extends AppCompatActivity {
     private static final int pic_id = 123;
     private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
-    private EditText mtvRemarks, etPlot;
+    private EditText mtvRemarks, etPlot, etFishTemp;
     private PhotoDialog photoDialog;
     private ImageView ivTakenPhoto;
 
@@ -74,11 +75,11 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
 
         photoResult.observe(this, response -> {
             if (response != null) {
-                GlobalState.recProcessing.photoPath = System.currentTimeMillis() + "";
+                GlobalState.recQuality.photoPath = System.currentTimeMillis() + "";
                 ivTakenPhoto.setVisibility(View.VISIBLE);
             } else {
                 ivTakenPhoto.setVisibility(View.GONE);
-                GlobalState.recProcessing.photoPath = null;
+                GlobalState.recQuality.photoPath = null;
             }
         });
 
@@ -131,6 +132,7 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
 
     private void assignCtrlVars() {
         etPlot = findViewById(R.id.etPlot);
+        etFishTemp = findViewById(R.id.etFishTemp);
         mtvRemarks = findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
@@ -139,34 +141,38 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        ProcessingRecord prcTx = GlobalState.recProcessing;
+        QualityRecord qltTx = GlobalState.recQuality;
 
-        if (!Strings.isEmptyOrWhitespace(prcTx.remarks)) {
-            mtvRemarks.setText(prcTx.remarks);
+        if (!Strings.isEmptyOrWhitespace(qltTx.remarks)) {
+            mtvRemarks.setText(qltTx.remarks);
         }
 
-        if (!Strings.isEmptyOrWhitespace(prcTx.photoPath)) {
+        if (!Strings.isEmptyOrWhitespace(qltTx.photoPath)) {
             ivTakenPhoto.setVisibility(View.VISIBLE);
         }
     }
 
-    private ProcessingRecord updateState() {
-        ProcessingRecord processingRecord = GlobalState.recProcessing;
+    private QualityRecord updateState() {
+        QualityRecord qualityRecord = GlobalState.recQuality;
 
         if (etPlot.getText() != null) {
-            processingRecord.pLot = etPlot.getText().toString();
+            qualityRecord.pLot = etPlot.getText().toString();
+        }
+
+        if (etFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etFishTemp.getText().toString())) {
+            qualityRecord.fishTemp = Double.valueOf(etFishTemp.getText().toString());
         }
 
         if (mtvRemarks.getText() != null) {
-            processingRecord.remarks = mtvRemarks.getText().toString();
+            qualityRecord.remarks = mtvRemarks.getText().toString();
         }
-        return processingRecord;
+        return qualityRecord;
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.pLot)) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.pLot)) {
                 sb.append(String.format("\n%s is missing", "'LOT'"));
             }
         }

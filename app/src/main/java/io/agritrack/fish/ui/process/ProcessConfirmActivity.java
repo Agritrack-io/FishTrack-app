@@ -141,10 +141,6 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
             tvDispatchNote.setText(prcRecord.dispatchNote);
         }
 
-        if (!Strings.isEmptyOrWhitespace(prcRecord.pLot)) {
-            tvPackagingLot.setText(prcRecord.pLot);
-        }
-
         if (prcRecord.availBins != null) {
             tvNumberOfBinsCount.setText(String.valueOf(prcRecord.availBins.size()));
         }

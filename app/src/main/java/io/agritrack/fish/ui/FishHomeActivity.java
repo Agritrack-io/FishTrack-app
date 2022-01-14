@@ -59,7 +59,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
-import io.agritrack.fish.ui.quality_arrival.PackageQualityStartActivity;
+import io.agritrack.fish.ui.quality_arrival.PackageQualitySelectStepsActivity;
 import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
 import io.agritrack.fish.ui.transport.TransportStartActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
@@ -107,7 +107,7 @@ public class FishHomeActivity extends AppCompatActivity {
             menuItemsSet.add(new MenuItem(Receiving_Idx, getString(R.string.menu_title_fish_receiving), ProcessBinsActivity.class, R.drawable.processing));
         }
         if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
-            menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), PackageQualityStartActivity.class, R.drawable.quality));
+            menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), PackageQualitySelectStepsActivity.class, R.drawable.quality));
         }
         if (roleCanAccessMenu(userRoles, Transport_Idx)) {
             menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
@@ -190,7 +190,7 @@ public class FishHomeActivity extends AppCompatActivity {
                         i = new Intent(appCtx, ProcessBinsActivity.class);
                         break;
                     case Packaging_Quality_Idx:
-                        i = new Intent(appCtx, PackageQualityStartActivity.class);
+                        i = new Intent(appCtx, PackageQualitySelectStepsActivity.class);
                         break;
                     case Warehouse_Idx:
                         i = new Intent(appCtx, WhMenuActivity.class);

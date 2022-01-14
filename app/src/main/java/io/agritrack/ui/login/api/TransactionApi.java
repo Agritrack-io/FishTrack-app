@@ -11,6 +11,7 @@ import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.dto.tx.PackageTxDTO;
 import io.agritrack.data.dto.tx.PlantTxDTO;
 import io.agritrack.data.dto.tx.ProcessingTxDTO;
+import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
 import io.agritrack.data.dto.tx.ShippingTxDTO;
 import io.agritrack.data.dto.tx.StorageTxDTO;
@@ -42,6 +43,10 @@ public interface TransactionApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/receipt")
     Call<ProcessingTxDTO> syncProcessingTx(@Body ProcessingTxDTO processTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/quality")
+    Call<QualityTxDTO> syncQualityTx(@Body QualityTxDTO processTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/logger/temp")

@@ -9,10 +9,8 @@ public class ProcessingTxDTO {
 
     public Long id;
     public String clean_truck;
-    public String plot;
     public String species;
     public String dispatch_note;
-    public String product_condition;
     public String security_clip_number;
     public List<String> bins_received = new LinkedList<String>();
     public String flot;
@@ -28,10 +26,8 @@ public class ProcessingTxDTO {
         ProcessingTxDTO processingTxDto = new ProcessingTxDTO();
 
         processingTxDto.clean_truck = processing.cleanTruck;
-        processingTxDto.plot = processing.plot;
         processingTxDto.species = processing.species;
         processingTxDto.dispatch_note = processing.dispatchNote;
-        processingTxDto.product_condition = processing.productCondition;
         processingTxDto.security_clip_number = processing.securityClipNumber;
         processingTxDto.flot = processing.flot;
         processingTxDto.site = processing.site;

@@ -155,6 +155,12 @@
     <string name="processing_details">Receipt details</string>
 
     <string name="title_quality">QUALITY</string>
+    <string name="choose_quality_type">Select quality type</string>
+    <string name="quality_one_step">ONE CHECK</string>
+    <string name="quality_first_step_text">Receipt</string>
+    <string name="quality_two_steps">TWO CHECKS</string>
+    <string name="quality_second_step_text">Package</string>
+    <string name="quality_select_type">"Are the bins intended for processing?"</string>
 
     <string name="dispatch_note">Type dispatch note</string>
     <string name="enter_lot">Type LOT</string>

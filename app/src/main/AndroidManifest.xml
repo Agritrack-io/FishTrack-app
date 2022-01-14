@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="io.agritrack">
+    package="io.agritrack" >
 
     <uses-feature android:name="android.hardware.location.gps" />
     <uses-feature android:name="android.hardware.camera" />
@@ -19,21 +19,27 @@
     <application
         android:name=".FishTrackApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_tomato"
-        android:label="@string/app_name_tomato"
-        android:roundIcon="@mipmap/ic_launcher_tomato"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true"
-        tools:replace="android:label">
+        tools:replace="android:label" >
+        <activity
+            android:name=".fish.ui.quality_arrival.PackageQualityStartPackageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".fish.ui.quality_arrival.PackageQualitySelectStepsActivity"
+            android:exported="false" />
         <activity
             android:name=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.quality_arrival.PackageQualityMoreInfo2Activity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.quality_arrival.PackageQualityTemperatureProfilesActivity"
             android:exported="false"
@@ -55,7 +61,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fish.ui.quality_arrival.PackageQualityStartActivity"
+            android:name=".fish.ui.quality_arrival.PackageQualityStartReceiptActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -81,8 +87,8 @@
         <activity
             android:name=".fruit.ui.shipping.ShippingDetailsActivity"
             android:exported="false"
-            android:windowSoftInputMode="stateAlwaysVisible"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
             android:name=".fruit.ui.shipping.ShippingStartActivity"
             android:exported="false"
@@ -294,7 +300,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.login.LoginActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

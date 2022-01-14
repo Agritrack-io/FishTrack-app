@@ -5,6 +5,7 @@ import static io.agritrack.rfid.RFIDUtils.WaitFor;
 
 import android.animation.TimeAnimator;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.util.Strings;
@@ -38,6 +40,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
 
     private static final String SHOW_READ_BUTTON = "ShowReadButton";
     private static final String SHOW_INIT_BUTTON = "ShowInitButton";
+    private static final String SHOW_RESET_BUTTON = "ShowResetButton";
     private static final int LEVEL_INCREMENT = 200;
     private static final int MAX_LEVEL = 10000;
     private static final String LOGGER_EPC = "loggerEPC";
@@ -53,6 +56,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     private List<String[]> values = null;
     private boolean showReadButton = false;
     private boolean showInitButton = false;
+    private boolean showResetButton = false;
     private String loggerEPC;
     private TaskRunner taskRunner;
 
@@ -77,8 +81,11 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                 m.put("EPC", loggerEPC);
                 m.put("LastValue", rs);
 
+                Dialog mDialog = getDialog();
                 if (!showReadButton) {
-                    getDialog().dismiss();
+                    if (mDialog!=null) {
+                        mDialog.dismiss();
+                    }
                     reading.setReading(m);
                 }
             } else {
@@ -181,12 +188,13 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         taskRunner = new TaskRunner();
     }
 
-    public static LoggerInitDialogFragment newInstance(String epc, boolean showReadButton, boolean showInitButton) {
+    public static LoggerInitDialogFragment newInstance(String epc, boolean showReadButton, boolean showInitButton, boolean showResetButton) {
         LoggerInitDialogFragment frag = new LoggerInitDialogFragment();
         Bundle args = new Bundle();
         args.putString(LOGGER_EPC, epc);
         args.putBoolean(SHOW_READ_BUTTON, showReadButton);
         args.putBoolean(SHOW_INIT_BUTTON, showInitButton);
+        args.putBoolean(SHOW_RESET_BUTTON, showResetButton);
         frag.setArguments(args);
 
         return frag;
@@ -215,6 +223,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
             showReadButton = getArguments().getBoolean(SHOW_READ_BUTTON);
             showInitButton = getArguments().getBoolean(SHOW_INIT_BUTTON);
+            showResetButton = getArguments().getBoolean(SHOW_RESET_BUTTON);
             this.loggerEPC = getArguments().getString(LOGGER_EPC);
 
             cmd = RFIDModuleFactory.getInstance();
@@ -228,15 +237,18 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                 btnRead.setVisibility(View.GONE);
             }
 
-            if (showInitButton) {
+            if (showResetButton) {
                 btnReset.setVisibility(View.VISIBLE);
-                btnSetup.setVisibility(View.VISIBLE);
-                btnInit.setVisibility(View.VISIBLE);
-
                 btnReset.setText("Press to Start.");
                 btnReset.setOnClickListener(resetBtnListener);
             } else {
                 btnReset.setVisibility(View.GONE);
+            }
+
+            if (showInitButton) {
+                btnSetup.setVisibility(View.VISIBLE);
+                btnInit.setVisibility(View.VISIBLE);
+            } else {
                 btnSetup.setVisibility(View.GONE);
                 btnInit.setVisibility(View.GONE);
             }
@@ -269,7 +281,10 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         mAnimator = new TimeAnimator();
         mAnimator.setTimeListener(this);
 
-        getActivity().runOnUiThread(() -> animateButton(view));
+        FragmentActivity mActivity = getActivity();
+        if (mActivity!=null) {
+            mActivity.runOnUiThread(() -> animateButton(view));
+        }
     }
 
     private void stopAnimation() {

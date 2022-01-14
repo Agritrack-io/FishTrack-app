@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,10 +19,12 @@ import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
+import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class PackageQualityMoreInfo3Activity extends AppCompatActivity {
 
+    private EditText etLightHematoma, etHeavyHematoma, etPink, etDark, etWhite, etUncolored, etHematomas, etMucus, etProblematicFish;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
 
@@ -69,16 +72,20 @@ public class PackageQualityMoreInfo3Activity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
-        //etPlot = findViewById(R.id.etPlot);
-        /*mtvRemarks = findViewById(R.id.mtvRemarks);
-        mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
-        ivTakenPhoto = findViewById(R.id.ivTakenPhoto);*/
+        etLightHematoma = findViewById(R.id.etLightHematoma);
+        etHeavyHematoma = findViewById(R.id.etHeavyHematoma);
+        etPink = findViewById(R.id.etPink);
+        etDark = findViewById(R.id.etDark);
+        etWhite = findViewById(R.id.etWhite);
+        etUncolored = findViewById(R.id.etUncolored);
+        etHematomas = findViewById(R.id.etHematomas);
+        etMucus = findViewById(R.id.etMucus);
+        etProblematicFish = findViewById(R.id.etProblematicFish);
         ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {
-        ProcessingRecord prcTx = GlobalState.recProcessing;
+        QualityRecord qualityRecord = GlobalState.recQuality;
 
         /*if (!Strings.isEmptyOrWhitespace(prcTx.remarks)) {
             mtvRemarks.setText(prcTx.remarks);
@@ -89,19 +96,46 @@ public class PackageQualityMoreInfo3Activity extends AppCompatActivity {
         }*/
     }
 
-    private ProcessingRecord updateState() {
-        ProcessingRecord processingRecord = GlobalState.recProcessing;
+    private QualityRecord updateState() {
+        QualityRecord qualityRecord = GlobalState.recQuality;
 
-        /*if (etPlot.getText() != null) {
-            processingRecord.pLot = etPlot.getText().toString();
+        if (etLightHematoma.getText() != null && !Strings.isEmptyOrWhitespace(etLightHematoma.getText().toString())) {
+            qualityRecord.lightHematoma = Double.valueOf(etLightHematoma.getText().toString());
         }
-        if (!Strings.isEmptyOrWhitespace(selectedFishCondition)) {
-            processingRecord.fishCondition = selectedFishCondition;
+
+        if (etHeavyHematoma.getText() != null && !Strings.isEmptyOrWhitespace(etHeavyHematoma.getText().toString())) {
+            qualityRecord.heavyHematoma = Double.valueOf(etHeavyHematoma.getText().toString());
         }
-        if (mtvRemarks.getText() != null) {
-            processingRecord.remarks = mtvRemarks.getText().toString();
-        }*/
-        return processingRecord;
+
+        if (etPink.getText() != null && !Strings.isEmptyOrWhitespace(etPink.getText().toString())) {
+            qualityRecord.pink = Double.valueOf(etPink.getText().toString());
+        }
+
+        if (etDark.getText() != null && !Strings.isEmptyOrWhitespace(etDark.getText().toString())) {
+            qualityRecord.dark = Double.valueOf(etDark.getText().toString());
+        }
+
+        if (etWhite.getText() != null && !Strings.isEmptyOrWhitespace(etWhite.getText().toString())) {
+            qualityRecord.white = Double.valueOf(etWhite.getText().toString());
+        }
+
+        if (etUncolored.getText() != null && !Strings.isEmptyOrWhitespace(etUncolored.getText().toString())) {
+            qualityRecord.uncolored = Double.valueOf(etUncolored.getText().toString());
+        }
+
+        if (etHematomas.getText() != null && !Strings.isEmptyOrWhitespace(etHematomas.getText().toString())) {
+            qualityRecord.hematomas = Double.valueOf(etHematomas.getText().toString());
+        }
+
+        if (etMucus.getText() != null && !Strings.isEmptyOrWhitespace(etMucus.getText().toString())) {
+            qualityRecord.mucus = Double.valueOf(etMucus.getText().toString());
+        }
+
+        if (etProblematicFish.getText() != null && !Strings.isEmptyOrWhitespace(etProblematicFish.getText().toString())) {
+            qualityRecord.problematicFish = Double.valueOf(etProblematicFish.getText().toString());
+        }
+
+        return qualityRecord;
     }
 
     private String validate() {

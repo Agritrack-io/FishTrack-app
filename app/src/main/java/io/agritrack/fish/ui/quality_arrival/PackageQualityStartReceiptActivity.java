@@ -42,7 +42,6 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.bo.LoggerReading;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.TriggerKeyAwareActivity;
@@ -50,17 +49,16 @@ import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.LoggerInitDialogFragment;
 
-public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
+public class PackageQualityStartReceiptActivity extends TriggerKeyAwareActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+    private boolean intentForProcessing = false; //TODO: Check why savedInstance is null
+    private final LinkedList<String[]> listMeasurements = new LinkedList<>();
     private SingleShotScanner scanner_runnable;
-
     private MobileDB db;
-
     private RecyclerView rvBinsForTransport;
     private TextView tvBinsCount;
-    private final LinkedList<String[]> listMeasurements = new LinkedList<>();
     private TemplateRecyclerAdapter adapterBins;
 
     private ImageButton ivDeleteBin;
@@ -94,10 +92,15 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package_quality_start);
+        setContentView(R.layout.activity_package_quality_start_receipt);
+
+        if (savedInstanceState != null) {
+            Bundle bundle = getIntent().getExtras();
+            intentForProcessing = bundle.getBoolean("processing");
+        }
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityStart);
+        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityStartReceiptActivity);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get an instance of local DB
@@ -154,7 +157,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
         });
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(PackageQualityStartActivity.this);
+            supportDialog = new SupportDialog(PackageQualityStartReceiptActivity.this);
             supportDialog.showDialog();
         });
 
@@ -206,7 +209,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
             stopScanner();
-            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), PackageQualitySelectStepsActivity.class);
             startActivity(i);
         });
     }
@@ -224,18 +227,19 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
     }
 
     private void updateState() {
-        GlobalState.initProcessingRecord();
+        GlobalState.initQualityRecord();
 
-        GlobalState.recProcessing.qualityBins = new LinkedList<>(adapterBins.getValues());
-        GlobalState.recProcessing.tempValues = listMeasurements;
-        GlobalState.recProcessing.retrievedAt = System.currentTimeMillis();
-        GlobalState.recProcessing.logger_rfid = logger_rfid;
+        GlobalState.recQuality.qualityBins = new LinkedList<>(adapterBins.getValues());
+        GlobalState.recQuality.tempValues = listMeasurements;
+        GlobalState.recQuality.qualityProcessing = intentForProcessing;
+        GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
+        GlobalState.recQuality.logger_rfid = logger_rfid;
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (GlobalState.recProcessing.qualityBins == null || GlobalState.recProcessing.qualityBins.isEmpty()) {
+            if (GlobalState.recQuality.qualityBins == null || GlobalState.recQuality.qualityBins.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Received bins'"));
             }
         }
@@ -264,16 +268,16 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
 
     // ###################################################
     private void stopScanner() {
-        if(this.scanner_runnable !=null) {
+        if (this.scanner_runnable != null) {
             this.scanner_runnable.stopReading();
             mScanHandler.removeCallbacks(this.scanner_runnable);
         }
     }
 
     private class ScanHandler extends Handler {
-        private final WeakReference<PackageQualityStartActivity> mActivity;
+        private final WeakReference<PackageQualityStartReceiptActivity> mActivity;
 
-        public ScanHandler(PackageQualityStartActivity activity) {
+        public ScanHandler(PackageQualityStartReceiptActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -297,7 +301,7 @@ public class PackageQualityStartActivity extends TriggerKeyAwareActivity {
                                 if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
                                     logger_rfid = epcStr.substring(11);
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, true, false);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, true, false, intentForProcessing);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {

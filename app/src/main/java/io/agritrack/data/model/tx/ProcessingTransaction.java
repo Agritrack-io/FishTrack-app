@@ -24,9 +24,6 @@ public class ProcessingTransaction {
     @ColumnInfo(name = "smells")
     public String smells;
 
-    @ColumnInfo(name = "plot")
-    public String plot;
-
     @ColumnInfo(name = "species")
     public String species;
 

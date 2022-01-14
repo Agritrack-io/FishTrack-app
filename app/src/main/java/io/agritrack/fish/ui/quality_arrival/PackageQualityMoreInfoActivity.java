@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
+import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -30,6 +32,7 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
     private String selectedBinCondition;
     private ToggleGroup tgIceCondition;
     private String selectedIceCondition;
+    private EditText etRigorMortis, etEliminationFood, etEliminationSperm, etParasites, etPeeling;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
 
@@ -77,20 +80,21 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
     }
 
     private void assignCtrlVars() {
-        //etPlot = findViewById(R.id.etPlot);
+
         tgBinCondition = findViewById(R.id.tgBinCondition);
         tgBinCondition.setOnCheckedChangeListener(this);
         tgIceCondition = findViewById(R.id.tgIceCondition);
         tgIceCondition.setOnCheckedChangeListener(this);
-        /*mtvRemarks = findViewById(R.id.mtvRemarks);
-        mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
-        ivTakenPhoto = findViewById(R.id.ivTakenPhoto);*/
+        etRigorMortis = findViewById(R.id.etRigorMortis);
+        etEliminationFood = findViewById(R.id.etEliminationFood);
+        etEliminationSperm = findViewById(R.id.etEliminationSperm);
+        etParasites = findViewById(R.id.etParasites);
+        etPeeling = findViewById(R.id.etPeeling);
         ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {
-        ProcessingRecord prcTx = GlobalState.recProcessing;
+        QualityRecord qualityRecord = GlobalState.recQuality;
 
         /*if (!Strings.isEmptyOrWhitespace(prcTx.remarks)) {
             mtvRemarks.setText(prcTx.remarks);
@@ -101,19 +105,33 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
         }*/
     }
 
-    private ProcessingRecord updateState() {
-        ProcessingRecord processingRecord = GlobalState.recProcessing;
+    private QualityRecord updateState() {
+        QualityRecord qualityRecord = GlobalState.recQuality;
 
-        /*if (etPlot.getText() != null) {
-            processingRecord.pLot = etPlot.getText().toString();
+        if (etRigorMortis.getText() != null && !Strings.isEmptyOrWhitespace(etRigorMortis.getText().toString())) {
+            qualityRecord.rigorMortis = Double.valueOf(etRigorMortis.getText().toString());
         }
-        if (!Strings.isEmptyOrWhitespace(selectedFishCondition)) {
-            processingRecord.fishCondition = selectedFishCondition;
+
+        if (etEliminationFood.getText() != null && !Strings.isEmptyOrWhitespace(etEliminationFood.getText().toString())) {
+            qualityRecord.eliminationFood = Double.valueOf(etEliminationFood.getText().toString());
         }
-        if (mtvRemarks.getText() != null) {
-            processingRecord.remarks = mtvRemarks.getText().toString();
-        }*/
-        return processingRecord;
+
+        if (etEliminationSperm.getText() != null && !Strings.isEmptyOrWhitespace(etEliminationSperm.getText().toString())) {
+            qualityRecord.eliminationSperm = Double.valueOf(etEliminationSperm.getText().toString());
+        }
+
+        if (etParasites.getText() != null && !Strings.isEmptyOrWhitespace(etParasites.getText().toString())) {
+            qualityRecord.parasites = Double.valueOf(etParasites.getText().toString());
+        }
+
+        if (etPeeling.getText() != null && !Strings.isEmptyOrWhitespace(etPeeling.getText().toString())) {
+            qualityRecord.peeling = Double.valueOf(etPeeling.getText().toString());
+        }
+
+        qualityRecord.binCondition = selectedBinCondition;
+        qualityRecord.iceCondition = selectedIceCondition;
+
+        return qualityRecord;
     }
 
     private String validate() {
@@ -139,6 +157,14 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
             selectedBinCondition = "ACCEPTABLE";
         } else if (checkedId == R.id.tbBadBin) {
             selectedBinCondition = "NOT ACCEPTABLE";
+        }
+
+        if (checkedId == R.id.tbGoodIce) {
+            selectedIceCondition = "GOOD";
+        } else if (checkedId == R.id.tbMediumIce) {
+            selectedIceCondition = "ACCEPTABLE";
+        } else if (checkedId == R.id.tbBadIce) {
+            selectedIceCondition = "NOT ACCEPTABLE";
         }
     }
 }

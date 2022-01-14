@@ -16,7 +16,7 @@ public class YesNoDialogFragment extends DialogFragment {
     private Bundle args = new Bundle();
     private CharSequence msg;
     private ConfirmationDialogCommand confirmationCmd;
-    private Function<Object, String> confirmationFn;
+    private ConfirmationDialogCommand rejectionCmd;
 
     public static YesNoDialogFragment instance() {
         YesNoDialogFragment fragment = new YesNoDialogFragment();
@@ -54,6 +54,9 @@ public class YesNoDialogFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (dialog != null) {
+                    if (rejectionCmd != null) {
+                        rejectionCmd.execute(args);
+                    }
                     dialog.dismiss();
                 }
             }
@@ -68,5 +71,9 @@ public class YesNoDialogFragment extends DialogFragment {
 
     public void onConfirm(ConfirmationDialogCommand cmd) {
         this.confirmationCmd = cmd;
+    }
+
+    public void onReject(ConfirmationDialogCommand cmd) {
+        this.rejectionCmd = cmd;
     }
 }

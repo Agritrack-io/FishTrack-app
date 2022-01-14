@@ -4,6 +4,7 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recProcessing;
+import static io.agritrack.fish.state.GlobalState.recQuality;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
@@ -28,11 +29,14 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.common.MeasurementsDTO;
 import io.agritrack.data.dto.tx.ProcessingTxDTO;
+import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.ProcessingTransaction;
+import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
+import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
@@ -90,8 +94,8 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
             public void onClick(View v) {
 
                 if (mLastLocation != null) {
-                    recProcessing.longitude = mLastLocation.getLongitude();
-                    recProcessing.latitude = mLastLocation.getLatitude();
+                    recQuality.longitude = mLastLocation.getLongitude();
+                    recQuality.latitude = mLastLocation.getLatitude();
                 } else {
                     CToast(PackageQualityConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
@@ -124,22 +128,14 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
     }
 
     private void initControlsFromState() {
-        ProcessingRecord prcRecord = GlobalState.recProcessing;
+        QualityRecord qltRecord = GlobalState.recQuality;
 
-        if (!Strings.isEmptyOrWhitespace(prcRecord.dispatchNote)) {
-            tvDispatchNote.setText(prcRecord.dispatchNote);
+        if (!Strings.isEmptyOrWhitespace(qltRecord.pLot)) {
+            tvPackagingLot.setText(qltRecord.pLot);
         }
 
-        if (!Strings.isEmptyOrWhitespace(prcRecord.pLot)) {
-            tvPackagingLot.setText(prcRecord.pLot);
-        }
-
-        if (prcRecord.qualityBins != null) {
-            tvNumberOfBinsCount.setText(String.valueOf(prcRecord.qualityBins.size()));
-        }
-
-        if (!Strings.isEmptyOrWhitespace(prcRecord.securityClip)) {
-            tvSecurityClipNumber.setText(prcRecord.securityClip);
+        if (qltRecord.qualityBins != null) {
+            tvNumberOfBinsCount.setText(String.valueOf(qltRecord.qualityBins.size()));
         }
 
         //tvNumberOfBinsCount.setText(prcRecord.totalBinsUsed != null ? prcRecord.totalBinsUsed.toString() : "N/A");
@@ -174,7 +170,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
                     //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
                     // persist Processing Record data to local DB.
-                    ProcessingTransaction tx = GlobalState.commitProcessing(db);
+                    QualityTransaction tx = GlobalState.commitQuality(db);
 
                     // persist Measurements Record data to local DB.
                     List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db);
@@ -184,7 +180,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
                     }
 
                     // sync Processing records
-                    Call<ProcessingTxDTO> syncTxAsyncCall = updService.syncProcessingTx(ProcessingTxDTO.convert(tx), "Bearer " + token);
+                    Call<QualityTxDTO> syncTxAsyncCall = updService.syncQualityTx(QualityTxDTO.convert(tx), "Bearer " + token);
                     syncTxAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncTxCallBack());
 
                     // sync Measurements records
@@ -207,10 +203,10 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         }
     }
 
-    public class SyncTxCallBack implements Callback<ProcessingTxDTO> {
+    public class SyncTxCallBack implements Callback<QualityTxDTO> {
         @Override
-        public void onResponse(Call<ProcessingTxDTO> call, Response<ProcessingTxDTO> response) {
-            ProcessingTxDTO rs = response.body();
+        public void onResponse(Call<QualityTxDTO> call, Response<QualityTxDTO> response) {
+            QualityTxDTO rs = response.body();
 
             if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
@@ -221,7 +217,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<ProcessingTxDTO> call, Throwable error) {
+        public void onFailure(Call<QualityTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
