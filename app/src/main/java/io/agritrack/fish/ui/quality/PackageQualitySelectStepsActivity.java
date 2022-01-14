@@ -1,4 +1,4 @@
-package io.agritrack.fish.ui.quality_arrival;
+package io.agritrack.fish.ui.quality;
 
 import static io.agritrack.common.LargeString.render;
 
@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.quality.packaging.PackageQualityStartPackageActivity;
+import io.agritrack.fish.ui.quality.receipt.PackageQualityStartReceiptActivity;
 import io.agritrack.ui.adapter.InventoryMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.service.LocalPreferences;
@@ -58,6 +61,7 @@ public class PackageQualitySelectStepsActivity extends AppCompatActivity {
 
                 switch (position) {
                     case First_Step_Idx:
+                        GlobalState.initQualityRecord();
                         i = new Intent(appCtx, PackageQualityStartReceiptActivity.class);
                         YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                         confirmSiteSelectionDlg.setMessage(getText(R.string.quality_select_type));
@@ -76,6 +80,7 @@ public class PackageQualitySelectStepsActivity extends AppCompatActivity {
                         confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                         break;
                     case Second_Step_Idx:
+                        GlobalState.initQualityRecord();
                             i = new Intent(appCtx, PackageQualityStartPackageActivity.class);
                             i.putExtra("id", position);
                             startActivity(i);

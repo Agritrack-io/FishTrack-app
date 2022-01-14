@@ -59,7 +59,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
-import io.agritrack.fish.ui.quality_arrival.PackageQualitySelectStepsActivity;
+import io.agritrack.fish.ui.quality.PackageQualitySelectStepsActivity;
 import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
 import io.agritrack.fish.ui.transport.TransportStartActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;

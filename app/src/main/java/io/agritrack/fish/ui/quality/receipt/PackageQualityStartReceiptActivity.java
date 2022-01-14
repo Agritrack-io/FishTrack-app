@@ -1,17 +1,9 @@
-package io.agritrack.fish.ui.quality_arrival;
+package io.agritrack.fish.ui.quality.receipt;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -24,6 +16,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -44,16 +43,18 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.bo.LoggerReading;
+import io.agritrack.fish.ui.quality.PackageQualitySelectStepsActivity;
+import io.agritrack.fish.ui.quality.PackageQualityTemperatureProfilesActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.LoggerInitDialogFragment;
 
-public class PackageQualityStartPackageActivity extends TriggerKeyAwareActivity {
+public class PackageQualityStartReceiptActivity extends TriggerKeyAwareActivity {
 
     // Local handler that receives the RFID scanner results.
-    private final PackageQualityStartPackageActivity.ScanHandler mScanHandler = new PackageQualityStartPackageActivity.ScanHandler(this);
+    private final ScanHandler mScanHandler = new ScanHandler(this);
     private boolean intentForProcessing = false; //TODO: Check why savedInstance is null
     private final LinkedList<String[]> listMeasurements = new LinkedList<>();
     private SingleShotScanner scanner_runnable;
@@ -93,10 +94,15 @@ public class PackageQualityStartPackageActivity extends TriggerKeyAwareActivity 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package_quality_start_package);
+        setContentView(R.layout.activity_package_quality_start_receipt);
+
+        if (savedInstanceState != null) {
+            Bundle bundle = getIntent().getExtras();
+            intentForProcessing = bundle.getBoolean("processing");
+        }
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityStartPackageActivity);
+        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityStartReceiptActivity);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get an instance of local DB
@@ -153,7 +159,7 @@ public class PackageQualityStartPackageActivity extends TriggerKeyAwareActivity 
         });
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(PackageQualityStartPackageActivity.this);
+            supportDialog = new SupportDialog(PackageQualityStartReceiptActivity.this);
             supportDialog.showDialog();
         });
 
@@ -223,10 +229,10 @@ public class PackageQualityStartPackageActivity extends TriggerKeyAwareActivity 
     }
 
     private void updateState() {
-        GlobalState.initQualityRecord();
 
         GlobalState.recQuality.qualityBins = new LinkedList<>(adapterBins.getValues());
         GlobalState.recQuality.tempValues = listMeasurements;
+        GlobalState.recQuality.qualityProcessing = intentForProcessing;
         GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
         GlobalState.recQuality.logger_rfid = logger_rfid;
     }
@@ -270,9 +276,9 @@ public class PackageQualityStartPackageActivity extends TriggerKeyAwareActivity 
     }
 
     private class ScanHandler extends Handler {
-        private final WeakReference<PackageQualityStartPackageActivity> mActivity;
+        private final WeakReference<PackageQualityStartReceiptActivity> mActivity;
 
-        public ScanHandler(PackageQualityStartPackageActivity activity) {
+        public ScanHandler(PackageQualityStartReceiptActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 

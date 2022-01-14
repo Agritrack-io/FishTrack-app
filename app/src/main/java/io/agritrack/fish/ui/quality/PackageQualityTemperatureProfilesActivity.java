@@ -1,4 +1,4 @@
-package io.agritrack.fish.ui.quality_arrival;
+package io.agritrack.fish.ui.quality;
 
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
@@ -21,6 +21,8 @@ import java.util.Map;
 import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.LoggerDataRecord;
+import io.agritrack.fish.ui.quality.receipt.PackageQualityInfoActivity;
+import io.agritrack.fish.ui.quality.receipt.PackageQualityStartReceiptActivity;
 import io.agritrack.ui.adapter.TemperatureProfileAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 

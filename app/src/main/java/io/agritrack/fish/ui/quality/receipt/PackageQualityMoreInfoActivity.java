@@ -1,6 +1,5 @@
-package io.agritrack.fish.ui.quality_arrival;
+package io.agritrack.fish.ui.quality.receipt;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -8,9 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,7 +17,6 @@ import com.google.android.gms.common.util.Strings;
 import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
