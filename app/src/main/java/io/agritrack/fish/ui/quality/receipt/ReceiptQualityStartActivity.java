@@ -43,15 +43,14 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.bo.LoggerReading;
-import io.agritrack.fish.ui.quality.PackageQualitySelectStepsActivity;
-import io.agritrack.fish.ui.quality.PackageQualityTemperatureProfilesActivity;
+import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.LoggerInitDialogFragment;
 
-public class PackageQualityStartReceiptActivity extends TriggerKeyAwareActivity {
+public class ReceiptQualityStartActivity extends TriggerKeyAwareActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
@@ -94,7 +93,7 @@ public class PackageQualityStartReceiptActivity extends TriggerKeyAwareActivity 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package_quality_start_receipt);
+        setContentView(R.layout.activity_receipt_quality_start);
 
         if (savedInstanceState != null) {
             Bundle bundle = getIntent().getExtras();
@@ -102,7 +101,7 @@ public class PackageQualityStartReceiptActivity extends TriggerKeyAwareActivity 
         }
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityStartReceiptActivity);
+        TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityStartActivity);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get an instance of local DB
@@ -159,7 +158,7 @@ public class PackageQualityStartReceiptActivity extends TriggerKeyAwareActivity 
         });
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(PackageQualityStartReceiptActivity.this);
+            supportDialog = new SupportDialog(ReceiptQualityStartActivity.this);
             supportDialog.showDialog();
         });
 
@@ -203,7 +202,7 @@ public class PackageQualityStartReceiptActivity extends TriggerKeyAwareActivity 
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), PackageQualityTemperatureProfilesActivity.class);
+                Intent i = new Intent(getApplicationContext(), ReceiptQualityTemperatureProfilesActivity.class);
                 startActivity(i);
             }
         });
@@ -211,7 +210,7 @@ public class PackageQualityStartReceiptActivity extends TriggerKeyAwareActivity 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
             stopScanner();
-            Intent i = new Intent(getApplicationContext(), PackageQualitySelectStepsActivity.class);
+            Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
             startActivity(i);
         });
     }
@@ -276,9 +275,9 @@ public class PackageQualityStartReceiptActivity extends TriggerKeyAwareActivity 
     }
 
     private class ScanHandler extends Handler {
-        private final WeakReference<PackageQualityStartReceiptActivity> mActivity;
+        private final WeakReference<ReceiptQualityStartActivity> mActivity;
 
-        public ScanHandler(PackageQualityStartReceiptActivity activity) {
+        public ScanHandler(ReceiptQualityStartActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 

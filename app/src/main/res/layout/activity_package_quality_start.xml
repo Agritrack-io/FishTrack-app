@@ -6,7 +6,7 @@ android:id="@+id/fishingBinsLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_semi_green"
-tools:context=".fish.ui.quality.receipt.PackageQualityStartReceiptActivity">
+tools:context=".fish.ui.quality.packaging.PackageQualityStartActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -53,7 +53,7 @@ tools:context=".fish.ui.quality.receipt.PackageQualityStartReceiptActivity">
         tools:ignore="MissingPrefix" />
 
     <TextView
-        android:id="@+id/tvHeaderPackageQualityStartReceiptActivity"
+        android:id="@+id/tvHeaderPackageQualityStartPackageActivity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

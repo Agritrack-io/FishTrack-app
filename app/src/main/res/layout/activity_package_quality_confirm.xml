@@ -6,7 +6,7 @@ android:id="@+id/fishingStartActivityLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_semi_green"
-tools:context=".fish.ui.quality.receipt.PackageQualityConfirmActivity">
+tools:context=".fish.ui.quality.packaging.PackageQualityConfirmActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -108,7 +108,7 @@ tools:context=".fish.ui.quality.receipt.PackageQualityConfirmActivity">
                 android:text="@string/number_of_bins"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvPackagingLotLabel"
+                app:layout_constraintBottom_toTopOf="@+id/tvFishTempLabel"
                 app:layout_constraintEnd_toStartOf="@+id/tvNumberOfBinsCount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -123,26 +123,26 @@ tools:context=".fish.ui.quality.receipt.PackageQualityConfirmActivity">
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvPackagingLot"
+                app:layout_constraintBottom_toTopOf="@+id/tvFishTemp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvNumberOfBinsLabel"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvPackagingLotLabel"
+                android:id="@+id/tvFishTempLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/product_lot_confirm_label"
+                android:text="@string/fish_temp_confirm_label"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvPackagingLot"
+                app:layout_constraintEnd_toStartOf="@+id/tvFishTemp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsLabel" />
 
             <TextView
-                android:id="@+id/tvPackagingLot"
-                android:layout_width="180dp"
+                android:id="@+id/tvFishTemp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
@@ -151,7 +151,7 @@ tools:context=".fish.ui.quality.receipt.PackageQualityConfirmActivity">
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvPackagingLotLabel"
+                app:layout_constraintStart_toEndOf="@+id/tvFishTempLabel"
                 app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsCount" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

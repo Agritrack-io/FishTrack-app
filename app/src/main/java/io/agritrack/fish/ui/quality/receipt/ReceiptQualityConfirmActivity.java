@@ -42,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PackageQualityConfirmActivity extends LocationAwareActivity {
+public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
@@ -56,27 +56,27 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package_quality_confirm);
+        setContentView(R.layout.activity_receipt_quality_confirm);
 
         // activate GPS location update feature.
         super.findLocation();
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityConfirm);
+        TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
 
         // instantiate ProgressDialog and set style.
-        progressDialog = new ProgressDialog(PackageQualityConfirmActivity.this);
+        progressDialog = new ProgressDialog(ReceiptQualityConfirmActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(PackageQualityConfirmActivity.this);
+            supportDialog = new SupportDialog(ReceiptQualityConfirmActivity.this);
             supportDialog.showDialog();
         });
 
@@ -93,7 +93,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
                     recQuality.longitude = mLastLocation.getLongitude();
                     recQuality.latitude = mLastLocation.getLatitude();
                 } else {
-                    CToast(PackageQualityConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
+                    CToast(ReceiptQualityConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
 
                 // Update state and proceed to next
@@ -109,7 +109,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToPackageQualityInfo);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackageQualityMoreInfo3Activity.class);
+            Intent i = new Intent(getApplicationContext(), ReceiptQualityMoreInfo3Activity.class);
             startActivity(i);
         });
     }
@@ -177,12 +177,12 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
 
                     // sync Processing records
                     Call<QualityTxDTO> syncTxAsyncCall = updService.syncQualityTx(QualityTxDTO.convert(tx), "Bearer " + token);
-                    syncTxAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncTxCallBack());
+                    syncTxAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncTxCallBack());
 
                     // sync Measurements records
                     if(!measurementsDTOs.isEmpty()) {
                         Call<List<MeasurementsDTO>> syncMsAsyncCall = updService.syncMeasurements(measurementsDTOs, "Bearer " + token);
-                        syncMsAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncMsCallBack());
+                        syncMsAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncMsCallBack());
                     }
                     return true;
                 } catch (Exception e) {
@@ -239,7 +239,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Processing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_processing_tx_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_temperatures_tx_update_failure), Toast.LENGTH_LONG));
             }
         }
 

@@ -31,6 +31,7 @@ import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.SyncAssetsCallBack;
+import io.agritrack.api.sync.SyncBinsByPackagingSite;
 import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
 import io.agritrack.api.sync.SyncCustomersCallBack;
@@ -42,6 +43,7 @@ import io.agritrack.api.sync.SyncSuppliersCallBack;
 import io.agritrack.api.sync.SyncUsersCallBack;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.AppUserDTO;
+import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
@@ -59,7 +61,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
-import io.agritrack.fish.ui.quality.PackageQualitySelectStepsActivity;
+import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
 import io.agritrack.fish.ui.transport.TransportStartActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
@@ -107,7 +109,7 @@ public class FishHomeActivity extends AppCompatActivity {
             menuItemsSet.add(new MenuItem(Receiving_Idx, getString(R.string.menu_title_fish_receiving), ProcessBinsActivity.class, R.drawable.processing));
         }
         if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
-            menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), PackageQualitySelectStepsActivity.class, R.drawable.quality));
+            menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), QualitySelectStepsActivity.class, R.drawable.quality));
         }
         if (roleCanAccessMenu(userRoles, Transport_Idx)) {
             menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
@@ -190,7 +192,7 @@ public class FishHomeActivity extends AppCompatActivity {
                         i = new Intent(appCtx, ProcessBinsActivity.class);
                         break;
                     case Packaging_Quality_Idx:
-                        i = new Intent(appCtx, PackageQualitySelectStepsActivity.class);
+                        i = new Intent(appCtx, QualitySelectStepsActivity.class);
                         break;
                     case Warehouse_Idx:
                         i = new Intent(appCtx, WhMenuActivity.class);
@@ -274,6 +276,10 @@ public class FishHomeActivity extends AppCompatActivity {
             // sync Cage Details
             Call<List<CageDetailsDTO>> syncCageDetailsAsyncCall = syncService.getCageDetailsBySiteId(siteId, "Bearer " + token);
             syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
+
+            // sync Cage Details
+            Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getBinsByPlant(siteId, "Bearer " + token);
+            syncBinsByPlantAsyncCall.enqueue(new SyncBinsByPackagingSite(this.syncResult));
 
             // sync fish species
             Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.PRODUCT, "Bearer " + token);

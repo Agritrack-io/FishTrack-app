@@ -20,7 +20,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class PackageQualityMoreInfo3Activity extends AppCompatActivity {
+public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
 
     private EditText etLightHematoma, etHeavyHematoma, etPink, etDark, etWhite, etUncolored, etHematomas, etMucus, etProblematicFish;
     private ImageView ivSupport;
@@ -29,10 +29,10 @@ public class PackageQualityMoreInfo3Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package_quality_more_info3);
+        setContentView(R.layout.activity_receipt_quality_more_info3);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityMoreInfo3);
+        TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityMoreInfo3);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
@@ -42,7 +42,7 @@ public class PackageQualityMoreInfo3Activity extends AppCompatActivity {
         initControlsFromState();
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(PackageQualityMoreInfo3Activity.this);
+            supportDialog = new SupportDialog(ReceiptQualityMoreInfo3Activity.this);
             supportDialog.showDialog();
         });
 
@@ -57,14 +57,14 @@ public class PackageQualityMoreInfo3Activity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), PackageQualityConfirmActivity.class);
+                Intent i = new Intent(getApplicationContext(), ReceiptQualityConfirmActivity.class);
                 startActivity(i);
             }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToPackageQualityMoreInfo2);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackageQualityMoreInfo2Activity.class);
+            Intent i = new Intent(getApplicationContext(), ReceiptQualityMoreInfo2Activity.class);
             startActivity(i);
         });
     }

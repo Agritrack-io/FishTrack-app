@@ -8,7 +8,7 @@ android:layout_height="match_parent"
 android:background="@color/agri_semi_green"
 android:descendantFocusability="beforeDescendants"
 android:focusableInTouchMode="true"
-tools:context=".fish.ui.quality.packaging.PackageQualityInfoActivity">
+tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -55,7 +55,7 @@ tools:context=".fish.ui.quality.packaging.PackageQualityInfoActivity">
         tools:ignore="MissingPrefix" />
 
     <TextView
-        android:id="@+id/tvHeaderPackageQualityInfo"
+        android:id="@+id/tvHeaderReceiptQualityInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -83,9 +83,70 @@ tools:context=".fish.ui.quality.packaging.PackageQualityInfoActivity">
     app:layout_constraintTop_toBottomOf="@+id/headerLayout">
 
     <RelativeLayout
+        android:id="@+id/processStartALayout"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/moreInfoCLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/shape_rounded_corner_with_shadow"
+            android:orientation="vertical"
+            android:padding="1dp">
+
+            <EditText
+                android:id="@+id/etPlot"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_rounded_dialog_input"
+                android:completionThreshold="1"
+                android:ems="10"
+                android:hint="@string/enter_lot"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:padding="5dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:background="@color/agri_semi_green"
+            android:paddingHorizontal="8dp"
+            android:text="@string/packaging_details"
+            android:textColor="@color/label_blue"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
         android:id="@+id/moreInfoCLayout"
         android:layout_width="0dp"
-        android:layout_height="300dp"
+        android:layout_height="200dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -93,7 +154,7 @@ tools:context=".fish.ui.quality.packaging.PackageQualityInfoActivity">
         app:layout_constraintBottom_toTopOf="@+id/processStartCLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/processStartALayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -212,7 +273,7 @@ tools:context=".fish.ui.quality.packaging.PackageQualityInfoActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="Θερμοκρασίες πριν τη συσκευασία"
+            android:text="Θερμοκρασίες κατά την άφιξη"
             android:textColor="@color/label_blue"
             android:textSize="16sp" />
 
@@ -221,7 +282,7 @@ tools:context=".fish.ui.quality.packaging.PackageQualityInfoActivity">
     <RelativeLayout
         android:id="@+id/processStartCLayout"
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="160dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -247,11 +308,11 @@ tools:context=".fish.ui.quality.packaging.PackageQualityInfoActivity">
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_rounded_dialog_input"
-                android:completionThreshold="1"
                 android:gravity="top"
                 android:hint="@string/receipt_remarks"
-                android:imeOptions="actionDone"
                 android:inputType="textMultiLine"
+                android:completionThreshold="1"
+                android:imeOptions="actionDone"
                 android:padding="5dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
@@ -328,7 +389,7 @@ tools:context=".fish.ui.quality.packaging.PackageQualityInfoActivity">
         android:scaleX="0.7"
         android:scaleY="0.7"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivToPackageQualityConfirm"
+        app:layout_constraintEnd_toStartOf="@+id/ivToPackageQualityMoreInfo"
         app:layout_constraintStart_toEndOf="@+id/ivBackToPackageQualityTempProfiles"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/powered_by_agritrack" />
@@ -348,7 +409,7 @@ tools:context=".fish.ui.quality.packaging.PackageQualityInfoActivity">
         app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
     <ImageView
-        android:id="@+id/ivToPackageQualityConfirm"
+        android:id="@+id/ivToPackageQualityMoreInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

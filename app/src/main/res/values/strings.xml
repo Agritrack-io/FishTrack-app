@@ -161,6 +161,7 @@
     <string name="quality_two_steps">TWO CHECKS</string>
     <string name="quality_second_step_text">Package</string>
     <string name="quality_select_type">"Are the bins intended for processing?"</string>
+    <string name="fish_temp_confirm_label">Fish temperature(°C):</string>
 
     <string name="dispatch_note">Type dispatch note</string>
     <string name="enter_lot">Type LOT</string>
@@ -319,6 +320,7 @@
     <string name="error_transport_tx_update_failure">Failed to update Transport transaction!!!</string>
     <string name="error_shipping_tx_update_failure">Failed to update Shipping transaction!!!</string>
     <string name="error_processing_tx_update_failure">Failed to update Packaging transaction!!!</string>
+    <string name="error_temperatures_tx_update_failure">Failed to update Measurements transaction!!!</string>
     <string name="no_epc_filter_selected">Please enter the tag to search for...</string>
     <string name="scan_asset_tag">Scan Asset</string>
     <string name="button_correlate">Correlate</string>

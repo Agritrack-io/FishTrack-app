@@ -1,10 +1,5 @@
 package io.agritrack.fish.ui.quality;
 
-import static io.agritrack.common.LargeString.render;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +9,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+
 import java.util.ArrayList;
 
 import io.agritrack.R;
@@ -21,13 +19,13 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.quality.packaging.PackageQualityStartPackageActivity;
-import io.agritrack.fish.ui.quality.receipt.PackageQualityStartReceiptActivity;
+import io.agritrack.fish.ui.quality.packaging.PackageQualityStartActivity;
+import io.agritrack.fish.ui.quality.receipt.ReceiptQualityStartActivity;
 import io.agritrack.ui.adapter.InventoryMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class PackageQualitySelectStepsActivity extends AppCompatActivity {
+public class QualitySelectStepsActivity extends AppCompatActivity {
 
     private static final int First_Step_Idx = 0, Second_Step_Idx = 1;
     private GridView gvQualityMenu;
@@ -38,7 +36,7 @@ public class PackageQualitySelectStepsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package_quality_select_steps);
+        setContentView(R.layout.activity_quality_select_steps);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderPackageQualitySelect);
@@ -48,8 +46,8 @@ public class PackageQualitySelectStepsActivity extends AppCompatActivity {
         assignCtrlVars();
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.quality_first_step_text), PackageQualityStartReceiptActivity.class));
-        menuItemsList.add(new MenuItem(getString(R.string.quality_second_step_text), PackageQualityStartReceiptActivity.class));
+        menuItemsList.add(new MenuItem(getString(R.string.quality_first_step_text), ReceiptQualityStartActivity.class));
+        menuItemsList.add(new MenuItem(getString(R.string.quality_second_step_text), ReceiptQualityStartActivity.class));
 
         InventoryMenuAdapter adapter = new InventoryMenuAdapter(this, menuItemsList);
 
@@ -62,7 +60,7 @@ public class PackageQualitySelectStepsActivity extends AppCompatActivity {
                 switch (position) {
                     case First_Step_Idx:
                         GlobalState.initQualityRecord();
-                        i = new Intent(appCtx, PackageQualityStartReceiptActivity.class);
+                        i = new Intent(appCtx, ReceiptQualityStartActivity.class);
                         YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                         confirmSiteSelectionDlg.setMessage(getText(R.string.quality_select_type));
 
@@ -81,16 +79,16 @@ public class PackageQualitySelectStepsActivity extends AppCompatActivity {
                         break;
                     case Second_Step_Idx:
                         GlobalState.initQualityRecord();
-                            i = new Intent(appCtx, PackageQualityStartPackageActivity.class);
-                            i.putExtra("id", position);
-                            startActivity(i);
-                            break;
+                        i = new Intent(appCtx, PackageQualityStartActivity.class);
+                        i.putExtra("id", position);
+                        startActivity(i);
+                        break;
                 }
             }
         });
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(PackageQualitySelectStepsActivity.this);
+            supportDialog = new SupportDialog(QualitySelectStepsActivity.this);
             supportDialog.showDialog();
         });
 

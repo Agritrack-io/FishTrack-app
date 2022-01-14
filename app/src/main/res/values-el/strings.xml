@@ -158,12 +158,13 @@
     <string name="title_date_lot_dispatch_note">ΗΜΕΡΟΜΗΝΙΑ / LOT / ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ</string>
 
     <string name="title_quality">ΠΟΙΟΤΙΚΟΣ ΕΛΕΓΧΟΣ</string>
-    <string name="choose_quality_type">Επιλέξτε βήματα ελέγχου</string>
+    <string name="choose_quality_type">Επιλέξτε έλεγχο</string>
     <string name="quality_one_step">ΕΝΑΣ ΕΛΕΓΧΟΣ</string>
-    <string name="quality_first_step_text">Έλεγχος πριν την Παραλαβή</string>
+    <string name="quality_first_step_text">Κατά την Παραλαβή</string>
     <string name="quality_two_steps">ΔΥΟ ΕΛΕΓΧΟΙ</string>
-    <string name="quality_second_step_text">Έλεγχος πριν την Συσκευασία</string>
+    <string name="quality_second_step_text">Πριν την Συσκευασία</string>
     <string name="quality_select_type">"Οι βούτες προορίζονται για επεξεργασία;"</string>
+    <string name="fish_temp_confirm_label">Θερμοκρασία ψαριών(°C):</string>
 
     <string name="dispatch_note">Εισάγετε δελτίο αποστολής</string>
     <string name="enter_lot">Εισάγετε LOT</string>
