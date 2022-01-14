@@ -31,7 +31,7 @@ public class CAEN_CONSTANTS {
     public final static byte REPLY_ACK = (byte) 0xAC;
     public final static byte REPLY_NACK = (byte) 0xFC;
 
-    public final static int TIME_WAITTAG_CMDWRITE = 700;
+    public final static int TIME_WAITTAG_CMDWRITE = 200;
     public final static int TIME_WAITTAG_CMDREADBASE = 100;
     public final static int TIME_WAITTAG_WRITEPAGE = 10;
 

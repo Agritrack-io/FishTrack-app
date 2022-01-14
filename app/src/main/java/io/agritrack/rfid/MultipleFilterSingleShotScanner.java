@@ -76,16 +76,15 @@ public class MultipleFilterSingleShotScanner implements Runnable {
                         break;
                     } else {
                         mScanHandler.sendEmptyMessage(1980);
+                        mScanHandler.removeCallbacks(this);
                     }
                 } else {
                     mScanHandler.sendEmptyMessage(1980);
+                    mScanHandler.removeCallbacks(this);
                 }
-                mScanHandler.postDelayed(this, 0);
             }
             // to avoid possible endless loop.
             if (idx > 10) {
-                mScanHandler.sendEmptyMessage(1980);
-                //mScanHandler.postDelayed(this, 0);
                 uhfReader.StopReading();
                 mScanHandler.removeCallbacks(this);
                 break;

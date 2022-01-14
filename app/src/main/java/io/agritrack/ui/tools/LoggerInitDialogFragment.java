@@ -188,7 +188,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         taskRunner = new TaskRunner();
     }
 
-    public static LoggerInitDialogFragment newInstance(String epc, boolean showReadButton, boolean showInitButton, boolean showResetButton) {
+    public static LoggerInitDialogFragment newInstance(String epc, boolean showReadButton, boolean showResetButton, boolean showInitButton) {
         LoggerInitDialogFragment frag = new LoggerInitDialogFragment();
         Bundle args = new Bundle();
         args.putString(LOGGER_EPC, epc);

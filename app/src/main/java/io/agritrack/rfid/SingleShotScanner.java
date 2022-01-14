@@ -66,19 +66,13 @@ public class SingleShotScanner implements Runnable {
 
                         msg.setData(b);
                         mScanHandler.sendMessage(msg);
-                        //mScanHandler.postDelayed(this, 50);
                         mScanHandler.removeCallbacks(this);
-                        uhfReader.StopReading();
                         break;
-                    } else {
-                        mScanHandler.sendEmptyMessage(1980);
-                        mScanHandler.postDelayed(this, 50);
                     }
                 }
             }
             // to avoid possible endless loop.
             if (idx > 10) {
-                //mScanHandler.sendEmptyMessage(1980);
                 uhfReader.StopReading();
                 mScanHandler.removeCallbacks(this);
                 break;

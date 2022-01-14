@@ -302,7 +302,7 @@ public class PackageQualityStartReceiptActivity extends TriggerKeyAwareActivity 
                                 if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
                                     logger_rfid = epcStr.substring(11);
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, true, false, intentForProcessing);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, true, intentForProcessing, false);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {

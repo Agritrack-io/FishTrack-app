@@ -175,6 +175,13 @@ public class FishingCageActivity extends TriggerKeyAwareActivity {
     }
 
     // ###################################################
+    private void stopScanner() {
+//        if(singleShot_runnable !=null) {
+//            mScanHandler.removeCallbacks(singleShot_runnable);
+//            singleShot_runnable.stopReading();
+//        }
+    }
+
     private class ScanHandler extends Handler {
         private final WeakReference<FishingCageActivity> mActivity;
 
@@ -184,9 +191,6 @@ public class FishingCageActivity extends TriggerKeyAwareActivity {
 
         @Override
         public void handleMessage(Message msg) {
-//            FishingCageActivity activity = mActivity.get();
-//            if (activity != null) {
-//            }
             switch (msg.what) {
                 case 1:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
