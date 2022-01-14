@@ -52,6 +52,7 @@ import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
+import io.agritrack.ui.tools.LoggerInitDialogFragment;
 
 public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
@@ -325,11 +326,11 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
                                 adapterBins.notifyDataSetChanged();
 
                                 //TODO: Data logger will not be manipulated during fishing
-                                /*if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
+                                if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, false, false, false);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, false, true, true);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
-                                }*/
+                                }
                             } else if (!IsDemo) {
                                 CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
                             }
