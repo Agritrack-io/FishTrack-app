@@ -47,7 +47,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
     }
 
     public void addUniqueItem(BinDetails val) {
-        if (!this.mList.contains(val)) {
+        if (this.mList.stream().noneMatch(x -> x.epc.equals(val.epc))) {
             this.mList.add(val);
         }
     }

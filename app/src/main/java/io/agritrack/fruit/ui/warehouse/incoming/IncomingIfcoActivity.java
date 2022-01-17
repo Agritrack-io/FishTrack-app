@@ -257,7 +257,7 @@ public class IncomingIfcoActivity extends LocationAwareActivity {
 
     private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Type item BARCODE");
+        builder.setTitle(R.string.confirm_selection);
 
         // Set up the input
         final EditText input = new EditText(this);
