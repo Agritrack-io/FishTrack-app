@@ -10,7 +10,7 @@ public class LoggerReading extends ViewModel {
     private final MutableLiveData<Map<String, Object>> selectedReading = new MutableLiveData<>();
 
     public void setReading(Map<String, Object> reading) {
-        selectedReading.setValue(reading);
+        selectedReading.postValue(reading);
     }
 
     public LiveData<Map<String, Object>> getReading() {

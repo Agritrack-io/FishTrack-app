@@ -27,6 +27,14 @@ public class SingleShotScanner implements Runnable {
         mScanHandler = handler;
     }
 
+    public void LowEnergy() {
+        uhfReader.LowPowerLevel();
+    }
+
+    public void HighEnergy() {
+        uhfReader.HighPowerLevel();
+    }
+
     public boolean startReading() {
         //TODO: check if uhfReader is not null
         return uhfReader.startReading();
@@ -73,7 +81,7 @@ public class SingleShotScanner implements Runnable {
             }
             // to avoid possible endless loop.
             if (idx > 10) {
-                uhfReader.StopReading();
+                //uhfReader.StopReading();
                 mScanHandler.removeCallbacks(this);
                 break;
             }

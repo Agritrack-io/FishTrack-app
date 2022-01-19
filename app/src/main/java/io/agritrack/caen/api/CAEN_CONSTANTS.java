@@ -32,7 +32,7 @@ public class CAEN_CONSTANTS {
     public final static byte REPLY_NACK = (byte) 0xFC;
 
     public final static int TIME_WAITTAG_CMDWRITE = 200;
-    public final static int TIME_WAITTAG_CMDREADBASE = 100;
+    public final static int TIME_WAITTAG_CMDREADBASE = 200;
     public final static int TIME_WAITTAG_WRITEPAGE = 10;
 
     public final static short SHORT_ZERO = (short) 0x0000;
@@ -43,24 +43,24 @@ public class CAEN_CONSTANTS {
     public final static short SHORT_SIX = (short) 0x0006;
 
 
-
     public final static int ShowProgressBar = 11;
     public final static int HideProgressBar = 99;
-    public final static int FWRevision = 1000;
-    public final static int HWRevision = 1002;
-    public final static int CTRLReg = 1003;
-    public final static int STATUSReg = 1004;
-    public final static int ReadTimeBIN = 1005;
-    public final static int WriteTimeBIN = 1105;
-    public final static int InitTimeStamp = 1006;
-    public final static int WriteTimeStamp = 1106;
-    public final static int SamplesCnt = 1007;
-    public final static int ReadInterval = 1008;
-    public final static int WriteInterval = 1108;
-    public final static int LastSample = 1009;
-    public final static int CurrentEPC = 1010;
-    public final static int MemoryStatus = 1011;
-    public final static int BatteryLevel = 1012;
+    public final static int ReadFWRevision = 1000;
+    public final static int ReadHWRevision = 1001;
+    public final static int ReadCTRLReg = 1002;
+    public final static int ReadSTATUSReg = 1003;
+    public final static int ReadTimeBIN = 1004;
+    public final static int ReadInitTimeStamp = 1005;
+    public final static int ReadSamplesCnt = 1006;
+    public final static int ReadInterval = 1007;
+    public final static int ReadLastSample = 1008;
+    public final static int ReadCurrentEPC = 1009;
+    public final static int ReadMemoryStatus = 1010;
+    public final static int ReadBatteryLevel = 1011;
+    public final static int WriteTimeBINZero = 1100;
+    public final static int WriteTimeBINOne = 1101;
+    public final static int WriteTimeStamp = 1102;
+    public final static int WriteInterval = 1103;
     public final static int CmdRESET = 10013;
     public final static int CmdENABLE = 10014;
     public final static int CmdReadData = 10015;

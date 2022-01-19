@@ -40,4 +40,9 @@ public class RFIDTag {
     public int hashCode() {
         return Objects.hash(epc);
     }
+
+    @Override
+    public String toString() {
+        return String.format("RFIDTag { epc=%s, rssi=%s}", epc, rssi);
+    }
 }

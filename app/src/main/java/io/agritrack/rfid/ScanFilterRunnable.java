@@ -10,7 +10,7 @@ import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;
 
-public class ScanFilterThread implements Runnable {
+public class ScanFilterRunnable implements Runnable {
     public static final String RFID_PREFIX = "BE0019A0000";
 
     private final Handler mScanHandler;
@@ -18,7 +18,7 @@ public class ScanFilterThread implements Runnable {
     private boolean scanInProgress = false;
     private String filterEPC;
 
-    public ScanFilterThread(Handler handler) {
+    public ScanFilterRunnable(Handler handler) {
         uhfReader = RFIDModuleFactory.getInstance();
         mScanHandler = handler;
     }
@@ -48,7 +48,7 @@ public class ScanFilterThread implements Runnable {
         List<RFIDTag> tagList;
         if (uhfReader != null && scanInProgress) {
             try {
-                tagList = uhfReader.inventoryRealTime();
+                tagList = uhfReader.searchInventory();
 
                 if (tagList != null && !tagList.isEmpty()) {
                     RFIDTag tag = tagList.get(0);
@@ -63,12 +63,11 @@ public class ScanFilterThread implements Runnable {
             } catch (Exception ignored) {
                 ignored.printStackTrace();
             }
-        }
-        if (!scanInProgress) {
+        } else  if (!scanInProgress) {
             uhfReader.StopReading();
             mScanHandler.sendEmptyMessage(1980);
             mScanHandler.removeCallbacks(this);
         }
-        mScanHandler.postDelayed(this, 0);
+        //mScanHandler.postDelayed(this, 0);
     }
 }

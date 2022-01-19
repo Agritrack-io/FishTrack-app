@@ -6,8 +6,8 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdReadData;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdSETUP;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.HideProgressBar;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.InitTimeStamp;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.LastSample;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadInitTimeStamp;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadLastSample;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ShowProgressBar;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
@@ -262,7 +262,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         public void handleMessage(Message msg) {
             String value = null;
             switch (msg.what) {
-                case LastSample:
+                case ReadLastSample:
                     value = msg.getData().getString("body");
                     if (!Strings.isEmptyOrWhitespace(value)) {
 //                        tvLastSampleValue.setText(value);
@@ -270,7 +270,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 //                        tvLastSampleValue.setText("ERR");
                     }
                     break;
-                case InitTimeStamp:
+                case ReadInitTimeStamp:
                     value = msg.getData().getString("body");
 //                    tvDateTime.setText(value);
                     break;

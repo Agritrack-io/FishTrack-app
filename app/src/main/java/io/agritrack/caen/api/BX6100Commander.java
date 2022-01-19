@@ -26,6 +26,7 @@ import com.uhf.api.cls.Reader;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import cn.pda.serialport.Tools;
 import io.agritrack.caen.pojo.RFIDTag;
@@ -35,6 +36,7 @@ public class BX6100Commander extends AbstractCAENCommander {
     private final int filterStartAddress = 2;
     private UHFRManager mUhfRManager;
     private byte[] epcBytes;
+    private String tagToSearch;
 
     public BX6100Commander() {
         mUhfRManager = UHFRManager.getInstance();// Init Uhf module
@@ -58,9 +60,42 @@ public class BX6100Commander extends AbstractCAENCommander {
         }
     }
 
+    public void HighPowerLevel() {
+        if (mUhfRManager != null) {
+            Reader.READER_ERR err = mUhfRManager.setPower(33, 33);//set uhf module power
+            if (err != Reader.READER_ERR.MT_OK_ERR) {
+                Reader.READER_ERR err1 = mUhfRManager.setPower(30, 30);//set uhf module power
+                if (err1 != Reader.READER_ERR.MT_OK_ERR) {
+                    Toast.makeText(getAppContext(), "Failed to switch to HIGH Energy mode!!", Toast.LENGTH_LONG);
+                }
+            }
+        } else {
+            Toast.makeText(getAppContext(), "No UHFR manager found!!", Toast.LENGTH_LONG);
+        }
+    }
+
+    public void LowPowerLevel() {
+        if (mUhfRManager != null) {
+            Reader.READER_ERR err = mUhfRManager.setPower(16, 16);//set uhf module power
+            if (err != Reader.READER_ERR.MT_OK_ERR) {
+                Reader.READER_ERR err1 = mUhfRManager.setPower(15, 15);//set uhf module power
+                if (err1 != Reader.READER_ERR.MT_OK_ERR) {
+                    Toast.makeText(getAppContext(), "Failed to switch to HIGH Energy mode!!", Toast.LENGTH_LONG);
+                }
+            }
+        } else {
+            Toast.makeText(getAppContext(), "No UHFR manager found!!", Toast.LENGTH_LONG);
+        }
+    }
+
+    @Override
+    public int[] getPowerLevel() {
+        return mUhfRManager.getPower();
+    }
 
     @Override
     public void setFilterEPC(String epc) {
+        this.tagToSearch = epc;
         this.epcBytes = Tools.HexString2Bytes(epc);
         this.mUhfRManager.setInventoryFilter(this.epcBytes, EPCBANK, filterStartAddress, true);
     }
@@ -155,11 +190,11 @@ public class BX6100Commander extends AbstractCAENCommander {
     public byte CheckReply() {
         try {
             byte[] reply = readTagDataByFilter(USERBANK, ADDR_REPLY, SHORT_ONE);
-            return REPLY_ACK == reply[1] ? reply[0] : REPLY_NACK == reply[1] ? (byte) -1 : (byte) -2;
+            return reply != null && REPLY_ACK == reply[1] ? reply[0] : reply != null && REPLY_NACK == reply[1] ? REPLY_NACK : REPLY_NACK;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return -2;
+        return REPLY_NACK;
     }
 
 
@@ -204,34 +239,49 @@ public class BX6100Commander extends AbstractCAENCommander {
 
     @Override
     public void CloseReader() {
-        this.mUhfRManager.close();
+        if (this.mUhfRManager != null) {
+            this.mUhfRManager.close();
+        }
         this.Status(Boolean.FALSE);
         RFIDModuleFactory.Reset();
     }
 
     @Override
     public List<RFIDTag> inventoryRealTime() {
-        //this.mUhfRManager.setCancleInventoryFilter();
+        this.mUhfRManager.setCancleInventoryFilter();
         //this.mUhfRManager.setGen2session(false);
         //List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryRealTime();
-        if (this.mUhfRManager == null) {
-            this.mUhfRManager = UHFRManager.getInstance();
-        }
-        List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryByTimer((short) 50);//  tagInventoryRealTime();
+        List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryByTimer((short) 250);//  tagInventoryRealTime();
         return inventory.stream().map(x -> new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
     }
 
     @Override
     public List<RFIDTag> inventoryWithFilter() {
+        if (this.mUhfRManager == null) {
+            this.mUhfRManager = UHFRManager.getInstance();
+        }
         List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryRealTime();
         this.mUhfRManager.setCancleInventoryFilter();
         return inventory.stream().map(x->new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
     }
 
     @Override
+    public List<RFIDTag> searchInventory() {
+        mUhfRManager.setGen2session(false);
+        mUhfRManager.setInventoryFilter(this.epcBytes, 1, 2, true);
+        List<Reader.TAGINFO> inventory = mUhfRManager.tagEpcTidInventoryByTimer((short) 100);
+        Stream<Reader.TAGINFO> filteredStream = inventory.stream().filter(k -> Tools.Bytes2HexString(k.EpcId, k.Epclen).indexOf(tagToSearch.substring(tagToSearch.length() - 6)) > -1);
+        return filteredStream.map(x->new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
+    }
+
+    @Override
     public boolean startReading() {
+        if (this.mUhfRManager == null) {
+            this.mUhfRManager = UHFRManager.getInstance();
+        }
         //this.mUhfRManager.setGen2session(true);
         //Reader.READER_ERR result = this.mUhfRManager.asyncStartReading();
+
         return false;// Reader.READER_ERR.MT_OK_ERR.equals(res);
     }
 
@@ -243,7 +293,7 @@ public class BX6100Commander extends AbstractCAENCommander {
             this.mUhfRManager.asyncStopReading();
             this.mUhfRManager.stopTagInventory();
             this.mUhfRManager.setGen2session(false);
-            this.mUhfRManager = null;
+            //this.mUhfRManager = null;
         }
     }
 }

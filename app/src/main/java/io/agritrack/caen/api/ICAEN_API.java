@@ -40,6 +40,9 @@ public interface ICAEN_API {
     /* This function enables TimeBin-One */
     Reader.READER_ERR WriteTimeBinONE();
 
+    /* This function disables timestamp recording */
+    Reader.READER_ERR WriteTimeBinZERO();
+
     /* This function sets the current epoch timestamp */
     Reader.READER_ERR WriteCurrentDatetime();
 
@@ -57,6 +60,14 @@ public interface ICAEN_API {
 
     /* This function sets Logger to LOW sensitivity mode. */
     Reader.READER_ERR LowSensitivity();
+
+    /* This function sets Logger to HIGH Read Power mode. */
+    void HighPowerLevel();
+
+    /* This function sets Logger to LOW Read Power mode. */
+    void LowPowerLevel();
+
+    int[] getPowerLevel();
 
     //##################################################
     //###  Public methods for Read / Write commands  ###
@@ -94,6 +105,13 @@ public interface ICAEN_API {
     /* This function returns first 'samplesCnt' temperature measurements */
     List<String[]> ReadSamples(int samplesCnt) throws Exception;
 
+    /* This function returns first 'samplesCnt' temperature measurements having an interval of 'intervalSeconds' seconds */
+    List<String[]> ReadSamples(int samplesCnt, int intervalSeconds) throws Exception;
+
+    /* This function returns first 'samplesCnt' temperature measurements having an interval of 'intervalSeconds' seconds, starting at 'startTSmSecQ' epoch time */
+    List<String[]> ReadSamples(int samplesCnt, int intervalSeconds, long startTSmSec) throws Exception;
+
+
     void CloseReader();
 
     void StopReading();
@@ -105,6 +123,8 @@ public interface ICAEN_API {
     List<RFIDTag> inventoryRealTime();
 
     List<RFIDTag> inventoryWithFilter();
+
+    List<RFIDTag> searchInventory();
 
     boolean startReading();
 }

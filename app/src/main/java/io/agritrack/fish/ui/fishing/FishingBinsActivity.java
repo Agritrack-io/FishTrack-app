@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -189,7 +190,20 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
     @Override
     protected void onStop() {
         this.stopScanner();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onPause();
     }
 
     private void clearSelectedItem() {
@@ -329,7 +343,7 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
                                 if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
                                     FragmentManager fm = getSupportFragmentManager();
                                     LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, false, true, true);
-                                    loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
+                                    loggerDlg.show(getSupportFragmentManager(), "test"); //LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {
                                 CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);

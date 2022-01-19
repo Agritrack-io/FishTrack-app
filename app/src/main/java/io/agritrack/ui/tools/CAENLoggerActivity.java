@@ -1,21 +1,22 @@
 package io.agritrack.ui.tools;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.CTRLReg;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdENABLE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.FWRevision;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.HWRevision;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.HideProgressBar;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.InitTimeStamp;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.LastSample;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadCTRLReg;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadFWRevision;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadHWRevision;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadInitTimeStamp;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadInterval;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadLastSample;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadSTATUSReg;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadSamplesCnt;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadTimeBIN;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.STATUSReg;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.SamplesCnt;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ShowProgressBar;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteInterval;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBIN;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBINOne;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBINZero;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeStamp;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -40,7 +41,9 @@ import com.google.android.gms.common.util.Strings;
 import com.uhf.api.cls.Reader;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import io.agritrack.R;
 import io.agritrack.caen.api.ICAEN_API;
@@ -55,8 +58,9 @@ public class CAENLoggerActivity extends AppCompatActivity {
 
     private TextView tvFWRevision, tvHWRevision, tvTimeBIN, tvDateTime, tvLastSampleValue, tvCurrentEPC, tvMemory, tvBattery;
     private EditText etInterval;
-    private Button btnRead, btnReset, btnInit, btnSamplesCnt, btnControlReg;
+    private Button btnRead, btnReset, btnInit, btnSamplesCnt, btnControlReg, btnScanEPC;
     private ProgressBar progressBar;
+    private SimpleDateFormat dtParser = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
 
     private ICAEN_API cmd;
 
@@ -67,7 +71,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         @Override
         public void run() {
             String response = cmd.ReadFWRevision();
-            mScanHandler.sendMessage(createMessage(FWRevision, response));
+            mScanHandler.sendMessage(createMessage(ReadFWRevision, response));
             mScanHandler.removeCallbacks(this);
         }
     };
@@ -76,7 +80,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         @Override
         public void run() {
             String response = cmd.ReadHWRevision();
-            mScanHandler.sendMessage(createMessage(HWRevision, response));
+            mScanHandler.sendMessage(createMessage(ReadHWRevision, response));
             mScanHandler.removeCallbacks(this);
         }
     };
@@ -85,7 +89,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         @Override
         public void run() {
             String response = cmd.ReadControlRegister();
-            mScanHandler.sendMessage(createMessage(CTRLReg, response));
+            mScanHandler.sendMessage(createMessage(ReadCTRLReg, response));
             mScanHandler.removeCallbacks(this);
         }
     };
@@ -94,7 +98,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         @Override
         public void run() {
             String response = cmd.ReadStatusRegister();
-            mScanHandler.sendMessage(createMessage(STATUSReg, response));
+            mScanHandler.sendMessage(createMessage(ReadSTATUSReg, response));
             mScanHandler.removeCallbacks(this);
         }
     };
@@ -112,7 +116,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         @Override
         public void run() {
             Short response = cmd.ReadSamplesCount();
-            mScanHandler.sendMessage(createMessage(SamplesCnt, response));
+            mScanHandler.sendMessage(createMessage(ReadSamplesCnt, response));
             mScanHandler.removeCallbacks(this);
         }
     };
@@ -130,7 +134,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         @Override
         public void run() {
             String response = cmd.ReadInitDatetime();
-            mScanHandler.sendMessage(createMessage(InitTimeStamp, response));
+            mScanHandler.sendMessage(createMessage(ReadInitTimeStamp, response));
             mScanHandler.removeCallbacks(this);
         }
     };
@@ -139,7 +143,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         @Override
         public void run() {
             Double response = cmd.ReadLastSample();
-            mScanHandler.sendMessage(createMessage(LastSample, String.valueOf(response)));
+            mScanHandler.sendMessage(createMessage(ReadLastSample, String.valueOf(response)));
             mScanHandler.removeCallbacks(this);
         }
     };
@@ -147,20 +151,14 @@ public class CAENLoggerActivity extends AppCompatActivity {
     final Runnable readThread = new Runnable() {
         @Override
         public void run() {
-
-            // Show ProgressBar
-            Message msgShowPB = new Message();
-            msgShowPB.what = ShowProgressBar;
-            mScanHandler.sendMessage(msgShowPB);
-
             // TimeBIN
             Short value = cmd.ReadTimeBIN();
             mScanHandler.sendMessage(createMessage(ReadTimeBIN, value));
             delay(100l);
 
-            // SampleCNT
-            value = cmd.ReadSamplesCount();
-            mScanHandler.sendMessage(createMessage(SamplesCnt, value));
+            // InitTS
+            String response = cmd.ReadInitDatetime();
+            mScanHandler.sendMessage(createMessage(ReadInitTimeStamp, response));
             delay(100l);
 
             // Interval
@@ -169,75 +167,83 @@ public class CAENLoggerActivity extends AppCompatActivity {
             delay(100l);
 
             // FWRevision
-            String response = cmd.ReadFWRevision();
-            mScanHandler.sendMessage(createMessage(FWRevision, response));
+            response = cmd.ReadFWRevision();
+            mScanHandler.sendMessage(createMessage(ReadFWRevision, response));
             delay(100l);
 
             // HWRevision
             response = cmd.ReadHWRevision();
-            mScanHandler.sendMessage(createMessage(HWRevision, response));
+            mScanHandler.sendMessage(createMessage(ReadHWRevision, response));
             delay(100l);
 
             // CTRLRegister
             response = cmd.ReadControlRegister();
-            mScanHandler.sendMessage(createMessage(CTRLReg, response));
+            mScanHandler.sendMessage(createMessage(ReadCTRLReg, response));
             delay(100l);
 
             // STATUSRegister
             response = cmd.ReadStatusRegister();
-            mScanHandler.sendMessage(createMessage(STATUSReg, response));
+            mScanHandler.sendMessage(createMessage(ReadSTATUSReg, response));
             delay(100l);
 
-            // InitTS
-            response = cmd.ReadInitDatetime();
-            mScanHandler.sendMessage(createMessage(InitTimeStamp, response));
+            // SampleCNT
+            value = cmd.ReadSamplesCount();
+            mScanHandler.sendMessage(createMessage(ReadSamplesCnt, value));
             delay(100l);
 
             // LastTemperature
             Double temp = cmd.ReadLastSample();
-            mScanHandler.sendMessage(createMessage(LastSample, String.valueOf(temp)));
+            mScanHandler.sendMessage(createMessage(ReadLastSample, String.valueOf(temp)));
             delay(100l);
 
-            // Hide ProgressBar
-            Message msgHidePB = new Message();
-            msgHidePB.what = HideProgressBar;
-            mScanHandler.sendMessage(msgHidePB);
+            mScanHandler.removeCallbacks(this);
         }
     };
 
     final Runnable resetThread = new Runnable() {
         @Override
         public void run() {
+            // reset logger
             Reader.READER_ERR response = cmd.Reset();
+            //int[] power = cmd.getPowerLevel();  // [readPower, writePower]
             mScanHandler.sendMessage(createMessage(CmdRESET, response));
+            delay(2000l);
+
+            // read Samples count
+            Short samplesCnt = cmd.ReadSamplesCount();
+            mScanHandler.sendMessage(createMessage(ReadSamplesCnt, samplesCnt));
+            //delay(200l);
+
             mScanHandler.removeCallbacks(this);
         }
     };
 
-    final Runnable showProgressThread = new Runnable() {
-        @Override
-        public void run() {
-            Message msgShowPB = new Message();
-            msgShowPB.what = ShowProgressBar;
-            mScanHandler.sendMessage(msgShowPB);
-        }
+    final Runnable showProgressThread = () -> {
+        Message msgShowPB = new Message();
+        msgShowPB.what = ShowProgressBar;
+        mScanHandler.sendMessage(msgShowPB);
     };
 
-    final Runnable hideProgressThread = new Runnable() {
-        @Override
-        public void run() {
-            Message msgShowPB = new Message();
-            msgShowPB.what = HideProgressBar;
-            mScanHandler.sendMessage(msgShowPB);
-        }
+    final Runnable hideProgressThread = () -> {
+        Message msgShowPB = new Message();
+        msgShowPB.what = HideProgressBar;
+        mScanHandler.sendMessage(msgShowPB);
     };
 
+    final Runnable writeTimeBinZeroThread = new Runnable() {
+        @Override
+        public void run() {
+            Reader.READER_ERR response = cmd.WriteTimeBinZERO();
+            mScanHandler.sendMessage(createMessage(WriteTimeBINZero, response));
+            mScanHandler.removeCallbacks(this);
+        }
+    };
 
     final Runnable writeTimeBinOneThread = new Runnable() {
         @Override
         public void run() {
             Reader.READER_ERR response = cmd.WriteTimeBinONE();
-            mScanHandler.sendMessage(createMessage(WriteTimeBIN, response));
+            mScanHandler.sendMessage(createMessage(WriteTimeBINOne, response));
             mScanHandler.removeCallbacks(this);
         }
     };
@@ -268,55 +274,89 @@ public class CAENLoggerActivity extends AppCompatActivity {
     final Runnable enableLoggingThread = new Runnable() {
         @Override
         public void run() {
-            Reader.READER_ERR response = cmd.EnableLogging();
+            // -------------------------------------
+            // set time Bin to 0, (disable timestamps)
+            Reader.READER_ERR response = cmd.WriteTimeBinZERO();
+            mScanHandler.sendMessage(createMessage(WriteTimeBINZero, response));
+//            delay(100l);
+
+            // set time Bin to 0, (disable timestamps)
+            short samplingInterval = DefaultInterval;
+            if (etInterval.getText() != null && !Strings.isEmptyOrWhitespace(etInterval.getText().toString())) {
+                samplingInterval = Short.valueOf(etInterval.getText().toString());
+            }
+            response = cmd.WriteInterval(samplingInterval);
+            mScanHandler.sendMessage(createMessage(WriteInterval, response));
+//            delay(100l);
+
+            // set Init time stamp
+            response = cmd.WriteCurrentDatetime();
+            mScanHandler.sendMessage(createMessage(WriteTimeStamp, response));
+//            delay(100l);
+
+            // enable logger
+            response = cmd.EnableLogging();
             mScanHandler.sendMessage(createMessage(CmdENABLE, response));
+//            delay(300l);
+            delay(2000l);
+
+            // read Samples count
+            Short samplesCnt = cmd.ReadSamplesCount();
+            delay(50l);
+            mScanHandler.sendMessage(createMessage(ReadSamplesCnt, samplesCnt));
+
+            // read Last Sample value
+            Double lastSample = cmd.ReadLastSample();
+            delay(50l);
+            mScanHandler.sendMessage(createMessage(ReadLastSample, String.valueOf(lastSample)));
+
             mScanHandler.removeCallbacks(this);
         }
     };
 
-
-    protected final View.OnClickListener btnResetListener = v -> {
+    protected final View.OnClickListener btnScanEPCListener = v -> {
         // Show ProgressBar
         mScanHandler.post(showProgressThread);
         // -------------------------------------
-        if (this.cmd != null) {
-            try {
-                tvFWRevision.setText("");
-                tvHWRevision.setText("");
-                tvTimeBIN.setText("");
-                tvDateTime.setText("");
-                etInterval.setText("");
-                tvLastSampleValue.setText("");
-                btnControlReg.setText("");
-                tvMemory.setText("");
-                tvBattery.setText("");
-                btnSamplesCnt.setText("");
-                // reset command
-                mScanHandler.postDelayed(resetThread, 50l);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            CToast(getApplicationContext(), "Plz Read Tag First!!", Toast.LENGTH_SHORT);
-        }
+        tvCurrentEPC.setText("");
+        // -------------------------------------
+        SingleShotScanner singleShot_runnable = new SingleShotScanner(mScanHandler);
+        singleShot_runnable.setFilter(Filters.RFID_LOGGER);
+        singleShot_runnable.LowEnergy();
+        singleShot_runnable.startReading();
+        mScanHandler.post(singleShot_runnable);
+        // -------------------------------------
+        btnReset.setEnabled(true);
+        btnInit.setEnabled(true);
+        singleShot_runnable.HighEnergy();
         // -------------------------------------
         // Hide ProgressBar
         mScanHandler.postDelayed(hideProgressThread, 800l);
     };
 
     protected final View.OnClickListener btnInitListener = v -> {
-
-        cmd.setFilterEPC(loggerEpc);
-
+        // -------------------------------------
         // Show ProgressBar
         mScanHandler.post(showProgressThread);
         // -------------------------------------
-        mScanHandler.postDelayed(writeTimeBinOneThread, 50l);
-        mScanHandler.postDelayed(writeIntervalThread, 100l);
-        mScanHandler.postDelayed(writeCurrentDateTimeThread, 150l);
-        mScanHandler.postDelayed(enableLoggingThread, 200l);
-        mScanHandler.postDelayed(readLastTemperatureThread, 300l);
+        clearControls();
+        // -------------------------------------
+        cmd.setFilterEPC(loggerEpc);
+        mScanHandler.postDelayed(enableLoggingThread, 50l);
+        // -------------------------------------
+        // Hide ProgressBar
+        mScanHandler.postDelayed(hideProgressThread, 800l);
+    };
 
+    protected final View.OnClickListener btnResetListener = v -> {
+        // -------------------------------------
+        // Show ProgressBar
+        mScanHandler.post(showProgressThread);
+        // -------------------------------------
+        clearControls();
+        // -------------------------------------
+        cmd.setFilterEPC(loggerEpc);
+        mScanHandler.postDelayed(resetThread, 100l);
         // -------------------------------------
         // Hide ProgressBar
         mScanHandler.postDelayed(hideProgressThread, 800l);
@@ -328,29 +368,10 @@ public class CAENLoggerActivity extends AppCompatActivity {
         // -------------------------------------
         clearControls();
         // -------------------------------------
-        SingleShotScanner singleShot_runnable = new SingleShotScanner(mScanHandler);
-        singleShot_runnable.setFilter(Filters.RFID_LOGGER);
-        singleShot_runnable.startReading();
-        mScanHandler.post(singleShot_runnable);
-        // -------------------------------------
-        btnReset.setEnabled(true);
-        btnInit.setEnabled(true);
-        // -------------------------------------
-        if(!Strings.isEmptyOrWhitespace(loggerEpc)) {
+        if (!Strings.isEmptyOrWhitespace(loggerEpc)) {
             cmd.setFilterEPC(loggerEpc);
             mScanHandler.postDelayed(readThread, 100l);
         }
-        // -------------------------------------
-
-//        mScanHandler.postDelayed(readFWRevisionThread, 50l);
-//        mScanHandler.postDelayed(readHWRevisionThread, 100l);
-//        mScanHandler.postDelayed(readCTRLRegisterThread, 150l);
-//        mScanHandler.postDelayed(readSTATUSRegisterThread, 200l);
-//        mScanHandler.postDelayed(readTimeBINThread, 250l);
-//        mScanHandler.postDelayed(readInitTSThread, 300l);
-//        mScanHandler.postDelayed(readSampleCNTThread, 350l);
-//        mScanHandler.postDelayed(readIntervalThread, 400l);
-//        mScanHandler.postDelayed(readLastTemperatureThread, 450l);
         // -------------------------------------
         // Hide ProgressBar
         mScanHandler.postDelayed(hideProgressThread, 800l);
@@ -375,6 +396,8 @@ public class CAENLoggerActivity extends AppCompatActivity {
         assignCtrlVars();
 
         this.valuesCnt = 0;
+
+        btnScanEPC.setOnClickListener(btnScanEPCListener);
 
         btnRead.setOnClickListener(btnReadListener);
 
@@ -412,6 +435,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         btnRead = findViewById(R.id.btnRead);
         btnReset = findViewById(R.id.btnReset);
         btnInit = findViewById(R.id.btnInit);
+        btnScanEPC = findViewById(R.id.btnScanEPC);
         tvFWRevision = findViewById(R.id.tvFWRevision);
         tvHWRevision = findViewById(R.id.tvHWRevision);
         tvTimeBIN = findViewById(R.id.tvTimeBIN);
@@ -429,6 +453,8 @@ public class CAENLoggerActivity extends AppCompatActivity {
         ivBack.setOnClickListener(view -> {
             // remove all callbacks and messages.
             mScanHandler.removeCallbacks(null);
+            cmd.CloseReader();
+            cmd = null;
 
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(i);
@@ -452,9 +478,16 @@ public class CAENLoggerActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
+        //if (cmd != null) {
+        //    cmd.CloseReader();
+        //}
         super.onDestroy();
-        cmd.CloseReader();
     }
 
     //--------------------------------------------
@@ -492,9 +525,9 @@ public class CAENLoggerActivity extends AppCompatActivity {
                     String rssi = msg.getData().getString("rssi");
                     try {
                         if (!Strings.isEmptyOrWhitespace(loggerEpc)) {
+                            tvCurrentEPC.setText(loggerEpc);
                             // sets Logger filter to closest EPC.
                             cmd.setFilterEPC(loggerEpc);
-                            tvCurrentEPC.setText(loggerEpc);
                         } else if (!IsDemo) {
                             CToast(getApplicationContext(), "No Logger EPC found, plz scan again!!", Toast.LENGTH_LONG);
                         }
@@ -503,7 +536,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
                     }
                     break;
 
-                case FWRevision:
+                case ReadFWRevision:
                     value = msg.getData().getString("body");
                     if (!Strings.isEmptyOrWhitespace(value)) {
                         tvFWRevision.setText(value);
@@ -511,7 +544,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
                         tvFWRevision.setText("ERR");
                     }
                     break;
-                case HWRevision:
+                case ReadHWRevision:
                     value = msg.getData().getString("body");
                     if (!Strings.isEmptyOrWhitespace(value)) {
                         tvHWRevision.setText(value);
@@ -519,7 +552,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
                         tvHWRevision.setText("ERR");
                     }
                     break;
-                case CTRLReg:
+                case ReadCTRLReg:
                     value = msg.getData().getString("body");
                     if (!Strings.isEmptyOrWhitespace(value)) {
                         btnControlReg.setText(value);
@@ -527,7 +560,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
                         btnControlReg.setText("ERR");
                     }
                     break;
-                case STATUSReg:
+                case ReadSTATUSReg:
                     value = msg.getData().getString("body");
                     if (!Strings.isEmptyOrWhitespace(value) && !"N/A".equalsIgnoreCase(value)) {
                         tvBattery.setText(value.substring(value.length() - 2));
@@ -541,14 +574,31 @@ public class CAENLoggerActivity extends AppCompatActivity {
                     short timeBin = msg.getData().getShort("body");
                     tvTimeBIN.setText(String.valueOf(timeBin));
                     break;
-                case SamplesCnt:
+                case ReadSamplesCnt:
                     valuesCnt = msg.getData().getShort("body");
                     if (valuesCnt >= 0) {
                         btnSamplesCnt.setText(String.format("%s measurements.", valuesCnt));
                         btnSamplesCnt.setOnClickListener(view -> {
                             if (valuesCnt > 0) {
                                 try {
-                                    List<String[]> values = cmd.ReadSamples(valuesCnt);
+                                    int intervalVal = DefaultInterval;
+                                    long initTSmSec = System.currentTimeMillis();
+
+                                    // get existing init timestamp value, if set...
+                                    if (tvDateTime.getText() != null) {
+                                        try {
+                                            initTSmSec = dtParser.parse(tvDateTime.getText().toString()).getTime();
+                                        } catch (Exception e) { }
+                                    }
+
+                                    // get existing interval value, if set...
+                                    if (etInterval.getText() != null) {
+                                        try {
+                                            intervalVal = Integer.valueOf(etInterval.getText().toString());
+                                        } catch (Exception e) { }
+                                    }
+
+                                    List<String[]> values = cmd.ReadSamples(valuesCnt, intervalVal, initTSmSec);
                                     displayMeasurementsDialog(values);
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -563,7 +613,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
                     short interval = msg.getData().getShort("body");
                     etInterval.setText(String.valueOf(interval));
                     break;
-                case LastSample:
+                case ReadLastSample:
                     value = msg.getData().getString("body");
                     if (!Strings.isEmptyOrWhitespace(value)) {
                         tvLastSampleValue.setText(value);
@@ -571,7 +621,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
                         tvLastSampleValue.setText("ERR");
                     }
                     break;
-                case InitTimeStamp:
+                case ReadInitTimeStamp:
                     value = msg.getData().getString("body");
                     tvDateTime.setText(value);
                     break;
@@ -581,15 +631,12 @@ public class CAENLoggerActivity extends AppCompatActivity {
                 case HideProgressBar:
                     runOnUiThread(() -> progressBar.setVisibility(View.GONE));
                     break;
-
                 case CmdRESET:
                     String result = msg.getData().getString("body");
                     if(!"MT_OK_ERR".equalsIgnoreCase(result)) {
                         CToast(getApplicationContext(), "Reset Failed!\n", Toast.LENGTH_SHORT);
                     }
                     break;
-
-
 
                 case 1980:
                     if (!IsDemo) {

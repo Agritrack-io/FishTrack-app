@@ -17,6 +17,7 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ONE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_TWO;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ZERO;
 import static io.agritrack.caen.api.EncodingUtils.ToShort;
+import static io.agritrack.caen.api.EncodingUtils.createTimestamp;
 import static io.agritrack.caen.api.EncodingUtils.parseTemperatureNumeric;
 import static io.agritrack.caen.api.EncodingUtils.parseTimestamp;
 import static io.agritrack.rfid.RFIDUtils.WaitFor;
@@ -32,6 +33,7 @@ import cn.pda.serialport.Tools;
 import io.agritrack.caen.pojo.RFIDTag;
 
 public abstract class AbstractCAENCommander implements ICAEN_API {
+    private static final short WORDS_PER_MEASUREMENT = (short)1; //(short)3;
     protected final Function<TagModel, String> TagToString = t -> Tools.Bytes2HexString(t.getmEpcBytes(), t.getmEpcBytes().length);
     protected final Function<Reader.TAGINFO, String> TagInfoToString = t -> Tools.Bytes2HexString(t.EpcId, t.Epclen);
     private static boolean LoggerIsOpen = Boolean.FALSE;
@@ -53,7 +55,13 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
 
     abstract public List<RFIDTag> inventoryRealTime();
 
+    abstract public List<RFIDTag> searchInventory();
+
     abstract public boolean startReading();
+
+    abstract public void HighPowerLevel();
+
+    abstract public void LowPowerLevel();
 
     //########################################################
     //###  Protected Methods called by several subclasses ####
@@ -130,6 +138,16 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     public Reader.READER_ERR WriteTimeBinONE() {
         try {
             return WriteRegisters(ADDR_TIME_BIN, SHORT_ONE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Reader.READER_ERR WriteTimeBinZERO() {
+        try {
+            return WriteRegisters(ADDR_TIME_BIN, SHORT_ZERO);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -351,13 +369,25 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
 
     @Override
     public List<String[]> ReadSamples(int samplesCnt) throws Exception {
+        final int intervalSeconds = 900;
+        return ReadSamples(samplesCnt, intervalSeconds);
+    }
+
+    @Override
+    public List<String[]> ReadSamples(int samplesCnt, int intervalSeconds) throws Exception {
+        long startTSmSec = System.currentTimeMillis() - (samplesCnt * intervalSeconds) * 1000L;
+        return ReadSamples(samplesCnt, intervalSeconds, startTSmSec);
+    }
+
+    @Override
+    public List<String[]> ReadSamples(int samplesCnt, int intervalSeconds, long startTSmSec) throws Exception {
         if (samplesCnt <= SampleBatchSize) {
-            return ReadSamplesBatch(SHORT_ZERO, samplesCnt);
+            return ReadSamplesBatch(startTSmSec, intervalSeconds, SHORT_ZERO, samplesCnt);
         } else {
             List<String[]> result = new LinkedList<>();
             for (short batchStart = 0; batchStart < samplesCnt; batchStart += SampleBatchSize) {
                 short batchSize = (samplesCnt - batchStart) >= SampleBatchSize ? SampleBatchSize : (short) (samplesCnt % SampleBatchSize);
-                List<String[]> batch = ReadSamplesBatch((short) (batchStart * 3), batchSize);
+                List<String[]> batch = ReadSamplesBatch(startTSmSec, intervalSeconds, (short) (batchStart * WORDS_PER_MEASUREMENT), batchSize);
                 result.addAll(batch);
                 Thread.sleep(200l);
             }
@@ -392,22 +422,34 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     //###################################################
     //###  Private methods for Read / Write commands  ###
     //###################################################
-    private List<String[]> ReadSamplesBatch(short start, int samplesCnt) throws Exception {
-        byte[] reply = ReadRegisters((short) (ADDR_LOGS + start), (short) (samplesCnt * 3));
+    private List<String[]> ReadSamplesBatch(long beginTSmSec, int intervalSeconds, short start, int samplesCnt) throws Exception {
+
+        byte[] reply = ReadRegisters((short) (ADDR_LOGS + start), (short) (samplesCnt * WORDS_PER_MEASUREMENT));
         if (reply != null && reply.length > 0 && reply[0] == REPLY_NACK)
             throw new Exception("Failed to read sample data.");
-        else if (reply == null || reply.length < 6)
+        else if (reply == null || reply.length < WORDS_PER_MEASUREMENT * 2)
             return new LinkedList<>();
-        return parseData(reply);
+
+        return parseDataWithoutTimestamp(beginTSmSec, intervalSeconds, reply);
     }
 
-    private List<String[]> parseData(byte[] data) {
+    private List<String[]> parseDataWithTimestamp(byte[] data) {
         List<String[]> measurements = new LinkedList<>();
 
         for (int i = 0; i < data.length - 5; i += 6) {
             short t = ToShort(new byte[]{data[i], data[i + 1]});
-            byte[] bytes = new byte[]{data[i + 4], data[i + 5], data[i + 2], data[i + 3]};
+            byte[] bytes = new byte[]{data[i + 4], data[i + 5], data[i + 2], data[i + WORDS_PER_MEASUREMENT]};
             measurements.add(new String[]{parseTimestamp(bytes), String.format("%.2f",parseTemperatureNumeric(t))});  //"%.2f\u2103"
+        }
+        return measurements;
+    }
+
+    private List<String[]> parseDataWithoutTimestamp(long beginTSmSec, int intervalSeconds, byte[] data) {
+        List<String[]> measurements = new LinkedList<>();
+        for (int sampleIdx = 0; sampleIdx < data.length/2; sampleIdx++) {
+            int byteIdx = sampleIdx * 2;
+            short t = ToShort(new byte[]{data[byteIdx], data[byteIdx+1]});
+            measurements.add(new String[]{createTimestamp(beginTSmSec + (sampleIdx * intervalSeconds) * 1000L), String.format("%.2f", parseTemperatureNumeric(t))});
         }
         return measurements;
     }

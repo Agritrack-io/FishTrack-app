@@ -116,4 +116,10 @@ public class EncodingUtils {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         return format.format(dt);
     }
+
+    public static String createTimestamp(long beginTS) {
+        Date dt = new Date(beginTS);
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return format.format(dt);
+    }
 }

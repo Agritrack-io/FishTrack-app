@@ -196,6 +196,11 @@ public class BX6200Commander extends AbstractCAENCommander  {
     }
 
     @Override
+    public List<RFIDTag> searchInventory() {
+        return inventoryRealTime();
+    }
+
+    @Override
     public List<RFIDTag> inventoryWithFilter() {
         return inventoryRealTime();
     }
@@ -204,5 +209,22 @@ public class BX6200Commander extends AbstractCAENCommander  {
     public boolean startReading() {
         //Reader.READER_ERR res = this.uhfReader.asyncStartReading();
         return false; //Reader.READER_ERR.MT_OK_ERR.equals(res);
+    }
+
+
+
+    @Override
+    public void HighPowerLevel() {
+
+    }
+
+    @Override
+    public void LowPowerLevel() {
+
+    }
+
+    @Override
+    public int[] getPowerLevel() {
+        return new int[2];
     }
 }

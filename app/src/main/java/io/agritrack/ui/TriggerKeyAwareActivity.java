@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import io.agritrack.rfid.X9KeyReceiver;
 
@@ -35,19 +34,19 @@ public abstract class TriggerKeyAwareActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onDestroy();
     }
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onPause();
     }
 

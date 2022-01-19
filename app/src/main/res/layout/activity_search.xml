@@ -239,6 +239,20 @@
                 android:textSize="18sp" />
         </RelativeLayout>
 
+        <ProgressBar
+            android:id="@+id/searchProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:background="@color/white"
+            app:layout_constraintTop_toTopOf="@id/formLayout"
+            app:layout_constraintLeft_toLeftOf="@id/formLayout"
+            app:layout_constraintBottom_toBottomOf="@id/formLayout"
+            app:layout_constraintRight_toRightOf="@id/formLayout"
+            app:flow_verticalBias="0.95"
+            app:flow_horizontalBias="0.50"/>
+
         <RelativeLayout
             android:id="@+id/SearchBLayout"
             android:layout_width="0dp"

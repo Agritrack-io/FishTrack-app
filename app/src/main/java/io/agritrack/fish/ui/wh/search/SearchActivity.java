@@ -34,12 +34,14 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.barcode.SoundUtil;
+import io.agritrack.caen.api.ICAEN_API;
+import io.agritrack.caen.api.RFIDModuleFactory;
+import io.agritrack.caen.pojo.RFIDTag;
 import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.rfid.ScanFilterThread;
 import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.bo.GenericListModel;
@@ -49,9 +51,7 @@ import io.agritrack.ui.service.LocalPreferences;
 public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-
-    private ScanHandler mScanHandler;
-    private ScanFilterThread search_runnable;
+    private final ScanHandler mScanHandler = new ScanHandler(this);
 
     private ProgressBar pbProximity;
     private MobileDB db;
@@ -60,15 +60,16 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
     private EditText etAssetBarcode;
     private SearchView svSearchAsset;
     private TextView tvProximity;
-
     private ImageView ivSupport;
     private SupportDialog supportDialog;
-
     private RecyclerView rvAssets;
     private Button btnSearchAsset;
     private String selectedAssetType;
     private String selectedBarcode = "";
     private ConstraintLayout selectedItem;
+    private ProgressBar searchProgressBar;
+
+    private boolean isScanning = false;
 
     // Instantiate a clickListener to be passed to adapterAssets.
     // It will be used to set the selectedBarcode var to the selected item barcode.
@@ -108,7 +109,7 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
         assignCtrlVars();
 
         // instantiate Local Handler that will process the scanning stream.
-        mScanHandler = new ScanHandler(this);
+        //mScanHandler = new ScanHandler(this);
 
         // link trigger/scan button to ClickListener
         btnSearchAsset.setOnClickListener(this::onClick);
@@ -139,7 +140,6 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
     protected void configFooter() {
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
-            stopScanner();
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });
@@ -154,6 +154,7 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
         pbProximity = findViewById(R.id.pbProximity);
         tvProximity = findViewById(R.id.tvProximity);
         ivSupport = findViewById(R.id.ivSupport);
+        searchProgressBar = findViewById(R.id.searchProgressBar);
         tgSearchAssetType.setOnCheckedChangeListener(this);
         rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvAssets.setItemAnimator(new DefaultItemAnimator());
@@ -182,9 +183,9 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
 
     private void loadCagesFromLocalDB() {
         // load assets for current Site and filter by asset type (if selected).
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftCage); //getAssetsForType(selectedAssetType);
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftCage);
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid)).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
             adapterAssets.getFilter().filter("");
             this.rvAssets.setAdapter(adapterAssets);
@@ -221,43 +222,55 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
             return;
         }
 
-        if (search_runnable == null) {
+        if(!isScanning) {
+            isScanning = true;
             btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            search_runnable = new ScanFilterThread(mScanHandler);
-            search_runnable.setFilterEPC(selectedBarcode);
-            search_runnable.startReading();
             btnSearchAsset.setText(R.string.stop_search);
-            mScanHandler.postDelayed(search_runnable, 0);
-        } else if (!search_runnable.isReading()) {
-            btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            search_runnable.setFilterEPC(selectedBarcode);
-            search_runnable.startReading();
-            btnSearchAsset.setText(R.string.stop_search);
-            mScanHandler.postDelayed(search_runnable, 0);
+
+            new Thread(search_runnable).start();
         } else {
+            isScanning = false;
             btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
             btnSearchAsset.setText(R.string.scan_bin);
             pbProximity.setProgress(0);
             tvProximity.setText(R.string.proximity);
-            stopScanner();
+
         }
+
+
+//        if (search_runnable == null) {
+//            btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+//            search_runnable = new ScanFilterRunnable(mScanHandler);
+//            search_runnable.setFilterEPC(selectedBarcode);
+//            search_runnable.startReading();
+//            btnSearchAsset.setText(R.string.stop_search);
+//            mScanHandler.post(search_runnable);
+//
+//            // display progress Bar.
+//            mScanHandler.post(() -> searchProgressBar.setVisibility(View.VISIBLE));
+//
+//        } else if (!search_runnable.isReading()) {
+//            btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+//            search_runnable.setFilterEPC(selectedBarcode);
+//            search_runnable.startReading();
+//            btnSearchAsset.setText(R.string.stop_search);
+//            mScanHandler.postDelayed(search_runnable, 0);
+//        } else {
+//            btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+//            btnSearchAsset.setText(R.string.scan_bin);
+//            pbProximity.setProgress(0);
+//            tvProximity.setText(R.string.proximity);
+//            stopScanner();
+//        }
     }
 
     @Override
     protected void onStop() {
-        this.stopScanner();
         super.onStop();
     }
 
     // ###################################################
-    private void stopScanner() {
-        if(this.search_runnable !=null) {
-            this.search_runnable.stopReading();
-            mScanHandler.removeCallbacks(this.search_runnable);
-        }
-    }
-
-    private class ScanHandler extends Handler {
+    private static class ScanHandler extends Handler {
         private final WeakReference<SearchActivity> mActivity;
 
         public ScanHandler(SearchActivity activity) {
@@ -273,8 +286,8 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
                     int rssi_norm = normalize(rssi_from_tag);
 
                     if (rssi_norm > 5 && rssi_norm < 95) {
-                        tvProximity.setText(String.valueOf(rssi_norm));
-                        pbProximity.setProgress(rssi_norm);
+                        mActivity.get().tvProximity.setText(String.valueOf(rssi_norm));
+                        mActivity.get().pbProximity.setProgress(rssi_norm);
                         if (rssi_norm < 95 && rssi_norm >= 80) {
                             toneG.startTone(ToneGenerator.TONE_DTMF_D, 200);
                         } else if (rssi_norm < 80 && rssi_norm >= 60) {
@@ -286,17 +299,17 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
                         }
                     } else if (rssi_norm >= 95) {
                         toneG.startTone(ToneGenerator.TONE_DTMF_D, 300);
-                        tvProximity.setText(">= 95%");
-                        pbProximity.setProgress(100);
+                        mActivity.get().tvProximity.setText(">= 95%");
+                        mActivity.get().pbProximity.setProgress(100);
                     } else {
                         toneG.startTone(ToneGenerator.TONE_DTMF_1, 10);
-                        tvProximity.setText("<= 5%");
-                        pbProximity.setProgress(0);
+                        mActivity.get().tvProximity.setText("<= 5%");
+                        mActivity.get().pbProximity.setProgress(0);
                     }
                     break;
                 case 1980:
-                    tvProximity.setText("");
-                    pbProximity.setProgress(0);
+                    mActivity.get().tvProximity.setText("");
+                    mActivity.get().pbProximity.setProgress(0);
             }
         }
 
@@ -308,4 +321,50 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
             return (int) (Math.abs(rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI) * 100);
         }
     }
+
+    // **************************************************************
+    private final Runnable search_runnable = new SearchRunnable();
+
+    private final class SearchRunnable implements Runnable {
+        private final ICAEN_API uhfReader;
+
+        private SearchRunnable() {
+            super();
+            uhfReader = RFIDModuleFactory.getInstance();;
+        }
+
+        @Override
+        public void run() {
+            try {
+                //communicating with handler using Runnable object
+                mScanHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isScanning == true) {
+                            searchProgressBar.setVisibility(View.VISIBLE);
+                        } else {
+                            searchProgressBar.setVisibility(View.GONE);
+                        }
+                    }
+                });
+
+                uhfReader.setFilterEPC(selectedBarcode);
+                List<RFIDTag> tagList = uhfReader.searchInventory();
+
+                if (tagList != null && !tagList.isEmpty()) {
+                    RFIDTag tag = tagList.get(0);
+                    Message msg = new Message();
+                    msg.what = 10;
+                    Bundle b = new Bundle();
+                    b.putInt("rssi", tag.getRssi());
+                    b.putString("epc", tag.getEpc());
+                    msg.setData(b);
+                    mScanHandler.sendMessage(msg);
+                }
+            } catch (Exception ignored) {
+                ignored.printStackTrace();
+            }
+        }
+    }
+
 }
