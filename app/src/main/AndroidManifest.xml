@@ -27,25 +27,36 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label" >
         <activity
-            android:name=".fish.ui.quality_arrival.PackageQualityStartPackageActivity"
+            android:name=".fish.ui.quality.packaging.PackageQualityConfirmActivity"
             android:exported="false" />
         <activity
-            android:name=".fish.ui.quality_arrival.PackageQualitySelectStepsActivity"
+            android:name=".fish.ui.quality.packaging.PackageQualityInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".fish.ui.quality_arrival.PackageQualityMoreInfo3Activity"
+            android:name=".fish.ui.quality.packaging.PackageQualityTemperatureProfilesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".fish.ui.quality.packaging.PackageQualityStartActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fish.ui.quality_arrival.PackageQualityMoreInfo2Activity"
+            android:name=".fish.ui.quality.QualitySelectStepsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fish.ui.quality_arrival.PackageQualityTemperatureProfilesActivity"
+            android:name=".fish.ui.quality.receipt.ReceiptQualityMoreInfo3Activity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fish.ui.quality_arrival.PackageQualityMoreInfoActivity"
+            android:name=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.quality.receipt.ReceiptQualityTemperatureProfilesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -57,15 +68,15 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fish.ui.quality_arrival.PackageQualityConfirmActivity"
+            android:name=".fish.ui.quality.receipt.ReceiptQualityConfirmActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fish.ui.quality_arrival.PackageQualityStartReceiptActivity"
+            android:name=".fish.ui.quality.receipt.ReceiptQualityStartActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fish.ui.quality_arrival.PackageQualityInfoActivity"
+            android:name=".fish.ui.quality.receipt.ReceiptQualityInfoActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

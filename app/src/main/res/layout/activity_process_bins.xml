@@ -113,7 +113,7 @@ tools:context=".fish.ui.process.ProcessBinsActivity">
                 android:text="@string/received_bins"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
+                app:layout_constraintBottom_toTopOf="@+id/tvHeaders"
                 app:layout_constraintEnd_toStartOf="@+id/ivDeleteBin"
                 app:layout_constraintStart_toEndOf="@+id/ivAddBin"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -138,6 +138,21 @@ tools:context=".fish.ui.process.ProcessBinsActivity">
                 tools:layout_conversion_absoluteHeight="120dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
+            <TextView
+                android:id="@+id/tvHeaders"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center_vertical"
+                android:paddingStart="22dp"
+                android:text="#             Βούτα                Κλωβός       Kg"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvSelectBins" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvBinsForTransport"
                 android:layout_width="0dp"
@@ -150,7 +165,7 @@ tools:context=".fish.ui.process.ProcessBinsActivity">
                 app:layout_constraintBottom_toTopOf="@+id/tvNumberBins"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSelectBins">
+                app:layout_constraintTop_toBottomOf="@+id/tvHeaders">
 
             </androidx.recyclerview.widget.RecyclerView>
 
@@ -192,7 +207,7 @@ tools:context=".fish.ui.process.ProcessBinsActivity">
                 android:layout_height="48dp"
                 android:layout_marginEnd="16dp"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
+                app:layout_constraintBottom_toTopOf="@+id/tvHeaders"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvSelectBins"
                 app:srcCompat="@drawable/ic_delete" />
@@ -203,26 +218,10 @@ tools:context=".fish.ui.process.ProcessBinsActivity">
                 android:layout_height="48dp"
                 android:layout_marginStart="16dp"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
+                app:layout_constraintBottom_toTopOf="@+id/tvHeaders"
                 app:layout_constraintEnd_toStartOf="@+id/tvSelectBins"
                 app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/ic_add_stock_opname" />
-
-            <RelativeLayout
-                android:id="@+id/loadingPanel"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="9dp">
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="true"
-                    android:visibility="invisible" />
-            </RelativeLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

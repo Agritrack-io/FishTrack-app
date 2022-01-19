@@ -3,6 +3,7 @@ package io.agritrack.ui.login.api;
 import java.util.List;
 
 import io.agritrack.data.dto.AppUserDTO;
+import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
@@ -11,7 +12,6 @@ import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
-import io.agritrack.data.dto.tx.CollectTxDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -69,6 +69,10 @@ public interface SyncApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/cage-detail/{siteId}")
     Call<List<CageDetailsDTO>> getCageDetailsBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/transport/bin-info/{siteId}")
+    Call<List<BinInfoDTO>> getBinsByPlant(@Path("siteId") Long siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/logger/{siteId}")

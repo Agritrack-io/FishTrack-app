@@ -1,6 +1,5 @@
-package io.agritrack.fish.ui.quality_arrival;
+package io.agritrack.fish.ui.quality.receipt;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -8,9 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,12 +17,11 @@ import com.google.android.gms.common.util.Strings;
 import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class PackageQualityMoreInfoActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class ReceiptQualityMoreInfoActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private ToggleGroup tgBinCondition;
     private String selectedBinCondition;
@@ -39,10 +34,10 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package_quality_more_info);
+        setContentView(R.layout.activity_receipt_quality_more_info);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityMoreInfo);
+        TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityMoreInfo);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
@@ -52,7 +47,7 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
         initControlsFromState();
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(PackageQualityMoreInfoActivity.this);
+            supportDialog = new SupportDialog(ReceiptQualityMoreInfoActivity.this);
             supportDialog.showDialog();
         });
 
@@ -67,14 +62,14 @@ public class PackageQualityMoreInfoActivity extends AppCompatActivity implements
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), PackageQualityMoreInfo2Activity.class);
+                Intent i = new Intent(getApplicationContext(), ReceiptQualityMoreInfo2Activity.class);
                 startActivity(i);
             }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToPackageQualityInfo);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackageQualityInfoActivity.class);
+            Intent i = new Intent(getApplicationContext(), ReceiptQualityInfoActivity.class);
             startActivity(i);
         });
     }

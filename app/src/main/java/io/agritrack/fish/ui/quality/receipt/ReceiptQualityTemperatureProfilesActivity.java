@@ -1,0 +1,112 @@
+package io.agritrack.fish.ui.quality.receipt;
+
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.common.util.Strings;
+
+import java.util.Map;
+
+import io.agritrack.R;
+import io.agritrack.dialog.SupportDialog;
+import io.agritrack.fish.state.LoggerDataRecord;
+import io.agritrack.ui.adapter.TemperatureProfileAdapter;
+import io.agritrack.ui.service.LocalPreferences;
+
+public class ReceiptQualityTemperatureProfilesActivity extends AppCompatActivity {
+
+    private RecyclerView lvTempProfiles;
+    private TemperatureProfileAdapter tempProfileAdapter;
+
+    private ImageView ivSupport;
+    private SupportDialog supportDialog;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_receipt_quality_temperature_profiles);
+
+        // set Header Info
+        TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityTemperatureProfiles);
+        tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // get  references of the controls
+        assignCtrlVars();
+
+        // get main controls references
+        this.lvTempProfiles = findViewById(R.id.lvTempProfiles);
+
+        tempProfileAdapter = new TemperatureProfileAdapter(this);
+        lvTempProfiles.setAdapter(tempProfileAdapter);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ReceiptQualityTemperatureProfilesActivity.this);
+        lvTempProfiles.setLayoutManager(layoutManager);
+        lvTempProfiles.setHasFixedSize(false);
+
+        tempProfileAdapter.notifyDataSetChanged();
+
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
+
+        ivSupport.setOnClickListener(view -> {
+            supportDialog = new SupportDialog(ReceiptQualityTemperatureProfilesActivity.this);
+            supportDialog.showDialog();
+        });
+
+        configFooter();
+    }
+
+    private void assignCtrlVars() {
+        lvTempProfiles = findViewById(R.id.lvTempProfiles);
+        ivSupport = findViewById(R.id.ivSupport);
+    }
+
+    protected void configFooter() {
+        ImageView ivNext = findViewById(R.id.ivToPackageQualityInfo);
+        ivNext.setOnClickListener(view -> {
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
+                Intent i = new Intent(getApplicationContext(), ReceiptQualityInfoActivity.class);
+                startActivity(i);
+            }
+        });
+
+        ImageView ivBack = findViewById(R.id.ivBackToPackageQualityStart);
+        ivBack.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), ReceiptQualityStartActivity.class);
+            startActivity(i);
+        });
+    }
+
+    private void initControlsFromState() {
+        Map<String, LoggerDataRecord.TemperatureModel> data = recLoggerData.data;
+        tempProfileAdapter.refill(data);
+    }
+
+    private String validate() {
+        StringBuilder sb = new StringBuilder();
+       /* if (!IsDemo) {
+            if (GlobalState.recProcessing.availBins == null || GlobalState.recProcessing.availBins.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Received bins'"));
+            }
+        }*/
+        return sb.toString();
+    }
+
+    private void updateState() {
+
+    }
+}

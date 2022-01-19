@@ -1,4 +1,4 @@
-package io.agritrack.fish.ui.quality_arrival;
+package io.agritrack.fish.ui.quality.packaging;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
@@ -26,15 +26,15 @@ import io.agritrack.R;
 import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.state.QualityRecord;
-import io.agritrack.ui.custom.ToggleGroup;
+import io.agritrack.fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class PackageQualityInfoActivity extends AppCompatActivity {
+
     private static final int pic_id = 123;
     private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
-    private EditText mtvRemarks, etPlot, etFishTemp;
+    private EditText mtvRemarks, etFishTemp;
     private PhotoDialog photoDialog;
     private ImageView ivTakenPhoto;
 
@@ -45,7 +45,6 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_package_quality_info);
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityInfo);
         tvHeader.setText(LocalPreferences.HeaderMsg());
@@ -91,34 +90,15 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
         configFooter();
     }
 
-    // This method will help to retrieve the image
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        // Match the request 'pic id with requestCode
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == pic_id) {
-
-            // BitMap is data structure of image file
-            // which stor the image in memory
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-
-            // Set the image in imageview for display
-            photoResult.setValue(photo);
-
-            photoDialog = new PhotoDialog(PackageQualityInfoActivity.this, photoResult, R.string.photo_taken);
-            photoDialog.showDialog();
-        }
-    }
-
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToPackageQualityMoreInfo);
+        ImageView ivNext = findViewById(R.id.ivToPackageQualityConfirm);
         ivNext.setOnClickListener(view -> {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), PackageQualityMoreInfoActivity.class);
+                Intent i = new Intent(getApplicationContext(), PackageQualityConfirmActivity.class);
                 startActivity(i);
             }
         });
@@ -131,7 +111,6 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
-        etPlot = findViewById(R.id.etPlot);
         etFishTemp = findViewById(R.id.etFishTemp);
         mtvRemarks = findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -155,10 +134,6 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
     private QualityRecord updateState() {
         QualityRecord qualityRecord = GlobalState.recQuality;
 
-        if (etPlot.getText() != null) {
-            qualityRecord.pLot = etPlot.getText().toString();
-        }
-
         if (etFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etFishTemp.getText().toString())) {
             qualityRecord.fishTemp = Double.valueOf(etFishTemp.getText().toString());
         }
@@ -171,11 +146,6 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.pLot)) {
-                sb.append(String.format("\n%s is missing", "'LOT'"));
-            }
-        }
 
         return sb.toString();
     }

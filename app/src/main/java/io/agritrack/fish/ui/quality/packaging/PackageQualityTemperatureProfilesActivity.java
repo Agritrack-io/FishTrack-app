@@ -1,18 +1,18 @@
-package io.agritrack.fish.ui.quality_arrival;
+package io.agritrack.fish.ui.quality.packaging;
 
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -35,10 +35,10 @@ public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package_quality_temperature_profiles);
+        setContentView(R.layout.activity_package_quality_temperature_profile);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityTemperatureProfiles);
+        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityTemperatureProfile);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
@@ -86,7 +86,7 @@ public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity
 
         ImageView ivBack = findViewById(R.id.ivBackToPackageQualityStart);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackageQualityStartReceiptActivity.class);
+            Intent i = new Intent(getApplicationContext(), PackageQualityStartActivity.class);
             startActivity(i);
         });
     }

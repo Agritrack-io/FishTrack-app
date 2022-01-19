@@ -37,7 +37,7 @@ public interface TransactionApi {
     Call<TransportTxDTO> syncTransportTx(@Body TransportTxDTO transportTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/transport/shipping")
+    @POST("/shipping")
     Call<ShippingTxDTO> syncShippingTx(@Body ShippingTxDTO shippingTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")

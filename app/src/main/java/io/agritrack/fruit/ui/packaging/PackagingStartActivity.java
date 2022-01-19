@@ -300,7 +300,7 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
         // Set up the input
         final EditText input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
         builder.setView(input);
 
         // Set up the buttons
@@ -309,6 +309,7 @@ public class PackagingStartActivity extends TriggerKeyAwareActivity {
             public void onClick(DialogInterface dialog, int which) {
                 toteBarcode = input.getText().toString();
                 adapterTotes.addItem(toteBarcode);
+                tvTotesCount.setText(String.valueOf(adapterTotes.getItemCount()));
                 adapterTotes.notifyDataSetChanged();
             }
         });

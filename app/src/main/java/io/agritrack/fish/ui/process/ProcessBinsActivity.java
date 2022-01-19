@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.process;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.InputType;
+import android.util.ArraySet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,11 +33,15 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
+import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.BinInfo;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
@@ -43,6 +49,7 @@ import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.TriggerKeyAwareActivity;
+import io.agritrack.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -52,7 +59,8 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
     private ScanHandler mScanHandler;
     private ScanInventoryThread scanner_runnable;
 
-    private TemplateRecyclerAdapter adapterBins;
+    private MobileDB db;
+    private BinWeightCageAdapter adapterBins;
 
     private RecyclerView rvBinsForTransport;
     private TextView tvBinsCount;
@@ -88,6 +96,9 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_process_bins);
 
+        // get an instance of local DB
+        db = MobileDB.getInstance(getAppContext());
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderProcessBins);
         tvHeader.setText(LocalPreferences.HeaderMsg());
@@ -101,7 +112,7 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBinsForTransport.setLayoutManager(layoutManager);
         rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
-        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
+        adapterBins = new BinWeightCageAdapter(this, new ArrayList<>(), itemsClickListener);
         rvBinsForTransport.setAdapter(adapterBins);
         rvBinsForTransport.setNestedScrollingEnabled(false);
 
@@ -110,7 +121,7 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
                 return;
             }
             tvBinsCount.setText(String.valueOf(response.size()));
-            adapterBins.setValues(new ArrayList<>(response));
+            adapterBins.setValues(convertEPCsToBinDetails(response));
             adapterBins.notifyDataSetChanged();
         });
 
@@ -132,7 +143,7 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
                     if (barcode != null) {
-                        adapterBins.removeItem(barcode);
+                        adapterBins.removeItem(new BinWeightCageAdapter.BinDetails(barcode));
                         adapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         selectedBarcode = null;
@@ -208,7 +219,7 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
         ProcessingRecord prcRecord = GlobalState.recProcessing;
 
         if (prcRecord.availBins != null) {
-            adapterBins.setValues(new LinkedList<>(prcRecord.availBins));
+            adapterBins.setValues(convertEPCsToBinDetails(new HashSet<>(prcRecord.availBins)));
             adapterBins.notifyDataSetChanged();
             tvBinsCount.setText(String.valueOf(prcRecord.availBins.size()));
         }
@@ -231,6 +242,16 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
             scanner_runnable.stopReading();
             scanButton.setText(R.string.scan_bin);
+
+            //Add code to retrieve bin info from local DB
+            List<BinWeightCageAdapter.BinDetails> binsList = adapterBins.getValues();
+            for (BinWeightCageAdapter.BinDetails bin : binsList){
+                BinInfo tmpBin = db.binInfoDAO().getByRFId(bin.epc);
+                if (tmpBin!=null){
+                    bin.weight = tmpBin.totalWeight;
+                    bin.cage = tmpBin.cage;
+                }
+            }
         }
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
@@ -250,7 +271,8 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 binBarcode = input.getText().toString();
-                adapterBins.addUniqueItem(binBarcode);
+                adapterBins.addUniqueItem(new BinWeightCageAdapter.BinDetails(binBarcode));
+                tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                 adapterBins.notifyDataSetChanged();
             }
         });
@@ -268,7 +290,7 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
     private void updateState() {
         GlobalState.initProcessingRecord();
 
-        GlobalState.recProcessing.availBins = new LinkedList<>(adapterBins.getValues());
+        GlobalState.recProcessing.availBins = adapterBins.getEpcsList();
     }
 
     private String validate() {
@@ -301,7 +323,7 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        epcList.stream().forEach(x -> adapterBins.addUniqueItem(x.toString()));
+                        epcList.stream().forEach(x -> adapterBins.addUniqueItem(new BinWeightCageAdapter.BinDetails(x)));
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         adapterBins.notifyDataSetChanged();
                     }
@@ -313,5 +335,13 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
                     break;
             }
         }
+    }
+
+    private List<BinWeightCageAdapter.BinDetails> convertEPCsToBinDetails(Set<String> epcs){
+        List<BinWeightCageAdapter.BinDetails> result = new ArrayList<>();
+        for (String epc: epcs){
+            result.add(new BinWeightCageAdapter.BinDetails(epc));
+        }
+        return result;
     }
 }
