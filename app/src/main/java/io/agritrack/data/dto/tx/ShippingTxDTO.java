@@ -17,12 +17,11 @@ import io.agritrack.data.model.tx.items.ShippingTxWithItems;
 public class ShippingTxDTO {
 
     public Long id;
-    public Long timestamp;
     public String truck_license_plate;
     public String driver_name;
     public String driver_phone;
     public String user;
-    public List<String> bins_loaded = new LinkedList<String>();
+    public List<String> ifco = new LinkedList<String>();
     public Integer ifco_cnt;
     public String customer;
     public Double longitude;
@@ -39,10 +38,9 @@ public class ShippingTxDTO {
             shippingTxDto.user = shippingTx.user;
             shippingTxDto.ifco_cnt = shippingTx.ifcoCnt;
             if (!CollectionUtils.isEmpty(shipping.ifco)){
-                shippingTxDto.bins_loaded = shipping.ifco.stream().map(x-> x.barcode).collect(Collectors.toList());
+                shippingTxDto.ifco = shipping.ifco.stream().map(x-> x.barcode).collect(Collectors.toList());
             }
             shippingTxDto.customer = shippingTx.customer;
-            shippingTxDto.timestamp = shippingTx.timestamp;
             shippingTxDto.longitude = shippingTx.longitude;
             shippingTxDto.latitude = shippingTx.latitude;
         }

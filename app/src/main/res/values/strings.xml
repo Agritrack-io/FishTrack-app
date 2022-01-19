@@ -412,7 +412,6 @@
     <string name="scan_ifco">Scan IFCO</string>
     <string name="number_of_ifco"># of IFCO:</string>
     <string name="type_rfid">Please confirm your selection</string>
-    <string name="type_barcode">Please confirm your selection</string>
 
     <string name="scan_rfid">Scan RFID</string>
     <string name="pole_barcode">Pole</string>

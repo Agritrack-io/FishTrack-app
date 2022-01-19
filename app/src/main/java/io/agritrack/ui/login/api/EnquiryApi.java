@@ -23,4 +23,8 @@ public interface EnquiryApi {
     @Headers("Content-Type: application/json; charset=UTF-8")
     @GET("/packaging/fruit/ifcobatch/{ifcoBarcode}")
     Call<List<String>> getIfcoBatch(@Path("ifcoBarcode") String ifcoBarcode, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=UTF-8")
+    @GET("/collect/fruit/rfidbatch/{rfidBarcode}")
+    Call<List<String>> getRFIDBatch(@Path("rfidBarcode") String rfidBarcode, @Header("Authorization") String token);
 }

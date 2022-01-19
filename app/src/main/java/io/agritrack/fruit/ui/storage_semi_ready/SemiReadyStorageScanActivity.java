@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,8 +34,11 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import io.agritrack.R;
+import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.sync.RfidBatchByRfidBarcode;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
@@ -42,14 +46,18 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
+import retrofit2.Call;
 
 public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
 
+    private final MutableLiveData<List<String>> enquiryResult = new MutableLiveData<>();
     private ScanHandler mScanHandler;
-    private ScanInventoryThread scanner_runnable;
+    private String rfidBarcode;
 
     private TemplateRecyclerAdapter adapterTotes;
 
@@ -153,6 +161,16 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
         // link trigger/scan button to ClickListener
         scanButton.setOnClickListener(this::onClick);
 
+        enquiryResult.observe(this, response -> {
+            if (response == null) {
+                CToast(getApplicationContext(), render("No RFID batch returned for this RFID"), Toast.LENGTH_LONG);
+                return;
+            }
+            adapterTotes.setValues(response);
+            adapterTotes.notifyDataSetChanged();
+            tvTotesCount.setText(String.valueOf(adapterTotes.getItemCount()));
+        });
+
         // create Footer
         configFooter();
     }
@@ -160,11 +178,6 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToSemiReadyStorageWeight);
         ivNext.setOnClickListener(view -> {
-            //Stop scanning since we navigate to next activity
-            if (scanner_runnable != null) {
-                scanner_runnable.stopReading();
-            }
-
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -177,14 +190,26 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToFruitHome);
         ivBack.setOnClickListener(view -> {
-            //Stop scanning since we navigate to previous activity
-            if (scanner_runnable != null) {
-                scanner_runnable.stopReading();
-            }
-
             Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             startActivity(i);
         });
+    }
+
+    private void invokeEnquiryRfidBatch(String rfidBarcode) {
+        try {
+            EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
+            String token = LocalPreferences.getToken();
+
+            // sync RFID batch for this rfidBarcode
+            Call<List<String>> enquiryRFIDBatchByRFIDBarcodeAsyncCall = enquiryService.getRFIDBatch(rfidBarcode, "Bearer " + token);
+            enquiryRFIDBatchByRFIDBarcodeAsyncCall.enqueue(new RfidBatchByRfidBarcode(this.enquiryResult));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
     }
 
     private void assignCtrlVars() {
@@ -194,27 +219,6 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
         ivDeleteTote = findViewById(R.id.ivDeleteTote);
         ivAddTote = findViewById(R.id.ivAddTote);
         scanButton = findViewById(R.id.btnScanTotes);
-    }
-
-    @Override
-    protected void onClick(View view) {
-        if (scanner_runnable == null) {
-            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable = new ScanInventoryThread(mScanHandler);
-            scanner_runnable.setFilter(Filters.RFID_TOTE);
-            scanner_runnable.startReading();
-            scanButton.setText(R.string.stop_scan);
-        } else if (!scanner_runnable.isReading()) {
-            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable.setFilter(Filters.RFID_TOTE);
-            scanner_runnable.startReading();
-            scanButton.setText(R.string.stop_scan);
-        } else {
-            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-            scanner_runnable.stopReading();
-            scanButton.setText(R.string.scan_totes);
-        }
-        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     private void clearSelectedItem() {
@@ -230,7 +234,6 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
             adapterTotes.setValues(new LinkedList<>(trns.receivedTotes));
             adapterTotes.notifyDataSetChanged();
             //Get reference of binsCount textView
-            //TextView tvBinsCount = findViewById(R.id.tvBinsCount);
             tvTotesCount.setText(String.valueOf(trns.receivedTotes.size()));
         }
     }
@@ -287,6 +290,14 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
         return sb.toString();
     }
 
+    @Override
+    protected void onClick(View view) {
+        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(Filters.RFID_TOTE);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
     // ###################################################
     private class ScanHandler extends Handler {
         private final WeakReference<SemiReadyStorageScanActivity> mActivity;
@@ -297,15 +308,17 @@ public class SemiReadyStorageScanActivity extends TriggerKeyAwareActivity {
 
         @Override
         public void handleMessage(Message msg) {
-            int kk = 0;
             switch (msg.what) {
-                case 100:
-                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
-                    //clearSelectedItem();
-                    if (epcList != null && !epcList.isEmpty()) {
-                        epcList.stream().forEach(x -> adapterTotes.addUniqueItem(x.toString()));
-                        tvTotesCount.setText(String.valueOf(adapterTotes.getItemCount()));
-                        adapterTotes.notifyDataSetChanged();
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    String rssi = msg.getData().getString("rssi");
+                    try {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            rfidBarcode = epcStr;
+                            invokeEnquiryRfidBatch(rfidBarcode);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     break;
                 case 1980:
