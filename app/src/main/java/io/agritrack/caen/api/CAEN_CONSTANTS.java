@@ -33,7 +33,7 @@ public class CAEN_CONSTANTS {
 
     public final static int TIME_WAITTAG_CMDWRITE = 200;
     public final static int TIME_WAITTAG_CMDREADBASE = 200;
-    public final static int TIME_WAITTAG_WRITEPAGE = 10;
+    public final static int TIME_WAITTAG_WRITEPAGE = 100;
 
     public final static short SHORT_ZERO = (short) 0x0000;
     public final static short SHORT_ONE = (short) 0x0001;

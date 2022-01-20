@@ -154,47 +154,47 @@ public class CAENLoggerActivity extends AppCompatActivity {
             // TimeBIN
             Short value = cmd.ReadTimeBIN();
             mScanHandler.sendMessage(createMessage(ReadTimeBIN, value));
-            delay(100l);
+            delay(80l);
 
             // InitTS
             String response = cmd.ReadInitDatetime();
             mScanHandler.sendMessage(createMessage(ReadInitTimeStamp, response));
-            delay(100l);
+            delay(80l);
 
             // Interval
             value = cmd.ReadInterval();
             mScanHandler.sendMessage(createMessage(ReadInterval, value));
-            delay(100l);
+            delay(80l);
 
             // FWRevision
             response = cmd.ReadFWRevision();
             mScanHandler.sendMessage(createMessage(ReadFWRevision, response));
-            delay(100l);
+            delay(50l);
 
             // HWRevision
             response = cmd.ReadHWRevision();
             mScanHandler.sendMessage(createMessage(ReadHWRevision, response));
-            delay(100l);
+            delay(50l);
 
             // CTRLRegister
             response = cmd.ReadControlRegister();
             mScanHandler.sendMessage(createMessage(ReadCTRLReg, response));
-            delay(100l);
+            delay(50l);
 
             // STATUSRegister
             response = cmd.ReadStatusRegister();
             mScanHandler.sendMessage(createMessage(ReadSTATUSReg, response));
-            delay(100l);
+            delay(50l);
 
             // SampleCNT
             value = cmd.ReadSamplesCount();
             mScanHandler.sendMessage(createMessage(ReadSamplesCnt, value));
-            delay(100l);
+            delay(80l);
 
             // LastTemperature
             Double temp = cmd.ReadLastSample();
             mScanHandler.sendMessage(createMessage(ReadLastSample, String.valueOf(temp)));
-            delay(100l);
+            delay(80l);
 
             mScanHandler.removeCallbacks(this);
         }
@@ -203,17 +203,18 @@ public class CAENLoggerActivity extends AppCompatActivity {
     final Runnable resetThread = new Runnable() {
         @Override
         public void run() {
+            cmd.HighSensitivity();
+
             // reset logger
             Reader.READER_ERR response = cmd.Reset();
-            //int[] power = cmd.getPowerLevel();  // [readPower, writePower]
             mScanHandler.sendMessage(createMessage(CmdRESET, response));
             delay(2000l);
 
             // read Samples count
             Short samplesCnt = cmd.ReadSamplesCount();
             mScanHandler.sendMessage(createMessage(ReadSamplesCnt, samplesCnt));
-            //delay(200l);
 
+            cmd.LowSensitivity();
             mScanHandler.removeCallbacks(this);
         }
     };
@@ -274,6 +275,8 @@ public class CAENLoggerActivity extends AppCompatActivity {
     final Runnable enableLoggingThread = new Runnable() {
         @Override
         public void run() {
+            cmd.HighSensitivity();
+
             // -------------------------------------
             // set time Bin to 0, (disable timestamps)
             Reader.READER_ERR response = cmd.WriteTimeBinZERO();
@@ -309,6 +312,9 @@ public class CAENLoggerActivity extends AppCompatActivity {
             Double lastSample = cmd.ReadLastSample();
             delay(50l);
             mScanHandler.sendMessage(createMessage(ReadLastSample, String.valueOf(lastSample)));
+
+            // revert to low sensitivity
+            cmd.LowSensitivity();
 
             mScanHandler.removeCallbacks(this);
         }

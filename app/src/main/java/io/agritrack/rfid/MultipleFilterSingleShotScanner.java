@@ -29,6 +29,14 @@ public class MultipleFilterSingleShotScanner implements Runnable {
         mScanHandler = handler;
     }
 
+    public void LowEnergy() {
+        uhfReader.LowPowerLevel();
+    }
+
+    public void HighEnergy() {
+        uhfReader.HighPowerLevel();
+    }
+
     public boolean startReading() {
         return uhfReader.startReading();
     }
