@@ -13,6 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIServiceGenerator {
 
+
     private static final String BASE_URL = "http://192.168.2.10:5000"; //"http://fishtrackbackend-env.eba-b2cqygnf.eu-central-1.elasticbeanstalk.com";
     private static final Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
 

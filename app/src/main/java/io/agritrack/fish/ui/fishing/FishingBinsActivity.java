@@ -41,7 +41,6 @@ import io.agritrack.R;
 import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
@@ -53,7 +52,6 @@ import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.LoggerInitDialogFragment;
 
 public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
@@ -303,8 +301,10 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
     protected void onClick(View view) {
         singleShot_runnable = new SingleShotScanner(mScanHandler);
         singleShot_runnable.setFilter(Filters.RFID_BIN);
+        singleShot_runnable.LowEnergy();
         singleShot_runnable.startReading();
         mScanHandler.postDelayed(singleShot_runnable, 0);
+        singleShot_runnable.HighEnergy();
     }
 
     // ###################################################
@@ -331,10 +331,14 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
                             binEPC = epcStr.substring(11);
+                            scannedBinEPCs.add(binEPC);
+                            tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
+                            adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
+                            adapterBins.notifyDataSetChanged();
                             // after bin is identified, initialize the temperatures logger.
-                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
+                            /*IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
                             if (logger != null) {
-                                scannedBinEPCs.add(epcStr.substring(11));
+                                scannedBinEPCs.add(binEPC);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();
@@ -347,7 +351,7 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
                                 }
                             } else if (!IsDemo) {
                                 CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
-                            }
+                            }*/
                         }
                         this.removeCallbacks(singleShot_runnable);
                     } catch (Exception e) {
@@ -355,9 +359,6 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
                     }
                     break;
                 case 1980:
-                    if (!IsDemo) {
-                        //CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
-                    }
                     this.removeCallbacks(singleShot_runnable);
                     break;
             }

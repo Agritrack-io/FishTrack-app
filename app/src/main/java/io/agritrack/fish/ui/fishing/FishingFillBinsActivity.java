@@ -209,8 +209,10 @@ public class FishingFillBinsActivity extends TriggerKeyAwareActivity {
     protected void onClick(View view) {
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_BIN);
+        scanner_runnable.HighEnergy();
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
+        scanner_runnable.LowEnergy();
     }
 
     private void assignCtrlVars() {

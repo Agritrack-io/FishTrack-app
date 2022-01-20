@@ -131,9 +131,9 @@ public class BX6200Commander extends AbstractCAENCommander  {
 
         try {
             while ((replyVal.length==1 ||  REPLY_NACK == replyVal[1]) && retries < 10) {
+                replyVal = INTERFACEMEM.ReadReply(uhfReader, accessPassword);
                 // wait for tag to parse command, execute it, and reply
                 Thread.sleep(TIME_WAITTAG_CMDREADBASE + TIME_WAITTAG_WRITEPAGE);
-                replyVal = INTERFACEMEM.ReadReply(uhfReader, accessPassword);
                 retries++;
             }
         } catch (InterruptedException e) {
@@ -157,13 +157,15 @@ public class BX6200Commander extends AbstractCAENCommander  {
         WriteInterval(interval);
         WriteCurrentDatetime();
         EnableLogging();
-        return ReadLastSample();
+        Double rs = ReadLastSample();
+        return rs;
     }
 
     @Override
     public Reader.READER_ERR Reset() {
         try {
-            return WriteRegisters(ADDR_CONTROL, SHORT_ONE);
+            Reader.READER_ERR rs = WriteRegisters(ADDR_CONTROL, SHORT_ONE);
+            return rs;
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -63,15 +63,19 @@ public class FishingCageActivity extends TriggerKeyAwareActivity {
         scanPlatformButton.setOnClickListener(view -> {
             MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
             scanner_runnable.setFilter(new String[]{Filters.RFID_PLATFORM});
+            scanner_runnable.LowEnergy();
             scanner_runnable.startReading();
             mScanHandler.postDelayed(scanner_runnable, 0);
+            scanner_runnable.HighEnergy();
         });
 
         scanCageButton.setOnClickListener(view -> {
             MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
             scanner_runnable.setFilter(new String[]{Filters.RFID_CAGE});
+            scanner_runnable.LowEnergy();
             scanner_runnable.startReading();
             mScanHandler.postDelayed(scanner_runnable, 0);
+            scanner_runnable.HighEnergy();
         });
         // =================================
 
