@@ -10,12 +10,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-public class LocationAwareActivity extends TriggerKeyAwareActivity implements LocationListener {
+public class LocationAwareActivity extends AppCompatActivity implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0;
     private static final long MIN_TIME_BW_UPDATES = 0; //1000 * 60 * 1;
     protected Location mLastLocation;
@@ -30,7 +30,6 @@ public class LocationAwareActivity extends TriggerKeyAwareActivity implements Lo
     }
 
     public Location findLocation() {
-
         try {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -126,7 +125,4 @@ public class LocationAwareActivity extends TriggerKeyAwareActivity implements Lo
         this.stopListener();
         super.onDestroy();
     }
-
-    @Override
-    protected void onClick(View view) { }
 }

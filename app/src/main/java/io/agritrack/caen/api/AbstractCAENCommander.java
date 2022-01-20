@@ -206,7 +206,9 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     public Reader.READER_ERR HighSensitivity() {
         try {
             Short bits = Short.valueOf("0014", 16);
-            return WriteRegisters(ADDR_CONTROL, bits);
+            Reader.READER_ERR rs = WriteRegisters(ADDR_CONTROL, bits);
+            Wait(100L);
+            return rs;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -218,7 +220,9 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     public Reader.READER_ERR LowSensitivity() {
         try {
             Short bits = Short.valueOf("0004", 16);
-            return WriteRegisters(ADDR_CONTROL, bits);
+            Reader.READER_ERR rs = WriteRegisters(ADDR_CONTROL, bits);
+            Wait(100L);
+            return rs;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -228,6 +232,11 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     //##################################################
     //###  Public methods for Read / Write commands  ###
     //##################################################
+    @Override
+    public void Wait(long ms) {
+        try {Thread.sleep(ms);} catch (InterruptedException e) { }
+    }
+
     /* This function returns in one step, the LastSampleMeasurement and the Samples Count */
     @Override
     public Object[] ReadSamplesCntAndLastValue() {

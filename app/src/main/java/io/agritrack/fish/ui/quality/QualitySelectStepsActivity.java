@@ -1,6 +1,5 @@
 package io.agritrack.fish.ui.quality;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -54,8 +53,8 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
         gvQualityMenu.setAdapter(adapter);
         gvQualityMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                final Context appCtx = getApplicationContext();
-                Intent i = new Intent(appCtx, ReceiptQualityStartActivity.class);
+                //final Context appCtx = getApplicationContext();
+                Intent i = new Intent(QualitySelectStepsActivity.this, ReceiptQualityStartActivity.class);
 
                 switch (position) {
                     case First_Step_Idx:
@@ -79,7 +78,7 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
                         break;
                     case Second_Step_Idx:
                         //GlobalState.initQualityRecord();
-                        i = new Intent(appCtx, PackageQualityStartActivity.class);
+                        i = new Intent(QualitySelectStepsActivity.this, PackageQualityStartActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);
                         break;

@@ -5,8 +5,10 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -39,11 +42,14 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.rfid.ScanInventoryThread;
-import io.agritrack.ui.TriggerKeyAwareActivity;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class TransportBinsActivity extends TriggerKeyAwareActivity {
+public class TransportBinsActivity extends AppCompatActivity {
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
+
     private ScanHandler mScanHandler;
     private ScanInventoryThread scanner_runnable;
 
@@ -82,6 +88,9 @@ public class TransportBinsActivity extends TriggerKeyAwareActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transport_bins);
+
+        // trigger + Fn keys will have the same effect as if clicking on Scan button
+        keyReceiver = new X9KeyReceiver(this::onClick);
 
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
@@ -161,6 +170,30 @@ public class TransportBinsActivity extends TriggerKeyAwareActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //unregister the receiver
+        if(keyReceiver != null)
+            unregisterReceiver(keyReceiver);
+        this.stopScanner();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(keyReceiver != null)
+            unregisterReceiver(keyReceiver);
+    }
+
     protected void onClick(View view) {
         if (scanner_runnable == null) {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
@@ -259,11 +292,6 @@ public class TransportBinsActivity extends TriggerKeyAwareActivity {
         return sb.toString();
     }
 
-    @Override
-    protected void onStop() {
-        this.stopScanner();
-        super.onStop();
-    }
     // ###################################################
     private void stopScanner() {
         if(this.scanner_runnable !=null) {

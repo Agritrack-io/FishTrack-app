@@ -8,8 +8,10 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,7 +38,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -48,8 +50,6 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
 import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.state.HarvestRecord;
-import io.agritrack.fruit.state.InventoryRecord;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.LocationAwareActivity;
@@ -61,6 +61,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TotesInventoryActivity extends LocationAwareActivity {
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
 
     private Button scanButton;
     private ScanHandler mScanHandler;
@@ -171,6 +173,33 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         });
 
         configFooter();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onPause();
     }
 
     private void clearSelectedItem() {
@@ -334,7 +363,6 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         }
     }
 
-    @Override
     protected void onClick(View view) {
         if (scanner_runnable == null) {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));

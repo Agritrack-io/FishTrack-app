@@ -7,7 +7,9 @@ import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,7 +19,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -25,8 +29,6 @@ import java.lang.ref.WeakReference;
 import java.time.LocalDate;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import io.agritrack.R;
@@ -42,12 +44,13 @@ import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.HarvestRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
-public class HarvestingStartActivity extends TriggerKeyAwareActivity {
+public class HarvestingStartActivity extends AppCompatActivity {
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
     private final MutableLiveData<SpeciesDTO> enquiryResult = new MutableLiveData<>();
@@ -108,6 +111,33 @@ public class HarvestingStartActivity extends TriggerKeyAwareActivity {
 
         // create Footer
         configFooter();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onPause();
     }
 
     protected void configFooter() {
@@ -194,7 +224,6 @@ public class HarvestingStartActivity extends TriggerKeyAwareActivity {
         return sb.toString();
     }
 
-    @Override
     protected void onClick(View view) {
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_POLE);

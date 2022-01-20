@@ -7,7 +7,9 @@ import static io.agritrack.fish.state.GlobalState.recWHOutgoing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -58,6 +61,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OutgoingAssetActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
 
     private ScanHandler mScanHandler;
     private ScanInventoryThread scanner_runnable;
@@ -182,6 +187,34 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
         });
 
         configFooter();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        this.stopScanner();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onPause();
     }
 
     private void clearSelectedItem() {
@@ -399,7 +432,6 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
         }
     }
 
-    @Override
     protected void onClick(View view) {
         if (scanner_runnable == null) {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
@@ -418,12 +450,6 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
             scanButton.setText(R.string.scan_assets);
         }
         mScanHandler.postDelayed(scanner_runnable, 0);
-    }
-
-    @Override
-    protected void onStop() {
-        this.stopScanner();
-        super.onStop();
     }
 
     // ###################################################

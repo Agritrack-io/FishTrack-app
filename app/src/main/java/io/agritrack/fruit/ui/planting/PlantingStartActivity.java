@@ -7,7 +7,9 @@ import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -39,10 +44,11 @@ import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.PlantRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class PlantingStartActivity extends TriggerKeyAwareActivity {
+public class PlantingStartActivity extends AppCompatActivity {
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
@@ -105,6 +111,33 @@ public class PlantingStartActivity extends TriggerKeyAwareActivity {
 
         // create Footer
         configFooter();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onPause();
     }
 
     protected void configFooter() {
@@ -182,8 +215,6 @@ public class PlantingStartActivity extends TriggerKeyAwareActivity {
         return sb.toString();
     }
 
-
-    @Override
     protected void onClick(View view) {
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_POLE);

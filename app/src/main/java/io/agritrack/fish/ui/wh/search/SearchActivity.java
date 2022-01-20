@@ -4,7 +4,9 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
@@ -19,8 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,13 +46,14 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGroup.OnCheckedChangeListener {
+public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
 
     private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
     private final ScanHandler mScanHandler = new ScanHandler(this);
@@ -214,7 +219,6 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
         }
     }
 
-    @Override
     protected void onClick(View view) {
         selectedBarcode = etAssetBarcode.getText().toString();
         if (Strings.isEmptyOrWhitespace(selectedBarcode)) {
@@ -265,8 +269,30 @@ public class SearchActivity extends TriggerKeyAwareActivity implements ToggleGro
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+    }
+
+    @Override
     protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onPause();
     }
 
     // ###################################################

@@ -7,8 +7,10 @@ import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -44,12 +47,14 @@ import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.bo.BinLoadsMap;
 import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.ui.TriggerKeyAwareActivity;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
 
-public class FishingFillBinsActivity extends TriggerKeyAwareActivity {
+public class FishingFillBinsActivity extends AppCompatActivity {
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
 
@@ -91,6 +96,9 @@ public class FishingFillBinsActivity extends TriggerKeyAwareActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_fill_bins);
+
+        // trigger + Fn keys will have the same effect as if clicking on Scan button
+        keyReceiver = new X9KeyReceiver(this::onClick);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingFillBins);
@@ -206,6 +214,30 @@ public class FishingFillBinsActivity extends TriggerKeyAwareActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //unregister the receiver
+        if(keyReceiver != null)
+            unregisterReceiver(keyReceiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //unregister the receiver
+        if(keyReceiver != null)
+            unregisterReceiver(keyReceiver);
+    }
+
     protected void onClick(View view) {
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_BIN);

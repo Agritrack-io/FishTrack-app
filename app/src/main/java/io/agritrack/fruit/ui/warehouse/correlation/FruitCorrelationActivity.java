@@ -7,7 +7,9 @@ import static io.agritrack.fruit.state.FruitGlobalState.recCorrelation;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
@@ -53,6 +57,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FruitCorrelationActivity extends LocationAwareActivity implements AdapterView.OnItemClickListener {
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final ScanHandler mScanHandler = new ScanHandler(this);
@@ -175,6 +181,33 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         });
 
         configFooter();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        super.onPause();
     }
 
     protected void configFooter() {
@@ -307,7 +340,6 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         }
     }
 
-    @Override
     protected void onClick(View view) {
         MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
         scanner_runnable.setFilters(Filters.RFID_POLE, Filters.RFID_LOGGER);

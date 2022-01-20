@@ -5,7 +5,9 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -45,16 +48,20 @@ import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.bo.LoggerReading;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.ui.TriggerKeyAwareActivity;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.LoggerInitDialogFragment;
 
-public class ReceiptQualityStartActivity extends TriggerKeyAwareActivity {
+public class ReceiptQualityStartActivity extends AppCompatActivity {
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-    private boolean intentForProcessing = false; //TODO: Check why savedInstance is null
+
+    private boolean intentForProcessing = false;
+
     private final LinkedList<String[]> listMeasurements = new LinkedList<>();
     private SingleShotScanner scanner_runnable;
     private MobileDB db;
@@ -65,6 +72,7 @@ public class ReceiptQualityStartActivity extends TriggerKeyAwareActivity {
     private ImageButton ivDeleteBin;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
+
     // Instantiate a clickListener to be passed to adapterBins.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
@@ -83,6 +91,7 @@ public class ReceiptQualityStartActivity extends TriggerKeyAwareActivity {
             selectedItem = view;
         }
     };
+
     private Set<String> scannedBinEPCs;
     private String logger_rfid;
     private ImageView ivSupport;
@@ -95,9 +104,12 @@ public class ReceiptQualityStartActivity extends TriggerKeyAwareActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receipt_quality_start);
 
-        if (savedInstanceState != null) {
+        // trigger + Fn keys will have the same effect as if clicking on Scan button
+        keyReceiver = new X9KeyReceiver(this::onClick);
+
+        if (getIntent() != null) {
             Bundle bundle = getIntent().getExtras();
-            intentForProcessing = bundle.getBoolean("processing");
+            intentForProcessing = bundle != null ? bundle.getBoolean("processing") : intentForProcessing;
         }
 
         // set Header Info
@@ -247,23 +259,43 @@ public class ReceiptQualityStartActivity extends TriggerKeyAwareActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        stopScanner();
-        super.onDestroy();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
     }
 
     @Override
     protected void onStop() {
-        stopScanner();
         super.onStop();
+        this.stopScanner();
+        //unregister the receiver
+        if(keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //unregister the receiver
+        if(keyReceiver != null)
+            unregisterReceiver(keyReceiver);
+    }
+
     protected void onClick(View view) {
         scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_BIN);
+        scanner_runnable.LowEnergy();
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
+        scanner_runnable.HighEnergy();
     }
 
     // ###################################################
@@ -289,33 +321,34 @@ public class ReceiptQualityStartActivity extends TriggerKeyAwareActivity {
                     String rssi = msg.getData().getString("rssi");
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            //binEPC = epcStr.substring(11);
+                            String binEPC = epcStr.substring(11);
+
                             // after bin is identified, initialize the temperatures logger.
                             IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
                             if (logger != null) {
-                                scannedBinEPCs.add(epcStr.substring(11));
+                                logger_rfid = logger.rfid;
+                                scannedBinEPCs.add(binEPC);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();
 
                                 if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
-                                    logger_rfid = epcStr.substring(11);
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, true, intentForProcessing, false);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid,  true, intentForProcessing, intentForProcessing);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {
                                 CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
                             }
                         }
+                        this.removeCallbacks(scanner_runnable);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     break;
+
                 case 1980:
-                    if (!IsDemo) {
-                        //CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
-                    }
+                    this.removeCallbacks(scanner_runnable);
                     break;
             }
 

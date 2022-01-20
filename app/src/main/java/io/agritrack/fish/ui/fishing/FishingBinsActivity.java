@@ -6,8 +6,10 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,10 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,23 +48,23 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.bo.LoggerReading;
 import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.ui.TriggerKeyAwareActivity;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class FishingBinsActivity extends TriggerKeyAwareActivity {
+public class FishingBinsActivity extends AppCompatActivity {
 
     // Local handler that receives the RFID scanner results.
-    private ScanHandler mScanHandler = new ScanHandler(this);
+    private final ScanHandler mScanHandler = new ScanHandler(this);
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
     private SingleShotScanner singleShot_runnable;
     private MobileDB db;
     private TemplateRecyclerAdapter adapterBins;
     private RecyclerView rvBins;
     private TextView tvBinsCount;
     private Button btnScanBin;
-    private LoggerReading loggerReading;
     private GetTempDataDialog tempLoggerDialog;
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
@@ -97,6 +98,9 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_bins);
+
+        // trigger + Fn keys will have the same effect as if clicking on Scan button
+        keyReceiver = new X9KeyReceiver(this::onClick);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
@@ -170,38 +174,34 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
             infoDialog.showDialog();
         });
 
-        loggerReading = new ViewModelProvider(this).get(LoggerReading.class);
-        loggerReading.getReading().observe(this, reading -> {
-            Double temp = (Double) reading.get("LastValue");
-            Long ts = (Long) reading.get("timestamp");
-
-            GlobalState.recFishing.binTemperatureRecord.addRecord(binEPC, ts, temp);
-
-            tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);
-            tempLoggerDialog.showDialog();
-        });
-
         // create Footer
         configFooter();
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+    }
+
+    @Override
     protected void onStop() {
-        this.stopScanner();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onStop();
+        this.stopScanner();
+        //unregister the receiver
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        super.onPause();
+        //unregister the receiver
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     private void clearSelectedItem() {
@@ -297,7 +297,6 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
         return sb.toString();
     }
 
-    @Override
     protected void onClick(View view) {
         singleShot_runnable = new SingleShotScanner(mScanHandler);
         singleShot_runnable.setFilter(Filters.RFID_BIN);
@@ -309,7 +308,7 @@ public class FishingBinsActivity extends TriggerKeyAwareActivity {
 
     // ###################################################
     private void stopScanner() {
-        if(singleShot_runnable !=null) {
+        if (singleShot_runnable != null) {
             mScanHandler.removeCallbacks(singleShot_runnable);
             singleShot_runnable.stopReading();
         }

@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
@@ -55,16 +56,19 @@ import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.ui.TriggerKeyAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
-public class ReadyStorageStartActivity extends TriggerKeyAwareActivity {
+public class ReadyStorageStartActivity extends AppCompatActivity {
+
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+
     private final MutableLiveData<List<String>> enquiryResult = new MutableLiveData<>();
     private MobileDB db;
     private ImageView ivSupport;
@@ -391,7 +395,6 @@ public class ReadyStorageStartActivity extends TriggerKeyAwareActivity {
 
     }
 
-    @Override
     protected void onClick(View view) {
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_POLE);

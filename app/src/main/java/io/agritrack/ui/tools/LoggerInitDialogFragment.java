@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,8 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.util.Strings;
@@ -79,12 +82,12 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             m.put("LastValue", enableRS);
 
             Dialog mDialog = getDialog();
-            if (!showReadButton) {
-                if (mDialog != null) {
-                    mDialog.dismiss();
-                }
-                reading.setReading(m);
+            //if (!showReadButton) { // in this implementation, Read Button will be visible
+            if (mDialog != null) {
+                mDialog.dismiss();
             }
+            reading.setReading(m);
+            //}
         } else {
             btnInit.setText("Init:: Failed");
         }
@@ -102,8 +105,25 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         tasksExecutor.execute(initRunnable);
     };
 
-
     protected final Runnable setupRunnable = ((Runnable) () -> {
+
+        // set time Bin to 0, (disable timestamps)
+        btnSetup.setText("Resetting calendar...");
+        Reader.READER_ERR response = cmd.WriteTimeBinZERO();
+        cmd.Wait(100l);
+        if (!Reader.READER_ERR.MT_OK_ERR.equals(response)) {
+            btnSetup.setText("Setup:: Failed, Press to retry...");
+            return;
+        }
+        // set Init time stamp
+        response = cmd.WriteCurrentDatetime();
+        cmd.Wait(100l);
+        if (!Reader.READER_ERR.MT_OK_ERR.equals(response)) {
+            btnSetup.setText("Setup:: Failed, Press to retry...");
+            return;
+        }
+
+        // set time Bin to 0, (disable timestamps)
         Reader.READER_ERR setupRS = this.cmd.Setup(ICAEN_API.DefaultInterval);
         if (Reader.READER_ERR.MT_OK_ERR.equals(setupRS)) {
             btnSetup.setText("Setup:: OK");
@@ -127,7 +147,6 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         // execute the setup task
         tasksExecutor.execute(setupRunnable);
     };
-
 
     protected final Runnable resetRunnable = ((Runnable) () -> {
         Reader.READER_ERR resetRS = this.cmd.Reset();
@@ -155,16 +174,18 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         tasksExecutor.execute(resetRunnable);
     };
 
-
     protected final Runnable readRunnable = ((Runnable) () -> {
         List<String[]> readRS = null;
         try {
             cmd.HighSensitivity();
             Short cnt = cmd.ReadSamplesCount();
             if (cnt != null && cnt > 0) {
+                btnRead.setText(String.format("Downloading %s values...", cnt));
                 try {
-                    //values = cmd.READ_SAMPLES_WITHOUT_TIMESTAMP(cnt);
                     values = cmd.ReadSamples(cnt);
+                    btnRead.setText("Success");
+                    btnRead.setOnClickListener(null);
+
                     recLoggerData.addDataSet(this.loggerEPC, System.currentTimeMillis() / 1000L, values);
 
                     // display temperatures in popup.
@@ -181,24 +202,21 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         }
 
 
-        if (readRS != null) {
-            btnRead.setText("Success");
-            btnRead.setOnClickListener(null);
-
+        if (readRS != null && !readRS.isEmpty()) {
             Map<String, Object> m = new HashMap<>();
             m.put("timestamp", System.currentTimeMillis());
             m.put("EPC", loggerEPC);
             m.put("Measurements", values);
 
-            if (getDialog() != null) {
-                getDialog().dismiss();
+            if (!showResetButton) {
+                // hide buttons window after successful downloading of temperatures.
+                this.dismiss();
+            } else {
+                btnReset.callOnClick();
             }
             reading.setReading(m);
-
-            //displayMeasurementsDialog(values);
-            // CToast(getActivity(), "Measurements:" + rs.size(), Toast.LENGTH_LONG);
         } else {
-            btnRead.setText("Failed. Press the button again.");
+            btnRead.setText("Failed. Press button to Retry.");
         }
     });
 
@@ -206,7 +224,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
 
         // draw btnRead background and text
         btnRead.setBackgroundResource(R.drawable.button_background);
-
+        btnRead.setText("Counting Measurements...");
         startAnimation(v, btnRead);
 
         //Task for read button
@@ -235,12 +253,29 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     @Override
     public void onStart() {
         super.onStart();
-        btnReset.callOnClick();
+        if(showReadButton) {
+            btnRead.callOnClick();
+        } else if(showResetButton) {
+            btnReset.callOnClick();
+        } else if(showInitButton) {
+            btnSetup.callOnClick();
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_dialog_fish_init_logger, container, false);
+    }
+
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        try {
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.add(this, tag);
+            ft.commitAllowingStateLoss();
+        } catch (IllegalStateException e) {
+            Log.d("ABSDIALOGFRAG", "Exception", e);
+        }
     }
 
     @Override
@@ -272,7 +307,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
 
             if (showResetButton) {
                 btnReset.setVisibility(View.VISIBLE);
-                btnReset.setText("Press to Start.");
+                //btnReset.setText("Press to Start.");
                 btnReset.setOnClickListener(resetBtnListener);
             } else {
                 btnReset.setVisibility(View.GONE);
@@ -326,36 +361,40 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
 
     @Override
     public void onTimeUpdate(TimeAnimator animation, long totalTime, long deltaTime) {
+        FragmentActivity mActivity = getActivity();
         mClipDrawable.setLevel(mCurrentLevel);
-        if (mCurrentLevel >= MAX_LEVEL) {
-            requireActivity().runOnUiThread(() -> mAnimator.cancel());
+        if (mActivity != null && mCurrentLevel >= MAX_LEVEL) {
+            getActivity().runOnUiThread(() -> mAnimator.cancel());
         } else {
             mCurrentLevel = Math.min(MAX_LEVEL, mCurrentLevel + LEVEL_INCREMENT);
         }
     }
 
     public void animateButton(View view) {
-        if (!mAnimator.isRunning()) {
+        FragmentActivity mActivity = getActivity();
+        if (mActivity != null && !mAnimator.isRunning()) {
             mCurrentLevel = 0;
-            requireActivity().runOnUiThread(() -> mAnimator.start());
+            getActivity().runOnUiThread(() -> mAnimator.start());
             //mAnimator.start();
         }
     }
 
     private void displayMeasurementsDialog(List<String[]> values) {
-
-        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(getActivity());
-        dlgBuilder.setTitle("Logger Data");
-
+        FragmentActivity mActivity = getActivity();
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.agri_list_item_12dp);
 
         int idx = 1;
         for (String[] value : values) {
             arrayAdapter.add(String.format("%3d. [%s] --> %s", idx++, value[0], value[1]));
         }
-        dlgBuilder.setAdapter(arrayAdapter, null);
-        dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
-        dlgBuilder.create().show();
+
+        if (mActivity != null) {
+            mActivity.runOnUiThread(() -> new AlertDialog.Builder(getActivity())
+                    .setTitle("Logger Data")
+                    .setAdapter(arrayAdapter, null)
+                    .setNegativeButton("Close", (dialog, which) -> dialog.dismiss())
+                    .show());
+        }
     }
 
     private void displayMeasurementsDialogWithoutTimestamp(List<Double> values) {

@@ -6,14 +6,15 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.InputType;
-import android.util.ArraySet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
@@ -34,7 +36,6 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -48,15 +49,19 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
-import io.agritrack.ui.TriggerKeyAwareActivity;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.adapter.BinWeightCageAdapter;
-import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class ProcessBinsActivity extends TriggerKeyAwareActivity {
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
+public class ProcessBinsActivity extends AppCompatActivity {
 
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
+
+    // Local handler that receives the RFID scanner results.
     private ScanHandler mScanHandler;
+
+    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private ScanInventoryThread scanner_runnable;
 
     private MobileDB db;
@@ -95,6 +100,9 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_process_bins);
+
+        // trigger + Fn keys will have the same effect as if clicking on Scan button
+        keyReceiver = new X9KeyReceiver(this::onClick);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
@@ -170,6 +178,31 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
         configFooter();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //unregister the receiver
+        if(keyReceiver != null)
+            unregisterReceiver(keyReceiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //unregister the receiver
+        if(keyReceiver != null)
+            unregisterReceiver(keyReceiver);
+    }
+
     private void clearSelectedItem() {
         if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
@@ -225,7 +258,6 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
         }
     }
 
-    @Override
     protected void onClick(View view) {
         if (scanner_runnable == null) {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
@@ -284,7 +316,6 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
         });
 
         builder.show();
-
     }
 
     private void updateState() {
@@ -301,11 +332,6 @@ public class ProcessBinsActivity extends TriggerKeyAwareActivity {
             }
         }
         return sb.toString();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     // ###################################################
