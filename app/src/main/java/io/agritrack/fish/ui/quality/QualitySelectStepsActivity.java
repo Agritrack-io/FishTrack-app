@@ -55,12 +55,12 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
         gvQualityMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final Context appCtx = getApplicationContext();
-                Intent i = null;
+                Intent i = new Intent(appCtx, ReceiptQualityStartActivity.class);
 
                 switch (position) {
                     case First_Step_Idx:
                         GlobalState.initQualityRecord();
-                        i = new Intent(appCtx, ReceiptQualityStartActivity.class);
+
                         YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                         confirmSiteSelectionDlg.setMessage(getText(R.string.quality_select_type));
 
@@ -78,7 +78,7 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
                         confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                         break;
                     case Second_Step_Idx:
-                        GlobalState.initQualityRecord();
+                        //GlobalState.initQualityRecord();
                         i = new Intent(appCtx, PackageQualityStartActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);

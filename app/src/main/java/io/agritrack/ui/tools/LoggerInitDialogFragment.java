@@ -195,7 +195,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             }
             reading.setReading(m);
 
-            displayMeasurementsDialog(values);
+            //displayMeasurementsDialog(values);
             // CToast(getActivity(), "Measurements:" + rs.size(), Toast.LENGTH_LONG);
         } else {
             btnRead.setText("Failed. Press the button again.");
