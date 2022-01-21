@@ -35,7 +35,7 @@ import io.agritrack.ui.service.LocalPreferences;
 public class HotelHomeActivity extends AppCompatActivity {
 
     private static final int Incoming_Idx = 0, Outgoing_Idx = 1, Inventory_Idx = 2, Correlation_Idx = 3, Search_Idx = 4;
-    GridView gvWhMainMenu;
+    GridView gvMainMenu;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -46,10 +46,10 @@ public class HotelHomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_hotel_home);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderWhMenu);
+        TextView tvHeader = findViewById(R.id.tvHeaderHome);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
-        gvWhMainMenu = findViewById(R.id.gvWhMainMenu);
+        gvMainMenu = findViewById(R.id.gvMainMenu);
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), HotelIncomingStartActivity.class, R.drawable.incoming));
@@ -59,9 +59,9 @@ public class HotelHomeActivity extends AppCompatActivity {
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), HotelSearchActivity.class, R.drawable.search));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
-        gvWhMainMenu.setAdapter(adapter);
+        gvMainMenu.setAdapter(adapter);
 
-        gvWhMainMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gvMainMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final Context appCtx = getApplicationContext();
                 Intent i = new Intent(appCtx, LoginActivity.class);
