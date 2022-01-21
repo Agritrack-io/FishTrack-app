@@ -51,7 +51,7 @@ import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class HotelSearchActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
-    private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+    private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_SYSTEM, 100);
     private final ScanHandler mScanHandler = new ScanHandler(this);
     private final ICAEN_API uhfReader = RFIDModuleFactory.getInstance();
 

@@ -118,13 +118,13 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
     private String getAssetTypeName(String type) {
         switch (type) {
             case Filters.RFID_CAGE:
-                return "CAGE";
+                return "SHEET"; //""CAGE";
             case Filters.RFID_NET:
-                return "NET";
+                return "TOWEL"; //""NET";
             case Filters.RFID_BIN:
-                return "BIN";
+                return "BLANKET"; //""BIN";
             case Filters.RFID_PLATFORM:
-                return "PLATFORM";
+                return "OTHER"; //""PLATFORM";
             default:
                 return "";
         }
