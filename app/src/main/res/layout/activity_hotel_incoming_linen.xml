@@ -53,7 +53,7 @@ tools:context=".hotel.ui.incoming.HotelIncomingLinenActivity">
         tools:ignore="MissingPrefix" />
 
     <TextView
-        android:id="@+id/tvHeaderInventory"
+        android:id="@+id/tvHeaderIncomingProcess"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
