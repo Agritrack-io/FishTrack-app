@@ -39,12 +39,15 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.sync.CollectionLotEnquiryCallBack;
 import io.agritrack.api.sync.RfidBatchByRfidBarcode;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.LotDTO;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fruit.state.StorageRecord;
@@ -61,6 +64,7 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
     protected BroadcastReceiver keyReceiver;
 
     private final MutableLiveData<List<String>> enquiryResult = new MutableLiveData<>();
+    private final MutableLiveData<LotDTO> enquiryLotResult = new MutableLiveData<>();
     private ScanHandler mScanHandler;
     private String rfidBarcode;
 
@@ -91,7 +95,7 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
             selectedItem = view;
         }
     };
-    private String toteBarcode;
+    private String toteBarcode, firstToteRfid, collectionLot;
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -176,6 +180,14 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
             tvTotesCount.setText(String.valueOf(adapterTotes.getItemCount()));
         });
 
+        enquiryLotResult.observe(this, response -> {
+            if (response == null) {
+                CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
+                return;
+            }
+            collectionLot = response.lot;
+        });
+
         // create Footer
         configFooter();
     }
@@ -235,6 +247,23 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
             // sync RFID batch for this rfidBarcode
             Call<List<String>> enquiryRFIDBatchByRFIDBarcodeAsyncCall = enquiryService.getRFIDBatch(rfidBarcode, "Bearer " + token);
             enquiryRFIDBatchByRFIDBarcodeAsyncCall.enqueue(new RfidBatchByRfidBarcode(this.enquiryResult));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+    }
+
+    private void invokeEnquiryLot() {
+        try {
+            EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
+            String token = LocalPreferences.getToken();
+
+            // sync collection lot for current Site
+            Call<LotDTO> enquiryCollectionLotAsyncCall = enquiryService.getCollectionLotByToteRfid(firstToteRfid, "Bearer " + token);
+            enquiryCollectionLotAsyncCall.enqueue(new CollectionLotEnquiryCallBack(this.enquiryLotResult));
 
 
         } catch (Exception e) {
@@ -309,6 +338,10 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
             storageRecord.totalTotesReceived = Integer.valueOf(tvTotesCount.getText().toString());
         }
 
+        if (!Strings.isEmptyOrWhitespace(this.collectionLot)) {
+            storageRecord.collectionLot = this.collectionLot;
+        }
+
         return storageRecord;
     }
 
@@ -348,14 +381,16 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
                             rfidBarcode = epcStr;
                             invokeEnquiryRfidBatch(rfidBarcode);
                         }
+                        if (!IsDemo && adapterTotes.getValues() != null) {
+                                firstToteRfid = rfidBarcode;
+                                invokeEnquiryLot();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     break;
                 case 1980:
-                    if (!IsDemo) {
-                        //CToast(getApplicationContext(), render("Scanning is over!!"), Toast.LENGTH_SHORT);
-                    }
+
                     break;
             }
         }

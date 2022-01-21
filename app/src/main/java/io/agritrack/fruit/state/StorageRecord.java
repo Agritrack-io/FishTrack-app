@@ -11,7 +11,6 @@ public class StorageRecord {
     public List<String> receivedTotes;
     public String totalWeight;
     public String poleRFID;
-    public String harvestLot;
     public Double longitude;
     public Double latitude;
     public Integer totalTotesReceived;
@@ -19,6 +18,7 @@ public class StorageRecord {
     public List<String> packagedIfco;
     public Integer totalIfcoCnt;
     public TxStatus category;
+    public String collectionLot;
 
     public StorageRecord(){
     }

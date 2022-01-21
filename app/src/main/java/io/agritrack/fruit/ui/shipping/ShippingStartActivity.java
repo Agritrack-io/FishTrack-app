@@ -91,8 +91,6 @@ public class ShippingStartActivity extends AppCompatActivity {
             if (data != null) {
                 String barcode = new String(data);
                 invokeEnquiryIfcoBatch(barcode);
-                /*adapterIfco.addItem(barcode);
-                adapterIfco.notifyDataSetChanged();*/
                 tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
                 scanning = false;
             }
@@ -258,6 +256,7 @@ public class ShippingStartActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToShippingDetails);
         ivNext.setOnClickListener(view -> {
+            scanService.stopScan();
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -367,17 +366,15 @@ public class ShippingStartActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        unregisterReceiver(receiver);
-        super.onStop();
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onDestroy();
     }
 
     @Override
-    protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        unregisterReceiver(receiver);
-        super.onDestroy();
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onStop();
     }
 
     private void showAddDialog() {

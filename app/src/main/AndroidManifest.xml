@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="io.agritrack" >
+    package="io.agritrack">
 
     <uses-feature android:name="android.hardware.location.gps" />
     <uses-feature android:name="android.hardware.camera" />
@@ -25,7 +25,31 @@
         android:supportsRtl="true"
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true"
-        tools:replace="android:label" >
+        tools:replace="android:label">
+        <activity
+            android:name=".hotel.ui.outgoing.HotelOutgoingLinenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hotel.ui.incoming.HotelIncomingLinenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hotel.ui.inventory.HotelInventoryLinenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hotel.ui.inventory.HotelInventoryAssetActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hotel.ui.search.HotelSearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hotel.ui.outgoing.HotelOutgoingStartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hotel.ui.inventory.HotelInventoryStartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hotel.ui.HotelHomeActivity"
+            android:exported="false" />
         <activity
             android:name=".fish.ui.quality.packaging.PackageQualityConfirmActivity"
             android:exported="false" />
@@ -307,7 +331,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.login.LoginActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -54,6 +54,7 @@ import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fruit.ui.FruitHomeActivity;
+import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.ui.config.ConfigActivity;
 import io.agritrack.ui.login.api.AuthApi;
 import io.agritrack.ui.login.api.AuthInfo;
@@ -313,6 +314,10 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(i);
         } else if ("FISH".equalsIgnoreCase(FishTrackApplication.PRODUCT)){
             Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            i.putExtra("syncErrors", this.syncResult.toString());
+            startActivity(i);
+        } else if ("HOTEL".equalsIgnoreCase(FishTrackApplication.PRODUCT)) {
+            Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
             i.putExtra("syncErrors", this.syncResult.toString());
             startActivity(i);
         }

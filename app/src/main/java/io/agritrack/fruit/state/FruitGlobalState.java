@@ -186,7 +186,7 @@ public class FruitGlobalState {
 
             txSemiStorage.totesCnt = recStorage.totalTotesReceived;
             txSemiStorage.totalWeight = recStorage.totalWeight;
-            txSemiStorage.collectionLot = recStorage.harvestLot;
+            txSemiStorage.collectionLot = recStorage.collectionLot;
             txSemiStorage.site = LocalPreferences.getCurrentSiteName();
             txSemiStorage.category = recStorage.category.name();
             txSemiStorage.to = recStorage.warehouse;
@@ -267,7 +267,7 @@ public class FruitGlobalState {
             StorageTransaction txReadyStorage = new StorageTransaction();
 
             txReadyStorage.ifcoCnt = recStorage.totalIfcoCnt;
-            txReadyStorage.collectionLot = recStorage.harvestLot;
+            txReadyStorage.collectionLot = recStorage.collectionLot;
             txReadyStorage.category = recStorage.category.name();
             txReadyStorage.to = recStorage.warehouse;
             txReadyStorage.user = LocalPreferences.getLoggedInUser("N/A");
