@@ -26,4 +26,8 @@ public class Constants {
     public static final String ftTote = "TOTE";
     public static final String ftIfco = "IFCO";
     public static final String ftDataLogger = "DATA_LOGGER";
+
+    public static final String ftSheet = "SHEET";
+    public static final String ftBlanket = "BLANKET";
+    public static final String ftTowel = "TOWEL";
 }

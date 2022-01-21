@@ -188,7 +188,6 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
             pbProximity.setProgress(0);
             tvProximity.setText(null);
         });
-
     }
 
     private void loadCagesFromLocalDB() {

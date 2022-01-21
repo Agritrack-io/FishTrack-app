@@ -300,7 +300,11 @@ public class BX6100Commander extends AbstractCAENCommander {
     @Override
     public boolean startSearching() {
         mUhfRManager.setGen2session(false);
-        return mUhfRManager.setInventoryFilter(this.epcBytes, 1, 2, true);
+        if(this.epcBytes!=null) {
+            return mUhfRManager.setInventoryFilter(this.epcBytes, 1, 2, true);
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -308,7 +312,6 @@ public class BX6100Commander extends AbstractCAENCommander {
         List<Reader.TAGINFO> inventory = mUhfRManager.tagEpcTidInventoryByTimer((short) 100);
         Stream<Reader.TAGINFO> filteredStream = inventory.stream().filter(k -> Tools.Bytes2HexString(k.EpcId, k.Epclen).indexOf(tagToSearch.substring(tagToSearch.length() - 6)) > -1);
         return filteredStream.map(x->new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
-
     }
 
     @Override
