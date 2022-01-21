@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -51,6 +50,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -95,6 +95,9 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outgoing_asset);
+
+        // trigger + Fn keys will have the same effect as if clicking on Scan button
+        keyReceiver = new X9KeyReceiver(this::onClick);
 
         // activate GPS location update feature.
         super.findLocation();
@@ -200,21 +203,19 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        this.stopScanner();
         super.onStop();
+        stopScanner();
+        //unregister the receiver
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        super.onPause();
+        //unregister the receiver
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     private void clearSelectedItem() {

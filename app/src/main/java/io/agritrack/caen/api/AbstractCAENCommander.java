@@ -59,6 +59,12 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
 
     abstract public boolean startReading();
 
+    abstract public boolean startSearching();
+
+    abstract public List<RFIDTag> search();
+
+    abstract public boolean stopSearching();
+
     abstract public void HighPowerLevel();
 
     abstract public void LowPowerLevel();

@@ -18,6 +18,7 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.android.hdhe.uhf.readerInterface.TagModel;
 import com.uhf.api.cls.Reader;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -213,6 +214,21 @@ public class BX6200Commander extends AbstractCAENCommander  {
         return false; //Reader.READER_ERR.MT_OK_ERR.equals(res);
     }
 
+
+    @Override
+    public boolean startSearching() {
+        return false;
+    }
+
+    @Override
+    public List<RFIDTag> search() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean stopSearching() {
+        return false;
+    }
 
 
     @Override

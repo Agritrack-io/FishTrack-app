@@ -129,4 +129,11 @@ public interface ICAEN_API {
     List<RFIDTag> searchInventory();
 
     boolean startReading();
+
+
+    boolean startSearching();
+
+    List<RFIDTag> search();
+
+    boolean stopSearching();
 }
