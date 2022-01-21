@@ -1,7 +1,5 @@
 package io.agritrack.hotel.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,18 +9,13 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 
 import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.fish.ui.wh.correlation.CorrelationActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingStartActivity;
-import io.agritrack.fish.ui.wh.inventory.InventoryStartActivity;
-import io.agritrack.fish.ui.wh.outgoing.OutgoingStartActivity;
-import io.agritrack.fish.ui.wh.search.SearchActivity;
 import io.agritrack.hotel.ui.incoming.HotelIncomingStartActivity;
 import io.agritrack.hotel.ui.inventory.HotelInventoryStartActivity;
 import io.agritrack.hotel.ui.outgoing.HotelOutgoingStartActivity;
@@ -34,7 +27,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class HotelHomeActivity extends AppCompatActivity {
 
-    private static final int Incoming_Idx = 0, Outgoing_Idx = 1, Inventory_Idx = 2, Correlation_Idx = 3, Search_Idx = 4;
+    private static final int Incoming_Idx = 0, Outgoing_Idx = 1, Inventory_Idx = 2, /*Correlation_Idx = 3, */Search_Idx = 3;
     GridView gvMainMenu;
 
     private ImageView ivSupport;
@@ -52,11 +45,11 @@ public class HotelHomeActivity extends AppCompatActivity {
         gvMainMenu = findViewById(R.id.gvMainMenu);
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), HotelIncomingStartActivity.class, R.drawable.incoming));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_outgoing), HotelOutgoingStartActivity.class, R.drawable.outgoing));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), HotelInventoryStartActivity.class, R.drawable.inventory));
+        menuItemsList.add(Incoming_Idx, new MenuItem(getString(R.string.menu_title_incoming), HotelIncomingStartActivity.class, R.drawable.incoming));
+        menuItemsList.add(Outgoing_Idx, new MenuItem(getString(R.string.menu_title_outgoing), HotelOutgoingStartActivity.class, R.drawable.outgoing));
+        menuItemsList.add(Inventory_Idx, new MenuItem(getString(R.string.menu_title_inventory), HotelInventoryStartActivity.class, R.drawable.inventory));
         //menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationActivity.class, R.drawable.correlation));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), HotelSearchActivity.class, R.drawable.search));
+        menuItemsList.add(Search_Idx, new MenuItem(getString(R.string.menu_title_search), HotelSearchActivity.class, R.drawable.search));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvMainMenu.setAdapter(adapter);
