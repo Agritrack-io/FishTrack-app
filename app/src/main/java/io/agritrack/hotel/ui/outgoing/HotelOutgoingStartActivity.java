@@ -37,7 +37,7 @@ import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.SiteInfo;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class HotelOutgoingStartActivity extends AppCompatActivity {
+public class HotelOutgoingStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private final MutableLiveData<SiteInfo> toAvramarSelection = new MutableLiveData<>();
     private final MutableLiveData<String> toCustomerSelection = new MutableLiveData<>();

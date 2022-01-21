@@ -73,8 +73,8 @@ public class HotelInventoryStartActivity extends AppCompatActivity {
         }
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.item_inventory_asset), getString(R.string.up_item_inventory_asset), InventoryAssetActivity.class));
-        menuItemsList.add(new MenuItem(getString(R.string.item_inventory_consumable), getString(R.string.down_item_inventory_consumable), InventoryConsumableActivity.class));
+        menuItemsList.add(new MenuItem(getString(R.string.item_inventory_asset), getString(R.string.up_item_inventory_asset), HotelInventoryAssetActivity.class));
+        menuItemsList.add(new MenuItem("LINEN", getString(R.string.up_item_inventory_asset), HotelInventoryLinenActivity.class));
 
         InventoryMenuAdapter adapter = new InventoryMenuAdapter(this, menuItemsList);
 
@@ -82,7 +82,7 @@ public class HotelInventoryStartActivity extends AppCompatActivity {
         gvInventoryMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final Context appCtx = getApplicationContext();
-                Intent i = new Intent(appCtx, InventoryStartActivity.class);
+                Intent i = new Intent(appCtx, HotelInventoryStartActivity.class);
 
                 switch (position) {
                     case Asset_Idx:
@@ -91,7 +91,7 @@ public class HotelInventoryStartActivity extends AppCompatActivity {
                         if (!Strings.isEmptyOrWhitespace(vl)) {
                             CToast(getApplicationContext(), render("Invalid inputs : " + vl), Toast.LENGTH_LONG);
                         } else {
-                            i = new Intent(appCtx, HotelInventoryLinenActivity.class);
+                            i = new Intent(appCtx, HotelInventoryAssetActivity.class);
                             break;
                         }
                     case Consumable_Idx:
@@ -100,7 +100,7 @@ public class HotelInventoryStartActivity extends AppCompatActivity {
                         if (!Strings.isEmptyOrWhitespace(vld)) {
                             CToast(getApplicationContext(), render("Invalid inputs : " + vld), Toast.LENGTH_LONG);
                         } else {
-                            i = new Intent(appCtx, HotelInventoryAssetActivity.class);
+                            i = new Intent(appCtx, HotelInventoryLinenActivity.class);
                             break;
                         }
                     default:
