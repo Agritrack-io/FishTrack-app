@@ -7,7 +7,7 @@ import android.os.Bundle;
 import io.agritrack.R;
 import io.agritrack.ui.custom.ToggleGroup;
 
-public class HotelOutgoingStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class HotelOutgoingStartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
