@@ -5,14 +5,14 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -32,10 +32,6 @@ import io.agritrack.dialog.SimpleListDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
-import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingAssetActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingConsumableActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingStartActivity;
 import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.SiteInfo;
@@ -76,10 +72,10 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
         // get  references of the controls
         assignCtrlVars();
 
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
+        /*// set (any?) previously selected values to activity Controls.
+        initControlsFromState();*/
 
-        fromAvramarSelection.observe(this, response -> {
+        /*fromAvramarSelection.observe(this, response -> {
             if (response != null) {
                 fromSite = response;
                 tvIncomingFrom.setText(fromSite.getName());
@@ -93,7 +89,7 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
                 tvIncomingFrom.setText(fromSupplier);
                 supplierDialog.dismiss();
             }
-        });
+        });*/
 
         toSiteSelection.observe(this, response -> {
             if (response != null) {
@@ -128,9 +124,11 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-                Intent i = new Intent(getApplicationContext(), HotelIncomingLinenActivity.class);
-                startActivity(i);
+                return;
             }
+            Intent i = new Intent(getApplicationContext(), HotelIncomingLinenActivity.class);
+            startActivity(i);
+
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
@@ -173,16 +171,18 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
         if (checkedId == R.id.tbAvramar) {
-            avramarDialog = new ExpandableListDialog(HotelIncomingStartActivity.this, fillAvramarData(), fromAvramarSelection, R.string.select_site);
-            avramarDialog.showDialog();
+            /*avramarDialog = new ExpandableListDialog(HotelIncomingStartActivity.this, fillAvramarData(), fromAvramarSelection, R.string.select_site);
+            avramarDialog.showDialog();*/
+            tvIncomingFrom.setText("HOTEL");
             selectedToggleButtonFrom = Constants.ftAvramar;
         } else if (checkedId == R.id.tbSupplier) {
-            supplierDialog = new SimpleListDialog(HotelIncomingStartActivity.this, fillSupplierData(), fromSupplierSelection, R.string.select_supplier);
-            supplierDialog.showDialog();
+            /*supplierDialog = new SimpleListDialog(HotelIncomingStartActivity.this, fillSupplierData(), fromSupplierSelection, R.string.select_supplier);
+            supplierDialog.showDialog();*/
+            tvIncomingFrom.setText("LAUNDRY");
             selectedToggleButtonFrom = Constants.ftSupplier;
         } else if (checkedId == R.id.tbAssetFrom) {
             GlobalState.recWHIncoming.from = Constants.ftAsset;
-            tvIncomingFrom.setText(Constants.ftAsset);
+            tvIncomingFrom.setText("OTHER");
             selectedToggleButtonFrom = Constants.ftAsset;
         } else if (checkedId == R.id.tbSite) {
             siteDialog = new SimpleListDialog(HotelIncomingStartActivity.this, fillSubSiteData(), toSiteSelection, R.string.select_subsite);
@@ -190,7 +190,11 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
             selectedToggleButtonTo = Constants.ftSite;
         } else if (checkedId == R.id.tbAssetTo) {
             GlobalState.recWHIncoming.to = Constants.ftAsset;
-            tvIncomingTo.setText(Constants.ftAsset);
+            tvIncomingTo.setText("ROOM");
+            selectedToggleButtonTo = Constants.ftAsset;
+        } else if (checkedId == R.id.tbCarTo) {
+            GlobalState.recWHIncoming.to = Constants.ftAsset;
+            tvIncomingTo.setText("CAR");
             selectedToggleButtonTo = Constants.ftAsset;
         }
     }
@@ -232,7 +236,7 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
         return sb.toString();
     }
 
-    private void initControlsFromState() {
+/*    private void initControlsFromState() {
 
         if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonFrom)) {
             tgIncomingSource.setCheckedStateForView(R.id.tbAvramar, true);
@@ -258,5 +262,5 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
         if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.to)) {
             tvIncomingTo.setText(GlobalState.recWHIncoming.to);
         }
-    }
+    }*/
 }

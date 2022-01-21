@@ -254,7 +254,7 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToStartIncoming);
+        ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             stopScanner();
 
