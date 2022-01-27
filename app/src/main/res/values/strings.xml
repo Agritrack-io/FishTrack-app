@@ -409,8 +409,8 @@
     <string name="item_inventory_totes">TOTES</string>
     <string name="item_inventory_ifco">IFCO</string>
     <string name="items">Items</string>
-    <string name="scan_ifco">Scan IFCO</string>
-    <string name="number_of_ifco"># of IFCO:</string>
+    <string name="scan_palette">Scan Palette</string>
+    <string name="number_of_palette"># of Palette:</string>
     <string name="type_rfid">Please confirm your selection</string>
 
     <string name="scan_rfid">Scan RFID</string>
@@ -422,6 +422,7 @@
     <string name="type_total_weight">Total weight</string>
     <string name="scan_warehouse">Scan warehouse</string>
     <string name="scan_tag">Scan tag</string>
+    <string name="palettes">Palettes</string>
     <string name="warehouse">Warehouse:</string>
     <string name="weight">Weight (kg):</string>
     <string name="error_storage_tx_update_failure">Storage transaction update failure!!!</string>
@@ -430,11 +431,14 @@
     <string name="title_open_orders">ORDERS</string>
     <string name="select_open_order">Currently Open Orders</string>
     <string name="totes_for_package">Totes for packaging</string>
+    <string name="packaging_lot">Packaging LOT</string>
+    <string name="choose_fruit_packaging_site">Choose packaging site</string>
     <string name="enter_lot_on_printer">Please enter the following LOT on the printing machine</string>
     <string name="trays_qty">Trays quantity</string>
+    <string name="confirm_packaging_lot">Packaging LOT:</string>
 
     <string name="title_storage">READY STORAGE</string>
-    <string name="select_ifco">Select IFCO</string>
+    <string name="select_palette">Select Palette</string>
 
     <string name="title_shipping">SHIPPING</string>
     <string name="shipping_details">Shipping details</string>
@@ -445,6 +449,9 @@
     <string name="IOTLoggers_sync_completed">IOTLoggers sync completed!</string>
     <string name="no_IOTLoggers_found_alert">No IOTLogger returned from backend!!!</string>
     <string name="menu_title_tools">Logger Tools</string>
+
+    <string name="procced_without_location">"GPS coordinates wasn't found. Do you want to proceed without getting them?"</string>
+    <string name="press_check_button_again">Please press the check button again</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="asset">ASSET</string>

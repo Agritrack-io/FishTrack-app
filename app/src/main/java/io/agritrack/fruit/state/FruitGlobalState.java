@@ -152,6 +152,7 @@ public class FruitGlobalState {
             txCollecting.assetRFID = recHarvest.poleRFID;
             txCollecting.site = recHarvest.greenhouse;
             txCollecting.collectionLot = recHarvest.harvestLot;
+            txCollecting.plantLot = recHarvest.plantLot;
             txCollecting.species = recHarvest.speciesName;
             txCollecting.totesCnt = recHarvest.totalTotesUsed;
             txCollecting.userId = LocalPreferences.getLoggedInUser("N/A");
@@ -221,8 +222,9 @@ public class FruitGlobalState {
             PackageTransaction txPackage = new PackageTransaction();
 
             txPackage.totesCnt = recPackaging.totalTotesForPackaging;
-            txPackage.ifcoCnt = recPackaging.totalPackagedIfco;
-            txPackage.collectionLot = recPackaging.collectionLot;
+            txPackage.paletteCnt = recPackaging.totalPackagedIfco;
+            txPackage.packagingLot = recPackaging.packagingLot;
+            txPackage.packagingSite = recPackaging.packagingSite;
             txPackage.user = LocalPreferences.getLoggedInUser("N/A");
             txPackage.longitude = recPackaging.longitude;
             txPackage.latitude = recPackaging.latitude;
@@ -267,7 +269,7 @@ public class FruitGlobalState {
             StorageTransaction txReadyStorage = new StorageTransaction();
 
             txReadyStorage.ifcoCnt = recStorage.totalIfcoCnt;
-            txReadyStorage.collectionLot = recStorage.collectionLot;
+            txReadyStorage.packagingLot = recStorage.packagingLot;
             txReadyStorage.category = recStorage.category.name();
             txReadyStorage.to = recStorage.warehouse;
             txReadyStorage.user = LocalPreferences.getLoggedInUser("N/A");
@@ -306,6 +308,7 @@ public class FruitGlobalState {
             txShipping.timestamp = System.currentTimeMillis();
             txShipping.user = LocalPreferences.getLoggedInUser("N/A");
             txShipping.customer = recShipping.customer;
+            txShipping.packagingLot = recShipping.packagingLot;
             txShipping.ifcoCnt = recShipping.totalIfcoCnt;
             txShipping.longitude = recShipping.longitude;
             txShipping.latitude = recShipping.latitude;

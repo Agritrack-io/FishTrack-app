@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -42,6 +43,7 @@ import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.PlantTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
+import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
@@ -64,8 +66,9 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
 
     private ProgressDialog progressDialog;
     private TextView tvTomatoType, tvPole, tvGreenHouse, tvUsername;
-
-    private ImageView ivSupport;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private boolean proceedWithoutLocation = false;
+    private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
 
     @Override
@@ -73,15 +76,23 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planting_confirm);
 
-        // activate GPS location update feature.
-        super.findLocation();
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderSeedingConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(PlantingConfirmActivity.this);
@@ -98,31 +109,37 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
         configFooter();
     }
 
+    private void moveToNextScreen(){
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
+                startActivity(i);
+            }
+        }
+    }
+
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (mLastLocation != null) {
                     recPlant.longitude = mLastLocation.getLongitude();
                     recPlant.latitude = mLastLocation.getLatitude();
+                    proceedWithoutLocation = true;
+                    moveToNextScreen();
+                } else if (!proceedWithoutLocation) {
+                    FragmentManager fm = getSupportFragmentManager();
+                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                 } else {
-                    CToast(PlantingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
-                    startActivity(i);
+                    //CToast(HarvestingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToStartSeeding);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), PlantingStartActivity.class);
             startActivity(i);
@@ -135,6 +152,8 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
         tvTomatoType = findViewById(R.id.tvTomatoType);
         tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToStartSeeding);
     }
 
     private void initControlsFromState() {

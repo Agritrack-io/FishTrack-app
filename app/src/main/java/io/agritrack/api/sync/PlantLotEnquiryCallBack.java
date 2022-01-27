@@ -1,0 +1,28 @@
+package io.agritrack.api.sync;
+
+import androidx.lifecycle.MutableLiveData;
+
+import io.agritrack.data.dto.LotDTO;
+import retrofit2.Call;
+import retrofit2.Response;
+
+public class PlantLotEnquiryCallBack extends BaseEnquiryCallBack<LotDTO>{
+
+    public PlantLotEnquiryCallBack(MutableLiveData<LotDTO> syncResult) {
+        super(syncResult);
+    }
+
+    @Override
+    public void onResponse(Call<LotDTO> call, Response<LotDTO> response) {
+        LotDTO plantLot = response.body();
+
+        if (plantLot != null) {
+
+            // Harvest Requests sync succeeded.
+            syncResult.setValue(plantLot);
+        } else {
+            // no Harvest Requests found
+            syncResult.setValue(null);
+        }
+    }
+}

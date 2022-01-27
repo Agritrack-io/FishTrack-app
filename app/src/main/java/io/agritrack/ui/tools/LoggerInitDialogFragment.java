@@ -178,6 +178,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         List<String[]> readRS = null;
         try {
             cmd.HighSensitivity();
+            String initTime = cmd.ReadInitDatetime();
             Short cnt = cmd.ReadSamplesCount();
             if (cnt != null && cnt > 0) {
                 btnRead.setText(String.format("Downloading %s values...", cnt));
@@ -186,7 +187,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                     btnRead.setText("Success");
                     btnRead.setOnClickListener(null);
 
-                    recLoggerData.addDataSet(this.loggerEPC, System.currentTimeMillis() / 1000L, values);
+                    recLoggerData.addDataSet(this.loggerEPC, System.currentTimeMillis() / 1000L, initTime, values);
 
                     // display temperatures in popup.
                     displayMeasurementsDialog(values);

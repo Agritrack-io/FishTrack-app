@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.CollectionUtils;
@@ -45,8 +46,10 @@ import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
 import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
@@ -69,8 +72,9 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
     private Button btnScanAssetTag;
     private TextView tvCorrPoleBarcode, tvCorrTempLoggerBarcode;
     private ProgressDialog progressDialog;
-
-    private ImageView ivSupport, ivNext;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private boolean proceedWithoutLocation = false;
+    private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
 
     @Override
@@ -78,15 +82,23 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fruit_correlation);
 
-        // activate GPS location update feature.
-        super.findLocation();
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFruitCorrelation);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(FruitCorrelationActivity.this);
@@ -116,64 +128,6 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         // =================================
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
-        /*btnScanAssetTag.setOnClickListener(view -> {
-            //update scanning, uhfReader, tvPlatformName values in thread
-            UhfReader _uhfReader = UhfReader.getInstance();
-            _uhfReader.setWorkArea(3);
-            //scanner.setUhfReader(_uhfReader);
-            scanner.setFilters(Filters.RFID_POLE, Filters.RFID_LOGGER);
-
-            Future<?> future = executor.submit(scanner);
-            try {
-                String epcStr = future.get(2000, TimeUnit.MILLISECONDS).toString();
-                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        public void run() {
-                            String[] epcs = epcStr.split(",");
-                            for (String epc : epcs) {
-                                if (epc.indexOf(Filters.RFID_POLE) > 0) {
-                                    FruitGlobalState.recCorrelation.poleRFID = epc;
-                                    tvCorrPoleBarcode.setText(epc.substring(11));
-                                }
-                                else if (epc.indexOf(Filters.RFID_LOGGER) > 0){
-                                    FruitGlobalState.recCorrelation.loggerRFID = epc;
-                                    tvCorrTempLoggerBarcode.setText(epc.substring(11));
-                                }
-
-                            }
-
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                future.cancel(true);
-            }
-        });*/
-
-        /*btnCorrelate.setOnClickListener(view -> {
-            FruitGlobalState.recCorrelation.assetType = AssetType.valueOf(Constants.ftPole);
-            FruitGlobalState.recCorrelation.poleBarcode = tvCorrPoleBarcode.getText() != null ? tvCorrPoleBarcode.getText().toString() : null;
-            FruitGlobalState.recCorrelation.loggerType = AssetType.valueOf(Constants.ftDataLogger);
-            //FruitGlobalState.recCorrelation.loggerRFID = tvCorrTempLoggerBarcode.getText() != null ? tvCorrTempLoggerBarcode.getText().toString() : null;
-
-            if (mLastLocation != null) {
-                recCorrelation.longitude = mLastLocation.getLongitude();
-                recCorrelation.latitude = mLastLocation.getLatitude();
-            } else {
-                CToast(FruitCorrelationActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-            }
-
-            // Update state and proceed to next
-            Boolean proceed = correlate();
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-                return;
-            }
-            if (proceed) {
-                ivNext.setEnabled(true);
-            }
-        });*/
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(FruitCorrelationActivity.this);
@@ -181,6 +135,19 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         });
 
         configFooter();
+    }
+
+    private void moveToNextScreen(){
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = correlate();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
+                startActivity(i);
+            }
+        }
     }
 
     @Override
@@ -212,6 +179,11 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
 
     protected void configFooter() {
         ivNext.setOnClickListener(view -> {
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
             FruitGlobalState.recCorrelation.assetType = AssetType.valueOf(Constants.ftPole);
             FruitGlobalState.recCorrelation.poleBarcode = tvCorrPoleBarcode.getText() != null ? tvCorrPoleBarcode.getText().toString() : null;
             FruitGlobalState.recCorrelation.loggerType = AssetType.valueOf(Constants.ftDataLogger);
@@ -220,24 +192,16 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
             if (mLastLocation != null) {
                 recCorrelation.longitude = mLastLocation.getLongitude();
                 recCorrelation.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else if (!proceedWithoutLocation) {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
-                CToast(FruitCorrelationActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
+                //CToast(HarvestingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
             }
-
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-                return;
-            }
-
-            // Update state and proceed to next
-            Boolean proceed = correlate();
-
-            Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
-            startActivity(i);
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToFruitWareHouseMenu);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
             startActivity(i);
@@ -245,11 +209,13 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
     }
 
     private void assignCtrlVars() {
-        ivNext = findViewById(R.id.ivToCongs);
+
         tvCorrPoleBarcode = findViewById(R.id.tvCorrPoleBarcode);
         tvCorrTempLoggerBarcode = findViewById(R.id.tvCorrTempLoggerBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
         ivSupport = findViewById(R.id.ivSupport);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToFruitWareHouseMenu);
         // get main controls references
         lvGreenhouse = findViewById(R.id.lvGreenhouse);
         // define if single or multiple choice mode will be used to display the checkboxes.

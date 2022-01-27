@@ -2,6 +2,7 @@ package io.agritrack.fruit.ui.harvesting;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.Constants.Greek_Locale;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -27,15 +28,17 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
-import java.util.Locale;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.sync.PlantLotEnquiryCallBack;
 import io.agritrack.api.sync.SpeciesByPoleRfidEnquiryCallBack;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.LotDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.Asset;
@@ -54,12 +57,13 @@ public class HarvestingStartActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
     private final MutableLiveData<SpeciesDTO> enquiryResult = new MutableLiveData<>();
+    private final MutableLiveData<LotDTO> enquiryLotResult = new MutableLiveData<>();
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
     private TextView tvPoleName, tvHarvestLot, tvSpeciesNameLabel, tvSpeciesName;
     private Button btnScanPole;
-    private String greenhouse, poleRFID, speciesName;
+    private String greenhouse, poleRFID, speciesName, plantLot;
 
     @Override
     @SuppressLint("NewApi")
@@ -89,9 +93,12 @@ public class HarvestingStartActivity extends AppCompatActivity {
         initControlsFromState();
 
         LocalDate date = LocalDate.now();
-        TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
+        LocalDateTime now = LocalDateTime.now();
+        String formatTime = String.format("%02d%02d%02d",now.getHour(), now.getMinute(), now.getSecond());
+        TemporalField woy = WeekFields.of(Greek_Locale).weekOfWeekBasedYear();
         int weekNumber = date.get(woy);
         tvHarvestLot.setText(String.format("%02d%s",weekNumber, date.getDayOfWeek().ordinal()+1));
+        recHarvest.harvestLot = String.format("%s%s",tvHarvestLot.getText().toString(), formatTime);
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(HarvestingStartActivity.this);
@@ -107,6 +114,14 @@ public class HarvestingStartActivity extends AppCompatActivity {
             tvSpeciesName.setVisibility(View.VISIBLE);
             tvSpeciesName.setText(response.local_name);
             speciesName = response.local_name;
+        });
+
+        enquiryLotResult.observe(this, response -> {
+            if (response == null) {
+                CToast(getApplicationContext(), render("No plant LOT returned for this greenhouse"), Toast.LENGTH_LONG);
+                return;
+            }
+            plantLot = response.lot;
         });
 
         // create Footer
@@ -199,17 +214,38 @@ public class HarvestingStartActivity extends AppCompatActivity {
         }
     }
 
+    private void invokeEnquiryLot() {
+        try {
+            EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
+            String token = LocalPreferences.getToken();
+
+            // sync collection lot for current Site
+            Call<LotDTO> enquiryPlantLotAsyncCall = enquiryService.getPlantLotByPoleRfid(poleRFID, "Bearer " + token);
+            enquiryPlantLotAsyncCall.enqueue(new PlantLotEnquiryCallBack(this.enquiryLotResult));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+    }
+
     private HarvestRecord updateState() {
         HarvestRecord harvestRecord = recHarvest;
 
         harvestRecord.poleRFID = tvPoleName.getText().toString();
-        harvestRecord.harvestLot = tvHarvestLot.getText().toString();
+        harvestRecord.harvestLotForCustomer = tvHarvestLot.getText().toString();
         if (!Strings.isEmptyOrWhitespace(this.speciesName)) {
             harvestRecord.speciesName = tvSpeciesName.getText().toString();
         }
 
         if (!Strings.isEmptyOrWhitespace(this.greenhouse)) {
             harvestRecord.greenhouse = this.greenhouse;
+        }
+
+        if (!Strings.isEmptyOrWhitespace(this.plantLot)) {
+            harvestRecord.plantLot= this.plantLot;
         }
         return harvestRecord;
     }
@@ -250,6 +286,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
                             tvPoleName.setText(epcStr);
                             poleRFID = epcStr;
                             invokeEnquirySpecies();
+                            invokeEnquiryLot();
                             Asset pole = db.assetDAO().getAssetByEpc(epcStr);
                             Site tempSite = db.siteDAO().getBySiteNameAndCode(LocalPreferences.getCurrentSiteLevel3(), pole.siteCode);
                             if (tempSite != null) {

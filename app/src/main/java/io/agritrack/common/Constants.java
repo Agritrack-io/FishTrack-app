@@ -1,6 +1,9 @@
 package io.agritrack.common;
 
+import java.util.Locale;
+
 public class Constants {
+    public static final Locale Greek_Locale = new Locale("el","GR");
     public static final String ftAvramar = "AVRAMAR";
     public static final String ftSupplier = "SUPPLIER";
     public static final String ftAsset = "ASSET";

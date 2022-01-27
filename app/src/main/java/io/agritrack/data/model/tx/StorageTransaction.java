@@ -35,6 +35,9 @@ public class StorageTransaction {
     @ColumnInfo(name = "collection_lot")
     public String collectionLot;
 
+    @ColumnInfo(name = "packaging_lot")
+    public String packagingLot;
+
     @ColumnInfo(name = "total_weight")
     public String totalWeight;
 

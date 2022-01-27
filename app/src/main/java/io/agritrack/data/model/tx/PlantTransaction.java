@@ -22,9 +22,6 @@ public class PlantTransaction {
     @ColumnInfo(name = "asset_rfid")
     public String assetRFID;
 
-    @ColumnInfo(name = "logger_rfid")
-    public String loggerRFID;
-
     @ColumnInfo(name = "species")
     public String species;
 

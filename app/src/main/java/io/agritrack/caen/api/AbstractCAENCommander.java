@@ -384,8 +384,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
 
     @Override
     public List<String[]> ReadSamples(int samplesCnt) throws Exception {
-        final int intervalSeconds = 900;
-        return ReadSamples(samplesCnt, intervalSeconds);
+        return ReadSamples(samplesCnt, DefaultInterval);
     }
 
     @Override
@@ -402,7 +401,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
             List<String[]> result = new LinkedList<>();
             for (short batchStart = 0; batchStart < samplesCnt; batchStart += SampleBatchSize) {
                 short batchSize = (samplesCnt - batchStart) >= SampleBatchSize ? SampleBatchSize : (short) (samplesCnt % SampleBatchSize);
-                List<String[]> batch = ReadSamplesBatch(startTSmSec, intervalSeconds, (short) (batchStart * WORDS_PER_MEASUREMENT), batchSize);
+                List<String[]> batch = ReadSamplesBatch(startTSmSec + (batchStart*intervalSeconds), intervalSeconds, (short) (batchStart * WORDS_PER_MEASUREMENT), batchSize);
                 result.addAll(batch);
                 Thread.sleep(200l);
             }

@@ -1,17 +1,23 @@
 package io.agritrack.fruit.ui.packaging;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.Constants.Greek_Locale;
+import static io.agritrack.common.FishTrackUtils.LotToDate;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recPackaging;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
@@ -36,9 +43,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -80,7 +96,7 @@ public class PackagingStartActivity extends AppCompatActivity {
     private TextView tvTotesCount;
     private ImageButton ivAddTote, ivDeleteTote;
     private String toteBarcode;
-    private String warehouse, firstToteRfid, collectionLot;
+    private String warehouse, firstToteRfid, collectionLot, packagingLot;
     private Optional<String> optToteRfid;
     private ConstraintLayout selectedItem;
     private String selectedBarcode;
@@ -105,6 +121,7 @@ public class PackagingStartActivity extends AppCompatActivity {
     };
 
     @Override
+    @SuppressLint("NewApi")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_packaging_start);
@@ -131,7 +148,7 @@ public class PackagingStartActivity extends AppCompatActivity {
                 CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
                 return;
             }
-            collectionLot = response.lot;
+            recPackaging.collectionLot = response.lot.substring(0,3);
         });
 
         // set (any?) previously selected values to activity Controls.
@@ -288,9 +305,9 @@ public class PackagingStartActivity extends AppCompatActivity {
             packagingRecord.warehouse = this.warehouse;
         }
 
-        if (!Strings.isEmptyOrWhitespace(this.collectionLot)) {
-            packagingRecord.collectionLot = this.collectionLot;
-        }
+        /*if (!Strings.isEmptyOrWhitespace(this.packagingLot)) {
+            packagingRecord.packagingLot = this.packagingLot;
+        }*/
 
         packagingRecord.totesForPackaging = new LinkedList<>(adapterTotes.getValues());
 

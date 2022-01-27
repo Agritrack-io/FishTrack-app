@@ -16,8 +16,8 @@ import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;
 
 public class SingleShotScanner implements Runnable {
-    private final ICAEN_API uhfReader;
-    private final Handler mScanHandler;
+    private ICAEN_API uhfReader;
+    private Handler mScanHandler;
     private String RFID_FILTER = null;
     private Boolean trimEPCFlag = Boolean.TRUE;
 
@@ -36,7 +36,9 @@ public class SingleShotScanner implements Runnable {
     }
 
     public boolean startReading() {
-        //TODO: check if uhfReader is not null
+        if(uhfReader == null) {
+            uhfReader = RFIDModuleFactory.getInstance();
+        }
         return uhfReader.startReading();
     }
 

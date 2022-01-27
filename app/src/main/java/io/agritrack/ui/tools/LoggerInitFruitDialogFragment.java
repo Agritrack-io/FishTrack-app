@@ -65,9 +65,16 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         @Override
         public void run() {
             try {
+                cmd.HighSensitivity();
+                String initTime = cmd.ReadInitDatetime();
                 Short samplesCnt = cmd.ReadSamplesCount();
+                if (samplesCnt<0){
+                   return;
+                }
                 List<String[]> measurements = cmd.ReadSamples(samplesCnt);
-                mScanHandler.sendMessage(createMessage(CmdReadData, measurements));
+                Message msg = createMessage(CmdReadData, measurements);
+                msg.getData().putString("initTime", initTime);
+                mScanHandler.sendMessage(msg);
                 mScanHandler.removeCallbacks(this);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -90,8 +97,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     final Runnable setupThread = new Runnable() {
         @Override
         public void run() {
-            Reader.READER_ERR resBinOne = cmd.WriteTimeBinONE();
-            Reader.READER_ERR resCurrTS = cmd.WriteCurrentDatetime();
+            Reader.READER_ERR resBinOne = cmd.WriteTimeBinZERO();
             Reader.READER_ERR resInterval = cmd.WriteInterval(DefaultInterval);
             Reader.READER_ERR response = cmd.WriteCurrentDatetime();
             mScanHandler.sendMessage(createMessage(CmdSETUP, response));
@@ -289,8 +295,9 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                         btnRead.setOnClickListener(null);
 
                         if (measurements != null) {
+                            String initTime = msg.getData().getString("initTime");
                             //displayMeasurementsDialog(measurements);
-                            recLoggerData.addDataSet(loggerEPC, System.currentTimeMillis() / 1000L, measurements);
+                            recLoggerData.addDataSet(loggerEPC, System.currentTimeMillis() / 1000L, initTime, measurements);
                         }
 
                         btnReset.setOnClickListener(resetBtnListener);

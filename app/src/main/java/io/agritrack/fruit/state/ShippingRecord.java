@@ -20,4 +20,5 @@ public class ShippingRecord {
     public String licensePlate;
     public String customer;
     public String driverPhone;
+    public String packagingLot;
 }

@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentManager;
+
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
@@ -23,9 +25,9 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CollectTxDTO;
-import io.agritrack.data.model.tx.CollectTransaction;
 import io.agritrack.data.model.tx.items.CollectionTxWithItems;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.HarvestRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
@@ -41,11 +43,13 @@ public class HarvestingConfirmActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
 
+    private boolean proceedWithoutLocation = false;
     private ProgressDialog progressDialog;
     private TextView tvGreenHouse, tvPole, tvHarvestLot, tvNumberTotes, tvUsername;
 
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
 
     @Override
@@ -53,15 +57,23 @@ public class HarvestingConfirmActivity extends LocationAwareActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_harvesting_confirm);
 
-        // activate GPS location update feature.
-        super.findLocation();
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderHarvestingConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(HarvestingConfirmActivity.this);
@@ -78,31 +90,37 @@ public class HarvestingConfirmActivity extends LocationAwareActivity {
         configFooter();
     }
 
+    private void moveToNextScreen(){
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
+                startActivity(i);
+            }
+        }
+    }
+
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (mLastLocation != null) {
                     recHarvest.longitude = mLastLocation.getLongitude();
                     recHarvest.latitude = mLastLocation.getLatitude();
+                    proceedWithoutLocation = true;
+                    moveToNextScreen();
+                } else if (!proceedWithoutLocation) {
+                    FragmentManager fm = getSupportFragmentManager();
+                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                 } else {
-                    CToast(HarvestingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
-                    startActivity(i);
+                    //CToast(HarvestingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToHarvestingTotes);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), HarvestingTotesActivity.class);
             startActivity(i);
@@ -116,6 +134,8 @@ public class HarvestingConfirmActivity extends LocationAwareActivity {
         tvNumberTotes = findViewById(R.id.tvNumberTotes);
         tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToHarvestingTotes);
     }
 
     private void initControlsFromState() {
@@ -123,7 +143,7 @@ public class HarvestingConfirmActivity extends LocationAwareActivity {
 
         tvGreenHouse.setText(recHarvest.greenhouse != null ? recHarvest.greenhouse : "N/A");
         tvPole.setText(recHarvest.poleRFID != null ? recHarvest.poleRFID : "N/A");
-        tvHarvestLot.setText(recHarvest.harvestLot != null ? recHarvest.harvestLot : "N/A");
+        tvHarvestLot.setText(recHarvest.harvestLotForCustomer != null ? recHarvest.harvestLotForCustomer : "N/A");
         tvNumberTotes.setText(recHarvest.totalTotesUsed != null ? recHarvest.totalTotesUsed.toString() : "N/A");
 
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());

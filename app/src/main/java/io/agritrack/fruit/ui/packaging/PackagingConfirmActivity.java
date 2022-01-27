@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -43,6 +44,7 @@ import io.agritrack.data.model.tx.PackageTransaction;
 import io.agritrack.data.model.tx.items.PackageTxWithItems;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
+import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.HarvestRecord;
 import io.agritrack.fruit.state.PackagingRecord;
@@ -62,9 +64,10 @@ public class PackagingConfirmActivity extends LocationAwareActivity {
     private MobileDB db;
 
     private ProgressDialog progressDialog;
-    private TextView tvHarvestLot, tvNumberIfco, tvUsername;
-
-    private ImageView ivSupport;
+    private TextView tvPackagingLot, tvNumberIfco, tvUsername;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private boolean proceedWithoutLocation = false;
+    private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
 
     @Override
@@ -78,6 +81,17 @@ public class PackagingConfirmActivity extends LocationAwareActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(PackagingConfirmActivity.this);
@@ -94,31 +108,37 @@ public class PackagingConfirmActivity extends LocationAwareActivity {
         configFooter();
     }
 
+    private void moveToNextScreen(){
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
+                startActivity(i);
+            }
+        }
+    }
+
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (mLastLocation != null) {
                     recPackaging.longitude = mLastLocation.getLongitude();
                     recPackaging.latitude = mLastLocation.getLatitude();
+                    proceedWithoutLocation = true;
+                    moveToNextScreen();
+                } else if (!proceedWithoutLocation) {
+                    FragmentManager fm = getSupportFragmentManager();
+                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                 } else {
-                    CToast(PackagingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
-                    startActivity(i);
+                    //CToast(HarvestingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToPackagingIfco);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), PackagingIfcoActivity.class);
             startActivity(i);
@@ -126,17 +146,19 @@ public class PackagingConfirmActivity extends LocationAwareActivity {
     }
 
     private void assignCtrlVars() {
-        tvHarvestLot = findViewById(R.id.tvHarvestLot);
+        tvPackagingLot = findViewById(R.id.tvPackagingLot);
         tvNumberIfco = findViewById(R.id.tvNumberIfco);
         ivSupport = findViewById(R.id.ivSupport);
         tvUsername = findViewById(R.id.tvUsername);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToPackagingIfco);
     }
 
     private void initControlsFromState() {
         PackagingRecord recPackaging = FruitGlobalState.recPackaging;
 
         tvNumberIfco.setText(recPackaging.totalPackagedIfco != null ? recPackaging.totalPackagedIfco.toString() : "N/A");
-        tvHarvestLot.setText(recPackaging.collectionLot != null ? recPackaging.collectionLot : "N/A");
+        tvPackagingLot.setText(recPackaging.packagingLot != null ? recPackaging.packagingLot : "N/A");
         tvUsername.setText(LocalPreferences.getLoggedInUser(""));
     }
 

@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.agritrack.data.model.tx.CollectTransaction;
 import io.agritrack.data.model.tx.PackageTransaction;
 import io.agritrack.data.model.tx.items.PackageTxWithItems;
 
@@ -15,11 +14,12 @@ public class PackageTxDTO {
     public Long id;
     public String user;
     public String site;
-    public String collection_lot;
+    public String packaging_lot;
+    public String packaging_site;
     public List<String> totes_for_process = new LinkedList<String>();
     public Integer totes_cnt;
-    public List<String> packaged_ifco = new LinkedList<String>();
-    public Integer ifco_cnt;
+    public List<String> palette_barcode = new LinkedList<String>();
+    public Integer palette_cnt;
     public List<TotesTxDTO> items;
     public Double longitude;
     public Double latitude;
@@ -31,15 +31,16 @@ public class PackageTxDTO {
             packageTxDTO.id = packageTx.id;
             packageTxDTO.site = packageTx.site;
             packageTxDTO.user = packageTx.user;
-            packageTxDTO.collection_lot = packageTx.collectionLot;
+            packageTxDTO.packaging_lot = packageTx.packagingLot;
+            packageTxDTO.packaging_site = packageTx.packagingSite;
             if (!CollectionUtils.isEmpty(packageTransaction.totes)){
                 packageTxDTO.totes_for_process = packageTransaction.totes.stream().map(x-> x.epc).collect(Collectors.toList());
             }
             packageTxDTO.totes_cnt = packageTx.totesCnt;
             if (!CollectionUtils.isEmpty(packageTransaction.ifco)){
-                packageTxDTO.packaged_ifco = packageTransaction.ifco.stream().map(x-> x.barcode).collect(Collectors.toList());
+                packageTxDTO.palette_barcode = packageTransaction.ifco.stream().map(x-> x.barcode).collect(Collectors.toList());
             }
-            packageTxDTO.ifco_cnt = packageTx.ifcoCnt;
+            packageTxDTO.palette_cnt = packageTx.paletteCnt;
             packageTxDTO.longitude = packageTx.longitude;
             packageTxDTO.latitude = packageTx.latitude;
         }

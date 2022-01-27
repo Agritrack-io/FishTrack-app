@@ -266,7 +266,7 @@ public class HotelSearchActivity extends AppCompatActivity implements ToggleGrou
         } else {
             isScanning = false;
             btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-            btnSearchAsset.setText(R.string.scan_bin);
+            btnSearchAsset.setText(R.string.title_search);
             pbProximity.setProgress(0);
             tvProximity.setText(R.string.proximity);
             uhfReader.stopSearching();

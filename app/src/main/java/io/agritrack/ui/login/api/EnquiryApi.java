@@ -16,9 +16,17 @@ public interface EnquiryApi {
     @GET("/collect/lot/{toteRFID}")
     Call<LotDTO> getCollectionLotByToteRfid(@Path("toteRFID") String toteRFID, @Header("Authorization") String token);
 
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/packaging/fruit/lot/{paletteBarcode}")
+    Call<LotDTO> getPackagingLotByPaletteBarcode(@Path("paletteBarcode") String paletteBarcode, @Header("Authorization") String token);
+
     @Headers("Content-Type: application/json; charset=UTF-8")
     @GET("/plant/species/{poleRFID}")
     Call<SpeciesDTO> getSpeciesByPoleRfid(@Path("poleRFID") String poleRFID, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=UTF-8")
+    @GET("/plant/lot/{poleRFID}")
+    Call<LotDTO> getPlantLotByPoleRfid(@Path("poleRFID") String poleRFID, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=UTF-8")
     @GET("/packaging/fruit/ifcobatch/{ifcoBarcode}")

@@ -33,6 +33,9 @@ public class CollectTransaction {
     @ColumnInfo(name = "collection_lot")
     public String collectionLot;
 
+    @ColumnInfo(name = "plant_lot")
+    public String plantLot;
+
     @ColumnInfo(name = "number_totes")
     public Integer totesCnt;
 

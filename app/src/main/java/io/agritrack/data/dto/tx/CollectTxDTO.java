@@ -18,6 +18,7 @@ public class CollectTxDTO {
     public String asset_rfid;
     public String species;
     public String collection_lot;
+    public String plant_lot;
     public Integer totes_cnt;
     public Double longitude;
     public Double latitude;
@@ -36,6 +37,7 @@ public class CollectTxDTO {
             collectTxDTO.asset_rfid = collectTx.assetRFID;
             collectTxDTO.species = collectTx.species;
             collectTxDTO.collection_lot = collectTx.collectionLot;
+            collectTxDTO.plant_lot = collectTx.plantLot;
             collectTxDTO.totes_cnt = collectTx.totesCnt;
             collectTxDTO.longitude = collectTx.longitude;
             collectTxDTO.latitude = collectTx.latitude;

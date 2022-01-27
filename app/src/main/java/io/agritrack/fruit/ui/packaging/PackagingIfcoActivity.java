@@ -9,6 +9,7 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -127,9 +128,9 @@ public class PackagingIfcoActivity extends AppCompatActivity {
         SoundUtil.initSoundPool(this);
 
         //Register receiver to receive the result of scan
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("com.rfid.SCAN");
-        registerReceiver(receiver, filter);
+        IntentFilter bcFilter = new IntentFilter();
+        bcFilter.addAction("com.rfid.SCAN");
+        registerReceiver(receiver, bcFilter);
 
         ivDeleteIfco.setOnClickListener(view -> {
 
@@ -246,7 +247,7 @@ public class PackagingIfcoActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recPackaging.packagedIfco == null || recPackaging.packagedIfco.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Packaged IFCO'"));
+                sb.append(String.format("\n%s is missing", "'Packaged palette'"));
             }
         }
 
@@ -264,28 +265,35 @@ public class PackagingIfcoActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         if (scanService == null) {
             scanService = new BarcodeScanService(this);
             //we must set mode to 0 : BroadcastReceiver mode
             scanService.setScanMode(0);
         }
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         if (scanService != null) {
             scanService.setScanMode(1);
             scanService.close();
             scanService = null;
         }
+        super.onPause();
     }
 
     @Override
     protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onDestroy();
-        unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onStop();
     }
 
     private void showAddDialog() {

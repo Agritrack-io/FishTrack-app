@@ -23,14 +23,14 @@ public class PackageTransaction {
     @ColumnInfo(name = "user")
     public String user;
 
-    @ColumnInfo(name = "collection_lot")
-    public String collectionLot;
+    @ColumnInfo(name = "packaging_lot")
+    public String packagingLot;
 
     @ColumnInfo(name = "totes_cnt")
     public Integer totesCnt;
 
-    @ColumnInfo(name = "ifco_cnt")
-    public Integer ifcoCnt;
+    @ColumnInfo(name = "palette_cnt")
+    public Integer paletteCnt;
 
     @ColumnInfo(name = "longitude")
     public Double longitude;
@@ -40,4 +40,7 @@ public class PackageTransaction {
 
     @ColumnInfo(name = "created_at")
     public Long createdAt;
+
+    @ColumnInfo(name = "packaging_site")
+    public String packagingSite;
 }

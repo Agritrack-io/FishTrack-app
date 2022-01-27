@@ -1,5 +1,6 @@
 package io.agritrack.fruit.ui.storage_ready;
 
+
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
@@ -39,15 +40,15 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.api.sync.IfcoBatchByIfcoBarcode;
+import io.agritrack.api.sync.PackagingLotEnquiryCallBack;
 import io.agritrack.barcode.BarcodeScanService;
 import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.LotDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
@@ -63,13 +64,11 @@ import retrofit2.Call;
 
 public class ReadyStorageStartActivity extends AppCompatActivity {
 
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
-
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-
-    private final MutableLiveData<List<String>> enquiryResult = new MutableLiveData<>();
+    private final MutableLiveData<LotDTO> enquiryResult = new MutableLiveData<>();
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -89,7 +88,9 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
             byte[] data = intent.getByteArrayExtra("data");
             if (data != null) {
                 String barcode = new String(data);
-                invokeEnquiryIfcoBatch(barcode);
+                invokeEnquiryLot(barcode);
+                adapterIfco.addUniqueItem(barcode);
+                adapterIfco.notifyDataSetChanged();
                 tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
                 scanning = false;
             }
@@ -203,12 +204,12 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
 
         enquiryResult.observe(this, response -> {
             if (response == null) {
-                CToast(getApplicationContext(), render("No ifco batch returned for this ifco"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render("No packaging LOT returned for this palette"), Toast.LENGTH_LONG);
                 return;
             }
-            adapterIfco.setValues(response);
-            adapterIfco.notifyDataSetChanged();
-            tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
+            if (!Strings.isEmptyOrWhitespace(response.lot)) {
+                recStorage.packagingLot = response.lot;
+            }
         });
 
         // create Footer
@@ -235,7 +236,24 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
         }
     }
 
-    private void invokeEnquiryIfcoBatch(String ifcoBarcode) {
+    private void invokeEnquiryLot(String barcode) {
+        try {
+            EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
+            String token = LocalPreferences.getToken();
+
+            // sync collection lot for current Site
+            Call<LotDTO> enquiryPackagingLotAsyncCall = enquiryService.getPackagingLotByPaletteBarcode(barcode, "Bearer " + token);
+            enquiryPackagingLotAsyncCall.enqueue(new PackagingLotEnquiryCallBack(this.enquiryResult));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+    }
+
+   /* private void invokeEnquiryIfcoBatch(String ifcoBarcode) {
         try {
             EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
             String token = LocalPreferences.getToken();
@@ -250,7 +268,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
         } finally {
 
         }
-    }
+    }*/
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
@@ -286,6 +304,8 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
         if (!Strings.isEmptyOrWhitespace(trns.poleRFID)) {
             tvPoleName.setText(trns.poleRFID);
         }
+
+        warehouse = trns.warehouse;
     }
 
     private StorageRecord updateState() {
@@ -313,9 +333,9 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
                 sb.append(String.format("\n%s is missing", "'Scan tag'"));
             }
 
-            /*if (FruitGlobalState.recStorage.packagedIfco == null || FruitGlobalState.recStorage.packagedIfco.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Received IFCO'"));
-            }*/
+            if (FruitGlobalState.recStorage.packagedIfco == null || FruitGlobalState.recStorage.packagedIfco.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Received Palette'"));
+            }
         }
         return sb.toString();
     }

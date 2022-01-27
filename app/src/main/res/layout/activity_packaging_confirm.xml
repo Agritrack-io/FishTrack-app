@@ -101,20 +101,20 @@ tools:context=".fruit.ui.packaging.PackagingConfirmActivity">
             android:padding="15dp">
 
             <TextView
-                android:id="@+id/tvHarvestLotLabel"
+                android:id="@+id/tvPackagingLotLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/confirm_harvest_lot"
+                android:text="@string/confirm_packaging_lot"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvNumberIfcoLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvHarvestLot"
+                app:layout_constraintEnd_toStartOf="@+id/tvPackagingLot"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvHarvestLot"
+                android:id="@+id/tvPackagingLot"
                 android:layout_width="186dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -125,72 +125,20 @@ tools:context=".fruit.ui.packaging.PackagingConfirmActivity">
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvNumberIfco"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvHarvestLotLabel"
+                app:layout_constraintStart_toEndOf="@+id/tvPackagingLotLabel"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <!--<TextView
-                android:id="@+id/tvWarehouseLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/warehouse"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvWeightLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvWarehouse"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvHarvestLotLabel" />
-
-            <TextView
-                android:id="@+id/tvWarehouse"
-                android:layout_width="186dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvWeight"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvWarehouseLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvHarvestLot" />
-
-            <TextView
-                android:id="@+id/tvWeightLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/weight"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvNumberIfcoLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvWeight"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvWarehouseLabel" />
-
-            <TextView
-                android:id="@+id/tvWeight"
-                android:layout_width="186dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvNumberIfco"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvWeightLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvWarehouse" />-->
 
             <TextView
                 android:id="@+id/tvNumberIfcoLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/number_of_ifco"
+                android:text="@string/number_of_palette"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvNumberIfco"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvHarvestLotLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/tvPackagingLotLabel" />
 
             <TextView
                 android:id="@+id/tvNumberIfco"
@@ -204,7 +152,7 @@ tools:context=".fruit.ui.packaging.PackagingConfirmActivity">
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvNumberIfcoLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvHarvestLot" />
+                app:layout_constraintTop_toBottomOf="@+id/tvPackagingLot" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -19,6 +19,7 @@ public class StorageRecord {
     public Integer totalIfcoCnt;
     public TxStatus category;
     public String collectionLot;
+    public String packagingLot;
 
     public StorageRecord(){
     }

@@ -39,15 +39,15 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.api.sync.IfcoBatchByIfcoBarcode;
+import io.agritrack.api.sync.PackagingLotEnquiryCallBack;
 import io.agritrack.barcode.BarcodeScanService;
 import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.LotDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
@@ -56,6 +56,7 @@ import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.ShippingRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
@@ -63,34 +64,34 @@ import retrofit2.Call;
 
 public class ShippingStartActivity extends AppCompatActivity {
 
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
-
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-
+    private final MutableLiveData<LotDTO> enquiryResult = new MutableLiveData<>();
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
-
     private TextView tvPoleName;
     private Button btnScanPole;
-    private final MutableLiveData<List<String>> enquiryResult = new MutableLiveData<>();
-
     private RecyclerView rvIfcoForShipping;
     private TextView tvIfcoCount;
     private boolean scanning = false;
     private String warehouse;
     private BarcodeScanService scanService;
     private TemplateRecyclerAdapter adapterIfco;
+
     // BroadcastReceiver to receiver scan data
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+    private final BroadcastReceiver barcodeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             byte[] data = intent.getByteArrayExtra("data");
+
             if (data != null) {
                 String barcode = new String(data);
-                invokeEnquiryIfcoBatch(barcode);
+                invokeEnquiryLot(barcode);
+                adapterIfco.addUniqueItem(barcode);
+                adapterIfco.notifyDataSetChanged();
                 tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
                 scanning = false;
             }
@@ -120,7 +121,7 @@ public class ShippingStartActivity extends AppCompatActivity {
     private String ifcoBarcode;
     private ImageButton ivAddIfco, ivDeleteIfco;
     private Button btnScanIfco;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,9 +151,9 @@ public class ShippingStartActivity extends AppCompatActivity {
         SoundUtil.initSoundPool(this);
 
         //Register receiver to receive the result of scan
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("com.rfid.SCAN");
-        registerReceiver(receiver, filter);
+        IntentFilter bcFilter = new IntentFilter();
+        bcFilter.addAction("com.rfid.SCAN");
+        registerReceiver(barcodeReceiver, bcFilter);
 
         // RFID scanning functionality
         btnScanPole.setOnClickListener(this::onClick);
@@ -202,7 +203,7 @@ public class ShippingStartActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
-        enquiryResult.observe(this, response -> {
+        /*enquiryResult.observe(this, response -> {
             if (response == null) {
                 CToast(getApplicationContext(), render("No ifco batch returned for this ifco"), Toast.LENGTH_LONG);
                 return;
@@ -210,6 +211,16 @@ public class ShippingStartActivity extends AppCompatActivity {
             adapterIfco.setValues(response);
             adapterIfco.notifyDataSetChanged();
             tvIfcoCount.setText(String.valueOf(adapterIfco.getItemCount()));
+        });*/
+
+        enquiryResult.observe(this, response -> {
+            if (response == null) {
+                CToast(getApplicationContext(), render("No packaging LOT returned for this palette"), Toast.LENGTH_LONG);
+                return;
+            }
+            if (!Strings.isEmptyOrWhitespace(response.lot)) {
+                recShipping.packagingLot = response.lot;
+            }
         });
 
         // create Footer
@@ -236,7 +247,24 @@ public class ShippingStartActivity extends AppCompatActivity {
         }
     }
 
-    private void invokeEnquiryIfcoBatch(String ifcoBarcode) {
+    private void invokeEnquiryLot(String barcode) {
+        try {
+            EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
+            String token = LocalPreferences.getToken();
+
+            // sync collection lot for current Site
+            Call<LotDTO> enquiryPackagingLotAsyncCall = enquiryService.getPackagingLotByPaletteBarcode(barcode, "Bearer " + token);
+            enquiryPackagingLotAsyncCall.enqueue(new PackagingLotEnquiryCallBack(this.enquiryResult));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+    }
+
+    /*private void invokeEnquiryIfcoBatch(String ifcoBarcode) {
         try {
             EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
             String token = LocalPreferences.getToken();
@@ -251,7 +279,7 @@ public class ShippingStartActivity extends AppCompatActivity {
         } finally {
 
         }
-    }
+    }*/
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToShippingDetails);
@@ -309,7 +337,7 @@ public class ShippingStartActivity extends AppCompatActivity {
         return shippingRecord;
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(recShipping.warehouse)) {
@@ -317,7 +345,7 @@ public class ShippingStartActivity extends AppCompatActivity {
             }
 
             if (FruitGlobalState.recShipping.packagedIfco == null || FruitGlobalState.recShipping.packagedIfco.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'IFCO for shipping'"));
+                sb.append(String.format("\n%s is missing", "'Palette for shipping'"));
             }
         }
         return sb.toString();
@@ -336,18 +364,17 @@ public class ShippingStartActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         if (scanService == null) {
             scanService = new BarcodeScanService(this);
             //we must set mode to 0 : BroadcastReceiver mode
             scanService.setScanMode(0);
         }
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(barcodeReceiver);
         if (scanService != null) {
             scanService.setScanMode(1);
             scanService.close();
@@ -357,23 +384,14 @@ public class ShippingStartActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        // Listen for Fn key press/release;
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.rfid.FUN_KEY");
-        this.registerReceiver(keyReceiver, filter);
-    }
-
-    @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(barcodeReceiver);
         super.onDestroy();
     }
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(barcodeReceiver);
         super.onStop();
     }
 

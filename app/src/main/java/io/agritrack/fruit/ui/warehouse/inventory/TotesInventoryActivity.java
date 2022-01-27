@@ -50,6 +50,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
 import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.ui.LocationAwareActivity;
@@ -75,8 +76,9 @@ public class TotesInventoryActivity extends LocationAwareActivity {
     private String selectedBarcode;
 
     private ProgressDialog progressDialog;
-
-    private ImageView ivSupport;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private boolean proceedWithoutLocation = false;
+    private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
 
     private TemplateRecyclerAdapter adapterTotes;
@@ -109,15 +111,23 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_totes_inventory);
 
-        // activate GPS location update feature.
-        super.findLocation();
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderTotesInventory);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
@@ -175,6 +185,19 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         configFooter();
     }
 
+    private void moveToNextScreen(){
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
+                startActivity(i);
+            }
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -215,10 +238,11 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         ivDeleteTote = findViewById(R.id.ivDeleteTote);
         ivAddTote = findViewById(R.id.ivAddTote);
         scanButton = findViewById(R.id.btnScanTotes);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToFruitInventoryStart);
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -230,22 +254,17 @@ public class TotesInventoryActivity extends LocationAwareActivity {
                 if (mLastLocation != null) {
                     recInventory.longitude = mLastLocation.getLongitude();
                     recInventory.latitude = mLastLocation.getLatitude();
+                    proceedWithoutLocation = true;
+                    moveToNextScreen();
+                } else if (!proceedWithoutLocation) {
+                    FragmentManager fm = getSupportFragmentManager();
+                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                 } else {
-                    CToast(TotesInventoryActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
-                    startActivity(i);
+                    //CToast(HarvestingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
             }
         });
 
-        ImageView ivBack = (ImageView) findViewById(R.id.ivBackToFruitInventoryStart);
         ivBack.setOnClickListener(view -> {
             if (scanner_runnable!=null) {
                 //Stop scanning since we navigate to previous activity

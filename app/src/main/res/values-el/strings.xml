@@ -410,8 +410,8 @@
     <string name="item_inventory_totes">ΤΕΛΑΡΑ</string>
     <string name="item_inventory_ifco">IFCO</string>
     <string name="items">Τεμάχια</string>
-    <string name="scan_ifco">Σκάναρε IFCO</string>
-    <string name="number_of_ifco">Αριθμός IFCO:</string>
+    <string name="scan_palette">Σκάναρε Παλέτα</string>
+    <string name="number_of_palette">Αριθμός παλετών:</string>
 
     <string name="scan_rfid">Σκάναρε RFID</string>
     <string name="pole_barcode">Κολόνα</string>
@@ -422,6 +422,7 @@
     <string name="type_total_weight">Συνολικό βάρος</string>
     <string name="scan_warehouse">Σκάναρε αποθήκη</string>
     <string name="scan_tag">Σκάναρε</string>
+    <string name="palettes">Παλέτες</string>
     <string name="warehouse">Αποθήκη:</string>
     <string name="weight">Βάρος (kg):</string>
     <string name="error_storage_tx_update_failure">Η αποθήκευση απέτυχε να συγχρονιστεί!!!</string>
@@ -429,12 +430,15 @@
     <string name="title_package">ΣΥΣΚΕΥΑΣΙΑ</string>
     <string name="title_open_orders">ΑΝΟΙΚΤΕΣ ΠΑΡΑΓΓΕΛΙΕΣ</string>
     <string name="select_open_order">Ανοικτες παραγγελίες</string>
+    <string name="packaging_lot">LOT συσκευασίας</string>
+    <string name="choose_fruit_packaging_site">Επίλεξτε συσκευαστήριο</string>
     <string name="totes_for_package">Τελάρα προς συσκευασία</string>
-    <string name="enter_lot_on_printer">Παρακαλώ εισάγετε το ακόλουθο LOT συγκομιδής στον εκτυπωτή</string>
+    <string name="enter_lot_on_printer">Παρακαλώ εισάγετε το ακόλουθο LOT συσκευασίας στον εκτυπωτή</string>
     <string name="trays_qty">Ποσότητα δισκίων</string>
+    <string name="confirm_packaging_lot">LOT συσκευασίας:</string>
 
     <string name="title_storage">ΑΠΟΘΗΚΕΥΣΗ ΕΤΟΙΜΩΝ</string>
-    <string name="select_ifco">Επιλέξτε IFCO</string>
+    <string name="select_palette">Επιλέξτε Παλέτα</string>
 
     <string name="title_shipping">ΑΠΟΣΤΟΛΗ</string>
     <string name="shipping_details">Λεπτομέρειες αποστολής</string>
@@ -445,6 +449,9 @@
     <string name="IOTLoggers_sync_completed">Τα καταγραφικά συγχρονίστηκαν επιτυχώς!</string>
     <string name="no_IOTLoggers_found_alert">Δεν βρέθηκαν καταγραφικά!!!</string>
     <string name="menu_title_tools">Εργαλεία καταγραφικών</string>
+
+    <string name="procced_without_location">"Οι συντεταγμένες GPS δεν βρέθηκαν. \nΕπιλέξτε: \n  'Όχι', για νέα προσπάθεια \n  'Ναι', για να συνεχίσετε."</string>
+    <string name="press_check_button_again">Παρακαλώ πατήστε το κουμπί για να συνεχίσετε</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="asset">ΠΑΓΙΟ</string>
@@ -456,5 +463,4 @@
     <string name="food">ΤΡΟΦΗ</string>
     <string name="vaccine">ΕΜΒΟΛΙΟ</string>
     <string name="antibiotic">ΑΝΤΙΒΙΟΤΙΚΑ</string>
-
 </resources>

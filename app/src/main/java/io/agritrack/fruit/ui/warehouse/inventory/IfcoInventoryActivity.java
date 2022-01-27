@@ -102,7 +102,9 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
         }
     };
     private ProgressDialog progressDialog;
-    private ImageView ivSupport;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private boolean proceedWithoutLocation = false;
+    private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
     private String toteBarcode;
     private ImageButton ivAddIfco, ivDeleteIfco;
@@ -113,15 +115,23 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ifco_inventory);
 
-        // activate GPS location update feature.
-        super.findLocation();
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderIfcoInventory);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(IfcoInventoryActivity.this);
@@ -190,6 +200,19 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
         configFooter();
     }
 
+    private void moveToNextScreen(){
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
+                startActivity(i);
+            }
+        }
+    }
+
     private void clearSelectedItem() {
         if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
@@ -211,7 +234,6 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -219,22 +241,17 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
                 if (mLastLocation != null) {
                     recInventory.longitude = mLastLocation.getLongitude();
                     recInventory.latitude = mLastLocation.getLatitude();
+                    proceedWithoutLocation = true;
+                    moveToNextScreen();
+                } else if (!proceedWithoutLocation) {
+                    FragmentManager fm = getSupportFragmentManager();
+                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                 } else {
-                    CToast(IfcoInventoryActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), FruitWhMenuActivity.class);
-                    startActivity(i);
+                    //CToast(HarvestingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
                 }
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToFruitInventoryStart);
         ivBack.setOnClickListener(view -> {
             //Set scanning to false to stop running scan thread
             scanning = false;
@@ -252,6 +269,8 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
         ivAddIfco = findViewById(R.id.ivAddIfco);
         btnScanIfco = findViewById(R.id.btnScanIfco);
         ivSupport = findViewById(R.id.ivSupport);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToFruitInventoryStart);
     }
 
     private void showAddDialog() {

@@ -283,6 +283,7 @@ public class GlobalState {
                 Measurement measurement = new Measurement();
                 measurement.loggerRFID = model.loggerEPC;
                 measurement.retrievedAt = model.retrievedAt;
+                measurement.enabledAt = model.enabledAt;
 
                 long measurementId = db.measurementsDAO().insert(measurement);
                 if (measurementId > 0 && model.values != null && !model.values.isEmpty()) {

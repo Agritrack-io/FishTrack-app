@@ -15,4 +15,7 @@ public class Measurement {
 
     @ColumnInfo(name = "retrieved_at")
     public Long retrievedAt;
+
+    @ColumnInfo(name = "enabled_at")
+    public String enabledAt;
 }

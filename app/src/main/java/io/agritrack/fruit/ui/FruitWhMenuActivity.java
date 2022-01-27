@@ -30,7 +30,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class FruitWhMenuActivity extends AppCompatActivity {
 
-    private static final int Incoming_Idx = 0, Inventory_Idx = 1, Correlation_Idx = 2, Temp_measure_Idx = 3;
+    private static final int Inventory_Idx = 0, Correlation_Idx = 1, Temp_measure_Idx = 2;//Incoming_Idx = 0
     GridView gvFruitWhMainMenu;
 
     private ImageView ivSupport;
@@ -48,7 +48,7 @@ public class FruitWhMenuActivity extends AppCompatActivity {
         gvFruitWhMainMenu = findViewById(R.id.gvFruitWhMainMenu);
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), IncomingIfcoActivity.class, R.drawable.incoming));
+        //menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), IncomingIfcoActivity.class, R.drawable.incoming));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), FruitInventoryStartActivity.class, R.drawable.inventory));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), FruitCorrelationActivity.class, R.drawable.correlation));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_measurements), DailyTemperatureMeasurementsActivity.class, R.drawable.quality));
@@ -62,10 +62,10 @@ public class FruitWhMenuActivity extends AppCompatActivity {
                 Intent i = new Intent(appCtx, LoginActivity.class);
 
                 switch (position) {
-                    case Incoming_Idx:
+                    /*case Incoming_Idx:
                         IncomingRecord incomingRecord = FruitGlobalState.initIncomingRecord();
                         i = new Intent(appCtx, IncomingIfcoActivity.class);
-                        break;
+                        break;*/
                     case Inventory_Idx:
                         InventoryRecord inventoryRecord = FruitGlobalState.initInventoryRecord();
                         i = new Intent(appCtx, FruitInventoryStartActivity.class);

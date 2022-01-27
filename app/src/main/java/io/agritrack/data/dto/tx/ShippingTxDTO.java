@@ -21,9 +21,10 @@ public class ShippingTxDTO {
     public String driver_name;
     public String driver_phone;
     public String user;
-    public List<String> ifco = new LinkedList<String>();
-    public Integer ifco_cnt;
+    public List<String> palette_barcode = new LinkedList<String>();
+    public Integer palette_cnt;
     public String customer;
+    public String packaging_lot;
     public Double longitude;
     public Double latitude;
 
@@ -36,11 +37,12 @@ public class ShippingTxDTO {
             shippingTxDto.driver_name = shippingTx.driverName;
             shippingTxDto.driver_phone = shippingTx.driverPhone;
             shippingTxDto.user = shippingTx.user;
-            shippingTxDto.ifco_cnt = shippingTx.ifcoCnt;
+            shippingTxDto.palette_cnt = shippingTx.ifcoCnt;
             if (!CollectionUtils.isEmpty(shipping.ifco)){
-                shippingTxDto.ifco = shipping.ifco.stream().map(x-> x.barcode).collect(Collectors.toList());
+                shippingTxDto.palette_barcode = shipping.ifco.stream().map(x-> x.barcode).collect(Collectors.toList());
             }
             shippingTxDto.customer = shippingTx.customer;
+            shippingTxDto.packaging_lot = shippingTx.packagingLot;
             shippingTxDto.longitude = shippingTx.longitude;
             shippingTxDto.latitude = shippingTx.latitude;
         }

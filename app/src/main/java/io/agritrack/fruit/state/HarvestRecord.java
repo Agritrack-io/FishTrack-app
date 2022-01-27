@@ -5,6 +5,7 @@ import java.util.List;
 public class HarvestRecord {
 
     public String poleRFID;
+    public String harvestLotForCustomer;
     public String harvestLot;
     public List<String> totes;
     public Integer totalTotesUsed;
@@ -13,6 +14,7 @@ public class HarvestRecord {
     public Double latitude;
     public String greenhouse;
     public String speciesName;
+    public String plantLot;
 
     public HarvestRecord(){
     }

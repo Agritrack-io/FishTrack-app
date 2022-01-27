@@ -25,6 +25,9 @@ public class ShippingTransaction {
     @ColumnInfo(name = "customer")
     public String customer;
 
+    @ColumnInfo(name = "packaging_lot")
+    public String packagingLot;
+
     @ColumnInfo(name = "ifco_cnt")
     public Integer ifcoCnt;
 
