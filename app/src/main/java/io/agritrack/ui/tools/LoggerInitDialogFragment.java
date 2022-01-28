@@ -74,7 +74,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         }
 
         if (enableRS != null && enableRS != -99) {
-            btnInit.setText("Success");
+            getActivity().runOnUiThread(() -> btnInit.setText("Success"));
             btnInit.setOnClickListener(null);
             Map<String, Object> m = new HashMap<>();
             m.put("timestamp", System.currentTimeMillis());
@@ -89,14 +89,14 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             reading.setReading(m);
             //}
         } else {
-            btnInit.setText("Init:: Failed");
+            getActivity().runOnUiThread(() -> btnInit.setText("Init:: Failed"));
         }
     });
 
     protected final View.OnClickListener initBtnListener = v -> {
         // draw btnInit background and text
         btnInit.setBackgroundResource(R.drawable.button_background);
-        btnInit.setText("Start Logger...");
+        getActivity().runOnUiThread(() -> btnInit.setText("Start Logger..."));
 
         startAnimation(v, btnInit);
 
@@ -106,13 +106,12 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     };
 
     protected final Runnable setupRunnable = ((Runnable) () -> {
-
         // set time Bin to 0, (disable timestamps)
-        btnSetup.setText("Resetting calendar...");
+        getActivity().runOnUiThread(() -> btnSetup.setText("Resetting calendar..."));
         Reader.READER_ERR response = cmd.WriteTimeBinZERO();
         cmd.Wait(100l);
         if (!Reader.READER_ERR.MT_OK_ERR.equals(response)) {
-            btnSetup.setText("Setup:: Failed, Press to retry...");
+            getActivity().runOnUiThread(() -> btnSetup.setText("Setup:: Failed, Press to retry..."));
             return;
         }
         // set Init time stamp
@@ -126,7 +125,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         // set time Bin to 0, (disable timestamps)
         Reader.READER_ERR setupRS = this.cmd.Setup(ICAEN_API.DefaultInterval);
         if (Reader.READER_ERR.MT_OK_ERR.equals(setupRS)) {
-            btnSetup.setText("Setup:: OK");
+            getActivity().runOnUiThread(() -> btnSetup.setText("Setup:: OK"));
             btnSetup.setOnClickListener(null);
 
             btnInit.setOnClickListener(initBtnListener);
@@ -140,7 +139,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     protected final View.OnClickListener setupBtnListener = v -> {
         // draw btnSetup background and text
         btnSetup.setBackgroundResource(R.drawable.button_background);
-        btnSetup.setText("Setting Up...");
+        getActivity().runOnUiThread(() -> btnSetup.setText("Setting Up..."));
 
         startAnimation(v, btnSetup);
 
@@ -151,7 +150,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     protected final Runnable resetRunnable = ((Runnable) () -> {
         Reader.READER_ERR resetRS = this.cmd.Reset();
         if (Reader.READER_ERR.MT_OK_ERR.equals(resetRS)) {
-            btnReset.setText("Reset:: OK");
+            getActivity().runOnUiThread(() -> btnReset.setText("Reset:: OK"));
             btnReset.setOnClickListener(null);
 
             stopAnimation();
@@ -167,7 +166,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     protected final View.OnClickListener resetBtnListener = v -> {
         // draw btnReset background and text
         btnReset.setBackgroundResource(R.drawable.button_background);
-        btnReset.setText("Resetting...");
+        getActivity().runOnUiThread(() -> btnReset.setText("Resetting..."));
 
         startAnimation(v, btnReset);
 
@@ -181,12 +180,11 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             String initTime = cmd.ReadInitDatetime();
             Short cnt = cmd.ReadSamplesCount();
             if (cnt != null && cnt > 0) {
-                btnRead.setText(String.format("Downloading %s values...", cnt));
+                getActivity().runOnUiThread(() -> btnRead.setText(String.format("Downloading %s values...", cnt)));
                 try {
                     values = cmd.ReadSamples(cnt);
-                    btnRead.setText("Success");
+                    getActivity().runOnUiThread(() -> btnRead.setText("Success"));
                     btnRead.setOnClickListener(null);
-
                     recLoggerData.addDataSet(this.loggerEPC, System.currentTimeMillis() / 1000L, initTime, values);
 
                     // display temperatures in popup.
@@ -217,7 +215,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             }
             reading.setReading(m);
         } else {
-            btnRead.setText("Failed. Press button to Retry.");
+            getActivity().runOnUiThread(() -> btnRead.setText("Failed. Press button to Retry."));
         }
     });
 
@@ -225,7 +223,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
 
         // draw btnRead background and text
         btnRead.setBackgroundResource(R.drawable.button_background);
-        btnRead.setText("Counting Measurements...");
+        getActivity().runOnUiThread(() -> btnRead.setText("Counting Measurements..."));
         startAnimation(v, btnRead);
 
         //Task for read button
@@ -363,11 +361,14 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     @Override
     public void onTimeUpdate(TimeAnimator animation, long totalTime, long deltaTime) {
         FragmentActivity mActivity = getActivity();
-        mClipDrawable.setLevel(mCurrentLevel);
-        if (mActivity != null && mCurrentLevel >= MAX_LEVEL) {
-            getActivity().runOnUiThread(() -> mAnimator.cancel());
-        } else {
-            mCurrentLevel = Math.min(MAX_LEVEL, mCurrentLevel + LEVEL_INCREMENT);
+
+        if (mActivity != null) {
+            mActivity.runOnUiThread(() -> mClipDrawable.setLevel(mCurrentLevel));
+            if (mCurrentLevel >= MAX_LEVEL) {
+                mActivity.runOnUiThread(() -> mAnimator.cancel());
+            } else {
+                mCurrentLevel = Math.min(MAX_LEVEL, mCurrentLevel + LEVEL_INCREMENT);
+            }
         }
     }
 
