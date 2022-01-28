@@ -43,7 +43,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -66,13 +65,11 @@ import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
 public class PackagingStartActivity extends AppCompatActivity {
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
-
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-
     private final MutableLiveData<List<LotDTO>> enquiryResult = new MutableLiveData<>();
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
     private ScanInventoryThread scanner_runnable;
     private Button btnScanPole, btnScanTotes;
     private MobileDB db;
@@ -155,9 +152,9 @@ public class PackagingStartActivity extends AppCompatActivity {
             Long aa = new BigInteger(packagingLot.substring(3), 16).longValue();
             LocalDateTime ttt = tt.plusMinutes(aa.intValue());*/
                 ivNext.setEnabled(true);
-            } else if (response.size() > 1){  //TODO:To be checked
-                CToast(getApplicationContext(), render("More than one harvest LOT returned for these totes"), Toast.LENGTH_LONG);
-                ivNext.setEnabled(true);
+            } else if (response.size() > 1) {  //TODO:To be checked
+                CToast(getApplicationContext(), render("More than one harvest LOT returned for these totes. Please select totes of a single LOT and scan again."), Toast.LENGTH_LONG);
+                ivNext.setEnabled(false);
             }
         });
 
@@ -304,9 +301,11 @@ public class PackagingStartActivity extends AppCompatActivity {
             tvTotesCount.setText(String.valueOf(trns.totesForPackaging.size()));
         }
 
-        if (trns.packagingLot != null && !Strings.isEmptyOrWhitespace(trns.packagingLot)){
+        if (trns.packagingLot != null && !Strings.isEmptyOrWhitespace(trns.packagingLot)) {
             ivNext.setEnabled(true);
         }
+
+        warehouse = trns.warehouse;
     }
 
     private PackagingRecord updateState() {
