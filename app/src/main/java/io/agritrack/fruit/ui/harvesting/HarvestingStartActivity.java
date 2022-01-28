@@ -11,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,10 +28,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -94,13 +97,26 @@ public class HarvestingStartActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-        LocalDate date = LocalDate.now();
-        LocalDateTime now = LocalDateTime.now();
-        String formatTime = String.format("%02d%02d%02d",now.getHour(), now.getMinute(), now.getSecond());
-        TemporalField woy = WeekFields.of(Greek_Locale).weekOfWeekBasedYear();
-        int weekNumber = date.get(woy);
-        tvHarvestLot.setText(String.format("%02d%s",weekNumber, date.getDayOfWeek().ordinal()+1));
-        recHarvest.harvestLot = String.format("%s%s",tvHarvestLot.getText().toString(), formatTime);
+
+        // API < 26
+        int weekOfYearId = 0, dayOfWeekId = 0;
+        String formatTime = ""; //String.format("%02d%02d%02d",now.getHour(), now.getMinute(), now.getSecond());
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            Calendar cal = new GregorianCalendar(Greek_Locale);
+            cal.setTime(new Date());
+            weekOfYearId = cal.get(Calendar.WEEK_OF_YEAR);
+            dayOfWeekId = cal.get(Calendar.DAY_OF_WEEK)+1;
+            formatTime = String.format("%02d%02d%02d",cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
+        } else {
+            LocalDateTime now = LocalDateTime.now();
+            TemporalField woy = WeekFields.of(Greek_Locale).weekOfWeekBasedYear();
+            weekOfYearId = now.get(woy);
+            dayOfWeekId = now.getDayOfWeek().ordinal()+1;
+            formatTime = String.format("%02d%02d%02d",now.getHour(), now.getMinute(), now.getSecond());
+        }
+
+        tvHarvestLot.setText(String.format("%02d%s", weekOfYearId, dayOfWeekId));
+        recHarvest.harvestLot = String.format("%s%s", tvHarvestLot.getText().toString(), formatTime);
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(HarvestingStartActivity.this);

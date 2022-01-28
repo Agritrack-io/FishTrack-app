@@ -5,10 +5,6 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdENABLE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdReadData;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdSETUP;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.HideProgressBar;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadInitTimeStamp;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadLastSample;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ShowProgressBar;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
 
@@ -28,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.common.util.Strings;
 import com.uhf.api.cls.Reader;
@@ -41,125 +38,41 @@ import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 
 public class LoggerInitFruitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
+    private static final int LEVEL_INCREMENT = 1000;
+    private static final int MAX_LEVEL = 10000;
+    private static final String LOGGER_EPC = "loggerEPC";
     public static String TAG = "CaenLoggerDialogFragment";
+
+    private Button btnRead, btnReset, btnSetup, btnInit;
 
     // Local handler that receives the RFID scanner results.
     private final CAENCommandsHandler mScanHandler = new CAENCommandsHandler(this);
-
-    private static final int LEVEL_INCREMENT = 500;
-    private static final int MAX_LEVEL = 1000;
-    private static final String LOGGER_EPC = "loggerEPC";
-
     private ICAEN_API cmd;
     private String loggerEPC;
-
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0;
     private ClipDrawable mClipDrawable;
 
-    private Button btnRead, btnReset, btnSetup, btnInit;
-
-    //####################################################
-    //Task to Read Existing Measurements
-    final Runnable readValuesThread = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                cmd.HighSensitivity();
-                String initTime = cmd.ReadInitDatetime();
-                Short samplesCnt = cmd.ReadSamplesCount();
-                if (samplesCnt<0){
-                   return;
-                }
-                List<String[]> measurements = cmd.ReadSamples(samplesCnt);
-                Message msg = createMessage(CmdReadData, measurements);
-                msg.getData().putString("initTime", initTime);
-                mScanHandler.sendMessage(msg);
-                mScanHandler.removeCallbacks(this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-    //Task that triggers Logging
-    final Runnable enableLoggingThread = new Runnable() {
-        @Override
-        public void run() {
-            Reader.READER_ERR response = cmd.EnableLogging();
-            Double lastMeasurement = cmd.ReadLastSample();
-            mScanHandler.sendMessage(createMessage(CmdENABLE, response));
-            mScanHandler.removeCallbacks(this);
-        }
-    };
-
-    //Task to set Current Date/Time
-    final Runnable setupThread = new Runnable() {
-        @Override
-        public void run() {
-            Reader.READER_ERR resBinOne = cmd.WriteTimeBinZERO();
-            Reader.READER_ERR resInterval = cmd.WriteInterval(DefaultInterval);
-            Reader.READER_ERR response = cmd.WriteCurrentDatetime();
-            mScanHandler.sendMessage(createMessage(CmdSETUP, response));
-            mScanHandler.removeCallbacks(this);
-        }
-    };
-
-    //Task that triggers Logging
-    final Runnable resetLoggerThread = new Runnable() {
-        @Override
-        public void run() {
-            Reader.READER_ERR response = cmd.Reset();
-            mScanHandler.sendMessage(createMessage(CmdRESET, response));
-            mScanHandler.removeCallbacks(this);
-        }
-    };
-
     //####################################################
     protected final View.OnClickListener initBtnListener = v -> {
-        btnInit.setBackgroundResource(R.drawable.button_background);
-        btnInit.setText("Start Logger...");
-
-        startAnimation(v, btnInit);
-
-        // Initiate Logging thread
-        mScanHandler.postDelayed(enableLoggingThread, 50);
-
+        // Send message to Enable Logging
+        mScanHandler.sendMessage(createMessage(CmdENABLE, null));
     };
-
     protected final View.OnClickListener setupBtnListener = v -> {
-
-        btnSetup.setBackgroundResource(R.drawable.button_background);
-        btnSetup.setText("Setting Up...");
-
-        startAnimation(v, btnSetup);
-
-        // Initiate Setup thread
-        mScanHandler.postDelayed(setupThread, 50);
+        // Send message to Start Setup sequence
+        mScanHandler.sendMessage(createMessage(CmdSETUP, null));
     };
 
     protected final View.OnClickListener resetBtnListener = v -> {
-
-        btnReset.setBackgroundResource(R.drawable.button_background);
-        btnReset.setText("Resetting...");
-
-        startAnimation(v, btnReset);
-
-        // Initiate Logging thread
-        mScanHandler.postDelayed(resetLoggerThread, 50);
+        // Send message to Start Reading sequence
+        mScanHandler.sendMessage(createMessage(CmdRESET, null));
     };
 
-    private List<String[]> values = null;
     private final View.OnClickListener readBtnListener = v -> {
-
-        btnRead.setBackgroundResource(R.drawable.button_background);
-        btnRead.setText("Read Logger...");
-
-        startAnimation(v, btnRead);
-
-        // Initiate Logging thread
-        mScanHandler.postDelayed(readValuesThread, 50);
+        // Send message to Start Resetting sequence
+        mScanHandler.sendMessage(createMessage(CmdReadData, null));
     };
+    private final List<String[]> values = null;
 
     public LoggerInitFruitDialogFragment() {
         // Empty constructor is required for DialogFragment
@@ -189,10 +102,6 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
             this.loggerEPC = getArguments().getString(LOGGER_EPC);
 
-            // get UhfReader instance
-            cmd = RFIDModuleFactory.getInstance();
-            cmd.setFilterEPC(this.loggerEPC);
-
             // Enable Read button
             btnRead.setText("Reading Measurements...");
             btnRead.setBackgroundResource(R.drawable.button_background);
@@ -211,13 +120,17 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     @Override
     public void onStart() {
         super.onStart();
+        // instantiate Reader Module
+        this.cmd = RFIDModuleFactory.getInstance();
+        if (!Strings.isEmptyOrWhitespace(this.loggerEPC)) {
+            cmd.setFilterEPC(this.loggerEPC);
+        }
 
         // Press First Button
-        mScanHandler.postDelayed(readValuesThread, 0);
+        mScanHandler.sendMessage(createMessage(CmdReadData, null));
     }
 
     private void startAnimation(View view, Button buttonID) {
-
         mCurrentLevel = 0;
 
         // Get a handle on the ClipDrawable that we will animate.
@@ -238,14 +151,17 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
     @Override
     public void onTimeUpdate(TimeAnimator animation, long totalTime, long deltaTime) {
-        getActivity().runOnUiThread(() -> {
-            mClipDrawable.setLevel(mCurrentLevel);
-            if (mCurrentLevel >= MAX_LEVEL) {
-                mAnimator.cancel();
-            } else {
-                mCurrentLevel = Math.min(MAX_LEVEL, mCurrentLevel + LEVEL_INCREMENT);
-            }
-        });
+        FragmentActivity mActivity = getActivity();
+        if(getActivity()!=null) {
+            getActivity().runOnUiThread(() -> {
+                mClipDrawable.setLevel(mCurrentLevel);
+                if (mCurrentLevel >= MAX_LEVEL) {
+                    mAnimator.cancel();
+                } else {
+                    mCurrentLevel = Math.min(MAX_LEVEL, mCurrentLevel + LEVEL_INCREMENT);
+                }
+            });
+        }
     }
 
     public void animateButton(View view) {
@@ -255,126 +171,20 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         }
     }
 
-
-    // ###################################################
-    private class CAENCommandsHandler extends Handler {
-        private final WeakReference<LoggerInitFruitDialogFragment> mActivity;
-
-        public CAENCommandsHandler(LoggerInitFruitDialogFragment activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            String value = null;
-            switch (msg.what) {
-                case ReadLastSample:
-                    value = msg.getData().getString("body");
-                    if (!Strings.isEmptyOrWhitespace(value)) {
-//                        tvLastSampleValue.setText(value);
-                    } else {
-//                        tvLastSampleValue.setText("ERR");
-                    }
-                    break;
-                case ReadInitTimeStamp:
-                    value = msg.getData().getString("body");
-//                    tvDateTime.setText(value);
-                    break;
-                case ShowProgressBar:
-//                    mActivity.get().getActivity().runOnUiThread(() -> progressBar.setVisibility(View.VISIBLE));
-                    break;
-                case HideProgressBar:
-//                    mActivity.get().getActivity().runOnUiThread(() -> progressBar.setVisibility(View.GONE));
-                    break;
-
-                case CmdReadData:
-                    LinkedList<String[]> measurements = (LinkedList<String[]>)msg.getData().getSerializable("body");
-                    if (measurements != null) {
-                        //btnRead.setText("Success");
-                        btnRead.setText(String.format("READ %s measurements.", measurements.size()));
-                        btnRead.setOnClickListener(null);
-
-                        if (measurements != null) {
-                            String initTime = msg.getData().getString("initTime");
-                            //displayMeasurementsDialog(measurements);
-                            recLoggerData.addDataSet(loggerEPC, System.currentTimeMillis() / 1000L, initTime, measurements);
-                        }
-
-                        btnReset.setOnClickListener(resetBtnListener);
-                        btnReset.callOnClick();
-                        //CToast(getActivity(), "Measurements:" + result3.size(), Toast.LENGTH_LONG);
-                    } else {
-                        btnRead.setText("Failed. Press the button again.");
-                    }
-                    break;
-
-                case CmdENABLE:
-                    //String.format("%.2f\u2103", lastTemperature);
-                    value = msg.getData().getString("body");
-                    if (Reader.READER_ERR.MT_OK_ERR.name().equals(value)) {
-                        btnInit.setText("Success");
-                        btnInit.setOnClickListener(null);
-                        stopAnimation();
-                        getDialog().dismiss();
-                    } else {
-                        btnInit.setText("Failed");
-                    }
-                    break;
-
-                case CmdRESET:
-                    String result = msg.getData().getString("body");
-                    if (Reader.READER_ERR.MT_OK_ERR.name().equals(result)) {
-                        btnReset.setText("Success");
-                        btnReset.setOnClickListener(null);
-
-                        stopAnimation();
-                        // enable setup button
-                        btnSetup.setOnClickListener(setupBtnListener);
-                        btnSetup.callOnClick();
-                    } else {
-                        btnReset.setText("Failed");
-                    }
-                    break;
-
-                case CmdSETUP:
-                    String result2 = msg.getData().getString("body");
-                    if (Reader.READER_ERR.MT_OK_ERR.name().equals(result2)) {
-                        btnSetup.setText("Success");
-                        btnSetup.setOnClickListener(null);
-
-                        stopAnimation();
-
-                        btnInit.setOnClickListener(initBtnListener);
-                        btnInit.callOnClick();
-                    } else {
-                        btnSetup.setText("Failed");
-                    }
-                    break;
-
-                case 1980:
-                    if (!IsDemo) {
-                        //CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
-                    }
-                    break;
-            }
-        }
-    }
-
-
     //--------------------------------------------
     private Message createMessage(int what, Object value) {
         Message msg = new Message();
         msg.what = what;
         Bundle b = new Bundle();
 
-        if (value!=null && value instanceof String)
-            b.putString("body", (String)value);
-        else if (value!=null && value instanceof Short)
-            b.putShort("body", (short)value);
-        else if (value!=null && value instanceof Reader.READER_ERR)
+        if (value != null && value instanceof String)
+            b.putString("body", (String) value);
+        else if (value != null && value instanceof Short)
+            b.putShort("body", (short) value);
+        else if (value != null && value instanceof Reader.READER_ERR)
             b.putString("body", ((Reader.READER_ERR) value).name());
-        else if (value!=null && value instanceof LinkedList)
-            b.putSerializable("body", (LinkedList)value);
+        else if (value != null && value instanceof LinkedList)
+            b.putSerializable("body", (LinkedList) value);
 
         msg.setData(b);
 
@@ -395,5 +205,164 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         dlgBuilder.setAdapter(arrayAdapter, null);
         dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
         dlgBuilder.create().show();
+    }
+
+    // ###################################################
+    private class CAENCommandsHandler extends Handler {
+        private final WeakReference<LoggerInitFruitDialogFragment> mActivity;
+
+        public CAENCommandsHandler(LoggerInitFruitDialogFragment activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+
+            switch (msg.what) {
+                case CmdReadData:
+                    //...setup Read Button............
+                    mActivity.get().getActivity().runOnUiThread(() -> {
+                        btnRead.setBackgroundResource(R.drawable.button_background);
+                        btnRead.setText("Read Logger...");
+                        startAnimation(getView(), btnRead);
+                    });
+                    //-----------------------------------------------------------------------------
+                    try {
+                        cmd.HighSensitivity();
+                        String initTime = cmd.ReadInitDatetime();
+                        Short samplesCnt = cmd.ReadSamplesCount();
+                        if (samplesCnt < 0) {
+                            mActivity.get().getActivity().runOnUiThread(() -> {
+                                btnRead.setText(String.format("Invalid measurements count."));
+                                stopAnimation();
+                            });
+                            return;
+                        } else if(samplesCnt == 0) {
+                            mActivity.get().getActivity().runOnUiThread(() -> {
+                                btnRead.setText(String.format("No measurements found."));
+                                btnRead.setOnClickListener(null);
+                                stopAnimation();
+                            });
+                            btnReset.setOnClickListener(resetBtnListener);
+                            btnReset.callOnClick();
+                            return;
+                        }
+
+                        List<String[]> measurements = cmd.ReadSamples(samplesCnt);
+                        if (measurements != null) {
+                            mActivity.get().getActivity().runOnUiThread(() -> {
+                                btnRead.setText(String.format("READ %s measurements.", measurements.size()));
+                                btnRead.setOnClickListener(null);
+                                stopAnimation();
+                            });
+
+                            if (measurements != null) {
+                                //displayMeasurementsDialog(measurements);
+                                recLoggerData.addDataSet(loggerEPC, System.currentTimeMillis() / 1000L, initTime, measurements);
+                            }
+                            btnReset.setOnClickListener(resetBtnListener);
+                            btnReset.callOnClick();
+                        } else {
+                            mActivity.get().getActivity().runOnUiThread(() -> {
+                                btnRead.setText("Failed. Press the button again.");
+                                stopAnimation();
+                            });
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case CmdRESET:
+                    //...setup Reset Button............
+                    mActivity.get().getActivity().runOnUiThread(() -> {
+                        btnReset.setBackgroundResource(R.drawable.button_background);
+                        btnReset.setText("Resetting...");
+                    });
+                    startAnimation(getView(), btnReset);
+                    //-----------------------------------------------------------------------------
+                    Reader.READER_ERR response = cmd.Reset();
+
+                    if (Reader.READER_ERR.MT_OK_ERR.equals(response)) {
+                        mActivity.get().getActivity().runOnUiThread(() -> {
+                            btnReset.setText("Reset:: Success");
+                            stopAnimation();
+                        });
+                        btnReset.setOnClickListener(null);
+                        // enable setup button
+                        btnSetup.setOnClickListener(setupBtnListener);
+                        btnSetup.callOnClick();
+                    } else {
+                        mActivity.get().getActivity().runOnUiThread(() -> {
+                            btnReset.setText("Reset:: Failed");
+                            stopAnimation();
+                        });
+                    }
+                    break;
+
+                case CmdSETUP:
+                    //...setup Setup Button............
+                    mActivity.get().getActivity().runOnUiThread(() -> {
+                        btnSetup.setBackgroundResource(R.drawable.button_background);
+                        btnSetup.setText("Setting Up...");
+                        startAnimation(getView(), btnSetup);
+                    });
+                    //-----------------------------------------------------------------------------
+                    // Initiate Setup (Zero time bin, default interval, current timestamp)
+                    Reader.READER_ERR resBinZero = cmd.WriteTimeBinZERO();
+                    Reader.READER_ERR resInterval = cmd.WriteInterval(DefaultInterval);
+                    Reader.READER_ERR resDateTime = cmd.WriteCurrentDatetime();
+
+                    if (Reader.READER_ERR.MT_OK_ERR.equals(resBinZero) && Reader.READER_ERR.MT_OK_ERR.equals(resInterval) && Reader.READER_ERR.MT_OK_ERR.equals(resDateTime)) {
+                        mActivity.get().getActivity().runOnUiThread(() -> {
+                            btnSetup.setText("Setup:: Success");
+                            btnSetup.setOnClickListener(null);
+                            stopAnimation();
+                        });
+                        btnInit.setOnClickListener(initBtnListener);
+                        btnInit.callOnClick();
+                    } else {
+                        mActivity.get().getActivity().runOnUiThread(() -> {
+                            btnSetup.setText("Setup:: Failed");
+                            stopAnimation();
+                        });
+                    }
+                    break;
+
+                case CmdENABLE:
+                    //...setup Init Button............
+                    mActivity.get().getActivity().runOnUiThread(() -> {
+                        btnInit.setBackgroundResource(R.drawable.button_background);
+                        btnInit.setText("Start Logger...");
+                        startAnimation(getView(), btnInit);
+                    });
+                    //-----------------------------------------------------------------------------
+                    // Initiate Logging
+                    Reader.READER_ERR resEnable = cmd.EnableLogging();
+                    Double lastMeasurement = cmd.ReadLastSample();
+
+                    //String.format("%.2f\u2103", lastTemperature);
+                    if (Reader.READER_ERR.MT_OK_ERR.equals(resEnable)) {
+                        mActivity.get().getActivity().runOnUiThread(() -> {
+                            btnInit.setText("Init:: Success");
+                            stopAnimation();
+                        });
+                        btnInit.setOnClickListener(null);
+                        getDialog().dismiss();
+                    } else {
+                        mActivity.get().getActivity().runOnUiThread(() -> {
+                            btnInit.setText("Init:: Failed");
+                            stopAnimation();
+                        });
+                    }
+                    break;
+
+                case 1980:
+                    if (!IsDemo) {
+                        //CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
 }

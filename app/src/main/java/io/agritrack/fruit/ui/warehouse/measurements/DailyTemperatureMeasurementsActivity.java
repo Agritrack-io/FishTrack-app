@@ -113,12 +113,6 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        super.onPause();
-    }
-
     protected void configFooter() {
         ImageView ivBack = findViewById(R.id.ivBackToFruitWhMenu);
         ivBack.setOnClickListener(view -> {

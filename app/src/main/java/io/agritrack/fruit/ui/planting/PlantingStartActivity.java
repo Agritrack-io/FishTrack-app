@@ -2,14 +2,15 @@ package io.agritrack.fruit.ui.planting;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.Constants.Greek_Locale;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,6 +31,9 @@ import java.lang.ref.WeakReference;
 import java.time.LocalDate;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -61,7 +65,6 @@ public class PlantingStartActivity extends AppCompatActivity {
     private String greenhouse, plantLot;
 
     @Override
-    @SuppressLint("NewApi")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planting_start);
@@ -79,10 +82,21 @@ public class PlantingStartActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-        LocalDate date = LocalDate.now();
-        TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
-        int weekNumber = date.get(woy);
-        plantLot = (String.format("%02d%s",weekNumber, date.getDayOfWeek().ordinal()+1));
+        // API < 26
+        int weekOfYearId = 0, dayOfWeekId = 0;
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            Calendar cal = new GregorianCalendar(Greek_Locale);
+            Date today = new Date();
+            cal.setTime(today);
+            weekOfYearId = cal.get(Calendar.WEEK_OF_YEAR);
+            dayOfWeekId = cal.get(Calendar.DAY_OF_WEEK);
+        } else {
+            LocalDate date = LocalDate.now();
+            TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
+            weekOfYearId = date.get(woy);
+            dayOfWeekId = date.getDayOfWeek().ordinal()+1;
+        }
+        plantLot = (String.format("%02d%s",weekOfYearId, dayOfWeekId));
 
         // load fish species and fill in the spFishType Spinner.
         List<Species> tomatoSpecies = db.speciesDAO().getAll();

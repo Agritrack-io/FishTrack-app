@@ -386,7 +386,6 @@ public class CAENLoggerActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         // instantiate Reader Module
         this.cmd = RFIDModuleFactory.getInstance();
     }
