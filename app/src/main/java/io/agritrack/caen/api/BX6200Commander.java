@@ -70,6 +70,9 @@ public class BX6200Commander extends AbstractCAENCommander  {
         //load command parameters in user memory
         boolean b = INTERFACEMEM.SetReadCommand(this.uhfReader, command, address, numBytes, accessPassword);
 
+        // wait for tag to set command
+        Thread.sleep(TIME_WAITTAG_CMDREADBASE);
+
         //trigger tag command reception+execution
         INTERFACEMEM.Trigger(this.uhfReader, accessPassword);
 
@@ -105,6 +108,9 @@ public class BX6200Commander extends AbstractCAENCommander  {
 
         // Fill the 5 Registers with the required command parameters.
         String outcome = INTERFACEMEM.SetWriteCommand(this.uhfReader, command, address, (short)size, msgID, data, accessPassword);
+
+        //wait for tag to write command
+        Thread.sleep(TIME_WAITTAG_CMDWRITE);
 
         //trigger tag command reception+execution
         INTERFACEMEM.Trigger(this.uhfReader, accessPassword);

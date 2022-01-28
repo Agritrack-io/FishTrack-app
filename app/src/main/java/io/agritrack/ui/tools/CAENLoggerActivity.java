@@ -1,7 +1,7 @@
 package io.agritrack.ui.tools;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdENABLE;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdINIT;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.HideProgressBar;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadCTRLReg;
@@ -299,7 +299,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
 
             // enable logger
             response = cmd.EnableLogging();
-            mScanHandler.sendMessage(createMessage(CmdENABLE, response));
+            mScanHandler.sendMessage(createMessage(CmdINIT, response));
 //            delay(300l);
             delay(2000l);
 
