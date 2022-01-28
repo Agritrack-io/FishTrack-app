@@ -258,7 +258,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
                             if (measurements != null) {
                                 //displayMeasurementsDialog(measurements);
-                                recLoggerData.addDataSet(loggerEPC, System.currentTimeMillis() / 1000L, initTime, measurements);
+                                recLoggerData.addDataSet(loggerEPC, System.currentTimeMillis() / 1000L, null, measurements);
                             }
                             btnReset.setOnClickListener(resetBtnListener);
                             btnReset.callOnClick();
