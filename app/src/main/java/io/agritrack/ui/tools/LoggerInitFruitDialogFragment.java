@@ -229,7 +229,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                     //-----------------------------------------------------------------------------
                     try {
                         cmd.HighSensitivity();
-                        String initTime = cmd.ReadInitDatetime();
+                        //String initTime = cmd.ReadInitDatetime();
                         Short samplesCnt = cmd.ReadSamplesCount();
                         if (samplesCnt < 0) {
                             mActivity.get().getActivity().runOnUiThread(() -> {
@@ -270,6 +270,8 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                    } finally {
+                        cmd.LowSensitivity();
                     }
                     break;
 
