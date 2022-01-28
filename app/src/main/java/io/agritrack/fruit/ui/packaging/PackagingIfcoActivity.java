@@ -264,6 +264,14 @@ public class PackagingIfcoActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent();
+        intent.setAction(ACTION_SCAN_INIT);
+        this.sendBroadcast(intent);
+    }
+
+    @Override
     protected void onResume() {
         if (scanService == null) {
             scanService = new BarcodeScanService(this);
