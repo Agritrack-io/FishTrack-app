@@ -311,9 +311,9 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                     // Initiate Setup (Zero time bin, default interval, current timestamp)
                     Reader.READER_ERR resBinZero = cmd.WriteTimeBinZERO();
                     Reader.READER_ERR resInterval = cmd.WriteInterval(DefaultInterval);
-                    Reader.READER_ERR resDateTime = cmd.WriteCurrentDatetime();
+                    //Reader.READER_ERR resDateTime = cmd.WriteCurrentDatetime();
 
-                    if (Reader.READER_ERR.MT_OK_ERR.equals(resBinZero) && Reader.READER_ERR.MT_OK_ERR.equals(resInterval) && Reader.READER_ERR.MT_OK_ERR.equals(resDateTime)) {
+                    if (Reader.READER_ERR.MT_OK_ERR.equals(resBinZero) && Reader.READER_ERR.MT_OK_ERR.equals(resInterval) /*&& Reader.READER_ERR.MT_OK_ERR.equals(resDateTime)*/) {
                         mActivity.get().getActivity().runOnUiThread(() -> {
                             btnSetup.setText("Setup:: Success");
                             btnSetup.setOnClickListener(null);
