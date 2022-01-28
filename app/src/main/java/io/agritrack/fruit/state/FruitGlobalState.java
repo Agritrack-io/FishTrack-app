@@ -225,6 +225,8 @@ public class FruitGlobalState {
             txPackage.paletteCnt = recPackaging.totalPackagedIfco;
             txPackage.packagingLot = recPackaging.packagingLot;
             txPackage.packagingSite = recPackaging.packagingSite;
+            txPackage.storageSite = recPackaging.warehouse;
+            txPackage.site = LocalPreferences.getCurrentSiteName();
             txPackage.user = LocalPreferences.getLoggedInUser("N/A");
             txPackage.longitude = recPackaging.longitude;
             txPackage.latitude = recPackaging.latitude;
@@ -271,6 +273,7 @@ public class FruitGlobalState {
             txReadyStorage.ifcoCnt = recStorage.totalIfcoCnt;
             txReadyStorage.packagingLot = recStorage.packagingLot;
             txReadyStorage.category = recStorage.category.name();
+            txReadyStorage.site = LocalPreferences.getCurrentSiteName();
             txReadyStorage.to = recStorage.warehouse;
             txReadyStorage.user = LocalPreferences.getLoggedInUser("N/A");
             txReadyStorage.longitude = recStorage.longitude;
@@ -305,6 +308,7 @@ public class FruitGlobalState {
             txShipping.driverName = recShipping.driverName;
             txShipping.driverPhone = recShipping.driverPhone;
             txShipping.truckLicensePlate = recShipping.licensePlate;
+            txShipping.site = LocalPreferences.getCurrentSiteName();
             txShipping.timestamp = System.currentTimeMillis();
             txShipping.user = LocalPreferences.getLoggedInUser("N/A");
             txShipping.customer = recShipping.customer;

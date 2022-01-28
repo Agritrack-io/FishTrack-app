@@ -16,6 +16,7 @@ public class PackageTxDTO {
     public String site;
     public String packaging_lot;
     public String packaging_site;
+    public String storage_site;
     public List<String> totes_for_process = new LinkedList<String>();
     public Integer totes_cnt;
     public List<String> palette_barcode = new LinkedList<String>();
@@ -33,6 +34,7 @@ public class PackageTxDTO {
             packageTxDTO.user = packageTx.user;
             packageTxDTO.packaging_lot = packageTx.packagingLot;
             packageTxDTO.packaging_site = packageTx.packagingSite;
+            packageTxDTO.storage_site = packageTx.storageSite;
             if (!CollectionUtils.isEmpty(packageTransaction.totes)){
                 packageTxDTO.totes_for_process = packageTransaction.totes.stream().map(x-> x.epc).collect(Collectors.toList());
             }

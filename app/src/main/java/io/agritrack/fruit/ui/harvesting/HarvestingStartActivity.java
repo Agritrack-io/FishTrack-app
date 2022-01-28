@@ -59,7 +59,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
     private final MutableLiveData<SpeciesDTO> enquiryResult = new MutableLiveData<>();
     private final MutableLiveData<LotDTO> enquiryLotResult = new MutableLiveData<>();
     private MobileDB db;
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivNext;
     private SupportDialog supportDialog;
     private TextView tvPoleName, tvHarvestLot, tvSpeciesNameLabel, tvSpeciesName;
     private Button btnScanPole;
@@ -80,6 +80,8 @@ public class HarvestingStartActivity extends AppCompatActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        ivNext.setEnabled(false);
 
         tvSpeciesNameLabel.setVisibility(View.INVISIBLE);
         tvSpeciesName.setVisibility(View.INVISIBLE);
@@ -105,23 +107,31 @@ public class HarvestingStartActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
-        enquiryResult.observe(this, response -> {
-            if (response == null) {
-                CToast(getApplicationContext(), render("No planting returned for this pole"), Toast.LENGTH_LONG);
-                return;
-            }
-            tvSpeciesNameLabel.setVisibility(View.VISIBLE);
-            tvSpeciesName.setVisibility(View.VISIBLE);
-            tvSpeciesName.setText(response.local_name);
-            speciesName = response.local_name;
-        });
-
         enquiryLotResult.observe(this, response -> {
             if (response == null) {
                 CToast(getApplicationContext(), render("No plant LOT returned for this greenhouse"), Toast.LENGTH_LONG);
                 return;
             }
             plantLot = response.lot;
+        });
+
+        enquiryResult.observe(this, response -> {
+            if (response == null) {
+                CToast(getApplicationContext(), render("No planting returned for this pole"), Toast.LENGTH_LONG);
+                return;
+            }
+            speciesName = response.local_name;
+            if (!Strings.isEmptyOrWhitespace(response.local_name)) {
+                speciesName = response.local_name;
+            }
+            if (Strings.isEmptyOrWhitespace(speciesName)) {
+                CToast(getApplicationContext(), render("No planting returned for this pole"), Toast.LENGTH_LONG);
+                return;
+            }
+            tvSpeciesNameLabel.setVisibility(View.VISIBLE);
+            tvSpeciesName.setVisibility(View.VISIBLE);
+            tvSpeciesName.setText(speciesName);
+            ivNext.setEnabled(true);
         });
 
         // create Footer
@@ -156,7 +166,6 @@ public class HarvestingStartActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToScanTotes);
         ivNext.setOnClickListener(view -> {
             updateState();
             String v = validate();
@@ -182,6 +191,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
         tvHarvestLot = findViewById(R.id.tvHarvestLot);
         tvSpeciesNameLabel = findViewById(R.id.tvSpeciesNameLabel);
         tvSpeciesName = findViewById(R.id.tvSpeciesName);
+        ivNext = findViewById(R.id.ivToScanTotes);
     }
 
     private void initControlsFromState() {
@@ -195,6 +205,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
             tvSpeciesNameLabel.setVisibility(View.VISIBLE);
             tvSpeciesName.setVisibility(View.VISIBLE);
             tvSpeciesName.setText(trns.speciesName);
+            ivNext.setEnabled(true);
         }
     }
 

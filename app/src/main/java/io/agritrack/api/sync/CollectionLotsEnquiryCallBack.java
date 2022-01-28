@@ -8,20 +8,20 @@ import io.agritrack.data.dto.LotDTO;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class CollectionLotEnquiryCallBack extends BaseEnquiryCallBack<LotDTO>{
+public class CollectionLotsEnquiryCallBack extends BaseEnquiryCallBack<List<LotDTO>>{
 
-    public CollectionLotEnquiryCallBack(MutableLiveData<LotDTO> syncResult) {
+    public CollectionLotsEnquiryCallBack(MutableLiveData<List<LotDTO>> syncResult) {
         super(syncResult);
     }
 
     @Override
-    public void onResponse(Call<LotDTO> call, Response<LotDTO> response) {
-        LotDTO collectionLot = response.body();
+    public void onResponse(Call<List<LotDTO>> call, Response<List<LotDTO>> response) {
+        List<LotDTO> collectionLots = response.body();
 
-        if (collectionLot != null) {
+        if (collectionLots != null) {
 
             // Harvest Requests sync succeeded.
-            syncResult.setValue(collectionLot);
+            syncResult.setValue(collectionLots);
         } else {
             // no Harvest Requests found
             syncResult.setValue(null);

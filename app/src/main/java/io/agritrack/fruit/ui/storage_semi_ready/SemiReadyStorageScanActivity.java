@@ -39,7 +39,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;

@@ -71,19 +71,6 @@ public class PackagingLotActivity extends AppCompatActivity {
             spPackagingSite.setAdapter(hrAdapter);
         }
 
-        LocalDateTime dateStart = LotToDate(recPackaging.collectionLot);
-
-        long minutesBetween = MINUTES.between(dateStart, LocalDateTime.now());
-        String hexMinutes = Long.toHexString(minutesBetween).toUpperCase();
-        //Decoding hex to minutes dec
-        //Long aa = new BigInteger(hexMinutes, 16).longValue();
-        packagingLot = String.format("%s%s",recPackaging.collectionLot, hexMinutes);
-        tvHarvestLot.setText(packagingLot);
-            /*//Decoding packaging lot to date time
-            LocalDateTime tt = LotToDate(packagingLot);
-            Long aa = new BigInteger(packagingLot.substring(3), 16).longValue();
-            LocalDateTime ttt = tt.plusMinutes(aa.intValue());*/
-
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
@@ -119,9 +106,9 @@ public class PackagingLotActivity extends AppCompatActivity {
     private void initControlsFromState() {
         PackagingRecord trns = recPackaging;
 
-        /*if (!Strings.isEmptyOrWhitespace(trns.packagingLot)) {
+        if (!Strings.isEmptyOrWhitespace(trns.packagingLot)) {
             tvHarvestLot.setText(trns.packagingLot);
-        }*/
+        }
 
         if (trns.sitePos > -1) {
             spPackagingSite.setSelection(trns.sitePos);

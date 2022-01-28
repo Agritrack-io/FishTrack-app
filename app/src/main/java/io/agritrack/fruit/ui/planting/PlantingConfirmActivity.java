@@ -51,6 +51,7 @@ import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.PlantRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
+import io.agritrack.fruit.ui.packaging.PackagingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
@@ -66,6 +67,7 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
 
     private ProgressDialog progressDialog;
     private TextView tvTomatoType, tvPole, tvGreenHouse, tvUsername;
+    private EditText etPIN;
     private YesNoDialogFragment confirmGPSSelectionDlg;
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
@@ -126,6 +128,10 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (TextUtils.isEmpty(etPIN.getText().toString())) {
+                    CToast(PlantingConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
+                    return;
+                }
                 if (mLastLocation != null) {
                     recPlant.longitude = mLastLocation.getLongitude();
                     recPlant.latitude = mLastLocation.getLatitude();
@@ -154,6 +160,7 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
         ivSupport = findViewById(R.id.ivSupport);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToStartSeeding);
+        etPIN = findViewById(R.id.etPasswordFishing);
     }
 
     private void initControlsFromState() {
@@ -170,7 +177,6 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
-        EditText etPIN = findViewById(R.id.etPasswordFishing);
         if (!TextUtils.isEmpty(etPIN.getText().toString())) {
             String login = LocalPreferences.getLoggedInUser("").trim();
             String pin = etPIN.getText().toString().trim();

@@ -1,10 +1,8 @@
 package io.agritrack.fruit.ui.packaging;
 
-import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.Constants.Greek_Locale;
 import static io.agritrack.common.FishTrackUtils.LotToDate;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recPackaging;
@@ -17,7 +15,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
@@ -43,24 +39,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
-import java.math.BigInteger;
-import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Period;
-import java.time.temporal.TemporalField;
-import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.api.sync.CollectionLotEnquiryCallBack;
+import io.agritrack.api.sync.CollectionLotsEnquiryCallBack;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.LotDTO;
@@ -84,11 +72,11 @@ public class PackagingStartActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
 
-    private final MutableLiveData<LotDTO> enquiryResult = new MutableLiveData<>();
+    private final MutableLiveData<List<LotDTO>> enquiryResult = new MutableLiveData<>();
     private ScanInventoryThread scanner_runnable;
     private Button btnScanPole, btnScanTotes;
     private MobileDB db;
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivNext;
     private SupportDialog supportDialog;
     private TextView tvPoleName;
     private TemplateRecyclerAdapter adapterTotes;
@@ -96,8 +84,7 @@ public class PackagingStartActivity extends AppCompatActivity {
     private TextView tvTotesCount;
     private ImageButton ivAddTote, ivDeleteTote;
     private String toteBarcode;
-    private String warehouse, firstToteRfid, collectionLot, packagingLot;
-    private Optional<String> optToteRfid;
+    private String warehouse, packagingLot;
     private ConstraintLayout selectedItem;
     private String selectedBarcode;
 
@@ -136,6 +123,8 @@ public class PackagingStartActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
+        ivNext.setEnabled(false);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTotesForPackage.setLayoutManager(layoutManager);
         rvTotesForPackage.setItemAnimator(new DefaultItemAnimator());
@@ -148,7 +137,28 @@ public class PackagingStartActivity extends AppCompatActivity {
                 CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
                 return;
             }
-            recPackaging.collectionLot = response.lot.substring(0,3);
+            if (response.size() == 1) {
+                String collectionLot = response.get(0).lot.substring(0, 3);
+                if (Strings.isEmptyOrWhitespace(collectionLot)) {
+                    CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
+                    return;
+                }
+                LocalDateTime dateStart = LotToDate(collectionLot);
+
+                long minutesBetween = MINUTES.between(dateStart, LocalDateTime.now());
+                String hexMinutes = Long.toHexString(minutesBetween).toUpperCase();
+                //Decoding hex to minutes dec
+                //Long aa = new BigInteger(hexMinutes, 16).longValue();
+                packagingLot = String.format("%s%s", collectionLot, hexMinutes);
+            /*//Decoding packaging lot to date time
+            LocalDateTime tt = LotToDate(packagingLot);
+            Long aa = new BigInteger(packagingLot.substring(3), 16).longValue();
+            LocalDateTime ttt = tt.plusMinutes(aa.intValue());*/
+                ivNext.setEnabled(true);
+            } else if (response.size() > 1){  //TODO:To be checked
+                CToast(getApplicationContext(), render("More than one harvest LOT returned for these totes"), Toast.LENGTH_LONG);
+                ivNext.setEnabled(true);
+            }
         });
 
         // set (any?) previously selected values to activity Controls.
@@ -228,7 +238,6 @@ public class PackagingStartActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToPackagingLot);
         ivNext.setOnClickListener(view -> {
             //Stop scanning since we navigate to next activity
             if (scanner_runnable != null) {
@@ -263,14 +272,14 @@ public class PackagingStartActivity extends AppCompatActivity {
         }
     }
 
-    private void invokeEnquiryLot() {
+    private void invokeEnquiryLot(List<String> toteRfids) {
         try {
             EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
             String token = LocalPreferences.getToken();
 
             // sync collection lot for current Site
-            Call<LotDTO> enquiryCollectionLotAsyncCall = enquiryService.getCollectionLotByToteRfid(firstToteRfid, "Bearer " + token);
-            enquiryCollectionLotAsyncCall.enqueue(new CollectionLotEnquiryCallBack(this.enquiryResult));
+            Call<List<LotDTO>> enquiryCollectionLotAsyncCall = enquiryService.getCollectionLotsByToteRfids(toteRfids, "Bearer " + token);
+            enquiryCollectionLotAsyncCall.enqueue(new CollectionLotsEnquiryCallBack(this.enquiryResult));
 
 
         } catch (Exception e) {
@@ -294,6 +303,10 @@ public class PackagingStartActivity extends AppCompatActivity {
             //TextView tvBinsCount = findViewById(R.id.tvBinsCount);
             tvTotesCount.setText(String.valueOf(trns.totesForPackaging.size()));
         }
+
+        if (trns.packagingLot != null && !Strings.isEmptyOrWhitespace(trns.packagingLot)){
+            ivNext.setEnabled(true);
+        }
     }
 
     private PackagingRecord updateState() {
@@ -305,9 +318,9 @@ public class PackagingStartActivity extends AppCompatActivity {
             packagingRecord.warehouse = this.warehouse;
         }
 
-        /*if (!Strings.isEmptyOrWhitespace(this.packagingLot)) {
+        if (!Strings.isEmptyOrWhitespace(this.packagingLot)) {
             packagingRecord.packagingLot = this.packagingLot;
-        }*/
+        }
 
         packagingRecord.totesForPackaging = new LinkedList<>(adapterTotes.getValues());
 
@@ -341,6 +354,7 @@ public class PackagingStartActivity extends AppCompatActivity {
         ivDeleteTote = findViewById(R.id.ivDeleteTote);
         ivAddTote = findViewById(R.id.ivAddTote);
         btnScanTotes = findViewById(R.id.btnScanTotes);
+        ivNext = findViewById(R.id.ivToPackagingLot);
     }
 
     private void showAddDialog() {
@@ -439,10 +453,9 @@ public class PackagingStartActivity extends AppCompatActivity {
                     break;
                 case 1980:
                     if (!IsDemo && adapterTotes.getValues() != null) {
-                        optToteRfid = adapterTotes.getValues().stream().findFirst();
-                        if (optToteRfid.isPresent()) {
-                            firstToteRfid = optToteRfid.get();
-                            invokeEnquiryLot();
+                        List<String> toteRfids = adapterTotes.getValues();
+                        if (toteRfids != null) {
+                            invokeEnquiryLot(toteRfids);
                         }
                     }
                     break;

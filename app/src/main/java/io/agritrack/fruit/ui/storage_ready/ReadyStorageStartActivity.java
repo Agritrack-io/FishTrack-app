@@ -70,7 +70,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivNext;
     private SupportDialog supportDialog;
     private TextView tvPoleName;
     private Button btnScanPole;
@@ -117,7 +117,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
         }
     };
 
-    private String ifcoBarcode;
+    private String ifcoBarcode, packagingLot;
     private ImageButton ivAddIfco, ivDeleteIfco;
     private Button btnScanIfco;
 
@@ -135,6 +135,8 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        ivNext.setEnabled(false);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvIfcoForStorage.setLayoutManager(layoutManager);
@@ -208,8 +210,13 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
                 return;
             }
             if (!Strings.isEmptyOrWhitespace(response.lot)) {
-                recStorage.packagingLot = response.lot;
+                packagingLot = response.lot;
             }
+            if (Strings.isEmptyOrWhitespace(packagingLot)) {
+                CToast(getApplicationContext(), render("No packaging LOT returned for this palette"), Toast.LENGTH_LONG);
+                return;
+            }
+            ivNext.setEnabled(true);
         });
 
         // create Footer
@@ -271,7 +278,6 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
     }*/
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
             scanService.stopScan();
             updateState();
@@ -305,6 +311,10 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
             tvPoleName.setText(trns.poleRFID);
         }
 
+        if (trns.packagingLot != null && !Strings.isEmptyOrWhitespace(trns.packagingLot)){
+            ivNext.setEnabled(true);
+        }
+
         warehouse = trns.warehouse;
     }
 
@@ -321,6 +331,10 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(this.warehouse)) {
             recStorage.warehouse = this.warehouse;
+        }
+
+        if (!Strings.isEmptyOrWhitespace(this.packagingLot)) {
+            storageRecord.packagingLot = this.packagingLot;
         }
 
         return storageRecord;
@@ -349,6 +363,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
         ivAddIfco = findViewById(R.id.ivAddIfco);
         btnScanIfco = findViewById(R.id.btnScanIfco);
         ivSupport = findViewById(R.id.ivSupport);
+        ivNext = findViewById(R.id.ivToConfirm);
     }
 
     @Override

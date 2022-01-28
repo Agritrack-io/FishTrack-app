@@ -43,4 +43,7 @@ public class PackageTransaction {
 
     @ColumnInfo(name = "packaging_site")
     public String packagingSite;
+
+    @ColumnInfo(name = "storage_site")
+    public String storageSite;
 }

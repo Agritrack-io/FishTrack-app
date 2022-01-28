@@ -54,7 +54,7 @@ public class PackagingIfcoActivity extends AppCompatActivity {
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
-
+    private final String ACTION_SCAN_INIT = "com.rfid.SCAN_INIT";
     private RecyclerView rvInventoryIfco;
     private TextView tvIfcoCount;
     private boolean scanning = false;

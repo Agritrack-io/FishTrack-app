@@ -44,13 +44,13 @@ public class YesNoDialogFragment extends DialogFragment {
         //mBuilder.setTitle(title);
         this.msg = (this.msg == null) ? getText(R.string.confirm_selection) : this.msg;
         mBuilder.setMessage(this.msg);
-        mBuilder.setPositiveButton("Yes", (dialog, which) -> {
+        mBuilder.setPositiveButton(R.string.yes, (dialog, which) -> {
             if (confirmationCmd != null) {
                 confirmationCmd.execute(args);
             }
         });
 
-        mBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        mBuilder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (dialog != null) {

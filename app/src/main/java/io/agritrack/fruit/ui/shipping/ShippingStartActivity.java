@@ -70,7 +70,7 @@ public class ShippingStartActivity extends AppCompatActivity {
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivNext;
     private SupportDialog supportDialog;
     private TextView tvPoleName;
     private Button btnScanPole;
@@ -118,7 +118,7 @@ public class ShippingStartActivity extends AppCompatActivity {
         }
     };
 
-    private String ifcoBarcode;
+    private String ifcoBarcode, packagingLot;
     private ImageButton ivAddIfco, ivDeleteIfco;
     private Button btnScanIfco;
 
@@ -136,6 +136,8 @@ public class ShippingStartActivity extends AppCompatActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        ivNext.setEnabled(false);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvIfcoForShipping.setLayoutManager(layoutManager);
@@ -219,8 +221,13 @@ public class ShippingStartActivity extends AppCompatActivity {
                 return;
             }
             if (!Strings.isEmptyOrWhitespace(response.lot)) {
-                recShipping.packagingLot = response.lot;
+                packagingLot = response.lot;
             }
+            if (Strings.isEmptyOrWhitespace(packagingLot)) {
+                CToast(getApplicationContext(), render("No packaging LOT returned for this palette"), Toast.LENGTH_LONG);
+                return;
+            }
+            ivNext.setEnabled(true);
         });
 
         // create Footer
@@ -282,7 +289,6 @@ public class ShippingStartActivity extends AppCompatActivity {
     }*/
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToShippingDetails);
         ivNext.setOnClickListener(view -> {
             scanService.stopScan();
             updateState();
@@ -316,6 +322,10 @@ public class ShippingStartActivity extends AppCompatActivity {
             tvPoleName.setText(trns.poleRFID);
         }
 
+        if (trns.packagingLot != null && !Strings.isEmptyOrWhitespace(trns.packagingLot)){
+            ivNext.setEnabled(true);
+        }
+
         warehouse = trns.warehouse;
     }
 
@@ -332,6 +342,10 @@ public class ShippingStartActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(this.warehouse)) {
             shippingRecord.warehouse = this.warehouse;
+        }
+
+        if (!Strings.isEmptyOrWhitespace(this.packagingLot)) {
+            shippingRecord.packagingLot = this.packagingLot;
         }
 
         return shippingRecord;
@@ -360,6 +374,7 @@ public class ShippingStartActivity extends AppCompatActivity {
         ivAddIfco = findViewById(R.id.ivAddIfco);
         btnScanIfco = findViewById(R.id.btnScanIfco);
         ivSupport = findViewById(R.id.ivSupport);
+        ivNext = findViewById(R.id.ivToShippingDetails);
     }
 
     @Override

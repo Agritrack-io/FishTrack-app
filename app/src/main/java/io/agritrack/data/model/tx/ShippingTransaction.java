@@ -22,6 +22,9 @@ public class ShippingTransaction {
     @ColumnInfo(name = "user_name")
     public String user;
 
+    @ColumnInfo(name = "site")
+    public String site;
+
     @ColumnInfo(name = "customer")
     public String customer;
 
@@ -39,4 +42,5 @@ public class ShippingTransaction {
 
     @ColumnInfo(name = "driver_phone")
     public String driverPhone;
+
 }

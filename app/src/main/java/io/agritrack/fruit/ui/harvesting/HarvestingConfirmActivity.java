@@ -48,7 +48,7 @@ public class HarvestingConfirmActivity extends LocationAwareActivity {
     private boolean proceedWithoutLocation = false;
     private ProgressDialog progressDialog;
     private TextView tvGreenHouse, tvPole, tvHarvestLot, tvNumberTotes, tvUsername;
-
+    private EditText etPIN;
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
 
@@ -107,6 +107,10 @@ public class HarvestingConfirmActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (TextUtils.isEmpty(etPIN.getText().toString())) {
+                    CToast(HarvestingConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
+                    return;
+                }
                 if (mLastLocation != null) {
                     recHarvest.longitude = mLastLocation.getLongitude();
                     recHarvest.latitude = mLastLocation.getLatitude();
@@ -136,6 +140,7 @@ public class HarvestingConfirmActivity extends LocationAwareActivity {
         ivSupport = findViewById(R.id.ivSupport);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToHarvestingTotes);
+        etPIN = findViewById(R.id.etPasswordFishing);
     }
 
     private void initControlsFromState() {
@@ -153,7 +158,6 @@ public class HarvestingConfirmActivity extends LocationAwareActivity {
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
-        EditText etPIN = findViewById(R.id.etPasswordFishing);
         if (!TextUtils.isEmpty(etPIN.getText().toString())) {
             String login = LocalPreferences.getLoggedInUser("").trim();
             String pin = etPIN.getText().toString().trim();

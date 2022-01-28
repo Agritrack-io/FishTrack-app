@@ -65,6 +65,7 @@ public class PackagingConfirmActivity extends LocationAwareActivity {
 
     private ProgressDialog progressDialog;
     private TextView tvPackagingLot, tvNumberIfco, tvUsername;
+    private EditText etPIN;
     private YesNoDialogFragment confirmGPSSelectionDlg;
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
@@ -125,6 +126,10 @@ public class PackagingConfirmActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (TextUtils.isEmpty(etPIN.getText().toString())) {
+                    CToast(PackagingConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
+                    return;
+                }
                 if (mLastLocation != null) {
                     recPackaging.longitude = mLastLocation.getLongitude();
                     recPackaging.latitude = mLastLocation.getLatitude();
@@ -152,6 +157,7 @@ public class PackagingConfirmActivity extends LocationAwareActivity {
         tvUsername = findViewById(R.id.tvUsername);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToPackagingIfco);
+        etPIN = findViewById(R.id.etPasswordFishing);
     }
 
     private void initControlsFromState() {
@@ -166,7 +172,6 @@ public class PackagingConfirmActivity extends LocationAwareActivity {
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
-        EditText etPIN = findViewById(R.id.etPasswordFishing);
         if (!TextUtils.isEmpty(etPIN.getText().toString())) {
             String login = LocalPreferences.getLoggedInUser("").trim();
             String pin = etPIN.getText().toString().trim();
