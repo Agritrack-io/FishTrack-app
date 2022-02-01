@@ -15,6 +15,7 @@ public class IfcoInventoryDTO {
     public String site;
     public String user;
     public List<String> ifco = new LinkedList<String>();
+    public Integer ifco_cnt;
     public Long created_at;
     public Double longitude;
     public Double latitude;
@@ -25,6 +26,7 @@ public class IfcoInventoryDTO {
             CoInventory coInventoryTx = inventory.coInventoryTx;
             ifcoInventoryDTO.inventory_type = coInventoryTx.coInvType;
             ifcoInventoryDTO.site = coInventoryTx.site;
+            ifcoInventoryDTO.ifco_cnt = coInventoryTx.ifcoCnt;
             ifcoInventoryDTO.user = coInventoryTx.user;
             if (!CollectionUtils.isEmpty(inventory.ifco)){
                 ifcoInventoryDTO.ifco = inventory.ifco.stream().map(x-> x.barcode).collect(Collectors.toList());

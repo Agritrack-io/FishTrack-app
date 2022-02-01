@@ -15,6 +15,7 @@ public class TotesInventoryDTO {
     public String user;
     public String site;
     public List<String> totes = new LinkedList<String>();
+    public Integer totes_cnt;
     public Long created_at;
     public Double longitude;
     public Double latitude;
@@ -25,6 +26,7 @@ public class TotesInventoryDTO {
             RFIDInventory rfidInventoryTx = inventory.rfidInventoryTx;
             inventoryDTO.inventory_type = rfidInventoryTx.rfidInvType;
             inventoryDTO.site = rfidInventoryTx.site;
+            inventoryDTO.totes_cnt = rfidInventoryTx.totesCnt;
             inventoryDTO.user = rfidInventoryTx.user;
             if (!CollectionUtils.isEmpty(inventory.totes)){
                 inventoryDTO.totes = inventory.totes.stream().map(x-> x.epc).collect(Collectors.toList());

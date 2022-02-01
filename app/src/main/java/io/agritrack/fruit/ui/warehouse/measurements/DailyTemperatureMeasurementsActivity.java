@@ -187,7 +187,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
                                 LoggerInitFruitDialogFragment loggerDlg = LoggerInitFruitDialogFragment.newInstance(logger.rfid);
                                 loggerDlg.show(fm, LoggerInitFruitDialogFragment.TAG);
                             } else if (!IsDemo) {
-                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
+                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this Pole!!"), Toast.LENGTH_SHORT);
                             }
                         }
                     } catch (Exception e) {
@@ -209,10 +209,10 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
             List<MeasurementsDTO> rs = response.body();
 
             if (rs != null || IsDemo) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_processing_tx_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_temperatures_tx_update_failure), Toast.LENGTH_LONG));
             }
         }
 

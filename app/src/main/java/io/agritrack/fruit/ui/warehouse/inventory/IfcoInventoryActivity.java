@@ -308,6 +308,9 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
         if (adapterIfco != null) {
             FruitGlobalState.recInventory.ifcoItems = adapterIfco.getValues();
         }
+        if (tvIfcoCount.getText() != null && !Strings.isEmptyOrWhitespace(tvIfcoCount.getText().toString())) {
+            recInventory.totalIfco = Integer.valueOf(tvIfcoCount.getText().toString());
+        }
         String v = validate();
         if (!Strings.isEmptyOrWhitespace(v)) {
             CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
@@ -380,7 +383,7 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
             IfcoInventoryDTO rs = response.body();
 
             if (rs != null || IsDemo) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Inventory update failure!!!"), Toast.LENGTH_LONG));

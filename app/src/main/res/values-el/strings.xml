@@ -322,6 +322,7 @@
     <string name="error_transport_tx_update_failure">Η μεταφορά απέτυχε να συγχρονιστεί!!!</string>
     <string name="error_shipping_tx_update_failure">Η μεταφορά απέτυχε να συγχρονιστεί!!!</string>
     <string name="error_processing_tx_update_failure">Η παραλαβή απέτυχε να συγχρονιστεί!!!</string>
+    <string name="error_temperatures_tx_update_failure">Οι θερμοκρασίες απέτυχαν να συγχρονιστούν!!!</string>
     <string name="no_epc_filter_selected">Παρακαλώ είσαγετε την ετικέτα την οποία αναζητάτε...</string>
     <string name="scan_asset_tag">Σκαναρε πάγιο</string>
     <string name="button_correlate">Συσχέτισε</string>

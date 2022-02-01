@@ -28,6 +28,9 @@ public class CoInventory {
     @ColumnInfo(name = "latitude")
     public Double latitude;
 
+    @ColumnInfo(name = "ifco_cnt")
+    public Integer ifcoCnt;
+
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", foreignKey = @ForeignKey(name="FK_Inventory_User"))
     public User user;

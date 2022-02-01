@@ -43,4 +43,6 @@ public class ShippingTransaction {
     @ColumnInfo(name = "driver_phone")
     public String driverPhone;
 
+    @ColumnInfo(name = "storage_site")
+    public String storageSite;
 }

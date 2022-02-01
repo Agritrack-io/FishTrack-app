@@ -12,7 +12,9 @@ public class InventoryRecord {
     public String selectedSite = null;
     public String subSite;
     public List<String> totesItems;
+    public Integer totalTotes;
     public List<String> ifcoItems;
+    public Integer totalIfco;
     public String site;
 
     public Double longitude;

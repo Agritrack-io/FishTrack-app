@@ -322,6 +322,9 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         if (adapterTotes != null) {
             recInventory.totesItems = adapterTotes.getValues();
         }
+        if (tvTotesCount.getText() != null && !Strings.isEmptyOrWhitespace(tvTotesCount.getText().toString())) {
+            recInventory.totalTotes = Integer.valueOf(tvTotesCount.getText().toString());
+        }
         String v = validate();
         if (!Strings.isEmptyOrWhitespace(v)) {
             CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
@@ -357,7 +360,7 @@ public class TotesInventoryActivity extends LocationAwareActivity {
             TotesInventoryDTO rs = response.body();
 
             if (rs != null || IsDemo) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Inventory update failure!!!"), Toast.LENGTH_LONG));

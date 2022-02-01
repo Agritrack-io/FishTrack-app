@@ -309,6 +309,7 @@ public class FruitGlobalState {
             txShipping.driverPhone = recShipping.driverPhone;
             txShipping.truckLicensePlate = recShipping.licensePlate;
             txShipping.site = LocalPreferences.getCurrentSiteName();
+            txShipping.storageSite = recPackaging.warehouse;
             txShipping.timestamp = System.currentTimeMillis();
             txShipping.user = LocalPreferences.getLoggedInUser("N/A");
             txShipping.customer = recShipping.customer;
@@ -342,6 +343,7 @@ public class FruitGlobalState {
         try {
             RFIDInventory txWHRFIDInventory = new RFIDInventory();
             txWHRFIDInventory.site = recInventory.subSite;
+            txWHRFIDInventory.totesCnt = recInventory.totalTotes;
             txWHRFIDInventory.user = LocalPreferences.getLoggedInUser("N/A");
             txWHRFIDInventory.performedAt = System.currentTimeMillis();
             txWHRFIDInventory.longitude = recInventory.longitude;
@@ -372,6 +374,7 @@ public class FruitGlobalState {
         try {
             CoInventory txWHCoInventory = new CoInventory();
             txWHCoInventory.site = recInventory.subSite;
+            txWHCoInventory.ifcoCnt = recInventory.totalIfco;
             txWHCoInventory.user = LocalPreferences.getLoggedInUser("N/A");
             txWHCoInventory.performedAt = System.currentTimeMillis();
             txWHCoInventory.longitude = recInventory.longitude;
