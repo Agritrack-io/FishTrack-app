@@ -51,6 +51,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -95,6 +96,9 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
+
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
 
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
@@ -191,19 +195,21 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
     @Override
     protected void onStop() {
-        super.onStop();
         stopScanner();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
+        stopScanner();
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
+
+        super.onDestroy();
     }
 
     private void clearSelectedItem() {
@@ -305,17 +311,19 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
             scanner_runnable.startReading();
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             scanButton.setText(R.string.stop_scan);
+            mScanHandler.postDelayed(scanner_runnable, 0);
         } else if (!scanner_runnable.isReading()) {
             scanner_runnable.setFilter(activeFilter);
             scanner_runnable.startReading();
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             scanButton.setText(R.string.stop_scan);
+            mScanHandler.postDelayed(scanner_runnable, 0);
         } else {
             scanner_runnable.stopReading();
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
             scanButton.setText(R.string.scan_assets);
+            mScanHandler.removeCallbacks(scanner_runnable);
         }
-        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     @Override
@@ -395,7 +403,8 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
     private void stopScanner() {
         if(this.scanner_runnable !=null) {
             this.scanner_runnable.stopReading();
-            mScanHandler.removeCallbacks(this.scanner_runnable);
+            mScanHandler.removeCallbacks(null);
+            //mScanHandler.removeCallbacks(this.scanner_runnable);
         }
     }
 

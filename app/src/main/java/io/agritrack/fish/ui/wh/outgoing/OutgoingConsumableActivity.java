@@ -1,18 +1,18 @@
 package io.agritrack.fish.ui.wh.outgoing;
 
-import android.Manifest;
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recWHOutgoing;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -20,11 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,14 +36,12 @@ import java.util.List;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.barcode.BarcodeScanService;
-import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.ConsumableTxDTO;
 import io.agritrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
 import io.agritrack.enums.ConsumableType;
@@ -55,6 +49,7 @@ import io.agritrack.enums.WarehouseTxState;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.fish.ui.WhMenuActivity;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -63,13 +58,6 @@ import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recTransport;
-import static io.agritrack.fish.state.GlobalState.recWHOutgoing;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class OutgoingConsumableActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
 

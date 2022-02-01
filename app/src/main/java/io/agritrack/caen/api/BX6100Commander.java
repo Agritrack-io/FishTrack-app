@@ -248,10 +248,9 @@ public class BX6100Commander extends AbstractCAENCommander {
 
     @Override
     public List<RFIDTag> inventoryRealTime() {
-        this.mUhfRManager.setCancleInventoryFilter();
-        //this.mUhfRManager.setGen2session(false);
-        //List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryRealTime();
-        List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryByTimer((short) 250);//  tagInventoryRealTime();
+        //this.mUhfRManager.setCancleInventoryFilter();
+        List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryRealTime();
+        //List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryByTimer((short) 250);//  tagInventoryRealTime();
         return inventory.stream().map(x -> new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
     }
 
@@ -279,10 +278,11 @@ public class BX6100Commander extends AbstractCAENCommander {
         if (this.mUhfRManager == null) {
             this.mUhfRManager = UHFRManager.getInstance();
         }
-        //this.mUhfRManager.setGen2session(true);
-        //Reader.READER_ERR result = this.mUhfRManager.asyncStartReading();
+        this.mUhfRManager.setCancleInventoryFilter();
+        this.mUhfRManager.setGen2session(true);
+        Reader.READER_ERR result = this.mUhfRManager.asyncStartReading();
 
-        return false;// Reader.READER_ERR.MT_OK_ERR.equals(res);
+        return Reader.READER_ERR.MT_OK_ERR.equals(result);  //false;
     }
 
 

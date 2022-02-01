@@ -36,7 +36,7 @@ import java.util.List;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.barcode.BarcodeScanService;
-import io.agritrack.barcode.SoundUtil;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;

@@ -1,5 +1,7 @@
 package io.agritrack.rfid;
 
+import static io.agritrack.sound.SoundUtil.Beep;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +14,7 @@ import java.util.stream.Stream;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;
+import io.agritrack.sound.SoundUtil;
 
 public class ScanInventoryThread implements Runnable {
     private final Handler mScanHandler;
@@ -35,6 +38,7 @@ public class ScanInventoryThread implements Runnable {
     }
 
     public void stopReading() {
+        uhfReader.StopReading();
         this.scanInProgress = false;
         this.RFID_FILTER = null;
     }
@@ -48,6 +52,7 @@ public class ScanInventoryThread implements Runnable {
         ArrayList<CharSequence> epcValues = new ArrayList<>();
         if (uhfReader != null && this.scanInProgress) {
             try {
+                SoundUtil.play(Beep, 1, 1f);
                 final List<RFIDTag> tagList = uhfReader.inventoryRealTime();
                 if (tagList != null && !tagList.isEmpty()) {
                     Stream<RFIDTag> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || (f.getEpc().indexOf(this.RFID_FILTER) == 11));
