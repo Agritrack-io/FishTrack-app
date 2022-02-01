@@ -6,12 +6,6 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fruit.state.FruitGlobalState.recIncoming;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -30,6 +24,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.barcode.BarcodeScanService;
-import io.agritrack.barcode.SoundUtil;
 import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.ConsumableTxDTO;
@@ -50,6 +49,7 @@ import io.agritrack.enums.ConsumableType;
 import io.agritrack.enums.WarehouseTxState;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.api.TransactionApi;

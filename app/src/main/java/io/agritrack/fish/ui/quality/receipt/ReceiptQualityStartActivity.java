@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.agritrack.R;
-import io.agritrack.barcode.SoundUtil;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.IotLogger;

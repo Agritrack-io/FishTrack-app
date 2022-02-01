@@ -43,6 +43,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -94,6 +95,9 @@ public class TransportBinsActivity extends AppCompatActivity {
 
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
+
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderTransportBins);
@@ -189,9 +193,9 @@ public class TransportBinsActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if(keyReceiver != null)
             unregisterReceiver(keyReceiver);
+        super.onDestroy();
     }
 
     protected void onClick(View view) {
@@ -201,17 +205,19 @@ public class TransportBinsActivity extends AppCompatActivity {
             scanner_runnable.setFilter(Filters.RFID_BIN);
             scanner_runnable.startReading();
             scanButton.setText(R.string.stop_scan);
+            mScanHandler.postDelayed(scanner_runnable, 0);
         } else if (!scanner_runnable.isReading()) {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             scanner_runnable.setFilter(Filters.RFID_BIN);
             scanner_runnable.startReading();
             scanButton.setText(R.string.stop_scan);
+            mScanHandler.postDelayed(scanner_runnable, 0);
         } else {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
             scanner_runnable.stopReading();
             scanButton.setText(R.string.scan_bin);
+            mScanHandler.removeCallbacks(scanner_runnable);
         }
-        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     protected void configFooter() {
@@ -296,7 +302,8 @@ public class TransportBinsActivity extends AppCompatActivity {
     private void stopScanner() {
         if(this.scanner_runnable !=null) {
             this.scanner_runnable.stopReading();
-            mScanHandler.removeCallbacks(this.scanner_runnable);
+            mScanHandler.removeCallbacks(null);
+            //mScanHandler.removeCallbacks(this.scanner_runnable);
         }
     }
 
