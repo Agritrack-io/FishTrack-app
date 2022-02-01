@@ -53,6 +53,7 @@ import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.api.TransactionApi;
@@ -114,6 +115,9 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderTotesInventory);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
 
         // get  references of the controls
         assignCtrlVars();
@@ -209,20 +213,20 @@ public class TotesInventoryActivity extends LocationAwareActivity {
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        stopScanner();
+        //unregister the receiver
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        super.onDestroy();
-    }
+        //unregister the receiver
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
 
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        super.onPause();
+        super.onDestroy();
     }
 
     private void clearSelectedItem() {
@@ -403,6 +407,15 @@ public class TotesInventoryActivity extends LocationAwareActivity {
             scanButton.setText(R.string.scan_totes);
         }
         mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private void stopScanner() {
+        if(this.scanner_runnable !=null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(null);
+            //mScanHandler.removeCallbacks(this.scanner_runnable);
+        }
     }
 
     // ###################################################

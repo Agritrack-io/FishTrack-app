@@ -136,8 +136,6 @@ public class ShippingStartActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        ivNext.setEnabled(false);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvIfcoForShipping.setLayoutManager(layoutManager);
         rvIfcoForShipping.setItemAnimator(new DefaultItemAnimator());
@@ -217,16 +215,17 @@ public class ShippingStartActivity extends AppCompatActivity {
         enquiryResult.observe(this, response -> {
             if (response == null) {
                 CToast(getApplicationContext(), render("No packaging LOT returned for this palette"), Toast.LENGTH_LONG);
+                ivNext.setVisibility(View.VISIBLE);
                 return;
             }
             if (!Strings.isEmptyOrWhitespace(response.lot)) {
                 packagingLot = response.lot;
             }
             if (Strings.isEmptyOrWhitespace(packagingLot)) {
-                CToast(getApplicationContext(), render("No packaging LOT returned for this palette"), Toast.LENGTH_LONG);
+                //CToast(getApplicationContext(), render("No packaging LOT returned for this palette"), Toast.LENGTH_LONG);
                 return;
             }
-            ivNext.setEnabled(true);
+            ivNext.setVisibility(View.VISIBLE);
         });
 
         // create Footer
@@ -322,7 +321,7 @@ public class ShippingStartActivity extends AppCompatActivity {
         }
 
         if (trns.packagingLot != null && !Strings.isEmptyOrWhitespace(trns.packagingLot)){
-            ivNext.setEnabled(true);
+            ivNext.setVisibility(View.VISIBLE);
         }
 
         warehouse = trns.warehouse;

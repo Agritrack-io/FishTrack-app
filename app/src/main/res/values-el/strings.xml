@@ -464,4 +464,8 @@
     <string name="food">ΤΡΟΦΗ</string>
     <string name="vaccine">ΕΜΒΟΛΙΟ</string>
     <string name="antibiotic">ΑΝΤΙΒΙΟΤΙΚΑ</string>
+    <string name="ok">OK</string>
+    <string name="lot_restriction">Λανθασμένο LOT</string>
+    <string name="lot_restriction_message">Περισσότερα του ενός LOT βρέθηκαν για τα τελάρα που σκανάρατε. Παρακαλώ πηγαίντε πίσω και σκανάρετε τελάρα από ένα LOT.</string>
+    <string name="invalid_inputs">Μη έγκυρα δεδομένα :</string>
 </resources>

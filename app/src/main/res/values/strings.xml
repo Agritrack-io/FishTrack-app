@@ -463,4 +463,8 @@
     <string name="food">FOOD</string>
     <string name="vaccine">VACCINE</string>
     <string name="antibiotic">ANTIBIOTIC</string>
+    <string name="ok">OK</string>
+    <string name="lot_restriction">Wrong LOT</string>
+    <string name="lot_restriction_message">More than one harvest LOT returned for these totes. Please go back and select totes of a single LOT.</string>
+    <string name="invalid_inputs">Invalid inputs :</string>
 </resources>

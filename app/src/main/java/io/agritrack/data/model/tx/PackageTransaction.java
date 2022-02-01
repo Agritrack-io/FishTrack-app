@@ -26,6 +26,9 @@ public class PackageTransaction {
     @ColumnInfo(name = "packaging_lot")
     public String packagingLot;
 
+    @ColumnInfo(name = "collection_lot")
+    public String collectionLot;
+
     @ColumnInfo(name = "totes_cnt")
     public Integer totesCnt;
 

@@ -22,6 +22,7 @@ public class ShippingTxDTO {
     public String driver_phone;
     public String user;
     public String site;
+    public String storage_site;
     public List<String> palette_barcode = new LinkedList<String>();
     public Integer palette_cnt;
     public String customer;
@@ -39,6 +40,7 @@ public class ShippingTxDTO {
             shippingTxDto.driver_phone = shippingTx.driverPhone;
             shippingTxDto.user = shippingTx.user;
             shippingTxDto.site = shippingTx.site;
+            shippingTxDto.storage_site = shippingTx.storageSite;
             shippingTxDto.palette_cnt = shippingTx.ifcoCnt;
             if (!CollectionUtils.isEmpty(shipping.ifco)){
                 shippingTxDto.palette_barcode = shipping.ifco.stream().map(x-> x.barcode).collect(Collectors.toList());
