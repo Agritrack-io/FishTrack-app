@@ -158,23 +158,23 @@ public class ReceiptQualityMoreInfoActivity extends AppCompatActivity implements
         QualityRecord qualityRecord = GlobalState.recQuality;
 
         if (etRigorMortis.getText() != null && !Strings.isEmptyOrWhitespace(etRigorMortis.getText().toString())) {
-            qualityRecord.rigorMortis = Double.valueOf(etRigorMortis.getText().toString());
+            qualityRecord.rigorMortis = Integer.valueOf(etRigorMortis.getText().toString());
         }
 
         if (etEliminationFood.getText() != null && !Strings.isEmptyOrWhitespace(etEliminationFood.getText().toString())) {
-            qualityRecord.eliminationFood = Double.valueOf(etEliminationFood.getText().toString());
+            qualityRecord.eliminationFood = Integer.valueOf(etEliminationFood.getText().toString());
         }
 
         if (etEliminationSperm.getText() != null && !Strings.isEmptyOrWhitespace(etEliminationSperm.getText().toString())) {
-            qualityRecord.eliminationSperm = Double.valueOf(etEliminationSperm.getText().toString());
+            qualityRecord.eliminationSperm = Integer.valueOf(etEliminationSperm.getText().toString());
         }
 
         if (etParasites.getText() != null && !Strings.isEmptyOrWhitespace(etParasites.getText().toString())) {
-            qualityRecord.parasites = Double.valueOf(etParasites.getText().toString());
+            qualityRecord.parasites = Integer.valueOf(etParasites.getText().toString());
         }
 
         if (etPeeling.getText() != null && !Strings.isEmptyOrWhitespace(etPeeling.getText().toString())) {
-            qualityRecord.peeling = Double.valueOf(etPeeling.getText().toString());
+            qualityRecord.peeling = Integer.valueOf(etPeeling.getText().toString());
         }
 
         qualityRecord.binCondition = selectedBinCondition;

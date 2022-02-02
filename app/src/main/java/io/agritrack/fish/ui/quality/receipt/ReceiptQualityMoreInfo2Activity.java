@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -72,60 +74,114 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
         });
     }
 
+    private InputFilter filter = new InputFilter() {
+        final int maxDigitsBeforeDecimalPoint=3;
+        final int maxDigitsAfterDecimalPoint=2;
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end,
+                                   Spanned dest, int dstart, int dend) {
+            StringBuilder builder = new StringBuilder(dest);
+            builder.replace(dstart, dend, source
+                    .subSequence(start, end).toString());
+            if (!builder.toString().matches(
+                    "(([1-9]{1})([0-9]{0,"+(maxDigitsBeforeDecimalPoint-1)+"})?)?(\\.[0-9]{0,"+maxDigitsAfterDecimalPoint+"})?"
+
+            )) {
+                if(source.length()==0)
+                    return dest.subSequence(dstart, dend);
+                return "";
+            }
+
+            return null;
+
+        }
+    };
+
     private void assignCtrlVars() {
         tgSmellCondition = findViewById(R.id.tgSmellCondition);
         tgSmellCondition.setOnCheckedChangeListener(this);
         etShiny = findViewById(R.id.etShiny);
+        etShiny.setFilters(new InputFilter[] { filter });
         etBlurred = findViewById(R.id.etBlurred);
+        etBlurred.setFilters(new InputFilter[] { filter });
         etHealed = findViewById(R.id.etHealed);
+        etHealed.setFilters(new InputFilter[] { filter });
         etBlind = findViewById(R.id.etBlind);
+        etBlind.setFilters(new InputFilter[] { filter });
         etCoherent = findViewById(R.id.etCoherent);
+        etCoherent.setFilters(new InputFilter[] { filter });
         etSoft = findViewById(R.id.etSoft);
+        etSoft.setFilters(new InputFilter[] { filter });
         etSwollen = findViewById(R.id.etSwollen);
+        etSwollen.setFilters(new InputFilter[] { filter });
         ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {
         QualityRecord qualityRecord = GlobalState.recQuality;
 
-        /*if (!Strings.isEmptyOrWhitespace(prcTx.remarks)) {
-            mtvRemarks.setText(prcTx.remarks);
+        if ("FRESH-METALLIC".equalsIgnoreCase(qualityRecord.smellCondition)) {
+            tgSmellCondition.check(R.id.tbFreshSmell);
+        } else if ("NO SMELL".equalsIgnoreCase(qualityRecord.smellCondition)) {
+            tgSmellCondition.check(R.id.tbNoSmell);
+        } else if ("LIGHT BAD".equalsIgnoreCase(qualityRecord.smellCondition)) {
+            tgSmellCondition.check(R.id.tbLightBadSmell);
+        } else if ("HEAVY BAD".equalsIgnoreCase(qualityRecord.smellCondition)) {
+            tgSmellCondition.check(R.id.tbHeavyBadSmell);
         }
-
-        if (!Strings.isEmptyOrWhitespace(prcTx.photoPath)) {
-            ivTakenPhoto.setVisibility(View.VISIBLE);
-        }*/
+        if (qualityRecord.shiny != null) {
+            etShiny.setText(String.valueOf(qualityRecord.shiny));
+        }
+        if (qualityRecord.blurred != null) {
+            etBlurred.setText(String.valueOf(qualityRecord.blurred));
+        }
+        if (qualityRecord.healed != null) {
+            etHealed.setText(String.valueOf(qualityRecord.healed));
+        }
+        if (qualityRecord.blindEyes != null) {
+            etBlind.setText(String.valueOf(qualityRecord.blindEyes));
+        }
+        if (qualityRecord.coherent != null) {
+            etCoherent.setText(String.valueOf(qualityRecord.coherent));
+        }
+        if (qualityRecord.soft != null) {
+            etSoft.setText(String.valueOf(qualityRecord.soft));
+        }
+        if (qualityRecord.swollen != null) {
+            etSwollen.setText(String.valueOf(qualityRecord.swollen));
+        }
     }
 
     private QualityRecord updateState() {
         QualityRecord qualityRecord = GlobalState.recQuality;
 
         if (etShiny.getText() != null && !Strings.isEmptyOrWhitespace(etShiny.getText().toString())) {
-            qualityRecord.shiny = Double.valueOf(etShiny.getText().toString());
+            qualityRecord.shiny = Integer.valueOf(etShiny.getText().toString());
         }
 
         if (etBlurred.getText() != null && !Strings.isEmptyOrWhitespace(etBlurred.getText().toString())) {
-            qualityRecord.blurred = Double.valueOf(etBlurred.getText().toString());
+            qualityRecord.blurred = Integer.valueOf(etBlurred.getText().toString());
         }
 
         if (etHealed.getText() != null && !Strings.isEmptyOrWhitespace(etHealed.getText().toString())) {
-            qualityRecord.healed = Double.valueOf(etHealed.getText().toString());
+            qualityRecord.healed = Integer.valueOf(etHealed.getText().toString());
         }
 
         if (etBlind.getText() != null && !Strings.isEmptyOrWhitespace(etBlind.getText().toString())) {
-            qualityRecord.blindEyes = Double.valueOf(etBlind.getText().toString());
+            qualityRecord.blindEyes = Integer.valueOf(etBlind.getText().toString());
         }
 
         if (etCoherent.getText() != null && !Strings.isEmptyOrWhitespace(etCoherent.getText().toString())) {
-            qualityRecord.coherent = Double.valueOf(etCoherent.getText().toString());
+            qualityRecord.coherent = Integer.valueOf(etCoherent.getText().toString());
         }
 
         if (etSoft.getText() != null && !Strings.isEmptyOrWhitespace(etSoft.getText().toString())) {
-            qualityRecord.soft = Double.valueOf(etSoft.getText().toString());
+            qualityRecord.soft = Integer.valueOf(etSoft.getText().toString());
         }
 
         if (etSwollen.getText() != null && !Strings.isEmptyOrWhitespace(etSwollen.getText().toString())) {
-            qualityRecord.swollen = Double.valueOf(etSwollen.getText().toString());
+            qualityRecord.swollen = Integer.valueOf(etSwollen.getText().toString());
         }
 
         qualityRecord.smellCondition = selectedSmellCondition;
