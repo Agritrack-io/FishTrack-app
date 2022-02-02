@@ -219,9 +219,8 @@ public class CAENLoggerActivity extends AppCompatActivity {
     final Runnable resetThread = new Runnable() {
         @Override
         public void run() {
+            // High sensitivity and STOP LOGGING!!!!
             cmd.HighSensitivity();
-
-            Reader.READER_ERR resDisable = cmd.DisableLogging();
             delay(500l);
 
             // reset logger
@@ -236,7 +235,6 @@ public class CAENLoggerActivity extends AppCompatActivity {
             Short samplesCnt = cmd.ReadSamplesCount();
             mScanHandler.sendMessage(createMessage(ReadSamplesCnt, samplesCnt));
 
-            cmd.LowSensitivity();
             mScanHandler.removeCallbacks(this);
         }
     };
@@ -297,13 +295,10 @@ public class CAENLoggerActivity extends AppCompatActivity {
     final Runnable enableLoggingThread = new Runnable() {
         @Override
         public void run() {
-            cmd.HighSensitivity();
-
             // -------------------------------------
             // set time Bin to 0, (disable timestamps)
             Reader.READER_ERR response = cmd.WriteTimeBinZERO();
             mScanHandler.sendMessage(createMessage(WriteTimeBINZero, response));
-//            delay(100l);
 
             // set time Bin to 0, (disable timestamps)
             short samplingInterval = DefaultInterval;
@@ -312,31 +307,20 @@ public class CAENLoggerActivity extends AppCompatActivity {
             }
             response = cmd.WriteInterval(samplingInterval);
             mScanHandler.sendMessage(createMessage(WriteInterval, response));
-//            delay(100l);
 
             // set Init time stamp
             response = cmd.WriteCurrentDatetime();
             mScanHandler.sendMessage(createMessage(WriteTimeStamp, response));
-//            delay(100l);
 
             // enable logger
             response = cmd.EnableLogging();
             mScanHandler.sendMessage(createMessage(CmdINIT, response));
-//            delay(300l);
             delay(2000l);
-
-            // read Samples count
-            Short samplesCnt = cmd.ReadSamplesCount();
-            delay(50l);
-            mScanHandler.sendMessage(createMessage(ReadSamplesCnt, samplesCnt));
 
             // read Last Sample value
             Double lastSample = cmd.ReadLastSample();
             delay(50l);
             mScanHandler.sendMessage(createMessage(ReadLastSample, String.valueOf(lastSample)));
-
-            // revert to low sensitivity
-            cmd.LowSensitivity();
 
             mScanHandler.removeCallbacks(this);
         }

@@ -107,7 +107,7 @@ public class BX6200Commander extends AbstractCAENCommander  {
         command = (short) (msgID << 8 | CMD_WRITE);
 
         // Fill the 5 Registers with the required command parameters.
-        String outcome = INTERFACEMEM.SetWriteCommand(this.uhfReader, command, address, (short)size, msgID, data, accessPassword);
+        String cmdValue = INTERFACEMEM.SetWriteCommand(this.uhfReader, command, address, (short)size, msgID, data, accessPassword);
 
         //wait for tag to write command
         Thread.sleep(TIME_WAITTAG_CMDWRITE);
