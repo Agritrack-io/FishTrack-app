@@ -55,7 +55,7 @@ public interface SyncApi {
     Call<List<EmployeeDTO>> getEmployeesBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/suppliers/{siteId}")
+    @GET("/supplier/{siteId}")
     Call<List<SupplierDTO>> getSuppliersBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
