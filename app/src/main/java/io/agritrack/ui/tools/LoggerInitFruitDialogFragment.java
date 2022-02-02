@@ -180,6 +180,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
             // disable Logging...
             Reader.READER_ERR resDisable = cmd.DisableLogging();
+            delay(200l);
 
             // reset logger
             short cntSamples = cmd.ReadSamplesCount();
