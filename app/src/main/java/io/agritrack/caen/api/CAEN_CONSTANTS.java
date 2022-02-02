@@ -31,8 +31,8 @@ public class CAEN_CONSTANTS {
     public final static byte REPLY_ACK = (byte) 0xAC;
     public final static byte REPLY_NACK = (byte) 0xFC;
 
-    public final static int TIME_WAITTAG_CMDWRITE = 200;
-    public final static int TIME_WAITTAG_CMDREADBASE = 200;
+    public final static int TIME_WAITTAG_CMDWRITE = 100;
+    public final static int TIME_WAITTAG_CMDREADBASE = 100;
     public final static int TIME_WAITTAG_WRITEPAGE = 50;
 
     public final static short SHORT_ZERO = (short) 0x0000;
@@ -66,4 +66,5 @@ public class CAEN_CONSTANTS {
     public final static int CmdReadData = 10015;
     public final static int CmdSETUP = 10016;
     public final static int CmdDisableLogging = 10017;
+    public final static int CmdReadSamplesCnt = 10018;
 }

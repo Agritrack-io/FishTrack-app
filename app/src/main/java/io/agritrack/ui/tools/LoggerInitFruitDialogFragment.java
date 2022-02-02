@@ -4,6 +4,7 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdINIT;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdReadData;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdReadSamplesCnt;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdSETUP;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteInterval;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBINZero;
@@ -53,6 +54,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     private String loggerEPC;
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0;
+    private Short cntSamples = 0;
     private ClipDrawable mClipDrawable;
 
     //##############################################################
@@ -170,11 +172,59 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         // -------------------------------------
     };
     // =============================================================
+    final Runnable readSamplesCntThread = new Runnable() {
+        @Override
+        public void run() {
+            //...Increase to MAX Sensitivity............
+            cmd.HighSensitivity();
 
+            // disable Logging...
+            Reader.READER_ERR resDisable = cmd.DisableLogging();
+            delay(200l);
+
+            // reset logger
+            short cntSamples = cmd.ReadSamplesCount();
+            delay(200l);
+            mScanHandler.sendMessage(createMessage(CmdReadSamplesCnt, cntSamples));
+
+            // remove any pending message
+            mScanHandler.removeCallbacks(this);
+        }
+    };
+
+    final Runnable readThread = new Runnable() {
+        @Override
+        public void run() {
+            // reset logger
+            Reader.READER_ERR response = cmd.Reset();
+            delay(2500l);
+            mScanHandler.sendMessage(createMessage(CmdReadData, response));
+
+            // remove any pending message
+            mScanHandler.removeCallbacks(this);
+        }
+    };
     // -------------------------------------------------------------
     private final View.OnClickListener readBtnListener = v -> {
+        FragmentActivity mActivity = getActivity();
+
+        //...setup Read Button............
+        mActivity.runOnUiThread(() -> {
+            btnRead.setBackgroundResource(R.drawable.button_background);
+            btnRead.setText("Read Logger...");
+            startAnimation(getView(), btnRead);
+        });
+
+        // -------------------------------------
+        cmd.setFilterEPC(loggerEPC);
+        mScanHandler.post(readSamplesCntThread);
+        // -------------------------------------
+
+        mScanHandler.postDelayed(readThread, 150l);
+        //-----------------------------------------------------------------------------
+
         // Send message to Start Resetting sequence
-        mScanHandler.sendMessage(createMessage(CmdReadData, null));
+//        mScanHandler.sendMessage(createMessage(CmdReadData, null));
     };
     //##############################################################
 
@@ -230,7 +280,8 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         this.cmd = RFIDModuleFactory.getInstance();
 
         // Press First Button
-        mScanHandler.sendMessage(createMessage(CmdReadData, null));
+        btnRead.callOnClick();
+        //mScanHandler.sendMessage(createMessage(CmdReadData, null));
     }
 
     private void startAnimation(View view, Button buttonID) {
@@ -323,39 +374,9 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
             switch (msg.what) {
                 case CmdReadData:
-                    //...setup Read Button............
-                    mActivity.get().getActivity().runOnUiThread(() -> {
-                        btnRead.setBackgroundResource(R.drawable.button_background);
-                        btnRead.setText("Read Logger...");
-                        startAnimation(getView(), btnRead);
-                    });
                     //-----------------------------------------------------------------------------
                     try {
-                        cmd.setFilterEPC(loggerEPC);
-                        cmd.HighSensitivity();
-                        Reader.READER_ERR resDisable = cmd.DisableLogging();
-                        cmd.Wait(400);
-
-                        //String initTime = cmd.ReadInitDatetime();
-                        Short samplesCnt = cmd.ReadSamplesCount();
-                        if (samplesCnt == null || samplesCnt < 0) {
-                            mActivity.get().getActivity().runOnUiThread(() -> {
-                                btnRead.setText(String.format("Invalid measurements count."));
-                                stopAnimation();
-                            });
-                            return;
-                        } else if(samplesCnt == 0) {
-                            mActivity.get().getActivity().runOnUiThread(() -> {
-                                btnRead.setText(String.format("No measurements found."));
-                                btnRead.setOnClickListener(null);
-                                stopAnimation();
-                            });
-                            btnReset.setOnClickListener(resetBtnListener);
-                            btnReset.callOnClick();
-                            return;
-                        }
-
-                        List<String[]> measurements = cmd.ReadSamples(samplesCnt);
+                        List<String[]> measurements = cmd.ReadSamples(cntSamples);
                         if (measurements != null) {
                             mActivity.get().getActivity().runOnUiThread(() -> {
                                 btnRead.setText(String.format("READ %s measurements.", measurements.size()));
@@ -381,6 +402,27 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                     }
                     break;
 
+                case CmdReadSamplesCnt:
+                    //String initTime = cmd.ReadInitDatetime();
+                    cntSamples = msg.getData().getShort("body");
+                    if (cntSamples == null || cntSamples < 0) {
+                        mActivity.get().getActivity().runOnUiThread(() -> {
+                            btnRead.setText(String.format("Invalid measurements count."));
+                            stopAnimation();
+                        });
+                        return;
+                    } else if(cntSamples == 0) {
+                        mActivity.get().getActivity().runOnUiThread(() -> {
+                            btnRead.setText(String.format("No measurements found."));
+                            btnRead.setOnClickListener(null);
+                            stopAnimation();
+                        });
+                        btnReset.setOnClickListener(resetBtnListener);
+                        btnReset.callOnClick();
+                        return;
+                    }
+                    break;
+
                 case CmdRESET:
                     String resReset = msg.getData().getString("body");
                     try {
@@ -391,9 +433,14 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                                 stopAnimation();
                             });
                             btnReset.setOnClickListener(null);
+
                             // enable setup button
-                            btnSetup.setOnClickListener(setupBtnListener);
-                            btnSetup.callOnClick();
+                            //btnSetup.setOnClickListener(setupBtnListener);
+                            //btnSetup.callOnClick();
+
+                            // enable setup button
+                            btnReset.setOnClickListener(null);
+                            getDialog().dismiss();
                         } else {
                             mActivity.get().getActivity().runOnUiThread(() -> {
                                 btnReset.setText("Reset:: Failed");
