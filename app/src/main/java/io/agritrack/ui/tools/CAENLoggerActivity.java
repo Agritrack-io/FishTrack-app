@@ -1,6 +1,7 @@
 package io.agritrack.ui.tools;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdDisableLogging;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdINIT;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.HideProgressBar;
@@ -58,7 +59,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
 
     private TextView tvFWRevision, tvHWRevision, tvTimeBIN, tvDateTime, tvLastSampleValue, tvCurrentEPC, tvMemory, tvBattery;
     private EditText etInterval;
-    private Button btnRead, btnReset, btnInit, btnSamplesCnt, btnControlReg, btnScanEPC;
+    private Button btnRead, btnReset, btnInit, btnSamplesCnt, btnControlReg, btnScanEPC, btnDisableLogging;
     private ProgressBar progressBar;
     private SimpleDateFormat dtParser = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
 
@@ -148,6 +149,21 @@ public class CAENLoggerActivity extends AppCompatActivity {
         }
     };
 
+    final Runnable disableLoggingThread = new Runnable() {
+        @Override
+        public void run() {
+            Reader.READER_ERR response = cmd.DisableLogging();
+            mScanHandler.sendMessage(createMessage(CmdDisableLogging, response));
+            delay(500l);
+
+            String resCTRL = cmd.ReadControlRegister();
+            mScanHandler.sendMessage(createMessage(ReadCTRLReg, resCTRL));
+
+            mScanHandler.removeCallbacks(this);
+        }
+    };
+
+
     final Runnable readThread = new Runnable() {
         @Override
         public void run() {
@@ -174,7 +190,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
             // HWRevision
             response = cmd.ReadHWRevision();
             mScanHandler.sendMessage(createMessage(ReadHWRevision, response));
-            delay(50l);
+            delay(150l);
 
             // CTRLRegister
             response = cmd.ReadControlRegister();
@@ -205,10 +221,16 @@ public class CAENLoggerActivity extends AppCompatActivity {
         public void run() {
             cmd.HighSensitivity();
 
+            Reader.READER_ERR resDisable = cmd.DisableLogging();
+            delay(500l);
+
             // reset logger
             Reader.READER_ERR response = cmd.Reset();
             mScanHandler.sendMessage(createMessage(CmdRESET, response));
-            delay(2000l);
+            delay(3000l);
+
+            String resCTRL = cmd.ReadControlRegister();
+            mScanHandler.sendMessage(createMessage(ReadCTRLReg, resCTRL));
 
             // read Samples count
             Short samplesCnt = cmd.ReadSamplesCount();
@@ -334,6 +356,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         // -------------------------------------
         btnReset.setEnabled(true);
         btnInit.setEnabled(true);
+        btnDisableLogging.setEnabled(true);
         singleShot_runnable.HighEnergy();
         // -------------------------------------
         // Hide ProgressBar
@@ -383,6 +406,22 @@ public class CAENLoggerActivity extends AppCompatActivity {
         mScanHandler.postDelayed(hideProgressThread, 800l);
     };
 
+    protected final View.OnClickListener btnDisableLoggingListener = v -> {
+        // Show ProgressBar
+        mScanHandler.post(showProgressThread);
+        // -------------------------------------
+        clearControls();
+        // -------------------------------------
+        if (!Strings.isEmptyOrWhitespace(loggerEpc)) {
+            cmd.setFilterEPC(loggerEpc);
+            mScanHandler.postDelayed(disableLoggingThread, 100l);
+        }
+        // -------------------------------------
+        // Hide ProgressBar
+        mScanHandler.postDelayed(hideProgressThread, 800l);
+    };
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -409,6 +448,8 @@ public class CAENLoggerActivity extends AppCompatActivity {
         btnReset.setOnClickListener(btnResetListener);
 
         btnInit.setOnClickListener(btnInitListener);
+
+        btnDisableLogging.setOnClickListener(btnDisableLoggingListener);
 
         btnControlReg.setOnClickListener(view -> {
             if (this.cmd != null) {
@@ -441,6 +482,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         btnReset = findViewById(R.id.btnReset);
         btnInit = findViewById(R.id.btnInit);
         btnScanEPC = findViewById(R.id.btnScanEPC);
+        btnDisableLogging = findViewById(R.id.btnDisableLogging);
         tvFWRevision = findViewById(R.id.tvFWRevision);
         tvHWRevision = findViewById(R.id.tvHWRevision);
         tvTimeBIN = findViewById(R.id.tvTimeBIN);
@@ -640,6 +682,12 @@ public class CAENLoggerActivity extends AppCompatActivity {
                     String result = msg.getData().getString("body");
                     if(!"MT_OK_ERR".equalsIgnoreCase(result)) {
                         CToast(getApplicationContext(), "Reset Failed!\n", Toast.LENGTH_SHORT);
+                    }
+                    break;
+                case CmdDisableLogging:
+                    String resDisableLogging = msg.getData().getString("body");
+                    if(!"MT_OK_ERR".equalsIgnoreCase(resDisableLogging)) {
+                        CToast(getApplicationContext(), "Failed to stop Logging!\n", Toast.LENGTH_SHORT);
                     }
                     break;
 

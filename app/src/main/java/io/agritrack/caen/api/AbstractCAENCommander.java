@@ -55,6 +55,8 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
 
     abstract public List<RFIDTag> inventoryRealTime();
 
+    abstract public List<RFIDTag> inventoryByTimer();
+
     abstract public List<RFIDTag> searchInventory();
 
     abstract public boolean startReading();
@@ -240,7 +242,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     //##################################################
     @Override
     public void Wait(long ms) {
-        try {Thread.sleep(ms);} catch (InterruptedException e) { }
+        try { Thread.sleep(ms);} catch (InterruptedException e) { }
     }
 
     /* This function returns in one step, the LastSampleMeasurement and the Samples Count */
@@ -266,7 +268,9 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     public String ReadControlRegister() {
         try {
             byte[] ctrlRS = ReadRegisters(ADDR_CONTROL, SHORT_ONE);
-            return String.format("%5s", Integer.toBinaryString(ToShort(ctrlRS))).replace(' ', '0');
+            String hexRS = Tools.Bytes2HexString(ctrlRS, ctrlRS.length);
+            //if(!"0004".equalsIgnoreCase(hexRS))
+                return String.format("%5s", Integer.toBinaryString(ToShort(ctrlRS))).replace(' ', '0');
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -320,8 +324,10 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     @Override
     public String ReadInitDatetime() {
         try {
-            byte[] aa = ReadRegisters(ADDR_INIT_DATE_L, SHORT_TWO);
-            return parseTimestamp(new byte[]{aa[2], aa[3], aa[0], aa[1]});
+            byte[] rs = ReadRegisters(ADDR_INIT_DATE_L, SHORT_TWO);
+            if (rs.length == 4) {
+                return parseTimestamp(new byte[]{rs[2], rs[3], rs[0], rs[1]});
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

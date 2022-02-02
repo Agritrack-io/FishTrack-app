@@ -44,8 +44,12 @@ public class EncodingUtils {
     public static short ToShort(byte[] bytes) {
         if(bytes.length>2) {
             bytes = Arrays.copyOf(bytes,2);
+            return ByteBuffer.wrap(bytes).getShort();
+        } else if (bytes.length==1) {
+            return bytes[0];
+        } else {
+            return ByteBuffer.wrap(bytes).getShort();
         }
-        return ByteBuffer.wrap(bytes).getShort();
     }
 
     /**

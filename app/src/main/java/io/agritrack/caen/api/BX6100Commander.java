@@ -247,8 +247,13 @@ public class BX6100Commander extends AbstractCAENCommander {
     }
 
     @Override
+    public List<RFIDTag> inventoryByTimer() {
+        List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryByTimer((short) 250);
+        return inventory.stream().map(x -> new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
+    }
+
+    @Override
     public List<RFIDTag> inventoryRealTime() {
-        //this.mUhfRManager.setCancleInventoryFilter();
         List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryRealTime();
         //List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryByTimer((short) 250);//  tagInventoryRealTime();
         return inventory.stream().map(x -> new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());

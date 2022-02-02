@@ -124,12 +124,13 @@ public interface ICAEN_API {
 
     List<RFIDTag> inventoryRealTime();
 
+    List<RFIDTag> inventoryByTimer();
+
     List<RFIDTag> inventoryWithFilter();
 
     List<RFIDTag> searchInventory();
 
     boolean startReading();
-
 
     boolean startSearching();
 
