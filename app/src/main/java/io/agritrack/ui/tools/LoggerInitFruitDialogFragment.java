@@ -61,15 +61,10 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     final Runnable initLoggingThread = new Runnable() {
         @Override
         public void run() {
-            //...Increase to MAX Sensitivity............
-            cmd.HighSensitivity();
             // enable logger
             Reader.READER_ERR response = cmd.EnableLogging();
             // Send message to Enable Logging
             mScanHandler.sendMessage(createMessage(CmdINIT, response));
-            delay(2000l);
-            // revert to LOW sensitivity
-            cmd.LowSensitivity();
             // remove any pending message
             mScanHandler.removeCallbacks(this);
         }
@@ -91,9 +86,6 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     final Runnable setupLoggerThread = new Runnable() {
         @Override
         public void run() {
-            //...Increase to MAX Sensitivity............
-            cmd.HighSensitivity();
-
             // set time Bin to 0, (disable timestamps)
             Reader.READER_ERR resZeroBin = cmd.WriteTimeBinZERO();
             delay(100l);
@@ -114,9 +106,6 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
             // Send message to Start Setup sequence
             mScanHandler.sendMessage(createMessage(CmdSETUP, outcome));
-
-            // revert to LOW sensitivity
-            cmd.LowSensitivity();
 
             // remove any pending message
             mScanHandler.removeCallbacks(this);
@@ -141,16 +130,10 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     final Runnable resetThread = new Runnable() {
         @Override
         public void run() {
-            //...Increase to MAX Sensitivity............
-            cmd.HighSensitivity();
-
             // reset logger
             Reader.READER_ERR response = cmd.Reset();
             delay(2500l);
             mScanHandler.sendMessage(createMessage(CmdRESET, response));
-
-            // revert to LOW sensitivity
-            cmd.LowSensitivity();
 
             // remove any pending message
             mScanHandler.removeCallbacks(this);
@@ -175,16 +158,11 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     final Runnable readSamplesCntThread = new Runnable() {
         @Override
         public void run() {
-            //...Increase to MAX Sensitivity............
-            cmd.HighSensitivity();
-
-            // disable Logging...
-            Reader.READER_ERR resDisable = cmd.DisableLogging();
-            delay(200l);
+            // disable Logging by setting sensitivity to HIGH...
+            Reader.READER_ERR resDisable = cmd.HighSensitivity(); //cmd.DisableLogging();
 
             // reset logger
             short cntSamples = cmd.ReadSamplesCount();
-            delay(200l);
             mScanHandler.sendMessage(createMessage(CmdReadSamplesCnt, cntSamples));
 
             // remove any pending message
@@ -197,7 +175,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         public void run() {
             // reset logger
             Reader.READER_ERR response = cmd.Reset();
-            delay(2500l);
+            //delay(2500l);
             mScanHandler.sendMessage(createMessage(CmdReadData, response));
 
             // remove any pending message
@@ -377,7 +355,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                     //-----------------------------------------------------------------------------
                     try {
                         List<String[]> measurements = cmd.ReadSamples(cntSamples);
-                        if (measurements != null) {
+                        if (measurements != null && cntSamples > 0) {
                             mActivity.get().getActivity().runOnUiThread(() -> {
                                 btnRead.setText(String.format("READ %s measurements.", measurements.size()));
                                 btnRead.setOnClickListener(null);
@@ -389,12 +367,17 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                                 //displayMeasurementsDialog(measurements);
                                 recLoggerData.addDataSet(loggerEPC, now, null, measurements);
                             }
+                            btnReset.setVisibility(View.VISIBLE);
                             btnReset.setOnClickListener(resetBtnListener);
                             btnReset.callOnClick();
                         } else {
                             mActivity.get().getActivity().runOnUiThread(() -> {
                                 btnRead.setText("Failed. Press the button again.");
                                 stopAnimation();
+                                btnInit.setOnClickListener(initBtnListener);
+                                btnInit.setVisibility(View.VISIBLE);
+                                btnInit.setEnabled(true);
+                                btnInit.setText("Start Logging.");
                             });
                         }
                     } catch (Exception e) {
@@ -410,16 +393,11 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                             btnRead.setText(String.format("Invalid measurements count."));
                             stopAnimation();
                         });
-                        return;
                     } else if(cntSamples == 0) {
                         mActivity.get().getActivity().runOnUiThread(() -> {
                             btnRead.setText(String.format("No measurements found."));
-                            btnRead.setOnClickListener(null);
                             stopAnimation();
                         });
-                        btnReset.setOnClickListener(resetBtnListener);
-                        btnReset.callOnClick();
-                        return;
                     }
                     break;
 
@@ -432,15 +410,16 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                                 btnReset.setText("Reset:: Success");
                                 stopAnimation();
                             });
+                            // diable Reset Button
                             btnReset.setOnClickListener(null);
 
                             // enable setup button
-                            //btnSetup.setOnClickListener(setupBtnListener);
-                            //btnSetup.callOnClick();
+                            btnInit.setVisibility(View.VISIBLE);
+                            btnInit.setOnClickListener(initBtnListener);
+                            btnInit.callOnClick();
 
-                            // enable setup button
-                            btnReset.setOnClickListener(null);
-                            getDialog().dismiss();
+                            // close popup
+                            //getDialog().dismiss();
                         } else {
                             mActivity.get().getActivity().runOnUiThread(() -> {
                                 btnReset.setText("Reset:: Failed");

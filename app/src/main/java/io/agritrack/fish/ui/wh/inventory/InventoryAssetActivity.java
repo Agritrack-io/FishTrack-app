@@ -87,6 +87,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
     private ProgressDialog progressDialog;
 
     private ImageView ivSupport;
+    private TextView tvGroupsCnt;
     private SupportDialog supportDialog;
 
     @Override
@@ -119,6 +120,9 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(InventoryAssetActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        // display groups counter
+        tvGroupsCnt.setVisibility(View.VISIBLE);
 
         xvInventoryItems.setOnGroupClickListener((parent, v, groupPosition, id) -> {
             clearSelectedItem();
@@ -225,6 +229,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         ivSupport = findViewById(R.id.ivSupport);
         tgChooseAssetType.setOnCheckedChangeListener(this);
         scanButton = findViewById(R.id.btnScanAsset);
+        tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
     }
 
     protected void configFooter() {
@@ -428,6 +433,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
                         adapterInventoryItems.appendItems(values);
                     }
                     adapterInventoryItems.notifyDataSetChanged();
+                    tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
                     break;
                 case 1980:
                     if (!IsDemo) {
