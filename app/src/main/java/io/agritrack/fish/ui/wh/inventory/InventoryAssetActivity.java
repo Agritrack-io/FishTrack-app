@@ -199,7 +199,6 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
-        stopScanner();
         super.onStop();
     }
 

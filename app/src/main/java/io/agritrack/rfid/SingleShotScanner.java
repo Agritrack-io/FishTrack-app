@@ -39,7 +39,7 @@ public class SingleShotScanner implements Runnable {
         if(uhfReader == null) {
             uhfReader = RFIDModuleFactory.getInstance();
         }
-        return uhfReader.startReading();
+        return true;// uhfReader.startReading();
     }
 
     public void stopReading() {
@@ -57,7 +57,7 @@ public class SingleShotScanner implements Runnable {
         while (true) {
             idx++;
             if (uhfReader != null) {
-                final List<RFIDTag> tagList = uhfReader.inventoryRealTime();
+                final List<RFIDTag> tagList = uhfReader.inventoryByTimer(); //inventoryRealTime();
                 if (tagList != null && !tagList.isEmpty()) {
                     Stream<RFIDTag> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || f.getEpc().indexOf(this.RFID_FILTER) == 11);
                     Optional<RFIDTag> tag = filteredStream.sorted((y, x) -> Integer.compare(x.getRssi(), y.getRssi())).findFirst();

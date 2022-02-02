@@ -333,6 +333,9 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                     try {
                         cmd.setFilterEPC(loggerEPC);
                         cmd.HighSensitivity();
+                        Reader.READER_ERR resDisable = cmd.DisableLogging();
+                        cmd.Wait(400);
+
                         //String initTime = cmd.ReadInitDatetime();
                         Short samplesCnt = cmd.ReadSamplesCount();
                         if (samplesCnt == null || samplesCnt < 0) {

@@ -205,6 +205,11 @@ public class BX6200Commander extends AbstractCAENCommander  {
     }
 
     @Override
+    public List<RFIDTag> inventoryByTimer() {
+        return inventoryRealTime();
+    }
+
+    @Override
     public List<RFIDTag> searchInventory() {
         return inventoryRealTime();
     }
