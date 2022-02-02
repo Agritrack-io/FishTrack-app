@@ -2,6 +2,7 @@ package io.agritrack.fish.ui.quality.receipt;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +12,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -128,9 +131,34 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         });
     }
 
+    private InputFilter filter = new InputFilter() {
+        final int maxDigitsBeforeDecimalPoint=2;
+        final int maxDigitsAfterDecimalPoint=2;
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end,
+                                   Spanned dest, int dstart, int dend) {
+            StringBuilder builder = new StringBuilder(dest);
+            builder.replace(dstart, dend, source
+                    .subSequence(start, end).toString());
+            if (!builder.toString().matches(
+                    "(([1-9]{1})([0-9]{0,"+(maxDigitsBeforeDecimalPoint-1)+"})?)?(\\.[0-9]{0,"+maxDigitsAfterDecimalPoint+"})?"
+
+            )) {
+                if(source.length()==0)
+                    return dest.subSequence(dstart, dend);
+                return "";
+            }
+
+            return null;
+
+        }
+    };
+
     private void assignCtrlVars() {
         etPlot = findViewById(R.id.etPlot);
         etFishTemp = findViewById(R.id.etFishTemp);
+        etFishTemp.setFilters(new InputFilter[] { filter });
         mtvRemarks = findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
@@ -147,6 +175,14 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(qltTx.photoPath)) {
             ivTakenPhoto.setVisibility(View.VISIBLE);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(qltTx.pLot)) {
+            etPlot.setText(qltTx.pLot);
+        }
+
+        if (qltTx.fishTemp != null) {
+            etFishTemp.setText(String.valueOf(qltTx.fishTemp));
         }
     }
 

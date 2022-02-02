@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
+import io.agritrack.common.Constants;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
@@ -74,30 +77,81 @@ public class ReceiptQualityMoreInfoActivity extends AppCompatActivity implements
         });
     }
 
-    private void assignCtrlVars() {
+    private InputFilter filter = new InputFilter() {
+        final int maxDigitsBeforeDecimalPoint=3;
+        final int maxDigitsAfterDecimalPoint=2;
 
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end,
+                                   Spanned dest, int dstart, int dend) {
+            StringBuilder builder = new StringBuilder(dest);
+            builder.replace(dstart, dend, source
+                    .subSequence(start, end).toString());
+            if (!builder.toString().matches(
+                    "(([1-9]{1})([0-9]{0,"+(maxDigitsBeforeDecimalPoint-1)+"})?)?(\\.[0-9]{0,"+maxDigitsAfterDecimalPoint+"})?"
+
+            )) {
+                if(source.length()==0)
+                    return dest.subSequence(dstart, dend);
+                return "";
+            }
+
+            return null;
+
+        }
+    };
+
+    private void assignCtrlVars() {
         tgBinCondition = findViewById(R.id.tgBinCondition);
         tgBinCondition.setOnCheckedChangeListener(this);
         tgIceCondition = findViewById(R.id.tgIceCondition);
         tgIceCondition.setOnCheckedChangeListener(this);
         etRigorMortis = findViewById(R.id.etRigorMortis);
+        etRigorMortis.setFilters(new InputFilter[] { filter });
         etEliminationFood = findViewById(R.id.etEliminationFood);
+        etEliminationFood.setFilters(new InputFilter[] { filter });
         etEliminationSperm = findViewById(R.id.etEliminationSperm);
+        etEliminationSperm.setFilters(new InputFilter[] { filter });
         etParasites = findViewById(R.id.etParasites);
+        etParasites.setFilters(new InputFilter[] { filter });
         etPeeling = findViewById(R.id.etPeeling);
+        etPeeling.setFilters(new InputFilter[] { filter });
         ivSupport = findViewById(R.id.ivSupport);
     }
 
     private void initControlsFromState() {
         QualityRecord qualityRecord = GlobalState.recQuality;
 
-        /*if (!Strings.isEmptyOrWhitespace(prcTx.remarks)) {
-            mtvRemarks.setText(prcTx.remarks);
+        if ("GOOD".equalsIgnoreCase(qualityRecord.binCondition)) {
+            tgBinCondition.check(R.id.tbGoodBin);
+        } else if ("ACCEPTABLE".equalsIgnoreCase(qualityRecord.binCondition)) {
+            tgBinCondition.check(R.id.tbMediumBin);
+        } else if ("NOT ACCEPTABLE".equalsIgnoreCase(qualityRecord.binCondition)) {
+            tgBinCondition.check(R.id.tbBadBin);
         }
 
-        if (!Strings.isEmptyOrWhitespace(prcTx.photoPath)) {
-            ivTakenPhoto.setVisibility(View.VISIBLE);
-        }*/
+        if ("GOOD".equalsIgnoreCase(qualityRecord.iceCondition)) {
+            tgIceCondition.check(R.id.tbGoodIce);
+        } else if ("ACCEPTABLE".equalsIgnoreCase(qualityRecord.iceCondition)) {
+            tgIceCondition.check(R.id.tbMediumIce);
+        } else if ("NOT ACCEPTABLE".equalsIgnoreCase(qualityRecord.iceCondition)) {
+            tgIceCondition.check(R.id.tbBadIce);
+        }
+        if (qualityRecord.rigorMortis != null) {
+            etRigorMortis.setText(String.valueOf(qualityRecord.rigorMortis));
+        }
+        if (qualityRecord.eliminationFood != null) {
+            etEliminationFood.setText(String.valueOf(qualityRecord.eliminationFood));
+        }
+        if (qualityRecord.eliminationSperm != null) {
+            etEliminationSperm.setText(String.valueOf(qualityRecord.eliminationSperm));
+        }
+        if (qualityRecord.parasites != null) {
+            etParasites.setText(String.valueOf(qualityRecord.parasites));
+        }
+        if (qualityRecord.peeling != null) {
+            etPeeling.setText(String.valueOf(qualityRecord.peeling));
+        }
     }
 
     private QualityRecord updateState() {

@@ -46,7 +46,7 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.quality_first_step_text), ReceiptQualityStartActivity.class));
-        menuItemsList.add(new MenuItem(getString(R.string.quality_second_step_text), ReceiptQualityStartActivity.class));
+        menuItemsList.add(new MenuItem(getString(R.string.quality_second_step_text), PackageQualityStartActivity.class));
 
         InventoryMenuAdapter adapter = new InventoryMenuAdapter(this, menuItemsList);
 

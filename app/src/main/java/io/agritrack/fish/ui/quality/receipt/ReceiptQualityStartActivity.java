@@ -3,6 +3,7 @@ package io.agritrack.fish.ui.quality.receipt;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.BroadcastReceiver;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.agritrack.R;
+import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
@@ -228,15 +230,15 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        ProcessingRecord prcRecord = GlobalState.recProcessing;
+        QualityRecord qualityRecord = GlobalState.recQuality;
 
-        /*if (prcRecord.availBins != null) {
-            adapterBins.setValues(new LinkedList<String>(prcRecord.availBins));
+        if (qualityRecord.qualityBins != null) {
+            adapterBins.setValues(new LinkedList<String>(qualityRecord.qualityBins));
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             TextView tvBinsCount = findViewById(R.id.tvBinsCount);
-            tvBinsCount.setText(String.valueOf(prcRecord.availBins.size()));
-        }*/
+            tvBinsCount.setText(String.valueOf(qualityRecord.qualityBins.size()));
+        }
     }
 
     private void updateState() {
