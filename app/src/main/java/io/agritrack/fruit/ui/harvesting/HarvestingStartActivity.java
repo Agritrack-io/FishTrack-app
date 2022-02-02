@@ -84,8 +84,6 @@ public class HarvestingStartActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        ivNext.setEnabled(false);
-
         tvSpeciesNameLabel.setVisibility(View.INVISIBLE);
         tvSpeciesName.setVisibility(View.INVISIBLE);
 
@@ -134,6 +132,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
         enquiryResult.observe(this, response -> {
             if (response == null) {
                 CToast(getApplicationContext(), render("No planting returned for this pole"), Toast.LENGTH_LONG);
+                ivNext.setVisibility(View.VISIBLE);
                 return;
             }
             speciesName = response.local_name;
@@ -147,7 +146,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
             tvSpeciesNameLabel.setVisibility(View.VISIBLE);
             tvSpeciesName.setVisibility(View.VISIBLE);
             tvSpeciesName.setText(speciesName);
-            ivNext.setEnabled(true);
+            ivNext.setVisibility(View.VISIBLE);
         });
 
         // create Footer
@@ -157,6 +156,7 @@ public class HarvestingStartActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        //ivNext.setVisibility(View.GONE);
         // Listen for Fn key press/release;
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.rfid.FUN_KEY");
@@ -211,17 +211,15 @@ public class HarvestingStartActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        HarvestRecord trns = FruitGlobalState.recHarvest;
-
-        if (!Strings.isEmptyOrWhitespace(trns.poleRFID)) {
-            tvPoleName.setText(trns.poleRFID);
+        if (!Strings.isEmptyOrWhitespace(recHarvest.poleRFID)) {
+            tvPoleName.setText(recHarvest.poleRFID);
         }
 
-        if (!Strings.isEmptyOrWhitespace(trns.speciesName)) {
+        if (!Strings.isEmptyOrWhitespace(recHarvest.speciesName)) {
             tvSpeciesNameLabel.setVisibility(View.VISIBLE);
             tvSpeciesName.setVisibility(View.VISIBLE);
-            tvSpeciesName.setText(trns.speciesName);
-            ivNext.setEnabled(true);
+            tvSpeciesName.setText(recHarvest.speciesName);
+            ivNext.setVisibility(View.VISIBLE);
         }
     }
 
@@ -259,22 +257,20 @@ public class HarvestingStartActivity extends AppCompatActivity {
     }
 
     private HarvestRecord updateState() {
-        HarvestRecord harvestRecord = recHarvest;
-
-        harvestRecord.poleRFID = tvPoleName.getText().toString();
-        harvestRecord.harvestLotForCustomer = tvHarvestLot.getText().toString();
+        recHarvest.poleRFID = tvPoleName.getText().toString();
+        recHarvest.harvestLotForCustomer = tvHarvestLot.getText().toString();
         if (!Strings.isEmptyOrWhitespace(this.speciesName)) {
-            harvestRecord.speciesName = tvSpeciesName.getText().toString();
+            recHarvest.speciesName = tvSpeciesName.getText().toString();
         }
 
         if (!Strings.isEmptyOrWhitespace(this.greenhouse)) {
-            harvestRecord.greenhouse = this.greenhouse;
+            recHarvest.greenhouse = this.greenhouse;
         }
 
         if (!Strings.isEmptyOrWhitespace(this.plantLot)) {
-            harvestRecord.plantLot= this.plantLot;
+            recHarvest.plantLot= this.plantLot;
         }
-        return harvestRecord;
+        return recHarvest;
     }
 
     private String validate() {

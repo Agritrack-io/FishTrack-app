@@ -45,6 +45,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.HarvestRecord;
 import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -98,6 +99,9 @@ public class HarvestingTotesActivity extends AppCompatActivity {
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderHarvestingTotes);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
 
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
@@ -169,18 +173,20 @@ public class HarvestingTotesActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        super.onStop();
+        stopScanner();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
+
+        super.onDestroy();
     }
 
     protected void configFooter() {
@@ -305,6 +311,14 @@ public class HarvestingTotesActivity extends AppCompatActivity {
         return sb.toString();
     }
 
+    // ###################################################
+    private void stopScanner() {
+        if(this.scanner_runnable !=null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(null);
+            //mScanHandler.removeCallbacks(this.scanner_runnable);
+        }
+    }
 
     // ###################################################
     private class ScanHandler extends Handler {

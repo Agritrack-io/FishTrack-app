@@ -59,6 +59,7 @@ import io.agritrack.fruit.state.PackagingRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
@@ -117,10 +118,11 @@ public class PackagingStartActivity extends AppCompatActivity {
         TextView tvHeader = findViewById(R.id.tvHeaderPackagingStart);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
+
         // get  references of the controls
         assignCtrlVars();
-
-        ivNext.setEnabled(false);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTotesForPackage.setLayoutManager(layoutManager);
@@ -132,12 +134,14 @@ public class PackagingStartActivity extends AppCompatActivity {
         enquiryResult.observe(this, response -> {
             if (response == null) {
                 CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
+                ivNext.setVisibility(View.VISIBLE);
                 return;
             }
             if (response.size() == 1) {
+                recPackaging.collectionLot = response.get(0).lot;
                 String collectionLot = response.get(0).lot.substring(0, 3);
                 if (Strings.isEmptyOrWhitespace(collectionLot)) {
-                    CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
+                    //CToast(getApplicationContext(), render("No harvest LOT returned for these totes"), Toast.LENGTH_LONG);
                     return;
                 }
                 LocalDateTime dateStart = LotToDate(collectionLot);
@@ -151,10 +155,19 @@ public class PackagingStartActivity extends AppCompatActivity {
             LocalDateTime tt = LotToDate(packagingLot);
             Long aa = new BigInteger(packagingLot.substring(3), 16).longValue();
             LocalDateTime ttt = tt.plusMinutes(aa.intValue());*/
-                ivNext.setEnabled(true);
-            } else if (response.size() > 1) {  //TODO:To be checked
-                CToast(getApplicationContext(), render("More than one harvest LOT returned for these totes. Please select totes of a single LOT and scan again."), Toast.LENGTH_LONG);
-                ivNext.setEnabled(false);
+                ivNext.setVisibility(View.VISIBLE);
+            } else if (response.size() > 1) {
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.lot_restriction)
+                        .setMessage(R.string.lot_restriction_message)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        }).show();
+                //CToast(getApplicationContext(), render("More than one harvest LOT returned for these totes. Please select totes of a single LOT and scan again."), Toast.LENGTH_LONG);
+                //ivNext.setVisibility(View.VISIBLE);
             }
         });
 
@@ -218,20 +231,20 @@ public class PackagingStartActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
+        stopScanner();
+        //unregister the receiver
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        super.onDestroy();
-    }
+        //unregister the receiver
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
 
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        super.onPause();
+        super.onDestroy();
     }
 
     protected void configFooter() {
@@ -302,7 +315,7 @@ public class PackagingStartActivity extends AppCompatActivity {
         }
 
         if (trns.packagingLot != null && !Strings.isEmptyOrWhitespace(trns.packagingLot)) {
-            ivNext.setEnabled(true);
+            ivNext.setVisibility(View.VISIBLE);
         }
 
         warehouse = trns.warehouse;
@@ -411,6 +424,15 @@ public class PackagingStartActivity extends AppCompatActivity {
                 btnScanTotes.setText(R.string.scan_totes);
             }
             mScanHandler.postDelayed(scanner_runnable, 0);
+        }
+    }
+
+    // ###################################################
+    private void stopScanner() {
+        if(this.scanner_runnable !=null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(null);
+            //mScanHandler.removeCallbacks(this.scanner_runnable);
         }
     }
 
