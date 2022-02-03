@@ -159,7 +159,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         @Override
         public void run() {
             // disable Logging by setting sensitivity to HIGH...
-            Reader.READER_ERR resDisable = cmd.HighSensitivity(); //cmd.DisableLogging();
+            Reader.READER_ERR resDisable = cmd.HighSensitivity();
 
             // reset logger
             short cntSamples = cmd.ReadSamplesCount();

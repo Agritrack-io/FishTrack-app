@@ -15,10 +15,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import io.agritrack.AgritrackProducts;
 import io.agritrack.data.dto.SiteDTO;
 
 public class LocalPreferences {
     public static final String Pref_Name = "agritrack";
+    public static final String AppProductName_Key = "activeAppProduct";
     public static final String Token_Key = "token";
     public static final String Longitude_Key = "lon";
     public static final String Latitude_Key = "lat";
@@ -50,6 +52,10 @@ public class LocalPreferences {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
         Date date = new Date(System.currentTimeMillis());
         return dateFormat.format(date);
+    }
+
+    public static String getActivePRODUCT() {
+        return pref.getString(AppProductName_Key, AgritrackProducts.FISH.name());
     }
 
     public static String getCurrentSiteName() {

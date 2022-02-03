@@ -282,7 +282,7 @@ public class FishHomeActivity extends AppCompatActivity {
             syncBinsByPlantAsyncCall.enqueue(new SyncBinsByPackagingSite(this.syncResult));
 
             // sync fish species
-            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.PRODUCT, "Bearer " + token);
+            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.getProduct(), "Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
 
             // sync IOT Loggers

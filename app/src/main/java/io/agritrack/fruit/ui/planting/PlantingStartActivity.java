@@ -37,6 +37,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
@@ -99,7 +100,7 @@ public class PlantingStartActivity extends AppCompatActivity {
         plantLot = (String.format("%02d%s",weekOfYearId, dayOfWeekId));
 
         // load fish species and fill in the spFishType Spinner.
-        List<Species> tomatoSpecies = db.speciesDAO().getAll();
+        List<Species> tomatoSpecies = db.speciesDAO().getAll(FishTrackApplication.getProduct());
         if (tomatoSpecies != null && !tomatoSpecies.isEmpty()) {
             String[] species = tomatoSpecies.stream().map(x -> x.localName).toArray(String[]::new);
             ArrayAdapter<String> spAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, species);

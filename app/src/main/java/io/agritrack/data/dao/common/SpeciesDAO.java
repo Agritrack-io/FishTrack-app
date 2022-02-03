@@ -9,14 +9,13 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import io.agritrack.FishTrackApplication;
 import io.agritrack.data.model.common.Species;
 
 @Dao
 public interface SpeciesDAO {
 
-    @Query("SELECT * from Species where type = '"+ FishTrackApplication.PRODUCT +"' order by id")
-    List<Species> getAll();
+    @Query("SELECT * from Species where type=:product order by id")
+    List<Species> getAll(String product);
 
     @Query("SELECT * from Species where id=:speciesId LIMIT 1")
     Species getById(Long speciesId);

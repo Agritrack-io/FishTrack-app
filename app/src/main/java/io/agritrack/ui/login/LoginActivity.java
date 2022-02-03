@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.Locale;
 
+import io.agritrack.AgritrackProducts;
 import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -55,6 +57,7 @@ import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.hotel.ui.HotelHomeActivity;
+import io.agritrack.su.AppOptionsFragment;
 import io.agritrack.ui.config.ConfigActivity;
 import io.agritrack.ui.login.api.AuthApi;
 import io.agritrack.ui.login.api.AuthInfo;
@@ -152,11 +155,15 @@ public class LoginActivity extends AppCompatActivity {
                     i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
                     startActivity(i);
                     finish();
-                } else if ("logger".equals(username) && "8888".equals(pin)) {
+                } else if ("caen".equals(username) && "8888".equals(pin)) {
                     Intent i = new Intent(getApplicationContext(), CAENLoggerActivity.class);
                     i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
                     startActivity(i);
                     finish();
+                } else if("root".equals(username) && "8888".equals(pin)) {
+                    FragmentManager fm = getSupportFragmentManager();
+                    AppOptionsFragment loggerDlg = AppOptionsFragment.newInstance();
+                    loggerDlg.show(fm, AppOptionsFragment.TAG);
                 } else {
                     // display spinning progress bar
                     toggleProgress(Boolean.TRUE, R.string.authenticating);
@@ -293,7 +300,7 @@ public class LoginActivity extends AppCompatActivity {
             syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
 
             // sync fish species
-            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.PRODUCT,"Bearer " + token);
+            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.getProduct(),"Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
 
             // sync IOT Loggers
@@ -308,15 +315,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToProductMenu() {
-        if ("TOMATO".equalsIgnoreCase(FishTrackApplication.PRODUCT)){
+        if (AgritrackProducts.TOMATO.name().equalsIgnoreCase(FishTrackApplication.getProduct())){
             Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             i.putExtra("syncErrors", this.syncResult.toString());
             startActivity(i);
-        } else if ("FISH".equalsIgnoreCase(FishTrackApplication.PRODUCT)){
+        } else if (AgritrackProducts.FISH.name().equalsIgnoreCase(FishTrackApplication.getProduct())){
             Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             i.putExtra("syncErrors", this.syncResult.toString());
             startActivity(i);
-        } else if ("HOTEL".equalsIgnoreCase(FishTrackApplication.PRODUCT)) {
+        } else if (AgritrackProducts.HOTEL.name().equalsIgnoreCase(FishTrackApplication.getProduct())) {
             Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
             i.putExtra("syncErrors", this.syncResult.toString());
             startActivity(i);

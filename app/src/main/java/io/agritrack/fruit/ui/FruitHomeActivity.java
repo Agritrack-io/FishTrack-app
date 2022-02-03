@@ -50,7 +50,6 @@ import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
-import io.agritrack.data.dto.tx.CollectTxDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fruit.state.FruitGlobalState;
@@ -60,7 +59,6 @@ import io.agritrack.fruit.state.PlantRecord;
 import io.agritrack.fruit.state.ShippingRecord;
 import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.harvesting.HarvestingStartActivity;
-import io.agritrack.fruit.ui.packaging.PackagingSelectOrderActivity;
 import io.agritrack.fruit.ui.packaging.PackagingStartActivity;
 import io.agritrack.fruit.ui.planting.PlantingStartActivity;
 import io.agritrack.fruit.ui.shipping.ShippingStartActivity;
@@ -256,7 +254,7 @@ public class FruitHomeActivity extends AppCompatActivity {
             syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
 
             // sync fish species
-            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.PRODUCT, "Bearer " + token);
+            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.getProduct(), "Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
 
             /*// sync fish species
