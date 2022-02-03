@@ -237,8 +237,8 @@ tools:context=".hotel.ui.outgoing.HotelOutgoingLinenActivity">
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="COVERLET"
-                    android:textOn="COVERLET"
+                    android:textOff="BLANKET"
+                    android:textOn="BLANKET"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
             </io.agritrack.ui.custom.ToggleGroup>
@@ -335,7 +335,7 @@ tools:context=".hotel.ui.outgoing.HotelOutgoingLinenActivity">
                 android:layout_marginEnd="8dp"
                 android:background="@color/transparent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems"
+                app:layout_constraintTop_toBottomOf="@+id/xvOutgoingAssets"
                 app:srcCompat="@drawable/ic_delete" />
 
             <ImageButton
@@ -346,7 +346,7 @@ tools:context=".hotel.ui.outgoing.HotelOutgoingLinenActivity">
                 android:background="@color/transparent"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems"
+                app:layout_constraintTop_toBottomOf="@+id/xvOutgoingAssets"
                 app:srcCompat="@drawable/ic_add_stock_opname" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

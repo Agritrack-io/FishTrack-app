@@ -55,6 +55,7 @@ import io.agritrack.fish.ui.wh.outgoing.OutgoingStartActivity;
 import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -110,6 +111,9 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderOutgoingProcess);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
 
         // get  references of the controls
         assignCtrlVars();
