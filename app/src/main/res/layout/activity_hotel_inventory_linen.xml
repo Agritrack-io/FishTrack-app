@@ -150,8 +150,8 @@ tools:context=".hotel.ui.inventory.HotelInventoryLinenActivity">
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="COVERLET"
-                    android:textOn="COVERLET"
+                    android:textOff="BLANKET"
+                    android:textOn="BLANKET"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
             </io.agritrack.ui.custom.ToggleGroup>

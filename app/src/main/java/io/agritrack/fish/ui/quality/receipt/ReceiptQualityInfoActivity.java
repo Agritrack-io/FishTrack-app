@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
+import io.agritrack.common.InputFilterMinMax;
 import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
@@ -149,9 +150,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
                     return dest.subSequence(dstart, dend);
                 return "";
             }
-
             return null;
-
         }
     };
 

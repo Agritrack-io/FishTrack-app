@@ -6,10 +6,6 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recWHInventory;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
-
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -25,6 +21,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -52,6 +51,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -108,6 +108,9 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
 
         // get  references of the controls
         assignCtrlVars();
+
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
 
         // link trigger/scan button to ClickListener
         scanButton.setOnClickListener(this::onClick);

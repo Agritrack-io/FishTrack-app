@@ -51,6 +51,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -108,6 +109,9 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
 
         // get  references of the controls
         assignCtrlVars();
+
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
 
         // link trigger/scan button to ClickListener
         scanButton.setOnClickListener(this::onClick);
@@ -340,10 +344,6 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
             case R.id.tbBin:
                 selectedAssetType = Constants.ftBin;
                 activeFilter = Filters.RFID_BIN;
-                break;
-            case R.id.tbPlatform:
-                selectedAssetType = Constants.ftPlatform;
-                activeFilter = Filters.RFID_PLATFORM;
                 break;
             default:
                 selectedAssetType = Constants.ftAll;
