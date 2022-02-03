@@ -68,7 +68,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
     private TextView tvPoleName;
     private Button btnScanPole;
 
-    private String epcStr;
+    private String loggerEPC;
 
 
     @Override
@@ -92,20 +92,23 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
 
         // configure image button to display last measurements set.
         ibShowValues.setOnClickListener(v -> {
-            if(!Strings.isEmptyOrWhitespace(epcStr)) {
-                List<String[]> values = recLoggerData.getValues(epcStr);
-                AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(DailyTemperatureMeasurementsActivity.this);
-                dlgBuilder.setTitle("Logger Data");
+            if(!Strings.isEmptyOrWhitespace(loggerEPC)) {
+                List<String[]> values = recLoggerData.getValues(loggerEPC);
 
-                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(DailyTemperatureMeasurementsActivity.this, R.layout.agri_list_item_12dp);
+                if(values!=null) {
+                    AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(DailyTemperatureMeasurementsActivity.this);
+                    dlgBuilder.setTitle("Logger Data");
 
-                int idx = 1;
-                for (String[] value : values) {
-                    arrayAdapter.add(String.format("%04d. [%s] --> %s", idx++, value[0], value[1]));
+                    final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(DailyTemperatureMeasurementsActivity.this, R.layout.agri_list_item_12dp);
+
+                    int idx = 1;
+                    for (String[] value : values) {
+                        arrayAdapter.add(String.format("%04d. [%s] --> %s", idx++, value[0], value[1]));
+                    }
+                    dlgBuilder.setAdapter(arrayAdapter, null);
+                    dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
+                    dlgBuilder.create().show();
                 }
-                dlgBuilder.setAdapter(arrayAdapter, null);
-                dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
-                dlgBuilder.create().show();
             } else {
                 CToast(getApplicationContext(), render("No Pole Tag was scanned!!"), Toast.LENGTH_SHORT);
             }
@@ -213,7 +216,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    epcStr = msg.getData().getString("epc");
+                    String epcStr = msg.getData().getString("epc");
                     String rssi = msg.getData().getString("rssi");
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
@@ -225,6 +228,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
                             IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
 
                             if (logger != null && !Strings.isEmptyOrWhitespace(logger.rfid)) {
+                                loggerEPC = logger.rfid;
                                 FragmentManager fm = getSupportFragmentManager();
                                 LoggerInitFruitDialogFragment loggerDlg = LoggerInitFruitDialogFragment.newInstance(logger.rfid);
                                 loggerDlg.show(fm, LoggerInitFruitDialogFragment.TAG);

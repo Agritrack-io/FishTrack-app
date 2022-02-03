@@ -67,4 +67,5 @@ public class CAEN_CONSTANTS {
     public final static int CmdSETUP = 10016;
     public final static int CmdDisableLogging = 10017;
     public final static int CmdReadSamplesCnt = 10018;
+    public final static int CmdValidate = 10019;
 }

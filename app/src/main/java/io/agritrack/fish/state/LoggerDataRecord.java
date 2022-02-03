@@ -13,7 +13,14 @@ public class LoggerDataRecord {
     }
 
     public List<String[]> getValues(String epc) {
-        return data.get(epc).values;
+        List<String[]> result = null;
+        if (data != null) {
+            TemperatureModel valuesforEPC = data.get(epc);
+            if (valuesforEPC != null) {
+                result = data.get(epc).values;
+            }
+        }
+        return result;
     }
 
     public class TemperatureModel {
