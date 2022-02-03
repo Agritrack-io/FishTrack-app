@@ -3,8 +3,10 @@ package io.agritrack.fruit.ui.warehouse.measurements;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,7 +14,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,10 +62,13 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
     private ImageView ivSupport;
+    private ImageButton ibShowValues;
     private SupportDialog supportDialog;
 
     private TextView tvPoleName;
     private Button btnScanPole;
+
+    private String epcStr;
 
 
     @Override
@@ -82,6 +89,27 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
         // =================================
         // RFID scanning functionality
         btnScanPole.setOnClickListener(this::onClick);
+
+        // configure image button to display last measurements set.
+        ibShowValues.setOnClickListener(v -> {
+            if(!Strings.isEmptyOrWhitespace(epcStr)) {
+                List<String[]> values = recLoggerData.getValues(epcStr);
+                AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(DailyTemperatureMeasurementsActivity.this);
+                dlgBuilder.setTitle("Logger Data");
+
+                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(DailyTemperatureMeasurementsActivity.this, R.layout.agri_list_item_12dp);
+
+                int idx = 1;
+                for (String[] value : values) {
+                    arrayAdapter.add(String.format("%04d. [%s] --> %s", idx++, value[0], value[1]));
+                }
+                dlgBuilder.setAdapter(arrayAdapter, null);
+                dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
+                dlgBuilder.create().show();
+            } else {
+                CToast(getApplicationContext(), render("No Pole Tag was scanned!!"), Toast.LENGTH_SHORT);
+            }
+        });
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(DailyTemperatureMeasurementsActivity.this);
@@ -150,6 +178,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
         btnScanPole = findViewById(R.id.btnScanPole);
         tvPoleName = findViewById(R.id.tvPoleName);
         ivSupport = findViewById(R.id.ivSupport);
+        ibShowValues = findViewById(R.id.ibShowValues);
     }
 
     protected void onClick(View view) {
@@ -157,6 +186,19 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
         scanner_runnable.setFilter(Filters.RFID_POLE);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    public void toggleValuesButton(boolean show) {
+
+        if(show) {
+            runOnUiThread(() -> {
+                ibShowValues.setVisibility(View.VISIBLE);
+            });
+        } else {
+            runOnUiThread(() -> {
+                ibShowValues.setVisibility(View.INVISIBLE);
+            });
+        }
     }
 
     // ###################################################
@@ -171,7 +213,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    String epcStr = msg.getData().getString("epc");
+                    epcStr = msg.getData().getString("epc");
                     String rssi = msg.getData().getString("rssi");
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {

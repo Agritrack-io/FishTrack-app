@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import io.agritrack.AgritrackProducts;
 import io.agritrack.data.dto.SiteDTO;
 
 public class LocalPreferences {
@@ -55,7 +54,7 @@ public class LocalPreferences {
     }
 
     public static String getActivePRODUCT() {
-        return pref.getString(AppProductName_Key, AgritrackProducts.FISH.name());
+        return pref.getString(AppProductName_Key, null);
     }
 
     public static String getCurrentSiteName() {

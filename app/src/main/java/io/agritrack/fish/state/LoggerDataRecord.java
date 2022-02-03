@@ -12,6 +12,10 @@ public class LoggerDataRecord {
         this.data.put(epc, new TemperatureModel(epc, retrievedAt, enabledAt, values));
     }
 
+    public List<String[]> getValues(String epc) {
+        return data.get(epc).values;
+    }
+
     public class TemperatureModel {
         public final String loggerEPC;
         public final Long retrievedAt;

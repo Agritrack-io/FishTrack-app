@@ -167,6 +167,10 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
             // remove any pending message
             mScanHandler.removeCallbacks(this);
+
+            if(cntSamples > 0) {
+                mScanHandler.postDelayed(readThread, 150l);
+            }
         }
     };
 
@@ -189,7 +193,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         //...setup Read Button............
         mActivity.runOnUiThread(() -> {
             btnRead.setBackgroundResource(R.drawable.button_background);
-            btnRead.setText("Read Logger...");
+            btnRead.setText("Reading Logger...");
             startAnimation(getView(), btnRead);
         });
 
@@ -198,7 +202,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         mScanHandler.post(readSamplesCntThread);
         // -------------------------------------
 
-        mScanHandler.postDelayed(readThread, 150l);
+        //mScanHandler.postDelayed(readThread, 150l);
         //-----------------------------------------------------------------------------
 
         // Send message to Start Resetting sequence
@@ -245,7 +249,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
         WindowManager.LayoutParams p = getDialog().getWindow().getAttributes();
         p.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE;
-        p.y = 100;
+        p.y = 130;
         getDialog().getWindow().setAttributes(p);
 
         return rootView;
@@ -366,6 +370,10 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                                 long now = System.currentTimeMillis() / 1000L;
                                 //displayMeasurementsDialog(measurements);
                                 recLoggerData.addDataSet(loggerEPC, now, null, measurements);
+
+//                                if(mActivity.get() instanceof DailyTemperatureMeasurementsActivity.class) {
+//
+//                                }
                             }
                             btnReset.setVisibility(View.VISIBLE);
                             btnReset.setOnClickListener(resetBtnListener);
@@ -374,10 +382,6 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                             mActivity.get().getActivity().runOnUiThread(() -> {
                                 btnRead.setText("Failed. Press the button again.");
                                 stopAnimation();
-                                btnInit.setOnClickListener(initBtnListener);
-                                btnInit.setVisibility(View.VISIBLE);
-                                btnInit.setEnabled(true);
-                                btnInit.setText("Start Logging.");
                             });
                         }
                     } catch (Exception e) {
@@ -399,6 +403,14 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                             stopAnimation();
                         });
                     }
+
+                    if(cntSamples == null || cntSamples<=0) {
+                        btnInit.setOnClickListener(initBtnListener);
+                        btnInit.setVisibility(View.VISIBLE);
+                        btnInit.setEnabled(true);
+                        btnInit.setText("Start Logging.");
+                    }
+
                     break;
 
                 case CmdRESET:
