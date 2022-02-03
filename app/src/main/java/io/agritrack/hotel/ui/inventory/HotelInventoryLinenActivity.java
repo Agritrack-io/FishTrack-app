@@ -341,10 +341,6 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
                 selectedAssetType = Constants.ftBin;
                 activeFilter = Filters.RFID_BIN;
                 break;
-            case R.id.tbPlatform:
-                selectedAssetType = Constants.ftPlatform;
-                activeFilter = Filters.RFID_PLATFORM;
-                break;
             default:
                 selectedAssetType = Constants.ftAll;
                 activeFilter = null;

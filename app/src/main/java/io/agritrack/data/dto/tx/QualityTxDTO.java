@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import io.agritrack.data.converter.StringListConverter;
@@ -15,7 +16,7 @@ public class QualityTxDTO {
     public Long id;
     public Long timestamp;
     public String plot;
-    public List<String> quality_bins;
+    public List<String> quality_bins = new LinkedList<String>();
     public String bin_condition;
     public String ice_condition;
     public String smell_condition;
@@ -50,6 +51,7 @@ public class QualityTxDTO {
         QualityTxDTO qualityTxDto = new QualityTxDTO();
 
         qualityTxDto.plot = quality.plot;
+        qualityTxDto.quality_bins = quality.qualityBins;
         qualityTxDto.bin_condition = quality.binCondition;
         qualityTxDto.ice_condition = quality.iceCondition;
         qualityTxDto.smell_condition = quality.smellCondition;
