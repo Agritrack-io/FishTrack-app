@@ -41,7 +41,7 @@ public class QualityTxDTO {
     public Integer hematomas;
     public Integer mucus;
     public Integer problematic_fish;
-    public String site;
+    public String packaging_site;
     public String harvest_load;
     public String user;
     public Double longitude;
@@ -76,7 +76,7 @@ public class QualityTxDTO {
         qualityTxDto.hematomas = quality.hematomas;
         qualityTxDto.mucus = quality.mucus;
         qualityTxDto.problematic_fish = quality.problematicFish;
-        qualityTxDto.site = quality.site;
+        qualityTxDto.packaging_site = quality.site;
         qualityTxDto.user = quality.user;
         qualityTxDto.timestamp = quality.timestamp;
         qualityTxDto.longitude = quality.longitude;
