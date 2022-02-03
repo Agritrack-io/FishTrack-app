@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.agritrack.R;
+import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
@@ -58,7 +59,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
     protected BroadcastReceiver keyReceiver;
 
     // Local handler that receives the RFID scanner results.
-    private final PackageQualityStartActivity.ScanHandler mScanHandler = new PackageQualityStartActivity.ScanHandler(this);
+    private final ScanHandler mScanHandler = new ScanHandler(this);
 
     private boolean intentForProcessing = true;
     private final LinkedList<String[]> listMeasurements = new LinkedList<>();
@@ -220,19 +221,18 @@ public class PackageQualityStartActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        ProcessingRecord prcRecord = GlobalState.recProcessing;
+        QualityRecord qualityRecord = GlobalState.recQuality;
 
-        /*if (prcRecord.availBins != null) {
-            adapterBins.setValues(new LinkedList<String>(prcRecord.availBins));
+        if (qualityRecord.qualityBins != null) {
+            adapterBins.setValues(new LinkedList<String>(qualityRecord.qualityBins));
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             TextView tvBinsCount = findViewById(R.id.tvBinsCount);
-            tvBinsCount.setText(String.valueOf(prcRecord.availBins.size()));
-        }*/
+            tvBinsCount.setText(String.valueOf(qualityRecord.qualityBins.size()));
+        }
     }
 
     private void updateState() {
-        GlobalState.initQualityRecord();
 
         GlobalState.recQuality.qualityBins = new LinkedList<>(adapterBins.getValues());
         GlobalState.recQuality.tempValues = listMeasurements;

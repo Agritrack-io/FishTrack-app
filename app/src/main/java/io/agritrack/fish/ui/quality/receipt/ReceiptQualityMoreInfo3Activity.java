@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
+import io.agritrack.common.InputFilterMinMax;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
@@ -97,23 +98,23 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
 
     private void assignCtrlVars() {
         etLightHematoma = findViewById(R.id.etLightHematoma);
-        etLightHematoma.setFilters(new InputFilter[] { filter });
+        etLightHematoma.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etHeavyHematoma = findViewById(R.id.etHeavyHematoma);
-        etHeavyHematoma.setFilters(new InputFilter[] { filter });
+        etHeavyHematoma.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etPink = findViewById(R.id.etPink);
-        etPink.setFilters(new InputFilter[] { filter });
+        etPink.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etDark = findViewById(R.id.etDark);
-        etDark.setFilters(new InputFilter[] { filter });
+        etDark.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etWhite = findViewById(R.id.etWhite);
-        etWhite.setFilters(new InputFilter[] { filter });
+        etWhite.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etUncolored = findViewById(R.id.etUncolored);
-        etUncolored.setFilters(new InputFilter[] { filter });
+        etUncolored.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etHematomas = findViewById(R.id.etHematomas);
-        etHematomas.setFilters(new InputFilter[] { filter });
+        etHematomas.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etMucus = findViewById(R.id.etMucus);
-        etMucus.setFilters(new InputFilter[] { filter });
+        etMucus.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etProblematicFish = findViewById(R.id.etProblematicFish);
-        etProblematicFish.setFilters(new InputFilter[] { filter });
+        etProblematicFish.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         ivSupport = findViewById(R.id.ivSupport);
     }
 

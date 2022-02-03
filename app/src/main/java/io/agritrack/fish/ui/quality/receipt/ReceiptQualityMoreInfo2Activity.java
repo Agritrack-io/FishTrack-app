@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
+import io.agritrack.common.InputFilterMinMax;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
@@ -74,47 +75,23 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
         });
     }
 
-    private InputFilter filter = new InputFilter() {
-        final int maxDigitsBeforeDecimalPoint=3;
-        final int maxDigitsAfterDecimalPoint=2;
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end,
-                                   Spanned dest, int dstart, int dend) {
-            StringBuilder builder = new StringBuilder(dest);
-            builder.replace(dstart, dend, source
-                    .subSequence(start, end).toString());
-            if (!builder.toString().matches(
-                    "(([1-9]{1})([0-9]{0,"+(maxDigitsBeforeDecimalPoint-1)+"})?)?(\\.[0-9]{0,"+maxDigitsAfterDecimalPoint+"})?"
-
-            )) {
-                if(source.length()==0)
-                    return dest.subSequence(dstart, dend);
-                return "";
-            }
-
-            return null;
-
-        }
-    };
-
     private void assignCtrlVars() {
         tgSmellCondition = findViewById(R.id.tgSmellCondition);
         tgSmellCondition.setOnCheckedChangeListener(this);
         etShiny = findViewById(R.id.etShiny);
-        etShiny.setFilters(new InputFilter[] { filter });
+        etShiny.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etBlurred = findViewById(R.id.etBlurred);
-        etBlurred.setFilters(new InputFilter[] { filter });
+        etBlurred.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etHealed = findViewById(R.id.etHealed);
-        etHealed.setFilters(new InputFilter[] { filter });
+        etHealed.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etBlind = findViewById(R.id.etBlind);
-        etBlind.setFilters(new InputFilter[] { filter });
+        etBlind.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etCoherent = findViewById(R.id.etCoherent);
-        etCoherent.setFilters(new InputFilter[] { filter });
+        etCoherent.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etSoft = findViewById(R.id.etSoft);
-        etSoft.setFilters(new InputFilter[] { filter });
+        etSoft.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etSwollen = findViewById(R.id.etSwollen);
-        etSwollen.setFilters(new InputFilter[] { filter });
+        etSwollen.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         ivSupport = findViewById(R.id.ivSupport);
     }
 

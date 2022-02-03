@@ -77,7 +77,7 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
                         confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                         break;
                     case Second_Step_Idx:
-                        //GlobalState.initQualityRecord();
+                        GlobalState.initQualityRecord();
                         i = new Intent(QualitySelectStepsActivity.this, PackageQualityStartActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);

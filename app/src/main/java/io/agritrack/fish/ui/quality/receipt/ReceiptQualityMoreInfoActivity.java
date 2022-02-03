@@ -18,6 +18,7 @@ import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
 import io.agritrack.common.Constants;
+import io.agritrack.common.InputFilterMinMax;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
@@ -77,45 +78,21 @@ public class ReceiptQualityMoreInfoActivity extends AppCompatActivity implements
         });
     }
 
-    private InputFilter filter = new InputFilter() {
-        final int maxDigitsBeforeDecimalPoint=3;
-        final int maxDigitsAfterDecimalPoint=2;
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end,
-                                   Spanned dest, int dstart, int dend) {
-            StringBuilder builder = new StringBuilder(dest);
-            builder.replace(dstart, dend, source
-                    .subSequence(start, end).toString());
-            if (!builder.toString().matches(
-                    "(([1-9]{1})([0-9]{0,"+(maxDigitsBeforeDecimalPoint-1)+"})?)?(\\.[0-9]{0,"+maxDigitsAfterDecimalPoint+"})?"
-
-            )) {
-                if(source.length()==0)
-                    return dest.subSequence(dstart, dend);
-                return "";
-            }
-
-            return null;
-
-        }
-    };
-
     private void assignCtrlVars() {
         tgBinCondition = findViewById(R.id.tgBinCondition);
         tgBinCondition.setOnCheckedChangeListener(this);
         tgIceCondition = findViewById(R.id.tgIceCondition);
         tgIceCondition.setOnCheckedChangeListener(this);
         etRigorMortis = findViewById(R.id.etRigorMortis);
-        etRigorMortis.setFilters(new InputFilter[] { filter });
+        etRigorMortis.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etEliminationFood = findViewById(R.id.etEliminationFood);
-        etEliminationFood.setFilters(new InputFilter[] { filter });
+        etEliminationFood.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etEliminationSperm = findViewById(R.id.etEliminationSperm);
-        etEliminationSperm.setFilters(new InputFilter[] { filter });
+        etEliminationSperm.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etParasites = findViewById(R.id.etParasites);
-        etParasites.setFilters(new InputFilter[] { filter });
+        etParasites.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etPeeling = findViewById(R.id.etPeeling);
-        etPeeling.setFilters(new InputFilter[] { filter });
+        etPeeling.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         ivSupport = findViewById(R.id.ivSupport);
     }
 
