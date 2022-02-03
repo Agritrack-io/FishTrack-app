@@ -228,17 +228,17 @@ public class BX6200Commander extends AbstractCAENCommander  {
 
     @Override
     public boolean startSearching() {
-        return false;
+        return true;
     }
 
     @Override
     public List<RFIDTag> search() {
-        return Collections.emptyList();
+        return inventoryRealTime();
     }
 
     @Override
     public boolean stopSearching() {
-        return false;
+        return true;
     }
 
 
