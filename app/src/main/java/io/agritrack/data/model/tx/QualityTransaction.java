@@ -38,67 +38,67 @@ public class QualityTransaction {
     public Double fishTemp;
 
     @ColumnInfo(name = "rigor_mortis")
-    public Double rigorMortis;
+    public Integer rigorMortis;
 
     @ColumnInfo(name = "elimination_food")
-    public Double eliminationFood;
+    public Integer eliminationFood;
 
     @ColumnInfo(name = "elimination_sperm")
-    public Double eliminationSperm;
+    public Integer eliminationSperm;
 
     @ColumnInfo(name = "parasites")
-    public Double parasites;
+    public Integer parasites;
 
     @ColumnInfo(name = "peeling")
-    public Double peeling;
+    public Integer peeling;
 
     @ColumnInfo(name = "shiny")
-    public Double shiny;
+    public Integer shiny;
 
     @ColumnInfo(name = "blurred")
-    public Double blurred;
+    public Integer blurred;
 
     @ColumnInfo(name = "healed")
-    public Double healed;
+    public Integer healed;
 
     @ColumnInfo(name = "blind_eyes")
-    public Double blindEyes;
+    public Integer blindEyes;
 
     @ColumnInfo(name = "coherent")
-    public Double coherent;
+    public Integer coherent;
 
     @ColumnInfo(name = "soft")
-    public Double soft;
+    public Integer soft;
 
     @ColumnInfo(name = "swollen")
-    public Double swollen;
+    public Integer swollen;
 
     @ColumnInfo(name = "light_hematoma")
-    public Double lightHematoma;
+    public Integer lightHematoma;
 
     @ColumnInfo(name = "heavy_hematoma")
-    public Double heavyHematoma;
+    public Integer heavyHematoma;
 
     @ColumnInfo(name = "pink")
-    public Double pink;
+    public Integer pink;
 
     @ColumnInfo(name = "dark")
-    public Double dark;
+    public Integer dark;
 
     @ColumnInfo(name = "white")
-    public Double white;
+    public Integer white;
 
     @ColumnInfo(name = "uncolored")
-    public Double uncolored;
+    public Integer uncolored;
 
     @ColumnInfo(name = "hematomas")
-    public Double hematomas;
+    public Integer hematomas;
 
     @ColumnInfo(name = "mucus")
-    public Double mucus;
+    public Integer mucus;
 
     @ColumnInfo(name = "problematic_fish")
-    public Double problematicFish;
+    public Integer problematicFish;
 
     @ColumnInfo(name = "site_id")
     public String site;
