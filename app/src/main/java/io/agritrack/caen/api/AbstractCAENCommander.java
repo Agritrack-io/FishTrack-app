@@ -364,8 +364,8 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     public Short ReadSamplesCount() {
         try {
             byte[] aa = ReadRegisters(ADDR_SAMPLES_CNT, SHORT_ONE);
-            if(aa==null || aa.length==1)
-                return null;
+            if(aa==null || aa.length==1) //sometimes returns {9}
+                return -1;
             return ToShort(aa);
         } catch (Exception ex) {
             ex.printStackTrace();
