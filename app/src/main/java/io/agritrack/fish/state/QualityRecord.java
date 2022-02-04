@@ -42,6 +42,7 @@ public class QualityRecord {
     public Double latitude;
     public String logger_rfid;
     public boolean qualityProcessing;
+    public String state;
 
     public QualityRecord() {
     }
