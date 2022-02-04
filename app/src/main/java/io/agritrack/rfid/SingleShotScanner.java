@@ -55,7 +55,6 @@ public class SingleShotScanner implements Runnable {
     public void run() {
         int idx = 0;
         while (true) {
-            idx++;
             if (uhfReader != null) {
                 final List<RFIDTag> tagList = uhfReader.inventoryByTimer(); //inventoryRealTime();
                 if (tagList != null && !tagList.isEmpty()) {
@@ -82,9 +81,14 @@ public class SingleShotScanner implements Runnable {
                 }
             }
             // to avoid possible endless loop.
-            if (idx > 10) {
-                //uhfReader.StopReading();
-                mScanHandler.removeCallbacks(this);
+            if (++idx > 10) {
+                Message msg = new Message();
+                msg.what = 999;
+                Bundle b = new Bundle();
+                b.putString("err", "No_TAG_Found");
+                msg.setData(b);
+                mScanHandler.sendMessage(msg);
+                mScanHandler.removeCallbacksAndMessages(null);
                 break;
             }
         }

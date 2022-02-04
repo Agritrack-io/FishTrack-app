@@ -240,6 +240,12 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     break;
+                case 999:
+                    String errCode = msg.getData().getString("err");
+                    if("No_TAG_Found".equalsIgnoreCase(errCode)) {
+                        CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
                 case 1980:
                     if (!IsDemo) {
                         //CToast(getApplicationContext(), render("No Pole Tag was detected!!"), Toast.LENGTH_SHORT);
