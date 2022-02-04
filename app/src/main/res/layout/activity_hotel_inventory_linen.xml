@@ -192,6 +192,22 @@ tools:context=".hotel.ui.inventory.HotelInventoryLinenActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
+            <TextView
+                android:id="@+id/tvGroupsCnt"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="32dp"
+                android:textSize="13pt"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnScanAsset"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
+
             <Button
                 android:id="@+id/btnScanAsset"
                 android:layout_width="150dp"

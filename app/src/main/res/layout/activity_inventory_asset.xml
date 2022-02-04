@@ -260,6 +260,7 @@ tools:context=".fish.ui.wh.inventory.InventoryAssetActivity">
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="32dp"
+            android:textSize="12pt"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnScanAsset"

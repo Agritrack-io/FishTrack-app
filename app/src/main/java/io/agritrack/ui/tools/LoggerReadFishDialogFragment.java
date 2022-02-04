@@ -209,8 +209,6 @@ public class LoggerReadFishDialogFragment extends DialogFragment implements Time
             return values;
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            cmd.LowSensitivity();
         }
         return values;
     }

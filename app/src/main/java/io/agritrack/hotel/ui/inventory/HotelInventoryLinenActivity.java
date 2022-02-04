@@ -85,6 +85,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
     private ProgressDialog progressDialog;
 
     private ImageView ivSupport;
+    private TextView tvGroupsCnt;
     private SupportDialog supportDialog;
 
 
@@ -119,6 +120,9 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(HotelInventoryLinenActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        // display groups counter
+        tvGroupsCnt.setVisibility(View.VISIBLE);
 
         xvInventoryItems.setOnGroupClickListener((parent, v, groupPosition, id) -> {
             clearSelectedItem();
@@ -225,6 +229,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
         ivSupport = findViewById(R.id.ivSupport);
         tgChooseAssetType.setOnCheckedChangeListener(this);
         scanButton = findViewById(R.id.btnScanAsset);
+        tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
     }
 
     protected void configFooter() {
@@ -422,6 +427,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
                         adapterInventoryItems.appendItems(values);
                     }
                     adapterInventoryItems.notifyDataSetChanged();
+                    tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
                     break;
                 case 1980:
                     if (!IsDemo) {

@@ -58,9 +58,6 @@ public interface ICAEN_API {
     /* This function sets Logger to HIGH sensitivity mode. */
     Reader.READER_ERR HighSensitivity();
 
-    /* This function sets Logger to LOW sensitivity mode. */
-    Reader.READER_ERR LowSensitivity();
-
     /* This function sets Logger to HIGH Read Power mode. */
     void HighPowerLevel();
 

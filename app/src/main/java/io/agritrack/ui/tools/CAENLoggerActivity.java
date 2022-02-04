@@ -441,9 +441,9 @@ public class CAENLoggerActivity extends AppCompatActivity {
                     CharSequence regCtrl = btnControlReg.getText();
                     String regCtrlStr = (regCtrl != null) ? regCtrl.toString() : null;
                     if (regCtrlStr != null && regCtrlStr.length() == 5 && regCtrlStr.charAt(0) == '1') {
-                        this.cmd.LowSensitivity();
+                        //this.cmd.LowSensitivity();
                     } else if (regCtrlStr != null && regCtrlStr.length() == 3 && regCtrlStr.charAt(0) == '1') {
-                        this.cmd.HighSensitivity();
+                        this.cmd.HighSensitivity(); // resets logger at the same time.
                     }
 
                     String controlReg = cmd.ReadControlRegister();

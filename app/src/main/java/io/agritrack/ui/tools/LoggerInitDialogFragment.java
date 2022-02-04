@@ -196,8 +196,6 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             readRS = values;
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            cmd.LowSensitivity();
         }
 
 

@@ -235,17 +235,23 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
 
         if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonFrom)) {
             tgOutgoingSource.setCheckedStateForView(R.id.tbSite, true);
-            siteDialog.dismiss();
+            if(siteDialog != null) {
+                siteDialog.dismiss();
+            }
         } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonFrom)) {
             tgOutgoingSource.check(R.id.tbAssetFrom);
         }
 
         if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
             tgOutgoingDestination.setCheckedStateForView(R.id.tbAvramar, true);
-            avramarDialog.dismiss();
+            if(avramarDialog != null) {
+                avramarDialog.dismiss();
+            }
         } else if (Constants.ftCustomer.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
             tgOutgoingDestination.setCheckedStateForView(R.id.tbCustomer, true);
-            customerDialog.dismiss();
+            if(customerDialog != null) {
+                customerDialog.dismiss();
+            }
         } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
             tgOutgoingDestination.check(R.id.tbOutAssetTo);
         }

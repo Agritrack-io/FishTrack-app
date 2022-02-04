@@ -18,7 +18,6 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.android.hdhe.uhf.readerInterface.TagModel;
 import com.uhf.api.cls.Reader;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
