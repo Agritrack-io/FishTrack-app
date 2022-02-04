@@ -23,6 +23,10 @@ public class LoggerDataRecord {
         return result;
     }
 
+    public void clearData() {
+        data = new HashMap<>();
+    }
+
     public class TemperatureModel {
         public final String loggerEPC;
         public final Long retrievedAt;

@@ -213,23 +213,8 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     @Override
     public Reader.READER_ERR HighSensitivity() {
         try {
-            Short bits = Short.valueOf("0010", 16); // High sensitivity and STOP LOGGING!!!!
+            Short bits = 16; //Short.valueOf("0010", 16); // High sensitivity and STOP LOGGING!!!!
             Reader.READER_ERR rs = WriteRegisters(ADDR_CONTROL, bits);
-            Wait(100L);
-            return rs;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
-
-    /* This function sets Logger to LOW sensitivity mode. */
-    @Override
-    public Reader.READER_ERR LowSensitivity() {
-        try {
-            Short bits = Short.valueOf("0004", 16); // Low sensitivity and START LOGGING!!!!
-            Reader.READER_ERR rs = WriteRegisters(ADDR_CONTROL, bits);
-            Wait(100L);
             return rs;
         } catch (Exception ex) {
             ex.printStackTrace();

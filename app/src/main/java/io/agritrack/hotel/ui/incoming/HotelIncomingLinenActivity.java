@@ -6,10 +6,6 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recWHIncoming;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
-
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -25,6 +21,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -49,9 +48,6 @@ import io.agritrack.enums.AssetType;
 import io.agritrack.enums.WarehouseTxState;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
-import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingAssetActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingStartActivity;
 import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
@@ -95,6 +91,7 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
     private ProgressDialog progressDialog;
 
     private ImageView ivSupport;
+    private TextView tvGroupsCnt;
     private SupportDialog supportDialog;
 
     @Override
@@ -127,6 +124,9 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(HotelIncomingLinenActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        // display groups counter
+        tvGroupsCnt.setVisibility(View.VISIBLE);
 
         xvIncomingItems.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -277,6 +277,7 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
         tgChooseAssetType.setOnCheckedChangeListener(this);
         ivSupport = findViewById(R.id.ivSupport);
         scanButton = findViewById(R.id.btnScanAsset);
+        tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
     }
 
     private boolean updateState() {
@@ -486,6 +487,7 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
                         }
                         adapterIncomingItems.notifyDataSetChanged();
                     }
+                    tvGroupsCnt.setText(String.valueOf(adapterIncomingItems.getGroupCount()));
                     break;
                 case 1980:
                     if (!IsDemo) {

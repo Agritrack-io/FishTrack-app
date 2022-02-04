@@ -1,16 +1,16 @@
 package io.agritrack.ui.tools;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdINIT;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdReadData;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdReadSamplesCnt;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdSETUP;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdValidate;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteInterval;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBINZero;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
+import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
+import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.animation.TimeAnimator;
 import android.app.AlertDialog;
@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
@@ -42,6 +43,8 @@ import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 
 public class LoggerInitFruitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
+    public enum State {STOP_LOGGER, COUNT_SAMPLES, READ_VALUES, RESET, INIT};
+    private static final int RST_BIT = 4, RFU_BIT = 3, LE_BIT = 2, DE_BIT = 1, RFSL_BIT = 0;
     private static final int LEVEL_INCREMENT = 1000;
     private static final int MAX_LEVEL = 10000;
     private static final String LOGGER_EPC = "loggerEPC";
@@ -54,10 +57,11 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     private ICAEN_API cmd;
     private String loggerEPC;
     private TimeAnimator mAnimator;
-    private int mCurrentLevel = 0;
+    private int mCurrentLevel = 0, resetCnt = 0;
     private Short cntSamples = 0;
     private ClipDrawable mClipDrawable;
     private boolean readyToDismiss = false;
+    private State state = null;
 
     //##############################################################
     final Runnable validateThread = new Runnable() {
@@ -65,8 +69,41 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         public void run() {
             // read CONTROL register state
             String ctrlState = cmd.ReadControlRegister();
+            // set button text to current CONTROL Register state
+            btnValidate.setText(String.format("CTRL: %s", ctrlState));
+
+            if(ctrlState.length() != 5) {
+                mScanHandler.sendMessage(createMessage(1900, ctrlState.length()));
+                return;
+            }
+
+            if(!State.RESET.equals(state) && ctrlState.charAt(RST_BIT)=='1' ) {
+                try {
+                    Thread.sleep(2000l);
+                } catch(Exception x) {
+                    x.printStackTrace();
+                }
+            }
+
+            if(State.STOP_LOGGER.equals(state) && ctrlState.charAt(LE_BIT)=='0' ) {
+                mScanHandler.post(readSamplesCntThread);
+            }
+
+            if(State.RESET.equals(state)) {
+                if(ctrlState.charAt(RST_BIT)=='0' ) {
+                    mScanHandler.sendMessage(createMessage(CmdRESET, Reader.READER_ERR.MT_OK_ERR));
+                    mScanHandler.post(initLoggingThread);
+                } else if(++resetCnt < 3) {
+                    mScanHandler.post(resetThread);
+                }
+            }
+
             // Send message to read CTRL state
-            mScanHandler.sendMessage(createMessage(CmdValidate, ctrlState));
+            if(State.INIT.equals(state) && ctrlState.charAt(LE_BIT)=='1') {
+                // Send message to Enable Logging
+                mScanHandler.sendMessage(createMessage(CmdINIT, Reader.READER_ERR.MT_OK_ERR));
+                //mScanHandler.sendMessage(createMessage(1980, ctrlState));
+            }
             // remove any pending message
             mScanHandler.removeCallbacks(this);
         }
@@ -75,17 +112,16 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     final Runnable initLoggingThread = new Runnable() {
         @Override
         public void run() {
+            // set current State
+            state = State.INIT;
             // enable logger
             Reader.READER_ERR response = cmd.EnableLogging();
-            // Send message to Enable Logging
-            mScanHandler.sendMessage(createMessage(CmdINIT, response));
+
+            // validate result
+            mScanHandler.post(validateThread);
+
             // remove any pending message
             mScanHandler.removeCallbacks(this);
-
-            // check CTRL to see if LE bit is OFF
-            if(Reader.READER_ERR.MT_OK_ERR.equals(response)) {
-                mScanHandler.postDelayed(validateThread, 0l);
-            }
         }
     };
     // -------------------------------------------------------------
@@ -98,7 +134,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         });
         // -------------------------------------
         cmd.setFilterEPC(loggerEPC);
-        mScanHandler.postDelayed(initLoggingThread, 50l);
+        mScanHandler.post(initLoggingThread);
     };
     // =============================================================
     final Runnable setupLoggerThread = new Runnable() {
@@ -146,10 +182,14 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     final Runnable resetThread = new Runnable() {
         @Override
         public void run() {
+            // set current State
+            state = State.RESET;
             // reset logger
             Reader.READER_ERR response = cmd.Reset();
             delay(2500l);
-            mScanHandler.sendMessage(createMessage(CmdRESET, response));
+
+            // validate result
+            mScanHandler.post(validateThread);
 
             // remove any pending message
             mScanHandler.removeCallbacks(this);
@@ -167,48 +207,86 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
         // -------------------------------------
         cmd.setFilterEPC(loggerEPC);
-        mScanHandler.postDelayed(resetThread, 50l);
+        mScanHandler.post(resetThread);
     };
     // =============================================================
+    final Runnable stopLoggerThread = new Runnable() {
+        @Override
+        public void run() {
+            // in case of read failure, no reason to stop logging again.
+            if(State.COUNT_SAMPLES.equals(state)) {
+                // invoke read sample
+                mScanHandler.post(readSamplesCntThread);
+            }
+
+            resetCnt = 0;              // counts reset retrials
+            readyToDismiss = false;    // set var for first time in each repetition
+            state = State.STOP_LOGGER; // set current State
+            Reader.READER_ERR resHigh = cmd.HighSensitivity(); // stop logger and HIGH sensitivity
+
+            if(!Reader.READER_ERR.MT_OK_ERR.equals(resHigh)) {
+                btnRead.setText(String.format("Stop:: Failed."));
+                stopAnimation();
+                return;
+            }
+
+            // validate result
+            mScanHandler.post(validateThread);
+            // remove any pending message
+            mScanHandler.removeCallbacks(this);
+        }
+    };
     final Runnable readSamplesCntThread = new Runnable() {
         @Override
         public void run() {
-            readyToDismiss = false;
+            // set current State
+            state = State.COUNT_SAMPLES;
 
-            // disable Logging by setting sensitivity to HIGH...
-            Reader.READER_ERR resHigh = cmd.HighSensitivity();
-
-            // check CTRL to see if LE bit is OFF
-            if(Reader.READER_ERR.MT_OK_ERR.equals(resHigh)) {
-                mScanHandler.postDelayed(validateThread, 0l);
-            }
-
-            // reset logger
+            // read number of Measurements
             short cntSamples = cmd.ReadSamplesCount();
             mScanHandler.sendMessage(createMessage(CmdReadSamplesCnt, cntSamples));
 
+            if(cntSamples > 0) {
+                mScanHandler.post(readValuesThread);
+            }
+
             // remove any pending message
             mScanHandler.removeCallbacks(this);
-
-            if(cntSamples > 0) {
-                mScanHandler.postDelayed(readThread, 150l);
-            }
         }
     };
-
-    final Runnable readThread = new Runnable() {
+    final Runnable readValuesThread = new Runnable() {
         @Override
         public void run() {
-            // reset logger
-            Reader.READER_ERR response = cmd.Reset();
-            //delay(2500l);
-            mScanHandler.sendMessage(createMessage(CmdReadData, response));
+            // set current State
+            state = State.READ_VALUES;
+
+            try {
+                // reset existing values
+                recLoggerData.clearData();
+
+                // read the measurements from logger based on samples count.
+                List<String[]> measurements = cmd.ReadSamples(cntSamples);
+
+                if (measurements != null) {
+                    // update buttons based on values read...
+                    mScanHandler.sendMessage(createMessage(CmdReadData, (short) measurements.size()));
+
+                    long now = System.currentTimeMillis() / 1000L;
+                    recLoggerData.addDataSet(loggerEPC, now, null, measurements);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            // since values are read, Reset the logger
+            mScanHandler.post(resetThread);
 
             // remove any pending message
             mScanHandler.removeCallbacks(this);
         }
     };
     // -------------------------------------------------------------
+
     private final View.OnClickListener readBtnListener = v -> {
         FragmentActivity mActivity = getActivity();
 
@@ -221,14 +299,8 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
         // -------------------------------------
         cmd.setFilterEPC(loggerEPC);
-        mScanHandler.post(readSamplesCntThread);
+        mScanHandler.post(stopLoggerThread);
         // -------------------------------------
-
-        //mScanHandler.postDelayed(readThread, 150l);
-        //-----------------------------------------------------------------------------
-
-        // Send message to Start Resetting sequence
-//        mScanHandler.sendMessage(createMessage(CmdReadData, null));
     };
     //##############################################################
 
@@ -286,7 +358,6 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
         // Press First Button
         btnRead.callOnClick();
-        //mScanHandler.sendMessage(createMessage(CmdReadData, null));
     }
 
     private void startAnimation(View view, Button buttonID) {
@@ -380,36 +451,26 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
             switch (msg.what) {
                 case CmdReadData:
                     //-----------------------------------------------------------------------------
-                    try {
-                        List<String[]> measurements = cmd.ReadSamples(cntSamples);
-                        if (measurements != null && cntSamples > 0) {
-                            mActivity.get().getActivity().runOnUiThread(() -> {
-                                btnRead.setText(String.format("READ %s measurements.", measurements.size()));
-                                btnRead.setOnClickListener(null);
-                                stopAnimation();
-                            });
+                    short valuesRead = msg.getData().getShort("body");
+                    if (valuesRead > 0) {
+                        mActivity.get().getActivity().runOnUiThread(() -> {
+                            btnRead.setText(String.format("READ %s measurements.", valuesRead));
+                            btnRead.setOnClickListener(null);
+                            stopAnimation();
+                        });
 
-                            if (measurements != null) {
-                                long now = System.currentTimeMillis() / 1000L;
-                                //displayMeasurementsDialog(measurements);
-                                recLoggerData.addDataSet(loggerEPC, now, null, measurements);
-                            }
-                            btnReset.setVisibility(View.VISIBLE);
-                            btnReset.setOnClickListener(resetBtnListener);
-                            btnReset.callOnClick();
-                        } else {
-                            mActivity.get().getActivity().runOnUiThread(() -> {
-                                btnRead.setText("Failed. Press the button again.");
-                                stopAnimation();
-                            });
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        btnReset.setVisibility(View.VISIBLE);
+                        btnReset.setOnClickListener(resetBtnListener);
+                        btnReset.callOnClick();
+                    } else {
+                        mActivity.get().getActivity().runOnUiThread(() -> {
+                            btnRead.setText("Failed. Press the button again.");
+                            stopAnimation();
+                        });
                     }
                     break;
 
                 case CmdReadSamplesCnt:
-                    //String initTime = cmd.ReadInitDatetime();
                     cntSamples = msg.getData().getShort("body");
                     if (cntSamples == null || cntSamples < 0) {
                         mActivity.get().getActivity().runOnUiThread(() -> {
@@ -429,7 +490,6 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                         btnInit.setEnabled(true);
                         btnInit.setText("Start Logging.");
                     }
-
                     break;
 
                 case CmdRESET:
@@ -491,7 +551,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                                 btnInit.setOnClickListener(null);
 
                                 readyToDismiss = true;
-                                //getDialog().dismiss();
+                                getDialog().dismiss();
                             });
                         } else {
                             mActivity.get().getActivity().runOnUiThread(() -> {
@@ -502,29 +562,15 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                     } catch(Exception e) { }
                     break;
 
-                case CmdValidate:
-                    String resValidate = msg.getData().getString("body");
-                    try {
-                        btnValidate.setText(String.format("CTRL: %s", resValidate));
-                        mActivity.get().getActivity().runOnUiThread(() -> {
-                            btnValidate.setText(String.format("CTRL: %s", resValidate));
-                        });
-
-                        if(readyToDismiss) {
-                            Thread.sleep(2000l);
-                            getDialog().dismiss();
-                        } else {
-
-                        }
-                    } catch(Exception e) {
-                        e.printStackTrace();
+                case 1980:
+                    if(readyToDismiss) {
+                        getDialog().dismiss();
                     }
                     break;
+                case 1900:
+                    CToast(getActivity(), render("Could not detect Logger!!\nPlease change your position!"), Toast.LENGTH_SHORT);
+                    getDialog().dismiss();
 
-                case 1980:
-                    if (!IsDemo) {
-                        //CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
-                    }
                     break;
             }
         }
