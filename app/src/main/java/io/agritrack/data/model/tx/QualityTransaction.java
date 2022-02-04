@@ -109,6 +109,9 @@ public class QualityTransaction {
     @ColumnInfo(name = "user_id")
     public String user;
 
+    @ColumnInfo(name = "state")
+    public String state;
+
     @ColumnInfo(name = "longitude")
     public Double longitude;
 

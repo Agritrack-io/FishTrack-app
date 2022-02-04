@@ -260,8 +260,9 @@ public class GlobalState {
             //txProcess.remarks = recProcessing.remarks;
             txQuality.qualityBins = recQuality.qualityBins;
             txQuality.user = LocalPreferences.getLoggedInUser("N/A");
-            txQuality.site = LocalPreferences.getCurrentSiteId().toString();
+            txQuality.site = LocalPreferences.getCurrentSiteName();
             txQuality.timestamp = System.currentTimeMillis();
+            //txQuality.state = recQuality.qualityProcessing;
             txQuality.longitude = recQuality.longitude;
             txQuality.latitude = recQuality.latitude;
 

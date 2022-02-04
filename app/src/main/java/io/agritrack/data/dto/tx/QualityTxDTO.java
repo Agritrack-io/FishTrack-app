@@ -38,12 +38,14 @@ public class QualityTxDTO {
     public Integer pink;
     public Integer dark;
     public Integer white;
+    public Integer uncolored;
     public Integer hematomas;
     public Integer mucus;
     public Integer problematic_fish;
     public String packaging_site;
     public String harvest_load;
     public String user;
+    public String state;
     public Double longitude;
     public Double latitude;
 
@@ -73,11 +75,13 @@ public class QualityTxDTO {
         qualityTxDto.pink = quality.pink;
         qualityTxDto.dark = quality.dark;
         qualityTxDto.white = quality.white;
+        qualityTxDto.uncolored = quality.uncolored;
         qualityTxDto.hematomas = quality.hematomas;
         qualityTxDto.mucus = quality.mucus;
         qualityTxDto.problematic_fish = quality.problematicFish;
         qualityTxDto.packaging_site = quality.site;
         qualityTxDto.user = quality.user;
+        qualityTxDto.state = quality.state;
         qualityTxDto.timestamp = quality.timestamp;
         qualityTxDto.longitude = quality.longitude;
         qualityTxDto.latitude = quality.latitude;
