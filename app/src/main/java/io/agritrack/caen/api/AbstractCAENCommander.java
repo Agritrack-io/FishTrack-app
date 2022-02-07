@@ -43,6 +43,8 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     // ##########################
     abstract public void setFilterEPC(String epc);
 
+    abstract public boolean clearEPCFilter();
+
     abstract protected byte[] ReadRegisters(short address, short length) throws Exception;
 
     abstract protected Reader.READER_ERR WriteRegisters(short address, Object data) throws Exception;
@@ -253,9 +255,10 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     public String ReadControlRegister() {
         try {
             byte[] ctrlRS = ReadRegisters(ADDR_CONTROL, SHORT_ONE);
-            String hexRS = Tools.Bytes2HexString(ctrlRS, ctrlRS.length);
+            String binaryText = Integer.toBinaryString(ToShort(ctrlRS));
+            binaryText = binaryText.length() > 5 ? binaryText.substring(0, 5) : binaryText;
             //if(!"0004".equalsIgnoreCase(hexRS))
-                return String.format("%5s", Integer.toBinaryString(ToShort(ctrlRS))).replace(' ', '0');
+                return String.format("%5s", binaryText).replace(' ', '0');
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -5,6 +5,7 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdReadData;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdReadSamplesCnt;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdSETUP;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdSTOP;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteInterval;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBINZero;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
@@ -95,7 +96,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
             // set button text to current CONTROL Register state
             btnValidate.setText(String.format("CTRL: %s", renderCTRLStatus(ctrlState)));
 
-            try {Thread.sleep(2000l);} catch(Exception x) {}
+            try {Thread.sleep(500l);} catch(Exception x) {}
 
             // return to validate
             mScanHandler.post(validateThread);
@@ -119,8 +120,12 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                 mScanHandler.post(readCTRLThread);
             }
 
-            if(State.STOP_LOGGER.equals(state) && ctrlState.charAt(LE_BIT)=='0' ) {
-                mScanHandler.post(readSamplesCntThread);
+            if(State.STOP_LOGGER.equals(state)) {
+                if(ctrlState.charAt(LE_BIT)=='0') {
+                    mScanHandler.post(readSamplesCntThread);
+                } else {
+                    mScanHandler.sendMessage(createMessage(CmdSTOP, Reader.READER_ERR.MT_CMD_FAILED_ERR));
+                }
             }
 
             if(State.RESET.equals(state)) {
@@ -129,6 +134,8 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                     mScanHandler.post(initLoggingThread);
                 } else if(++resetCnt < 3) {
                     mScanHandler.post(readCTRLThread);
+                } else if(++resetCnt > 3) {
+                    mScanHandler.sendMessage(createMessage(CmdRESET, Reader.READER_ERR.MT_CMD_FAILED_ERR));
                 }
             }
 
@@ -288,6 +295,9 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                 mScanHandler.post(readValuesThread);
             }
 
+            // validate result
+            mScanHandler.post(validateThread);
+
             // remove any pending message
             mScanHandler.removeCallbacks(this);
         }
@@ -394,6 +404,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     @Override
     public void onStart() {
         super.onStart();
+
         // instantiate Reader Module
         this.cmd = RFIDModuleFactory.getInstance();
 
@@ -556,6 +567,25 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                         } else {
                             mActivity.get().getActivity().runOnUiThread(() -> {
                                 btnReset.setText("Reset:: Failed");
+                                stopAnimation();
+                                mScanHandler.removeCallbacksAndMessages(null);
+                            });
+                        }
+                    } catch(Exception e) { }
+                    break;
+
+                case CmdSTOP:
+                    String resStop = msg.getData().getString("body");
+                    try {
+                        //-----------------------------------------------------------------------------
+                        if (Reader.READER_ERR.MT_OK_ERR.name().equals(resStop)) {
+                            mActivity.get().getActivity().runOnUiThread(() -> {
+                                btnRead.setText("Stop:: Success");
+                                stopAnimation();
+                            });
+                        } else {
+                            mActivity.get().getActivity().runOnUiThread(() -> {
+                                btnRead.setText("Stop:: Failed");
                                 stopAnimation();
                                 mScanHandler.removeCallbacksAndMessages(null);
                             });

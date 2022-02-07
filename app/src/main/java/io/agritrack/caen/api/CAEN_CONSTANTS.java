@@ -61,6 +61,7 @@ public class CAEN_CONSTANTS {
     public final static int WriteTimeBINOne = 1101;
     public final static int WriteTimeStamp = 1102;
     public final static int WriteInterval = 1103;
+    public final static int CmdSTOP = 10012;
     public final static int CmdRESET = 10013;
     public final static int CmdINIT = 10014;
     public final static int CmdReadData = 10015;
