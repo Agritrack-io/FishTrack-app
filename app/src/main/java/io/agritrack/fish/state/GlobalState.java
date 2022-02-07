@@ -262,7 +262,7 @@ public class GlobalState {
             txQuality.user = LocalPreferences.getLoggedInUser("N/A");
             txQuality.site = LocalPreferences.getCurrentSiteName();
             txQuality.timestamp = System.currentTimeMillis();
-            //txQuality.state = recQuality.qualityProcessing;
+            txQuality.state = recQuality.state;
             txQuality.longitude = recQuality.longitude;
             txQuality.latitude = recQuality.latitude;
 

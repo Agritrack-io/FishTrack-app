@@ -238,6 +238,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
         GlobalState.recQuality.tempValues = listMeasurements;
         GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
         GlobalState.recQuality.logger_rfid = logger_rfid;
+        GlobalState.recQuality.state = "PROCESSING";
     }
 
     private String validate() {

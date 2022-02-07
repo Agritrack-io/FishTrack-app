@@ -248,6 +248,11 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         GlobalState.recQuality.qualityProcessing = intentForProcessing;
         GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
         GlobalState.recQuality.logger_rfid = logger_rfid;
+        if (intentForProcessing){
+            GlobalState.recQuality.state = "PROCESSING";
+        } else {
+            GlobalState.recQuality.state = "STORAGE";
+        }
     }
 
     private String validate() {
