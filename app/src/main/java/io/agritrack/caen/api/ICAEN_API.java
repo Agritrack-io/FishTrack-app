@@ -15,6 +15,8 @@ public interface ICAEN_API {
 
     void setFilterEPC(String epc);
 
+    boolean clearEPCFilter();
+
     // ########################
     // ###  public methods  ###
     // ########################

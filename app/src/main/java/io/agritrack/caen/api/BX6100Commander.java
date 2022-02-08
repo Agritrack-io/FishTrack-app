@@ -100,6 +100,11 @@ public class BX6100Commander extends AbstractCAENCommander {
         this.mUhfRManager.setInventoryFilter(this.epcBytes, EPCBANK, filterStartAddress, true);
     }
 
+    @Override
+    public boolean clearEPCFilter() {
+        return this.mUhfRManager.setCancleInventoryFilter();
+    }
+
     private byte[] readTagDataByFilter(int memBank, short startAddress, short len) {
         return mUhfRManager.getTagDataByFilter(memBank, startAddress, len, accessPassword, timeout, epcBytes, EPCBANK, filterStartAddress, true);
     }

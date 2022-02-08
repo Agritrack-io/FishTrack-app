@@ -69,6 +69,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
     private Button btnScanPole;
 
     private String loggerEPC;
+    FragmentManager fm = getSupportFragmentManager();
 
 
     @Override
@@ -229,7 +230,6 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
 
                             if (logger != null && !Strings.isEmptyOrWhitespace(logger.rfid)) {
                                 loggerEPC = logger.rfid;
-                                FragmentManager fm = getSupportFragmentManager();
                                 LoggerInitFruitDialogFragment loggerDlg = LoggerInitFruitDialogFragment.newInstance(logger.rfid);
                                 loggerDlg.show(fm, LoggerInitFruitDialogFragment.TAG);
                             } else if (!IsDemo) {

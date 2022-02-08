@@ -46,6 +46,10 @@ public class BX6200Commander extends AbstractCAENCommander  {
         this.uhfReader.selectEPC(epcBytes);
     }
 
+    @Override
+    public boolean clearEPCFilter() {
+        return (this.uhfReader.unSelectEPC()>0);
+    }
 
     // #########################
     // ###  Private Methods  ###

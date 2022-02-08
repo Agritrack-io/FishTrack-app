@@ -14,6 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APIServiceGenerator {
 
     private static final String BASE_URL = "http://192.168.1.12:5000"; //"http://3.68.68.173:5000"; //"http://192.168.1.4:5000"; //http://fishtrack-be-dev.eu-central-1.elasticbeanstalk.com";
+
     private static final Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
     private static Retrofit retrofit = retrofitBuilder.build();
     private static final OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
