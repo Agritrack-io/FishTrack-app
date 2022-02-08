@@ -2,11 +2,8 @@ package io.agritrack.fish.ui.quality.receipt;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,10 +20,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
+
 import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
-import io.agritrack.common.InputFilterMinMax;
 import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
@@ -37,6 +36,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
     private static final int pic_id = 123;
     private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
     private EditText mtvRemarks, etPlot, etFishTemp;
+    private TextView  tvTempBin;
     private PhotoDialog photoDialog;
     private ImageView ivTakenPhoto;
 
@@ -163,10 +163,15 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
         ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
         ivSupport = findViewById(R.id.ivSupport);
+        tvTempBin = findViewById(R.id.tvTempBin);
     }
 
     private void initControlsFromState() {
         QualityRecord qltTx = GlobalState.recQuality;
+
+        if(recLoggerData.avgT != null) {
+            tvTempBin.setText(String.format("%.1f", recLoggerData.avgT));
+        }
 
         if (!Strings.isEmptyOrWhitespace(qltTx.remarks)) {
             mtvRemarks.setText(qltTx.remarks);

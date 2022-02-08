@@ -15,22 +15,23 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IFillFormatter;
-import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.fish.state.LoggerDataRecord;
 
-public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureProfileAdapter.ViewHolder>{
-    private LayoutInflater mLayoutInflater = null;
-    public  Context context;
-    private ArrayList<String> listOfEPCs = new ArrayList<>();
+public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureProfileAdapter.ViewHolder> {
     private static LineDataSet set1;
+    public Context context;
+    private LayoutInflater mLayoutInflater = null;
+    private ArrayList<String> listOfEPCs = new ArrayList<>();
     private double highT, avgT, lowT;
     private Map<String, LoggerDataRecord.TemperatureModel> mapOfData;
 
@@ -40,7 +41,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
         this.context = ctx;
         this.listOfEPCs = new ArrayList<>(data.keySet());
 
-        DoubleSummaryStatistics stats = data.values().stream().flatMap(y->y.values.stream()).mapToDouble(x -> Double.valueOf(x[1])).summaryStatistics();
+        DoubleSummaryStatistics stats = data.values().stream().flatMap(y -> y.values.stream()).mapToDouble(x -> Double.valueOf(x[1])).summaryStatistics();
         this.highT = stats.getMax();
         this.lowT = stats.getMin();
         this.avgT = stats.getAverage();
@@ -64,13 +65,14 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
         String key = listOfEPCs.get(position);
         LoggerDataRecord.TemperatureModel model = mapOfData.get(key);
 
-        if(model!=null) {
+        if (model != null) {
             DoubleSummaryStatistics stats = model.values.stream().mapToDouble(x -> Double.valueOf(x[1].replace(',', '.'))).summaryStatistics();
 
             _highT = stats.getMax();
             _lowT = stats.getMin();
             _avgT = stats.getAverage();
 
+            holder.setMeasurements(key, model.values);
             holder.tvBinEPC.setText(key);
             holder.tvHigh.setText(String.format("%.2f\u2103", _highT));
             holder.tvAvg.setText(String.format("%.2f\u2103", _avgT));
@@ -80,8 +82,8 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
 
     @Override
     public int getItemCount() {
-        if(listOfEPCs == null){
-            return  0;
+        if (listOfEPCs == null) {
+            return 0;
         } else {
             return listOfEPCs.size();
         }
@@ -98,7 +100,6 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
         public LineChart temperatureChart;
         public LineData data;
         public CardView cardView;
-        public ArrayList<Entry> values;
         public TextView tvBinEPC;
         public TextView tvHigh;
         public TextView tvAvg;
@@ -114,13 +115,9 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             tvHigh = itemView.findViewById(R.id.tvHigh);
             tvAvg = itemView.findViewById(R.id.tvAvg);
             tvLow = itemView.findViewById(R.id.tvLow);
-
-            setData(10,3f);
-            customiseChart();
         }
 
-        private void customiseChart()
-        {
+        private void customiseChart() {
             temperatureChart.getDescription().setEnabled(false);
             temperatureChart.setDrawGridBackground(true);
             temperatureChart.setDragEnabled(false);
@@ -128,10 +125,10 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             temperatureChart.setScaleEnabled(true);
             temperatureChart.setScaleYEnabled(false);
             temperatureChart.setScaleXEnabled(true);
-            temperatureChart.getXAxis().setEnabled(true);
+            temperatureChart.getXAxis().setEnabled(false);
             temperatureChart.getLineData().setDrawValues(false);
             temperatureChart.getXAxis().setDrawGridLines(false);
-            temperatureChart.getXAxis().setDrawAxisLine(false);
+            temperatureChart.getXAxis().setDrawAxisLine(true);
             temperatureChart.getAxisLeft().setDrawGridLines(true);
             temperatureChart.getAxisRight().setDrawGridLines(false);
             temperatureChart.getAxisRight().setDrawZeroLine(true);
@@ -148,46 +145,26 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             temperatureChart.setPinchZoom(false);
         }
 
-        private void setData(int count, float range) {
+        public void setMeasurements(String key, List<String[]> measurements) {
+            AtomicInteger idx = new AtomicInteger();
+            ArrayList<Entry> values = (ArrayList<Entry>) measurements.stream().map(x -> new Entry(idx.incrementAndGet(), Float.valueOf(x[1]))).collect(Collectors.toList());
 
-            values = new ArrayList<>();
-
-            values.add(new Entry(1,10f));
-            values.add(new Entry(2,12f));
-            values.add(new Entry(3,8f));
-            values.add(new Entry(4,12f));
-            values.add(new Entry(5,3f));
-            values.add(new Entry(6,4f));
-            values.add(new Entry(7,4f));
-            values.add(new Entry(8,5f));
-            values.add(new Entry(9,2f));
-            values.add(new Entry(10,3f));
-            values.add(new Entry(11,9f));
-            values.add(new Entry(12,4f));
-            values.add(new Entry(13,7f));
-            values.add(new Entry(14,10));
-
-
-
-            set1 = new LineDataSet(values, "DataSet 1");
+            set1 = new LineDataSet(values, key);
             set1.setDrawCircles(false);
             set1.setDrawFilled(true);
             set1.setLineWidth(1f);
             set1.setColor(Color.GREEN);
             set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
             set1.setDrawFilled(true);
-            set1.setFillFormatter(new IFillFormatter() {
-                @Override
-                public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
-                    return temperatureChart.getAxisLeft().getAxisMinimum();
+            set1.setFillFormatter((dataSet, dataProvider) -> temperatureChart.getAxisLeft().getAxisMinimum());
 
-                }
-            });
             ArrayList<ILineDataSet> dataSets = new ArrayList<>();
             dataSets.add(set1);
-            data = new LineData(dataSets);
 
+            data = new LineData(dataSets);
             temperatureChart.setData(data);
+
+            customiseChart();
         }
     }
 }

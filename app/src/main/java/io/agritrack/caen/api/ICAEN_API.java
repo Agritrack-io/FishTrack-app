@@ -9,7 +9,7 @@ import io.agritrack.caen.pojo.RFIDTag;
 
 public interface ICAEN_API {
     Short DefaultInterval = (short) (30); // (5); //(900); //(3600);
-    Short SampleBatchSize = 30;
+    Short SampleBatchSize = 80;
     byte[] accessPassword = Tools.HexString2Bytes("00000000");
 
 

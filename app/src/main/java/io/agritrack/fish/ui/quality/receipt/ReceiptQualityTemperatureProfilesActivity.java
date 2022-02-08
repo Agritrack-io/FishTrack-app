@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.util.DoubleSummaryStatistics;
 import java.util.Map;
 
 import io.agritrack.R;
@@ -74,11 +75,11 @@ public class ReceiptQualityTemperatureProfilesActivity extends AppCompatActivity
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToPackageQualityInfo);
         ivNext.setOnClickListener(view -> {
-            updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render("Errors : " + v), Toast.LENGTH_LONG);
             } else {
+                updateState();
                 Intent i = new Intent(getApplicationContext(), ReceiptQualityInfoActivity.class);
                 startActivity(i);
             }
@@ -108,5 +109,15 @@ public class ReceiptQualityTemperatureProfilesActivity extends AppCompatActivity
 
     private void updateState() {
 
+        if (recLoggerData.data != null && recLoggerData.data.size() > 0) {
+            DoubleSummaryStatistics stats = recLoggerData.data.values().stream()
+                                                .flatMap(x -> x.values.stream())
+                                                .mapToDouble(x -> Double.valueOf(x[1].replace(',', '.')))
+                                                .summaryStatistics();
+
+            recLoggerData.highT = stats.getMax();
+            recLoggerData.lowT = stats.getMin();
+            recLoggerData.avgT = stats.getAverage();
+        }
     }
 }
