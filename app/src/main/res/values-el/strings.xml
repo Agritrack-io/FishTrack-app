@@ -217,7 +217,10 @@
     <string name="up_item_inventory_asset">[Σκάναρε RFID]</string>
     <string name="down_item_inventory_consumable">[Σκάναρε barcode]</string>
     <string name="inventory_item_label">Είδη απογραφής</string>
+    <string name="inventory_header">Τύπος\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Περιγραφή\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0#</string>
     <string name="choose_inventory_type">Επιλέξτε τύπο αντικειμένου</string>
+    <string name="inventory_codes">Κωδικοί:</string>
+    <string name="inventory_items">Τεμάχια:</string>
     <string name="asset_type">Συνεχίστε για να σκανάρετε RFID</string>
     <string name="consumable_type">Συνεχίστε για να σκανάρετε BARCODE</string>
 

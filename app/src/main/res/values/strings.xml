@@ -217,7 +217,10 @@
     <string name="down_item_inventory_consumable">[Scan barcode]</string>
     <string name="inventory_details">Inventory details</string>
     <string name="inventory">Inventory</string>
+    <string name="inventory_header">Code\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Description\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0#</string>
     <string name="inventory_item_label">Items</string>
+    <string name="inventory_codes">Codes:</string>
+    <string name="inventory_items">Items:</string>
     <string name="choose_inventory_type">Select item type</string>
     <string name="asset_type">Continue to scan asset RFID</string>
     <string name="consumable_type">Continue to scan consumable BARCODE</string>
@@ -412,7 +415,6 @@
     <string name="items">Items</string>
     <string name="scan_palette">Scan Palette</string>
     <string name="number_of_palette"># of Palette:</string>
-    <string name="type_rfid">Please confirm your selection</string>
 
     <string name="scan_rfid">Scan RFID</string>
     <string name="pole_barcode">Pole</string>

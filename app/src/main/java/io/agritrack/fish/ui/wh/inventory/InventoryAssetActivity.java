@@ -87,7 +87,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
     private ProgressDialog progressDialog;
 
     private ImageView ivSupport;
-    private TextView tvGroupsCnt;
+    private TextView tvGroupsCnt, tvItemsCnt;
     private SupportDialog supportDialog;
 
     @Override
@@ -123,6 +123,9 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
         // display groups counter
         tvGroupsCnt.setVisibility(View.VISIBLE);
+
+        // display items counter
+        tvItemsCnt.setVisibility(View.VISIBLE);
 
         xvInventoryItems.setOnGroupClickListener((parent, v, groupPosition, id) -> {
             clearSelectedItem();
@@ -166,6 +169,8 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
                     if (barcode != null) {
                         adapterInventoryItems.removeItem(selectedParent, selectedChild);
                         adapterInventoryItems.notifyDataSetChanged();
+                        tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
+                        tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
                         selectedBarcode = null;
                         selectedChild = null;
                     }
@@ -184,6 +189,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
                         adapterInventoryItems.removeAll();
                         adapterInventoryItems.notifyDataSetChanged();
                     tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
+                    tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
                 });
 
                 confirmSiteSelectionDlg.onReject(bundle -> {
@@ -248,6 +254,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         tgChooseAssetType.setOnCheckedChangeListener(this);
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
+        tvItemsCnt = findViewById(R.id.tvItemsCnt);
     }
 
     protected void configFooter() {
@@ -459,6 +466,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
                     }
                     adapterInventoryItems.notifyDataSetChanged();
                     tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
+                    tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
                     break;
                 case 1980:
                     if (!IsDemo) {

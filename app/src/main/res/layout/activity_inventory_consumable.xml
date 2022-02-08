@@ -256,7 +256,6 @@ tools:context=".fish.ui.wh.inventory.InventoryConsumableActivity">
                 android:layout_marginTop="8dp"
                 android:background="@drawable/border_bottom"
                 android:gravity="center"
-                android:inputType="number"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textIsSelectable="false"

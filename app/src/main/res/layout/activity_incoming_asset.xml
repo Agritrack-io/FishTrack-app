@@ -284,6 +284,7 @@
                     android:layout_height="60dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="12dp"
+                    android:layout_marginStart="24dp"
                     android:background="@drawable/button_press_effect"
                     android:text="@string/scan_assets"
                     android:textColor="@color/yellow"
@@ -303,7 +304,7 @@
                     android:layout_marginEnd="8dp"
                     android:gravity="center_vertical"
                     android:paddingStart="22dp"
-                    android:text="Type          Description                          #"
+                    android:text="@string/inventory_header"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toTopOf="@+id/xvIncomingItems"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -315,7 +316,6 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="8dp"
-
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/bg_rounded_input_spinner"
@@ -327,6 +327,76 @@
                     app:layout_constraintTop_toBottomOf="@+id/tvHeaders">
 
                 </ExpandableListView>
+
+                <TextView
+                    android:id="@+id/tvGroupsCntLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/inventory_codes"
+                    android:textColor="@color/black"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvItemsCntLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/tvGroupsCnt"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems" />
+
+                <TextView
+                    android:id="@+id/tvGroupsCnt"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toTopOf="@+id/tvItemsCnt"
+                    app:layout_constraintEnd_toStartOf="@+id/btnScanAsset"
+                    app:layout_constraintStart_toEndOf="@+id/tvGroupsCntLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems" />
+
+                <TextView
+                    android:id="@+id/tvItemsCntLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/inventory_items"
+                    android:textColor="@color/black"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tvItemsCnt"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvGroupsCntLabel" />
+
+                <TextView
+                    android:id="@+id/tvItemsCnt"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnScanAsset"
+                    app:layout_constraintStart_toEndOf="@+id/tvItemsCntLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvGroupsCnt" />
 
                 <ImageButton
                     android:id="@+id/ivDeleteItem"
@@ -344,6 +414,7 @@
                     android:layout_height="48dp"
                     android:layout_marginStart="8dp"
                     android:background="@color/transparent"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems"
                     app:srcCompat="@drawable/ic_add_stock_opname" />

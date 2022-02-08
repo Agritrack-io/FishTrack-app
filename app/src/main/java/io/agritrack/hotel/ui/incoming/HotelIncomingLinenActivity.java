@@ -91,7 +91,7 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
     private ProgressDialog progressDialog;
 
     private ImageView ivSupport;
-    private TextView tvGroupsCnt;
+    private TextView tvGroupsCnt, tvItemsCnt;
     private SupportDialog supportDialog;
 
     @Override
@@ -128,6 +128,9 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
         // display groups counter
         tvGroupsCnt.setVisibility(View.VISIBLE);
 
+        // display items counter
+        tvItemsCnt.setVisibility(View.VISIBLE);
+
         xvIncomingItems.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
@@ -162,6 +165,7 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        // onClick button event handling...
         ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
@@ -176,6 +180,8 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
                     if (barcode != null) {
                         adapterIncomingItems.removeItem(selectedParent, selectedChild);
                         adapterIncomingItems.notifyDataSetChanged();
+                        tvGroupsCnt.setText(String.valueOf(adapterIncomingItems.getGroupCount()));
+                        tvItemsCnt.setText(String.valueOf(adapterIncomingItems.getItemsCount()));
                         selectedBarcode = null;
                         selectedChild = null;
                     }
@@ -183,9 +189,28 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else {
+            } else if (adapterIncomingItems.getGroupCount()>0){
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+                // instantiate Site selection confirm dialog
+                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
+                //confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_all_items));
+
+                confirmSiteSelectionDlg.onConfirm(bundle -> {
+                    adapterIncomingItems.removeAll();
+                    adapterIncomingItems.notifyDataSetChanged();
+                    tvGroupsCnt.setText(String.valueOf(adapterIncomingItems.getGroupCount()));
+                    tvItemsCnt.setText(String.valueOf(adapterIncomingItems.getItemsCount()));
+                });
+
+                confirmSiteSelectionDlg.onReject(bundle -> {
+                    CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+                });
+
+                FragmentManager fm = getSupportFragmentManager();
+                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            } else {
+                CToast(getApplicationContext(), render("Item list is empty!!"), Toast.LENGTH_LONG);
             }
         });
 
@@ -284,6 +309,7 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
         ivSupport = findViewById(R.id.ivSupport);
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
+        tvItemsCnt = findViewById(R.id.tvItemsCnt);
     }
 
     private boolean updateState() {
@@ -494,6 +520,7 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
                         adapterIncomingItems.notifyDataSetChanged();
                     }
                     tvGroupsCnt.setText(String.valueOf(adapterIncomingItems.getGroupCount()));
+                    tvItemsCnt.setText(String.valueOf(adapterIncomingItems.getItemsCount()));
                     break;
                 case 1980:
                     if (!IsDemo) {

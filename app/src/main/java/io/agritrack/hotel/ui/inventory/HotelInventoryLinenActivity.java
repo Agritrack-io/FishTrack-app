@@ -85,7 +85,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
     private ProgressDialog progressDialog;
 
     private ImageView ivSupport;
-    private TextView tvGroupsCnt;
+    private TextView tvGroupsCnt, tvItemsCnt;
     private SupportDialog supportDialog;
 
 
@@ -123,6 +123,9 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
 
         // display groups counter
         tvGroupsCnt.setVisibility(View.VISIBLE);
+
+        // display items counter
+        tvItemsCnt.setVisibility(View.VISIBLE);
 
         xvInventoryItems.setOnGroupClickListener((parent, v, groupPosition, id) -> {
             clearSelectedItem();
@@ -166,6 +169,8 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
                     if (barcode != null) {
                         adapterInventoryItems.removeItem(selectedParent, selectedChild);
                         adapterInventoryItems.notifyDataSetChanged();
+                        tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
+                        tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
                         selectedBarcode = null;
                         selectedChild = null;
                     }
@@ -173,9 +178,28 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else {
+            } else if (adapterInventoryItems.getGroupCount()>0){
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+                // instantiate Site selection confirm dialog
+                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
+                //confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_all_items));
+
+                confirmSiteSelectionDlg.onConfirm(bundle -> {
+                    adapterInventoryItems.removeAll();
+                    adapterInventoryItems.notifyDataSetChanged();
+                    tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
+                    tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
+                });
+
+                confirmSiteSelectionDlg.onReject(bundle -> {
+                    CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+                });
+
+                FragmentManager fm = getSupportFragmentManager();
+                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            } else {
+                CToast(getApplicationContext(), render("Item list is empty!!"), Toast.LENGTH_LONG);
             }
         });
 
@@ -230,6 +254,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
         tgChooseAssetType.setOnCheckedChangeListener(this);
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
+        tvItemsCnt = findViewById(R.id.tvItemsCnt);
     }
 
     protected void configFooter() {
@@ -435,6 +460,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
                     }
                     adapterInventoryItems.notifyDataSetChanged();
                     tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
+                    tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
                     break;
                 case 1980:
                     if (!IsDemo) {

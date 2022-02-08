@@ -69,6 +69,7 @@ public class IncomingConsumableActivity extends LocationAwareActivity implements
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
     private boolean scanning = false;
     private BarcodeScanService scanService;
     private BarcodeRecyclerAdapter adapterIncomingItems = null;
@@ -77,7 +78,8 @@ public class IncomingConsumableActivity extends LocationAwareActivity implements
 
     private ProgressDialog progressDialog;
 
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivNext, ivBack;
+    private boolean proceedWithoutLocation = false;
     private SupportDialog supportDialog;
 
     // BroadcastReceiver to receiver scan data
@@ -134,6 +136,17 @@ public class IncomingConsumableActivity extends LocationAwareActivity implements
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(IncomingConsumableActivity.this);
@@ -199,6 +212,19 @@ public class IncomingConsumableActivity extends LocationAwareActivity implements
         });
 
         configFooter();
+    }
+
+    private void moveToNextScreen(){
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
+            }
+        }
     }
 
     private void clearSelectedItem() {

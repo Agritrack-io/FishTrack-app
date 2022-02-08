@@ -24,7 +24,9 @@ public class SingleShotScanner implements Runnable {
     public SingleShotScanner(Handler handler) {
         super();
         uhfReader = RFIDModuleFactory.getInstance();
-        uhfReader.clearEPCFilter();
+        if (uhfReader!=null) {
+            uhfReader.clearEPCFilter();
+        }
         mScanHandler = handler;
     }
 

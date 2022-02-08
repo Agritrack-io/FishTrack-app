@@ -91,7 +91,7 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
     private ProgressDialog progressDialog;
 
     private ImageView ivSupport;
-    private TextView tvGroupsCnt;
+    private TextView tvGroupsCnt, tvItemsCnt;
     private SupportDialog supportDialog;
 
     @Override
@@ -121,6 +121,9 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
 
         // display groups counter
         tvGroupsCnt.setVisibility(View.VISIBLE);
+
+        // display items counter
+        tvItemsCnt.setVisibility(View.VISIBLE);
 
         xvOutgoingAssets.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -162,10 +165,11 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        // onClick button event handling...
         ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if (selectedParent!=null && selectedChild!=null) {
+            if (selectedParent != null && selectedChild != null) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                 confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
@@ -176,6 +180,8 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
                     if (barcode != null) {
                         adapterOutgoingItems.removeItem(selectedParent, selectedChild);
                         adapterOutgoingItems.notifyDataSetChanged();
+                        tvGroupsCnt.setText(String.valueOf(adapterOutgoingItems.getGroupCount()));
+                        tvItemsCnt.setText(String.valueOf(adapterOutgoingItems.getItemsCount()));
                         selectedBarcode = null;
                         selectedChild = null;
                     }
@@ -183,9 +189,28 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else {
+            } else if (adapterOutgoingItems.getGroupCount()>0){
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+                // instantiate Site selection confirm dialog
+                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
+                //confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_all_items));
+
+                confirmSiteSelectionDlg.onConfirm(bundle -> {
+                    adapterOutgoingItems.removeAll();
+                    adapterOutgoingItems.notifyDataSetChanged();
+                    tvGroupsCnt.setText(String.valueOf(adapterOutgoingItems.getGroupCount()));
+                    tvItemsCnt.setText(String.valueOf(adapterOutgoingItems.getItemsCount()));
+                });
+
+                confirmSiteSelectionDlg.onReject(bundle -> {
+                    CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+                });
+
+                FragmentManager fm = getSupportFragmentManager();
+                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            } else {
+                CToast(getApplicationContext(), render("Item list is empty!!"), Toast.LENGTH_LONG);
             }
         });
 
@@ -284,6 +309,7 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
         tgChooseAssetType.setOnCheckedChangeListener(this);
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
+        tvItemsCnt = findViewById(R.id.tvItemsCnt);
     }
 
     private boolean updateState() {
@@ -498,6 +524,7 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
                         adapterOutgoingItems.notifyDataSetChanged();
                     }
                     tvGroupsCnt.setText(String.valueOf(adapterOutgoingItems.getGroupCount()));
+                    tvItemsCnt.setText(String.valueOf(adapterOutgoingItems.getItemsCount()));
                     break;
                 case 1980:
                     if (!IsDemo) {

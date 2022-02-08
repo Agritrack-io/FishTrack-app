@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
@@ -31,6 +33,7 @@ import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
@@ -46,11 +49,13 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
 
     private ProgressDialog progressDialog;
     private TextView tvNumberOfBinsCount, tvDispatchNote, tvPackagingLot, tvSecurityClipNumber, tvUsername;
-
-    private ImageView ivSupport;
+    private EditText etPIN;
+    private ImageView ivSupport, ivNext, ivBack;
+    private boolean proceedWithoutLocation = false;
     private SupportDialog supportDialog;
 
     @Override
@@ -58,15 +63,26 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receipt_quality_confirm);
 
-        // activate GPS location update feature.
-        super.findLocation();
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
+
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(ReceiptQualityConfirmActivity.this);
@@ -83,31 +99,43 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         configFooter();
     }
 
+    private void moveToNextScreen() {
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+                startActivity(i);
+            }
+        }
+    }
+
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (mLastLocation != null) {
+                if (TextUtils.isEmpty(etPIN.getText().toString())) {
+                    CToast(ReceiptQualityConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
+                    return;
+                }
+                boolean userIsValid = isAuthenticated();
+                if (!userIsValid) {
+                    CToast(ReceiptQualityConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
+                    return;
+                } else if (mLastLocation != null) {
                     recQuality.longitude = mLastLocation.getLongitude();
                     recQuality.latitude = mLastLocation.getLatitude();
-                } else {
-                    CToast(ReceiptQualityConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
-                    startActivity(i);
+                    proceedWithoutLocation = true;
+                    moveToNextScreen();
+                } else if (!proceedWithoutLocation) {
+                    FragmentManager fm = getSupportFragmentManager();
+                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                 }
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToPackageQualityInfo);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), ReceiptQualityMoreInfo3Activity.class);
             startActivity(i);
@@ -121,6 +149,9 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         tvSecurityClipNumber = findViewById(R.id.tvSecurityClipNumber);
         tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToPackageQualityInfo);
+        etPIN = findViewById(R.id.etPasswordFishing);
     }
 
     private void initControlsFromState() {
@@ -139,63 +170,52 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }
 
+    private boolean isAuthenticated() {
+        String login = LocalPreferences.getLoggedInUser("").trim();
+        String pin = etPIN.getText().toString().trim();
+
+        // use typed-in PIN to compare credentials with those stored in the Local DB.
+        AuthenticationService authSvc = new AuthenticationService();
+        boolean authentication = authSvc.authenticateUser(this.db, login, pin);
+
+        return authentication;
+    }
+
     private boolean updateState() {
-        // get an instance of local DB
-        this.db = MobileDB.getInstance(getAppContext());
+        try {
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(render("Synchronizing data..."));
+            progressDialog.show();
 
-        EditText etPIN = findViewById(R.id.etPasswordProcessing);
-        if (!TextUtils.isEmpty(etPIN.getText().toString())) {
-            String login = LocalPreferences.getLoggedInUser("").trim();
-            String pin = etPIN.getText().toString().trim();
+            String token = LocalPreferences.getToken();
+            //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
-            // use typed-in PIN to compare credentials with those stored in the Local DB.
-            AuthenticationService authSvc = new AuthenticationService();
-            boolean authentication = authSvc.authenticateUser(this.db, login, pin);
+            // persist Processing Record data to local DB.
+            QualityTransaction tx = GlobalState.commitQuality(db);
 
-            // credentials do NOT match
-            if (!authentication) {
-                runOnUiThread(() -> CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG));
-                return false;
-            } else {
-                try {
-                    progressDialog.setCancelable(false);
-                    progressDialog.setMessage(render("Synchronizing data..."));
-                    progressDialog.show();
-
-                    String token = LocalPreferences.getToken();
-                    //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
-
-                    // persist Processing Record data to local DB.
-                    QualityTransaction tx = GlobalState.commitQuality(db);
-
-                    // persist Measurements Record data to local DB.
-                    List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db);
-                    List<MeasurementsDTO> measurementsDTOs = new ArrayList<>();
-                    for(TemperatureTimeSeries ts : measurements) {
-                        measurementsDTOs.add(MeasurementsDTO.convert(ts));
-                    }
-
-                    // sync Processing records
-                    Call<QualityTxDTO> syncTxAsyncCall = updService.syncQualityTx(QualityTxDTO.convert(tx), "Bearer " + token);
-                    syncTxAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncTxCallBack());
-
-                    // sync Measurements records
-                    if(!measurementsDTOs.isEmpty()) {
-                        Call<List<MeasurementsDTO>> syncMsAsyncCall = updService.syncMeasurements(measurementsDTOs, "Bearer " + token);
-                        syncMsAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncMsCallBack());
-                    }
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
-                    return false;
-                } finally {
-                    progressDialog.dismiss();
-                }
+            // persist Measurements Record data to local DB.
+            List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db);
+            List<MeasurementsDTO> measurementsDTOs = new ArrayList<>();
+            for (TemperatureTimeSeries ts : measurements) {
+                measurementsDTOs.add(MeasurementsDTO.convert(ts));
             }
-        } else {
-            runOnUiThread(() -> CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG));
+
+            // sync Processing records
+            Call<QualityTxDTO> syncTxAsyncCall = updService.syncQualityTx(QualityTxDTO.convert(tx), "Bearer " + token);
+            syncTxAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncTxCallBack());
+
+            // sync Measurements records
+            if (!measurementsDTOs.isEmpty()) {
+                Call<List<MeasurementsDTO>> syncMsAsyncCall = updService.syncMeasurements(measurementsDTOs, "Bearer " + token);
+                syncMsAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncMsCallBack());
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
             return false;
+        } finally {
+            progressDialog.dismiss();
         }
     }
 
