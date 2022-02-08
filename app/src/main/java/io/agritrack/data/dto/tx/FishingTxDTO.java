@@ -24,7 +24,7 @@ public class FishingTxDTO {
     public Double sea_temperature;
     public Integer total_quantity;
     public Short number_harvest_bins;
-    public List<String> harvest_bins = new LinkedList<String>();
+    public String harvest_bins_data;
     public List<String> team_members = new LinkedList<String>();
     public String status;
     public String temp_data;
@@ -37,7 +37,7 @@ public class FishingTxDTO {
 
     public static FishingTxDTO convert(FishingTransaction fishing) {
         FishingTxDTO fishingTxDTO = new FishingTxDTO();
-        fishingTxDTO.hlot = fishing.hlot;
+        //fishingTxDTO.hlot = fishing.hlot;
         fishingTxDTO.harvest_request = fishing.harvestRq;
         fishingTxDTO.platform_rfid = fishing.platformRFID;
         fishingTxDTO.cage_rfid = fishing.cageRFID;
@@ -54,7 +54,7 @@ public class FishingTxDTO {
         fishingTxDTO.sea_temperature = fishing.seaTemperature;
         fishingTxDTO.total_quantity = fishing.totalQty;
         fishingTxDTO.number_harvest_bins = fishing.harvestBinsCnt;
-        fishingTxDTO.harvest_bins = fishing.harvestBins;
+        fishingTxDTO.harvest_bins_data = fishing.harvestBinsData;
         fishingTxDTO.team_members = fishing.team;
         fishingTxDTO.status = fishing.txStatus.name();
         fishingTxDTO.user = fishing.user;

@@ -221,16 +221,13 @@ public class TransportBinsActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivBack = findViewById(R.id.ivBackToStartTransport);
-        ivBack.setOnClickListener(view -> {
-            stopScanner();
-            Intent i = new Intent(getApplicationContext(), TransportStartActivity.class);
-            startActivity(i);
-        });
-
         ImageView ivNext = findViewById(R.id.ivToDriverConfirm);
         ivNext.setOnClickListener(view -> {
-            stopScanner();
+            //Stop scanning since we navigate to next activity
+            if (scanner_runnable!=null) {
+                scanner_runnable.stopReading();
+            }
+
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -239,6 +236,17 @@ public class TransportBinsActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), TransportDriverConfirmActivity.class);
                 startActivity(i);
             }
+        });
+
+        ImageView ivBack = findViewById(R.id.ivBackToStartTransport);
+        ivBack.setOnClickListener(view -> {
+            //Stop scanning since we navigate to previous activity
+            if (scanner_runnable!=null) {
+                scanner_runnable.stopReading();
+            }
+
+            Intent i = new Intent(getApplicationContext(), TransportStartActivity.class);
+            startActivity(i);
         });
     }
 

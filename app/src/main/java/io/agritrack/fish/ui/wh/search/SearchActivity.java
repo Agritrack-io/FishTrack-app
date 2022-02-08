@@ -150,6 +150,11 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
     protected void configFooter() {
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
+            //Stop searching since we navigate to previous activity
+            if (mScanHandler !=null) {
+                mScanHandler.removeCallbacks(search_runnable);
+            }
+
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });
@@ -225,29 +230,29 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
 
     @Override
     protected void onStart() {
-        super.onStart();
         // Listen for Fn key press/release;
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.rfid.FUN_KEY");
         this.registerReceiver(keyReceiver, filter);
         this.uhfReader.HighPowerLevel();
+        super.onStart();
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
         this.uhfReader.LowPowerLevel();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
+        super.onDestroy();
     }
 
     protected void onClick(View view) {

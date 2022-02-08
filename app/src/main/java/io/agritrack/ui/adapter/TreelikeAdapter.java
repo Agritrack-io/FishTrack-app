@@ -153,4 +153,9 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
             this.keys.remove(parentPosition);
         }
     }
+
+    public void removeAll() {
+        this.mValues.clear();
+        this.keys.removeAll(this.mValues.keySet());
+    }
 }

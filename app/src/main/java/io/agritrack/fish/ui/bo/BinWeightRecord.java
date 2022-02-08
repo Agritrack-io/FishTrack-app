@@ -7,7 +7,7 @@ public class BinWeightRecord {
 
     private final Map<String, BinRecord> data = new HashMap<>();
 
-    public void addRecord(String binEPC, Double value) {
+    public void addRecord(String binEPC, Integer value) {
         this.data.put(binEPC, new BinRecord(binEPC, value));
     }
 
@@ -25,17 +25,17 @@ public class BinWeightRecord {
     }
 
     private class BinRecord {
-        private final Double value;
+        private final Integer value;
         private final String binEPC;
 
-        public BinRecord(String binEPC, Double value) {
+        public BinRecord(String binEPC, Integer value) {
             this.binEPC = binEPC;
             this.value = value;
         }
 
         @Override
         public String toString() {
-            return String.format("{binEPC:'%s', value:%.2f}", binEPC, value);
+            return String.format("{binEPC:'%s', weight:%04d}", binEPC, value);
         }
     }
 }

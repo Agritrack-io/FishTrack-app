@@ -182,6 +182,11 @@ public class HotelSearchActivity extends AppCompatActivity implements ToggleGrou
     protected void configFooter() {
         ImageView ivBack = findViewById(R.id.ivBackToHotelHome);
         ivBack.setOnClickListener(view -> {
+            //Stop searching since we navigate to previous activity
+            if (mScanHandler !=null) {
+                mScanHandler.removeCallbacks(search_runnable);
+            }
+
             Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
             startActivity(i);
         });

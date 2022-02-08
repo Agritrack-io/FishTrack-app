@@ -158,7 +158,7 @@ public class GlobalState {
             txFishing.requester = recFishing.requesterName;
             txFishing.totalQty = recFishing.totalFishWeight;
             txFishing.timestamp = System.currentTimeMillis();
-            txFishing.harvestBins = recFishing.availBins;
+            txFishing.harvestBinsData = recFishing.binWeightRecord.toJSONText();
             txFishing.team = recFishing.fishingTeam;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
             txFishing.tempData = recFishing.binTemperatureRecord.toJSONText();

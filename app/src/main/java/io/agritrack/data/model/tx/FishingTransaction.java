@@ -75,6 +75,9 @@ public class FishingTransaction {
     @ColumnInfo(name = "harvest_bins")
     public List<String> harvestBins;
 
+    @ColumnInfo(name = "harvest_bins_data")
+    public String harvestBinsData;
+
     @TypeConverters(StringListConverter.class)
     @ColumnInfo(name = "team_members")
     public List<String> team;
