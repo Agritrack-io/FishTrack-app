@@ -250,8 +250,8 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Stop scanning since we navigate to next activity
                 if (scanner_runnable!=null) {
-                    //Stop scanning since we navigate to next activity
                     scanner_runnable.stopReading();
                 }
 
@@ -270,8 +270,8 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         });
 
         ivBack.setOnClickListener(view -> {
+            //Stop scanning since we navigate to previous activity
             if (scanner_runnable!=null) {
-                //Stop scanning since we navigate to previous activity
                 scanner_runnable.stopReading();
             }
 

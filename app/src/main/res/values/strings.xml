@@ -344,6 +344,7 @@
     <string name="customers_sync_completed">Customers sync completed!</string>
     <string name="users_sync_completed">Users sync completed!</string>
     <string name="delete_selected_item">"About to delete: "</string>
+    <string name="delete_all_items">"Do you want to clear all items?"</string>
     <string name="select_site">Please select site</string>
     <string name="select_supplier">Please select supplier</string>
     <string name="select_customer">Please select customer</string>

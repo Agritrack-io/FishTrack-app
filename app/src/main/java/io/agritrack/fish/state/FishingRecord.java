@@ -6,6 +6,7 @@ import java.util.List;
 
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.fish.ui.bo.BinTemperatureRecord;
+import io.agritrack.fish.ui.bo.BinWeightRecord;
 
 public class FishingRecord {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
@@ -38,6 +39,7 @@ public class FishingRecord {
     public String notes;
     public String packagingPlant;
     public BinTemperatureRecord binTemperatureRecord = new BinTemperatureRecord();
+    public BinWeightRecord binWeightRecord = new BinWeightRecord();
 
     public FishingRecord() {
     }

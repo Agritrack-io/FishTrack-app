@@ -346,6 +346,7 @@
     <string name="customers_sync_completed">Οι πελάτες συγχονίστηκαν επιτυχώς!</string>
     <string name="users_sync_completed">Οι χρήστες συγχονίστηκαν επιτυχώς!</string>
     <string name="delete_selected_item">"Προς διαγραφή: "</string>
+    <string name="delete_all_items">"Θέλετε να διαγράψετε όλη τη λίστα?"</string>
     <string name="select_site">Παρακαλώ επιλέξτε χώρο</string>
     <string name="select_supplier">Παρακαλώ επιλέξτε προμηθευτή</string>
     <string name="select_customer">Παρακαλώ επιλέξτε πελάτη</string>

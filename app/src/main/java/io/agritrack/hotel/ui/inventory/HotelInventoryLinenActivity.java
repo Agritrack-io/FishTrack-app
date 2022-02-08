@@ -237,7 +237,10 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stopScanner();
+                //Stop scanning since we navigate to next activity
+                if (scanner_runnable!=null) {
+                    scanner_runnable.stopReading();
+                }
 
                 if (mLastLocation != null) {
                     recWHInventory.longitude = mLastLocation.getLongitude();
@@ -259,7 +262,11 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
 
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
-            stopScanner();
+            //Stop scanning since we navigate to previous activity
+            if (scanner_runnable!=null) {
+                scanner_runnable.stopReading();
+            }
+
             Intent i = new Intent(getApplicationContext(), HotelInventoryStartActivity.class);
             startActivity(i);
         });

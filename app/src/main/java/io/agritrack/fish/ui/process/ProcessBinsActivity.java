@@ -222,7 +222,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
         ImageView ivNext = findViewById(R.id.ivToSupervisorConfirm);
         ivNext.setOnClickListener(view -> {
             //Stop scanning since we navigate to next activity
-            if (this.scanner_runnable != null) {
+            if (scanner_runnable!=null) {
                 scanner_runnable.stopReading();
             }
 
@@ -239,7 +239,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
         ImageView ivBack = findViewById(R.id.ivBackToStartProcess);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
-            if (this.scanner_runnable != null) {
+            if (scanner_runnable!=null) {
                 scanner_runnable.stopReading();
             }
 

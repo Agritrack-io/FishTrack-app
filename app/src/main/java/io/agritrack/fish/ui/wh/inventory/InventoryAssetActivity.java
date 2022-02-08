@@ -173,9 +173,27 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else {
+            } else if (adapterInventoryItems.getGroupCount()>0){
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+                // instantiate Site selection confirm dialog
+                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
+                //confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_all_items));
+
+                confirmSiteSelectionDlg.onConfirm(bundle -> {
+                        adapterInventoryItems.removeAll();
+                        adapterInventoryItems.notifyDataSetChanged();
+                    tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
+                });
+
+                confirmSiteSelectionDlg.onReject(bundle -> {
+                    CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+                });
+
+                FragmentManager fm = getSupportFragmentManager();
+                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            } else {
+                CToast(getApplicationContext(), render("Item list is empty!!"), Toast.LENGTH_LONG);
             }
         });
 
@@ -237,7 +255,10 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stopScanner();
+                //Stop scanning since we navigate to next activity
+                if (scanner_runnable!=null) {
+                    scanner_runnable.stopReading();
+                }
 
                 if (mLastLocation != null) {
                     recWHInventory.longitude = mLastLocation.getLongitude();
@@ -259,7 +280,11 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
-            stopScanner();
+            //Stop scanning since we navigate to previous activity
+            if (scanner_runnable!=null) {
+                scanner_runnable.stopReading();
+            }
+
             Intent i = new Intent(getApplicationContext(), InventoryStartActivity.class);
             startActivity(i);
         });

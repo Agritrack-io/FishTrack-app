@@ -64,6 +64,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private TemplateRecyclerAdapter adapterCatches;
     private String mCatchWeight = "";
     private String currentBin;
+    private Integer weightOfBin;
     private BinLoadsMap loadsMap;
     private String selectedCatch;
     private ConstraintLayout selectedItem;
@@ -146,6 +147,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // =================================
         // Adding bin load completion functionality
         btnFillBin.setOnClickListener(view -> {
+            GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin);
             clearSelectedItem();
             btnCurrentBinScan.setEnabled(true);
             btnCurrentBinScan.setTextColor(getColor(R.color.aqua));
@@ -347,7 +349,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
             tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
             tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
-
+            weightOfBin = loadsMap.weightOf(currentBin);
             if (adapterCatches.getItemCount() != 0) {
                 btnDeleteCatch.setEnabled(true);
                 btnDeleteCatch.setTextColor(getColor(R.color.aqua));
