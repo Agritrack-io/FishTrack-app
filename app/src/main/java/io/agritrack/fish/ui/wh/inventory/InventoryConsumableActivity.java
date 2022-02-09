@@ -36,7 +36,6 @@ import java.util.List;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.barcode.BarcodeScanService;
-import io.agritrack.sound.SoundUtil;
 import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
@@ -49,6 +48,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.ConsumableType;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -60,13 +60,11 @@ import retrofit2.Response;
 
 public class InventoryConsumableActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
 
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private ToggleGroup tgChooseConsumableType;
-
     private String selectedConsumableType = ConsumableType.ALL.name();
     private String activeFilter = null;
     private int selectedToggleButton = -1;
-
-    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
 
     private RecyclerView rvInventoryItems;
@@ -74,14 +72,6 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
     private boolean scanning = false;
     private BarcodeScanService scanService;
     private BarcodeRecyclerAdapter adapterInventoryItems;
-    private String selectedBarcode;
-    private ConstraintLayout selectedItem;
-
-    private ProgressDialog progressDialog;
-
-    private ImageView ivSupport;
-    private SupportDialog supportDialog;
-
     // BroadcastReceiver to receiver scan data
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -96,7 +86,8 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
             }
         }
     };
-
+    private String selectedBarcode;
+    private ConstraintLayout selectedItem;
     // Instantiate a clickListener to be passed to adapterIncomingItems.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsOnClickListener = new View.OnClickListener() {
@@ -115,7 +106,11 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
             selectedItem = view;
         }
     };
-
+    private ProgressDialog progressDialog;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private boolean proceedWithoutLocation = false;
+    private ImageView ivSupport, ivNext, ivBack;
+    private SupportDialog supportDialog;
     private ImageButton ivAddItem, ivDeleteItem;
     private Button btnScanConsumable;
 
@@ -124,15 +119,23 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_consumable);
 
-        // activate GPS location update feature.
-        super.findLocation();
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderInventory);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(InventoryConsumableActivity.this);
@@ -201,6 +204,19 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
         configFooter();
     }
 
+    private void moveToNextScreen() {
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
+            }
+        }
+    }
+
     private void clearSelectedItem() {
         if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
@@ -222,30 +238,33 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        ivNext.setOnClickListener(view -> {
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            stopScanning();
 
-                if (mLastLocation != null) {
-                    recWHInventory.longitude = mLastLocation.getLongitude();
-                    recWHInventory.latitude = mLastLocation.getLatitude();
-                } else {
-                    CToast(InventoryConsumableActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
+            if (adapterInventoryItems != null) {
+                GlobalState.recWHInventory.barcodeItems = adapterInventoryItems.getValues();
+            }
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
 
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                      // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                    startActivity(i);
-                }
+            GlobalState.recWHInventory.consumableType = ConsumableType.valueOf(this.selectedConsumableType);
+            GlobalState.recWHInventory.site = LocalPreferences.getCurrentSiteName();
+            if (mLastLocation != null) {
+                recWHInventory.longitude = mLastLocation.getLongitude();
+                recWHInventory.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             //Set scanning to false to stop running scan thread
             scanning = false;
@@ -262,6 +281,8 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
         tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
         ivAddItem = findViewById(R.id.ivAddItem);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToWhMenu);
         btnScanConsumable = findViewById(R.id.btnScanConsumable);
         ivSupport = findViewById(R.id.ivSupport);
         tgChooseConsumableType.setOnCheckedChangeListener(this);
@@ -298,18 +319,6 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
     }*/
 
     private boolean updateState() {
-        if (adapterInventoryItems != null) {
-            GlobalState.recWHInventory.barcodeItems = adapterInventoryItems.getValues();
-        }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
-        }
-
-        GlobalState.recWHInventory.consumableType = ConsumableType.valueOf(this.selectedConsumableType);
-        GlobalState.recWHInventory.site = LocalPreferences.getCurrentSiteName();
-
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 

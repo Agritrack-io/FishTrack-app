@@ -62,18 +62,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OutgoingAssetActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
-
     private ScanHandler mScanHandler;
     private ScanInventoryThread scanner_runnable;
-
     private ToggleGroup tgChooseAssetType;
     private String selectedAssetType = AssetType.ALL.name();
     private String activeFilter = null;
-    private  int selectedToggleButton = -1;
-
-    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    private int selectedToggleButton = -1;
     private MobileDB db;
 
     private TreelikeAdapter adapterOutgoingItems;
@@ -89,8 +86,9 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
     private Integer selectedParent, selectedChild;
 
     private ProgressDialog progressDialog;
-
-    private ImageView ivSupport;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private boolean proceedWithoutLocation = false;
+    private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
 
     @Override
@@ -104,15 +102,23 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
         // initiate raw sound
         SoundUtil.initSoundPool(this);
 
-        // activate GPS location update feature.
-        super.findLocation();
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderOutgoingProcess);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(OutgoingAssetActivity.this);
@@ -188,7 +194,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else if (adapterOutgoingItems.getGroupCount()>0){
+            } else if (adapterOutgoingItems.getGroupCount() > 0) {
                 // <delete> Button was pressed without selecting a Bin first.
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
@@ -225,6 +231,19 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
         configFooter();
     }
 
+    private void moveToNextScreen() {
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
+            }
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -258,37 +277,39 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Stop scanning since we navigate to next activity
-                if (scanner_runnable!=null) {
-                    scanner_runnable.stopReading();
-                }
+        ivNext.setOnClickListener(view -> {
+            //Stop scanning since we navigate to next activity
+            if (scanner_runnable != null) {
+                scanner_runnable.stopReading();
+            }
 
-                if (mLastLocation != null) {
-                    recWHOutgoing.longitude = mLastLocation.getLongitude();
-                    recWHOutgoing.latitude = mLastLocation.getLatitude();
-                } else {
-                    CToast(OutgoingAssetActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
+            if (adapterOutgoingItems != null) {
+                GlobalState.recWHOutgoing.items = adapterOutgoingItems.getValues();
+            }
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
 
-                // Update state and proceed to next
-                Boolean proceed = updateState();
+            GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
+            GlobalState.recWHOutgoing.assetType = AssetType.valueOf(this.selectedAssetType);
+            GlobalState.recWHOutgoing.site = LocalPreferences.getCurrentSiteName();
 
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                    startActivity(i);
-                }
+            if (mLastLocation != null) {
+                recWHOutgoing.longitude = mLastLocation.getLongitude();
+                recWHOutgoing.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToStartOutgoing);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
-            if (scanner_runnable!=null) {
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -309,22 +330,11 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
         tvItemsCnt = findViewById(R.id.tvItemsCnt);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToStartOutgoing);
     }
 
     private boolean updateState() {
-        if (adapterOutgoingItems != null) {
-            GlobalState.recWHOutgoing.items = adapterOutgoingItems.getValues();
-        }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
-        }
-
-        GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
-        GlobalState.recWHOutgoing.assetType = AssetType.valueOf(this.selectedAssetType);
-        GlobalState.recWHOutgoing.site = LocalPreferences.getCurrentSiteName();
-
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
@@ -413,12 +423,12 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
 
-        if( selectedToggleButton == checkedId){
+        if (selectedToggleButton == checkedId) {
             group.clearCheck();
             return;
         }
         selectedToggleButton = checkedId;
-        switch(checkedId){
+        switch (checkedId) {
             case R.id.tbCage:
                 selectedAssetType = Constants.ftCage;
                 activeFilter = Filters.RFID_CAGE;
@@ -440,6 +450,34 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
                 activeFilter = null;
                 selectedToggleButton = -1;
                 break;
+        }
+    }
+
+    protected void onClick(View view) {
+        if (scanner_runnable == null) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable = new ScanInventoryThread(mScanHandler);
+            scanner_runnable.setFilter(activeFilter);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else if (!scanner_runnable.isReading()) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable.setFilter(activeFilter);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+            scanner_runnable.stopReading();
+            scanButton.setText(R.string.scan_assets);
+        }
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private void stopScanner() {
+        if (this.scanner_runnable != null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.scanner_runnable);
         }
     }
 
@@ -474,34 +512,6 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
         }
     }
 
-    protected void onClick(View view) {
-        if (scanner_runnable == null) {
-            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable = new ScanInventoryThread(mScanHandler);
-            scanner_runnable.setFilter(activeFilter);
-            scanner_runnable.startReading();
-            scanButton.setText(R.string.stop_scan);
-        } else if (!scanner_runnable.isReading()) {
-            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable.setFilter(activeFilter);
-            scanner_runnable.startReading();
-            scanButton.setText(R.string.stop_scan);
-        } else {
-            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-            scanner_runnable.stopReading();
-            scanButton.setText(R.string.scan_assets);
-        }
-        mScanHandler.postDelayed(scanner_runnable, 0);
-    }
-
-    // ###################################################
-    private void stopScanner() {
-        if(this.scanner_runnable !=null) {
-            this.scanner_runnable.stopReading();
-            mScanHandler.removeCallbacks(this.scanner_runnable);
-        }
-    }
-
     private class ScanHandler extends Handler {
         private final WeakReference<OutgoingAssetActivity> mActivity;
 
@@ -516,7 +526,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        Map<String, List<String>> values = epcList.stream().map(x->x.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
+                        Map<String, List<String>> values = epcList.stream().map(x -> x.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
 
                         if (adapterOutgoingItems == null) {
                             adapterOutgoingItems = new TreelikeAdapter(mActivity.get(), values);

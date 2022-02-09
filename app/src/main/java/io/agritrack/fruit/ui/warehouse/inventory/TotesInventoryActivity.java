@@ -249,6 +249,10 @@ public class TotesInventoryActivity extends LocationAwareActivity {
 
     protected void configFooter() {
         ivNext.setOnClickListener(view -> {
+            //Stop scanning since we navigate to next activity
+            if (scanner_runnable!=null) {
+                scanner_runnable.stopReading();
+            }
             if (adapterTotes != null) {
                 recInventory.totesItems = adapterTotes.getValues();
             }

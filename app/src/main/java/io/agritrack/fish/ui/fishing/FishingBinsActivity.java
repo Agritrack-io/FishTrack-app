@@ -65,14 +65,12 @@ public class FishingBinsActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private ScanHandler mScanHandler;
 
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     private ScanInventoryThread scanner_runnable;
     private MobileDB db;
     private TemplateRecyclerAdapter adapterBins;
     private RecyclerView rvBins;
     private TextView tvBinsCount;
     private Button btnScanBin;
-    private GetTempDataDialog tempLoggerDialog;
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
@@ -94,8 +92,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             selectedItem = view;
         }
     };
-    private Set<String> scannedBinEPCs;
-    private String binBarcode = "", binEPC;
+    private String binBarcode;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
@@ -150,7 +147,6 @@ public class FishingBinsActivity extends AppCompatActivity {
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
                     if (barcode != null) {
-                        scannedBinEPCs.remove(barcode);
                         adapterBins.removeItem(barcode);
                         adapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));

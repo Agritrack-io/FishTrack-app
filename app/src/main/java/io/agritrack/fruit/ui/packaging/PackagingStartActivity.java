@@ -31,7 +31,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -429,7 +428,7 @@ public class PackagingStartActivity extends AppCompatActivity {
 
     // ###################################################
     private void stopScanner() {
-        if(this.scanner_runnable !=null) {
+        if (this.scanner_runnable != null) {
             this.scanner_runnable.stopReading();
             mScanHandler.removeCallbacks(null);
             //mScanHandler.removeCallbacks(this.scanner_runnable);

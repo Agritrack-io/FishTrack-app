@@ -285,34 +285,34 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        ivNext.setOnClickListener(view -> {
                 //Stop scanning since we navigate to next activity
                 if (scanner_runnable!=null) {
                     scanner_runnable.stopReading();
                 }
+                if (adapterIncomingItems != null) {
+                    GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
+                }
+                String v = validate();
+                if (!Strings.isEmptyOrWhitespace(v)) {
+                    CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                    return;
+                }
+                GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
+                GlobalState.recWHIncoming.assetType = AssetType.valueOf(this.selectedAssetType);
+                GlobalState.recWHIncoming.site = LocalPreferences.getCurrentSiteName();
 
                 if (mLastLocation != null) {
                     recWHIncoming.longitude = mLastLocation.getLongitude();
                     recWHIncoming.latitude = mLastLocation.getLatitude();
+                    proceedWithoutLocation = true;
+                    moveToNextScreen();
                 } else {
-                    CToast(IncomingAssetActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
+                    FragmentManager fm = getSupportFragmentManager();
+                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                 }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                    startActivity(i);
-                }
-            }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToStartIncoming);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
             if (scanner_runnable!=null) {
@@ -336,21 +336,11 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
         tvItemsCnt = findViewById(R.id.tvItemsCnt);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToStartIncoming);
     }
 
     private boolean updateState() {
-        if (adapterIncomingItems != null) {
-            GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
-        }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
-        }
-        GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
-        GlobalState.recWHIncoming.assetType = AssetType.valueOf(this.selectedAssetType);
-        GlobalState.recWHIncoming.site = LocalPreferences.getCurrentSiteName();
-
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 

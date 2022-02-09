@@ -62,6 +62,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
     private RecyclerView rvWeightBatchesBin;
     private TemplateRecyclerAdapter adapterCatches;
+    private boolean isClickable;
     private String mCatchWeight = "";
     private String currentBin;
     private Integer weightOfBin;
@@ -73,20 +74,25 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private final View.OnClickListener catchesOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedCatch = tvRecyclerItem.getText().toString();
+            if (isClickable) {
+                ConstraintLayout view = (ConstraintLayout) v;
+                TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
+                selectedCatch = tvRecyclerItem.getText().toString();
 
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
+                if (selectedItem != null) {
+                    selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
+                }
+
+                v.setSelected(true);
+                v.setSoundEffectsEnabled(true);
+                view.setBackgroundColor(Color.GRAY);
+                selectedItem = view;
+
+                btnDeleteCatch.setEnabled(true);
+                btnDeleteCatch.setTextColor(getColor(R.color.aqua));
+            } else {
+                v.setSoundEffectsEnabled(false);
             }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-
-            btnDeleteCatch.setEnabled(true);
-            btnDeleteCatch.setTextColor(getColor(R.color.aqua));
         }
     };
     private ImageView ivSupport, ivInfo;
@@ -115,6 +121,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         rvWeightBatchesBin.setLayoutManager(layoutManager);
         rvWeightBatchesBin.setItemAnimator(new DefaultItemAnimator());
         adapterCatches = new TemplateRecyclerAdapter(this, new ArrayList<>(), catchesOnClickListener);
+        isClickable = adapterCatches.isClickable;
         rvWeightBatchesBin.setAdapter(adapterCatches);
         rvWeightBatchesBin.setNestedScrollingEnabled(false);
 
@@ -149,6 +156,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         btnFillBin.setOnClickListener(view -> {
             GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin);
             clearSelectedItem();
+            isClickable = false;
             btnCurrentBinScan.setEnabled(true);
             btnCurrentBinScan.setTextColor(getColor(R.color.aqua));
             btnNextCatch.setEnabled(false);
@@ -176,17 +184,16 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                         tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
                         tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
 
-                        //tvInventoryItemsCount.setText(String.valueOf(adapterIncomingItems.getItemCount()));
                         selectedCatch = null;
-
-                        if (adapterCatches.getItemCount() != 0) {
-                            btnDeleteCatch.setEnabled(true);
-                            btnDeleteCatch.setTextColor(getColor(R.color.aqua));
-                        } else {
-                            btnDeleteCatch.setEnabled(false);
-                            btnDeleteCatch.setTextColor(Color.DKGRAY);
-                        }
+                        btnDeleteCatch.setEnabled(false);
+                        btnDeleteCatch.setTextColor(Color.DKGRAY);
                     }
+                });
+
+                confirmSiteSelectionDlg.onReject(bundle -> {
+                    selectedCatch = null;
+                    btnDeleteCatch.setEnabled(false);
+                    btnDeleteCatch.setTextColor(Color.DKGRAY);
                 });
 
                 FragmentManager fm = getSupportFragmentManager();
@@ -246,6 +253,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         scanner_runnable.HighEnergy();
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
+        isClickable = true;
         scanner_runnable.LowEnergy();
     }
 
@@ -324,7 +332,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     private void showCatchDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Fish Catch Weight");
+        builder.setTitle(R.string.fish_catch_weight);
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -338,25 +346,18 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         builder.setView(input);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", (dialog, which) -> {
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             mCatchWeight = input.getText().toString();
             if (Strings.isEmptyOrWhitespace(mCatchWeight) || mCatchWeight == null) {
-                CToast(getApplicationContext(), render("Please type weight"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.type_weight), Toast.LENGTH_LONG);
                 return;
             }
             adapterCatches.addItem(mCatchWeight);
             adapterCatches.notifyDataSetChanged();
 
             tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-            tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
             weightOfBin = loadsMap.weightOf(currentBin);
-            if (adapterCatches.getItemCount() != 0) {
-                btnDeleteCatch.setEnabled(true);
-                btnDeleteCatch.setTextColor(getColor(R.color.aqua));
-            } else {
-                btnDeleteCatch.setEnabled(false);
-                btnDeleteCatch.setTextColor(Color.DKGRAY);
-            }
+            tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
         builder.show();
@@ -385,13 +386,17 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             tvCurrentBin.setText(epc);
                             currentBin = epc;
                             adapterCatches.setValues(loadsMap.getLoads(currentBin));
+                            tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
                             adapterCatches.notifyDataSetChanged();
                             tvUsedBinsCount.setText(loadsMap.loadsCnt());
                         });
 
                         btnNextCatch.setEnabled(true);
                         btnNextCatch.setTextColor(getColor(R.color.aqua));
-                        tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
+                        if (adapterCatches.getItemCount() != 0) {
+                            btnFillBin.setEnabled(true);
+                            btnFillBin.setTextColor(getColor(R.color.aqua));
+                        }
                     }
 
                     break;

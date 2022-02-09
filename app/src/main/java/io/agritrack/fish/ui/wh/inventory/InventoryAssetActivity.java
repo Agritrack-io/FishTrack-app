@@ -62,12 +62,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class InventoryAssetActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
-
-    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     // Local handler that receives the RFID scanner results.
-
     private ScanHandler mScanHandler;
     private ScanInventoryThread scanner_runnable;
     private ToggleGroup tgChooseAssetType;
@@ -86,7 +84,9 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
     private ProgressDialog progressDialog;
 
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivNext, ivBack;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private boolean proceedWithoutLocation = false;
     private TextView tvGroupsCnt, tvItemsCnt;
     private SupportDialog supportDialog;
 
@@ -104,15 +104,23 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
 
-        // activate GPS location update feature.
-        super.findLocation();
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderInventory);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // link trigger/scan button to ClickListener
         scanButton.setOnClickListener(this::onClick);
@@ -178,7 +186,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else if (adapterInventoryItems.getGroupCount()>0){
+            } else if (adapterInventoryItems.getGroupCount() > 0) {
                 // <delete> Button was pressed without selecting a Bin first.
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
@@ -186,8 +194,8 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
                 confirmSiteSelectionDlg.setMessage(getText(R.string.delete_all_items));
 
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
-                        adapterInventoryItems.removeAll();
-                        adapterInventoryItems.notifyDataSetChanged();
+                    adapterInventoryItems.removeAll();
+                    adapterInventoryItems.notifyDataSetChanged();
                     tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
                     tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
                 });
@@ -210,6 +218,19 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         });
 
         configFooter();
+    }
+
+    private void moveToNextScreen() {
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
+            }
+        }
     }
 
     @Override
@@ -255,40 +276,40 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
         tvItemsCnt = findViewById(R.id.tvItemsCnt);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToWhMenu);
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Stop scanning since we navigate to next activity
-                if (scanner_runnable!=null) {
-                    scanner_runnable.stopReading();
-                }
+        ivNext.setOnClickListener(view -> {
+            //Stop scanning since we navigate to next activity
+            if (scanner_runnable != null) {
+                scanner_runnable.stopReading();
+            }
+            if (adapterInventoryItems != null) {
+                recWHInventory.items = adapterInventoryItems.getValues();
+            }
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+            recWHInventory.assetType = AssetType.valueOf(this.selectedAssetType);
 
-                if (mLastLocation != null) {
-                    recWHInventory.longitude = mLastLocation.getLongitude();
-                    recWHInventory.latitude = mLastLocation.getLatitude();
-                } else {
-                    CToast(InventoryAssetActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                    startActivity(i);
-                }
+            if (mLastLocation != null) {
+                recWHInventory.longitude = mLastLocation.getLongitude();
+                recWHInventory.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
-            if (scanner_runnable!=null) {
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -298,16 +319,6 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
     }
 
     private boolean updateState() {
-        if (adapterInventoryItems != null) {
-            recWHInventory.items = adapterInventoryItems.getValues();
-        }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
-        }
-        recWHInventory.assetType = AssetType.valueOf(this.selectedAssetType);
-
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
@@ -405,6 +416,15 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
         return sb.toString();
     }
 
+    // ###################################################
+    private void stopScanner() {
+        if (this.scanner_runnable != null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(null);
+            //mScanHandler.removeCallbacks(this.scanner_runnable);
+        }
+    }
+
     public class SyncInvTxCallBack implements Callback<RFIDInventoryDTO> {
         @Override
         public void onResponse(Call<RFIDInventoryDTO> call, Response<RFIDInventoryDTO> response) {
@@ -432,15 +452,6 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
-        }
-    }
-
-    // ###################################################
-    private void stopScanner() {
-        if(this.scanner_runnable !=null) {
-            this.scanner_runnable.stopReading();
-            mScanHandler.removeCallbacks(null);
-            //mScanHandler.removeCallbacks(this.scanner_runnable);
         }
     }
 

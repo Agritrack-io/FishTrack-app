@@ -103,8 +103,8 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
 
             <io.agritrack.ui.custom.ToggleGroup
                 android:id="@+id/tgSmellCondition"
-                android:layout_width="wrap_content"
-                android:layout_height="120dp"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -113,59 +113,59 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
 
                 <ToggleButton
                     android:id="@+id/tbFreshSmell"
-                    android:layout_width="110dp"
+                    android:layout_width="70dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_weight="1"
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="ΦΡΕΣΚΟ ΜΕΤΑΛΛΙΚΟ"
-                    android:textOn="ΦΡΕΣΚΟ ΜΕΤΑΛΛΙΚΟ"
+                    android:textOff="@string/fresh_metallic"
+                    android:textOn="@string/fresh_metallic"
                     android:textSize="@dimen/text_view_font_size_small" />
 
                 <ToggleButton
                     android:id="@+id/tbNoSmell"
-                    android:layout_width="65dp"
+                    android:layout_width="70dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="33dp"
+                    android:layout_marginTop="25dp"
                     android:layout_weight="1"
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="ΑΟΣΜΟ"
-                    android:textOn="ΑΟΣΜΟ"
+                    android:textOff="@string/odorless"
+                    android:textOn="@string/odorless"
                     android:textSize="@dimen/text_view_font_size_small" />
 
                 <ToggleButton
                     android:id="@+id/tbLightBadSmell"
-                    android:layout_width="90dp"
+                    android:layout_width="70dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_weight="1"
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="ΕΛΑΦΡΑ ΔΥΣΟΣΜΟ"
-                    android:textOn="ΕΛΑΦΡΑ ΔΥΣΟΣΜΟ"
+                    android:textOff="@string/light_stinky"
+                    android:textOn="@string/light_stinky"
                     android:textSize="@dimen/text_view_font_size_small" />
 
                 <ToggleButton
                     android:id="@+id/tbHeavyBadSmell"
-                    android:layout_width="90dp"
+                    android:layout_width="70dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="ΕΝΤΟΝΑ ΔΥΣΟΣΜΟ"
-                    android:textOn="ΕΝΤΟΝΑ ΔΥΣΟΣΜΟ"
+                    android:textOff="@string/heavy_stinky"
+                    android:textOn="@string/heavy_stinky"
                     android:textSize="@dimen/text_view_font_size_small" />
             </io.agritrack.ui.custom.ToggleGroup>
 
@@ -178,9 +178,9 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="Οσμή"
+            android:text="@string/smells"
             android:textColor="@color/label_blue"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
     </RelativeLayout>
 
@@ -214,7 +214,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Λαμπερά"
+                android:text="@string/shiny"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -262,7 +262,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Θολά"
+                android:text="@string/blurred"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -309,7 +309,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Επουλωμένα"
+                android:text="@string/healed"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -357,7 +357,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Τυφλά"
+                android:text="@string/blind"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -406,9 +406,9 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="Αξιολόγηση ματιών"
+            android:text="@string/eye_evaluation"
             android:textColor="@color/label_blue"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
     </RelativeLayout>
 
@@ -442,7 +442,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Συνεκτική"
+                android:text="@string/coherent"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -490,7 +490,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Μαλακή"
+                android:text="@string/soft"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -537,7 +537,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Διογκωμένη"
+                android:text="@string/swollen"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -585,9 +585,9 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="Κοιλιά"
+            android:text="@string/belly"
             android:textColor="@color/label_blue"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
     </RelativeLayout>
 

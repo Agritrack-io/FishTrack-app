@@ -5,6 +5,7 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -36,12 +37,33 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
     private static final int pic_id = 123;
     private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
     private EditText mtvRemarks, etPlot, etFishTemp;
-    private TextView  tvTempBin;
+    private TextView tvTempBin;
     private PhotoDialog photoDialog;
     private ImageView ivTakenPhoto;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
+    private InputFilter filter = new InputFilter() {
+        final int maxDigitsBeforeDecimalPoint = 2;
+        final int maxDigitsAfterDecimalPoint = 2;
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end,
+                                   Spanned dest, int dstart, int dend) {
+            StringBuilder builder = new StringBuilder(dest);
+            builder.replace(dstart, dend, source
+                    .subSequence(start, end).toString());
+            if (!builder.toString().matches(
+                    "(([1-9]{1})([0-9]{0," + (maxDigitsBeforeDecimalPoint - 1) + "})?)?(\\.[0-9]{0," + maxDigitsAfterDecimalPoint + "})?"
+
+            )) {
+                if (source.length() == 0)
+                    return dest.subSequence(dstart, dend);
+                return "";
+            }
+            return null;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,16 +121,20 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         // Match the request 'pic id with requestCode
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == pic_id) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    Bitmap photo = (Bitmap) data.getExtras().get("data");
 
-            // BitMap is data structure of image file
-            // which stor the image in memory
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    // Set the image in imageview for display
+                    photoResult.setValue(photo);
 
-            // Set the image in imageview for display
-            photoResult.setValue(photo);
+                    photoDialog = new PhotoDialog(ReceiptQualityInfoActivity.this, photoResult, R.string.photo_taken);
+                    photoDialog.showDialog();
 
-            photoDialog = new PhotoDialog(ReceiptQualityInfoActivity.this, photoResult, R.string.photo_taken);
-            photoDialog.showDialog();
+                    break;
+                case Activity.RESULT_CANCELED:
+                    break;
+            }
         }
     }
 
@@ -132,32 +158,10 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         });
     }
 
-    private InputFilter filter = new InputFilter() {
-        final int maxDigitsBeforeDecimalPoint=2;
-        final int maxDigitsAfterDecimalPoint=2;
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end,
-                                   Spanned dest, int dstart, int dend) {
-            StringBuilder builder = new StringBuilder(dest);
-            builder.replace(dstart, dend, source
-                    .subSequence(start, end).toString());
-            if (!builder.toString().matches(
-                    "(([1-9]{1})([0-9]{0,"+(maxDigitsBeforeDecimalPoint-1)+"})?)?(\\.[0-9]{0,"+maxDigitsAfterDecimalPoint+"})?"
-
-            )) {
-                if(source.length()==0)
-                    return dest.subSequence(dstart, dend);
-                return "";
-            }
-            return null;
-        }
-    };
-
     private void assignCtrlVars() {
         etPlot = findViewById(R.id.etPlot);
         etFishTemp = findViewById(R.id.etFishTemp);
-        etFishTemp.setFilters(new InputFilter[] { filter });
+        etFishTemp.setFilters(new InputFilter[]{filter});
         mtvRemarks = findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
@@ -169,7 +173,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
     private void initControlsFromState() {
         QualityRecord qltTx = GlobalState.recQuality;
 
-        if(recLoggerData.avgT != null) {
+        if (recLoggerData.avgT != null) {
             tvTempBin.setText(String.format("%.1f", recLoggerData.avgT));
         }
 
@@ -212,6 +216,10 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.pLot)) {
                 sb.append(String.format("\n%s is missing", "'LOT'"));
+            }
+
+            if (GlobalState.recQuality.fishTemp == null) {
+                sb.append(String.format("\n%s is missing", "'Fish average temperature'"));
             }
         }
 

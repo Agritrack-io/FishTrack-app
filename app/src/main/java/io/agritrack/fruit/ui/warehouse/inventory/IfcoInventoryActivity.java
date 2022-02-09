@@ -236,6 +236,10 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
 
     protected void configFooter() {
         ivNext.setOnClickListener(view -> {
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            stopScanning();
+
             if (adapterIfco != null) {
                 FruitGlobalState.recInventory.ifcoItems = adapterIfco.getValues();
             }

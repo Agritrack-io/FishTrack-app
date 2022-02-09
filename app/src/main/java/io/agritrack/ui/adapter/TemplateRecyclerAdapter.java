@@ -76,10 +76,11 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
 
         public MyViewHolder(@NonNull View itemView, View.OnClickListener itemsClickListener) {
             super(itemView);
+
             tvItemName = itemView.findViewById(R.id.tvRecyclerItem);
             tvItemSNo = itemView.findViewById(R.id.tvRecyclerItemSNo);
 
-            if (itemsClickListener != null) {
+            if (itemsClickListener != null && isClickable) {
                 itemView.setOnClickListener(itemsClickListener);
             }
         }

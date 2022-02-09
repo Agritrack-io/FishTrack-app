@@ -279,6 +279,7 @@ public class TransportBinsActivity extends AppCompatActivity {
                 binBarcode = input.getText().toString();
                 adapterBins.addUniqueItem(binBarcode);
                 adapterBins.notifyDataSetChanged();
+                tvBinsCount.setText(String.valueOf(adapterBins.getValues().size()));
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

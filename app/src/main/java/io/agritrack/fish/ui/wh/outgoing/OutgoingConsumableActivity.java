@@ -61,12 +61,11 @@ import retrofit2.Response;
 
 public class OutgoingConsumableActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
 
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private ToggleGroup tgChooseConsumableType;
     private String selectedConsumableType = ConsumableType.ALL.name();
     private String activeFilter = null;
     private int selectedToggleButton = -1;
-
-    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
     private boolean scanning = false;
 
@@ -76,17 +75,28 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
     private ImageButton ivAddItem, ivDeleteItem;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
+    // Instantiate a clickListener to be passed to adapterIncomingItems.
+    // It will be used to set the selectedBarcode var to the selected item barcode.
+    private final View.OnClickListener itemsOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ConstraintLayout view = (ConstraintLayout) v;
+            TextView tvRecyclerItem = view.findViewById(R.id.tvItemDescription);
+            selectedBarcode = tvRecyclerItem.getText().toString();
 
+            if (selectedItem != null) {
+                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
+            }
+
+            v.setSelected(true);
+            view.setBackgroundColor(Color.GRAY);
+            selectedItem = view;
+        }
+    };
     private Button btnScanConsumable;
-
     private ProgressDialog progressDialog;
-
     private BarcodeScanService scanService;
     private BarcodeRecyclerAdapter adapterOutgoingItems;
-
-    private ImageView ivSupport;
-    private SupportDialog supportDialog;
-
     // BroadcastReceiver to receiver scan data
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -101,33 +111,15 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
             }
         }
     };
-
-    // Instantiate a clickListener to be passed to adapterIncomingItems.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvItemDescription);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-
-            if(selectedItem!=null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
+    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private boolean proceedWithoutLocation = false;
+    private ImageView ivSupport, ivNext, ivBack;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outgoing_consumable);
-
-        // activate GPS location update feature.
-        super.findLocation();
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderOutgoingProcess);
@@ -135,6 +127,17 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(OutgoingConsumableActivity.this);
@@ -202,6 +205,19 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
         configFooter();
     }
 
+    private void moveToNextScreen() {
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
+            }
+        }
+    }
+
     private void clearSelectedItem() {
         if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
@@ -223,32 +239,36 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        ivNext.setOnClickListener(view -> {
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            stopScanning();
 
-                if (mLastLocation != null) {
-                    recWHOutgoing.longitude = mLastLocation.getLongitude();
-                    recWHOutgoing.latitude = mLastLocation.getLatitude();
-                } else {
-                    CToast(OutgoingConsumableActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
+            if (adapterOutgoingItems != null) {
+                GlobalState.recWHOutgoing.barcodeItems = adapterOutgoingItems.getValues();
+            }
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
 
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                     // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                    startActivity(i);
-                }
+            GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
+            GlobalState.recWHOutgoing.assetType = AssetType.valueOf(this.selectedConsumableType);
+            GlobalState.recWHOutgoing.site = LocalPreferences.getCurrentSiteName();
+            if (mLastLocation != null) {
+                recWHOutgoing.longitude = mLastLocation.getLongitude();
+                recWHOutgoing.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToStartOutgoing);
         ivBack.setOnClickListener(view -> {
-              //Set scanning to false to stop running scan thread
+            //Set scanning to false to stop running scan thread
             scanning = false;
             stopScanning();
 
@@ -264,25 +284,14 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
         tvOutgoingProcessTo = findViewById(R.id.tvOutgoingProcessTo);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
         ivAddItem = findViewById(R.id.ivAddItem);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToStartOutgoing);
         btnScanConsumable = findViewById(R.id.btnScanConsumable);
         ivSupport = findViewById(R.id.ivSupport);
         tgChooseConsumableType.setOnCheckedChangeListener(this);
     }
 
     private boolean updateState() {
-        if (adapterOutgoingItems != null) {
-            GlobalState.recWHOutgoing.barcodeItems = adapterOutgoingItems.getValues();
-        }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
-        }
-
-        GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
-        GlobalState.recWHOutgoing.assetType = AssetType.valueOf(this.selectedConsumableType);
-        GlobalState.recWHOutgoing.site = LocalPreferences.getCurrentSiteName();
-
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
@@ -366,12 +375,12 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
 
-        if( selectedToggleButton == checkedId){
+        if (selectedToggleButton == checkedId) {
             group.clearCheck();
             return;
         }
         selectedToggleButton = checkedId;
-        switch(checkedId){
+        switch (checkedId) {
             case R.id.tbFood:
                 selectedConsumableType = Constants.ftFood;
                 activeFilter = Filters.BARCODE_FOOD;
