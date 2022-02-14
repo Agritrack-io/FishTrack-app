@@ -93,7 +93,7 @@ public class PlantingStartActivity extends AppCompatActivity {
             dayOfWeekId = cal.get(Calendar.DAY_OF_WEEK);
         } else {
             LocalDate date = LocalDate.now();
-            TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
+            TemporalField woy = WeekFields.of(Greek_Locale).weekOfWeekBasedYear();
             weekOfYearId = date.get(woy);
             dayOfWeekId = date.getDayOfWeek().ordinal()+1;
         }

@@ -158,12 +158,12 @@ public class GlobalState {
             txFishing.requester = recFishing.requesterName;
             txFishing.totalQty = recFishing.totalFishWeight;
             txFishing.timestamp = System.currentTimeMillis();
-            txFishing.harvestBinsData = recFishing.binWeightRecord.toJSONText();
+            txFishing.harvestBinsData = recFishing.binWeightRecord.getBins();//.toJSONText();
             txFishing.team = recFishing.fishingTeam;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
             txFishing.tempData = recFishing.binTemperatureRecord.toJSONText();
             txFishing.user = LocalPreferences.getLoggedInUser("N/A");
-            txFishing.site = LocalPreferences.getCurrentSiteId().toString();
+            txFishing.site = LocalPreferences.getCurrentSiteName();
             txFishing.longitude = recFishing.longitude;
             txFishing.latitude = recFishing.latitude;
 
@@ -182,6 +182,7 @@ public class GlobalState {
 
             txTransport.destination = recTransport.packagingSite;
             txTransport.driverName = recTransport.driverName;
+            txTransport.driverPhone = recTransport.driverPhone;
             txTransport.truckLicensePlate = recTransport.licensePlate;
             txTransport.securityClipNo = recTransport.clipNumber;
             txTransport.driverSignature = new String(recTransport.signatureBytes, StandardCharsets.UTF_8);
@@ -191,7 +192,7 @@ public class GlobalState {
             txTransport.timestamp = System.currentTimeMillis();
             txTransport.loadedBins = recTransport.availBins;
             txTransport.user = LocalPreferences.getLoggedInUser("N/A");
-            txTransport.siteCode = LocalPreferences.getCurrentSiteId().toString();
+            txTransport.siteCode = LocalPreferences.getCurrentSiteName();
             txTransport.longitude = recTransport.longitude;
             txTransport.latitude = recTransport.latitude;
 

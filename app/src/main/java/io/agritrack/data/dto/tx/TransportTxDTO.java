@@ -9,7 +9,7 @@ public class TransportTxDTO {
 
     public Long id;
     public String transport_head;
-    public String destination;
+    public String packaging_site;
     public Boolean truck_refrigerated;
     public Boolean parallel_transport;
     public String truck_license_plate;
@@ -18,7 +18,7 @@ public class TransportTxDTO {
     public String driver_phone;
     public String driver_signature;
     public List<String> bins_loaded = new LinkedList<String>();
-    public String site_code;
+    public String site;
     public String user;
     public Long timestamp;
     public Double longitude;
@@ -29,7 +29,7 @@ public class TransportTxDTO {
         TransportTxDTO transportTxDto = new TransportTxDTO();
 
         transportTxDto.transport_head = transport.transportHead;
-        transportTxDto.destination = transport.destination;
+        transportTxDto.packaging_site = transport.destination;
         transportTxDto.truck_refrigerated = transport.isTruckRefrigerated;
         transportTxDto.parallel_transport = transport.isParallelTransport;
         transportTxDto.truck_license_plate = transport.truckLicensePlate;
@@ -39,7 +39,7 @@ public class TransportTxDTO {
         transportTxDto.driver_signature = transport.driverSignature;
         transportTxDto.bins_loaded = transport.loadedBins;
         transportTxDto.user = transport.user;
-        transportTxDto.site_code = transport.siteCode;
+        transportTxDto.site = transport.siteCode;
         transportTxDto.timestamp = transport.timestamp;
         transportTxDto.longitude = transport.longitude;
         transportTxDto.latitude = transport.latitude;

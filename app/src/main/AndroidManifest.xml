@@ -27,53 +27,59 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
+            android:name=".hotel.ui.status.HotelChangeStatusActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hotel.ui.sync.HotelSynchronizeActivity"
+            android:exported="false" />
+        <activity
             android:name=".hotel.ui.outgoing.HotelOutgoingLinenActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".hotel.ui.incoming.HotelIncomingLinenActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".hotel.ui.incoming.HotelIncomingStartActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".hotel.ui.inventory.HotelInventoryLinenActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".hotel.ui.inventory.HotelInventoryAssetActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".hotel.ui.search.HotelSearchActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".hotel.ui.outgoing.HotelOutgoingStartActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".hotel.ui.inventory.HotelInventoryStartActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".hotel.ui.HotelHomeActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.quality.packaging.PackageQualityConfirmActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.quality.packaging.PackageQualityInfoActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.quality.packaging.PackageQualityTemperatureProfilesActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.quality.packaging.PackageQualityStartActivity"
             android:exported="false"

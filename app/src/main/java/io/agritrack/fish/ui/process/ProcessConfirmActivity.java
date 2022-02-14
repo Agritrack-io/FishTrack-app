@@ -147,7 +147,7 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
         ivSupport = findViewById(R.id.ivSupport);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToReceiveBins);
-        etPIN = findViewById(R.id.etPasswordFishing);
+        etPIN = findViewById(R.id.etPasswordProcessing);
     }
 
     private void initControlsFromState() {

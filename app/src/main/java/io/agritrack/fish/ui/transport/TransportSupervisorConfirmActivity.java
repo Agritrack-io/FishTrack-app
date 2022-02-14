@@ -124,6 +124,8 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
                 } else if (mLastLocation != null) {
                     recTransport.longitude = mLastLocation.getLongitude();
                     recTransport.latitude = mLastLocation.getLatitude();
+                    proceedWithoutLocation = true;
+                    moveToNextScreen();
                 } else if (!proceedWithoutLocation) {
                     FragmentManager fm = getSupportFragmentManager();
                     confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
@@ -147,7 +149,7 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
         ivSupport = findViewById(R.id.ivSupport);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToDriverConfirm);
-        etPIN = findViewById(R.id.etPasswordFishing);
+        etPIN = findViewById(R.id.etPasswordTransport);
     }
 
     private void initControlsFromState() {

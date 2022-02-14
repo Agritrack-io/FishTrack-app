@@ -500,6 +500,16 @@
 
     <string name="procced_without_location">"GPS coordinates wasn't found. Do you want to proceed without getting them?"</string>
     <string name="press_check_button_again">Please press the check button again</string>
+
+    <!-- Hotel strings -->
+    <string name="title_sync">SYNCHRONIZATION</string>
+    <string name="files_to_sync">Files to synchronize</string>
+    <string name="menu_title_synchronize">Files to sync</string>
+
+    <string name="title_status">CHANGE STATUS</string>
+    <string name="menu_title_status">Change status</string>
+    <string name="new_status">New status</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="asset">ASSET</string>

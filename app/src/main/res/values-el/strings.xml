@@ -38,6 +38,7 @@
     <string name="menu_title_inventory">Απογραφή</string>
     <string name="menu_title_correlation">Συσχέτιση</string>
     <string name="menu_title_search">Αναζήτηση</string>
+    <string name="menu_title_synchronize">Αρχεία προς Συγχρονισμό</string>
 
     <string name="menu_title_internal">Εσωτερική</string>
     <string name="menu_title_external">Εξωτερική</string>
@@ -502,6 +503,15 @@
 
     <string name="procced_without_location">"Οι συντεταγμένες GPS δεν βρέθηκαν. \nΕπιλέξτε: \n  'Όχι', για νέα προσπάθεια \n  'Ναι', για να συνεχίσετε."</string>
     <string name="press_check_button_again">Παρακαλώ πατήστε το κουμπί για να συνεχίσετε</string>
+
+    <!-- Hotel strings -->
+    <string name="title_sync">ΣΥΓΧΡΟΝΙΣΜΟΣ</string>
+    <string name="files_to_sync">Αρχεία προς συγχρονισμό</string>
+
+    <string name="title_status">ΑΛΛΑΓΗ ΚΑΤΑΣΤΑΣΗΣ</string>
+    <string name="menu_title_status">Αλλαγή κατάστασης</string>
+    <string name="new_status">Νέα κατάσταση</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="asset">ΠΑΓΙΟ</string>

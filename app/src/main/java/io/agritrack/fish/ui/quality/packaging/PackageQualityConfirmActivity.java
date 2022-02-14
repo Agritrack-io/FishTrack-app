@@ -149,7 +149,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         ivSupport = findViewById(R.id.ivSupport);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToPackageQualityInfo);
-        etPIN = findViewById(R.id.etPasswordFishing);
+        etPIN = findViewById(R.id.etPasswordProcessing);
     }
 
     private void initControlsFromState() {
