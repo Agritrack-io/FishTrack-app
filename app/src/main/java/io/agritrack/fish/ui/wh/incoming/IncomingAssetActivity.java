@@ -48,9 +48,11 @@ import io.agritrack.enums.AssetType;
 import io.agritrack.enums.WarehouseTxState;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
@@ -74,11 +76,13 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
     private String activeFilter = null;
     private int selectedToggleButton = -1;
     private MobileDB db;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
 
     private TreelikeAdapter adapterIncomingItems;
 
     private TextView tvIncomingProcessFrom, tvIncomingProcessTo;
     private ExpandableListView xvIncomingItems;
+    private TextView tvGroupsCnt, tvItemsCnt;
 
     private ImageButton ivAddItem, ivDeleteItem;
     private Button scanButton;
@@ -88,7 +92,8 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
 
     private ProgressDialog progressDialog;
 
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivNext, ivBack;
+    private boolean proceedWithoutLocation = false;
     private SupportDialog supportDialog;
 
     @Override
@@ -98,6 +103,9 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
+
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
 
         // activate GPS location update feature.
         super.findLocation();
@@ -109,6 +117,17 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
         // get  references of the controls
         assignCtrlVars();
 
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
+
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
 
@@ -118,6 +137,12 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(IncomingAssetActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        // display groups counter
+        tvGroupsCnt.setVisibility(View.VISIBLE);
+
+        // display items counter
+        tvItemsCnt.setVisibility(View.VISIBLE);
 
         xvIncomingItems.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -153,6 +178,7 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        // onClick button event handling...
         ivDeleteItem.setOnClickListener(view -> {
             clearSelectedItem();
 
@@ -167,6 +193,8 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
                     if (barcode != null) {
                         adapterIncomingItems.removeItem(selectedParent, selectedChild);
                         adapterIncomingItems.notifyDataSetChanged();
+                        tvGroupsCnt.setText(String.valueOf(adapterIncomingItems.getGroupCount()));
+                        tvItemsCnt.setText(String.valueOf(adapterIncomingItems.getItemsCount()));
                         selectedBarcode = null;
                         selectedChild = null;
                     }
@@ -174,9 +202,28 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else {
+            } else if (adapterIncomingItems.getGroupCount()>0){
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+                // instantiate Site selection confirm dialog
+                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
+                //confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_all_items));
+
+                confirmSiteSelectionDlg.onConfirm(bundle -> {
+                    adapterIncomingItems.removeAll();
+                    adapterIncomingItems.notifyDataSetChanged();
+                    tvGroupsCnt.setText(String.valueOf(adapterIncomingItems.getGroupCount()));
+                    tvItemsCnt.setText(String.valueOf(adapterIncomingItems.getItemsCount()));
+                });
+
+                confirmSiteSelectionDlg.onReject(bundle -> {
+                    CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+                });
+
+                FragmentManager fm = getSupportFragmentManager();
+                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            } else {
+                CToast(getApplicationContext(), render("Item list is empty!!"), Toast.LENGTH_LONG);
             }
         });
 
@@ -190,6 +237,19 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
         });
 
         configFooter();
+    }
+
+    private void moveToNextScreen(){
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+                startActivity(i);
+            }
+        }
     }
 
     @Override
@@ -225,34 +285,34 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        ivNext.setOnClickListener(view -> {
                 //Stop scanning since we navigate to next activity
                 if (scanner_runnable!=null) {
                     scanner_runnable.stopReading();
                 }
+                if (adapterIncomingItems != null) {
+                    GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
+                }
+                String v = validate();
+                if (!Strings.isEmptyOrWhitespace(v)) {
+                    CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                    return;
+                }
+                GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
+                GlobalState.recWHIncoming.assetType = AssetType.valueOf(this.selectedAssetType);
+                GlobalState.recWHIncoming.site = LocalPreferences.getCurrentSiteName();
 
                 if (mLastLocation != null) {
                     recWHIncoming.longitude = mLastLocation.getLongitude();
                     recWHIncoming.latitude = mLastLocation.getLatitude();
+                    proceedWithoutLocation = true;
+                    moveToNextScreen();
                 } else {
-                    CToast(IncomingAssetActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
+                    FragmentManager fm = getSupportFragmentManager();
+                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                 }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                    startActivity(i);
-                }
-            }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToStartIncoming);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
             if (scanner_runnable!=null) {
@@ -274,21 +334,13 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
         tgChooseAssetType.setOnCheckedChangeListener(this);
         ivSupport = findViewById(R.id.ivSupport);
         scanButton = findViewById(R.id.btnScanAsset);
+        tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
+        tvItemsCnt = findViewById(R.id.tvItemsCnt);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToStartIncoming);
     }
 
     private boolean updateState() {
-        if (adapterIncomingItems != null) {
-            GlobalState.recWHIncoming.items = adapterIncomingItems.getValues();
-        }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
-        }
-        GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
-        GlobalState.recWHIncoming.assetType = AssetType.valueOf(this.selectedAssetType);
-        GlobalState.recWHIncoming.site = LocalPreferences.getCurrentSiteName();
-
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
@@ -486,6 +538,8 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
                             adapterIncomingItems.appendItems(values);
                         }
                         adapterIncomingItems.notifyDataSetChanged();
+                        tvGroupsCnt.setText(String.valueOf(adapterIncomingItems.getGroupCount()));
+                        tvItemsCnt.setText(String.valueOf(adapterIncomingItems.getItemsCount()));
                     }
                     break;
                 case 1980:

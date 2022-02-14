@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.util.DoubleSummaryStatistics;
 import java.util.Map;
 
 import io.agritrack.R;
@@ -108,5 +109,15 @@ public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity
 
     private void updateState() {
 
+        if (recLoggerData.data != null && recLoggerData.data.size() > 0) {
+            DoubleSummaryStatistics stats = recLoggerData.data.values().stream()
+                    .flatMap(x -> x.values.stream())
+                    .mapToDouble(x -> Double.valueOf(x[1].replace(',', '.')))
+                    .summaryStatistics();
+
+            recLoggerData.highT = stats.getMax();
+            recLoggerData.lowT = stats.getMin();
+            recLoggerData.avgT = stats.getAverage();
+        }
     }
 }

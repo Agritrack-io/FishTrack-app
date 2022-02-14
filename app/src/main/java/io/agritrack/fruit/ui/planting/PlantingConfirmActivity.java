@@ -3,26 +3,12 @@ package io.agritrack.fruit.ui.planting;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fruit.state.FruitGlobalState.recPlant;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentManager;
-
-import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -30,28 +16,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentManager;
+
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.dto.tx.PlantTxDTO;
-import io.agritrack.data.model.HarvestRequest;
-import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.PlantTransaction;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.TimeOutProgressDlg;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.TransportationRecord;
-import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.PlantRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
-import io.agritrack.fruit.ui.packaging.PackagingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
@@ -82,6 +61,9 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
         TextView tvHeader = findViewById(R.id.tvHeaderSeedingConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
+
         // get  references of the controls
         assignCtrlVars();
 
@@ -111,7 +93,7 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
         configFooter();
     }
 
-    private void moveToNextScreen(){
+    private void moveToNextScreen() {
         if (proceedWithoutLocation) {
             // Update state and proceed to next
             Boolean proceed = updateState();
@@ -132,7 +114,11 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
                     CToast(PlantingConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
                     return;
                 }
-                if (mLastLocation != null) {
+                boolean userIsValid = isAuthenticated();
+                if (!userIsValid) {
+                    CToast(PlantingConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
+                    return;
+                } else if (mLastLocation != null) {
                     recPlant.longitude = mLastLocation.getLongitude();
                     recPlant.latitude = mLastLocation.getLatitude();
                     proceedWithoutLocation = true;
@@ -173,42 +159,32 @@ public class PlantingConfirmActivity extends LocationAwareActivity {
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }
 
+    private boolean isAuthenticated() {
+        String login = LocalPreferences.getLoggedInUser("").trim();
+        String pin = etPIN.getText().toString().trim();
+
+        // use typed-in PIN to compare credentials with those stored in the Local DB.
+        AuthenticationService authSvc = new AuthenticationService();
+        boolean authentication = authSvc.authenticateUser(this.db, login, pin);
+
+        return authentication;
+    }
+
     private boolean updateState() {
-        // get an instance of local DB
-        this.db = MobileDB.getInstance(getAppContext());
+        try {
+            String token = LocalPreferences.getToken();
 
-        if (!TextUtils.isEmpty(etPIN.getText().toString())) {
-            String login = LocalPreferences.getLoggedInUser("").trim();
-            String pin = etPIN.getText().toString().trim();
+            // persist Planting Record data to local DB.
+            PlantTransaction tx = FruitGlobalState.commitPlanting(db);
 
-            // use typed-in PIN to compare credentials with those stored in the Local DB.
-            AuthenticationService authSvc = new AuthenticationService();
-            boolean authentication = authSvc.authenticateUser(this.db, login, pin);
+            // sync fish species
+            Call<PlantTxDTO> syncTxAsyncCall = updService.syncPlantTx(PlantTxDTO.convert(tx), "Bearer " + token);
+            syncTxAsyncCall.enqueue(new PlantingConfirmActivity.SyncTxCallBack());
 
-            // credentials do NOT match
-            if (!authentication) {
-                runOnUiThread(() -> CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG));
-                return false;
-            } else {
-                try {
-                    String token = LocalPreferences.getToken();
-
-                    // persist Planting Record data to local DB.
-                    PlantTransaction tx = FruitGlobalState.commitPlanting(db);
-
-                    // sync fish species
-                    Call<PlantTxDTO> syncTxAsyncCall = updService.syncPlantTx(PlantTxDTO.convert(tx), "Bearer " + token);
-                    syncTxAsyncCall.enqueue(new PlantingConfirmActivity.SyncTxCallBack());
-
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
-                    return false;
-                }
-            }
-        } else {
-            runOnUiThread(() -> CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG));
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
             return false;
         }
     }

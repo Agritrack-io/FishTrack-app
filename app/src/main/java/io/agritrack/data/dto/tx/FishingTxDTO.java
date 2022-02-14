@@ -3,7 +3,9 @@ package io.agritrack.data.dto.tx;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.agritrack.data.model.BinInfo;
 import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.fish.ui.bo.BinWeightRecord;
 
 public class FishingTxDTO {
 
@@ -24,7 +26,7 @@ public class FishingTxDTO {
     public Double sea_temperature;
     public Integer total_quantity;
     public Short number_harvest_bins;
-    public String harvest_bins_data;
+    public List<BinWeightRecord.BinRecord> harvest_bins_data;
     public List<String> team_members = new LinkedList<String>();
     public String status;
     public String temp_data;

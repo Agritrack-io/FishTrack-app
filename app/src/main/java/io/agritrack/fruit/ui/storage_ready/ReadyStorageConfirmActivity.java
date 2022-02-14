@@ -25,16 +25,13 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.StorageTxDTO;
-import io.agritrack.data.model.tx.StorageTransaction;
 import io.agritrack.data.model.tx.items.StorageTxWithItems;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.TxStatus;
-import io.agritrack.enums.WarehouseTxState;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
-import io.agritrack.fruit.ui.shipping.ShippingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
@@ -55,7 +52,7 @@ public class ReadyStorageConfirmActivity extends LocationAwareActivity {
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +61,9 @@ public class ReadyStorageConfirmActivity extends LocationAwareActivity {
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderStorageReadyConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
 
         // get  references of the controls
         assignCtrlVars();
@@ -94,7 +94,7 @@ public class ReadyStorageConfirmActivity extends LocationAwareActivity {
         configFooter();
     }
 
-    private void moveToNextScreen(){
+    private void moveToNextScreen() {
         if (proceedWithoutLocation) {
             // Update state and proceed to next
             Boolean proceed = updateState();
@@ -115,7 +115,11 @@ public class ReadyStorageConfirmActivity extends LocationAwareActivity {
                     CToast(ReadyStorageConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
                     return;
                 }
-                if (mLastLocation != null) {
+                boolean userIsValid = isAuthenticated();
+                if (!userIsValid) {
+                    CToast(ReadyStorageConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
+                    return;
+                } else if (mLastLocation != null) {
                     recStorage.longitude = mLastLocation.getLongitude();
                     recStorage.latitude = mLastLocation.getLatitude();
                     proceedWithoutLocation = true;
@@ -154,44 +158,33 @@ public class ReadyStorageConfirmActivity extends LocationAwareActivity {
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }
 
-    private boolean updateState(){
+    private boolean isAuthenticated() {
+        String login = LocalPreferences.getLoggedInUser("").trim();
+        String pin = etPIN.getText().toString().trim();
+
+        // use typed-in PIN to compare credentials with those stored in the Local DB.
+        AuthenticationService authSvc = new AuthenticationService();
+        boolean authentication = authSvc.authenticateUser(this.db, login, pin);
+
+        return authentication;
+    }
+
+    private boolean updateState() {
         recStorage.category = TxStatus.READY;
+        try {
+            String token = LocalPreferences.getToken();
 
-        // get an instance of local DB
-        this.db = MobileDB.getInstance(getAppContext());
+            // persist Planting Record data to local DB.
+            StorageTxWithItems tx = FruitGlobalState.commitReadyStorage(db);
 
-        if (!TextUtils.isEmpty(etPIN.getText().toString())) {
-            String login = LocalPreferences.getLoggedInUser("").trim();
-            String pin = etPIN.getText().toString().trim();
+            // sync fish species
+            Call<StorageTxDTO> syncTxAsyncCall = updService.syncStorageTx(StorageTxDTO.convert(tx), "Bearer " + token);
+            syncTxAsyncCall.enqueue(new ReadyStorageConfirmActivity.SyncTxCallBack());
 
-            // use typed-in PIN to compare credentials with those stored in the Local DB.
-            AuthenticationService authSvc = new AuthenticationService();
-            boolean authentication = authSvc.authenticateUser(this.db, login, pin);
-
-            // credentials do NOT match
-            if (!authentication) {
-                runOnUiThread(() -> CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG));
-                return false;
-            } else {
-                try {
-                    String token = LocalPreferences.getToken();
-
-                    // persist Planting Record data to local DB.
-                    StorageTxWithItems tx = FruitGlobalState.commitReadyStorage(db);
-
-                    // sync fish species
-                    Call<StorageTxDTO> syncTxAsyncCall = updService.syncStorageTx(StorageTxDTO.convert(tx), "Bearer " + token);
-                    syncTxAsyncCall.enqueue(new ReadyStorageConfirmActivity.SyncTxCallBack());
-
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
-                    return false;
-                }
-            }
-        } else {
-            runOnUiThread(() -> CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG));
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
             return false;
         }
     }

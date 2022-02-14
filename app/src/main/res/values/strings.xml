@@ -105,6 +105,8 @@
     <string name="delete_catch_button">DELETE CATCH</string>
     <string name="end_bin_button">BIN FILLED</string>
     <string name="weight_bin">Weight of Bin:</string>
+    <string name="type_weight">Please type weight</string>
+    <string name="fish_catch_weight">Fish Catch Weight</string>
     <string name="fishing_catches">Fishing Catches</string>
     <string name="fishing_summary">Fishing Summary</string>
     <string name="total_weight">TOTAL WEIGHT (Kg):</string>
@@ -153,6 +155,7 @@
     <string name="title_receipt">RECEIPT</string>
     <string name="title_date_lot_dispatch_note">DATE / LOT / DISPATCH NOTE</string>
     <string name="processing_details">Receipt details</string>
+    <string name="receipt_header">#\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Bin \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Cage \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Kg</string>
 
     <string name="title_quality">QUALITY</string>
     <string name="choose_quality_type">Select quality type</string>
@@ -162,6 +165,48 @@
     <string name="quality_second_step_text">Package</string>
     <string name="quality_select_type">"Are the bins intended for processing?"</string>
     <string name="fish_temp_confirm_label">Fish temperature(°C):</string>
+    <string name="arrival_temperatures">Arrival temperatures</string>
+    <string name="bin_avg_temp">Bin average temperature</string>
+    <string name="fish_avg_temp">Fish average temperature</string>
+    <string name="arrival_bin_condition">Arrival bin condition</string>
+    <string name="arrival_ice_condition">Arrival ice condition</string>
+    <string name="good_condition">GOOD</string>
+    <string name="moderate_condition">MODERATE</string>
+    <string name="bad_condition">BAD</string>
+    <string name="percentages">Percentages</string>
+    <string name="rigor_mortis">Rigor mortis</string>
+    <string name="elimination_food">Elimination food</string>
+    <string name="elimination_sperm">Elimination sperm</string>
+    <string name="parasites">Parasites</string>
+    <string name="peeling">Peeling</string>
+    <string name="smells">Smell</string>
+    <string name="fresh_metallic">FRESH METALLIC</string>
+    <string name="odorless">ODORLESS</string>
+    <string name="light_stinky">Light stinky</string>
+    <string name="heavy_stinky">Heavy stinky</string>
+    <string name="eye_evaluation">Eye evaluation</string>
+    <string name="shiny">Shiny</string>
+    <string name="blurred">Blurred</string>
+    <string name="healed">Healed</string>
+    <string name="blind">Blind</string>
+    <string name="belly">Belly</string>
+    <string name="coherent">Coherent</string>
+    <string name="soft">Soft</string>
+    <string name="swollen">Swollen</string>
+    <string name="hematomas">Hematomas</string>
+    <string name="light_hem">Light</string>
+    <string name="severe_hem">Severe</string>
+    <string name="gills">Gills</string>
+    <string name="pink">Pink</string>
+    <string name="dark">Dark</string>
+    <string name="white">White</string>
+    <string name="uncolored">Uncolored</string>
+    <string name="mucus">Mucus</string>
+    <string name="defective_fish">Defective fish</string>
+    <string name="process_temperatures">Process temperatures</string>
+    <string name="high_temp">Max:</string>
+    <string name="avg_temp">Avg:</string>
+    <string name="low_temp">Min:</string>
 
     <string name="dispatch_note">Type dispatch note</string>
     <string name="enter_lot">Type LOT</string>
@@ -217,7 +262,10 @@
     <string name="down_item_inventory_consumable">[Scan barcode]</string>
     <string name="inventory_details">Inventory details</string>
     <string name="inventory">Inventory</string>
+    <string name="inventory_header">Code\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Description\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0#</string>
     <string name="inventory_item_label">Items</string>
+    <string name="inventory_codes">Codes:</string>
+    <string name="inventory_items">Items:</string>
     <string name="choose_inventory_type">Select item type</string>
     <string name="asset_type">Continue to scan asset RFID</string>
     <string name="consumable_type">Continue to scan consumable BARCODE</string>
@@ -412,7 +460,6 @@
     <string name="items">Items</string>
     <string name="scan_palette">Scan Palette</string>
     <string name="number_of_palette"># of Palette:</string>
-    <string name="type_rfid">Please confirm your selection</string>
 
     <string name="scan_rfid">Scan RFID</string>
     <string name="pole_barcode">Pole</string>
@@ -453,6 +500,16 @@
 
     <string name="procced_without_location">"GPS coordinates wasn't found. Do you want to proceed without getting them?"</string>
     <string name="press_check_button_again">Please press the check button again</string>
+
+    <!-- Hotel strings -->
+    <string name="title_sync">SYNCHRONIZATION</string>
+    <string name="files_to_sync">Files to synchronize</string>
+    <string name="menu_title_synchronize">Files to sync</string>
+
+    <string name="title_status">CHANGE STATUS</string>
+    <string name="menu_title_status">Change status</string>
+    <string name="new_status">New status</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="asset">ASSET</string>

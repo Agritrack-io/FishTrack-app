@@ -103,10 +103,11 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
 
             <io.agritrack.ui.custom.ToggleGroup
                 android:id="@+id/tgBinCondition"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -116,39 +117,39 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
                     android:id="@+id/tbGoodBin"
                     android:layout_width="100dp"
                     android:layout_height="30dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="ΚΑΛΗ"
-                    android:textOn="ΚΑΛΗ"
+                    android:textOff="@string/good_condition"
+                    android:textOn="@string/good_condition"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
                 <ToggleButton
                     android:id="@+id/tbMediumBin"
                     android:layout_width="100dp"
                     android:layout_height="30dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="ΜΕΤΡΙΑ"
-                    android:textOn="ΜΕΤΡΙΑ"
+                    android:textOff="@string/moderate_condition"
+                    android:textOn="@string/moderate_condition"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
                 <ToggleButton
                     android:id="@+id/tbBadBin"
                     android:layout_width="100dp"
                     android:layout_height="30dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="ΚΑΚΗ"
-                    android:textOn="ΚΑΚΗ"
+                    android:textOff="@string/bad_condition"
+                    android:textOn="@string/bad_condition"
                     android:textSize="@dimen/text_view_font_size_medium" />
             </io.agritrack.ui.custom.ToggleGroup>
 
@@ -159,11 +160,12 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="0dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="Κατάσταση Δεξαμενής κατά την άφιξη"
+            android:text="@string/arrival_bin_condition"
             android:textColor="@color/label_blue"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
     </RelativeLayout>
 
@@ -190,10 +192,11 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
 
             <io.agritrack.ui.custom.ToggleGroup
                 android:id="@+id/tgIceCondition"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -203,39 +206,39 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
                     android:id="@+id/tbGoodIce"
                     android:layout_width="100dp"
                     android:layout_height="30dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="ΚΑΛΗ"
-                    android:textOn="ΚΑΛΗ"
+                    android:textOff="@string/good_condition"
+                    android:textOn="@string/good_condition"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
                 <ToggleButton
                     android:id="@+id/tbMediumIce"
                     android:layout_width="100dp"
                     android:layout_height="30dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="ΜΕΤΡΙΑ"
-                    android:textOn="ΜΕΤΡΙΑ"
+                    android:textOff="@string/moderate_condition"
+                    android:textOn="@string/moderate_condition"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
                 <ToggleButton
                     android:id="@+id/tbBadIce"
                     android:layout_width="100dp"
                     android:layout_height="30dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="ΚΑΚΗ"
-                    android:textOn="ΚΑΚΗ"
+                    android:textOff="@string/bad_condition"
+                    android:textOn="@string/bad_condition"
                     android:textSize="@dimen/text_view_font_size_medium" />
             </io.agritrack.ui.custom.ToggleGroup>
 
@@ -248,16 +251,16 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="Κατάσταση Πάγου κατά την άφιξη"
+            android:text="@string/arrival_ice_condition"
             android:textColor="@color/label_blue"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/moreInfoDLayout"
         android:layout_width="0dp"
-        android:layout_height="380dp"
+        android:layout_height="360dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -284,7 +287,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Νεκρική ακαμψία"
+                android:text="@string/rigor_mortis"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -333,7 +336,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Αποβολή τροφών"
+                android:text="@string/elimination_food"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -382,7 +385,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Αποβολή σπέρματος"
+                android:text="@string/elimination_sperm"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -431,7 +434,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Παράσιτα"
+                android:text="@string/parasites"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -481,7 +484,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Απολέπιση"
+                android:text="@string/peeling"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -531,9 +534,9 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="Ποσοστά"
+            android:text="@string/percentages"
             android:textColor="@color/label_blue"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
     </RelativeLayout>
 

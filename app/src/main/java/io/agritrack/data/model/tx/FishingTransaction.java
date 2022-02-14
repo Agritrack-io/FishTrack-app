@@ -7,9 +7,11 @@ import androidx.room.TypeConverters;
 
 import java.util.List;
 
+import io.agritrack.data.converter.BinRecordConverter;
 import io.agritrack.data.converter.StringListConverter;
 import io.agritrack.data.converter.TxStatusEnumConverter;
 import io.agritrack.enums.TxStatus;
+import io.agritrack.fish.ui.bo.BinWeightRecord;
 
 @Entity(tableName = "fishing_transaction")
 public class FishingTransaction {
@@ -75,8 +77,9 @@ public class FishingTransaction {
     @ColumnInfo(name = "harvest_bins")
     public List<String> harvestBins;
 
+    @TypeConverters(BinRecordConverter.class)
     @ColumnInfo(name = "harvest_bins_data")
-    public String harvestBinsData;
+    public List<BinWeightRecord.BinRecord> harvestBinsData;
 
     @TypeConverters(StringListConverter.class)
     @ColumnInfo(name = "team_members")

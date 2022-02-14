@@ -173,7 +173,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Μέση Θερμοκρασία βουτών"
+                android:text="@string/bin_avg_temp"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -222,7 +222,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Θερμοκρασία ψαριών"
+                android:text="@string/fish_avg_temp"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
@@ -272,9 +272,9 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="Θερμοκρασίες κατά την άφιξη"
+            android:text="@string/arrival_temperatures"
             android:textColor="@color/label_blue"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
     </RelativeLayout>
 

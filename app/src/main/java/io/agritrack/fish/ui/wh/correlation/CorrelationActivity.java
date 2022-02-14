@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,9 +46,13 @@ import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
@@ -73,6 +78,7 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
     private Button btnScanAssetTag, btnCorrelate;
     private TextView tvCorrAssetBarcode;
     private MobileDB db;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
     private FilterableAdapter adapterAssets;
     private String selectedAssetType;
     private String selectedBarcode = "";
@@ -80,7 +86,8 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
     private ConstraintLayout selectedItem;
     private ProgressDialog progressDialog;
 
-    private ImageView ivSupport;
+    private boolean proceedWithoutLocation = false;
+    private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
 
     // Instantiate a clickListener to be passed to adapterAssets.
@@ -117,6 +124,17 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
         // get  references of the controls
         assignCtrlVars();
 
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
+
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(CorrelationActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -137,7 +155,16 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
                 return;
             }
-            correlate();
+            if (mLastLocation != null) {
+                recWHCorrelation.longitude = mLastLocation.getLongitude();
+                recWHCorrelation.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            }
+            //correlate();
         });
 
         ivSupport.setOnClickListener(view -> {
@@ -146,6 +173,19 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
         });
 
         configFooter();
+    }
+
+    private void moveToNextScreen(){
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = correlate();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), CorrelationActivity.class);
+                startActivity(i);
+            }
+        }
     }
 
     @Override
@@ -176,30 +216,26 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        ivNext.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+            startActivity(i);
+                /*String v = validate();
+                if (!Strings.isEmptyOrWhitespace(v)) {
+                    CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                    return;
+                }
 
                 if (mLastLocation != null) {
                     recWHCorrelation.longitude = mLastLocation.getLongitude();
                     recWHCorrelation.latitude = mLastLocation.getLatitude();
+                    proceedWithoutLocation = true;
+                    moveToNextScreen();
                 } else {
-                    CToast(CorrelationActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = correlate();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-                    startActivity(i);
-                }
-            }
+                    FragmentManager fm = getSupportFragmentManager();
+                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+                }*/
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToWareHouseMenu);
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
@@ -214,6 +250,8 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
         btnCorrelate = findViewById(R.id.btnCorrelate);
         tgSearchAssetType.setOnCheckedChangeListener(this);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToWareHouseMenu);
         ivSupport = findViewById(R.id.ivSupport);
         rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvAssets.setItemAnimator(new DefaultItemAnimator());

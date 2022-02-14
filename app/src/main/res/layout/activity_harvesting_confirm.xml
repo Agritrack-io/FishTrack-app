@@ -168,7 +168,7 @@ tools:context=".fruit.ui.harvesting.HarvestingConfirmActivity">
 
             <TextView
                 android:id="@+id/tvHarvestLot"
-                android:layout_width="186dp"
+                android:layout_width="146dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"

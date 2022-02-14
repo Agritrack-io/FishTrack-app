@@ -38,6 +38,7 @@ import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
 import io.agritrack.data.model.tx.SeaTemperatureTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.TimeOutProgressDlg;
+import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.transport.TransportSupervisorConfirmActivity;
@@ -60,11 +61,13 @@ public class SeaTemperatureActivity extends LocationAwareActivity {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private EditText etReferenceTemp, etCageTemp;
     private TextView tvCurrentDate;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
 
     private MobileDB db;
     private ProgressDialog progressDialog;
 
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivNext, ivBack;
+    private boolean proceedWithoutLocation = false;
     private SupportDialog supportDialog;
 
     @Override
@@ -87,6 +90,17 @@ public class SeaTemperatureActivity extends LocationAwareActivity {
         db = MobileDB.getInstance(getAppContext());
 
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(SeaTemperatureActivity.this);
@@ -125,6 +139,19 @@ public class SeaTemperatureActivity extends LocationAwareActivity {
         showCurrentSite();
 
         configFooter();
+    }
+
+    private void moveToNextScreen(){
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+                startActivity(i);
+            }
+        }
     }
 
     protected void configFooter() {

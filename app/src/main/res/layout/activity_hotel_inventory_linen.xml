@@ -192,28 +192,13 @@ tools:context=".hotel.ui.inventory.HotelInventoryLinenActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <TextView
-                android:id="@+id/tvGroupsCnt"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="32dp"
-                android:textSize="13pt"
-                android:textStyle="bold"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnScanAsset"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
-
             <Button
                 android:id="@+id/btnScanAsset"
                 android:layout_width="150dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="12dp"
+                android:layout_marginStart="24dp"
                 android:background="@drawable/button_press_effect"
                 android:text="@string/scan_assets"
                 android:textColor="@color/yellow"
@@ -233,7 +218,7 @@ tools:context=".hotel.ui.inventory.HotelInventoryLinenActivity">
                 android:layout_marginEnd="8dp"
                 android:gravity="center_vertical"
                 android:paddingStart="22dp"
-                android:text="Τύπος           Περιγραφή                       #"
+                android:text="@string/inventory_header"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/xvInventoryItems"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -256,6 +241,76 @@ tools:context=".hotel.ui.inventory.HotelInventoryLinenActivity">
                 app:layout_constraintStart_toStartOf="parent">
 
             </ExpandableListView>
+
+            <TextView
+                android:id="@+id/tvGroupsCntLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/inventory_codes"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/tvItemsCntLabel"
+                app:layout_constraintEnd_toStartOf="@+id/tvGroupsCnt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
+
+            <TextView
+                android:id="@+id/tvGroupsCnt"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/tvItemsCnt"
+                app:layout_constraintEnd_toStartOf="@+id/btnScanAsset"
+                app:layout_constraintStart_toEndOf="@+id/tvGroupsCntLabel"
+                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
+
+            <TextView
+                android:id="@+id/tvItemsCntLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/inventory_items"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvItemsCnt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvGroupsCntLabel" />
+
+            <TextView
+                android:id="@+id/tvItemsCnt"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnScanAsset"
+                app:layout_constraintStart_toEndOf="@+id/tvItemsCntLabel"
+                app:layout_constraintTop_toBottomOf="@+id/tvGroupsCnt" />
 
             <ImageButton
                 android:id="@+id/ivDeleteItem"

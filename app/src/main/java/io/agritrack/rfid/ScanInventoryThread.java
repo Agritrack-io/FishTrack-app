@@ -29,8 +29,11 @@ public class ScanInventoryThread implements Runnable {
     }
 
     public boolean startReading() {
-        this.scanInProgress = true;
-        return uhfReader.startReading();
+        if (uhfReader!=null) {
+            this.scanInProgress = true;
+            return uhfReader.startReading();
+        }
+        return false;
     }
 
     public void setFilter(String rfidFilter) {

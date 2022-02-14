@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.barcode.BarcodeScanService;
+import io.agritrack.enums.AssetType;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
@@ -234,21 +235,31 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
     }
 
     protected void configFooter() {
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        ivNext.setOnClickListener(view -> {
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            stopScanning();
 
-                if (mLastLocation != null) {
-                    recInventory.longitude = mLastLocation.getLongitude();
-                    recInventory.latitude = mLastLocation.getLatitude();
-                    proceedWithoutLocation = true;
-                    moveToNextScreen();
-                } else if (!proceedWithoutLocation) {
-                    FragmentManager fm = getSupportFragmentManager();
-                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-                } else {
-                    //CToast(HarvestingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
+            if (adapterIfco != null) {
+                FruitGlobalState.recInventory.ifcoItems = adapterIfco.getValues();
+            }
+            if (tvIfcoCount.getText() != null && !Strings.isEmptyOrWhitespace(tvIfcoCount.getText().toString())) {
+                recInventory.totalIfco = Integer.valueOf(tvIfcoCount.getText().toString());
+            }
+            FruitGlobalState.recInventory.consumableType = ConsumableType.valueOf(Constants.ftIfco);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+            if (mLastLocation != null) {
+                recInventory.longitude = mLastLocation.getLongitude();
+                recInventory.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             }
         });
 
@@ -305,20 +316,6 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
     }
 
     private boolean updateState() {
-        if (adapterIfco != null) {
-            FruitGlobalState.recInventory.ifcoItems = adapterIfco.getValues();
-        }
-        if (tvIfcoCount.getText() != null && !Strings.isEmptyOrWhitespace(tvIfcoCount.getText().toString())) {
-            recInventory.totalIfco = Integer.valueOf(tvIfcoCount.getText().toString());
-        }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
-        }
-
-        FruitGlobalState.recInventory.consumableType = ConsumableType.valueOf(Constants.ftIfco);
-
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 

@@ -32,7 +32,6 @@ import io.agritrack.enums.WarehouseTxState;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.ShippingRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
-import io.agritrack.fruit.ui.planting.PlantingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
@@ -53,7 +52,7 @@ public class ShippingConfirmActivity extends LocationAwareActivity {
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +61,9 @@ public class ShippingConfirmActivity extends LocationAwareActivity {
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderShippingConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
 
         // get  references of the controls
         assignCtrlVars();
@@ -92,7 +94,7 @@ public class ShippingConfirmActivity extends LocationAwareActivity {
         configFooter();
     }
 
-    private void moveToNextScreen(){
+    private void moveToNextScreen() {
         if (proceedWithoutLocation) {
             // Update state and proceed to next
             Boolean proceed = updateState();
@@ -113,7 +115,11 @@ public class ShippingConfirmActivity extends LocationAwareActivity {
                     CToast(ShippingConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
                     return;
                 }
-                if (mLastLocation != null) {
+                boolean userIsValid = isAuthenticated();
+                if (!userIsValid) {
+                    CToast(ShippingConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
+                    return;
+                } else if (mLastLocation != null) {
                     recShipping.longitude = mLastLocation.getLongitude();
                     recShipping.latitude = mLastLocation.getLatitude();
                     proceedWithoutLocation = true;
@@ -156,44 +162,33 @@ public class ShippingConfirmActivity extends LocationAwareActivity {
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }
 
-    private boolean updateState(){
+    private boolean isAuthenticated() {
+        String login = LocalPreferences.getLoggedInUser("").trim();
+        String pin = etPIN.getText().toString().trim();
+
+        // use typed-in PIN to compare credentials with those stored in the Local DB.
+        AuthenticationService authSvc = new AuthenticationService();
+        boolean authentication = authSvc.authenticateUser(this.db, login, pin);
+
+        return authentication;
+    }
+
+    private boolean updateState() {
         recShipping.state = WarehouseTxState.Outgoing;
+        try {
+            String token = LocalPreferences.getToken();
+            //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
-        // get an instance of local DB
-        this.db = MobileDB.getInstance(getAppContext());
+            // persist Transportation Record data to local DB.
+            ShippingTxWithItems tx = FruitGlobalState.commitShipping(db);
 
-        if (!TextUtils.isEmpty(etPIN.getText().toString())) {
-            String login = LocalPreferences.getLoggedInUser("").trim();
-            String pin = etPIN.getText().toString().trim();
-
-            // use typed-in PIN to compare credentials with those stored in the Local DB.
-            AuthenticationService authSvc = new AuthenticationService();
-            boolean authentication = authSvc.authenticateUser(this.db, login, pin);
-
-            // credentials do NOT match
-            if (!authentication) {
-                runOnUiThread(() -> CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG));
-                return false;
-            } else {
-                try {
-                    String token = LocalPreferences.getToken();
-                    //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
-
-                    // persist Transportation Record data to local DB.
-                    ShippingTxWithItems tx = FruitGlobalState.commitShipping(db);
-
-                    // sync fish species
-                    Call<ShippingTxDTO> syncTxAsyncCall = updService.syncShippingTx(ShippingTxDTO.convert(tx), "Bearer " + token);
-                    syncTxAsyncCall.enqueue(new ShippingConfirmActivity.SyncTxCallBack());
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
-                    return false;
-                }
-            }
-        } else {
-            runOnUiThread(() -> CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG));
+            // sync fish species
+            Call<ShippingTxDTO> syncTxAsyncCall = updService.syncShippingTx(ShippingTxDTO.convert(tx), "Bearer " + token);
+            syncTxAsyncCall.enqueue(new ShippingConfirmActivity.SyncTxCallBack());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
             return false;
         }
     }

@@ -194,11 +194,9 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
                 recCorrelation.latitude = mLastLocation.getLatitude();
                 proceedWithoutLocation = true;
                 moveToNextScreen();
-            } else if (!proceedWithoutLocation) {
+            } else {
                 FragmentManager fm = getSupportFragmentManager();
                 confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else {
-                //CToast(HarvestingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
             }
         });
 

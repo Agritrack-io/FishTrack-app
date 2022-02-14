@@ -181,6 +181,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         } else if (checkedId == R.id.tbAssetFrom) {
             GlobalState.recWHOutgoing.from = Constants.ftAsset;
             tvOutgoingFrom.setText(Constants.ftAsset);
+            selectedToggleButtonFrom = Constants.ftAsset;
         } else if (checkedId == R.id.tbAvramar) {
             avramarDialog = new ExpandableListDialog(OutgoingStartActivity.this, fillAvramarData(), toAvramarSelection, R.string.select_site);
             avramarDialog.showDialog();
@@ -192,6 +193,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         } else if (checkedId == R.id.tbOutAssetTo) {
             GlobalState.recWHOutgoing.to = Constants.ftAsset;
             tvOutgoingTo.setText(Constants.ftAsset);
+            selectedToggleButtonTo = Constants.ftAsset;
         }
         if (checkedId == R.id.tbAsset) {
             selectedOutgoingItemType = Constants.ftAsset;

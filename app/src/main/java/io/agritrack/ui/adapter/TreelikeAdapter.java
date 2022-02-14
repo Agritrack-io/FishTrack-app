@@ -1,5 +1,6 @@
 package io.agritrack.ui.adapter;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -9,11 +10,13 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -34,6 +37,12 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
     @Override
     public int getGroupCount() {
         return this.mValues != null ? this.mValues.size() : 0;
+    }
+
+    public long getItemsCount() {
+        return mValues.values()
+                .stream()
+                .flatMap(Collection::stream).count();
     }
 
     @Override

@@ -154,7 +154,7 @@
 
                 <TextView
                     android:id="@+id/tvReqQuantityCount"
-                    android:layout_width="136dp"
+                    android:layout_width="116dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/border_bottom"
@@ -168,7 +168,7 @@
 
                 <TextView
                     android:id="@+id/tvNumberOfBinsCount"
-                    android:layout_width="136dp"
+                    android:layout_width="116dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/border_bottom"
@@ -195,7 +195,7 @@
 
                 <TextView
                     android:id="@+id/tvTotalQuantityCount"
-                    android:layout_width="136dp"
+                    android:layout_width="116dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"

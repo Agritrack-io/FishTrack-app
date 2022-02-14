@@ -3,6 +3,7 @@ package io.agritrack.fruit.ui.warehouse.inventory;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fruit.state.FruitGlobalState.recCorrelation;
 import static io.agritrack.fruit.state.FruitGlobalState.recInventory;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -247,25 +248,31 @@ public class TotesInventoryActivity extends LocationAwareActivity {
     }
 
     protected void configFooter() {
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Stop scanning since we navigate to next activity
-                if (scanner_runnable!=null) {
-                    scanner_runnable.stopReading();
-                }
-
-                if (mLastLocation != null) {
-                    recInventory.longitude = mLastLocation.getLongitude();
-                    recInventory.latitude = mLastLocation.getLatitude();
-                    proceedWithoutLocation = true;
-                    moveToNextScreen();
-                } else if (!proceedWithoutLocation) {
-                    FragmentManager fm = getSupportFragmentManager();
-                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-                } else {
-                    //CToast(HarvestingConfirmActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
+        ivNext.setOnClickListener(view -> {
+            //Stop scanning since we navigate to next activity
+            if (scanner_runnable!=null) {
+                scanner_runnable.stopReading();
+            }
+            if (adapterTotes != null) {
+                recInventory.totesItems = adapterTotes.getValues();
+            }
+            if (tvTotesCount.getText() != null && !Strings.isEmptyOrWhitespace(tvTotesCount.getText().toString())) {
+                recInventory.totalTotes = Integer.valueOf(tvTotesCount.getText().toString());
+            }
+            FruitGlobalState.recInventory.assetType = AssetType.valueOf(Constants.ftTote);
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+            if (mLastLocation != null) {
+                recInventory.longitude = mLastLocation.getLongitude();
+                recInventory.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             }
         });
 
@@ -323,20 +330,6 @@ public class TotesInventoryActivity extends LocationAwareActivity {
     }
 
     private boolean updateState() {
-        if (adapterTotes != null) {
-            recInventory.totesItems = adapterTotes.getValues();
-        }
-        if (tvTotesCount.getText() != null && !Strings.isEmptyOrWhitespace(tvTotesCount.getText().toString())) {
-            recInventory.totalTotes = Integer.valueOf(tvTotesCount.getText().toString());
-        }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
-        }
-
-        FruitGlobalState.recInventory.assetType = AssetType.valueOf(Constants.ftTote);
-
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 

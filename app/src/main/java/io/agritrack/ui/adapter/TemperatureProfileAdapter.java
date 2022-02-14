@@ -147,7 +147,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
 
         public void setMeasurements(String key, List<String[]> measurements) {
             AtomicInteger idx = new AtomicInteger();
-            ArrayList<Entry> values = (ArrayList<Entry>) measurements.stream().map(x -> new Entry(idx.incrementAndGet(), Float.valueOf(x[1]))).collect(Collectors.toList());
+            ArrayList<Entry> values = (ArrayList<Entry>) measurements.stream().map(x -> new Entry(idx.incrementAndGet(), Float.valueOf(x[1].replace(',', '.')))).collect(Collectors.toList());
 
             set1 = new LineDataSet(values, key);
             set1.setDrawCircles(false);

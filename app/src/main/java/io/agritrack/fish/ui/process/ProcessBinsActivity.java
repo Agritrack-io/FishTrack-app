@@ -50,6 +50,7 @@ import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -106,6 +107,9 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
+
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderProcessBins);

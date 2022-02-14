@@ -38,6 +38,7 @@
     <string name="menu_title_inventory">Απογραφή</string>
     <string name="menu_title_correlation">Συσχέτιση</string>
     <string name="menu_title_search">Αναζήτηση</string>
+    <string name="menu_title_synchronize">Αρχεία προς Συγχρονισμό</string>
 
     <string name="menu_title_internal">Εσωτερική</string>
     <string name="menu_title_external">Εξωτερική</string>
@@ -105,7 +106,9 @@
     <string name="delete_catch_button">ΔΙΕΓΡΑΨΕ ΨΑΡΙΑ</string>
     <string name="end_bin_button">ΤΕΛΟΣ ΒΟΥΤΑΣ</string>
     <string name="weight_bin">Βάρος βούτας:</string>
+    <string name="type_weight">Παρακαλώ πληκτρολογήστε βάρος</string>
     <string name="fishing_catches">Ψαριές</string>
+    <string name="fish_catch_weight">Βάρος ψαριάς</string>
     <string name="fishing_summary">Σύνολα αλίευσης</string>
     <string name="total_weight">ΣΥΝΟΛΙΚΟ ΒΑΡΟΣ:</string>
     <string name="used_bins">ΧΡΗΣΙΜΟΠΟΙΟΥΜΕΝΕΣ ΒΟΥΤΕΣ:</string>
@@ -156,6 +159,7 @@
     <string name="title_receipt">ΠΑΡΑΛΑΒΗ</string>
     <string name="processing_details">Πληροφορίες παραλαβής</string>
     <string name="title_date_lot_dispatch_note">ΗΜΕΡΟΜΗΝΙΑ / LOT / ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ</string>
+    <string name="receipt_header">#\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Βούτα \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Κλωβός \u00A0\u00A0\u00A0\u00A0 Kg</string>
 
     <string name="title_quality">ΠΟΙΟΤΙΚΟΣ ΕΛΕΓΧΟΣ</string>
     <string name="choose_quality_type">Επιλέξτε έλεγχο</string>
@@ -165,6 +169,48 @@
     <string name="quality_second_step_text">Πριν την Συσκευασία</string>
     <string name="quality_select_type">"Οι βούτες προορίζονται για επεξεργασία;"</string>
     <string name="fish_temp_confirm_label">Θερμοκρασία ψαριών(°C):</string>
+    <string name="arrival_temperatures">Θερμοκρασίες κατά την άφιξη</string>
+    <string name="bin_avg_temp">Μέση Θερμοκρασία βουτών</string>
+    <string name="fish_avg_temp">Μέση Θερμοκρασία ψαριών</string>
+    <string name="arrival_bin_condition">Κατάσταση Δεξαμενής κατά την άφιξη</string>
+    <string name="arrival_ice_condition">Κατάσταση Πάγου κατά την άφιξη</string>
+    <string name="good_condition">ΚΑΛΗ</string>
+    <string name="moderate_condition">ΜΕΤΡΙΑ</string>
+    <string name="bad_condition">ΚΑΚΗ</string>
+    <string name="percentages">Ποσοστά</string>
+    <string name="rigor_mortis">Νεκρική ακαμψία</string>
+    <string name="elimination_food">Αποβολή τροφών</string>
+    <string name="elimination_sperm">Αποβολή σπέρματος</string>
+    <string name="parasites">Παράσιτα</string>
+    <string name="peeling">Απολέπιση</string>
+    <string name="smells">Οσμή</string>
+    <string name="fresh_metallic">ΦΡΕΣΚΟ ΜΕΤΑΛΛΙΚΟ</string>
+    <string name="odorless">ΑΟΣΜΟ</string>
+    <string name="light_stinky">ΕΛΑΦΡΑ ΔΥΣΟΣΜΟ</string>
+    <string name="heavy_stinky">ΕΝΤΟΝΑ ΔΥΣΟΣΜΟ</string>
+    <string name="eye_evaluation">Αξιολόγηση ματιών</string>
+    <string name="shiny">Λαμπερά</string>
+    <string name="blurred">Θολά</string>
+    <string name="healed">Επουλωμένα</string>
+    <string name="blind">Τυφλά</string>
+    <string name="belly">Κοιλιά</string>
+    <string name="coherent">Συνεκτική</string>
+    <string name="soft">Μαλακή</string>
+    <string name="swollen">Διογκωμένη</string>
+    <string name="hematomas">Αιματώματα</string>
+    <string name="light_hem">Ελαφριά</string>
+    <string name="severe_hem">Έντονα</string>
+    <string name="gills">Βράγχια</string>
+    <string name="pink">Ρόδινα</string>
+    <string name="dark">Σκούρα</string>
+    <string name="white">Ξέσπρια</string>
+    <string name="uncolored">Αποχρωματισμένα</string>
+    <string name="mucus">Βλέννα</string>
+    <string name="defective_fish">Προβληματικά ψάρια</string>
+    <string name="process_temperatures">Θερμοκρασίες πριν τη συσκευασία</string>
+    <string name="high_temp">Max:</string>
+    <string name="avg_temp">Μέση:</string>
+    <string name="low_temp">Min:</string>
 
     <string name="dispatch_note">Εισάγετε δελτίο αποστολής</string>
     <string name="enter_lot">Εισάγετε LOT</string>
@@ -217,7 +263,10 @@
     <string name="up_item_inventory_asset">[Σκάναρε RFID]</string>
     <string name="down_item_inventory_consumable">[Σκάναρε barcode]</string>
     <string name="inventory_item_label">Είδη απογραφής</string>
+    <string name="inventory_header">Τύπος\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Περιγραφή\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0#</string>
     <string name="choose_inventory_type">Επιλέξτε τύπο αντικειμένου</string>
+    <string name="inventory_codes">Κωδικοί:</string>
+    <string name="inventory_items">Τεμάχια:</string>
     <string name="asset_type">Συνεχίστε για να σκανάρετε RFID</string>
     <string name="consumable_type">Συνεχίστε για να σκανάρετε BARCODE</string>
 
@@ -454,6 +503,15 @@
 
     <string name="procced_without_location">"Οι συντεταγμένες GPS δεν βρέθηκαν. \nΕπιλέξτε: \n  'Όχι', για νέα προσπάθεια \n  'Ναι', για να συνεχίσετε."</string>
     <string name="press_check_button_again">Παρακαλώ πατήστε το κουμπί για να συνεχίσετε</string>
+
+    <!-- Hotel strings -->
+    <string name="title_sync">ΣΥΓΧΡΟΝΙΣΜΟΣ</string>
+    <string name="files_to_sync">Αρχεία προς συγχρονισμό</string>
+
+    <string name="title_status">ΑΛΛΑΓΗ ΚΑΤΑΣΤΑΣΗΣ</string>
+    <string name="menu_title_status">Αλλαγή κατάστασης</string>
+    <string name="new_status">Νέα κατάσταση</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="asset">ΠΑΓΙΟ</string>

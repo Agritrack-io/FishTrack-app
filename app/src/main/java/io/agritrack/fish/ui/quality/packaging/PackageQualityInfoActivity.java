@@ -2,11 +2,10 @@ package io.agritrack.fish.ui.quality.packaging;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
-
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -22,6 +21,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
+
 import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
@@ -29,7 +31,6 @@ import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
-import io.agritrack.fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class PackageQualityInfoActivity extends AppCompatActivity {
@@ -37,11 +38,33 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
     private static final int pic_id = 123;
     private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
     private EditText mtvRemarks, etFishTemp;
+    private TextView tvTempBin;
     private PhotoDialog photoDialog;
     private ImageView ivTakenPhoto;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
+    private InputFilter filter = new InputFilter() {
+        final int maxDigitsBeforeDecimalPoint = 2;
+        final int maxDigitsAfterDecimalPoint = 2;
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end,
+                                   Spanned dest, int dstart, int dend) {
+            StringBuilder builder = new StringBuilder(dest);
+            builder.replace(dstart, dend, source
+                    .subSequence(start, end).toString());
+            if (!builder.toString().matches(
+                    "(([1-9]{1})([0-9]{0," + (maxDigitsBeforeDecimalPoint - 1) + "})?)?(\\.[0-9]{0," + maxDigitsAfterDecimalPoint + "})?"
+
+            )) {
+                if (source.length() == 0)
+                    return dest.subSequence(dstart, dend);
+                return "";
+            }
+            return null;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +115,29 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
         configFooter();
     }
 
+    // This method will help to retrieve the image
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // Match the request 'pic id with requestCode
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == pic_id) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+
+                    // Set the image in imageview for display
+                    photoResult.setValue(photo);
+
+                    photoDialog = new PhotoDialog(PackageQualityInfoActivity.this, photoResult, R.string.photo_taken);
+                    photoDialog.showDialog();
+
+                    break;
+                case Activity.RESULT_CANCELED:
+                    break;
+            }
+        }
+    }
+
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToPackageQualityConfirm);
         ivNext.setOnClickListener(view -> {
@@ -112,40 +158,23 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
         });
     }
 
-    private InputFilter filter = new InputFilter() {
-        final int maxDigitsBeforeDecimalPoint=2;
-        final int maxDigitsAfterDecimalPoint=2;
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end,
-                                   Spanned dest, int dstart, int dend) {
-            StringBuilder builder = new StringBuilder(dest);
-            builder.replace(dstart, dend, source
-                    .subSequence(start, end).toString());
-            if (!builder.toString().matches(
-                    "(([1-9]{1})([0-9]{0,"+(maxDigitsBeforeDecimalPoint-1)+"})?)?(\\.[0-9]{0,"+maxDigitsAfterDecimalPoint+"})?"
-
-            )) {
-                if(source.length()==0)
-                    return dest.subSequence(dstart, dend);
-                return "";
-            }
-            return null;
-        }
-    };
-
     private void assignCtrlVars() {
         etFishTemp = findViewById(R.id.etFishTemp);
-        etFishTemp.setFilters(new InputFilter[] { filter });
+        etFishTemp.setFilters(new InputFilter[]{filter});
         mtvRemarks = findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
         ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
         ivSupport = findViewById(R.id.ivSupport);
+        tvTempBin = findViewById(R.id.tvTempBin);
     }
 
     private void initControlsFromState() {
         QualityRecord qltTx = GlobalState.recQuality;
+
+        if (recLoggerData.avgT != null) {
+            tvTempBin.setText(String.format("%.1f", recLoggerData.avgT));
+        }
 
         if (!Strings.isEmptyOrWhitespace(qltTx.remarks)) {
             mtvRemarks.setText(qltTx.remarks);
@@ -175,6 +204,11 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
+        if (!IsDemo) {
+            if (GlobalState.recQuality.fishTemp == null) {
+                sb.append(String.format("\n%s is missing", "'Fish average temperature'"));
+            }
+        }
 
         return sb.toString();
     }
