@@ -468,4 +468,5 @@
     <string name="lot_restriction">Wrong LOT</string>
     <string name="lot_restriction_message">More than one harvest LOT returned for these totes. Please go back and select totes of a single LOT.</string>
     <string name="invalid_inputs">Invalid inputs :</string>
+    <string name="inventorySaveFailed">Failed to save local Inventory file</string>
 </resources>

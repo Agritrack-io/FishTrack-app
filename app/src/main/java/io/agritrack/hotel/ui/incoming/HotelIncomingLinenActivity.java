@@ -3,6 +3,7 @@ package io.agritrack.hotel.ui.incoming;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.enums.AssetType.ALL;
 import static io.agritrack.fish.state.GlobalState.recWHIncoming;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -25,12 +27,20 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,12 +66,17 @@ import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.TransactionApi;
+import io.agritrack.ui.login.api.UploadingApi;
 import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HotelIncomingLinenActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
+public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
 
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
@@ -70,6 +85,7 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
     private ScanInventoryThread scanner_runnable;
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    private final UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
 
     private ToggleGroup tgChooseAssetType;
     private String selectedAssetType = AssetType.ALL.name();
@@ -188,10 +204,6 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
                 CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
             }
         });
-
-//        ivAddItem.setOnClickListener(view -> {
-//            showAddDialog();
-//        });
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(HotelIncomingLinenActivity.this);
@@ -312,6 +324,23 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
             // persist WHIncomingAssetTX Record data to local DB.
             AssetTransaction tx = GlobalState.commitWHRFIDIncoming(db);
 
+
+            // save data in a local file.
+            String fileName = storeRecordToLocalJSONFile();
+            if(fileName != null) {
+                File jsonFile = new File(HotelIncomingLinenActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+                String content_type = getMimeType(jsonFile.getPath());
+
+                // create RequestBody instance from file
+                RequestBody requestFile = RequestBody.create(jsonFile , MediaType.parse(content_type));
+
+                // MultipartBody.Part is used to send also the actual file name
+                MultipartBody.Part filePart = MultipartBody.Part.createFormData("incoming", fileName, requestFile);
+
+                Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadHotelInventory(null, filePart, "Bearer " + token);
+                //syncTxAsyncCall.enqueue(new HotelIncomingLinenActivity.UploadIncomingJsonCallBack());
+            }
+
             // sync WH Incoming Tx
             Call<AssetTxDTO> syncTxAsyncCall = updService.syncRFIDIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
             syncTxAsyncCall.enqueue(new HotelIncomingLinenActivity.SyncTxCallBack());
@@ -324,6 +353,65 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
         } finally {
             progressDialog.dismiss();
         }
+    }
+
+    private String storeRecordToLocalJSONFile() {
+        String fileName = null;
+        // if WHIncoming record contains data, then save it to a local file.
+        if(recWHIncoming.items!=null && recWHIncoming.items.size() > 0) {
+            Date currentDate = new Date();
+            String compactTSFormat = "yyyyMMddHHmmss";
+            SimpleDateFormat sdf = new SimpleDateFormat(compactTSFormat);
+
+            // get asset Type, based on what toggle button was pressed.
+            String assetType = (recWHIncoming.assetType != null) ? recWHIncoming.assetType.name() : ALL.name();
+
+            // create the local json file name
+            fileName = String.format("Incoming.%s.%s.json",assetType, sdf.format(currentDate));
+            File outputFile = new File(HotelIncomingLinenActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+
+            ObjectMapper mapper = new ObjectMapper();
+            try (JsonGenerator jGenerator = mapper.getFactory().createGenerator(outputFile, JsonEncoding.UTF8)) {
+                jGenerator.writeStartObject(); // {
+
+                for (Map.Entry<String, List<String>> entry : recWHIncoming.items.entrySet()) {
+                    String catCode = entry.getKey();
+                    List<String> epcs = entry.getValue();
+
+                    jGenerator.writeStringField("cat", catCode);
+                    jGenerator.writeStringField("state", recWHIncoming.state.name());
+                    jGenerator.writeStringField("site", recWHIncoming.site);
+                    jGenerator.writeStringField("fromSite", recWHIncoming.from);
+                    jGenerator.writeStringField("toSite", recWHIncoming.to);
+                    jGenerator.writeNumberField("lon", recWHIncoming.longitude);
+                    jGenerator.writeNumberField("lat", recWHIncoming.latitude);
+
+                    // put the epcs in an array
+                    jGenerator.writeFieldName("epcs");
+                    jGenerator.writeStartArray(); // [
+                    for (String epc : epcs) {
+                        jGenerator.writeString(epc); // "epc..."
+                    }
+                    jGenerator.writeEndArray();
+                }
+
+                jGenerator.writeEndObject(); // }
+            } catch (JsonGenerationException e) {
+                e.printStackTrace();
+                Toast.makeText(HotelIncomingLinenActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
+                return null;
+            } catch (JsonMappingException e) {
+                e.printStackTrace();
+                Toast.makeText(HotelIncomingLinenActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
+                return null;
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(HotelIncomingLinenActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
+                return null;
+            }
+        }
+
+        return fileName;
     }
 
     private String validate() {
@@ -352,34 +440,6 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
             adapterIncomingItems.notifyDataSetChanged();
         }
     }
-
-/*    private void showAddDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Type item BARCODE");
-
-        // Set up the input
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String itemBarcode = input.getText().toString();
-                adapterIncomingItems.addItem(itemBarcode);
-                adapterIncomingItems.notifyDataSetChanged();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.show();
-    }*/
 
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
@@ -502,5 +562,12 @@ public class HotelIncomingLinenActivity extends LocationAwareActivity implements
                     break;
             }
         }
+    }
+
+
+    private String getMimeType(String path) {
+//        String extension = MimeTypeMap.getFileExtensionFromUrl(path);
+//        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        return "application/json";
     }
 }

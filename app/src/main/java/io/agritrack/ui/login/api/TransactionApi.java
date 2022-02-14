@@ -96,17 +96,9 @@ public interface TransactionApi {
     @POST("/inventory/wh")
     Call<RFIDInventoryDTO> syncRFIDInventoryTx(@Body RFIDInventoryDTO rFIDInventory, @Header("Authorization") String token);
 
-//    @Headers("Content-Type: application/json; charset=utf-8")
-//    @POST("/inventory/wh")
-//    Call<List<RFIDInventoryItemDTO>> syncRFIDInventoryItemTx(@Body List<RFIDInventoryItemDTO> rFIDInventoryItems, @Header("Authorization") String token);
-
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/inventory/wh")
     Call<CoInventoryDTO> syncCoInventoryTx(@Body CoInventoryDTO coInventory, @Header("Authorization") String token);
-//
-//    @Headers("Content-Type: application/json; charset=utf-8")
-//    @POST("/inventory/consumable/items")
-//    Call<List<CoInventoryItemDTO>> syncCoInventoryItemTx(@Body List<CoInventoryItemDTO> coInventoryItems, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/temperatures/cages")
