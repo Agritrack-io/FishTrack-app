@@ -28,10 +28,12 @@
         tools:replace="android:label">
         <activity
             android:name=".hotel.ui.status.HotelChangeStatusActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".hotel.ui.sync.HotelSynchronizeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".hotel.ui.outgoing.HotelOutgoingLinenActivity"
             android:exported="false"

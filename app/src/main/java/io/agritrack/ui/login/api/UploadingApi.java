@@ -13,5 +13,9 @@ public interface UploadingApi {
 
     @POST("hotel/files/upload")
     @Multipart
-    Call<ResponseBody> uploadHotelInventory(@Part("status") RequestBody status, @Part MultipartBody.Part file, @Header("Authorization") String token);
+    Call<ResponseBody> uploadHotelInventoryWithStatus(@Part("status") RequestBody status, @Part MultipartBody.Part file, @Header("Authorization") String token);
+
+    @POST("hotel/files/upload")
+    @Multipart
+    Call<ResponseBody> uploadHotelInventory(@Part MultipartBody.Part file, @Header("Authorization") String token);
 }

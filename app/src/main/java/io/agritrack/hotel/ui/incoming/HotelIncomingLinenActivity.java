@@ -86,7 +86,6 @@ public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity
     private ScanInventoryThread scanner_runnable;
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-    private final UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
 
     private ToggleGroup tgChooseAssetType;
     private String selectedAssetType = AssetType.ALL.name();
@@ -351,22 +350,6 @@ public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity
             // persist WHIncomingAssetTX Record data to local DB.
             AssetTransaction tx = GlobalState.commitWHRFIDIncoming(db);
 
-            // save data in a local file.
-            String fileName = storeRecordToLocalJSONFile();
-            if(fileName != null) {
-                File jsonFile = new File(HotelIncomingLinenActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
-
-                // create RequestBody instance from file
-                RequestBody requestFile = RequestBody.create(jsonFile , MediaType.parse("application/json"));
-
-                // MultipartBody.Part is used to send also the actual file name
-                MultipartBody.Part filePart = MultipartBody.Part.createFormData("incoming", fileName, requestFile);
-
-                Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadHotelInventory(null, filePart, "Bearer " + token);
-                uploadJsonFileAsyncCall.enqueue(new InventoryFileUploadCallBack());
-                //syncTxAsyncCall.enqueue(new HotelIncomingLinenActivity.UploadIncomingJsonCallBack());
-            }
-
             // sync WH Incoming Tx
             Call<AssetTxDTO> syncTxAsyncCall = updService.syncRFIDIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
             syncTxAsyncCall.enqueue(new HotelIncomingLinenActivity.SyncTxCallBack());
@@ -379,65 +362,6 @@ public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity
         } finally {
             progressDialog.dismiss();
         }
-    }
-
-    private String storeRecordToLocalJSONFile() {
-        String fileName = null;
-        // if WHIncoming record contains data, then save it to a local file.
-        if(recWHIncoming.items!=null && recWHIncoming.items.size() > 0) {
-            Date currentDate = new Date();
-            String compactTSFormat = "yyyyMMddHHmmss";
-            SimpleDateFormat sdf = new SimpleDateFormat(compactTSFormat);
-
-            // get asset Type, based on what toggle button was pressed.
-            String assetType = (recWHIncoming.assetType != null) ? recWHIncoming.assetType.name() : ALL.name();
-
-            // create the local json file name
-            fileName = String.format("Incoming.%s.%s.json",assetType, sdf.format(currentDate));
-            File outputFile = new File(HotelIncomingLinenActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
-
-            ObjectMapper mapper = new ObjectMapper();
-            try (JsonGenerator jGenerator = mapper.getFactory().createGenerator(outputFile, JsonEncoding.UTF8)) {
-                jGenerator.writeStartObject(); // {
-
-                for (Map.Entry<String, List<String>> entry : recWHIncoming.items.entrySet()) {
-                    String catCode = entry.getKey();
-                    List<String> epcs = entry.getValue();
-
-                    jGenerator.writeStringField("cat", catCode);
-                    jGenerator.writeStringField("state", recWHIncoming.state.name());
-                    jGenerator.writeStringField("site", recWHIncoming.site);
-                    jGenerator.writeStringField("fromSite", recWHIncoming.from);
-                    jGenerator.writeStringField("toSite", recWHIncoming.to);
-                    jGenerator.writeNumberField("lon", recWHIncoming.longitude);
-                    jGenerator.writeNumberField("lat", recWHIncoming.latitude);
-
-                    // put the epcs in an array
-                    jGenerator.writeFieldName("epcs");
-                    jGenerator.writeStartArray(); // [
-                    for (String epc : epcs) {
-                        jGenerator.writeString(epc); // "epc..."
-                    }
-                    jGenerator.writeEndArray();
-                }
-
-                jGenerator.writeEndObject(); // }
-            } catch (JsonGenerationException e) {
-                e.printStackTrace();
-                Toast.makeText(HotelIncomingLinenActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
-                return null;
-            } catch (JsonMappingException e) {
-                e.printStackTrace();
-                Toast.makeText(HotelIncomingLinenActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
-                return null;
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(HotelIncomingLinenActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
-                return null;
-            }
-        }
-
-        return fileName;
     }
 
     private String validate() {
@@ -524,18 +448,6 @@ public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
-        }
-    }
-
-    public class InventoryFileUploadCallBack implements Callback<ResponseBody> {
-        @Override
-        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-            Log.v("Upload", "success");
-        }
-
-        @Override
-        public void onFailure(Call<ResponseBody> call, Throwable t) {
-            Log.e("Upload error:", t.getMessage());
         }
     }
 
