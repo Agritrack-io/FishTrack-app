@@ -507,6 +507,9 @@
     <!-- Hotel strings -->
     <string name="title_sync">ΣΥΓΧΡΟΝΙΣΜΟΣ</string>
     <string name="files_to_sync">Αρχεία προς συγχρονισμό</string>
+    <string name="inventorySaveFailed">Το αρχείο απέτυχε να σωθεί τοπικά!</string>
+    <string name="file_failed_to_sync">Το αρχείο απέτυχε να συγχρονιστεί!!! Παρακαλώ επιλέξτε \'Αρχεία προς συγχρονισμό\'.</string>
+    <string name="files_failed_to_sync">Τα αρχεία απέτυχαν να συγχρονιστούν!!! Παρακαλώ ελέγξτε τη σύνδεσή σας.</string>
 
     <string name="title_status">ΑΛΛΑΓΗ ΚΑΤΑΣΤΑΣΗΣ</string>
     <string name="menu_title_status">Αλλαγή κατάστασης</string>

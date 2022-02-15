@@ -3,12 +3,9 @@ package io.agritrack.hotel.ui.status;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.enums.AssetType.ALL;
 import static io.agritrack.fish.state.GlobalState.recWHInventory;
 import static io.agritrack.ui.custom.CustomToast.CToast;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -16,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -28,48 +26,52 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
+
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.common.util.Strings;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.common.Constants;
-import io.agritrack.common.Filters;
+import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.wh.RFIDInventoryDTO;
-import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
-import io.agritrack.data.model.Site;
-import io.agritrack.data.model.wh.RFIDInventory;
-import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.enums.AssetType;
-import io.agritrack.fish.state.GlobalState;
 import io.agritrack.hotel.ui.HotelHomeActivity;
-import io.agritrack.hotel.ui.inventory.HotelInventoryLinenActivity;
-import io.agritrack.hotel.ui.inventory.HotelInventoryStartActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
-import io.agritrack.ui.custom.ToggleGroup;
-import io.agritrack.ui.login.api.TransactionApi;
+import io.agritrack.ui.login.api.UploadingApi;
 import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HotelChangeStatusActivity extends LocationAwareActivity {
 
-    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    private final UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     // Local handler that receives the RFID scanner results.
@@ -127,10 +129,9 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         String[] status = new String[]{"Active", "Discarded", "Retired", "Tag-replaced", "Repaired"};
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
 
-            ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, status);
-            hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-            spPackagingSite.setAdapter(hrAdapter);
-
+        ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, status);
+        hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
+        spPackagingSite.setAdapter(hrAdapter);
 
         // display groups counter
         tvGroupsCnt.setVisibility(View.VISIBLE);
@@ -189,7 +190,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else if (adapterInventoryItems.getGroupCount()>0){
+            } else if (adapterInventoryItems.getGroupCount() > 0) {
                 // <delete> Button was pressed without selecting a Bin first.
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
@@ -272,7 +273,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
             @Override
             public void onClick(View v) {
                 //Stop scanning since we navigate to next activity
-                if (scanner_runnable!=null) {
+                if (scanner_runnable != null) {
                     scanner_runnable.stopReading();
                 }
 
@@ -297,7 +298,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
-            if (scanner_runnable!=null) {
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -316,6 +317,10 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
             CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             return false;
         }
+        String selectedStatus = null;
+        if (spPackagingSite.getSelectedItem() != null) {
+            selectedStatus = spPackagingSite.getSelectedItem().toString();
+        }
 
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
@@ -327,17 +332,21 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
 
             String token = LocalPreferences.getToken();
 
-            // persist WHIncomingAssetTX Record data to local DB.
-            RFIDInventory invtx = GlobalState.commitWHRFIDInventory(db);
-            List<RFIDInventoryItem> invItemtxs = GlobalState.commitWHRFIDInventoryItem(db, invtx);
+            // save data in a local file.
+            String fileName = storeRecordToLocalJSONFile();
+            if (fileName != null) {
+                File jsonFile = new File(HotelChangeStatusActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
 
-            // sync WH Inventory Tx
-            RFIDInventoryDTO inventoryDto = RFIDInventoryDTO.convert(invtx);
-            List<RFIDInventoryItemDTO> invItemsDto = RFIDInventoryItemDTO.convert(invItemtxs);
-            inventoryDto.rfid_items = invItemsDto.stream().map(x -> new RFIDInventoryItemDTO(x.rfid)).collect(Collectors.groupingBy(g -> g.code, Collectors.toCollection(ArrayList::new)));
+                // create RequestBody instance from file
+                RequestBody requestFile = RequestBody.create(jsonFile, MediaType.parse("application/json"));
 
-            Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(inventoryDto, "Bearer " + token);
-            syncInvTxCallBack.enqueue(new HotelChangeStatusActivity.SyncInvTxCallBack());
+                // MultipartBody.Part is used to send also the actual file name
+                MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", fileName, requestFile);
+
+                RequestBody statusBody = RequestBody.create(MediaType.parse("text/plain"), selectedStatus);
+                Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadHotelInventoryWithStatus(statusBody, filePart, "Bearer " + token);
+                uploadJsonFileAsyncCall.enqueue(new HotelChangeStatusActivity.InventoryFileUploadCallBack());
+            }
 
             return true;
         } catch (Exception e) {
@@ -387,34 +396,62 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         }
     }
 
-    public class SyncInvTxCallBack implements Callback<RFIDInventoryDTO> {
-        @Override
-        public void onResponse(Call<RFIDInventoryDTO> call, Response<RFIDInventoryDTO> response) {
-            RFIDInventoryDTO rs = response.body();
-            if (rs != null || IsDemo) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
-            } else {
-                // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Inventory update failure!!!"), Toast.LENGTH_LONG));
+    private String storeRecordToLocalJSONFile() {
+        String fileName = null;
+
+        // if WHIncoming record contains data, then save it to a local file.
+        if (recWHInventory.items != null && recWHInventory.items.size() > 0) {
+            Date currentDate = new Date();
+            String compactTSFormat = "yyyyMMddHHmmss";
+            SimpleDateFormat sdf = new SimpleDateFormat(compactTSFormat);
+
+            // get asset Type, based on what toggle button was pressed.
+            String assetType = (recWHInventory.assetType != null) ? recWHInventory.assetType.name() : ALL.name();
+
+            // create the local json file name
+            fileName = String.format("InvChangeStatus.%s.%s.json", assetType, sdf.format(currentDate));
+            File outputFile = new File(HotelChangeStatusActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+
+            ObjectMapper mapper = new ObjectMapper();
+            try (JsonGenerator jGenerator = mapper.getFactory().createGenerator(outputFile, JsonEncoding.UTF8)) {
+                jGenerator.writeStartArray(); // [
+
+                for (Map.Entry<String, List<String>> entry : recWHInventory.items.entrySet()) {
+                    jGenerator.writeStartObject(); // {
+
+                    String catCode = entry.getKey();
+                    List<String> epcs = entry.getValue();
+
+                    jGenerator.writeStringField("cat", catCode);
+                    jGenerator.writeStringField("site", recWHInventory.subSite);
+
+                    // put the epcs in an array
+                    jGenerator.writeFieldName("epcs");
+                    jGenerator.writeStartArray(); // [
+                    for (String epc : epcs) {
+                        jGenerator.writeString(epc); // "epc..."
+                    }
+                    jGenerator.writeEndArray();
+                    jGenerator.writeEndObject(); // }
+                }
+
+                jGenerator.writeEndArray(); // ]
+            } catch (JsonGenerationException e) {
+                e.printStackTrace();
+                Toast.makeText(HotelChangeStatusActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
+                return null;
+            } catch (JsonMappingException e) {
+                e.printStackTrace();
+                Toast.makeText(HotelChangeStatusActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
+                return null;
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(HotelChangeStatusActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
+                return null;
             }
         }
 
-        @Override
-        public void onFailure(Call<RFIDInventoryDTO> call, Throwable error) {
-            if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
-            } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
-            } else {
-                if (call.isCanceled()) {
-                    //Call was cancelled by user
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
-                } else {
-                    //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
-                }
-            }
-        }
+        return fileName;
     }
 
     private class ScanHandler extends Handler {
@@ -446,6 +483,43 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                         //CToast(getApplicationContext(), render("Inventory scanning is over!!"), Toast.LENGTH_SHORT);
                     }
                     break;
+            }
+        }
+    }
+
+    public class InventoryFileUploadCallBack implements Callback<ResponseBody> {
+        @Override
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            try {
+                if (response.body() != null) {
+                    String fileName = response.body().string();
+                    boolean res = FileUtils.deleteInventoryFile(HotelChangeStatusActivity.this, fileName);
+                    if (res) {
+                        runOnUiThread(() -> CToast(getApplicationContext(), render("File was uploaded successfully!!!"), Toast.LENGTH_LONG));
+                    } else {
+                        runOnUiThread(() -> CToast(getApplicationContext(), render("Failed to remove file from local folder!!!"), Toast.LENGTH_LONG));
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Error:" + e.getMessage()), Toast.LENGTH_LONG));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ResponseBody> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.file_failed_to_sync), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
             }
         }
     }

@@ -555,8 +555,20 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
         }
 
         @Override
-        public void onFailure(Call<ResponseBody> call, Throwable t) {
-            runOnUiThread(() -> CToast(getApplicationContext(), render("File upload failure!!! Please sync files from main menu."), Toast.LENGTH_LONG));
+        public void onFailure(Call<ResponseBody> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.file_failed_to_sync), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
+            }
         }
     }
 }

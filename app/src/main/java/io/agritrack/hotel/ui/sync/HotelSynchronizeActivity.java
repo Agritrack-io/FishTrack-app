@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +34,7 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.hotel.ui.HotelHomeActivity;
+import io.agritrack.hotel.ui.inventory.HotelInventoryLinenActivity;
 import io.agritrack.ui.login.api.UploadingApi;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.MediaType;
@@ -104,7 +107,6 @@ public class HotelSynchronizeActivity extends AppCompatActivity { //implements A
             } else {
                 boolean proceed = syncAllFiles();
                 if (proceed) {
-                    CToast(getApplicationContext(), render("Files uploaded successfully!!!"), Toast.LENGTH_LONG);
                     Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
                     startActivity(i);
                 } else {
@@ -170,17 +172,37 @@ public class HotelSynchronizeActivity extends AppCompatActivity { //implements A
     public class InventoryFileUploadCallBack implements Callback<ResponseBody> {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-            boolean res = FileUtils.deleteInventoryFile(HotelSynchronizeActivity.this, "Inventory.ALL.20220215140236.json");
-            if (res) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("File was uploaded successfully!!!"), Toast.LENGTH_LONG));
-            } else {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Failed to remove file from local folder!!!"), Toast.LENGTH_LONG));
+            try {
+                if (response.body()!=null) {
+                    String fileName = response.body().string();
+                    boolean res = FileUtils.deleteInventoryFile(HotelSynchronizeActivity.this, fileName);
+                    if (res) {
+                        runOnUiThread(() -> CToast(getApplicationContext(), render("File " + fileName + " was uploaded successfully!!!"), Toast.LENGTH_LONG));
+                    } else {
+                        runOnUiThread(() -> CToast(getApplicationContext(), render("Failed to remove file" +fileName+ " from local folder!!!"), Toast.LENGTH_LONG));
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Error:" + e.getMessage()), Toast.LENGTH_LONG));
             }
         }
 
         @Override
-        public void onFailure(Call<ResponseBody> call, Throwable t) {
-            //runOnUiThread(() -> CToast(getApplicationContext(), render("File upload failure!!! Please sync files from main menu."), Toast.LENGTH_LONG));
+        public void onFailure(Call<ResponseBody> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.files_failed_to_sync), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
+            }
         }
     }
 }
