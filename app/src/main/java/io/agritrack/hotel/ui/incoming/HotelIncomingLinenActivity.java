@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -350,20 +351,19 @@ public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity
             // persist WHIncomingAssetTX Record data to local DB.
             AssetTransaction tx = GlobalState.commitWHRFIDIncoming(db);
 
-
             // save data in a local file.
             String fileName = storeRecordToLocalJSONFile();
             if(fileName != null) {
                 File jsonFile = new File(HotelIncomingLinenActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
-                String content_type = getMimeType(jsonFile.getPath());
 
                 // create RequestBody instance from file
-                RequestBody requestFile = RequestBody.create(jsonFile , MediaType.parse(content_type));
+                RequestBody requestFile = RequestBody.create(jsonFile , MediaType.parse("application/json"));
 
                 // MultipartBody.Part is used to send also the actual file name
                 MultipartBody.Part filePart = MultipartBody.Part.createFormData("incoming", fileName, requestFile);
 
                 Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadHotelInventory(null, filePart, "Bearer " + token);
+                uploadJsonFileAsyncCall.enqueue(new InventoryFileUploadCallBack());
                 //syncTxAsyncCall.enqueue(new HotelIncomingLinenActivity.UploadIncomingJsonCallBack());
             }
 
@@ -527,6 +527,18 @@ public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity
         }
     }
 
+    public class InventoryFileUploadCallBack implements Callback<ResponseBody> {
+        @Override
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            Log.v("Upload", "success");
+        }
+
+        @Override
+        public void onFailure(Call<ResponseBody> call, Throwable t) {
+            Log.e("Upload error:", t.getMessage());
+        }
+    }
+
     protected void onClick(View view) {
         if (scanner_runnable == null) {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
@@ -589,12 +601,5 @@ public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity
                     break;
             }
         }
-    }
-
-
-    private String getMimeType(String path) {
-//        String extension = MimeTypeMap.getFileExtensionFromUrl(path);
-//        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-        return "application/json";
     }
 }
