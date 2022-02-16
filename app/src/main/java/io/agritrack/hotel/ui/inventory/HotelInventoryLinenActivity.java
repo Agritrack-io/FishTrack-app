@@ -4,7 +4,6 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.enums.AssetType.ALL;
-import static io.agritrack.fish.state.GlobalState.recWHIncoming;
 import static io.agritrack.fish.state.GlobalState.recWHInventory;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -17,7 +16,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -45,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -54,24 +51,16 @@ import io.agritrack.common.Constants;
 import io.agritrack.common.FileUtils;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.wh.RFIDInventoryDTO;
-import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
-import io.agritrack.data.model.wh.RFIDInventory;
-import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
-import io.agritrack.fish.state.GlobalState;
 import io.agritrack.hotel.ui.HotelHomeActivity;
-import io.agritrack.hotel.ui.incoming.HotelIncomingLinenActivity;
-import io.agritrack.hotel.ui.sync.HotelSynchronizeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
-import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.login.api.UploadingApi;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.MediaType;
@@ -495,28 +484,37 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
 
             ObjectMapper mapper = new ObjectMapper();
             try (JsonGenerator jGenerator = mapper.getFactory().createGenerator(outputFile, JsonEncoding.UTF8)) {
-                jGenerator.writeStartArray(); // [
+                jGenerator.writeStartObject(); // {
+
+                // add some general attributes describing the inventory, i.e. be similar to FISH WH inventory
+                jGenerator.writeStringField("inventory_type", "Normal");
+                jGenerator.writeStringField("user", LocalPreferences.getLoggedInUser("n/a"));
+                jGenerator.writeStringField("site", recWHInventory.subSite);
+                jGenerator.writeNumberField("created_at", System.currentTimeMillis());
+                jGenerator.writeNumberField("latitude", recWHInventory.latitude);
+                jGenerator.writeNumberField("longitude", recWHInventory.longitude);
+
+                jGenerator.writeFieldName("rfid_items");
+                jGenerator.writeStartObject(); // {
 
                 for (Map.Entry<String, List<String>> entry : recWHInventory.items.entrySet()) {
-                    jGenerator.writeStartObject(); // {
 
                     String catCode = entry.getKey();
+                    // set the code of current category.
+                    jGenerator.writeFieldName(catCode);
+
                     List<String> epcs = entry.getValue();
-
-                    jGenerator.writeStringField("cat", catCode);
-                    jGenerator.writeStringField("site", recWHInventory.subSite);
-
                     // put the epcs in an array
-                    jGenerator.writeFieldName("epcs");
                     jGenerator.writeStartArray(); // [
                     for (String epc : epcs) {
-                        jGenerator.writeString(epc); // "epc..."
+                        jGenerator.writeStartObject(); // {
+                        jGenerator.writeStringField("rfid", epc); // "epc..."
+                        jGenerator.writeEndObject(); // }
                     }
                     jGenerator.writeEndArray();
-                    jGenerator.writeEndObject(); // }
                 }
 
-                jGenerator.writeEndArray(); // ]
+                jGenerator.writeEndObject(); // }
             } catch (JsonGenerationException e) {
                 e.printStackTrace();
                 Toast.makeText(HotelInventoryLinenActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
