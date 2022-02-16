@@ -514,6 +514,7 @@
     <string name="title_status">ΑΛΛΑΓΗ ΚΑΤΑΣΤΑΣΗΣ</string>
     <string name="menu_title_status">Αλλαγή κατάστασης</string>
     <string name="new_status">Νέα κατάσταση</string>
+    <string name="procced_change_status">Είστε σίγουρος για να αλλάξετε την κατάσταση σε \'%1$s\' για αυτά τα %2$d τεμάχια?</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -512,6 +512,7 @@
     <string name="title_status">CHANGE STATUS</string>
     <string name="menu_title_status">Change status</string>
     <string name="new_status">New status</string>
+    <string name="procced_change_status">Are you sure to change status to \'%1$s\' for these %2$d items?</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -528,4 +529,5 @@
     <string name="lot_restriction">Wrong LOT</string>
     <string name="lot_restriction_message">More than one harvest LOT returned for these totes. Please go back and select totes of a single LOT.</string>
     <string name="invalid_inputs">Invalid inputs :</string>
+
 </resources>

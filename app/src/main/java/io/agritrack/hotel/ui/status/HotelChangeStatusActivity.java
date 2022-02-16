@@ -53,6 +53,7 @@ import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.enums.AssetType;
 import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
@@ -84,14 +85,17 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
     private String activeFilter = null;
     private ImageButton ivAddItem, ivDeleteItem;
     private Button scanButton;
-    private Integer selectedParent, selectedChild;
+    private Integer selectedParent, selectedChild, totalItems;
     private ConstraintLayout selectedItem;
-    private String selectedBarcode;
+    private String selectedBarcode, selectedStatus;
     private Spinner spPackagingSite;
 
     private ProgressDialog progressDialog;
 
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivNext, ivBack;
+    private YesNoDialogFragment confirmGPSSelectionDlg, confirmChangeStatusDlg;
+    private boolean proceedWithoutLocation = false;
+    private boolean proceedToNextScreen = false;
     private TextView tvGroupsCnt, tvItemsCnt;
     private SupportDialog supportDialog;
 
@@ -106,8 +110,8 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
 
-        // activate GPS location update feature.
-        super.findLocation();
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderStatus);
@@ -132,6 +136,27 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, status);
         hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
         spPackagingSite.setAdapter(hrAdapter);
+
+        confirmChangeStatusDlg = YesNoDialogFragment.instance();
+        confirmChangeStatusDlg.onConfirm(bundle -> {
+            proceedToNextScreen = true;
+            moveToNextScreen();
+        });
+        confirmChangeStatusDlg.onReject(bundle -> {
+            proceedToNextScreen = false;
+            return;
+        });
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreenWithoutGps();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // display groups counter
         tvGroupsCnt.setVisibility(View.VISIBLE);
@@ -183,6 +208,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                         adapterInventoryItems.notifyDataSetChanged();
                         tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
                         tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
+                        totalItems = Math.toIntExact(adapterInventoryItems.getItemsCount());
                         selectedBarcode = null;
                         selectedChild = null;
                     }
@@ -202,6 +228,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                     adapterInventoryItems.notifyDataSetChanged();
                     tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
                     tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
+                    totalItems = Math.toIntExact(adapterInventoryItems.getItemsCount());
                 });
 
                 confirmSiteSelectionDlg.onReject(bundle -> {
@@ -222,6 +249,38 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         });
 
         configFooter();
+    }
+
+    private void moveToNextScreen() {
+        if (mLastLocation != null) {
+            recWHInventory.longitude = mLastLocation.getLongitude();
+            recWHInventory.latitude = mLastLocation.getLatitude();
+            proceedWithoutLocation = true;
+            //moveToNextScreen();
+        } else if (proceedWithoutLocation){
+            FragmentManager fmg = getSupportFragmentManager();
+            confirmGPSSelectionDlg.showNow(fmg, getString(R.string.confirm_selection));
+            return;
+        }
+        // Update state and proceed to next
+        Boolean proceed = updateState();
+
+        if (proceed) {
+            // move to next activity.
+            Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
+            startActivity(i);
+        }
+    }
+
+    private void moveToNextScreenWithoutGps() {
+        // Update state and proceed to next
+        Boolean proceed = updateState();
+
+        if (proceed) {
+            // move to next activity.
+            Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
+            startActivity(i);
+        }
     }
 
     @Override
@@ -265,37 +324,36 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
         tvItemsCnt = findViewById(R.id.tvItemsCnt);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToWhMenu);
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Stop scanning since we navigate to next activity
-                if (scanner_runnable != null) {
-                    scanner_runnable.stopReading();
-                }
-
-                if (mLastLocation != null) {
-                    recWHInventory.longitude = mLastLocation.getLongitude();
-                    recWHInventory.latitude = mLastLocation.getLatitude();
-                } else {
-                    CToast(HotelChangeStatusActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
-                    startActivity(i);
-                }
+        ivNext.setOnClickListener(view -> {
+            //Stop scanning since we navigate to next activity
+            if (scanner_runnable != null) {
+                scanner_runnable.stopReading();
+            }
+            if (adapterInventoryItems != null) {
+                recWHInventory.items = adapterInventoryItems.getValues();
+            }
+            if (spPackagingSite.getSelectedItem() != null) {
+                selectedStatus = spPackagingSite.getSelectedItem().toString();
+            }
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+            if (!proceedToNextScreen) {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmChangeStatusDlg.setMessage(getString(R.string.procced_change_status, selectedStatus, totalItems));
+                confirmChangeStatusDlg.showNow(fm, getString(R.string.confirm_selection));
+            } else {
+                moveToNextScreenWithoutGps();
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
             if (scanner_runnable != null) {
@@ -309,7 +367,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
 
 
     private boolean updateState() {
-        if (adapterInventoryItems != null) {
+        /*if (adapterInventoryItems != null) {
             recWHInventory.items = adapterInventoryItems.getValues();
         }
         String v = validate();
@@ -317,13 +375,10 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
             CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             return false;
         }
-        String selectedStatus = null;
+
         if (spPackagingSite.getSelectedItem() != null) {
             selectedStatus = spPackagingSite.getSelectedItem().toString();
-        }
-
-        // get an instance of local DB
-        this.db = MobileDB.getInstance(getAppContext());
+        }*/
 
         try {
             progressDialog.setCancelable(false);
@@ -382,7 +437,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recWHInventory.items == null || recWHInventory.items.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Inventory items'"));
+                sb.append(String.format("\n%s is missing", "'Items to be changed'"));
             }
         }
         return sb.toString();
@@ -477,6 +532,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                     adapterInventoryItems.notifyDataSetChanged();
                     tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
                     tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
+                    totalItems = Math.toIntExact(adapterInventoryItems.getItemsCount());
                     break;
                 case 1980:
                     if (!IsDemo) {
