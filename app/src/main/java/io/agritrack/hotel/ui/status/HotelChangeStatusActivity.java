@@ -398,7 +398,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                 // MultipartBody.Part is used to send also the actual file name
                 MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", fileName, requestFile);
 
-                RequestBody statusBody = RequestBody.create(MediaType.parse("text/plain"), selectedStatus);
+                RequestBody statusBody = RequestBody.create(selectedStatus, MediaType.parse("text/plain"));
                 Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadHotelInventoryWithStatus(statusBody, filePart, "Bearer " + token);
                 uploadJsonFileAsyncCall.enqueue(new HotelChangeStatusActivity.InventoryFileUploadCallBack());
             }
