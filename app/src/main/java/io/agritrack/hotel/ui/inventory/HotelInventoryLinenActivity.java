@@ -487,7 +487,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
                 jGenerator.writeStartObject(); // {
 
                 // add some general attributes describing the inventory, i.e. be similar to FISH WH inventory
-                jGenerator.writeStringField("inventory_type", "Normal");
+                jGenerator.writeStringField("inventory_type", "BLIND");
                 jGenerator.writeStringField("user", LocalPreferences.getLoggedInUser("n/a"));
                 jGenerator.writeStringField("site", recWHInventory.subSite);
                 jGenerator.writeNumberField("created_at", System.currentTimeMillis());
@@ -509,6 +509,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
                     for (String epc : epcs) {
                         jGenerator.writeStartObject(); // {
                         jGenerator.writeStringField("rfid", epc); // "epc..."
+                        jGenerator.writeStringField("code", catCode); // "category code..."
                         jGenerator.writeEndObject(); // }
                     }
                     jGenerator.writeEndArray();
