@@ -53,7 +53,6 @@ import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.enums.AssetType;
 import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
@@ -426,64 +425,6 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         }
     }
 
-    private String storeRecordToLocalJSONFile() {
-        String fileName = null;
-
-        // if WHIncoming record contains data, then save it to a local file.
-        if (recWHInventory.items != null && recWHInventory.items.size() > 0) {
-            Date currentDate = new Date();
-            String compactTSFormat = "yyyyMMddHHmmss";
-            SimpleDateFormat sdf = new SimpleDateFormat(compactTSFormat);
-
-            // get asset Type, based on what toggle button was pressed.
-            String assetType = (recWHInventory.assetType != null) ? recWHInventory.assetType.name() : ALL.name();
-
-            // create the local json file name
-            fileName = String.format("InvChangeStatus.%s.%s.json", assetType, sdf.format(currentDate));
-            File outputFile = new File(HotelChangeStatusActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
-
-            ObjectMapper mapper = new ObjectMapper();
-            try (JsonGenerator jGenerator = mapper.getFactory().createGenerator(outputFile, JsonEncoding.UTF8)) {
-                jGenerator.writeStartArray(); // [
-
-                for (Map.Entry<String, List<String>> entry : recWHInventory.items.entrySet()) {
-                    jGenerator.writeStartObject(); // {
-
-                    String catCode = entry.getKey();
-                    List<String> epcs = entry.getValue();
-
-                    jGenerator.writeStringField("cat", catCode);
-                    jGenerator.writeStringField("site", recWHInventory.subSite);
-
-                    // put the epcs in an array
-                    jGenerator.writeFieldName("epcs");
-                    jGenerator.writeStartArray(); // [
-                    for (String epc : epcs) {
-                        jGenerator.writeString(epc); // "epc..."
-                    }
-                    jGenerator.writeEndArray();
-                    jGenerator.writeEndObject(); // }
-                }
-
-                jGenerator.writeEndArray(); // ]
-            } catch (JsonGenerationException e) {
-                e.printStackTrace();
-                Toast.makeText(HotelChangeStatusActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
-                return null;
-            } catch (JsonMappingException e) {
-                e.printStackTrace();
-                Toast.makeText(HotelChangeStatusActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
-                return null;
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(HotelChangeStatusActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
-                return null;
-            }
-        }
-
-        return fileName;
-    }
-
     private class ScanHandler extends Handler {
         private final WeakReference<HotelChangeStatusActivity> mActivity;
 
@@ -516,6 +457,74 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                     break;
             }
         }
+    }
+
+    private String storeRecordToLocalJSONFile() {
+        String fileName = null;
+
+        // if WHIncoming record contains data, then save it to a local file.
+        if (recWHInventory.items != null && recWHInventory.items.size() > 0) {
+            Date currentDate = new Date();
+            String compactTSFormat = "yyyyMMddHHmmss";
+            SimpleDateFormat sdf = new SimpleDateFormat(compactTSFormat);
+
+            // get asset Type, based on what toggle button was pressed.
+            String assetType = (recWHInventory.assetType != null) ? recWHInventory.assetType.name() : ALL.name();
+
+            // create the local json file name
+            fileName = String.format("InvChangeStatus.%s.%s.json", assetType, sdf.format(currentDate));
+            File outputFile = new File(HotelChangeStatusActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+
+            ObjectMapper mapper = new ObjectMapper();
+            try (JsonGenerator jGenerator = mapper.getFactory().createGenerator(outputFile, JsonEncoding.UTF8)) {
+                jGenerator.writeStartObject(); // {
+
+                // add some general attributes describing the inventory, i.e. be similar to FISH WH inventory
+                jGenerator.writeStringField("inventory_type", "BLIND");
+                jGenerator.writeStringField("user", LocalPreferences.getLoggedInUser("n/a"));
+                jGenerator.writeStringField("site", recWHInventory.subSite);
+                jGenerator.writeNumberField("created_at", System.currentTimeMillis());
+                jGenerator.writeNumberField("latitude", recWHInventory.latitude);
+                jGenerator.writeNumberField("longitude", recWHInventory.longitude);
+
+                jGenerator.writeFieldName("rfid_items");
+                jGenerator.writeStartObject(); // {
+
+                for (Map.Entry<String, List<String>> entry : recWHInventory.items.entrySet()) {
+
+                    String catCode = entry.getKey();
+                    // set the code of current category.
+                    jGenerator.writeFieldName(catCode);
+
+                    List<String> epcs = entry.getValue();
+                    // put the epcs in an array
+                    jGenerator.writeStartArray(); // [
+                    for (String epc : epcs) {
+                        jGenerator.writeStartObject(); // {
+                        jGenerator.writeStringField("rfid", epc); // "epc..."
+                        jGenerator.writeStringField("code", catCode); // "category code..."
+                        jGenerator.writeEndObject(); // }
+                    }
+                    jGenerator.writeEndArray();
+                }
+
+                jGenerator.writeEndObject(); // }
+            } catch (JsonGenerationException e) {
+                e.printStackTrace();
+                Toast.makeText(HotelChangeStatusActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
+                return null;
+            } catch (JsonMappingException e) {
+                e.printStackTrace();
+                Toast.makeText(HotelChangeStatusActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
+                return null;
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(HotelChangeStatusActivity.this, getResources().getString(R.string.inventorySaveFailed), Toast.LENGTH_LONG).show();
+                return null;
+            }
+        }
+
+        return fileName;
     }
 
     public class InventoryFileUploadCallBack implements Callback<ResponseBody> {
