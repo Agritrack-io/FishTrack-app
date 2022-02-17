@@ -151,7 +151,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
         confirmGPSSelectionDlg.onConfirm(bundle -> {
             proceedWithoutLocation = true;
-            moveToNextScreenWithoutGps();
+            moveToNextScreen();
         });
         confirmGPSSelectionDlg.onReject(bundle -> {
             mLastLocation = findLocation();
@@ -256,23 +256,11 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
             recWHInventory.longitude = mLastLocation.getLongitude();
             recWHInventory.latitude = mLastLocation.getLatitude();
             proceedWithoutLocation = true;
-            //moveToNextScreen();
-        } else if (proceedWithoutLocation){
+        } else if (!proceedWithoutLocation){
             FragmentManager fmg = getSupportFragmentManager();
             confirmGPSSelectionDlg.showNow(fmg, getString(R.string.confirm_selection));
             return;
         }
-        // Update state and proceed to next
-        Boolean proceed = updateState();
-
-        if (proceed) {
-            // move to next activity.
-            Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
-            startActivity(i);
-        }
-    }
-
-    private void moveToNextScreenWithoutGps() {
         // Update state and proceed to next
         Boolean proceed = updateState();
 
@@ -350,7 +338,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                 confirmChangeStatusDlg.setMessage(getString(R.string.procced_change_status, selectedStatus, totalItems));
                 confirmChangeStatusDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
-                moveToNextScreenWithoutGps();
+                moveToNextScreen();
             }
         });
 
@@ -367,19 +355,6 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
 
 
     private boolean updateState() {
-        /*if (adapterInventoryItems != null) {
-            recWHInventory.items = adapterInventoryItems.getValues();
-        }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
-        }
-
-        if (spPackagingSite.getSelectedItem() != null) {
-            selectedStatus = spPackagingSite.getSelectedItem().toString();
-        }*/
-
         try {
             progressDialog.setCancelable(false);
             progressDialog.setMessage(render("Synchronizing data..."));
