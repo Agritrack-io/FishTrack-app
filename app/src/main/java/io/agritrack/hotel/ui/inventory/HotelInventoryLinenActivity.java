@@ -342,14 +342,16 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
                 RequestBody requestFile = RequestBody.create(jsonFile , MediaType.parse("application/json"));
 
                 // MultipartBody.Part is used to send also the actual file name
-                MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", fileName, requestFile);
+                MultipartBody.Part filePart = MultipartBody.Part.createFormData("inventory", fileName, requestFile);
 
                 Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadHotelInventory(filePart, "Bearer " + token);
                 uploadJsonFileAsyncCall.enqueue(new InventoryFileUploadCallBack());
             }
 
-            /*// sync WH Inventory Tx
-            RFIDInventoryDTO inventoryDto = RFIDInventoryDTO.convert(invtx);
+            // The commented code was used to upload data as JSON body of Http request.
+            // removed since data will be uploaded as file...
+            // sync WH Inventory Tx
+         /* RFIDInventoryDTO inventoryDto = RFIDInventoryDTO.convert(invtx);
             List<RFIDInventoryItemDTO> invItemsDto = RFIDInventoryItemDTO.convert(invItemtxs);
             inventoryDto.rfid_items = invItemsDto.stream().map(x -> new RFIDInventoryItemDTO(x.rfid)).collect(Collectors.groupingBy(g -> g.code, Collectors.toCollection(ArrayList::new)));
 
