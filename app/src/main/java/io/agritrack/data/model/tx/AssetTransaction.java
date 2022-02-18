@@ -20,6 +20,9 @@ public class AssetTransaction {
     @ColumnInfo(name = "timestamp")
     public Long timestamp;
 
+    @ColumnInfo(name = "user_id")
+    public String userId;
+
     @TypeConverters(StringMapConverter.class)
     @ColumnInfo(name = "rfids")
     public Map<String, List<String>> itemRFIDs;
@@ -36,9 +39,6 @@ public class AssetTransaction {
 
     @ColumnInfo(name = "source")
     public String from;
-
-    @ColumnInfo(name = "collection_lot")
-    public String collectionLot;
 
     @ColumnInfo(name = "dest")
     public String to;

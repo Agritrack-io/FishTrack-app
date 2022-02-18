@@ -313,6 +313,7 @@ public class GlobalState {
             txWHIncoming.to = recWHIncoming.to;
             txWHIncoming.site = recWHIncoming.site;
             txWHIncoming.timestamp = System.currentTimeMillis();
+            txWHIncoming.userId = LocalPreferences.getLoggedInUser("N/A");
             txWHIncoming.longitude = recWHIncoming.longitude;
             txWHIncoming.latitude = recWHIncoming.latitude;
 
