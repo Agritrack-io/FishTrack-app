@@ -352,7 +352,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
                 RequestBody requestFile = RequestBody.create(jsonFile, MediaType.parse("application/json"));
 
                 // MultipartBody.Part is used to send also the actual file name
-                MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", fileName, requestFile);
+                MultipartBody.Part filePart = MultipartBody.Part.createFormData("inventory", fileName, requestFile);
 
                 Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadHotelInventory(filePart, "Bearer " + token);
                 uploadJsonFileAsyncCall.enqueue(new InventoryFileUploadCallBack());
