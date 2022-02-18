@@ -94,7 +94,10 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
 
     private ProgressDialog progressDialog;
 
-    private ImageView ivSupport;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private boolean proceedWithoutLocation = false;
+    private boolean storeLocation = true;
+    private ImageView ivSupport, ivNext, ivBack;
     private TextView tvGroupsCnt, tvItemsCnt;
     private SupportDialog supportDialog;
 
@@ -104,22 +107,32 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hotel_inventory_linen);
 
-
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
 
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
 
-        // activate GPS location update feature.
-        super.findLocation();
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderInventory);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
+
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // initiate raw sound
         SoundUtil.initSoundPool(this);
@@ -188,7 +201,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else if (adapterInventoryItems.getGroupCount()>0){
+            } else if (adapterInventoryItems.getGroupCount() > 0) {
                 // <delete> Button was pressed without selecting a Bin first.
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
@@ -222,6 +235,18 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
         configFooter();
     }
 
+    private void moveToNextScreen() {
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
+                startActivity(i);
+            }
+        }
+    }
 
     @Override
     protected void onStart() {
@@ -265,40 +290,39 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
         tvItemsCnt = findViewById(R.id.tvItemsCnt);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToWhMenu);
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Stop scanning since we navigate to next activity
-                if (scanner_runnable!=null) {
-                    scanner_runnable.stopReading();
-                }
-
-                if (mLastLocation != null) {
-                    recWHInventory.longitude = mLastLocation.getLongitude();
-                    recWHInventory.latitude = mLastLocation.getLatitude();
-                } else {
-                    CToast(HotelInventoryLinenActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
-                    startActivity(i);
-                }
+        ivNext.setOnClickListener(view -> {
+            //Stop scanning since we navigate to next activity
+            if (scanner_runnable != null) {
+                scanner_runnable.stopReading();
+            }
+            if (adapterInventoryItems != null) {
+                recWHInventory.items = adapterInventoryItems.getValues();
+            }
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+            recWHInventory.assetType = AssetType.valueOf(this.selectedAssetType);
+            if (mLastLocation != null) {
+                recWHInventory.longitude = mLastLocation.getLongitude();
+                recWHInventory.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
-            if (scanner_runnable!=null) {
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -309,19 +333,6 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
 
 
     private boolean updateState() {
-        if (adapterInventoryItems != null) {
-            recWHInventory.items = adapterInventoryItems.getValues();
-        }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
-        }
-        recWHInventory.assetType = AssetType.valueOf(this.selectedAssetType);
-
-        // get an instance of local DB
-        this.db = MobileDB.getInstance(getAppContext());
-
         try {
             progressDialog.setCancelable(false);
             progressDialog.setMessage(render("Synchronizing data..."));
@@ -329,17 +340,16 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
 
             String token = LocalPreferences.getToken();
 
-            // persist WHIncomingAssetTX Record data to local DB.
-            //RFIDInventory invtx = GlobalState.commitWHRFIDInventory(db);
-            //List<RFIDInventoryItem> invItemtxs = GlobalState.commitWHRFIDInventoryItem(db, invtx);
-
+            if (mLastLocation == null) {
+                storeLocation = false;
+            }
             // save data in a local file.
             String fileName = storeRecordToLocalJSONFile();
-            if(fileName != null) {
+            if (fileName != null) {
                 File jsonFile = new File(HotelInventoryLinenActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
 
                 // create RequestBody instance from file
-                RequestBody requestFile = RequestBody.create(jsonFile , MediaType.parse("application/json"));
+                RequestBody requestFile = RequestBody.create(jsonFile, MediaType.parse("application/json"));
 
                 // MultipartBody.Part is used to send also the actual file name
                 MultipartBody.Part filePart = MultipartBody.Part.createFormData("inventory", fileName, requestFile);
@@ -348,6 +358,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
                 uploadJsonFileAsyncCall.enqueue(new InventoryFileUploadCallBack());
             }
 
+<<<<<<< HEAD
             // The commented code was used to upload data as JSON body of Http request.
             // removed since data will be uploaded as file...
             // sync WH Inventory Tx
@@ -358,6 +369,8 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
             Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(inventoryDto, "Bearer " + token);
             syncInvTxCallBack.enqueue(new HotelInventoryLinenActivity.SyncInvTxCallBack());*/
 
+=======
+>>>>>>> faafec92caef4e1a0940680aa20bef202ab53cbc
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -435,44 +448,11 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
         }
     }
 
-    private class ScanHandler extends Handler {
-        private final WeakReference<HotelInventoryLinenActivity> mActivity;
-
-        public ScanHandler(HotelInventoryLinenActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 100:
-                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
-                    clearSelectedItem();
-                    Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
-                    if (adapterInventoryItems == null) {
-                        adapterInventoryItems = new TreelikeAdapter(HotelInventoryLinenActivity.this, values);
-                        xvInventoryItems.setAdapter(adapterInventoryItems);
-                    } else {
-                        adapterInventoryItems.appendItems(values);
-                    }
-                    adapterInventoryItems.notifyDataSetChanged();
-                    tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
-                    tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
-                    break;
-                case 1980:
-                    if (!IsDemo) {
-                        //CToast(getApplicationContext(), render("Inventory scanning is over!!"), Toast.LENGTH_SHORT);
-                    }
-                    break;
-            }
-        }
-    }
-
     private String storeRecordToLocalJSONFile() {
         String fileName = null;
 
         // if WHIncoming record contains data, then save it to a local file.
-        if(recWHInventory.items!=null && recWHInventory.items.size() > 0) {
+        if (recWHInventory.items != null && recWHInventory.items.size() > 0) {
             Date currentDate = new Date();
             String compactTSFormat = "yyyyMMddHHmmss";
             SimpleDateFormat sdf = new SimpleDateFormat(compactTSFormat);
@@ -481,7 +461,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
             String assetType = (recWHInventory.assetType != null) ? recWHInventory.assetType.name() : ALL.name();
 
             // create the local json file name
-            fileName = String.format("Inventory.%s.%s.json",assetType, sdf.format(currentDate));
+            fileName = String.format("Inventory.%s.%s.json", assetType, sdf.format(currentDate));
             File outputFile = new File(HotelInventoryLinenActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
 
             ObjectMapper mapper = new ObjectMapper();
@@ -493,8 +473,10 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
                 jGenerator.writeStringField("user", LocalPreferences.getLoggedInUser("n/a"));
                 jGenerator.writeStringField("site", recWHInventory.subSite);
                 jGenerator.writeNumberField("created_at", System.currentTimeMillis());
-                jGenerator.writeNumberField("latitude", recWHInventory.latitude);
-                jGenerator.writeNumberField("longitude", recWHInventory.longitude);
+                if (storeLocation) {
+                    jGenerator.writeNumberField("latitude", recWHInventory.latitude);
+                    jGenerator.writeNumberField("longitude", recWHInventory.longitude);
+                }
 
                 jGenerator.writeFieldName("rfid_items");
                 jGenerator.writeStartObject(); // {
@@ -536,11 +518,44 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
         return fileName;
     }
 
+    private class ScanHandler extends Handler {
+        private final WeakReference<HotelInventoryLinenActivity> mActivity;
+
+        public ScanHandler(HotelInventoryLinenActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 100:
+                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
+                    clearSelectedItem();
+                    Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
+                    if (adapterInventoryItems == null) {
+                        adapterInventoryItems = new TreelikeAdapter(HotelInventoryLinenActivity.this, values);
+                        xvInventoryItems.setAdapter(adapterInventoryItems);
+                    } else {
+                        adapterInventoryItems.appendItems(values);
+                    }
+                    adapterInventoryItems.notifyDataSetChanged();
+                    tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
+                    tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
+                    break;
+                case 1980:
+                    if (!IsDemo) {
+                        //CToast(getApplicationContext(), render("Inventory scanning is over!!"), Toast.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
+    }
+
     public class InventoryFileUploadCallBack implements Callback<ResponseBody> {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
-                if (response.body()!=null) {
+                if (response.body() != null) {
                     String fileName = response.body().string();
                     boolean res = FileUtils.deleteInventoryFile(HotelInventoryLinenActivity.this, fileName);
                     if (res) {
