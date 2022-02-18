@@ -358,6 +358,19 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
                 uploadJsonFileAsyncCall.enqueue(new InventoryFileUploadCallBack());
             }
 
+<<<<<<< HEAD
+            // The commented code was used to upload data as JSON body of Http request.
+            // removed since data will be uploaded as file...
+            // sync WH Inventory Tx
+         /* RFIDInventoryDTO inventoryDto = RFIDInventoryDTO.convert(invtx);
+            List<RFIDInventoryItemDTO> invItemsDto = RFIDInventoryItemDTO.convert(invItemtxs);
+            inventoryDto.rfid_items = invItemsDto.stream().map(x -> new RFIDInventoryItemDTO(x.rfid)).collect(Collectors.groupingBy(g -> g.code, Collectors.toCollection(ArrayList::new)));
+
+            Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(inventoryDto, "Bearer " + token);
+            syncInvTxCallBack.enqueue(new HotelInventoryLinenActivity.SyncInvTxCallBack());*/
+
+=======
+>>>>>>> faafec92caef4e1a0940680aa20bef202ab53cbc
             return true;
         } catch (Exception e) {
             e.printStackTrace();
