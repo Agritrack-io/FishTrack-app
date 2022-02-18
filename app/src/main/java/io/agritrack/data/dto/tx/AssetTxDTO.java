@@ -3,37 +3,35 @@ package io.agritrack.data.dto.tx;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.List;
+import java.util.Map;
+
 import io.agritrack.data.model.tx.AssetTransaction;
 
 public class AssetTxDTO {
 
     public Long id;
-    public String assetType;
-    public String from;
-    public String to;
-    public String rfid;
+    public String asset_type;
+    public String source_site;
+    public String target_site;
+    public Map<String, List<String>> rfid_items;
     public String state;
     public String site;
-    public String collection_lot;
-    public Long timestamp;
-    public Double lon;
-    public Double lat;
+    public Double longitude;
+    public Double latitude;
 
-    public static AssetTxDTO convert(AssetTransaction assetTx) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public static AssetTxDTO convert(AssetTransaction assetTx) {
 
         AssetTxDTO assetTxDTO = new AssetTxDTO();
         assetTxDTO.id = assetTx.id;
-        assetTxDTO.assetType = assetTx.assetType;
+        assetTxDTO.asset_type = assetTx.assetType;
         assetTxDTO.state = assetTx.state;
-        assetTxDTO.rfid = objectMapper.writeValueAsString(assetTx.itemRFIDs);
-        assetTxDTO.from = assetTx.from;
-        assetTxDTO.to = assetTx.to;
+        assetTxDTO.rfid_items = assetTx.itemRFIDs;
+        assetTxDTO.source_site = assetTx.from;
+        assetTxDTO.target_site = assetTx.to;
         assetTxDTO.site = assetTx.site;
-        assetTxDTO.collection_lot = assetTx.collectionLot;
-        assetTxDTO.timestamp = assetTx.timestamp;
-        assetTxDTO.lon = assetTx.longitude;
-        assetTxDTO.lat = assetTx.latitude;
+        assetTxDTO.longitude = assetTx.longitude;
+        assetTxDTO.latitude = assetTx.latitude;
 
         return assetTxDTO;
     }
