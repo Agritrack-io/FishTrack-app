@@ -480,9 +480,12 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                 jGenerator.writeStartObject(); // {
 
                 // add some general attributes describing the inventory, i.e. be similar to FISH WH inventory
-                jGenerator.writeStringField("inventory_type", "BLIND");
+                jGenerator.writeStringField("asset_type", "ALL");
                 jGenerator.writeStringField("user", LocalPreferences.getLoggedInUser("n/a"));
-                jGenerator.writeStringField("site", recWHInventory.subSite);
+                jGenerator.writeStringField("site", recWHInventory.site);
+                jGenerator.writeStringField("state", selectedStatus);
+                jGenerator.writeStringField("source_site", recWHInventory.subSite);
+                jGenerator.writeStringField("target_site", recWHInventory.subSite);
                 jGenerator.writeNumberField("created_at", System.currentTimeMillis());
                 jGenerator.writeNumberField("latitude", recWHInventory.latitude);
                 jGenerator.writeNumberField("longitude", recWHInventory.longitude);
@@ -500,10 +503,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                     // put the epcs in an array
                     jGenerator.writeStartArray(); // [
                     for (String epc : epcs) {
-                        jGenerator.writeStartObject(); // {
-                        jGenerator.writeStringField("rfid", epc); // "epc..."
-                        jGenerator.writeStringField("code", catCode); // "category code..."
-                        jGenerator.writeEndObject(); // }
+                        jGenerator.writeString(epc); // "epc..."
                     }
                     jGenerator.writeEndArray();
                 }
