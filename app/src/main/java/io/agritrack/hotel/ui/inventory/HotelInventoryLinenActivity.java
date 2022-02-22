@@ -17,10 +17,13 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,21 +74,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HotelInventoryLinenActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
+public class HotelInventoryLinenActivity extends LocationAwareActivity {
     private final UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     // Local handler that receives the RFID scanner results.
     private ScanHandler mScanHandler;
     private ScanInventoryThread scanner_runnable;
-    private ToggleGroup tgChooseAssetType;
     private MobileDB db;
     private ExpandableListView xvInventoryItems;
+    private Spinner spLinenType;
 
     private TreelikeAdapter adapterInventoryItems;
     private String selectedAssetType = AssetType.ALL.name();
     private String activeFilter = null;
-    private int selectedToggleButton = -1;
     private ImageButton ivAddItem, ivDeleteItem;
     private Button scanButton;
     private Integer selectedParent, selectedChild;
@@ -122,6 +124,24 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
 
         // get  references of the controls
         assignCtrlVars();
+
+        String[] type = new String[]{"All", "Παπλ/θήκη Υπ/πλη Raso 280X250", "Σεντόνι Υπ/πλο Raso 300X300", "Μαξ/θήκη Φάκελος Raso 54X95", "Μπουρνούζι Λευκό XL", "Πετσέτα Πισίνας Sand 80Χ200"};
+        // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
+
+        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, type) {
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (position % 2 == 0) { // we're on an even row
+                    view.setBackgroundColor(getColor(R.color.white));
+                } else {
+                    view.setBackgroundColor(getColor(R.color.light_grey));
+                }
+                return view;
+            }
+        };
+        hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
+        spLinenType.setAdapter(hrAdapter);
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
@@ -281,12 +301,11 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
     }
 
     private void assignCtrlVars() {
-        tgChooseAssetType = findViewById(R.id.tgChooseAssetType);
         xvInventoryItems = findViewById(R.id.xvInventoryItems);
+        spLinenType = findViewById(R.id.spLinenType);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
         ivAddItem = findViewById(R.id.ivAddItem);
         ivSupport = findViewById(R.id.ivSupport);
-        tgChooseAssetType.setOnCheckedChangeListener(this);
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
         tvItemsCnt = findViewById(R.id.tvItemsCnt);
@@ -396,35 +415,6 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity implement
             scanButton.setText(R.string.scan_assets);
         }
         mScanHandler.postDelayed(scanner_runnable, 0);
-    }
-
-    @Override
-    public void onCheckedChanged(ToggleGroup group, int checkedId) {
-
-        if (selectedToggleButton == checkedId) {
-            group.clearCheck();
-            return;
-        }
-        selectedToggleButton = checkedId;
-        switch (checkedId) {
-            case R.id.tbCage:
-                selectedAssetType = Constants.ftCage;
-                activeFilter = Filters.RFID_CAGE;
-                break;
-            case R.id.tbNet:
-                selectedAssetType = Constants.ftNet;
-                activeFilter = Filters.RFID_NET;
-                break;
-            case R.id.tbBin:
-                selectedAssetType = Constants.ftBin;
-                activeFilter = Filters.RFID_BIN;
-                break;
-            default:
-                selectedAssetType = Constants.ftAll;
-                activeFilter = null;
-                selectedToggleButton = -1;
-                break;
-        }
     }
 
     private String validate() {

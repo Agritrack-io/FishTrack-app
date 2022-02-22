@@ -42,16 +42,17 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
     private final MutableLiveData<SiteInfo> fromAvramarSelection = new MutableLiveData<>();
     private final MutableLiveData<String> fromSupplierSelection = new MutableLiveData<>();
     private final MutableLiveData<String> toSiteSelection = new MutableLiveData<>();
-
+    private final MutableLiveData<String> fromSiteSelection = new MutableLiveData<>();
     private TextView tvIncomingFrom, tvIncomingTo;
     private ToggleGroup tgIncomingSource, tgIncomingDestination;
     private String selectedToggleButtonFrom, selectedToggleButtonTo;
     private ExpandableListDialog avramarDialog;
     private SimpleListDialog supplierDialog;
     private SimpleListDialog siteDialog;
-    private SiteInfo fromSite;
+    //private SiteInfo fromSite;
     private String fromSupplier;
     private String toSite;
+    private String fromSite;
     private MobileDB db;
 
     private ImageView ivSupport;
@@ -81,7 +82,7 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
                 tvIncomingFrom.setText(fromSite.getName());
                 avramarDialog.dismiss();
             }
-        });
+        });*/
 
         fromSupplierSelection.observe(this, response -> {
             if (response != null) {
@@ -89,12 +90,20 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
                 tvIncomingFrom.setText(fromSupplier);
                 supplierDialog.dismiss();
             }
-        });*/
+        });
 
         toSiteSelection.observe(this, response -> {
             if (response != null) {
                 toSite = response;
                 tvIncomingTo.setText(toSite);
+                siteDialog.dismiss();
+            }
+        });
+
+        fromSiteSelection.observe(this, response -> {
+            if (response != null) {
+                fromSite = response;
+                tvIncomingFrom.setText(fromSite);
                 siteDialog.dismiss();
             }
         });
@@ -150,7 +159,8 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
 
     private List<String> fillSupplierData() {
         List<String> result = new ArrayList<>();
-        List<Supplier> allSuppliers = db.supplierDAO().getAll();
+        List<Site> allSuppliers = db.siteDAO().getAllSuppliers();
+        //List<Supplier> allSuppliers = db.supplierDAO().getAll();
         if (allSuppliers != null && !allSuppliers.isEmpty()) {
             result = allSuppliers.stream().map(s -> s.name).collect(Collectors.toList());
         }
@@ -171,14 +181,16 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
         if (checkedId == R.id.tbAvramar) {
+            siteDialog = new SimpleListDialog(HotelIncomingStartActivity.this, fillSubSiteData(), fromSiteSelection, R.string.select_subsite);
+            siteDialog.showDialog();
             /*avramarDialog = new ExpandableListDialog(HotelIncomingStartActivity.this, fillAvramarData(), fromAvramarSelection, R.string.select_site);
             avramarDialog.showDialog();*/
-            tvIncomingFrom.setText("HOTEL");
+            //tvIncomingFrom.setText("HOTEL");
             selectedToggleButtonFrom = Constants.ftAvramar;
         } else if (checkedId == R.id.tbSupplier) {
-            /*supplierDialog = new SimpleListDialog(HotelIncomingStartActivity.this, fillSupplierData(), fromSupplierSelection, R.string.select_supplier);
-            supplierDialog.showDialog();*/
-            tvIncomingFrom.setText("LAUNDRY");
+            supplierDialog = new SimpleListDialog(HotelIncomingStartActivity.this, fillSupplierData(), fromSupplierSelection, R.string.select_supplier);
+            supplierDialog.showDialog();
+            //tvIncomingFrom.setText("LAUNDRY");
             selectedToggleButtonFrom = Constants.ftSupplier;
         } else if (checkedId == R.id.tbAssetFrom) {
             GlobalState.recWHIncoming.from = Constants.ftAsset;

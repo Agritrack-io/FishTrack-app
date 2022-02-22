@@ -26,7 +26,10 @@ public interface SiteDAO {
     @Query("SELECT * from site where site_type='GREENHOUSE'")
     List<Site> getAllGreenhouses();
 
-    @Query("SELECT * from site where site_lvl=4 and lvl3=:parentId")
+    @Query("SELECT * from site where site_type='SUPPLIER'")
+    List<Site> getAllSuppliers();
+
+    @Query("SELECT * from site where site_lvl=4 and lvl3=:parentId and site_type!='SUPPLIER'")
     List<Site> getCurrentSiteSubSites(String parentId);
 
     @Query("SELECT * from site where id=:siteId LIMIT 1")

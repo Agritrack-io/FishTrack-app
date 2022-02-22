@@ -135,7 +135,7 @@ public class HotelSearchActivity extends AppCompatActivity implements ToggleGrou
         // load assets for current Site and filter by asset type (if selected).
         List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftCage);
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfid)).collect(Collectors.toList());
+            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfidBarcode)).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
             adapterAssets.getFilter().filter("");
             this.rvAssets.setAdapter(adapterAssets);
@@ -146,7 +146,7 @@ public class HotelSearchActivity extends AppCompatActivity implements ToggleGrou
         // load assets for current Site and filter by asset type (if selected).
         List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftNet); //getAssetsForType(selectedAssetType);
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfid)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
+            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfidBarcode)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
             adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
             adapterAssets.getFilter().filter("");
             this.rvAssets.setAdapter(adapterAssets);
@@ -157,7 +157,7 @@ public class HotelSearchActivity extends AppCompatActivity implements ToggleGrou
         // load assets for current Site and filter by asset type (if selected).
         List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftBin); //getAssetsForType(selectedAssetType);
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfid)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
+            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfidBarcode)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
             adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
             adapterAssets.getFilter().filter("");
             this.rvAssets.setAdapter(adapterAssets);

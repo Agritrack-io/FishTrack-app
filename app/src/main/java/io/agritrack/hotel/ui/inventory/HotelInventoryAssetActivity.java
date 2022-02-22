@@ -85,7 +85,10 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
 
     private ProgressDialog progressDialog;
 
-    private ImageView ivSupport;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private boolean proceedWithoutLocation = false;
+    private boolean storeLocation = true;
+    private ImageView ivSupport, ivNext, ivBack;
     private TextView tvGroupsCnt, tvItemsCnt;
     private SupportDialog supportDialog;
 
@@ -100,8 +103,8 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
         // instantiate Local Handler that will process the scanning stream.
         mScanHandler = new ScanHandler(this);
 
-        // activate GPS location update feature.
-        super.findLocation();
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderInventory);
@@ -109,6 +112,17 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // initiate raw sound
         SoundUtil.initSoundPool(this);
@@ -177,7 +191,7 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else if (adapterInventoryItems.getGroupCount()>0){
+            } else if (adapterInventoryItems.getGroupCount() > 0) {
                 // <delete> Button was pressed without selecting a Bin first.
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
@@ -209,6 +223,19 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
         });
 
         configFooter();
+    }
+
+    private void moveToNextScreen() {
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
+                startActivity(i);
+            }
+        }
     }
 
     @Override
@@ -253,40 +280,40 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
         tvItemsCnt = findViewById(R.id.tvItemsCnt);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToWhMenu);
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Stop scanning since we navigate to next activity
-                if (scanner_runnable!=null) {
-                    scanner_runnable.stopReading();
-                }
+        ivNext.setOnClickListener(view -> {
+            //Stop scanning since we navigate to next activity
+            if (scanner_runnable != null) {
+                scanner_runnable.stopReading();
+            }
+            if (adapterInventoryItems != null) {
+                recWHInventory.items = adapterInventoryItems.getValues();
+            }
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+            recWHInventory.assetType = AssetType.valueOf(this.selectedAssetType);
 
-                if (mLastLocation != null) {
-                    recWHInventory.longitude = mLastLocation.getLongitude();
-                    recWHInventory.latitude = mLastLocation.getLatitude();
-                } else {
-                    CToast(HotelInventoryAssetActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
-                    startActivity(i);
-                }
+            if (mLastLocation != null) {
+                recWHInventory.longitude = mLastLocation.getLongitude();
+                recWHInventory.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
-            if (scanner_runnable!=null) {
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
             Intent i = new Intent(getApplicationContext(), HotelInventoryStartActivity.class);
@@ -296,19 +323,6 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
 
 
     private boolean updateState() {
-        if (adapterInventoryItems != null) {
-            recWHInventory.items = adapterInventoryItems.getValues();
-        }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
-        }
-        recWHInventory.assetType = AssetType.valueOf(this.selectedAssetType);
-
-        // get an instance of local DB
-        this.db = MobileDB.getInstance(getAppContext());
-
         try {
             progressDialog.setCancelable(false);
             progressDialog.setMessage(render("Synchronizing data..."));

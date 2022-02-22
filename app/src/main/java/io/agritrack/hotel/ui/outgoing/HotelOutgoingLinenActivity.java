@@ -15,10 +15,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,23 +64,19 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HotelOutgoingLinenActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
-
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
-
-    private ScanHandler mScanHandler;
-    private ScanInventoryThread scanner_runnable;
-
-    private ToggleGroup tgChooseAssetType;
-    private String selectedAssetType = AssetType.ALL.name();
-    private String activeFilter = null;
-    private  int selectedToggleButton = -1;
+public class HotelOutgoingLinenActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
+    private ScanHandler mScanHandler;
+    private ScanInventoryThread scanner_runnable;
+    private String selectedAssetType = AssetType.ALL.name();
+    private String activeFilter = null;
     private MobileDB db;
 
     private TreelikeAdapter adapterOutgoingItems;
+    private Spinner spLinenType;
 
     private TextView tvOutgoingProcessFrom, tvOutgoingProcessTo;
     private ExpandableListView xvOutgoingAssets;
@@ -90,7 +89,10 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
 
     private ProgressDialog progressDialog;
 
-    private ImageView ivSupport;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private boolean proceedWithoutLocation = false;
+    private boolean storeLocation = true;
+    private ImageView ivSupport, ivNext, ivBack;
     private TextView tvGroupsCnt, tvItemsCnt;
     private SupportDialog supportDialog;
 
@@ -102,8 +104,8 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
 
-        // activate GPS location update feature.
-        super.findLocation();
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderOutgoingProcess);
@@ -114,6 +116,35 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
 
         // get  references of the controls
         assignCtrlVars();
+
+        String[] type = new String[]{"All", "Παπλ/θήκη Υπ/πλη Raso 280X250", "Σεντόνι Υπ/πλο Raso 300X300", "Μαξ/θήκη Φάκελος Raso 54X95", "Μπουρνούζι Λευκό XL", "Πετσέτα Πισίνας Sand 80Χ200"};
+        // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
+
+        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, type) {
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (position % 2 == 0) { // we're on an even row
+                    view.setBackgroundColor(getColor(R.color.white));
+                } else {
+                    view.setBackgroundColor(getColor(R.color.light_grey));
+                }
+                return view;
+            }
+        };
+        hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
+        spLinenType.setAdapter(hrAdapter);
+
+        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
+        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
+        confirmGPSSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutLocation = true;
+            moveToNextScreen();
+        });
+        confirmGPSSelectionDlg.onReject(bundle -> {
+            mLastLocation = findLocation();
+            proceedWithoutLocation = false;
+        });
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(HotelOutgoingLinenActivity.this);
@@ -189,7 +220,7 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else if (adapterOutgoingItems.getGroupCount()>0){
+            } else if (adapterOutgoingItems.getGroupCount() > 0) {
                 // <delete> Button was pressed without selecting a Bin first.
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
@@ -226,6 +257,19 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
         configFooter();
     }
 
+    private void moveToNextScreen() {
+        if (proceedWithoutLocation) {
+            // Update state and proceed to next
+            Boolean proceed = updateState();
+
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
+                startActivity(i);
+            }
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -259,37 +303,38 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Stop scanning since we navigate to next activity
-                if (scanner_runnable!=null) {
-                    scanner_runnable.stopReading();
-                }
+        ivNext.setOnClickListener(view -> {
+            //Stop scanning since we navigate to next activity
+            if (scanner_runnable != null) {
+                scanner_runnable.stopReading();
+            }
+            if (adapterOutgoingItems != null) {
+                GlobalState.recWHOutgoing.items = adapterOutgoingItems.getValues();
+            }
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
 
-                if (mLastLocation != null) {
-                    recWHOutgoing.longitude = mLastLocation.getLongitude();
-                    recWHOutgoing.latitude = mLastLocation.getLatitude();
-                } else {
-                    CToast(HotelOutgoingLinenActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
+            GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
+            GlobalState.recWHOutgoing.assetType = AssetType.valueOf(this.selectedAssetType);
+            GlobalState.recWHOutgoing.site = LocalPreferences.getCurrentSiteName();
 
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
-                    startActivity(i);
-                }
+            if (mLastLocation != null) {
+                recWHOutgoing.longitude = mLastLocation.getLongitude();
+                recWHOutgoing.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToStartOutgoing);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
-            if (scanner_runnable!=null) {
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -299,36 +344,21 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
     }
 
     private void assignCtrlVars() {
-        tgChooseAssetType = findViewById(R.id.tgChooseAssetType);
         xvOutgoingAssets = findViewById(R.id.xvOutgoingAssets);
+        spLinenType = findViewById(R.id.spLinenType);
         tvOutgoingProcessFrom = findViewById(R.id.tvOutgoingProcessFrom);
         tvOutgoingProcessTo = findViewById(R.id.tvOutgoingProcessTo);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
         ivAddItem = findViewById(R.id.ivAddItem);
         ivSupport = findViewById(R.id.ivSupport);
-        tgChooseAssetType.setOnCheckedChangeListener(this);
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
         tvItemsCnt = findViewById(R.id.tvItemsCnt);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivBack = findViewById(R.id.ivBackToStartOutgoing);
     }
 
     private boolean updateState() {
-        if (adapterOutgoingItems != null) {
-            GlobalState.recWHOutgoing.items = adapterOutgoingItems.getValues();
-        }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
-        }
-
-        GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
-        GlobalState.recWHOutgoing.assetType = AssetType.valueOf(this.selectedAssetType);
-        GlobalState.recWHOutgoing.site = LocalPreferences.getCurrentSiteName();
-
-        // get an instance of local DB
-        this.db = MobileDB.getInstance(getAppContext());
-
         try {
             progressDialog.setCancelable(false);
             progressDialog.setMessage(render("Synchronizing data..."));
@@ -411,32 +441,31 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
 
     }*/
 
-    @Override
-    public void onCheckedChanged(ToggleGroup group, int checkedId) {
-
-        if( selectedToggleButton == checkedId){
-            group.clearCheck();
-            return;
+    protected void onClick(View view) {
+        if (scanner_runnable == null) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable = new ScanInventoryThread(mScanHandler);
+            scanner_runnable.setFilter(activeFilter);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else if (!scanner_runnable.isReading()) {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            scanner_runnable.setFilter(activeFilter);
+            scanner_runnable.startReading();
+            scanButton.setText(R.string.stop_scan);
+        } else {
+            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+            scanner_runnable.stopReading();
+            scanButton.setText(R.string.scan_assets);
         }
-        selectedToggleButton = checkedId;
-        switch(checkedId){
-            case R.id.tbCage:
-                selectedAssetType = Constants.ftCage;
-                activeFilter = Filters.RFID_CAGE;
-                break;
-            case R.id.tbNet:
-                selectedAssetType = Constants.ftNet;
-                activeFilter = Filters.RFID_NET;
-                break;
-            case R.id.tbBin:
-                selectedAssetType = Constants.ftBin;
-                activeFilter = Filters.RFID_BIN;
-                break;
-            default:
-                selectedAssetType = Constants.ftAll;
-                activeFilter = null;
-                selectedToggleButton = -1;
-                break;
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    // ###################################################
+    private void stopScanner() {
+        if (this.scanner_runnable != null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.scanner_runnable);
         }
     }
 
@@ -471,34 +500,6 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
         }
     }
 
-    protected void onClick(View view) {
-        if (scanner_runnable == null) {
-            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable = new ScanInventoryThread(mScanHandler);
-            scanner_runnable.setFilter(activeFilter);
-            scanner_runnable.startReading();
-            scanButton.setText(R.string.stop_scan);
-        } else if (!scanner_runnable.isReading()) {
-            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable.setFilter(activeFilter);
-            scanner_runnable.startReading();
-            scanButton.setText(R.string.stop_scan);
-        } else {
-            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-            scanner_runnable.stopReading();
-            scanButton.setText(R.string.scan_assets);
-        }
-        mScanHandler.postDelayed(scanner_runnable, 0);
-    }
-
-    // ###################################################
-    private void stopScanner() {
-        if(this.scanner_runnable !=null) {
-            this.scanner_runnable.stopReading();
-            mScanHandler.removeCallbacks(this.scanner_runnable);
-        }
-    }
-
     private class ScanHandler extends Handler {
         private final WeakReference<HotelOutgoingLinenActivity> mActivity;
 
@@ -513,7 +514,7 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity implements
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        Map<String, List<String>> values = epcList.stream().map(x->x.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
+                        Map<String, List<String>> values = epcList.stream().map(x -> x.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
 
                         if (adapterOutgoingItems == null) {
                             adapterOutgoingItems = new TreelikeAdapter(mActivity.get(), values);
