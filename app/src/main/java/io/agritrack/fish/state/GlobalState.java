@@ -366,6 +366,7 @@ public class GlobalState {
             txWHOutgoing.to = recWHOutgoing.to;
             txWHOutgoing.site = recWHOutgoing.site;
             txWHOutgoing.timestamp = System.currentTimeMillis();
+            txWHOutgoing.userId = LocalPreferences.getLoggedInUser("N/A");
             txWHOutgoing.longitude = recWHOutgoing.longitude;
             txWHOutgoing.latitude = recWHOutgoing.latitude;
 

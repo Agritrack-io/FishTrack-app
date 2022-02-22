@@ -129,7 +129,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         progressDialog = new ProgressDialog(HotelChangeStatusActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        String[] status = new String[]{"Active", "Discarded", "Retired", "Tag-replaced", "Repaired"};
+        String[] status = new String[]{"Active", "Discarded", "Retired", "Tag-replaced", "Repaired", "New"};
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
 
         ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, status);

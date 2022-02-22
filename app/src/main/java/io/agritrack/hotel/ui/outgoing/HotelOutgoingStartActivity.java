@@ -42,6 +42,7 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
     private final MutableLiveData<SiteInfo> toAvramarSelection = new MutableLiveData<>();
     private final MutableLiveData<String> toCustomerSelection = new MutableLiveData<>();
     private final MutableLiveData<String> fromSiteSelection = new MutableLiveData<>();
+    private final MutableLiveData<String> toSiteSelection = new MutableLiveData<>();
 
     private TextView tvOutgoingFrom, tvOutgoingTo;
     private ToggleGroup tgOutgoingSource, tgOutgoingDestination, tgOutgoingItemType;
@@ -50,8 +51,9 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
     private SimpleListDialog customerDialog;
     private SimpleListDialog siteDialog;
     private String fromSite;
+    private String toSite;
     private String toCustomer;
-    private SiteInfo toSite;
+    //private SiteInfo toSite;
     private MobileDB db;
 
     private ImageView ivSupport;
@@ -75,14 +77,14 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-        toAvramarSelection.observe(this, response -> {
+        /*toAvramarSelection.observe(this, response -> {
             if (response != null) {
                 toSite = response;
                 tvOutgoingTo.setText(toSite.getName());
                 avramarDialog.dismiss();
             }
         });
-
+*/
         toCustomerSelection.observe(this, response -> {
             if (response != null) {
                 toCustomer = response;
@@ -95,6 +97,14 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
             if (response != null) {
                 fromSite = response;
                 tvOutgoingFrom.setText(fromSite);
+                siteDialog.dismiss();
+            }
+        });
+
+        toSiteSelection.observe(this, response -> {
+            if (response != null) {
+                toSite = response;
+                tvOutgoingTo.setText(toSite);
                 siteDialog.dismiss();
             }
         });
@@ -149,9 +159,10 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
 
     private List<String> fillCustomerData() {
         List<String> result = new ArrayList<>();
-        List<Customer> allCustomers = db.customerDAO().getAll();
-        if (allCustomers != null && !allCustomers.isEmpty()) {
-            result = allCustomers.stream().map(s -> s.name).collect(Collectors.toList());
+        //List<Customer> allCustomers = db.customerDAO().getAll();
+        List<Site> allSuppliers = db.siteDAO().getAllSuppliers();
+        if (allSuppliers != null && !allSuppliers.isEmpty()) {
+            result = allSuppliers.stream().map(s -> s.name).collect(Collectors.toList());
         }
 
         return result;
@@ -180,14 +191,16 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
             GlobalState.recWHOutgoing.from = Constants.ftAsset;
             tvOutgoingFrom.setText("CAR");
         } else if (checkedId == R.id.tbAvramar) {
+            siteDialog = new SimpleListDialog(HotelOutgoingStartActivity.this, fillSubSiteData(), toSiteSelection, R.string.select_subsite);
+            siteDialog.showDialog();
            /* avramarDialog = new ExpandableListDialog(HotelOutgoingStartActivity.this, fillAvramarData(), toAvramarSelection, R.string.select_site);
             avramarDialog.showDialog();*/
-            tvOutgoingTo.setText("HOTEL");
+            //tvOutgoingTo.setText("HOTEL");
             selectedToggleButtonTo = Constants.ftAvramar;
         } else if (checkedId == R.id.tbSupplier) {
-            /*customerDialog = new SimpleListDialog(HotelOutgoingStartActivity.this, fillCustomerData(), toCustomerSelection, R.string.select_customer);
-            customerDialog.showDialog();*/
-            tvOutgoingTo.setText("LAUNDRY");
+            customerDialog = new SimpleListDialog(HotelOutgoingStartActivity.this, fillCustomerData(), toCustomerSelection, R.string.select_customer);
+            customerDialog.showDialog();
+            //tvOutgoingTo.setText("LAUNDRY");
             selectedToggleButtonTo = Constants.ftSupplier;
         } else if (checkedId == R.id.tbOutAssetTo) {
             GlobalState.recWHOutgoing.to = Constants.ftAsset;

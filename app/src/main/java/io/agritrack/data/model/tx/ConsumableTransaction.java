@@ -16,6 +16,9 @@ public class ConsumableTransaction {
     @ColumnInfo(name = "timestamp")
     public Long timestamp;
 
+    @ColumnInfo(name = "user_id")
+    public String userId;
+
     @ColumnInfo(name = "barcode")
     public String barcode;
 
