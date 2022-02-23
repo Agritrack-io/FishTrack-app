@@ -129,7 +129,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         progressDialog = new ProgressDialog(HotelChangeStatusActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        String[] status = new String[]{"Active", "Discarded", "Retired", "Tag-replaced", "Repaired", "New"};
+        String[] status = new String[]{"Active", "Discarded", "Retired", "Tag-replaced", "Repaired", "Just bought"};
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
 
         ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, status);
@@ -334,8 +334,13 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
             }
             if (!proceedToNextScreen) {
                 FragmentManager fm = getSupportFragmentManager();
-                confirmChangeStatusDlg.setMessage(getString(R.string.procced_change_status, selectedStatus, totalItems));
-                confirmChangeStatusDlg.showNow(fm, getString(R.string.confirm_selection));
+                if (selectedStatus.equalsIgnoreCase("Just bought")){
+                    confirmChangeStatusDlg.setMessage(getString(R.string.proceed_insert_new_rfid, totalItems));
+                    confirmChangeStatusDlg.showNow(fm, getString(R.string.confirm_selection));
+                } else {
+                    confirmChangeStatusDlg.setMessage(getString(R.string.proceed_change_status, selectedStatus, totalItems));
+                    confirmChangeStatusDlg.showNow(fm, getString(R.string.confirm_selection));
+                }
             } else {
                 moveToNextScreen();
             }
@@ -480,7 +485,6 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                 jGenerator.writeStartObject(); // {
 
                 // add some general attributes describing the inventory, i.e. be similar to FISH WH inventory
-                jGenerator.writeStringField("inventory_type", "BLIND");
                 jGenerator.writeStringField("user", LocalPreferences.getLoggedInUser("n/a"));
                 jGenerator.writeStringField("site", recWHInventory.subSite);
                 jGenerator.writeNumberField("created_at", System.currentTimeMillis());

@@ -512,7 +512,8 @@
     <string name="title_status">CHANGE STATUS</string>
     <string name="menu_title_status">Change status</string>
     <string name="new_status">New status</string>
-    <string name="procced_change_status">Are you sure to change status to \'%1$s\' for these %2$d items?</string>
+    <string name="proceed_change_status">Are you sure to change status to \'%1$s\' for these %2$d items?</string>
+    <string name="proceed_insert_new_rfid">You are about to insert %1$d new items to live inventory. Are you sure?</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
