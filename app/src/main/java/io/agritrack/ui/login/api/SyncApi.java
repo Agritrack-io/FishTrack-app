@@ -5,6 +5,7 @@ import java.util.List;
 import io.agritrack.data.dto.AppUserDTO;
 import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.CageDetailsDTO;
+import io.agritrack.data.dto.EncodingSchemeDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.CustomerDTO;
@@ -77,4 +78,10 @@ public interface SyncApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/logger/{siteId}")
     Call<List<IotLoggerDTO>> getIOTLoggersBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/encoding/customer/name/{clusterName}")
+    Call<List<EncodingSchemeDTO>> getEncodingSchemeByCustomerName(@Path("clusterName") String customerName, @Header("Authorization") String token);
+
+
 }
