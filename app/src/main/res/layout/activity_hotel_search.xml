@@ -84,7 +84,7 @@
         <RelativeLayout
             android:id="@+id/SearchALayout"
             android:layout_width="0dp"
-            android:layout_height="370dp"
+            android:layout_height="350dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
@@ -102,70 +102,28 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <TextView
-                    android:id="@+id/tvAssetType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:text="Linen Type"
-                    android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintEnd_toStartOf="@+id/tgSearchAssetType"
+                <Spinner
+                    android:id="@+id/spLinenType"
+                    style="@style/spinner_style"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:dropDownWidth="wrap_content"
+                    android:focusableInTouchMode="true"
+                    android:requiresFadingEdge="horizontal"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="textStart"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toTopOf="@+id/svSearchAsset"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.496"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:layout_conversion_absoluteHeight="0dp"
                     tools:layout_conversion_absoluteWidth="0dp" />
-
-                <io.agritrack.ui.custom.ToggleGroup
-                    android:id="@+id/tgSearchAssetType"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tvAssetType"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ToggleButton
-                        android:id="@+id/tbSheet"
-                        android:layout_width="55dp"
-                        android:layout_height="30dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/togglebutton_selector"
-                        android:gravity="center"
-                        android:textColor="@drawable/button_text_color"
-                        android:textOff="SHEET"
-                        android:textOn="SHEET"
-                        android:textSize="@dimen/text_view_font_size_medium" />
-
-                    <ToggleButton
-                        android:id="@+id/tbTowel"
-                        android:layout_width="55dp"
-                        android:layout_height="30dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/togglebutton_selector"
-                        android:gravity="center"
-                        android:textColor="@drawable/button_text_color"
-                        android:textOff="TOWEL"
-                        android:textOn="TOWEL"
-                        android:textSize="@dimen/text_view_font_size_medium" />
-
-                    <ToggleButton
-                        android:id="@+id/tbBlanket"
-                        android:layout_width="75dp"
-                        android:layout_height="30dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/togglebutton_selector"
-                        android:gravity="center"
-                        android:textColor="@drawable/button_text_color"
-                        android:textOff="BLANKET"
-                        android:textOn="BLANKET"
-                        android:textSize="@dimen/text_view_font_size_medium" />
-                </io.agritrack.ui.custom.ToggleGroup>
 
                 <androidx.appcompat.widget.SearchView
                     android:id="@+id/svSearchAsset"
@@ -178,10 +136,11 @@
                     android:padding="5dp"
                     android:paddingStart="10dp"
                     android:queryHint="Search Here"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toTopOf="@+id/rvAssets"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tgSearchAssetType"
+                    app:layout_constraintTop_toBottomOf="@+id/spLinenType"
                     app:searchHintIcon="@null" />
 
                 <androidx.recyclerview.widget.RecyclerView

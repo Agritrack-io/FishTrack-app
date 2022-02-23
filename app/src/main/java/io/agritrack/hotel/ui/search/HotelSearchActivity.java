@@ -14,10 +14,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +54,7 @@ import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class HotelSearchActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class HotelSearchActivity extends AppCompatActivity {
     private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_SYSTEM, 100);
     private final ScanHandler mScanHandler = new ScanHandler(this);
     private final ICAEN_API uhfReader = RFIDModuleFactory.getInstance();
@@ -63,7 +67,7 @@ public class HotelSearchActivity extends AppCompatActivity implements ToggleGrou
     private ProgressBar pbProximity;
     private MobileDB db;
     private FilterableAdapter adapterAssets;
-    private ToggleGroup tgSearchAssetType;
+    private Spinner spLinenType;
     private EditText etAssetBarcode;
     private SearchView svSearchAsset;
     private TextView tvProximity;
@@ -117,6 +121,38 @@ public class HotelSearchActivity extends AppCompatActivity implements ToggleGrou
         // get  references of the controls
         assignCtrlVars();
 
+        String[] type = new String[]{"LINEN", "Παπλ/θήκη Υπ/πλη Raso 280X250", "Σεντόνι Υπ/πλο Raso 300X300", "Μαξ/θήκη Φάκελος Raso 54X95", "Μπουρνούζι Λευκό XL", "Πετσέτα Πισίνας Sand 80Χ200"};
+        // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
+
+        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, type) {
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (position % 2 == 0) { // we're on an even row
+                    view.setBackgroundColor(getColor(R.color.white));
+                } else {
+                    view.setBackgroundColor(getColor(R.color.light_grey));
+                }
+                return view;
+            }
+        };
+
+        spLinenType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
+                loadLinenByTypeFromLocalDB(selectedAssetType);
+                svSearchAsset.setVisibility(View.VISIBLE);
+            }
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+        hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
+        spLinenType.setAdapter(hrAdapter);
+
         // instantiate Local Handler that will process the scanning stream.
         //mScanHandler = new ScanHandler(this);
 
@@ -131,7 +167,19 @@ public class HotelSearchActivity extends AppCompatActivity implements ToggleGrou
         configFooter();
     }
 
-    private void loadCagesFromLocalDB() {
+    private void loadLinenByTypeFromLocalDB(String assetType) {
+        // load assets for current Site and filter by asset type (if selected).
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType);
+        if (assetsList != null && !assetsList.isEmpty()) {
+            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfidBarcode)).collect(Collectors.toList());
+            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets.getFilter().filter("");
+            adapterAssets.notifyDataSetChanged();
+            this.rvAssets.setAdapter(adapterAssets);
+        }
+    }
+
+    /*private void loadCagesFromLocalDB() {
         // load assets for current Site and filter by asset type (if selected).
         List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftCage);
         if (assetsList != null && !assetsList.isEmpty()) {
@@ -162,9 +210,9 @@ public class HotelSearchActivity extends AppCompatActivity implements ToggleGrou
             adapterAssets.getFilter().filter("");
             this.rvAssets.setAdapter(adapterAssets);
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
         if (checkedId == R.id.tbSheet) {
             selectedAssetType = Constants.ftSheet;
@@ -177,7 +225,7 @@ public class HotelSearchActivity extends AppCompatActivity implements ToggleGrou
             loadBinsFromLocalDB();
         }
         svSearchAsset.setVisibility(View.VISIBLE);
-    }
+    }*/
 
     protected void configFooter() {
         ImageView ivBack = findViewById(R.id.ivBackToHotelHome);
@@ -193,7 +241,8 @@ public class HotelSearchActivity extends AppCompatActivity implements ToggleGrou
     }
 
     private void assignCtrlVars() {
-        tgSearchAssetType = findViewById(R.id.tgSearchAssetType);
+        //tgSearchAssetType = findViewById(R.id.tgSearchAssetType);
+        spLinenType = findViewById(R.id.spLinenType);
         svSearchAsset = findViewById(R.id.svSearchAsset);
         etAssetBarcode = findViewById(R.id.etAssetBarcode);
         rvAssets = findViewById(R.id.rvAssets);
@@ -202,7 +251,7 @@ public class HotelSearchActivity extends AppCompatActivity implements ToggleGrou
         tvProximity = findViewById(R.id.tvProximity);
         ivSupport = findViewById(R.id.ivSupport);
         searchProgressBar = findViewById(R.id.searchProgressBar);
-        tgSearchAssetType.setOnCheckedChangeListener(this);
+        //tgSearchAssetType.setOnCheckedChangeListener(this);
         rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvAssets.setItemAnimator(new DefaultItemAnimator());
 
