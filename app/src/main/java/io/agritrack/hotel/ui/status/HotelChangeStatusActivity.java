@@ -502,14 +502,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
 
                     List<String> epcs = entry.getValue();
                     // put the epcs in an array
-                    jGenerator.writeStartArray(); // [
-                    for (String epc : epcs) {
-                        jGenerator.writeStartObject(); // {
-                        jGenerator.writeStringField("rfid", epc); // "epc..."
-                        jGenerator.writeStringField("code", catCode); // "category code..."
-                        jGenerator.writeEndObject(); // }
-                    }
-                    jGenerator.writeEndArray();
+                    jGenerator.writeArray(epcs.toArray(new String[epcs.size()]), 0, epcs.size());
                 }
 
                 jGenerator.writeEndObject(); // }
