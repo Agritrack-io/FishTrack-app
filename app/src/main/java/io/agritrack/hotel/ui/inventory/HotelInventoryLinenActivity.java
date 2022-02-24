@@ -51,9 +51,7 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.common.Constants;
 import io.agritrack.common.FileUtils;
-import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
@@ -126,9 +124,6 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
 
         // get  references of the controls
         assignCtrlVars();
-
-        //String[] assetTypes = new String[]{"All", "Παπλ/θήκη Υπ/πλη Raso 280X250", "Σεντόνι Υπ/πλο Raso 300X300", "Μαξ/θήκη Φάκελος Raso 54X95", "Μπουρνούζι Λευκό XL", "Πετσέτα Πισίνας Sand 80Χ200"};
-        // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
 
         ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.allNames()) {
             @Override

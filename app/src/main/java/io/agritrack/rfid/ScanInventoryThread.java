@@ -14,13 +14,18 @@ import java.util.stream.Stream;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;
+import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.sound.SoundUtil;
 
 public class ScanInventoryThread implements Runnable {
+    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
+
     private final Handler mScanHandler;
     private final ICAEN_API uhfReader;
     private boolean scanInProgress = false;
     private String RFID_FILTER;
+    private final int encodingIdx = schemeSvc.encodingIndex();
+    private final int encodingWth = schemeSvc.encodingWidth();
 
 
     public ScanInventoryThread(Handler handler) {
@@ -58,15 +63,15 @@ public class ScanInventoryThread implements Runnable {
                 SoundUtil.play(Beep, 1, 1f);
                 final List<RFIDTag> tagList = uhfReader.inventoryRealTime();
                 if (tagList != null && !tagList.isEmpty()) {
-                    Stream<RFIDTag> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || (f.getEpc().indexOf(this.RFID_FILTER) == 11));
+                    Stream<RFIDTag> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || (f.getEpc().indexOf(this.RFID_FILTER) == encodingIdx));
                     List<RFIDTag> filteredList = filteredStream.collect(Collectors.toList());
                     for (RFIDTag tag : filteredList) {
                         if (tag != null) {
                             final String epcStr = tag.getEpc();
-                            if (epcStr.length() <= 12) {
+                            if (epcStr.length() <= encodingWth) {
                                 continue;
                             }
-                            epcValues.add(epcStr.substring(11));
+                            epcValues.add(epcStr.substring(encodingIdx));
                         }
                     }
 
