@@ -87,7 +87,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
     private Integer selectedParent, selectedChild, totalItems;
     private ConstraintLayout selectedItem;
     private String selectedBarcode, selectedStatus;
-    private Spinner spPackagingSite;
+    private Spinner spStatus;
 
     private ProgressDialog progressDialog;
 
@@ -129,12 +129,12 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         progressDialog = new ProgressDialog(HotelChangeStatusActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        String[] status = new String[]{"Active", "Discarded", "Retired", "Tag-replaced", "Repaired", "Just bought"};
+        String[] status = new String[]{"Active", "Discarded", "Retired", "Tag-replaced", "Repaired", "New asset"};
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
 
         ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, status);
         hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-        spPackagingSite.setAdapter(hrAdapter);
+        spStatus.setAdapter(hrAdapter);
 
         confirmChangeStatusDlg = YesNoDialogFragment.instance();
         confirmChangeStatusDlg.onConfirm(bundle -> {
@@ -303,7 +303,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
     }
 
     private void assignCtrlVars() {
-        spPackagingSite = findViewById(R.id.spPackagingSite);
+        spStatus = findViewById(R.id.spPackagingSite);
         xvInventoryItems = findViewById(R.id.xvInventoryItems);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
         ivAddItem = findViewById(R.id.ivAddItem);
@@ -324,8 +324,8 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
             if (adapterInventoryItems != null) {
                 recWHInventory.items = adapterInventoryItems.getValues();
             }
-            if (spPackagingSite.getSelectedItem() != null) {
-                selectedStatus = spPackagingSite.getSelectedItem().toString();
+            if (spStatus.getSelectedItem() != null) {
+                selectedStatus = spStatus.getSelectedItem().toString();
             }
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -477,7 +477,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
             String assetType = (recWHInventory.assetType != null) ? recWHInventory.assetType.name() : ALL.name();
 
             // create the local json file name
-            fileName = String.format("InvChangeStatus.%s.%s.json", assetType, sdf.format(currentDate));
+            fileName = String.format("InvChangeStatus_%s_%s_%s.json", selectedStatus, assetType, sdf.format(currentDate));
             File outputFile = new File(HotelChangeStatusActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
 
             ObjectMapper mapper = new ObjectMapper();

@@ -448,7 +448,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
             String assetType = (recWHInventory.assetType != null) ? recWHInventory.assetType.name() : ALL.name();
 
             // create the local json file name
-            fileName = String.format("Inventory.%s.%s.json", assetType, sdf.format(currentDate));
+            fileName = String.format("Inventory_%s_%s.json", assetType, sdf.format(currentDate));
             File outputFile = new File(HotelInventoryLinenActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
 
             ObjectMapper mapper = new ObjectMapper();

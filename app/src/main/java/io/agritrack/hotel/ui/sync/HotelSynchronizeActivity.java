@@ -123,8 +123,10 @@ public class HotelSynchronizeActivity extends AppCompatActivity { //implements A
     }
 
     private List<String> getFileNamesList() {
-        File documentsFolder = new File(HotelSynchronizeActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath());
-        files = documentsFolder.listFiles();
+        final String extension = ".json";
+        final File documentsFolder = new File(HotelSynchronizeActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath());
+        File[] files = documentsFolder.listFiles((File pathname) -> pathname.getName().endsWith(extension));
+        //files = documentsFolder.listFiles();
         filesLength = files.length;
         List<String> fileNames = Arrays.stream(files).map(x -> x.getName()).collect(Collectors.toList());
 
@@ -135,15 +137,31 @@ public class HotelSynchronizeActivity extends AppCompatActivity { //implements A
         try {
             String token = LocalPreferences.getToken();
 
+            final String extension = ".json";
+            final File documentsFolder = new File(HotelSynchronizeActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath());
+            File[] files = documentsFolder.listFiles((File pathname) -> pathname.getName().endsWith(extension));
             for (File file : files) {
                 // create RequestBody instance from file
                 RequestBody requestFile = RequestBody.create(file, MediaType.parse("application/json"));
 
-                // MultipartBody.Part is used to send also the actual file name
-                MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
 
-                Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadHotelInventory(filePart, "Bearer " + token);
-                uploadJsonFileAsyncCall.enqueue(new HotelSynchronizeActivity.InventoryFileUploadCallBack());
+
+                if (file.getName().startsWith("Inventory")) {
+                    // MultipartBody.Part is used to send also the actual file name
+                    MultipartBody.Part filePart = MultipartBody.Part.createFormData("inventory", file.getName(), requestFile);
+
+                    Call<ResponseBody> uploadJsonInvFileAsyncCall = upldSvc.uploadHotelInventory(filePart, "Bearer " + token);
+                    uploadJsonInvFileAsyncCall.enqueue(new HotelSynchronizeActivity.InventoryFileUploadCallBack());
+                } else {
+                    // MultipartBody.Part is used to send also the actual file name
+                    MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+
+                    String[] parts = file.getName().split("_"); //3 parts
+                    String status = parts[1];
+                    RequestBody statusBody = RequestBody.create(status, MediaType.parse("text/plain"));
+                    Call<ResponseBody> uploadJsonChangeStatusFileAsyncCall = upldSvc.uploadHotelInventoryWithStatus(filePart, statusBody, "Bearer " + token);
+                    uploadJsonChangeStatusFileAsyncCall.enqueue(new HotelSynchronizeActivity.InvChangeStatusFileUploadCallBack());
+                }
             }
             return true;
         } catch (Exception e) {
@@ -170,6 +188,43 @@ public class HotelSynchronizeActivity extends AppCompatActivity { //implements A
     }
 
     public class InventoryFileUploadCallBack implements Callback<ResponseBody> {
+        @Override
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            try {
+                if (response.body()!=null) {
+                    String fileName = response.body().string();
+                    boolean res = FileUtils.deleteInventoryFile(HotelSynchronizeActivity.this, fileName);
+                    if (res) {
+                        runOnUiThread(() -> CToast(getApplicationContext(), render("File " + fileName + " was uploaded successfully!!!"), Toast.LENGTH_LONG));
+                    } else {
+                        runOnUiThread(() -> CToast(getApplicationContext(), render("Failed to remove file" +fileName+ " from local folder!!!"), Toast.LENGTH_LONG));
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Error:" + e.getMessage()), Toast.LENGTH_LONG));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ResponseBody> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.files_failed_to_sync), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
+            }
+        }
+    }
+
+    public class InvChangeStatusFileUploadCallBack implements Callback<ResponseBody> {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
