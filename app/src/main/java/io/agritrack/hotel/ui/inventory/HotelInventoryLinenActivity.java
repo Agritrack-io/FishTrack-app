@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -50,7 +51,9 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.common.Constants;
 import io.agritrack.common.FileUtils;
+import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
@@ -141,6 +144,18 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
         };
         hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
         spLinenType.setAdapter(hrAdapter);
+
+        spLinenType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
+                activeFilter = schemeSvc.codeOf(selectedAssetType);
+            }
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));

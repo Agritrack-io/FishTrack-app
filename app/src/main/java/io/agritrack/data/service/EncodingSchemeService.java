@@ -2,10 +2,12 @@ package io.agritrack.data.service;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 import io.agritrack.data.db.MobileDB;
@@ -18,6 +20,8 @@ public class EncodingSchemeService {
     // get an instance of local DB
     private static MobileDB db = MobileDB.getInstance(getAppContext());
     private static Map<String, EncodingSchemeEntity> assetTypesMap;
+    private static int startIdx = 0;
+    private static int codeWidth = 0;
 
 
     static {
@@ -31,7 +35,8 @@ public class EncodingSchemeService {
         MobileDB db = MobileDB.getInstance(getAppContext());
         List<EncodingSchemeEntity> entries = db.encodingSchemeDAO().getAll();
         entries.stream().forEach(i -> assetTypesMap.put(i.code, i));
-
+        codeWidth = assetTypesMap.keySet().stream().mapToInt(String::length).max().getAsInt();
+        startIdx = assetTypesMap.values().stream().map(x-> x.encoding_index).mapToInt(y->y).min().getAsInt();
     }
 
     public static synchronized EncodingSchemeService getInstance() {
@@ -42,14 +47,17 @@ public class EncodingSchemeService {
     }
 
     public String nameOf(String code) {
-        String result = code;
+        String result;
         EncodingSchemeEntity itm = assetTypesMap.get(code);
-        result = itm != null ? itm.description : code;
+        result = itm != null ? itm.description : "Unknown";
         return result;
     }
 
     public String codeOf(String description) {
         String result = null;
+        if ("All".equalsIgnoreCase(description)){
+            return null;
+        }
         Optional<Map.Entry<String, EncodingSchemeEntity>> itm = assetTypesMap.entrySet().stream().filter(x -> description.equalsIgnoreCase(x.getValue().description)).findFirst();
         return itm.isPresent() ? itm.get().getValue().code : result;
     }

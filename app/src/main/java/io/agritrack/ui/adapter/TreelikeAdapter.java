@@ -20,8 +20,10 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
+import io.agritrack.data.service.EncodingSchemeService;
 
 public class TreelikeAdapter extends BaseExpandableListAdapter {
+    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
 
     private final Context mCtx;
     // child data in format of: <Type, List of children<Type>>
@@ -125,7 +127,8 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
     }
 
     private String getAssetTypeName(String type) {
-        switch (type) {
+        return schemeSvc.nameOf(type);
+        /*switch (type) {
             case Filters.RFID_CAGE:
                 return "SHEET"; //""CAGE";
             case Filters.RFID_NET:
@@ -136,7 +139,7 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
                 return "OTHER"; //""PLATFORM";
             default:
                 return "";
-        }
+        }*/
     }
 
     public void appendItems(Map<String, List<String>> values) {
