@@ -477,7 +477,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
             String assetType = (recWHInventory.assetType != null) ? recWHInventory.assetType.name() : ALL.name();
 
             // create the local json file name
-            fileName = String.format("InvChangeStatus.%s.%s.json", assetType, sdf.format(currentDate));
+            fileName = String.format("InvChangeStatus_%s_.%s.%s.json", selectedStatus, assetType, sdf.format(currentDate));
             File outputFile = new File(HotelChangeStatusActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
 
             ObjectMapper mapper = new ObjectMapper();
