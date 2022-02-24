@@ -531,5 +531,7 @@
     <string name="lot_restriction_message">More than one harvest LOT returned for these totes. Please go back and select totes of a single LOT.</string>
     <string name="invalid_inputs">Invalid inputs :</string>
     <string name="laundry">LAUNDRY</string>
+    <string name="EncodeScheme_sync_completed">Encoding scheme synchronised successfuly!</string>
+    <string name="no_EncodeScheme_found_alert">No Encoding Scheme entry was found!</string>
 
 </resources>

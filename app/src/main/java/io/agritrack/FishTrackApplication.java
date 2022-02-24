@@ -1,13 +1,17 @@
 package io.agritrack;
 
+import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.service.LocalPreferences.AppProductName_Key;
 
 import android.app.Application;
 import android.content.Context;
+import android.widget.Toast;
 
 import com.facebook.stetho.BuildConfig;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.common.util.Strings;
 
+import io.agritrack.ui.custom.CustomToast;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class FishTrackApplication extends Application {
@@ -40,6 +44,10 @@ public class FishTrackApplication extends Application {
             Stetho.initializeWithDefaults(this);
         }
 
-        //PRODUCT = LocalPreferences.getActivePRODUCT();
+        if(Strings.isEmptyOrWhitespace(LocalPreferences.getActivePRODUCT())) {
+            CustomToast.CToast(getAppContext(), render("Please Select a Product!!!"), Toast.LENGTH_LONG);
+        } else {
+            PRODUCT = LocalPreferences.getActivePRODUCT();
+        }
     }
 }

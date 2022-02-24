@@ -33,6 +33,7 @@ import io.agritrack.AgritrackProducts;
 import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.sync.EncodingSchemeCallBack;
 import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
@@ -46,6 +47,7 @@ import io.agritrack.api.sync.SyncUsersCallBack;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.AppUserDTO;
 import io.agritrack.data.dto.CageDetailsDTO;
+import io.agritrack.data.dto.EncodingSchemeDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.CustomerDTO;
@@ -306,6 +308,11 @@ public class LoginActivity extends AppCompatActivity {
             // sync IOT Loggers
             Call<List<IotLoggerDTO>> syncIOTLoggersAsyncCall = syncService.getIOTLoggersBySiteId(siteId, "Bearer " + token);
             syncIOTLoggersAsyncCall.enqueue(new SyncIOTLoggersCallBack(this.syncResult));
+
+            // sync Encoding scheme info
+            Call<List<EncodingSchemeDTO>> syncEncodingShemeAsyncCall = syncService.getEncodingSchemeByCustomerName(clusterId, "Bearer " + token);
+            syncEncodingShemeAsyncCall.enqueue(new EncodingSchemeCallBack(this.syncResult));
+
 
             goToProductMenu();
 
