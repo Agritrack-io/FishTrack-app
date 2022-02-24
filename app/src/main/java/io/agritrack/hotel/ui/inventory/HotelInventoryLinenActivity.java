@@ -50,10 +50,9 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.common.Constants;
 import io.agritrack.common.FileUtils;
-import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
@@ -63,7 +62,6 @@ import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
-import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.UploadingApi;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.MediaType;
@@ -75,6 +73,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HotelInventoryLinenActivity extends LocationAwareActivity {
+    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     private final UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
@@ -125,10 +124,10 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        String[] type = new String[]{"All", "Παπλ/θήκη Υπ/πλη Raso 280X250", "Σεντόνι Υπ/πλο Raso 300X300", "Μαξ/θήκη Φάκελος Raso 54X95", "Μπουρνούζι Λευκό XL", "Πετσέτα Πισίνας Sand 80Χ200"};
+        //String[] assetTypes = new String[]{"All", "Παπλ/θήκη Υπ/πλη Raso 280X250", "Σεντόνι Υπ/πλο Raso 300X300", "Μαξ/θήκη Φάκελος Raso 54X95", "Μπουρνούζι Λευκό XL", "Πετσέτα Πισίνας Sand 80Χ200"};
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
 
-        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, type) {
+        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.allNames()) {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
