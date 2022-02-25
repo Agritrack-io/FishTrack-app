@@ -86,7 +86,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
     private Spinner spLinenType;
 
     private TreelikeAdapter adapterInventoryItems;
-    private String selectedAssetType = AssetType.ALL.name();
+    private String selectedAssetType = AssetType.ALL;
     private String activeFilter = null;
     private ImageButton ivAddItem, ivDeleteItem;
     private Button scanButton;
@@ -336,7 +336,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
                 return;
             }
-            recWHInventory.assetType = AssetType.valueOf(this.selectedAssetType);
+            recWHInventory.assetType = this.selectedAssetType;
             if (mLastLocation != null) {
                 recWHInventory.longitude = mLastLocation.getLongitude();
                 recWHInventory.latitude = mLastLocation.getLatitude();
@@ -385,16 +385,6 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
                 Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadHotelInventory(filePart, "Bearer " + token);
                 uploadJsonFileAsyncCall.enqueue(new InventoryFileUploadCallBack());
             }
-
-            // The commented code was used to upload data as JSON body of Http request.
-            // removed since data will be uploaded as file...
-            // sync WH Inventory Tx
-         /* RFIDInventoryDTO inventoryDto = RFIDInventoryDTO.convert(invtx);
-            List<RFIDInventoryItemDTO> invItemsDto = RFIDInventoryItemDTO.convert(invItemtxs);
-            inventoryDto.rfid_items = invItemsDto.stream().map(x -> new RFIDInventoryItemDTO(x.rfid)).collect(Collectors.groupingBy(g -> g.code, Collectors.toCollection(ArrayList::new)));
-
-            Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(inventoryDto, "Bearer " + token);
-            syncInvTxCallBack.enqueue(new HotelInventoryLinenActivity.SyncInvTxCallBack());*/
 
             return true;
         } catch (Exception e) {
@@ -454,7 +444,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
             SimpleDateFormat sdf = new SimpleDateFormat(compactTSFormat);
 
             // get asset Type, based on what toggle button was pressed.
-            String assetType = (recWHInventory.assetType != null) ? recWHInventory.assetType.name() : ALL.name();
+            String assetType = (recWHInventory.assetType != null) ? recWHInventory.assetType : ALL;
 
             // create the local json file name
             fileName = String.format("Inventory_%s_%s.json", assetType, sdf.format(currentDate));
@@ -527,7 +517,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
                 case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     clearSelectedItem();
-                    Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
+                    Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.schemeCode(g), Collectors.toCollection(ArrayList::new)));
                     if (adapterInventoryItems == null) {
                         adapterInventoryItems = new TreelikeAdapter(HotelInventoryLinenActivity.this, values);
                         xvInventoryItems.setAdapter(adapterInventoryItems);

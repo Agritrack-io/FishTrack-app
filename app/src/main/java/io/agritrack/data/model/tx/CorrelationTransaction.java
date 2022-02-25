@@ -5,8 +5,6 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import io.agritrack.data.converter.AssetTypeConverter;
-
 @Entity(tableName = "correlation_transaction")
 public class CorrelationTransaction {
     @PrimaryKey
@@ -21,7 +19,6 @@ public class CorrelationTransaction {
     @ColumnInfo(name = "timestamp")
     public Long timestamp;
 
-    @TypeConverters(AssetTypeConverter.class)
     @ColumnInfo(name = "asset_type")
     public String assetType;
 
@@ -31,7 +28,6 @@ public class CorrelationTransaction {
     @ColumnInfo(name = "asset_rfid")
     public String assetRFID;
 
-    @TypeConverters(AssetTypeConverter.class)
     @ColumnInfo(name = "logger_type")
     public String loggerType;
 

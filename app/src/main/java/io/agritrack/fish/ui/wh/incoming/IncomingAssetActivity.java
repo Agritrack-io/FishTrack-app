@@ -48,7 +48,6 @@ import io.agritrack.enums.AssetType;
 import io.agritrack.enums.WarehouseTxState;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
@@ -72,7 +71,7 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
 
     private ToggleGroup tgChooseAssetType;
-    private String selectedAssetType = AssetType.ALL.name();
+    private String selectedAssetType = AssetType.ALL;
     private String activeFilter = null;
     private int selectedToggleButton = -1;
     private MobileDB db;
@@ -299,7 +298,7 @@ public class IncomingAssetActivity extends LocationAwareActivity implements Togg
                     return;
                 }
                 GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
-                GlobalState.recWHIncoming.assetType = AssetType.valueOf(this.selectedAssetType);
+                GlobalState.recWHIncoming.assetType = this.selectedAssetType;
                 GlobalState.recWHIncoming.site = LocalPreferences.getCurrentSiteName();
 
                 if (mLastLocation != null) {

@@ -20,6 +20,6 @@ public class InventoryRecord {
     public Double longitude;
     public Double latitude;
     public int subSitePos = -1;
-    public AssetType assetType;
+    public String assetType;
     public ConsumableType consumableType;
 }

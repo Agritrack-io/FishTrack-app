@@ -2,10 +2,13 @@ package io.agritrack.data.service;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 
+import com.google.android.gms.common.util.Strings;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.agritrack.data.db.MobileDB;
@@ -18,6 +21,7 @@ public class EncodingSchemeService {
     // get an instance of local DB
     private static MobileDB db = MobileDB.getInstance(getAppContext());
     private static Map<String, EncodingSchemeEntity> assetTypesMap;
+    private static Set<String> codesSet;
     private static int startIdx = -1;
     private static int codeWidth = 0;
 
@@ -27,7 +31,7 @@ public class EncodingSchemeService {
         // put the 'All' case on top of the list
         EncodingSchemeEntity allItm = new EncodingSchemeEntity();
         //allItm.code = null; //"All";
-        allItm.description = "All";
+        allItm.description = "ALL";
         assetTypesMap.put(null, allItm);
 
         MobileDB db = MobileDB.getInstance(getAppContext());
@@ -37,6 +41,8 @@ public class EncodingSchemeService {
             codeWidth = i.code.length();
             startIdx = i.encoding_index;
         });
+        codesSet = assetTypesMap.keySet();
+
         //codeWidth = assetTypesMap.keySet().stream().mapToInt(String::length).max().getAsInt();
         //startIdx = assetTypesMap.values().stream().map(x-> x.encoding_index).mapToInt(y->y).min().getAsInt();
     }
@@ -78,5 +84,26 @@ public class EncodingSchemeService {
 
     public int encodingWidth() {
         return codeWidth;
+    }
+
+    public String schemeCode(String epc, boolean startFromZero) {
+        int idx = startFromZero ? 0 : startIdx;
+        if (Strings.isEmptyOrWhitespace(epc)) {
+            return null;
+        }
+        if (epc.length() <= (idx + codeWidth)) {
+            return "XXXX";
+        }
+        String code = epc.substring(idx, codeWidth);
+        boolean validCode = codesSet.contains(code);
+        if (validCode) {
+            return code;
+        } else {
+            return "XXXX";
+        }
+    }
+
+    public String schemeCode(String epc){
+        return schemeCode(epc,true);
     }
 }

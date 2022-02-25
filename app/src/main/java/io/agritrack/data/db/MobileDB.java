@@ -7,7 +7,6 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import io.agritrack.data.converter.AssetTypeConverter;
 import io.agritrack.data.converter.ConsumableTypeConverter;
 import io.agritrack.data.converter.DateConverter;
 import io.agritrack.data.converter.LongListConverter;
@@ -94,8 +93,8 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
         IfcoTransaction.class, AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class,
         Measurement.class, TemperatureData.class, SeaTemperatureTransaction.class, RepairTransaction.class},
-        version = 15, exportSchema = false)
-@TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, AssetTypeConverter.class, ConsumableTypeConverter.class})
+        version = 1, exportSchema = false)
+@TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
     private static MobileDB INSTANCE;

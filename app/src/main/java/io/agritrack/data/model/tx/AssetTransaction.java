@@ -8,7 +8,6 @@ import androidx.room.TypeConverters;
 import java.util.List;
 import java.util.Map;
 
-import io.agritrack.data.converter.AssetTypeConverter;
 import io.agritrack.data.converter.StringMapConverter;
 
 @Entity(tableName = "asset_transaction")
@@ -27,7 +26,6 @@ public class AssetTransaction {
     @ColumnInfo(name = "rfids")
     public Map<String, List<String>> itemRFIDs;
 
-    @TypeConverters(AssetTypeConverter.class)
     @ColumnInfo(name = "asset_type")
     public String assetType;
 

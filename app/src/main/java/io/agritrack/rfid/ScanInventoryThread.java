@@ -68,7 +68,7 @@ public class ScanInventoryThread implements Runnable {
                     for (RFIDTag tag : filteredList) {
                         if (tag != null) {
                             final String epcStr = tag.getEpc();
-                            if (epcStr.length() <= encodingWth) {
+                            if (epcStr.length() <= (encodingWth + encodingIdx)) {
                                 continue;
                             }
                             epcValues.add(epcStr.substring(encodingIdx));

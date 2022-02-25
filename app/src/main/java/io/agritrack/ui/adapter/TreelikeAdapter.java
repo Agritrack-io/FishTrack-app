@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -27,12 +28,12 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
 
     private final Context mCtx;
     // child data in format of: <Type, List of children<Type>>
-    private Map<String, List<String>> mValues;
+    private TreeMap<String, List<String>> mValues = new TreeMap<>();;
     private List<String> keys;
 
     public TreelikeAdapter(Context context, Map<String, List<String>> listData) {
         this.mCtx = context;
-        this.mValues = listData;
+        this.mValues.putAll(listData);
         this.keys = new LinkedList<>(this.mValues.keySet());
     }
 
@@ -118,7 +119,8 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
     }
 
     public void setValues(Map<String, List<String>> items) {
-        this.mValues = items;
+        this.mValues = new TreeMap<>();
+        this.mValues.putAll(items);
     }
 
     @Override
@@ -128,18 +130,6 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
 
     private String getAssetTypeName(String type) {
         return schemeSvc.nameOf(type);
-        /*switch (type) {
-            case Filters.RFID_CAGE:
-                return "SHEET"; //""CAGE";
-            case Filters.RFID_NET:
-                return "TOWEL"; //""NET";
-            case Filters.RFID_BIN:
-                return "BLANKET"; //""BIN";
-            case Filters.RFID_PLATFORM:
-                return "OTHER"; //""PLATFORM";
-            default:
-                return "";
-        }*/
     }
 
     public void appendItems(Map<String, List<String>> values) {

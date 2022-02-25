@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
+import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
@@ -55,6 +56,7 @@ import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class HotelSearchActivity extends AppCompatActivity {
+    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_SYSTEM, 100);
     private final ScanHandler mScanHandler = new ScanHandler(this);
     private final ICAEN_API uhfReader = RFIDModuleFactory.getInstance();
@@ -78,6 +80,7 @@ public class HotelSearchActivity extends AppCompatActivity {
     private String selectedAssetType;
     private String selectedBarcode = "";
     private ConstraintLayout selectedItem;
+    private String epcPrefix = "BE0019A0000";
 
     // Instantiate a clickListener to be passed to adapterAssets.
     // It will be used to set the selectedBarcode var to the selected item barcode.
@@ -121,10 +124,7 @@ public class HotelSearchActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        String[] type = new String[]{"LINEN", "Παπλ/θήκη Υπ/πλη Raso 280X250", "Σεντόνι Υπ/πλο Raso 300X300", "Μαξ/θήκη Φάκελος Raso 54X95", "Μπουρνούζι Λευκό XL", "Πετσέτα Πισίνας Sand 80Χ200"};
-        // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
-
-        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, type) {
+        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.allNames()) {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -314,7 +314,7 @@ public class HotelSearchActivity extends AppCompatActivity {
             isScanning = true;
             btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             btnSearchAsset.setText(R.string.stop_search);
-            uhfReader.setFilterEPC(selectedBarcode);
+            uhfReader.setFilterEPC(epcPrefix + selectedBarcode);
             uhfReader.startSearching();
             mScanHandler.postDelayed(search_runnable, 0);
         } else {

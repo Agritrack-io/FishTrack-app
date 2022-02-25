@@ -254,7 +254,7 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
             }
 
             GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
-            GlobalState.recWHOutgoing.assetType = AssetType.valueOf(this.selectedConsumableType);
+            GlobalState.recWHOutgoing.assetType = this.selectedConsumableType;
             GlobalState.recWHOutgoing.site = LocalPreferences.getCurrentSiteName();
             if (mLastLocation != null) {
                 recWHOutgoing.longitude = mLastLocation.getLongitude();

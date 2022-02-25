@@ -259,7 +259,7 @@ public class TotesInventoryActivity extends LocationAwareActivity {
             if (tvTotesCount.getText() != null && !Strings.isEmptyOrWhitespace(tvTotesCount.getText().toString())) {
                 recInventory.totalTotes = Integer.valueOf(tvTotesCount.getText().toString());
             }
-            FruitGlobalState.recInventory.assetType = AssetType.valueOf(Constants.ftTote);
+            FruitGlobalState.recInventory.assetType = Constants.ftTote;
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);

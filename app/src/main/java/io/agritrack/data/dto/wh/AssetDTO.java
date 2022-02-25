@@ -11,7 +11,7 @@ public class AssetDTO {
     public String barcode;
     public String code;
     public String rfid_barcode;
-    public Long site;
+    public String site;
     public String site_name;
     public String site_code;
     public String cage_RFID;

@@ -73,7 +73,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
     private ExpandableListView xvInventoryItems;
 
     private TreelikeAdapter adapterInventoryItems;
-    private String selectedAssetType = AssetType.ALL.name();
+    private String selectedAssetType = AssetType.ALL;
     private String activeFilter = null;
     private int selectedToggleButton = -1;
     private ImageButton ivAddItem, ivDeleteItem;
@@ -294,7 +294,7 @@ public class InventoryAssetActivity extends LocationAwareActivity implements Tog
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
                 return;
             }
-            recWHInventory.assetType = AssetType.valueOf(this.selectedAssetType);
+            recWHInventory.assetType = this.selectedAssetType;
 
             if (mLastLocation != null) {
                 recWHInventory.longitude = mLastLocation.getLongitude();

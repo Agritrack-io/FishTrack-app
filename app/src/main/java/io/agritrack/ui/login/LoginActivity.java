@@ -269,6 +269,9 @@ public class LoginActivity extends AppCompatActivity {
             Long siteId = LocalPreferences.getCurrentSiteId();
             String clusterId = LocalPreferences.getCurrentClusterId();
 
+            //Clean encoding scheme table before update
+            this.db.encodingSchemeDAO().deleteAll();
+
             // sync sites for current cluster
             Call<List<SiteDTO>> syncSitesAsyncCall = syncService.getSitesByCluster(clusterId, "Bearer " + token);
             syncSitesAsyncCall.enqueue(new SyncClusterSitesCallBack(this.syncResult));

@@ -44,6 +44,7 @@ import io.agritrack.data.dto.wh.RFIDInventoryDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
+import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
@@ -62,7 +63,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HotelInventoryAssetActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
-
+    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
@@ -74,7 +75,7 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
     private ExpandableListView xvInventoryItems;
 
     private TreelikeAdapter adapterInventoryItems;
-    private String selectedAssetType = AssetType.ALL.name();
+    private String selectedAssetType = AssetType.ALL;
     private String activeFilter = null;
     private int selectedToggleButton = -1;
     private ImageButton ivAddItem, ivDeleteItem;
@@ -298,7 +299,7 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
                 return;
             }
-            recWHInventory.assetType = AssetType.valueOf(this.selectedAssetType);
+            recWHInventory.assetType = this.selectedAssetType;
 
             if (mLastLocation != null) {
                 recWHInventory.longitude = mLastLocation.getLongitude();
@@ -383,19 +384,19 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
         switch (checkedId) {
             case R.id.tbCage:
                 selectedAssetType = Constants.ftCage;
-                activeFilter = Filters.RFID_CAGE;
+                activeFilter = schemeSvc.codeOf(selectedAssetType);
                 break;
             case R.id.tbNet:
                 selectedAssetType = Constants.ftNet;
-                activeFilter = Filters.RFID_NET;
+                activeFilter = schemeSvc.codeOf(selectedAssetType);
                 break;
             case R.id.tbBin:
                 selectedAssetType = Constants.ftBin;
-                activeFilter = Filters.RFID_BIN;
+                activeFilter = schemeSvc.codeOf(selectedAssetType);
                 break;
             case R.id.tbPlatform:
                 selectedAssetType = Constants.ftPlatform;
-                activeFilter = Filters.RFID_PLATFORM;
+                activeFilter = schemeSvc.codeOf(selectedAssetType);
                 break;
             default:
                 selectedAssetType = Constants.ftAll;
@@ -466,7 +467,7 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
                 case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     clearSelectedItem();
-                    Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
+                    Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.schemeCode(g), Collectors.toCollection(ArrayList::new)));
                     if (adapterInventoryItems == null) {
                         adapterInventoryItems = new TreelikeAdapter(HotelInventoryAssetActivity.this, values);
                         xvInventoryItems.setAdapter(adapterInventoryItems);

@@ -51,6 +51,7 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.hotel.ui.HotelHomeActivity;
@@ -70,7 +71,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HotelChangeStatusActivity extends LocationAwareActivity {
-
+    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     private final UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
@@ -129,7 +130,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         progressDialog = new ProgressDialog(HotelChangeStatusActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        String[] status = new String[]{"Active", "Discarded", "Retired", "Tag-replaced", "Repaired", "New asset"};
+        String[] status = new String[]{"Active", "Discarded", "Retired", "Tag-replaced", "Repaired", "New item"};
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
 
         ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, status);
@@ -474,7 +475,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
             SimpleDateFormat sdf = new SimpleDateFormat(compactTSFormat);
 
             // get asset Type, based on what toggle button was pressed.
-            String assetType = (recWHInventory.assetType != null) ? recWHInventory.assetType.name() : ALL.name();
+            String assetType = (recWHInventory.assetType != null) ? recWHInventory.assetType : ALL;
 
             // create the local json file name
             fileName = String.format("InvChangeStatus_%s_%s_%s.json", selectedStatus, assetType, sdf.format(currentDate));

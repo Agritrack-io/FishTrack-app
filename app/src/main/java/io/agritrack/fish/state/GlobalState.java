@@ -307,7 +307,7 @@ public class GlobalState {
         try {
             AssetTransaction txWHIncoming = new AssetTransaction();
             txWHIncoming.state = recWHIncoming.state.name();
-            txWHIncoming.assetType = (recWHIncoming.assetType != null) ? recWHIncoming.assetType.name() : ALL.name();
+            txWHIncoming.assetType = (recWHIncoming.assetType != null) ? recWHIncoming.assetType : ALL;
             txWHIncoming.itemRFIDs = recWHIncoming.items;
             txWHIncoming.from = recWHIncoming.from;
             txWHIncoming.to = recWHIncoming.to;
@@ -335,7 +335,7 @@ public class GlobalState {
                 ConsumableTransaction txWHIncoming = new ConsumableTransaction();
 
                 txWHIncoming.state = recWHIncoming.state.name();
-                txWHIncoming.consumableType = (recWHIncoming.consumableType != null) ? recWHIncoming.consumableType.name() : ALL.name();
+                txWHIncoming.consumableType = (recWHIncoming.consumableType != null) ? recWHIncoming.consumableType.name() : ALL;
                 txWHIncoming.barcode = entry.getKey();
                 txWHIncoming.quantity = entry.getValue();
                 txWHIncoming.timestamp = System.currentTimeMillis();
@@ -360,7 +360,7 @@ public class GlobalState {
         try {
             AssetTransaction txWHOutgoing = new AssetTransaction();
             txWHOutgoing.state = recWHOutgoing.state.name();
-            txWHOutgoing.assetType = (recWHOutgoing.assetType != null) ? recWHOutgoing.assetType.name() : ALL.name();
+            txWHOutgoing.assetType = (recWHOutgoing.assetType != null) ? recWHOutgoing.assetType : ALL;
             txWHOutgoing.itemRFIDs = recWHOutgoing.items;
             txWHOutgoing.from = recWHOutgoing.from;
             txWHOutgoing.to = recWHOutgoing.to;
@@ -388,7 +388,7 @@ public class GlobalState {
                 ConsumableTransaction txWHOutgoing = new ConsumableTransaction();
 
                 txWHOutgoing.state = recWHOutgoing.state.name();
-                txWHOutgoing.consumableType = (recWHOutgoing.consumableType != null) ? recWHOutgoing.consumableType.name() : ALL.name();
+                txWHOutgoing.consumableType = (recWHOutgoing.consumableType != null) ? recWHOutgoing.consumableType.name() : ALL;
                 txWHOutgoing.barcode = entry.getKey();
                 txWHOutgoing.quantity = entry.getValue();
                 txWHOutgoing.timestamp = System.currentTimeMillis();
@@ -474,7 +474,7 @@ public class GlobalState {
 
             for (Map.Entry<String, Integer> entry : inventoryData) {
                 CoInventoryItem newItem = new CoInventoryItem();
-                newItem.consumableType = (recWHInventory.consumableType != null) ? recWHInventory.consumableType.name() : ALL.name();
+                newItem.consumableType = (recWHInventory.consumableType != null) ? recWHInventory.consumableType.name() : ALL;
                 newItem.barcode = entry.getKey();
                 newItem.quantity = entry.getValue();
                 newItem.timestamp = System.currentTimeMillis();
@@ -494,7 +494,7 @@ public class GlobalState {
     public static CorrelationTransaction commitWHCorrelation(MobileDB db) {
         try {
             CorrelationTransaction txCorrelation = new CorrelationTransaction();
-            txCorrelation.assetType = recWHCorrelation.assetType.name();
+            txCorrelation.assetType = recWHCorrelation.assetType;
             txCorrelation.barcode = recWHCorrelation.barcode;
             txCorrelation.assetRFID = recWHCorrelation.rfid;
             txCorrelation.timestamp = System.currentTimeMillis();

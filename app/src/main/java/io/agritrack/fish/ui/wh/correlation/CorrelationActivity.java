@@ -146,7 +146,7 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
         btnScanAssetTag.setOnClickListener(this::onClick);
 
         btnCorrelate.setOnClickListener(view -> {
-            GlobalState.recWHCorrelation.assetType = !Strings.isEmptyOrWhitespace(selectedAssetType) ? AssetType.valueOf(selectedAssetType) : null;
+            GlobalState.recWHCorrelation.assetType = selectedAssetType;
             GlobalState.recWHCorrelation.barcode = !Strings.isEmptyOrWhitespace(selectedBarcode) ? selectedBarcode : null; //tvCorrAssetBarcode.getText() != null ? tvCorrAssetBarcode.getText().toString() : null;
             GlobalState.recWHCorrelation.rfid = tvCorrAssetBarcode.getText() != null ? tvCorrAssetBarcode.getText().toString() : null;
 

@@ -184,9 +184,9 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
                 return;
             }
-            FruitGlobalState.recCorrelation.assetType = AssetType.valueOf(Constants.ftPole);
+            FruitGlobalState.recCorrelation.assetType = Constants.ftPole;
             FruitGlobalState.recCorrelation.poleBarcode = tvCorrPoleBarcode.getText() != null ? tvCorrPoleBarcode.getText().toString() : null;
-            FruitGlobalState.recCorrelation.loggerType = AssetType.valueOf(Constants.ftDataLogger);
+            FruitGlobalState.recCorrelation.loggerType = Constants.ftDataLogger;
             FruitGlobalState.recCorrelation.loggerRFID = tvCorrTempLoggerBarcode.getText() != null ? tvCorrTempLoggerBarcode.getText().toString() : null;
 
             if (mLastLocation != null) {

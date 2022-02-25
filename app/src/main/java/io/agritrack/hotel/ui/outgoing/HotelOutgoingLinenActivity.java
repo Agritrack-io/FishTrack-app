@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -45,6 +46,7 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.model.tx.AssetTransaction;
+import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
@@ -65,13 +67,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HotelOutgoingLinenActivity extends LocationAwareActivity {
-
+    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     private ScanHandler mScanHandler;
     private ScanInventoryThread scanner_runnable;
-    private String selectedAssetType = AssetType.ALL.name();
+    private String selectedAssetType = AssetType.ALL;
     private String activeFilter = null;
     private MobileDB db;
 
@@ -117,10 +119,7 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        String[] type = new String[]{"All", "Παπλ/θήκη Υπ/πλη Raso 280X250", "Σεντόνι Υπ/πλο Raso 300X300", "Μαξ/θήκη Φάκελος Raso 54X95", "Μπουρνούζι Λευκό XL", "Πετσέτα Πισίνας Sand 80Χ200"};
-        // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
-
-        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, type) {
+        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.allNames()) {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -134,6 +133,18 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity {
         };
         hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
         spLinenType.setAdapter(hrAdapter);
+
+        spLinenType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
+                activeFilter = schemeSvc.codeOf(selectedAssetType);
+            }
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
@@ -318,7 +329,7 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity {
             }
 
             GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
-            GlobalState.recWHOutgoing.assetType = AssetType.valueOf(this.selectedAssetType);
+            GlobalState.recWHOutgoing.assetType = this.selectedAssetType;
             GlobalState.recWHOutgoing.site = LocalPreferences.getCurrentSiteName();
 
             if (mLastLocation != null) {
@@ -512,10 +523,9 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity {
             switch (msg.what) {
                 case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
-                    //clearSelectedItem();
+                    clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        Map<String, List<String>> values = epcList.stream().map(x -> x.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
-
+                        Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.schemeCode(g), Collectors.toCollection(ArrayList::new)));
                         if (adapterOutgoingItems == null) {
                             adapterOutgoingItems = new TreelikeAdapter(mActivity.get(), values);
                             xvOutgoingAssets.setAdapter(adapterOutgoingItems);

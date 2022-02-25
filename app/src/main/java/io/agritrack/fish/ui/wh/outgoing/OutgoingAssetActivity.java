@@ -68,7 +68,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
     private ScanHandler mScanHandler;
     private ScanInventoryThread scanner_runnable;
     private ToggleGroup tgChooseAssetType;
-    private String selectedAssetType = AssetType.ALL.name();
+    private String selectedAssetType = AssetType.ALL;
     private String activeFilter = null;
     private int selectedToggleButton = -1;
     private MobileDB db;
@@ -293,7 +293,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
             }
 
             GlobalState.recWHOutgoing.state = WarehouseTxState.Outgoing;
-            GlobalState.recWHOutgoing.assetType = AssetType.valueOf(this.selectedAssetType);
+            GlobalState.recWHOutgoing.assetType = this.selectedAssetType;
             GlobalState.recWHOutgoing.site = LocalPreferences.getCurrentSiteName();
 
             if (mLastLocation != null) {

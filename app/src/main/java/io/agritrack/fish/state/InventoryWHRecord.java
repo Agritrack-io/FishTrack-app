@@ -8,7 +8,7 @@ import io.agritrack.enums.ConsumableType;
 
 public class InventoryWHRecord {
     public String selectedSite = null;
-    public AssetType assetType;
+    public String assetType;
     public ConsumableType consumableType;
     public String subSite;
     public Map<String, List<String>> items;

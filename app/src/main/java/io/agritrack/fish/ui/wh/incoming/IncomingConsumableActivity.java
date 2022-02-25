@@ -251,7 +251,7 @@ public class IncomingConsumableActivity extends LocationAwareActivity implements
                 return;
             }
             GlobalState.recWHIncoming.state = WarehouseTxState.Incoming;
-            GlobalState.recWHIncoming.assetType = AssetType.valueOf(this.selectedConsumableType);
+            GlobalState.recWHIncoming.assetType = this.selectedConsumableType;
             GlobalState.recWHIncoming.site = LocalPreferences.getCurrentSiteName();
 
             if (mLastLocation != null) {

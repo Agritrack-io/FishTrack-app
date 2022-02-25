@@ -406,7 +406,7 @@ public class FruitGlobalState {
         try {
             ConsumableTransaction txWHIncoming = new ConsumableTransaction();
             txWHIncoming.state = recIncoming.state.name();
-            txWHIncoming.consumableType = (recIncoming.consumableType != null) ? recIncoming.consumableType.name() : ALL.name();
+            txWHIncoming.consumableType = (recIncoming.consumableType != null) ? recIncoming.consumableType.name() : ALL;
             txWHIncoming.site = recIncoming.site;
             txWHIncoming.timestamp = System.currentTimeMillis();
             txWHIncoming.longitude = recIncoming.longitude;
@@ -437,7 +437,7 @@ public class FruitGlobalState {
         try {
             AssetTransaction txWHOutgoing = new AssetTransaction();
             txWHOutgoing.state = recWHOutgoing.state.name();
-            txWHOutgoing.assetType = (recWHOutgoing.assetType != null) ? recWHOutgoing.assetType.name() : ALL.name();
+            txWHOutgoing.assetType = (recWHOutgoing.assetType != null) ? recWHOutgoing.assetType : ALL;
             txWHOutgoing.itemRFIDs = recWHOutgoing.items;
             txWHOutgoing.from = recWHOutgoing.from;
             txWHOutgoing.to = recWHOutgoing.to;
@@ -464,7 +464,7 @@ public class FruitGlobalState {
                 ConsumableTransaction txWHOutgoing = new ConsumableTransaction();
 
                 txWHOutgoing.state = recWHOutgoing.state.name();
-                txWHOutgoing.consumableType = (recWHOutgoing.consumableType != null) ? recWHOutgoing.consumableType.name() : ALL.name();
+                txWHOutgoing.consumableType = (recWHOutgoing.consumableType != null) ? recWHOutgoing.consumableType.name() : ALL;
                 txWHOutgoing.barcode = entry.getKey();
                 txWHOutgoing.quantity = entry.getValue();
                 txWHOutgoing.timestamp = System.currentTimeMillis();
@@ -494,7 +494,7 @@ public class FruitGlobalState {
                     RFIDInventoryItem newItem = new RFIDInventoryItem();
 
                     newItem.itemRFID = entry;
-                    newItem.assetType = (recInventory.assetType != null) ? recInventory.assetType.name() : null;
+                    newItem.assetType = (recInventory.assetType != null) ? recInventory.assetType : null;
                     newItem.inventory = inventory.id;
                     items.add(newItem);
             }
@@ -534,9 +534,9 @@ public class FruitGlobalState {
             CorrelationTransaction txCorrelation = new CorrelationTransaction();
 
             txCorrelation.site = recCorrelation.subSite;
-            txCorrelation.assetType = (recCorrelation.assetType != null) ? recCorrelation.assetType.name() : null;
+            txCorrelation.assetType = (recCorrelation.assetType != null) ? recCorrelation.assetType : null;
             txCorrelation.assetRFID = recCorrelation.poleRFID;
-            txCorrelation.loggerType = (recCorrelation.loggerType != null) ? recCorrelation.loggerType.name() : null;
+            txCorrelation.loggerType = (recCorrelation.loggerType != null) ? recCorrelation.loggerType : null;
             txCorrelation.loggerRFID = recCorrelation.loggerRFID;
             txCorrelation.barcode = recCorrelation.poleBarcode;
             txCorrelation.user = LocalPreferences.getLoggedInUser("N/A");
