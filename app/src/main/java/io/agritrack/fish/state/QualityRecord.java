@@ -43,6 +43,9 @@ public class QualityRecord {
     public String logger_rfid;
     public boolean qualityProcessing;
     public String state;
+    public Double etT1;
+    public Double etT2;
+    public Double etT3;
 
     public QualityRecord() {
     }

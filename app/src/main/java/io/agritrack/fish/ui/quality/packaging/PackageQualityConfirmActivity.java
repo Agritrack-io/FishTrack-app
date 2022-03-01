@@ -9,6 +9,7 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.common.MeasurementsDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;
@@ -37,16 +40,22 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.quality.receipt.ReceiptQualityConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
+import io.agritrack.ui.login.api.UploadingApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PackageQualityConfirmActivity extends LocationAwareActivity {
-
+    private final UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
     private YesNoDialogFragment confirmGPSSelectionDlg;
@@ -168,6 +177,35 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }
 
+    private boolean syncAllPhotos() {
+        try {
+            String token = LocalPreferences.getToken();
+
+            final String extension = ".jpeg";
+            final File documentsFolder = new File(PackageQualityConfirmActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath());
+            File[] files = documentsFolder.listFiles((File pathname) -> pathname.getName().endsWith(extension));
+            for (File file : files) {
+                // create RequestBody instance from file
+                RequestBody requestFile = RequestBody.create(file, MediaType.parse("application/json"));
+
+                if (file.getName().startsWith("Photo")) {
+                    // MultipartBody.Part is used to send also the actual file name
+                    MultipartBody.Part filePart = MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
+
+                    Call<ResponseBody> uploadJpegPhotoFileAsyncCall = upldSvc.uploadPhoto(filePart, "Bearer " + token);
+                    uploadJpegPhotoFileAsyncCall.enqueue(new PackageQualityConfirmActivity.PhotoFileUploadCallBack());
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+            return false;
+        } finally {
+
+        }
+    }
+
     private boolean isAuthenticated() {
         String login = LocalPreferences.getLoggedInUser("").trim();
         String pin = etPIN.getText().toString().trim();
@@ -187,6 +225,8 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
 
             String token = LocalPreferences.getToken();
             //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
+
+            syncAllPhotos();
 
             // persist Processing Record data to local DB.
             QualityTransaction tx = GlobalState.commitQuality(db);
@@ -265,6 +305,43 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         public void onFailure(Call<List<MeasurementsDTO>> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
+            }
+        }
+    }
+
+    public class PhotoFileUploadCallBack implements Callback<ResponseBody> {
+        @Override
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            try {
+                if (response.body()!=null) {
+                    String fileName = response.body().string();
+                    boolean res = FileUtils.deleteInventoryFile(PackageQualityConfirmActivity.this, fileName);
+                    if (res) {
+                        //runOnUiThread(() -> CToast(getApplicationContext(), render("File " + fileName + " was uploaded successfully!!!"), Toast.LENGTH_LONG));
+                    } else {
+                        //runOnUiThread(() -> CToast(getApplicationContext(), render("Failed to remove file" +fileName+ " from local folder!!!"), Toast.LENGTH_LONG));
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Error:" + e.getMessage()), Toast.LENGTH_LONG));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ResponseBody> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.files_failed_to_sync), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
             } else {

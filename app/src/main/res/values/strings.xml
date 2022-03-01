@@ -162,7 +162,8 @@
     <string name="quality_one_step">ONE CHECK</string>
     <string name="quality_first_step_text">Receipt</string>
     <string name="quality_two_steps">TWO CHECKS</string>
-    <string name="quality_second_step_text">Package</string>
+    <string name="quality_second_step_text">Before Package</string>
+    <string name="quality_third_step_text">After Package</string>
     <string name="quality_select_type">"Are the bins intended for processing?"</string>
     <string name="fish_temp_confirm_label">Fish temperature(°C):</string>
     <string name="arrival_temperatures">Arrival temperatures</string>
@@ -207,6 +208,10 @@
     <string name="high_temp">Max:</string>
     <string name="avg_temp">Avg:</string>
     <string name="low_temp">Min:</string>
+    <string name="lot">LOT</string>
+    <string name="box_sn">S/N</string>
+    <string name="current_date">Date</string>
+    <string name="fish_measurements">Fish temperatures</string>
 
     <string name="dispatch_note">Type dispatch note</string>
     <string name="enter_lot">Type LOT</string>
@@ -533,5 +538,5 @@
     <string name="laundry">LAUNDRY</string>
     <string name="EncodeScheme_sync_completed">Encoding scheme synchronised successfuly!</string>
     <string name="no_EncodeScheme_found_alert">No Encoding Scheme entry was found!</string>
-
+    <string name="scan_box">Scan box</string>
 </resources>

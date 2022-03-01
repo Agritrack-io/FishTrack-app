@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Environment;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -16,9 +17,22 @@ import androidx.annotation.StringRes;
 import androidx.lifecycle.MutableLiveData;
 
 import io.agritrack.R;
+import io.agritrack.fish.ui.quality.receipt.ReceiptQualityInfoActivity;
+import io.agritrack.hotel.ui.inventory.HotelInventoryLinenActivity;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PhotoDialog {
 
@@ -28,10 +42,12 @@ public class PhotoDialog {
     private MutableLiveData<Bitmap> liveItem;
     private final Activity activity;
     private Dialog dialog;
+    private String binEpc;
 
-    public PhotoDialog (Activity activity, MutableLiveData<Bitmap> selection, @StringRes int title) {
+    public PhotoDialog (Activity activity, MutableLiveData<Bitmap> selection, String binEpc, @StringRes int title) {
         this.activity = activity;
         this.liveItem = selection;
+        this.binEpc = binEpc;
 
         setDialog();
         findViews();
@@ -47,10 +63,41 @@ public class PhotoDialog {
         });
 
         btnOk.setOnClickListener(view -> {
+            File file = savebitmap(liveItem.getValue());
             dismiss();
             CToast(activity.getApplicationContext(), render("Your photo was saved locally"), Toast.LENGTH_LONG);
         });
     }
+
+    private File savebitmap(Bitmap bmp) {
+        Date currentDate = new Date();
+        String compactTSFormat = "yyyyMMddHHmmss";
+        SimpleDateFormat sdf = new SimpleDateFormat(compactTSFormat);
+        OutputStream outStream = null;
+        String fileName = null;
+        // create the local jpeg file name
+        fileName = String.format("Photo_%s_%s.jpeg", binEpc, sdf.format(currentDate));
+        // String temp = null;
+        File file = new File(activity.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+        if (file.exists()) {
+            file.delete();
+            file = new File(activity.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+
+        }
+
+        try {
+            outStream = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+            outStream.flush();
+            outStream.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return file;
+    }
+
 
     public void showDialog() {
         dialog.show();

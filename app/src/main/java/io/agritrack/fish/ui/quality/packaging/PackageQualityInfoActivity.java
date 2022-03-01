@@ -41,6 +41,7 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
     private TextView tvTempBin;
     private PhotoDialog photoDialog;
     private ImageView ivTakenPhoto;
+    private String binEpc;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -128,7 +129,7 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
                     // Set the image in imageview for display
                     photoResult.setValue(photo);
 
-                    photoDialog = new PhotoDialog(PackageQualityInfoActivity.this, photoResult, R.string.photo_taken);
+                    photoDialog = new PhotoDialog(PackageQualityInfoActivity.this, photoResult, binEpc, R.string.photo_taken);
                     photoDialog.showDialog();
 
                     break;
@@ -171,6 +172,10 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
 
     private void initControlsFromState() {
         QualityRecord qltTx = GlobalState.recQuality;
+
+        if (qltTx.qualityBins != null) {
+            binEpc = qltTx.qualityBins.get(0);
+        }
 
         if (recLoggerData.avgT != null) {
             tvTempBin.setText(String.format("%.1f", recLoggerData.avgT));

@@ -167,6 +167,7 @@
     <string name="quality_first_step_text">Κατά την Παραλαβή</string>
     <string name="quality_two_steps">ΔΥΟ ΕΛΕΓΧΟΙ</string>
     <string name="quality_second_step_text">Πριν την Συσκευασία</string>
+    <string name="quality_third_step_text">Μετά την Συσκευασία</string>
     <string name="quality_select_type">"Οι βούτες προορίζονται για επεξεργασία;"</string>
     <string name="fish_temp_confirm_label">Θερμοκρασία ψαριών(°C):</string>
     <string name="arrival_temperatures">Θερμοκρασίες κατά την άφιξη</string>
@@ -209,8 +210,12 @@
     <string name="defective_fish">Προβληματικά ψάρια</string>
     <string name="process_temperatures">Θερμοκρασίες πριν τη συσκευασία</string>
     <string name="high_temp">Max:</string>
-    <string name="avg_temp">Μέση:</string>
+    <string name="avg_temp">Avg:</string>
     <string name="low_temp">Min:</string>
+    <string name="lot">LOT</string>
+    <string name="box_sn">S/N</string>
+    <string name="current_date">Ημερομηνία</string>
+    <string name="fish_measurements">Θερμοκρασίες ψαριών</string>
 
     <string name="dispatch_note">Εισάγετε δελτίο αποστολής</string>
     <string name="enter_lot">Εισάγετε LOT</string>
@@ -532,4 +537,5 @@
     <string name="lot_restriction">Λανθασμένο LOT</string>
     <string name="lot_restriction_message">Περισσότερα του ενός LOT βρέθηκαν για τα τελάρα που σκανάρατε. Παρακαλώ πηγαίντε πίσω και σκανάρετε τελάρα από ένα LOT.</string>
     <string name="invalid_inputs">Μη έγκυρα δεδομένα :</string>
+
 </resources>
