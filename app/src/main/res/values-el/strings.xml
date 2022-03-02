@@ -212,10 +212,14 @@
     <string name="high_temp">Max:</string>
     <string name="avg_temp">Avg:</string>
     <string name="low_temp">Min:</string>
+    <string name="scan_box">Σκάναρε κιβώτιο</string>
     <string name="lot">LOT</string>
     <string name="box_sn">S/N</string>
     <string name="current_date">Ημερομηνία</string>
     <string name="fish_measurements">Θερμοκρασίες ψαριών</string>
+    <string name="confirm_lot">LOT:</string>
+    <string name="confirm_box">S/N:</string>
+    <string name="avg_fish_temp_confirm_label">Μέση θερμοκρασία (°C)</string>
 
     <string name="dispatch_note">Εισάγετε δελτίο αποστολής</string>
     <string name="enter_lot">Εισάγετε LOT</string>

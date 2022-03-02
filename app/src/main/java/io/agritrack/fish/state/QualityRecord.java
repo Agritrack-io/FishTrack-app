@@ -46,6 +46,7 @@ public class QualityRecord {
     public Double etT1;
     public Double etT2;
     public Double etT3;
+    public String boxSn;
 
     public QualityRecord() {
     }

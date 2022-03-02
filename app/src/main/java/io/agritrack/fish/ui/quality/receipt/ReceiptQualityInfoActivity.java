@@ -139,7 +139,6 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
             switch (resultCode) {
                 case Activity.RESULT_OK:
                     Bitmap photo = (Bitmap) data.getExtras().get("data");
-                    //File file = savebitmap(photo);
 
                     // Set the image in imageview for display
                     photoResult.setValue(photo);
@@ -154,35 +153,6 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         }
     }
 
-    /*private File savebitmap(Bitmap bmp) {
-        Date currentDate = new Date();
-        String compactTSFormat = "yyyyMMddHHmmss";
-        SimpleDateFormat sdf = new SimpleDateFormat(compactTSFormat);
-        OutputStream outStream = null;
-        String fileName = null;
-        // create the local jpeg file name
-        fileName = String.format("Photo_%s_%s.jpeg", binEpc, sdf.format(currentDate));
-        // String temp = null;
-        File file = new File(ReceiptQualityInfoActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
-        if (file.exists()) {
-            file.delete();
-            file = new File(ReceiptQualityInfoActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
-
-        }
-
-        try {
-            outStream = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
-            outStream.flush();
-            outStream.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return file;
-    }
-*/
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToPackageQualityMoreInfo);
         ivNext.setOnClickListener(view -> {

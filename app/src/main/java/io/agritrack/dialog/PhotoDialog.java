@@ -87,7 +87,7 @@ public class PhotoDialog {
 
         try {
             outStream = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+            bmp. compress(Bitmap.CompressFormat.JPEG, 100, outStream);
             outStream.flush();
             outStream.close();
 

@@ -85,7 +85,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
     <RelativeLayout
         android:id="@+id/processStartALayout"
         android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_height="75dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -146,7 +146,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
     <RelativeLayout
         android:id="@+id/moreInfoCLayout"
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="350dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -165,7 +165,55 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
             android:padding="1dp">
 
             <TextView
-                android:id="@+id/tvTempBinLabel"
+                android:id="@+id/tvMinTempBinLabel"
+                android:layout_width="280dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="@string/bin_avg_temp"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/tvMeanTempBinLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvMinTempBin"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_rounded_dialog_non_input"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/tvMeanTempBin"
+                app:layout_constraintStart_toEndOf="@+id/tvMinTempBinLabel"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvMinBin"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="°C"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/tvMinTempBin"
+                app:layout_constraintStart_toEndOf="@+id/tvMinTempBin"
+                app:layout_constraintTop_toTopOf="@+id/tvMinTempBin" />
+
+            <TextView
+                android:id="@+id/tvMeanTempBinLabel"
                 android:layout_width="280dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
@@ -179,10 +227,10 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
                 android:textSize="@dimen/text_view_font_size_medium"
                 app:layout_constraintBottom_toTopOf="@+id/tvFishTempLabel"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/tvMinTempBinLabel" />
 
             <TextView
-                android:id="@+id/tvTempBin"
+                android:id="@+id/tvMeanTempBin"
                 android:layout_width="70dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
@@ -195,11 +243,11 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
                 app:layout_constraintBottom_toTopOf="@+id/etFishTemp"
-                app:layout_constraintStart_toEndOf="@+id/tvTempBinLabel"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@+id/tvMeanTempBinLabel"
+                app:layout_constraintTop_toBottomOf="@+id/tvMinTempBin" />
 
             <TextView
-                android:id="@+id/tvBin"
+                android:id="@+id/tvMeanBin"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
@@ -208,9 +256,58 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
                 android:textAlignment="viewStart"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/tvTempBin"
-                app:layout_constraintStart_toEndOf="@+id/tvTempBin"
-                app:layout_constraintTop_toTopOf="@+id/tvTempBin" />
+                app:layout_constraintBottom_toBottomOf="@+id/tvMeanTempBin"
+                app:layout_constraintStart_toEndOf="@+id/tvMeanTempBin"
+                app:layout_constraintTop_toTopOf="@+id/tvMeanTempBin" />
+
+            <TextView
+                android:id="@+id/tvMaxTempBinLabel"
+                android:layout_width="280dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="@string/bin_avg_temp"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/tvFishTempLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvMeanTempBinLabel"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/tvMaxTempBin"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_rounded_dialog_non_input"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/etFishTemp"
+                app:layout_constraintStart_toEndOf="@+id/tvMeanTempBinLabel"
+                app:layout_constraintTop_toBottomOf="@+id/tvMinTempBin" />
+
+            <TextView
+                android:id="@+id/tvMaxBin"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="°C"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/tvMeanTempBin"
+                app:layout_constraintStart_toEndOf="@+id/tvMeanTempBin"
+                app:layout_constraintTop_toTopOf="@+id/tvMeanTempBin" />
 
             <TextView
                 android:id="@+id/tvFishTempLabel"
@@ -281,7 +378,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
     <RelativeLayout
         android:id="@+id/processStartCLayout"
         android:layout_width="0dp"
-        android:layout_height="160dp"
+        android:layout_height="140dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"

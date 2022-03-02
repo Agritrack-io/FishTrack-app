@@ -28,8 +28,13 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
+            android:name=".fish.ui.quality.afterpackage.AfterPackagingQualityConfirmActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".fish.ui.quality.afterpackage.AfterPackagingQualityActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".hotel.ui.status.HotelChangeStatusActivity"
             android:exported="false"

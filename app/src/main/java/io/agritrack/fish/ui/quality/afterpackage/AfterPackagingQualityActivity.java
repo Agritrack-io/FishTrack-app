@@ -4,32 +4,41 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recQuality;
-import static io.agritrack.fish.state.GlobalState.recTools;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+import java.util.LinkedList;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.barcode.BarcodeScanService;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
 import io.agritrack.data.model.tx.SeaTemperatureTransaction;
@@ -38,27 +47,47 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
-import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
+import io.agritrack.fish.ui.quality.packaging.PackageQualityTemperatureProfilesActivity;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.state.StorageRecord;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
+import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AfterPackagingQualityActivity extends LocationAwareActivity {
+public class AfterPackagingQualityActivity extends AppCompatActivity {
 
-    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private EditText etT1, etT2, etT3;
-    private TextView tvCurrentDate;
-    private YesNoDialogFragment confirmGPSSelectionDlg;
-
-    private MobileDB db;
+    private TextView tvCurrentDate, tvCurrentLot, tvCurrentBox;
     private ProgressDialog progressDialog;
-
+    private boolean scanning = false;
+    // BroadcastReceiver to receiver scan data
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            byte[] data = intent.getByteArrayExtra("data");
+            if (data != null) {
+                String barcode = new String(data);
+                String currentLot = barcode.substring(18, 24);
+                String currentBox = barcode.substring(barcode.length()-8);
+                tvCurrentLot.setText(currentLot);
+                tvCurrentBox.setText(currentBox);
+                scanning = false;
+            }
+        }
+    };
+    private BarcodeScanService scanService;
+    private Button btnScanBox;
     private ImageView ivSupport, ivNext, ivBack;
-    private boolean proceedWithoutLocation = false;
     private SupportDialog supportDialog;
+
+    public static String Today() {
+        return java.text.DateFormat.getDateTimeInstance().format(new Date());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,112 +102,172 @@ public class AfterPackagingQualityActivity extends LocationAwareActivity {
         progressDialog = new ProgressDialog(AfterPackagingQualityActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        // get an instance of local DB
-        db = MobileDB.getInstance(getAppContext());
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
+
+        //Register receiver to receive the result of scan
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.rfid.SCAN");
+        registerReceiver(receiver, filter);
 
         assignCtrlVars();
 
-        confirmGPSSelectionDlg = YesNoDialogFragment.instance();
-        confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
-        confirmGPSSelectionDlg.onConfirm(bundle -> {
-            proceedWithoutLocation = true;
-            moveToNextScreen();
-        });
-        confirmGPSSelectionDlg.onReject(bundle -> {
-            mLastLocation = findLocation();
-            proceedWithoutLocation = false;
-        });
+        initControlsFromState();
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(AfterPackagingQualityActivity.this);
             supportDialog.showDialog();
         });
 
-        InputFilter filter = new InputFilter() {
-            final int maxDigitsBeforeDecimalPoint=2;
-            final int maxDigitsAfterDecimalPoint=2;
+        InputFilter textFilter = new InputFilter() {
+            final int maxDigitsBeforeDecimalPoint = 2;
+            final int maxDigitsAfterDecimalPoint = 2;
 
             @Override
-            public CharSequence filter(CharSequence source, int start, int end,
-                                       Spanned dest, int dstart, int dend) {
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                 StringBuilder builder = new StringBuilder(dest);
                 builder.replace(dstart, dend, source
                         .subSequence(start, end).toString());
                 if (!builder.toString().matches(
-                        "(([1-9]{1})([0-9]{0,"+(maxDigitsBeforeDecimalPoint-1)+"})?)?(\\.[0-9]{0,"+maxDigitsAfterDecimalPoint+"})?"
-
+                        "(([1-9]{1})([0-9]{0," + (maxDigitsBeforeDecimalPoint - 1) + "})?)?(\\.[0-9]{0," + maxDigitsAfterDecimalPoint + "})?"
                 )) {
-                    if(source.length()==0)
+                    if (source.length() == 0)
                         return dest.subSequence(dstart, dend);
                     return "";
                 }
-
                 return null;
-
             }
         };
 
-        etT1.setFilters(new InputFilter[] { filter });
-        etT2.setFilters(new InputFilter[] { filter });
-        etT3.setFilters(new InputFilter[] { filter });
+        btnScanBox.setOnClickListener(view -> {
+            if (!scanning) {
+                startScanning();
+            } else {
+                stopScanning();
+            }
+        });
+
+        etT1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!Strings.isEmptyOrWhitespace(etT1.getText().toString()) && Double.parseDouble(etT1.getText().toString()) > 7){
+                    etT1.setBackgroundColor(Color.RED);
+                } else if (!Strings.isEmptyOrWhitespace(etT1.getText().toString()) && Double.parseDouble(etT1.getText().toString()) <= 7){
+                    etT1.setBackgroundColor(Color.WHITE);
+                }
+                etT2.requestFocus();
+            }
+        });
+
+        etT2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!Strings.isEmptyOrWhitespace(etT2.getText().toString()) && Double.parseDouble(etT2.getText().toString()) > 7){
+                    etT2.setBackgroundColor(Color.RED);
+                } else if (!Strings.isEmptyOrWhitespace(etT2.getText().toString()) && Double.parseDouble(etT2.getText().toString()) <= 7){
+                    etT2.setBackgroundColor(Color.WHITE);
+                }
+                etT3.requestFocus();
+            }
+        });
+
+        etT3.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (!Strings.isEmptyOrWhitespace(etT3.getText().toString()) && Double.parseDouble(etT3.getText().toString()) > 7){
+                    etT3.setBackgroundColor(Color.RED);
+                } else if (!Strings.isEmptyOrWhitespace(etT3.getText().toString()) && Double.parseDouble(etT3.getText().toString()) <= 7){
+                    etT3.setBackgroundColor(Color.WHITE);
+                }
+                if(actionId==EditorInfo.IME_ACTION_DONE){
+                    //Clear focus here from edittext
+                    etT3.clearFocus();
+                }
+                return false;
+            }
+        });
+
+        etT1.setFilters(new InputFilter[]{textFilter});
+        etT2.setFilters(new InputFilter[]{textFilter});
+        etT3.setFilters(new InputFilter[]{textFilter});
 
         tvCurrentDate.setText(Today());
 
         configFooter();
     }
 
-    private void moveToNextScreen(){
-        if (proceedWithoutLocation) {
-            // Update state and proceed to next
-            Boolean proceed = updateState();
-
-            if (proceed) {
-                // move to next activity.
-                Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
-                startActivity(i);
-            }
-        }
-    }
-
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        ivNext.setOnClickListener(view -> {
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            stopScanning();
 
-                if (mLastLocation != null) {
-                    recQuality.longitude = mLastLocation.getLongitude();
-                    recQuality.latitude = mLastLocation.getLatitude();
-                } else {
-                    CToast(AfterPackagingQualityActivity.this, "Error: Unable to get Location from GPS", Toast.LENGTH_LONG);
-                }
-
-                // Update state and proceed to next
-                Boolean proceed = updateState();
-                if (proceed) {
-                    // move to next activity.
-                    Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
-                    startActivity(i);
-                }
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
+                Intent i = new Intent(getApplicationContext(), AfterPackagingQualityConfirmActivity.class);
+                startActivity(i);
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToQualityMenu);
         ivBack.setOnClickListener(view -> {
+            //Set scanning to false to stop running scan thread
+            scanning = false;
+            stopScanning();
+
             Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
             startActivity(i);
         });
     }
 
+    private void startScanning() {
+        if (scanService != null) {
+            scanning = true;
+            scanService.scan();
+        }
+    }
+
+    private void stopScanning() {
+        if (scanService != null) {
+            scanService.stopScan();
+            scanning = false;
+        }
+    }
+
     private void assignCtrlVars() {
         tvCurrentDate = findViewById(R.id.tvCurrentDate);
+        tvCurrentBox = findViewById(R.id.tvCurrentBox);
+        tvCurrentLot = findViewById(R.id.tvCurrentLot);
         etT1 = findViewById(R.id.etT1);
         etT2 = findViewById(R.id.etT2);
         etT3 = findViewById(R.id.etT3);
+        ivNext = findViewById(R.id.ivToAfterPackagingQualityConfirm);
+        ivBack = findViewById(R.id.ivBackToQualityMenu);
+        btnScanBox = findViewById(R.id.btnScanBox);
         ivSupport = findViewById(R.id.ivSupport);
     }
 
-    private boolean updateState() {
+    private void initControlsFromState() {
+        if (!Strings.isEmptyOrWhitespace(recQuality.pLot)) {
+            tvCurrentLot.setText(recQuality.pLot);
+        }
+        if (!Strings.isEmptyOrWhitespace(recQuality.boxSn)) {
+            tvCurrentBox.setText(recQuality.boxSn);
+        }
+        if (recQuality.etT1 != null){
+            etT1.setText(String.valueOf(recQuality.etT1));
+        }
+        if (recQuality.etT2 != null){
+            etT2.setText(String.valueOf(recQuality.etT2));
+        }
+        if (recQuality.etT3 != null){
+            etT3.setText(String.valueOf(recQuality.etT3));
+        }
+    }
+
+    private void updateState() {
 
         if (etT1.getText() != null && !Strings.isEmptyOrWhitespace(etT1.getText().toString())) {
             recQuality.etT1 = Double.valueOf(etT1.getText().toString());
@@ -189,43 +278,21 @@ public class AfterPackagingQualityActivity extends LocationAwareActivity {
         if (etT3.getText() != null && !Strings.isEmptyOrWhitespace(etT3.getText().toString())) {
             recQuality.etT3 = Double.valueOf(etT3.getText().toString());
         }
-        String v = validate();
-        if (!Strings.isEmptyOrWhitespace(v)) {
-            CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            return false;
+        if (tvCurrentLot.getText() != null && !Strings.isEmptyOrWhitespace(tvCurrentLot.getText().toString())) {
+            recQuality.pLot = tvCurrentLot.getText().toString();
         }
-
-        // get an instance of local DB
-        this.db = MobileDB.getInstance(getAppContext());
-
-        try {
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(render("Synchronizing data..."));
-            progressDialog.show();
-
-            String token = LocalPreferences.getToken();
-
-            // persist WHCorrelationTX Record data to local DB.
-            SeaTemperatureTransaction tx = GlobalState.commitSeaTemp(db);
-
-            // sync WH Correlation Tx
-            Call<SeaTemperatureTxDTO> syncTxAsyncCall = updService.syncSeaTempTx(SeaTemperatureTxDTO.convert(tx), "Bearer " + token);
-            syncTxAsyncCall.enqueue(new AfterPackagingQualityActivity.SyncTxCallBack());
-
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
-
-            return false;
-        } finally {
-            progressDialog.dismiss();
+        if (tvCurrentBox.getText() != null && !Strings.isEmptyOrWhitespace(tvCurrentBox.getText().toString())) {
+            recQuality.boxSn = tvCurrentBox.getText().toString();
         }
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if(!IsDemo) {
+        if (!IsDemo) {
+            if (recQuality.pLot == null || recQuality.boxSn == null) {
+                sb.append(String.format("\n%s is missing", "'Scan'"));
+            }
+
             if (recQuality.etT1 == null) {
                 sb.append(String.format("\n%s is missing", "'T1 temperature'"));
             }
@@ -242,39 +309,36 @@ public class AfterPackagingQualityActivity extends LocationAwareActivity {
         return sb.toString();
     }
 
-    public class SyncTxCallBack implements Callback<SeaTemperatureTxDTO> {
-        @Override
-        public void onResponse(Call<SeaTemperatureTxDTO> call, Response<SeaTemperatureTxDTO> response) {
-            SeaTemperatureTxDTO rs = response.body();
-
-            if (rs != null || IsDemo) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
-            } else {
-                // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_CorrelationTx_update_failure), Toast.LENGTH_LONG));
-            }
+    @Override
+    protected void onResume() {
+        if (scanService == null) {
+            scanService = new BarcodeScanService(this);
+            //we must set mode to 0 : BroadcastReceiver mode
+            scanService.setScanMode(0);
         }
-
-        @Override
-        public void onFailure(Call<SeaTemperatureTxDTO> call, Throwable error) {
-            if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
-            } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
-            } else {
-                if (call.isCanceled()) {
-                    //Call was cancelled by user
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
-                } else {
-                    //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
-                }
-            }
-        }
+        super.onResume();
     }
 
-    public static String Today() {
-        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-        return currentDateTimeString;
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        if (scanService != null) {
+            scanService.setScanMode(1);
+            scanService.close();
+            scanService = null;
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onStop();
     }
 }
