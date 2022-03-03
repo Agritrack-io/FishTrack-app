@@ -18,6 +18,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.quality.afterpackage.AfterPackagingQualityActivity;
 import io.agritrack.fish.ui.quality.packaging.PackageQualityStartActivity;
 import io.agritrack.fish.ui.quality.receipt.ReceiptQualityStartActivity;
 import io.agritrack.ui.adapter.InventoryMenuAdapter;
@@ -26,7 +27,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class QualitySelectStepsActivity extends AppCompatActivity {
 
-    private static final int First_Step_Idx = 0, Second_Step_Idx = 1;
+    private static final int First_Step_Idx = 0, Second_Step_Idx = 1, Third_Step_Idx = 2;
     private GridView gvQualityMenu;
 
     private ImageView ivSupport;
@@ -47,6 +48,7 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.quality_first_step_text), ReceiptQualityStartActivity.class));
         menuItemsList.add(new MenuItem(getString(R.string.quality_second_step_text), PackageQualityStartActivity.class));
+        menuItemsList.add(new MenuItem(getString(R.string.quality_third_step_text), AfterPackagingQualityActivity.class));
 
         InventoryMenuAdapter adapter = new InventoryMenuAdapter(this, menuItemsList);
 
@@ -79,6 +81,12 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
                     case Second_Step_Idx:
                         GlobalState.initQualityRecord();
                         i = new Intent(QualitySelectStepsActivity.this, PackageQualityStartActivity.class);
+                        i.putExtra("id", position);
+                        startActivity(i);
+                        break;
+                    case Third_Step_Idx:
+                        GlobalState.initQualityRecord();
+                        i = new Intent(QualitySelectStepsActivity.this, AfterPackagingQualityActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);
                         break;

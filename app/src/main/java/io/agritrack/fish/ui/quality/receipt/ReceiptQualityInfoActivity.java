@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -26,12 +27,25 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+
 import io.agritrack.R;
 import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
+import io.agritrack.hotel.ui.inventory.HotelInventoryLinenActivity;
 import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 
 public class ReceiptQualityInfoActivity extends AppCompatActivity {
     private static final int pic_id = 123;
@@ -40,6 +54,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
     private TextView tvTempBin;
     private PhotoDialog photoDialog;
     private ImageView ivTakenPhoto;
+    private String binEpc;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -128,7 +143,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
                     // Set the image in imageview for display
                     photoResult.setValue(photo);
 
-                    photoDialog = new PhotoDialog(ReceiptQualityInfoActivity.this, photoResult, R.string.photo_taken);
+                    photoDialog = new PhotoDialog(ReceiptQualityInfoActivity.this, photoResult, binEpc, R.string.photo_taken);
                     photoDialog.showDialog();
 
                     break;
@@ -172,6 +187,10 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
 
     private void initControlsFromState() {
         QualityRecord qltTx = GlobalState.recQuality;
+
+        if (qltTx.qualityBins != null) {
+            binEpc = qltTx.qualityBins.get(0);
+        }
 
         if (recLoggerData.avgT != null) {
             tvTempBin.setText(String.format("%.1f", recLoggerData.avgT));
