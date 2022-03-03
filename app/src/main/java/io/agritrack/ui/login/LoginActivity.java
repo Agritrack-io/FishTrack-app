@@ -7,6 +7,7 @@ import static io.agritrack.ui.service.LocalPreferences.Logged_In_User_Key;
 import static io.agritrack.ui.service.LocalPreferences.Token_Key;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -72,7 +73,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements DialogInterface.OnDismissListener {
     private static final String TAG = LoginActivity.class.getSimpleName();
     private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
@@ -162,10 +163,11 @@ public class LoginActivity extends AppCompatActivity {
                     i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
                     startActivity(i);
                     finish();
-                } else if("root".equals(username) && "8888".equals(pin)) {
+                } else if ("root".equals(username) && "8888".equals(pin)) {
                     FragmentManager fm = getSupportFragmentManager();
-                    AppOptionsFragment loggerDlg = AppOptionsFragment.newInstance();
-                    loggerDlg.show(fm, AppOptionsFragment.TAG);
+                    AppOptionsFragment optionsDlg = AppOptionsFragment.newInstance();
+                    optionsDlg.show(fm, AppOptionsFragment.TAG);
+                    fm.executePendingTransactions();
                 } else {
                     // display spinning progress bar
                     toggleProgress(Boolean.TRUE, R.string.authenticating);
@@ -305,7 +307,7 @@ public class LoginActivity extends AppCompatActivity {
             syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
 
             // sync fish species
-            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.getProduct(),"Bearer " + token);
+            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.getProduct(), "Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
 
             // sync IOT Loggers
@@ -325,11 +327,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToProductMenu() {
-        if (AgritrackProducts.TOMATO.name().equalsIgnoreCase(FishTrackApplication.getProduct())){
+        if (AgritrackProducts.TOMATO.name().equalsIgnoreCase(FishTrackApplication.getProduct())) {
             Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
             i.putExtra("syncErrors", this.syncResult.toString());
             startActivity(i);
-        } else if (AgritrackProducts.FISH.name().equalsIgnoreCase(FishTrackApplication.getProduct())){
+        } else if (AgritrackProducts.FISH.name().equalsIgnoreCase(FishTrackApplication.getProduct())) {
             Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             i.putExtra("syncErrors", this.syncResult.toString());
             startActivity(i);
@@ -418,6 +420,18 @@ public class LoginActivity extends AppCompatActivity {
             finish();
             return false;
         });
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        // show previous loggeding user name
+        String previousLoggedInUser1 = LocalPreferences.getLoggedInUser(null);
+        if (previousLoggedInUser1 != null) {
+            final EditText etUserName1 = findViewById(R.id.etUserName);
+            final EditText etPassword1 = findViewById(R.id.etPassword);
+            etUserName1.setText(previousLoggedInUser1);
+            etPassword1.setText("");
+        }
     }
 
     // ##########################

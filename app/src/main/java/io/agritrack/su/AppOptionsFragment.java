@@ -1,5 +1,6 @@
 package io.agritrack.su;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.ToggleButton;
 
 import androidx.fragment.app.DialogFragment;
 
@@ -26,9 +28,10 @@ public class AppOptionsFragment extends DialogFragment {
     private int check = 0;
     private Spinner spProducts;
     private Button btnSiteSelection, btnRT0012, btnDelCfg, btnTruncDB;
+    private ToggleButton tbEnvironment;
     private String selectedProduct;
 
-    private DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+    private DialogInterface.OnClickListener productsDialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
@@ -84,12 +87,23 @@ public class AppOptionsFragment extends DialogFragment {
         btnRT0012 = rootView.findViewById(R.id.btnRT0012);
         btnDelCfg = rootView.findViewById(R.id.btnDelCfg);
         btnTruncDB = rootView.findViewById(R.id.btnTruncDB);
+        tbEnvironment = rootView.findViewById(R.id.tbEnvironment);
+
 
         // set onClick listeners for the menu buttons
         btnSiteSelection.setOnClickListener(btSiteSelectionClickListener);
         btnRT0012.setOnClickListener(btRT0012ClickListener);
         btnDelCfg.setOnClickListener(btDelCfgClickListener);
         btnTruncDB.setOnClickListener(btTruncDBClickListener);
+        tbEnvironment.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // The toggle is enabled
+            } else {
+                // The toggle is disabled
+            }
+        });
+
+
 
         //Getting the instance of Spinner and applying OnItemSelectedListener on it
         spProducts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -101,13 +115,14 @@ public class AppOptionsFragment extends DialogFragment {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setMessage(String.format("App context will switch to %s.\nAre you sure?", selectedProduct))
-                            .setPositiveButton("Yes", dialogClickListener)
-                            .setNegativeButton("No", dialogClickListener).show();
+                            .setPositiveButton("Yes", productsDialogClickListener)
+                            .setNegativeButton("No", productsDialogClickListener).show();
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         //Creating the ArrayAdapter instance having the country list
@@ -117,6 +132,15 @@ public class AppOptionsFragment extends DialogFragment {
         spProducts.setAdapter(productsAdapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onDismiss(final DialogInterface dialog) {
+        super.onDismiss(dialog);
+        final Activity activity = getActivity();
+        if (activity instanceof DialogInterface.OnDismissListener) {
+            ((DialogInterface.OnDismissListener) activity).onDismiss(dialog);
+        }
     }
 
     public void gotoSiteSelection(View v) {

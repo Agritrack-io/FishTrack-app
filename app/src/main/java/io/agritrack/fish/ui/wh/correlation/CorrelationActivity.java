@@ -47,12 +47,8 @@ import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.enums.AssetType;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
@@ -65,13 +61,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CorrelationActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener{
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
-
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
     private ToggleGroup tgSearchAssetType;
     private SearchView svSearchAsset;
     private RecyclerView rvAssets;
@@ -84,12 +78,6 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
     private String selectedBarcode = "";
     private String activeFilter = null;
     private ConstraintLayout selectedItem;
-    private ProgressDialog progressDialog;
-
-    private boolean proceedWithoutLocation = false;
-    private ImageView ivSupport, ivNext, ivBack;
-    private SupportDialog supportDialog;
-
     // Instantiate a clickListener to be passed to adapterAssets.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
@@ -108,6 +96,10 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
             selectedItem = view;
         }
     };
+    private ProgressDialog progressDialog;
+    private boolean proceedWithoutLocation = false;
+    private ImageView ivSupport, ivNext, ivBack;
+    private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -386,6 +378,13 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
         }
     }
 
+    protected void onClick(View view) {
+        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(activeFilter);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
     public class SyncTxCallBack implements Callback<CorrelationTxDTO> {
         @Override
         public void onResponse(Call<CorrelationTxDTO> call, Response<CorrelationTxDTO> response) {
@@ -416,13 +415,6 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
                 }
             }
         }
-    }
-
-    protected void onClick(View view) {
-        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
-        scanner_runnable.setFilter(activeFilter);
-        scanner_runnable.startReading();
-        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     // ###################################################
