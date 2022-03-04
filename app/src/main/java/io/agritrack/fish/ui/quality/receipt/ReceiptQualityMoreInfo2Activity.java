@@ -1,14 +1,19 @@
 package io.agritrack.fish.ui.quality.receipt;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +26,7 @@ import io.agritrack.common.InputFilterMinMax;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
+import io.agritrack.fish.ui.quality.packaging.PackageQualityConfirmActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -50,6 +56,70 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(ReceiptQualityMoreInfo2Activity.this);
             supportDialog.showDialog();
+        });
+
+        etCoherent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number1 = etCoherent.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etCoherent.getText().toString().trim());
+                int number2 = etSoft.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etSoft.getText().toString().trim());
+                int number3 = etSwollen.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etSwollen.getText().toString().trim());
+                if (number1+number2+number3!=100 && !Strings.isEmptyOrWhitespace(etSoft.getText().toString()) && !Strings.isEmptyOrWhitespace(etSwollen.getText().toString())){
+                    etCoherent.setBackgroundColor(Color.RED);
+                    etSoft.setBackgroundColor(Color.RED);
+                    etSwollen.setBackgroundColor(Color.RED);
+                    CToast(ReceiptQualityMoreInfo2Activity.this, "Το άθροισμα των ποσοστών είναι διαφορετικό από 100%", Toast.LENGTH_SHORT);
+                } else {
+                    etCoherent.setBackgroundColor(Color.WHITE);
+                    etSoft.setBackgroundColor(Color.WHITE);
+                    etSwollen.setBackgroundColor(Color.WHITE);
+                }
+                etSoft.requestFocus();
+            }
+        });
+
+        etSoft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number1 = etCoherent.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etCoherent.getText().toString().trim());
+                int number2 = etSoft.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etSoft.getText().toString().trim());
+                int number3 = etSwollen.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etSwollen.getText().toString().trim());
+                if (number1+number2+number3!=100 && !Strings.isEmptyOrWhitespace(etCoherent.getText().toString()) && !Strings.isEmptyOrWhitespace(etSwollen.getText().toString())){
+                    etCoherent.setBackgroundColor(Color.RED);
+                    etSoft.setBackgroundColor(Color.RED);
+                    etSwollen.setBackgroundColor(Color.RED);
+                    CToast(ReceiptQualityMoreInfo2Activity.this, "Το άθροισμα των ποσοστών είναι διαφορετικό από 100%", Toast.LENGTH_SHORT);
+                } else {
+                    etCoherent.setBackgroundColor(Color.WHITE);
+                    etSoft.setBackgroundColor(Color.WHITE);
+                    etSwollen.setBackgroundColor(Color.WHITE);
+                }
+                etSwollen.requestFocus();
+            }
+        });
+
+        etSwollen.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                int number1 = etCoherent.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etCoherent.getText().toString().trim());
+                int number2 = etSoft.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etSoft.getText().toString().trim());
+                int number3 = etSwollen.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etSwollen.getText().toString().trim());
+                if (number1+number2+number3!=100 && !Strings.isEmptyOrWhitespace(etCoherent.getText().toString()) && !Strings.isEmptyOrWhitespace(etSoft.getText().toString())){
+                    etCoherent.setBackgroundColor(Color.RED);
+                    etSoft.setBackgroundColor(Color.RED);
+                    etSwollen.setBackgroundColor(Color.RED);
+                    CToast(ReceiptQualityMoreInfo2Activity.this, "Το άθροισμα των ποσοστών είναι διαφορετικό από 100%", Toast.LENGTH_SHORT);
+                } else {
+                    etCoherent.setBackgroundColor(Color.WHITE);
+                    etSoft.setBackgroundColor(Color.WHITE);
+                    etSwollen.setBackgroundColor(Color.WHITE);
+                }
+                if(actionId== EditorInfo.IME_ACTION_DONE){
+                    //Clear focus here from edittext
+                    etSwollen.clearFocus();
+                }
+                return false;
+            }
         });
 
         configFooter();
@@ -168,15 +238,15 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        /*if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.pLot)) {
-                sb.append(String.format("\n%s is missing", "'LOT'"));
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.smellCondition)) {
+                sb.append(String.format("\n%s is missing", "'Smell condition'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)) {
-                sb.append(String.format("\n%s is missing", "'Fish condition'"));
+            if (GlobalState.recQuality.shiny == null || GlobalState.recQuality.blurred == null || GlobalState.recQuality.healed == null || GlobalState.recQuality.blindEyes == null || GlobalState.recQuality.coherent == null || GlobalState.recQuality.soft == null || GlobalState.recQuality.swollen == null) {
+                sb.append(String.format("\n%s is missing", "'Some percentages fields'"));
             }
-        }*/
+        }
 
         return sb.toString();
     }

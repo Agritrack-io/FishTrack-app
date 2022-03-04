@@ -236,7 +236,7 @@ public class GlobalState {
             txQuality.iceCondition = recQuality.iceCondition;
             txQuality.binCondition = recQuality.binCondition;
             txQuality.smellCondition = recQuality.smellCondition;
-            txQuality.fishTemp = recQuality.fishTemp;
+            txQuality.fishTemp = recQuality.minFishTemp;
             txQuality.rigorMortis = recQuality.rigorMortis;
             txQuality.eliminationFood = recQuality.eliminationFood;
             txQuality.eliminationSperm = recQuality.eliminationSperm;

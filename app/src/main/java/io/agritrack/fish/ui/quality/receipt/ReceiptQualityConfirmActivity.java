@@ -186,8 +186,8 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         try {
             String token = LocalPreferences.getToken();
 
-            final String extension = ".jpeg";
-            final File documentsFolder = new File(ReceiptQualityConfirmActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath());
+            final String extension = ".png";
+            final File documentsFolder = new File(ReceiptQualityConfirmActivity.this.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath());
             File[] files = documentsFolder.listFiles((File pathname) -> pathname.getName().endsWith(extension));
             for (File file : files) {
                 // create RequestBody instance from file
@@ -330,7 +330,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             try {
                 if (response.body()!=null) {
                     String fileName = response.body().string();
-                    boolean res = FileUtils.deleteInventoryFile(ReceiptQualityConfirmActivity.this, fileName);
+                    boolean res = FileUtils.deletePhotoFile(ReceiptQualityConfirmActivity.this, fileName);
                     if (res) {
                         //runOnUiThread(() -> CToast(getApplicationContext(), render("File " + fileName + " was uploaded successfully!!!"), Toast.LENGTH_LONG));
                     } else {

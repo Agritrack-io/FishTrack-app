@@ -185,7 +185,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             String epc = (String) reading.get("EPC");
             Long ts = (Long) reading.get("timestamp");
 
-            //recLoggerData.addDataSet(this.loggerEPC, System.currentTimeMillis() / 1000L, values);
+            recLoggerData.addDataSet(epc, System.currentTimeMillis() / 1000L, null, values);
 
             //TODO: check if dialog display will be invoked here or in fragment
 //            tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);

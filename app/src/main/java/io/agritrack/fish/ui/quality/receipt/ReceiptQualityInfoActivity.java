@@ -8,11 +8,13 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -26,6 +28,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import io.agritrack.R;
 import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
@@ -36,11 +41,12 @@ import io.agritrack.ui.service.LocalPreferences;
 public class ReceiptQualityInfoActivity extends AppCompatActivity {
     private static final int pic_id = 123;
     private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
-    private EditText mtvRemarks, etPlot, etFishTemp;
-    private TextView tvTempBin;
+    private EditText mtvRemarks, etPlot, etMinFishTemp, etMeanFishTemp, etMaxFishTemp;
+    private TextView tvMeanTempBin, tvMinTempBin, tvMaxTempBin;
     private PhotoDialog photoDialog;
     private ImageView ivTakenPhoto;
     private String binEpc;
+    private NumberFormat format = new DecimalFormat("0.#");
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -52,8 +58,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             StringBuilder builder = new StringBuilder(dest);
             builder.replace(dstart, dend, source.subSequence(start, end).toString());
-            if (!builder.toString().matches("(([1-9]{1})([0-9]{0," + (maxDigitsBeforeDecimalPoint - 1) + "})?)?(\\.[0-9]{0," + maxDigitsAfterDecimalPoint + "})?"))
-            {
+            if (!builder.toString().matches("(([1-9]{1})([0-9]{0," + (maxDigitsBeforeDecimalPoint - 1) + "})?)?(\\.[0-9]{0," + maxDigitsAfterDecimalPoint + "})?")) {
                 if (source.length() == 0)
                     return dest.subSequence(dstart, dend);
                 return "";
@@ -109,6 +114,46 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
+        etMinFishTemp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!Strings.isEmptyOrWhitespace(etMinFishTemp.getText().toString()) && Double.parseDouble(etMinFishTemp.getText().toString()) > 7) {
+                    etMinFishTemp.setBackgroundColor(Color.RED);
+                } else if (!Strings.isEmptyOrWhitespace(etMinFishTemp.getText().toString()) && Double.parseDouble(etMinFishTemp.getText().toString()) <= 7) {
+                    etMinFishTemp.setBackgroundColor(Color.WHITE);
+                }
+                etMeanFishTemp.requestFocus();
+            }
+        });
+
+        etMeanFishTemp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!Strings.isEmptyOrWhitespace(etMeanFishTemp.getText().toString()) && Double.parseDouble(etMeanFishTemp.getText().toString()) > 7) {
+                    etMeanFishTemp.setBackgroundColor(Color.RED);
+                } else if (!Strings.isEmptyOrWhitespace(etMeanFishTemp.getText().toString()) && Double.parseDouble(etMeanFishTemp.getText().toString()) <= 7) {
+                    etMeanFishTemp.setBackgroundColor(Color.WHITE);
+                }
+                etMaxFishTemp.requestFocus();
+            }
+        });
+
+        etMaxFishTemp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (!Strings.isEmptyOrWhitespace(etMaxFishTemp.getText().toString()) && Double.parseDouble(etMaxFishTemp.getText().toString()) > 7) {
+                    etMaxFishTemp.setBackgroundColor(Color.RED);
+                } else if (!Strings.isEmptyOrWhitespace(etMaxFishTemp.getText().toString()) && Double.parseDouble(etMaxFishTemp.getText().toString()) <= 7) {
+                    etMaxFishTemp.setBackgroundColor(Color.WHITE);
+                }
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    //Clear focus here from edittext
+                    etMaxFishTemp.clearFocus();
+                }
+                return false;
+            }
+        });
+
         configFooter();
     }
 
@@ -157,11 +202,20 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
 
     private void assignCtrlVars() {
         etPlot = findViewById(R.id.etPlot);
-        etFishTemp = findViewById(R.id.etFishTemp);
-        etFishTemp.setFilters(new InputFilter[]{filter});
+        etMinFishTemp = findViewById(R.id.etMinFishTemp);
+        etMinFishTemp.setFilters(new InputFilter[]{filter});
+        etMeanFishTemp = findViewById(R.id.etMeanFishTemp);
+        etMeanFishTemp.setFilters(new InputFilter[]{filter});
+        etMaxFishTemp = findViewById(R.id.etMaxFishTemp);
+        etMaxFishTemp.setFilters(new InputFilter[]{filter});
+
         ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
         ivSupport = findViewById(R.id.ivSupport);
-        tvTempBin = findViewById(R.id.tvTempBin);
+
+        tvMinTempBin = findViewById(R.id.tvMinTempBin);
+        tvMeanTempBin = findViewById(R.id.tvMeanTempBin);
+        tvMaxTempBin = findViewById(R.id.tvMaxTempBin);
+
         mtvRemarks = findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
@@ -170,12 +224,20 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
     private void initControlsFromState() {
         QualityRecord qltTx = GlobalState.recQuality;
 
-        if (qltTx.qualityBins != null) {
+        if (qltTx.qualityBins != null && !qltTx.qualityBins.isEmpty()) {
             binEpc = qltTx.qualityBins.get(0);
         }
 
+        if (recLoggerData.lowT != null) {
+            tvMinTempBin.setText(String.format("%.1f", recLoggerData.lowT));
+        }
+
         if (recLoggerData.avgT != null) {
-            tvTempBin.setText(String.format("%.1f", recLoggerData.avgT));
+            tvMeanTempBin.setText(String.format("%.1f", recLoggerData.avgT));
+        }
+
+        if (recLoggerData.highT != null) {
+            tvMaxTempBin.setText(String.format("%.1f", recLoggerData.highT));
         }
 
         if (!Strings.isEmptyOrWhitespace(qltTx.remarks)) {
@@ -190,8 +252,16 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
             etPlot.setText(qltTx.pLot);
         }
 
-        if (qltTx.fishTemp != null) {
-            etFishTemp.setText(String.valueOf(qltTx.fishTemp));
+        if (qltTx.minFishTemp != null) {
+            etMinFishTemp.setText(String.valueOf(qltTx.minFishTemp));
+        }
+
+        if (qltTx.meanFishTemp != null) {
+            etMeanFishTemp.setText(String.valueOf(qltTx.meanFishTemp));
+        }
+
+        if (qltTx.maxFishTemp != null) {
+            etMaxFishTemp.setText(String.valueOf(qltTx.maxFishTemp));
         }
     }
 
@@ -202,8 +272,16 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
             qualityRecord.pLot = etPlot.getText().toString();
         }
 
-        if (etFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etFishTemp.getText().toString())) {
-            qualityRecord.fishTemp = Double.valueOf(etFishTemp.getText().toString());
+        if (etMinFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etMinFishTemp.getText().toString())) {
+            qualityRecord.minFishTemp = Double.valueOf(etMinFishTemp.getText().toString());
+        }
+
+        if (etMeanFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etMeanFishTemp.getText().toString())) {
+            qualityRecord.meanFishTemp = Double.valueOf(etMeanFishTemp.getText().toString());
+        }
+
+        if (etMaxFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etMaxFishTemp.getText().toString())) {
+            qualityRecord.maxFishTemp = Double.valueOf(etMaxFishTemp.getText().toString());
         }
 
         if (mtvRemarks.getText() != null) {
@@ -219,8 +297,16 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
                 sb.append(String.format("\n%s is missing", "'LOT'"));
             }
 
-            if (GlobalState.recQuality.fishTemp == null) {
+            if (GlobalState.recQuality.minFishTemp == null) {
+                sb.append(String.format("\n%s is missing", "'Fish min temperature'"));
+            }
+
+            if (GlobalState.recQuality.meanFishTemp == null) {
                 sb.append(String.format("\n%s is missing", "'Fish average temperature'"));
+            }
+
+            if (GlobalState.recQuality.maxFishTemp == null) {
+                sb.append(String.format("\n%s is missing", "'Fish max temperature'"));
             }
         }
 

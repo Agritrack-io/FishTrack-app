@@ -8,10 +8,13 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,7 +43,6 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.quality.receipt.ReceiptQualityConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.login.api.UploadingApi;
@@ -61,7 +63,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
     private YesNoDialogFragment confirmGPSSelectionDlg;
 
     private ProgressDialog progressDialog;
-    private TextView tvNumberOfBinsCount, tvFishTemp, tvUsername;
+    private TextView tvNumberOfBinsCount, tvMinFishTemp, tvMeanFishTemp, tvMaxFishTemp, tvUsername;
     private EditText etPIN;
     private ImageView ivSupport, ivNext, ivBack;
     private boolean proceedWithoutLocation = false;
@@ -153,7 +155,9 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
 
     private void assignCtrlVars() {
         tvNumberOfBinsCount = findViewById(R.id.tvNumberOfBinsCount);
-        tvFishTemp = findViewById(R.id.tvFishTemp);
+        tvMinFishTemp = findViewById(R.id.tvMinFishTemp);
+        tvMeanFishTemp = findViewById(R.id.tvMeanFishTemp);
+        tvMaxFishTemp = findViewById(R.id.tvMaxFishTemp);
         tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
         ivNext = findViewById(R.id.ivToCongs);
@@ -164,8 +168,16 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
     private void initControlsFromState() {
         QualityRecord qltRecord = GlobalState.recQuality;
 
-        if (!Strings.isEmptyOrWhitespace(String.valueOf(qltRecord.fishTemp))) {
-            tvFishTemp.setText(String.valueOf(qltRecord.fishTemp));
+        if (!Strings.isEmptyOrWhitespace(String.valueOf(qltRecord.minFishTemp))) {
+            tvMinFishTemp.setText(String.valueOf(qltRecord.minFishTemp));
+        }
+
+        if (!Strings.isEmptyOrWhitespace(String.valueOf(qltRecord.meanFishTemp))) {
+            tvMeanFishTemp.setText(String.valueOf(qltRecord.meanFishTemp));
+        }
+
+        if (!Strings.isEmptyOrWhitespace(String.valueOf(qltRecord.maxFishTemp))) {
+            tvMaxFishTemp.setText(String.valueOf(qltRecord.maxFishTemp));
         }
 
         if (qltRecord.qualityBins != null) {
@@ -181,8 +193,8 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         try {
             String token = LocalPreferences.getToken();
 
-            final String extension = ".jpeg";
-            final File documentsFolder = new File(PackageQualityConfirmActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath());
+            final String extension = ".png";
+            final File documentsFolder = new File(PackageQualityConfirmActivity.this.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath());
             File[] files = documentsFolder.listFiles((File pathname) -> pathname.getName().endsWith(extension));
             for (File file : files) {
                 // create RequestBody instance from file
@@ -325,7 +337,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
             try {
                 if (response.body()!=null) {
                     String fileName = response.body().string();
-                    boolean res = FileUtils.deleteInventoryFile(PackageQualityConfirmActivity.this, fileName);
+                    boolean res = FileUtils.deletePhotoFile(PackageQualityConfirmActivity.this, fileName);
                     if (res) {
                         //runOnUiThread(() -> CToast(getApplicationContext(), render("File " + fileName + " was uploaded successfully!!!"), Toast.LENGTH_LONG));
                     } else {

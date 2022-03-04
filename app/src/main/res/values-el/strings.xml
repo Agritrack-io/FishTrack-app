@@ -169,9 +169,15 @@
     <string name="quality_second_step_text">Πριν την Συσκευασία</string>
     <string name="quality_third_step_text">Μετά την Συσκευασία</string>
     <string name="quality_select_type">"Οι βούτες προορίζονται για επεξεργασία;"</string>
-    <string name="fish_temp_confirm_label">Θερμοκρασία ψαριών(°C):</string>
+    <string name="fish_min_temp_confirm_label">Ελάχ. Θερμοκρασία ψαριών(°C):</string>
+    <string name="fish_mean_temp_confirm_label">Fish avg temperature(°C):</string>
+    <string name="fish_max_temp_confirm_label">Fish max temperature(°C):</string>
     <string name="arrival_temperatures">Θερμοκρασίες κατά την άφιξη</string>
     <string name="bin_avg_temp">Μέση Θερμοκρασία βουτών</string>
+    <string name="bin_min_temp">Ελάχ. Θερμοκρασία βουτών</string>
+    <string name="bin_max_temp">Μέγ. Θερμοκρασία βουτών</string>
+    <string name="fish_min_temp">Ελάχ. Θερμοκρασία ψαριών</string>
+    <string name="fish_max_temp">Μέγ. Θερμοκρασία ψαριών</string>
     <string name="fish_avg_temp">Μέση Θερμοκρασία ψαριών</string>
     <string name="arrival_bin_condition">Κατάσταση Δεξαμενής κατά την άφιξη</string>
     <string name="arrival_ice_condition">Κατάσταση Πάγου κατά την άφιξη</string>
