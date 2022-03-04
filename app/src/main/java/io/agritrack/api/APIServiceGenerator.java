@@ -17,6 +17,7 @@ public class APIServiceGenerator {
 
     private static final String BASE_URL = "http://192.168.150.11:5000";
 
+
     private static final Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
     private static Retrofit retrofit = retrofitBuilder.build();
     private static final OkHttpClient.Builder httpClient = new OkHttpClient.Builder()

@@ -11,7 +11,7 @@
     tools:context=".su.AppOptionsFragment">
 
     <ToggleButton
-        android:id="@+id/toggleButton"
+        android:id="@+id/tbEnvironment"
         android:layout_width="0dp"
         android:layout_height="65dp"
         android:layout_centerHorizontal="true"
@@ -44,7 +44,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btnSiteSelection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toggleButton" />
+        app:layout_constraintTop_toBottomOf="@+id/tbEnvironment" />
 
 
     <Button

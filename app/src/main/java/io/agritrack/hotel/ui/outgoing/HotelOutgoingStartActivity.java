@@ -17,43 +17,35 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
-import io.agritrack.data.model.common.Customer;
-import io.agritrack.dialog.ExpandableListDialog;
 import io.agritrack.dialog.SimpleListDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.ui.custom.ToggleGroup;
-import io.agritrack.ui.login.api.SiteInfo;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class HotelOutgoingStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
-    private final MutableLiveData<SiteInfo> toAvramarSelection = new MutableLiveData<>();
     private final MutableLiveData<String> toCustomerSelection = new MutableLiveData<>();
     private final MutableLiveData<String> fromSiteSelection = new MutableLiveData<>();
     private final MutableLiveData<String> toSiteSelection = new MutableLiveData<>();
 
     private TextView tvOutgoingFrom, tvOutgoingTo;
-    private ToggleGroup tgOutgoingSource, tgOutgoingDestination, tgOutgoingItemType;
-    private String selectedOutgoingItemType, selectedToggleButtonFrom, selectedToggleButtonTo;
-    private ExpandableListDialog avramarDialog;
+    private ToggleGroup tgOutgoingSource, tgOutgoingDestination;
+    private String  selectedToggleButtonFrom, selectedToggleButtonTo;
     private SimpleListDialog customerDialog;
     private SimpleListDialog siteDialog;
     private String fromSite;
     private String toSite;
     private String toCustomer;
-    //private SiteInfo toSite;
     private MobileDB db;
 
     private ImageView ivSupport;
@@ -77,14 +69,6 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-        /*toAvramarSelection.observe(this, response -> {
-            if (response != null) {
-                toSite = response;
-                tvOutgoingTo.setText(toSite.getName());
-                avramarDialog.dismiss();
-            }
-        });
-*/
         toCustomerSelection.observe(this, response -> {
             if (response != null) {
                 toCustomer = response;
@@ -147,22 +131,11 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
         ivSupport = findViewById(R.id.ivSupport);
     }
 
-    private Map<String, List<SiteInfo>> fillAvramarData() {
-        Map<String, List<SiteInfo>> result = new HashMap<>();
-        List<Site> allSites = db.siteDAO().getAll();
-        if (allSites != null && !allSites.isEmpty()) {
-            result = allSites.stream().filter(x -> x.siteLevel == 3).map(s -> new SiteInfo(s.name, s.description, s.lvl2)).collect(Collectors.groupingBy(SiteInfo::getCode));
-        }
-
-        return result;
-    }
-
-    private List<String> fillCustomerData() {
+    private List<String> fillLaundryList() {
         List<String> result = new ArrayList<>();
-        //List<Customer> allCustomers = db.customerDAO().getAll();
-        List<Site> allSuppliers = db.siteDAO().getAllSuppliers();
-        if (allSuppliers != null && !allSuppliers.isEmpty()) {
-            result = allSuppliers.stream().map(s -> s.name).collect(Collectors.toList());
+        List<Site> allLaundries = db.siteDAO().getAllBySiteType("LAUNDRY");
+        if (allLaundries != null && !allLaundries.isEmpty()) {
+            result = allLaundries.stream().map(s -> s.name).collect(Collectors.toList());
         }
 
         return result;
@@ -193,14 +166,10 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
         } else if (checkedId == R.id.tbAvramar) {
             siteDialog = new SimpleListDialog(HotelOutgoingStartActivity.this, fillSubSiteData(), toSiteSelection, R.string.select_subsite);
             siteDialog.showDialog();
-           /* avramarDialog = new ExpandableListDialog(HotelOutgoingStartActivity.this, fillAvramarData(), toAvramarSelection, R.string.select_site);
-            avramarDialog.showDialog();*/
-            //tvOutgoingTo.setText("HOTEL");
             selectedToggleButtonTo = Constants.ftAvramar;
         } else if (checkedId == R.id.tbSupplier) {
-            customerDialog = new SimpleListDialog(HotelOutgoingStartActivity.this, fillCustomerData(), toCustomerSelection, R.string.select_customer);
+            customerDialog = new SimpleListDialog(HotelOutgoingStartActivity.this, fillLaundryList(), toCustomerSelection, R.string.select_customer);
             customerDialog.showDialog();
-            //tvOutgoingTo.setText("LAUNDRY");
             selectedToggleButtonTo = Constants.ftSupplier;
         } else if (checkedId == R.id.tbOutAssetTo) {
             GlobalState.recWHOutgoing.to = Constants.ftAsset;
@@ -255,12 +224,7 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
             tgOutgoingSource.check(R.id.tbAssetFrom);
         }
 
-        if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
-            tgOutgoingDestination.setCheckedStateForView(R.id.tbAvramar, true);
-            if(avramarDialog != null) {
-                avramarDialog.dismiss();
-            }
-        } else if (Constants.ftCustomer.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
+        if (Constants.ftCustomer.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
             tgOutgoingDestination.setCheckedStateForView(R.id.tbCustomer, true);
             if(customerDialog != null) {
                 customerDialog.dismiss();

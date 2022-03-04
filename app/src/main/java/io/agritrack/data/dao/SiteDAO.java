@@ -17,19 +17,16 @@ public interface SiteDAO {
     @Query("SELECT * from site")
     List<Site> getAll();
 
+    @Query("SELECT * from site where site_type=:siteType")
+    List<Site> getAllBySiteType(String siteType);
+
     @Query("SELECT * from site where site_type='PLANT'")
     List<Site> getAllProcessingPlants();
-
-    @Query("SELECT * from site where site_type='FISHFARM'")
-    List<Site> getAllFishFarms();
-
-    @Query("SELECT * from site where site_type='GREENHOUSE'")
-    List<Site> getAllGreenhouses();
 
     @Query("SELECT * from site where site_type='SUPPLIER'")
     List<Site> getAllSuppliers();
 
-    @Query("SELECT * from site where site_lvl=4 and lvl3=:parentId and site_type!='SUPPLIER'")
+    @Query("SELECT * from site where site_lvl=4 and lvl3=:parentId and site_type!='SUPPLIER' and site_type!='LAUNDRY'")
     List<Site> getCurrentSiteSubSites(String parentId);
 
     @Query("SELECT * from site where id=:siteId LIMIT 1")

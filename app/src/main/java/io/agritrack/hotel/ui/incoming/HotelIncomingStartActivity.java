@@ -17,39 +17,31 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
-import io.agritrack.data.model.common.Supplier;
-import io.agritrack.dialog.ExpandableListDialog;
 import io.agritrack.dialog.SimpleListDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.ui.custom.ToggleGroup;
-import io.agritrack.ui.login.api.SiteInfo;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class HotelIncomingStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
-    private final MutableLiveData<SiteInfo> fromAvramarSelection = new MutableLiveData<>();
-    private final MutableLiveData<String> fromSupplierSelection = new MutableLiveData<>();
+    private final MutableLiveData<String> fromSelection = new MutableLiveData<>();
     private final MutableLiveData<String> toSiteSelection = new MutableLiveData<>();
     private final MutableLiveData<String> fromSiteSelection = new MutableLiveData<>();
     private TextView tvIncomingFrom, tvIncomingTo;
     private ToggleGroup tgIncomingSource, tgIncomingDestination;
     private String selectedToggleButtonFrom, selectedToggleButtonTo;
-    private ExpandableListDialog avramarDialog;
     private SimpleListDialog supplierDialog;
     private SimpleListDialog siteDialog;
-    //private SiteInfo fromSite;
     private String fromSupplier;
     private String toSite;
     private String fromSite;
@@ -73,18 +65,7 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
         // get  references of the controls
         assignCtrlVars();
 
-        /*// set (any?) previously selected values to activity Controls.
-        initControlsFromState();*/
-
-        /*fromAvramarSelection.observe(this, response -> {
-            if (response != null) {
-                fromSite = response;
-                tvIncomingFrom.setText(fromSite.getName());
-                avramarDialog.dismiss();
-            }
-        });*/
-
-        fromSupplierSelection.observe(this, response -> {
+        fromSelection.observe(this, response -> {
             if (response != null) {
                 fromSupplier = response;
                 tvIncomingFrom.setText(fromSupplier);
@@ -147,20 +128,9 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
         });
     }
 
-    private Map<String, List<SiteInfo>> fillAvramarData() {
-        Map<String, List<SiteInfo>> result = new HashMap<>();
-        List<Site> allSites = db.siteDAO().getAll();
-        if (allSites != null && !allSites.isEmpty()) {
-            result = allSites.stream().filter(x -> x.siteLevel == 3).map(s -> new SiteInfo(s.name, s.description, s.lvl2)).collect(Collectors.groupingBy(SiteInfo::getCode));
-        }
-
-        return result;
-    }
-
-    private List<String> fillSupplierData() {
+    private List<String> fillSiteData(String siteTp) {
         List<String> result = new ArrayList<>();
-        List<Site> allSuppliers = db.siteDAO().getAllSuppliers();
-        //List<Supplier> allSuppliers = db.supplierDAO().getAll();
+        List<Site> allSuppliers = db.siteDAO().getAllBySiteType(siteTp);
         if (allSuppliers != null && !allSuppliers.isEmpty()) {
             result = allSuppliers.stream().map(s -> s.name).collect(Collectors.toList());
         }
@@ -180,17 +150,9 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
 
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        if (checkedId == R.id.tbAvramar) {
-            siteDialog = new SimpleListDialog(HotelIncomingStartActivity.this, fillSubSiteData(), fromSiteSelection, R.string.select_subsite);
-            siteDialog.showDialog();
-            /*avramarDialog = new ExpandableListDialog(HotelIncomingStartActivity.this, fillAvramarData(), fromAvramarSelection, R.string.select_site);
-            avramarDialog.showDialog();*/
-            //tvIncomingFrom.setText("HOTEL");
-            selectedToggleButtonFrom = Constants.ftAvramar;
-        } else if (checkedId == R.id.tbSupplier) {
-            supplierDialog = new SimpleListDialog(HotelIncomingStartActivity.this, fillSupplierData(), fromSupplierSelection, R.string.select_supplier);
+        if (checkedId == R.id.tbSupplier) {
+            supplierDialog = new SimpleListDialog(HotelIncomingStartActivity.this, fillSiteData("LAUNDRY"), fromSelection, R.string.select_supplier);
             supplierDialog.showDialog();
-            //tvIncomingFrom.setText("LAUNDRY");
             selectedToggleButtonFrom = Constants.ftSupplier;
         } else if (checkedId == R.id.tbAssetFrom) {
             GlobalState.recWHIncoming.from = Constants.ftAsset;
@@ -247,32 +209,4 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
 
         return sb.toString();
     }
-
-/*    private void initControlsFromState() {
-
-        if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonFrom)) {
-            tgIncomingSource.setCheckedStateForView(R.id.tbAvramar, true);
-            avramarDialog.dismiss();
-        } else if (Constants.ftSupplier.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonFrom)) {
-            tgIncomingSource.setCheckedStateForView(R.id.tbSupplier, true);
-            supplierDialog.dismiss();
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonFrom)) {
-            tgIncomingSource.check(R.id.tbAssetFrom);
-        }
-
-        if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonTo)) {
-            tgIncomingDestination.setCheckedStateForView(R.id.tbSite, true);
-            siteDialog.dismiss();
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonTo)) {
-            tgIncomingDestination.check(R.id.tbAssetTo);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.from)) {
-            tvIncomingFrom.setText(GlobalState.recWHIncoming.from);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.to)) {
-            tvIncomingTo.setText(GlobalState.recWHIncoming.to);
-        }
-    }*/
 }
