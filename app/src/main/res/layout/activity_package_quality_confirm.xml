@@ -108,14 +108,14 @@ tools:context=".fish.ui.quality.packaging.PackageQualityConfirmActivity">
                 android:text="@string/number_of_bins"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvFishTempLabel"
+                app:layout_constraintBottom_toTopOf="@+id/tvMinFishTempLabel"
                 app:layout_constraintEnd_toStartOf="@+id/tvNumberOfBinsCount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvNumberOfBinsCount"
-                android:layout_width="180dp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -123,26 +123,78 @@ tools:context=".fish.ui.quality.packaging.PackageQualityConfirmActivity">
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvFishTemp"
+                app:layout_constraintBottom_toTopOf="@+id/tvMinFishTemp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvNumberOfBinsLabel"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvFishTempLabel"
+                android:id="@+id/tvMinFishTempLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/fish_temp_confirm_label"
+                android:text="@string/fish_min_temp_confirm_label"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvFishTemp"
+                app:layout_constraintBottom_toTopOf="@+id/tvMeanFishTempLabel"
+                app:layout_constraintEnd_toStartOf="@+id/tvMinFishTemp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsLabel" />
 
             <TextView
-                android:id="@+id/tvFishTemp"
-                android:layout_width="120dp"
+                android:id="@+id/tvMinFishTemp"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/border_bottom"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/tvMeanFishTemp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvMinFishTempLabel"
+                app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsCount" />
+
+            <TextView
+                android:id="@+id/tvMeanFishTempLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/fish_mean_temp_confirm_label"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/tvMaxFishTempLabel"
+                app:layout_constraintEnd_toStartOf="@+id/tvMinFishTemp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvMinFishTempLabel" />
+
+            <TextView
+                android:id="@+id/tvMeanFishTemp"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/border_bottom"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/tvMaxFishTemp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvMeanFishTempLabel"
+                app:layout_constraintTop_toBottomOf="@+id/tvMinFishTemp" />
+
+            <TextView
+                android:id="@+id/tvMaxFishTempLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/fish_max_temp_confirm_label"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvMaxFishTemp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvMeanFishTempLabel" />
+
+            <TextView
+                android:id="@+id/tvMaxFishTemp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
@@ -151,8 +203,8 @@ tools:context=".fish.ui.quality.packaging.PackageQualityConfirmActivity">
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvFishTempLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsCount" />
+                app:layout_constraintStart_toEndOf="@+id/tvMaxFishTempLabel"
+                app:layout_constraintTop_toBottomOf="@+id/tvMeanFishTemp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

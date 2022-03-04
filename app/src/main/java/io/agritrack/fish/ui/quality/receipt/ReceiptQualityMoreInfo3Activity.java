@@ -1,5 +1,6 @@
 package io.agritrack.fish.ui.quality.receipt;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -194,15 +195,11 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        /*if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.pLot)) {
-                sb.append(String.format("\n%s is missing", "'LOT'"));
+        if (!IsDemo) {
+            if (GlobalState.recQuality.lightHematoma == null || GlobalState.recQuality.heavyHematoma == null || GlobalState.recQuality.pink == null || GlobalState.recQuality.dark == null || GlobalState.recQuality.white == null || GlobalState.recQuality.uncolored == null || GlobalState.recQuality.hematomas == null || GlobalState.recQuality.mucus == null || GlobalState.recQuality.problematicFish == null) {
+                sb.append(String.format("\n%s is missing", "'Some percentages fields'"));
             }
-
-            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)) {
-                sb.append(String.format("\n%s is missing", "'Fish condition'"));
-            }
-        }*/
+        }
 
         return sb.toString();
     }

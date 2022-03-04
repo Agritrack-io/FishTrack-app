@@ -3,6 +3,7 @@ package io.agritrack.fish.ui.quality.receipt;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.fruit.state.FruitGlobalState.recHarvest;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -183,7 +184,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             String epc = (String) reading.get("EPC");
             Long ts = (Long) reading.get("timestamp");
 
-            //recLoggerData.addDataSet(this.loggerEPC, System.currentTimeMillis() / 1000L, values);
+            recLoggerData.addDataSet(epc, System.currentTimeMillis() / 1000L, null, values);
 
             //TODO: check if dialog display will be invoked here or in fragment
 //            tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);

@@ -1,23 +1,22 @@
 package io.agritrack.fish.ui.quality.receipt;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
-import android.text.Spanned;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
-import io.agritrack.common.Constants;
 import io.agritrack.common.InputFilterMinMax;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
@@ -162,15 +161,19 @@ public class ReceiptQualityMoreInfoActivity extends AppCompatActivity implements
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        /*if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.pLot)) {
-                sb.append(String.format("\n%s is missing", "'LOT'"));
+        if (!IsDemo) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.binCondition)) {
+                sb.append(String.format("\n%s is missing", "'Bin condition'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.fishCondition)) {
-                sb.append(String.format("\n%s is missing", "'Fish condition'"));
+            if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.iceCondition)) {
+                sb.append(String.format("\n%s is missing", "'Ice condition'"));
             }
-        }*/
+
+            if (GlobalState.recQuality.rigorMortis == null || GlobalState.recQuality.eliminationFood == null || GlobalState.recQuality.eliminationSperm == null || GlobalState.recQuality.parasites == null || GlobalState.recQuality.peeling == null) {
+                sb.append(String.format("\n%s is missing", "'Some percentages fields'"));
+            }
+        }
 
         return sb.toString();
     }

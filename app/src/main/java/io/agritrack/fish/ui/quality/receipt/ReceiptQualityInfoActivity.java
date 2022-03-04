@@ -8,11 +8,14 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -25,6 +28,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
+
+import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import io.agritrack.R;
 import io.agritrack.dialog.PhotoDialog;
@@ -41,6 +48,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
     private PhotoDialog photoDialog;
     private ImageView ivTakenPhoto;
     private String binEpc;
+    private NumberFormat format = new DecimalFormat("0.#");
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -113,6 +121,46 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
+        etMinFishTemp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!Strings.isEmptyOrWhitespace(etMinFishTemp.getText().toString()) && Double.parseDouble(etMinFishTemp.getText().toString()) > 7){
+                    etMinFishTemp.setBackgroundColor(Color.RED);
+                } else if (!Strings.isEmptyOrWhitespace(etMinFishTemp.getText().toString()) && Double.parseDouble(etMinFishTemp.getText().toString()) <= 7){
+                    etMinFishTemp.setBackgroundColor(Color.WHITE);
+                }
+                etMeanFishTemp.requestFocus();
+            }
+        });
+
+        etMeanFishTemp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!Strings.isEmptyOrWhitespace(etMeanFishTemp.getText().toString()) && Double.parseDouble(etMeanFishTemp.getText().toString()) > 7){
+                    etMeanFishTemp.setBackgroundColor(Color.RED);
+                } else if (!Strings.isEmptyOrWhitespace(etMeanFishTemp.getText().toString()) && Double.parseDouble(etMeanFishTemp.getText().toString()) <= 7){
+                    etMeanFishTemp.setBackgroundColor(Color.WHITE);
+                }
+                etMaxFishTemp.requestFocus();
+            }
+        });
+
+        etMaxFishTemp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (!Strings.isEmptyOrWhitespace(etMaxFishTemp.getText().toString()) && Double.parseDouble(etMaxFishTemp.getText().toString()) > 7){
+                    etMaxFishTemp.setBackgroundColor(Color.RED);
+                } else if (!Strings.isEmptyOrWhitespace(etMaxFishTemp.getText().toString()) && Double.parseDouble(etMaxFishTemp.getText().toString()) <= 7){
+                    etMaxFishTemp.setBackgroundColor(Color.WHITE);
+                }
+                if(actionId== EditorInfo.IME_ACTION_DONE){
+                    //Clear focus here from edittext
+                    etMaxFishTemp.clearFocus();
+                }
+                return false;
+            }
+        });
+
         configFooter();
     }
 
@@ -180,7 +228,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
     private void initControlsFromState() {
         QualityRecord qltTx = GlobalState.recQuality;
 
-        if (qltTx.qualityBins != null) {
+        if (qltTx.qualityBins != null && !qltTx.qualityBins.isEmpty()) {
             binEpc = qltTx.qualityBins.get(0);
         }
 

@@ -165,7 +165,9 @@
     <string name="quality_second_step_text">Before Package</string>
     <string name="quality_third_step_text">After Package</string>
     <string name="quality_select_type">"Are the bins intended for processing?"</string>
-    <string name="fish_temp_confirm_label">Fish temperature(°C):</string>
+    <string name="fish_min_temp_confirm_label">Fish min temperature(°C):</string>
+    <string name="fish_mean_temp_confirm_label">Fish avg temperature(°C):</string>
+    <string name="fish_max_temp_confirm_label">Fish max temperature(°C):</string>
     <string name="arrival_temperatures">Arrival temperatures</string>
     <string name="bin_avg_temp">Bin average temperature</string>
     <string name="bin_min_temp">Bin min temperature</string>
