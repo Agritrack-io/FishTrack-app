@@ -168,6 +168,10 @@
     <string name="fish_temp_confirm_label">Fish temperature(°C):</string>
     <string name="arrival_temperatures">Arrival temperatures</string>
     <string name="bin_avg_temp">Bin average temperature</string>
+    <string name="bin_min_temp">Bin min temperature</string>
+    <string name="bin_max_temp">Bin max temperature</string>
+    <string name="fish_min_temp">Fish min temperature</string>
+    <string name="fish_max_temp">Fish max temperature</string>
     <string name="fish_avg_temp">Fish average temperature</string>
     <string name="arrival_bin_condition">Arrival bin condition</string>
     <string name="arrival_ice_condition">Arrival ice condition</string>

@@ -172,6 +172,10 @@
     <string name="fish_temp_confirm_label">Θερμοκρασία ψαριών(°C):</string>
     <string name="arrival_temperatures">Θερμοκρασίες κατά την άφιξη</string>
     <string name="bin_avg_temp">Μέση Θερμοκρασία βουτών</string>
+    <string name="bin_min_temp">Ελάχ. Θερμοκρασία βουτών</string>
+    <string name="bin_max_temp">Μέγ. Θερμοκρασία βουτών</string>
+    <string name="fish_min_temp">Ελάχ. Θερμοκρασία ψαριών</string>
+    <string name="fish_max_temp">Μέγ. Θερμοκρασία ψαριών</string>
     <string name="fish_avg_temp">Μέση Θερμοκρασία ψαριών</string>
     <string name="arrival_bin_condition">Κατάσταση Δεξαμενής κατά την άφιξη</string>
     <string name="arrival_ice_condition">Κατάσταση Πάγου κατά την άφιξη</string>

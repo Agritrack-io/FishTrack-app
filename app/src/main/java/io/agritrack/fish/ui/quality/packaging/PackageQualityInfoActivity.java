@@ -189,8 +189,8 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
             ivTakenPhoto.setVisibility(View.VISIBLE);
         }
 
-        if (qltTx.fishTemp != null) {
-            etFishTemp.setText(String.valueOf(qltTx.fishTemp));
+        if (qltTx.minFishTemp != null) {
+            etFishTemp.setText(String.valueOf(qltTx.minFishTemp));
         }
     }
 
@@ -198,7 +198,7 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
         QualityRecord qualityRecord = GlobalState.recQuality;
 
         if (etFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etFishTemp.getText().toString())) {
-            qualityRecord.fishTemp = Double.valueOf(etFishTemp.getText().toString());
+            qualityRecord.minFishTemp = Double.valueOf(etFishTemp.getText().toString());
         }
 
         if (mtvRemarks.getText() != null) {
@@ -210,7 +210,7 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (GlobalState.recQuality.fishTemp == null) {
+            if (GlobalState.recQuality.minFishTemp == null) {
                 sb.append(String.format("\n%s is missing", "'Fish average temperature'"));
             }
         }

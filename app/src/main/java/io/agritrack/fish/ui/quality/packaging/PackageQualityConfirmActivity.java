@@ -40,7 +40,6 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.quality.receipt.ReceiptQualityConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.login.api.UploadingApi;
@@ -164,8 +163,8 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
     private void initControlsFromState() {
         QualityRecord qltRecord = GlobalState.recQuality;
 
-        if (!Strings.isEmptyOrWhitespace(String.valueOf(qltRecord.fishTemp))) {
-            tvFishTemp.setText(String.valueOf(qltRecord.fishTemp));
+        if (!Strings.isEmptyOrWhitespace(String.valueOf(qltRecord.minFishTemp))) {
+            tvFishTemp.setText(String.valueOf(qltRecord.minFishTemp));
         }
 
         if (qltRecord.qualityBins != null) {

@@ -14,7 +14,9 @@ public class QualityRecord {
     public String binCondition;
     public String iceCondition;
     public String smellCondition;
-    public Double fishTemp;
+    public Double minFishTemp;
+    public Double meanFishTemp;
+    public Double maxFishTemp;
     public Integer rigorMortis;
     public Integer eliminationFood;
     public Integer eliminationSperm;

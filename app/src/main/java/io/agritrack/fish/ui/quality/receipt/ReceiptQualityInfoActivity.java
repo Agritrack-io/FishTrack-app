@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -27,31 +26,18 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-
 import io.agritrack.R;
 import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
-import io.agritrack.hotel.ui.inventory.HotelInventoryLinenActivity;
 import io.agritrack.ui.service.LocalPreferences;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
 
 public class ReceiptQualityInfoActivity extends AppCompatActivity {
     private static final int pic_id = 123;
     private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
-    private EditText mtvRemarks, etPlot, etFishTemp;
-    private TextView tvTempBin;
+    private EditText mtvRemarks, etPlot, etMinFishTemp, etMeanFishTemp, etMaxFishTemp;
+    private TextView tvMeanTempBin, tvMinTempBin, tvMaxTempBin;
     private PhotoDialog photoDialog;
     private ImageView ivTakenPhoto;
     private String binEpc;
@@ -175,14 +161,20 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
 
     private void assignCtrlVars() {
         etPlot = findViewById(R.id.etPlot);
-        etFishTemp = findViewById(R.id.etFishTemp);
-        etFishTemp.setFilters(new InputFilter[]{filter});
+        etMinFishTemp = findViewById(R.id.etMinFishTemp);
+        etMinFishTemp.setFilters(new InputFilter[]{filter});
+        etMeanFishTemp = findViewById(R.id.etMeanFishTemp);
+        etMeanFishTemp.setFilters(new InputFilter[]{filter});
+        etMaxFishTemp = findViewById(R.id.etMaxFishTemp);
+        etMaxFishTemp.setFilters(new InputFilter[]{filter});
         mtvRemarks = findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
         mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
         ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
         ivSupport = findViewById(R.id.ivSupport);
-        tvTempBin = findViewById(R.id.tvTempBin);
+        tvMinTempBin = findViewById(R.id.tvMinTempBin);
+        tvMeanTempBin = findViewById(R.id.tvMeanTempBin);
+        tvMaxTempBin = findViewById(R.id.tvMaxTempBin);
     }
 
     private void initControlsFromState() {
@@ -192,8 +184,16 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
             binEpc = qltTx.qualityBins.get(0);
         }
 
+        if (recLoggerData.lowT != null) {
+            tvMinTempBin.setText(String.format("%.1f", recLoggerData.lowT));
+        }
+
         if (recLoggerData.avgT != null) {
-            tvTempBin.setText(String.format("%.1f", recLoggerData.avgT));
+            tvMeanTempBin.setText(String.format("%.1f", recLoggerData.avgT));
+        }
+
+        if (recLoggerData.highT != null) {
+            tvMaxTempBin.setText(String.format("%.1f", recLoggerData.highT));
         }
 
         if (!Strings.isEmptyOrWhitespace(qltTx.remarks)) {
@@ -208,8 +208,16 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
             etPlot.setText(qltTx.pLot);
         }
 
-        if (qltTx.fishTemp != null) {
-            etFishTemp.setText(String.valueOf(qltTx.fishTemp));
+        if (qltTx.minFishTemp != null) {
+            etMinFishTemp.setText(String.valueOf(qltTx.minFishTemp));
+        }
+
+        if (qltTx.meanFishTemp != null) {
+            etMeanFishTemp.setText(String.valueOf(qltTx.meanFishTemp));
+        }
+
+        if (qltTx.maxFishTemp != null) {
+            etMaxFishTemp.setText(String.valueOf(qltTx.maxFishTemp));
         }
     }
 
@@ -220,8 +228,16 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
             qualityRecord.pLot = etPlot.getText().toString();
         }
 
-        if (etFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etFishTemp.getText().toString())) {
-            qualityRecord.fishTemp = Double.valueOf(etFishTemp.getText().toString());
+        if (etMinFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etMinFishTemp.getText().toString())) {
+            qualityRecord.minFishTemp = Double.valueOf(etMinFishTemp.getText().toString());
+        }
+
+        if (etMeanFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etMeanFishTemp.getText().toString())) {
+            qualityRecord.meanFishTemp = Double.valueOf(etMeanFishTemp.getText().toString());
+        }
+
+        if (etMaxFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etMaxFishTemp.getText().toString())) {
+            qualityRecord.maxFishTemp = Double.valueOf(etMaxFishTemp.getText().toString());
         }
 
         if (mtvRemarks.getText() != null) {
@@ -237,8 +253,16 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
                 sb.append(String.format("\n%s is missing", "'LOT'"));
             }
 
-            if (GlobalState.recQuality.fishTemp == null) {
+            if (GlobalState.recQuality.minFishTemp == null) {
+                sb.append(String.format("\n%s is missing", "'Fish min temperature'"));
+            }
+
+            if (GlobalState.recQuality.meanFishTemp == null) {
                 sb.append(String.format("\n%s is missing", "'Fish average temperature'"));
+            }
+
+            if (GlobalState.recQuality.maxFishTemp == null) {
+                sb.append(String.format("\n%s is missing", "'Fish max temperature'"));
             }
         }
 
