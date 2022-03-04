@@ -48,7 +48,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     private static final int RST_BIT = 4, RFU_BIT = 3, LE_BIT = 2, DE_BIT = 1, RFSL_BIT = 0;
     private static final int LEVEL_INCREMENT = 1000;
     private static final int MAX_LEVEL = 10000;
-    private static final String LOGGER_EPC = "loggerEPC";
+    private static final String LOGGER_EPC = "FruitLoggerEPC";
     public static String TAG = "CaenLoggerDialogFragment";
 
     private Button btnRead, btnReset, btnSetup, btnInit, btnValidate;

@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -27,25 +26,12 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-
 import io.agritrack.R;
 import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
-import io.agritrack.hotel.ui.inventory.HotelInventoryLinenActivity;
 import io.agritrack.ui.service.LocalPreferences;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
 
 public class ReceiptQualityInfoActivity extends AppCompatActivity {
     private static final int pic_id = 123;
@@ -63,15 +49,11 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         final int maxDigitsAfterDecimalPoint = 2;
 
         @Override
-        public CharSequence filter(CharSequence source, int start, int end,
-                                   Spanned dest, int dstart, int dend) {
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             StringBuilder builder = new StringBuilder(dest);
-            builder.replace(dstart, dend, source
-                    .subSequence(start, end).toString());
-            if (!builder.toString().matches(
-                    "(([1-9]{1})([0-9]{0," + (maxDigitsBeforeDecimalPoint - 1) + "})?)?(\\.[0-9]{0," + maxDigitsAfterDecimalPoint + "})?"
-
-            )) {
+            builder.replace(dstart, dend, source.subSequence(start, end).toString());
+            if (!builder.toString().matches("(([1-9]{1})([0-9]{0," + (maxDigitsBeforeDecimalPoint - 1) + "})?)?(\\.[0-9]{0," + maxDigitsAfterDecimalPoint + "})?"))
+            {
                 if (source.length() == 0)
                     return dest.subSequence(dstart, dend);
                 return "";
@@ -177,12 +159,12 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         etPlot = findViewById(R.id.etPlot);
         etFishTemp = findViewById(R.id.etFishTemp);
         etFishTemp.setFilters(new InputFilter[]{filter});
-        mtvRemarks = findViewById(R.id.mtvRemarks);
-        mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
         ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
         ivSupport = findViewById(R.id.ivSupport);
         tvTempBin = findViewById(R.id.tvTempBin);
+        mtvRemarks = findViewById(R.id.mtvRemarks);
+        mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
     }
 
     private void initControlsFromState() {

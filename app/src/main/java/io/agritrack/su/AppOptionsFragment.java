@@ -103,8 +103,6 @@ public class AppOptionsFragment extends DialogFragment {
             }
         });
 
-
-
         //Getting the instance of Spinner and applying OnItemSelectedListener on it
         spProducts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
