@@ -11,18 +11,15 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBINZero;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
-import static io.agritrack.rfid.RFIDUtils.WaitFor;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.animation.TimeAnimator;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,34 +32,23 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.util.Strings;
 import com.uhf.api.cls.Reader;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import io.agritrack.R;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
-import io.agritrack.fish.ui.bo.LoggerReading;
-
 
 public class LoggerInitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
 
     private static final String SHOW_READ_BUTTON = "ShowReadButton";
     private static final String SHOW_INIT_BUTTON = "ShowInitButton";
     private static final String SHOW_RESET_BUTTON = "ShowResetButton";
-    private LoggerReading reading;
-
     private boolean showReadButton = false;
     private boolean showInitButton = false;
     private boolean showResetButton = false;
@@ -72,7 +58,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     private static final int RST_BIT = 4, RFU_BIT = 3, LE_BIT = 2, DE_BIT = 1, RFSL_BIT = 0;
     private static final int LEVEL_INCREMENT = 1000;
     private static final int MAX_LEVEL = 10000;
-    private static final String LOGGER_EPC = "loggerEPC";
+    private static final String LOGGER_EPC = "FishLoggerEPC";
     public static String TAG = "CaenLoggerDialogFragment";
 
     private Button btnRead, btnReset, btnSetup, btnInit, btnValidate;
@@ -86,7 +72,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     private Short cntSamples = 0;
     private ClipDrawable mClipDrawable;
     private boolean readyToDismiss = false;
-    private LoggerInitFruitDialogFragment.State state = null;
+    private State state = null;
 
     //##############################################################
     private String renderCTRLStatus(String state) {
@@ -140,11 +126,11 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                 return;
             }
 
-            if(!LoggerInitFruitDialogFragment.State.RESET.equals(state) && ctrlState.charAt(RST_BIT)=='1' ) {
+            if(!State.RESET.equals(state) && ctrlState.charAt(RST_BIT)=='1' ) {
                 mScanHandler.post(readCTRLThread);
             }
 
-            if(LoggerInitFruitDialogFragment.State.STOP_LOGGER.equals(state)) {
+            if(State.STOP_LOGGER.equals(state)) {
                 if(ctrlState.charAt(LE_BIT)=='0') {
                     mScanHandler.post(readSamplesCntThread);
                 } else {
@@ -152,19 +138,22 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                 }
             }
 
-            if(LoggerInitFruitDialogFragment.State.RESET.equals(state)) {
+            if(State.RESET.equals(state)) {
                 if(ctrlState.charAt(RST_BIT)=='0' ) {
                     mScanHandler.sendMessage(createMessage(CmdRESET, Reader.READER_ERR.MT_OK_ERR));
                     mScanHandler.post(initLoggingThread);
-                } else if(++resetCnt < 3) {
-                    mScanHandler.post(readCTRLThread);
-                } else if(++resetCnt > 3) {
-                    mScanHandler.sendMessage(createMessage(CmdRESET, Reader.READER_ERR.MT_CMD_FAILED_ERR));
+                } else {
+                    resetCnt++;
+                    if(resetCnt < 3) {
+                        mScanHandler.post(readCTRLThread);
+                    } else if(resetCnt > 3) {
+                        mScanHandler.sendMessage(createMessage(CmdRESET, Reader.READER_ERR.MT_CMD_FAILED_ERR));
+                    }
                 }
             }
 
             // Send message to read CTRL state
-            if(LoggerInitFruitDialogFragment.State.INIT.equals(state)) {
+            if(State.INIT.equals(state)) {
                 if(ctrlState.charAt(LE_BIT)=='1') {
                     // Send message to Enable Logging
                     mScanHandler.sendMessage(createMessage(CmdINIT, Reader.READER_ERR.MT_OK_ERR));
@@ -182,7 +171,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         @Override
         public void run() {
             // set current State
-            state = LoggerInitFruitDialogFragment.State.INIT;
+            state = State.INIT;
             // enable logger
             Reader.READER_ERR response = cmd.EnableLogging();
 
@@ -252,7 +241,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         @Override
         public void run() {
             // set current State
-            state = LoggerInitFruitDialogFragment.State.RESET;
+            state = State.RESET;
             // reset logger
             Reader.READER_ERR response = cmd.Reset();
             delay(2500l);
@@ -283,14 +272,14 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         @Override
         public void run() {
             // in case of read failure, no reason to stop logging again.
-            if(LoggerInitFruitDialogFragment.State.COUNT_SAMPLES.equals(state)) {
+            if(State.COUNT_SAMPLES.equals(state)) {
                 // invoke read sample
                 mScanHandler.post(readSamplesCntThread);
             }
 
             resetCnt = 0;              // counts reset retrials
             readyToDismiss = false;    // set var for first time in each repetition
-            state = LoggerInitFruitDialogFragment.State.STOP_LOGGER; // set current State
+            state = State.STOP_LOGGER; // set current State
             Reader.READER_ERR resHigh = cmd.HighSensitivity(); // stop logger and HIGH sensitivity
 
             if(!Reader.READER_ERR.MT_OK_ERR.equals(resHigh)) {
@@ -309,7 +298,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         @Override
         public void run() {
             // set current State
-            state = LoggerInitFruitDialogFragment.State.COUNT_SAMPLES;
+            state = State.COUNT_SAMPLES;
 
             // read number of Measurements
             short cntSamples = cmd.ReadSamplesCount();
@@ -330,12 +319,9 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         @Override
         public void run() {
             // set current State
-            state = LoggerInitFruitDialogFragment.State.READ_VALUES;
+            state = State.READ_VALUES;
 
             try {
-                // reset existing values
-                recLoggerData.clearData();
-
                 // read the measurements from logger based on samples count.
                 List<String[]> measurements = cmd.ReadSamples(cntSamples);
 
@@ -346,8 +332,12 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                     // update buttons based on values read...
                     mScanHandler.sendMessage(createMessage(CmdReadData, (short) measurements.size()));
 
-                    // since values are read, Reset the logger
-                    mScanHandler.post(resetThread);
+                    if(showResetButton) {
+                        // since values are read, Reset the logger
+                        mScanHandler.post(resetThread);
+                    } else {
+                        mScanHandler.sendMessage(createMessage(1980, (short) -1));
+                    }
                 } else {
                     // update read button text to display failure...
                     mScanHandler.sendMessage(createMessage(CmdReadData, (short) -1));
@@ -374,7 +364,6 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
 
         // -------------------------------------
         cmd.setFilterEPC(loggerEPC);
-
         mScanHandler.post(stopLoggerThread);
         // -------------------------------------
     };
@@ -386,7 +375,6 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         // Empty constructor is required for DialogFragment
         // Make sure not to add arguments to the constructor
         // Use `newInstance` instead as shown below
-        // taskRunner = new TaskRunner();
     }
 
     public static LoggerInitDialogFragment newInstance(String epc, boolean showReadButton, boolean showResetButton, boolean showInitButton) {
@@ -411,7 +399,6 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         btnInit = rootView.findViewById(R.id.btnInit);
         btnValidate = rootView.findViewById(R.id.btnValidate);
 
-
         if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
             this.loggerEPC = getArguments().getString(LOGGER_EPC);
 
@@ -430,51 +417,16 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         return rootView;
     }
 
-   /* @Override
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        btnReset = view.findViewById(R.id.btnReset);
-        btnSetup = view.findViewById(R.id.btnSetup);
-        btnInit = view.findViewById(R.id.btnInit);
-        btnRead = view.findViewById(R.id.btnRead);
-
-
-        if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
+        if (getArguments() != null) {
             showReadButton = getArguments().getBoolean(SHOW_READ_BUTTON);
             showInitButton = getArguments().getBoolean(SHOW_INIT_BUTTON);
             showResetButton = getArguments().getBoolean(SHOW_RESET_BUTTON);
-            loggerEPC = getArguments().getString(LOGGER_EPC);
-
-            cmd = RFIDModuleFactory.getInstance();
-            cmd.setFilterEPC(this.loggerEPC);
-
-            if (showResetButton) {
-                btnReset.setVisibility(View.VISIBLE);
-                //btnReset.setText("Press to Start.");
-                btnReset.setOnClickListener(resetBtnListener);
-            } else {
-                btnReset.setVisibility(View.GONE);
-            }
-
-            if (showInitButton) {
-                btnSetup.setVisibility(View.VISIBLE);
-                btnInit.setVisibility(View.VISIBLE);
-            } else {
-                btnSetup.setVisibility(View.GONE);
-                btnInit.setVisibility(View.GONE);
-            }
         }
-
-        getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
-        WindowManager.LayoutParams p = getDialog().getWindow().getAttributes();
-        p.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE;
-        p.y = 100;
-        getDialog().getWindow().setAttributes(p);
-
-        reading = new ViewModelProvider(requireActivity()).get(LoggerReading.class);
-    }*/
-
+    }
 
     @Override
     public void onStart() {
@@ -586,9 +538,13 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                             stopAnimation();
                         });
 
-                        btnReset.setVisibility(View.VISIBLE);
-                        btnReset.setOnClickListener(resetBtnListener);
-                        btnReset.callOnClick();
+                        if(showResetButton) {
+                            btnReset.setVisibility(View.VISIBLE);
+                            btnReset.setOnClickListener(resetBtnListener);
+                            btnReset.callOnClick();
+                        } else {
+                            readyToDismiss = true;
+                        }
                     } else {
                         mActivity.get().getActivity().runOnUiThread(() -> {
                             btnRead.setText("Failed. Press the button again.");
@@ -611,7 +567,6 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                         });
                     }
 
-                    //if(cntSamples == null || cntSamples<=0) {
                     if(cntSamples == 0) {
                         btnInit.setOnClickListener(initBtnListener);
                         btnInit.setVisibility(View.VISIBLE);
@@ -725,6 +680,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             }
         }
     }
+
 
     private void delay(long delay) {
         try {

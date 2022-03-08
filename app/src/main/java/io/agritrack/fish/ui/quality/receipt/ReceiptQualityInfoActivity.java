@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputFilter;
@@ -29,7 +28,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -57,15 +55,10 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         final int maxDigitsAfterDecimalPoint = 2;
 
         @Override
-        public CharSequence filter(CharSequence source, int start, int end,
-                                   Spanned dest, int dstart, int dend) {
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             StringBuilder builder = new StringBuilder(dest);
-            builder.replace(dstart, dend, source
-                    .subSequence(start, end).toString());
-            if (!builder.toString().matches(
-                    "(([1-9]{1})([0-9]{0," + (maxDigitsBeforeDecimalPoint - 1) + "})?)?(\\.[0-9]{0," + maxDigitsAfterDecimalPoint + "})?"
-
-            )) {
+            builder.replace(dstart, dend, source.subSequence(start, end).toString());
+            if (!builder.toString().matches("(([1-9]{1})([0-9]{0," + (maxDigitsBeforeDecimalPoint - 1) + "})?)?(\\.[0-9]{0," + maxDigitsAfterDecimalPoint + "})?")) {
                 if (source.length() == 0)
                     return dest.subSequence(dstart, dend);
                 return "";
@@ -124,9 +117,9 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         etMinFishTemp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!Strings.isEmptyOrWhitespace(etMinFishTemp.getText().toString()) && Double.parseDouble(etMinFishTemp.getText().toString()) > 7){
+                if (!Strings.isEmptyOrWhitespace(etMinFishTemp.getText().toString()) && Double.parseDouble(etMinFishTemp.getText().toString()) > 7) {
                     etMinFishTemp.setBackgroundColor(Color.RED);
-                } else if (!Strings.isEmptyOrWhitespace(etMinFishTemp.getText().toString()) && Double.parseDouble(etMinFishTemp.getText().toString()) <= 7){
+                } else if (!Strings.isEmptyOrWhitespace(etMinFishTemp.getText().toString()) && Double.parseDouble(etMinFishTemp.getText().toString()) <= 7) {
                     etMinFishTemp.setBackgroundColor(Color.WHITE);
                 }
                 etMeanFishTemp.requestFocus();
@@ -136,9 +129,9 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         etMeanFishTemp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!Strings.isEmptyOrWhitespace(etMeanFishTemp.getText().toString()) && Double.parseDouble(etMeanFishTemp.getText().toString()) > 7){
+                if (!Strings.isEmptyOrWhitespace(etMeanFishTemp.getText().toString()) && Double.parseDouble(etMeanFishTemp.getText().toString()) > 7) {
                     etMeanFishTemp.setBackgroundColor(Color.RED);
-                } else if (!Strings.isEmptyOrWhitespace(etMeanFishTemp.getText().toString()) && Double.parseDouble(etMeanFishTemp.getText().toString()) <= 7){
+                } else if (!Strings.isEmptyOrWhitespace(etMeanFishTemp.getText().toString()) && Double.parseDouble(etMeanFishTemp.getText().toString()) <= 7) {
                     etMeanFishTemp.setBackgroundColor(Color.WHITE);
                 }
                 etMaxFishTemp.requestFocus();
@@ -148,12 +141,12 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         etMaxFishTemp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (!Strings.isEmptyOrWhitespace(etMaxFishTemp.getText().toString()) && Double.parseDouble(etMaxFishTemp.getText().toString()) > 7){
+                if (!Strings.isEmptyOrWhitespace(etMaxFishTemp.getText().toString()) && Double.parseDouble(etMaxFishTemp.getText().toString()) > 7) {
                     etMaxFishTemp.setBackgroundColor(Color.RED);
-                } else if (!Strings.isEmptyOrWhitespace(etMaxFishTemp.getText().toString()) && Double.parseDouble(etMaxFishTemp.getText().toString()) <= 7){
+                } else if (!Strings.isEmptyOrWhitespace(etMaxFishTemp.getText().toString()) && Double.parseDouble(etMaxFishTemp.getText().toString()) <= 7) {
                     etMaxFishTemp.setBackgroundColor(Color.WHITE);
                 }
-                if(actionId== EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     //Clear focus here from edittext
                     etMaxFishTemp.clearFocus();
                 }
@@ -215,14 +208,17 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         etMeanFishTemp.setFilters(new InputFilter[]{filter});
         etMaxFishTemp = findViewById(R.id.etMaxFishTemp);
         etMaxFishTemp.setFilters(new InputFilter[]{filter});
-        mtvRemarks = findViewById(R.id.mtvRemarks);
-        mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
+
         ivTakenPhoto = findViewById(R.id.ivTakenPhoto);
         ivSupport = findViewById(R.id.ivSupport);
+
         tvMinTempBin = findViewById(R.id.tvMinTempBin);
         tvMeanTempBin = findViewById(R.id.tvMeanTempBin);
         tvMaxTempBin = findViewById(R.id.tvMaxTempBin);
+
+        mtvRemarks = findViewById(R.id.mtvRemarks);
+        mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mtvRemarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
     }
 
     private void initControlsFromState() {

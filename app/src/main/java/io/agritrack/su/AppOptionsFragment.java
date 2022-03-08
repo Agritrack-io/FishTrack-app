@@ -1,5 +1,7 @@
 package io.agritrack.su;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,10 +18,14 @@ import android.widget.ToggleButton;
 
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.gms.common.util.Strings;
+
 import io.agritrack.AgritrackProducts;
 import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
+import io.agritrack.data.db.MobileDB;
 import io.agritrack.ui.config.ConfigActivity;
+import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.CAENLoggerActivity;
 
 
@@ -30,23 +36,6 @@ public class AppOptionsFragment extends DialogFragment {
     private Button btnSiteSelection, btnRT0012, btnDelCfg, btnTruncDB;
     private ToggleButton tbEnvironment;
     private String selectedProduct;
-
-    private DialogInterface.OnClickListener productsDialogClickListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    //Yes button clicked
-                    FishTrackApplication.setProduct(selectedProduct);
-                    dismiss();
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    //No button clicked
-                    break;
-            }
-        }
-    };
 
     private View.OnClickListener btSiteSelectionClickListener = v -> gotoSiteSelection(v);
 
@@ -103,44 +92,52 @@ public class AppOptionsFragment extends DialogFragment {
             }
         });
 
+        //Creating the ArrayAdapter instance having the country list
+        ArrayAdapter productsAdapter = new ArrayAdapter(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, AgritrackProducts.values());
+        productsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+        //Setting the ArrayAdapter data on the Spinner
+        spProducts.setAdapter(productsAdapter);
+
+        // fetch previously selected product.
+        selectedProduct = FishTrackApplication.getProduct();
+        //spProducts.setSelection(2);
+        if(!Strings.isEmptyOrWhitespace(selectedProduct)) {
+            spProducts.setSelection(productsAdapter.getPosition(AgritrackProducts.valueOf(selectedProduct)));
+        }
 
         //Getting the instance of Spinner and applying OnItemSelectedListener on it
         spProducts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                AgritrackProducts[] products = AgritrackProducts.values();
-                if (++check > 1 && position > -1 && position < products.length) {
-                    selectedProduct = products[position].name();
+                if (++check > 1) {
+                    selectedProduct = parent.getItemAtPosition(position).toString();
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage(String.format("App context will switch to %s.\nAre you sure?", selectedProduct))
-                            .setPositiveButton("Yes", productsDialogClickListener)
-                            .setNegativeButton("No", productsDialogClickListener).show();
+                    AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(getActivity())
+                            .setTitle("Change Product")
+                            .setMessage(String.format("App context will switch to %s.\nAre you sure?", selectedProduct))
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                FishTrackApplication.setProduct(selectedProduct);
+                                dismiss(); })
+                            .setNegativeButton("No", null);
+                    dlgBuilder.show();
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
-
-        //Creating the ArrayAdapter instance having the country list
-        ArrayAdapter productsAdapter = new ArrayAdapter(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, AgritrackProducts.values());
-        productsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //Setting the ArrayAdapter data on the Spinner
-        spProducts.setAdapter(productsAdapter);
 
         return rootView;
     }
 
     @Override
     public void onDismiss(final DialogInterface dialog) {
-        super.onDismiss(dialog);
         final Activity activity = getActivity();
         if (activity instanceof DialogInterface.OnDismissListener) {
             ((DialogInterface.OnDismissListener) activity).onDismiss(dialog);
         }
+        super.onDismiss(dialog);
     }
 
     public void gotoSiteSelection(View v) {
@@ -158,10 +155,28 @@ public class AppOptionsFragment extends DialogFragment {
     }
 
     public void delCfg(View v) {
-
+        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(getActivity())
+                .setTitle("Erasing Local Cache")
+                .setMessage("Are you sure you want to erase local cache?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    LocalPreferences.Reset();
+                    dismiss();
+                })
+                .setNegativeButton("No", null);
+        dlgBuilder.show();
     }
 
     public void trunLocalDB(View v) {
-
+        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(getActivity())
+                .setTitle("Erasing Local DB")
+                .setMessage("Are you sure you want to empty local database?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // get an instance of local DB
+                    MobileDB db = MobileDB.getInstance(getAppContext());
+                    db.clearAllTables();
+                    dismiss();
+                })
+                .setNegativeButton("No", null);
+        dlgBuilder.show();
     }
 }
