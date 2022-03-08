@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public enum AgritrackProducts {
-    FISH, TOMATO, HOTEL, MILK;
+    NONE, FISH, TOMATO, HOTEL, MILK;
 
     private static List<String> values = null;
 

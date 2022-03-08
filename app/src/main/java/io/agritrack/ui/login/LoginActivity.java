@@ -81,6 +81,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     private ImageButton ibLocale;
     private ProgressDialog progressDialog;
     private int syncCounter = 1;
+    private EditText etUserName, etPassword;
 
 
     @Override
@@ -95,8 +96,8 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         db = MobileDB.getInstance(getAppContext());
 
         // bind the credentials controls
-        final EditText etUserName = findViewById(R.id.etUserName);
-        final EditText etPassword = findViewById(R.id.etPassword);
+        etUserName = findViewById(R.id.etUserName);
+        etPassword = findViewById(R.id.etPassword);
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(LoginActivity.this);
@@ -426,12 +427,12 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     public void onDismiss(DialogInterface dialog) {
         // show previous loggeding user name
         String previousLoggedInUser1 = LocalPreferences.getLoggedInUser(null);
-        if (previousLoggedInUser1 != null) {
-            final EditText etUserName1 = findViewById(R.id.etUserName);
-            final EditText etPassword1 = findViewById(R.id.etPassword);
-            etUserName1.setText(previousLoggedInUser1);
-            etPassword1.setText("");
+        if (previousLoggedInUser1 != null && !"root".equalsIgnoreCase(previousLoggedInUser1)) {
+            etUserName.setText(previousLoggedInUser1);
+        } else if (previousLoggedInUser1 == null || "root".equalsIgnoreCase(previousLoggedInUser1)) {
+            etUserName.setText("");
         }
+        etPassword.setText("");
     }
 
     // ##########################
