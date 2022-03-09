@@ -16,11 +16,11 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class FishTrackApplication extends Application {
     //This flag is used to redirect flow to different menu according to the product
-    private static String PRODUCT = AgritrackProducts.FISH.name();  //[FISH, TOMATO, HOTEL, MILK]
+    private static String PRODUCT = AgritrackProducts.TOMATO.name();  //[FISH, TOMATO, HOTEL, MILK]
     //This global variable is used to supply country info where is required
     public static final String COUNTRY = "gr";//[gr, es]
     //When true, no validation is performed in selected activities. This feature is enabled for Presentations and Demos.
-    public static final boolean IsDemo = false;
+    public static final boolean IsDemo = true;
     private static Context mContext;
 
     public static Context getAppContext() {

@@ -15,10 +15,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +46,7 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.model.tx.AssetTransaction;
+import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
@@ -61,17 +66,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class OutgoingAssetActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener {
+public class OutgoingAssetActivity extends LocationAwareActivity {
+    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     private ScanHandler mScanHandler;
     private ScanInventoryThread scanner_runnable;
-    private ToggleGroup tgChooseAssetType;
     private String selectedAssetType = AssetType.ALL;
     private String activeFilter = null;
-    private int selectedToggleButton = -1;
     private MobileDB db;
+    private Spinner spAssetType;
 
     private TreelikeAdapter adapterOutgoingItems;
 
@@ -108,6 +113,33 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
 
         // get  references of the controls
         assignCtrlVars();
+
+        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.allNames()) {
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (position % 2 == 0) { // we're on an even row
+                    view.setBackgroundColor(getColor(R.color.white));
+                } else {
+                    view.setBackgroundColor(getColor(R.color.light_grey));
+                }
+                return view;
+            }
+        };
+        hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
+        spAssetType.setAdapter(hrAdapter);
+
+        spAssetType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
+                activeFilter = schemeSvc.codeOf(selectedAssetType);
+            }
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
@@ -319,14 +351,13 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
     }
 
     private void assignCtrlVars() {
-        tgChooseAssetType = findViewById(R.id.tgChooseAssetType);
+        spAssetType = findViewById(R.id.spAssetType);
         xvOutgoingAssets = findViewById(R.id.xvOutgoingItems);
         tvOutgoingProcessFrom = findViewById(R.id.tvOutgoingProcessFrom);
         tvOutgoingProcessTo = findViewById(R.id.tvOutgoingProcessTo);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
         ivAddItem = findViewById(R.id.ivAddItem);
         ivSupport = findViewById(R.id.ivSupport);
-        tgChooseAssetType.setOnCheckedChangeListener(this);
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);
         tvItemsCnt = findViewById(R.id.tvItemsCnt);
@@ -420,39 +451,6 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
 
     }*/
 
-    @Override
-    public void onCheckedChanged(ToggleGroup group, int checkedId) {
-
-        if (selectedToggleButton == checkedId) {
-            group.clearCheck();
-            return;
-        }
-        selectedToggleButton = checkedId;
-        switch (checkedId) {
-            case R.id.tbCage:
-                selectedAssetType = Constants.ftCage;
-                activeFilter = Filters.RFID_CAGE;
-                break;
-            case R.id.tbNet:
-                selectedAssetType = Constants.ftNet;
-                activeFilter = Filters.RFID_NET;
-                break;
-            case R.id.tbBin:
-                selectedAssetType = Constants.ftBin;
-                activeFilter = Filters.RFID_BIN;
-                break;
-            case R.id.tbPlatform:
-                selectedAssetType = Constants.ftPlatform;
-                activeFilter = Filters.RFID_PLATFORM;
-                break;
-            default:
-                selectedAssetType = Constants.ftAll;
-                activeFilter = null;
-                selectedToggleButton = -1;
-                break;
-        }
-    }
-
     protected void onClick(View view) {
         if (scanner_runnable == null) {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
@@ -526,7 +524,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity implements Togg
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        Map<String, List<String>> values = epcList.stream().map(x -> x.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
+                        Map<String, List<String>> values = epcList.stream().map(x -> x.toString()).collect(Collectors.groupingBy(g -> schemeSvc.schemeCode(g), Collectors.toCollection(ArrayList::new)));
 
                         if (adapterOutgoingItems == null) {
                             adapterOutgoingItems = new TreelikeAdapter(mActivity.get(), values);

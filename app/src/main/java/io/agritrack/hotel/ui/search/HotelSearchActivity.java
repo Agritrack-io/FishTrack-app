@@ -241,7 +241,6 @@ public class HotelSearchActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
-        //tgSearchAssetType = findViewById(R.id.tgSearchAssetType);
         spLinenType = findViewById(R.id.spLinenType);
         svSearchAsset = findViewById(R.id.svSearchAsset);
         etAssetBarcode = findViewById(R.id.etAssetBarcode);
@@ -251,7 +250,6 @@ public class HotelSearchActivity extends AppCompatActivity {
         tvProximity = findViewById(R.id.tvProximity);
         ivSupport = findViewById(R.id.ivSupport);
         searchProgressBar = findViewById(R.id.searchProgressBar);
-        //tgSearchAssetType.setOnCheckedChangeListener(this);
         rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvAssets.setItemAnimator(new DefaultItemAnimator());
 

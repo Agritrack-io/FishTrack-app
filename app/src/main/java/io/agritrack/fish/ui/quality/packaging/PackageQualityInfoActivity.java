@@ -9,7 +9,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -27,6 +29,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
+
+import java.io.File;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import io.agritrack.R;
 import io.agritrack.dialog.PhotoDialog;
@@ -93,6 +100,16 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
                 // Create the camera_intent ACTION_IMAGE_CAPTURE
                 // it will open the camera for capture the image
                 Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                Date currentDate = new Date();
+                String compactTSFormat = "yyyyMMddHHmmss";
+                SimpleDateFormat sdf = new SimpleDateFormat(compactTSFormat);
+                // create the local jpeg file name
+                String fileName = String.format("Photo_%s_%s.png", binEpc, sdf.format(currentDate));
+
+                String photoPath =String.valueOf(PackageQualityInfoActivity.this.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+
+                //camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.parse(photoPath /*+ "/" + fileName*/));
 
                 // Start the activity with camera_intent,
                 // and request pic id
@@ -166,6 +183,9 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
         if (requestCode == pic_id) {
             switch (resultCode) {
                 case Activity.RESULT_OK:
+                    Uri photoUri = data.getData();
+
+
                     Bitmap photo = (Bitmap) data.getExtras().get("data");
 
                     // Set the image in imageview for display
