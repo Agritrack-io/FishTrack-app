@@ -472,7 +472,7 @@ public class PackagingStartActivity extends AppCompatActivity {
                     }
                     break;
                 case 1980:
-                    if (!IsDemo && adapterTotes.getValues() != null) {
+                    if (adapterTotes.getValues() != null) {
                         List<String> toteRfids = adapterTotes.getValues();
                         if (toteRfids != null) {
                             invokeEnquiryLot(toteRfids);

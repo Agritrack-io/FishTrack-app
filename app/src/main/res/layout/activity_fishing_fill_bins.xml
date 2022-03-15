@@ -5,6 +5,8 @@
     android:id="@+id/fishingStartActivityLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     android:background="@color/agri_semi_green"
     tools:context=".fish.ui.fishing.FishingFillBinsActivity">
 

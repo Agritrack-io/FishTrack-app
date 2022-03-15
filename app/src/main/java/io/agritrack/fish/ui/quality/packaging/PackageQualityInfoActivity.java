@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -25,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
@@ -95,6 +97,7 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
         ImageButton ivCamera = findViewById(R.id.ivCamera);
         ivCamera.setOnClickListener(new View.OnClickListener() {
 
+            @RequiresApi(api = Build.VERSION_CODES.FROYO)
             @Override
             public void onClick(View v) {
                 // Create the camera_intent ACTION_IMAGE_CAPTURE
@@ -109,7 +112,7 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
 
                 String photoPath =String.valueOf(PackageQualityInfoActivity.this.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
 
-                //camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.parse(photoPath /*+ "/" + fileName*/));
+                camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.parse(photoPath + "/" + fileName));
 
                 // Start the activity with camera_intent,
                 // and request pic id

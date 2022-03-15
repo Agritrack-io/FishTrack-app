@@ -54,7 +54,7 @@ import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class ProcessBinsActivity extends AppCompatActivity {
+public class  ProcessBinsActivity extends AppCompatActivity {
 
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
