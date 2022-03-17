@@ -23,6 +23,7 @@ import io.agritrack.data.model.tx.AssetTransaction;
 import io.agritrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.data.model.tx.PostPackageQualityTransaction;
 import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.data.model.tx.RepairTransaction;
@@ -236,7 +237,9 @@ public class GlobalState {
             txQuality.iceCondition = recQuality.iceCondition;
             txQuality.binCondition = recQuality.binCondition;
             txQuality.smellCondition = recQuality.smellCondition;
-            txQuality.fishTemp = recQuality.minFishTemp;
+            txQuality.minFishTemp = recQuality.minFishTemp;
+            txQuality.avgFishTemp = recQuality.meanFishTemp;
+            txQuality.maxFishTemp = recQuality.maxFishTemp;
             txQuality.rigorMortis = recQuality.rigorMortis;
             txQuality.eliminationFood = recQuality.eliminationFood;
             txQuality.eliminationSperm = recQuality.eliminationSperm;
@@ -249,6 +252,7 @@ public class GlobalState {
             txQuality.coherent = recQuality.coherent;
             txQuality.soft = recQuality.soft;
             txQuality.swollen = recQuality.swollen;
+            txQuality.noHematoma = recQuality.noHematoma;
             txQuality.lightHematoma = recQuality.lightHematoma;
             txQuality.heavyHematoma = recQuality.heavyHematoma;
             txQuality.pink = recQuality.pink;
@@ -268,6 +272,29 @@ public class GlobalState {
             txQuality.latitude = recQuality.latitude;
 
             db.qualityTransactionDAO().insert(txQuality);
+
+            return txQuality;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static PostPackageQualityTransaction commitPostPackageQuality(MobileDB db) {
+        try {
+            PostPackageQualityTransaction txQuality = new PostPackageQualityTransaction();
+            txQuality.plot = recQuality.pLot;
+            txQuality.boxSn = recQuality.boxSn;
+            txQuality.tempT1 = recQuality.etT1;
+            txQuality.tempT2 = recQuality.etT2;
+            txQuality.tempT3 = recQuality.etT3;
+            txQuality.user = LocalPreferences.getLoggedInUser("N/A");
+            txQuality.site = LocalPreferences.getCurrentSiteName();
+            txQuality.timestamp = recQuality.timestamp;
+            txQuality.longitude = recQuality.longitude;
+            txQuality.latitude = recQuality.latitude;
+
+            db.postPackageQualityTransactionDAO().insert(txQuality);
 
             return txQuality;
         } catch (Exception ex) {

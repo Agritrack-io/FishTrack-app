@@ -1,4 +1,4 @@
-package io.agritrack.fish.ui.quality.afterpackage;
+package io.agritrack.fish.ui.quality.postpackage;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
@@ -6,13 +6,11 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recQuality;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -22,7 +20,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.net.SocketTimeoutException;
@@ -32,32 +29,27 @@ import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.common.MeasurementsDTO;
+import io.agritrack.data.dto.tx.PostPackageQualityTxDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
+import io.agritrack.data.model.tx.PostPackageQualityTransaction;
 import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.quality.packaging.PackageQualityConfirmActivity;
-import io.agritrack.fish.ui.quality.packaging.PackageQualityInfoActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AfterPackagingQualityConfirmActivity extends LocationAwareActivity {
+public class PostPackagingQualityConfirmActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
@@ -72,7 +64,7 @@ public class AfterPackagingQualityConfirmActivity extends LocationAwareActivity 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_after_packaging_quality_confirm);
+        setContentView(R.layout.activity_post_packaging_quality_confirm);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderAfterPackagingQualityConfirm);
@@ -96,14 +88,14 @@ public class AfterPackagingQualityConfirmActivity extends LocationAwareActivity 
         });
 
         // instantiate ProgressDialog and set style.
-        progressDialog = new ProgressDialog(AfterPackagingQualityConfirmActivity.this);
+        progressDialog = new ProgressDialog(PostPackagingQualityConfirmActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(AfterPackagingQualityConfirmActivity.this);
+            supportDialog = new SupportDialog(PostPackagingQualityConfirmActivity.this);
             supportDialog.showDialog();
         });
 
@@ -128,12 +120,12 @@ public class AfterPackagingQualityConfirmActivity extends LocationAwareActivity 
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(etPIN.getText().toString())) {
-                    CToast(AfterPackagingQualityConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
+                    CToast(PostPackagingQualityConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
                     return;
                 }
                 boolean userIsValid = isAuthenticated();
                 if (!userIsValid) {
-                    CToast(AfterPackagingQualityConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
+                    CToast(PostPackagingQualityConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
                     return;
                 } else if (mLastLocation != null) {
                     recQuality.longitude = mLastLocation.getLongitude();
@@ -148,7 +140,7 @@ public class AfterPackagingQualityConfirmActivity extends LocationAwareActivity 
         });
 
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), AfterPackagingQualityActivity.class);
+            Intent i = new Intent(getApplicationContext(), PostPackagingQualityActivity.class);
             startActivity(i);
         });
     }
@@ -205,18 +197,11 @@ public class AfterPackagingQualityConfirmActivity extends LocationAwareActivity 
             //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
             // persist Processing Record data to local DB.
-            QualityTransaction tx = GlobalState.commitQuality(db);
-
-            // persist Measurements Record data to local DB.
-            List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db);
-            List<MeasurementsDTO> measurementsDTOs = new ArrayList<>();
-            for (TemperatureTimeSeries ts : measurements) {
-                measurementsDTOs.add(MeasurementsDTO.convert(ts));
-            }
+            PostPackageQualityTransaction tx = GlobalState.commitPostPackageQuality(db);
 
             // sync Processing records
-            Call<QualityTxDTO> syncTxAsyncCall = updService.syncQualityTx(QualityTxDTO.convert(tx), "Bearer " + token);
-            syncTxAsyncCall.enqueue(new AfterPackagingQualityConfirmActivity.SyncTxCallBack());
+            Call<PostPackageQualityTxDTO> syncTxAsyncCall = updService.syncPostPackageQualityTx(PostPackageQualityTxDTO.convert(tx), "Bearer " + token);
+            syncTxAsyncCall.enqueue(new PostPackagingQualityConfirmActivity.SyncTxCallBack());
 
             return true;
         } catch (Exception e) {
@@ -228,13 +213,13 @@ public class AfterPackagingQualityConfirmActivity extends LocationAwareActivity 
         }
     }
 
-    public class SyncTxCallBack implements Callback<QualityTxDTO> {
+    public class SyncTxCallBack implements Callback<PostPackageQualityTxDTO> {
         @Override
-        public void onResponse(Call<QualityTxDTO> call, Response<QualityTxDTO> response) {
-            QualityTxDTO rs = response.body();
+        public void onResponse(Call<PostPackageQualityTxDTO> call, Response<PostPackageQualityTxDTO> response) {
+            PostPackageQualityTxDTO rs = response.body();
 
             if (rs != null || IsDemo) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_processing_tx_update_failure), Toast.LENGTH_LONG));
@@ -242,7 +227,7 @@ public class AfterPackagingQualityConfirmActivity extends LocationAwareActivity 
         }
 
         @Override
-        public void onFailure(Call<QualityTxDTO> call, Throwable error) {
+        public void onFailure(Call<PostPackageQualityTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

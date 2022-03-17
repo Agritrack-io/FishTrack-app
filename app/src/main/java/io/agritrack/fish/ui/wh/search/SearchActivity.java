@@ -168,7 +168,7 @@ public class SearchActivity extends AppCompatActivity {
         // load assets for current Site and filter by asset type (if selected).
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType);
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfidBarcode)).collect(Collectors.toList());
+            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfid)).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();

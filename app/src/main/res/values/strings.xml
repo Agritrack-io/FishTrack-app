@@ -157,7 +157,9 @@
     <string name="processing_details">Receipt details</string>
     <string name="receipt_header">#\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Bin \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Cage \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Kg</string>
 
+    <string name="title_quality_receipt">QUALITY/PP-DOC-01</string>
     <string name="title_quality">QUALITY</string>
+    <string name="title_quality_package">QUALITY/PP-DOC-02</string>
     <string name="choose_quality_type">Select quality type</string>
     <string name="quality_one_step">ONE CHECK</string>
     <string name="quality_first_step_text">Receipt</string>
@@ -201,6 +203,7 @@
     <string name="soft">Soft</string>
     <string name="swollen">Swollen</string>
     <string name="hematomas">Hematomas</string>
+    <string name="no_hem">Not at all</string>
     <string name="light_hem">Light</string>
     <string name="severe_hem">Severe</string>
     <string name="gills">Gills</string>

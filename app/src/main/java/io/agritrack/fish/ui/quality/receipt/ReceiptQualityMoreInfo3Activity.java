@@ -26,7 +26,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
 
-    private EditText etLightHematoma, etHeavyHematoma, etPink, etDark, etWhite, etUncolored, etHematomas, etMucus, etProblematicFish;
+    private EditText etNoHematoma, etLightHematoma, etHeavyHematoma, etPink, etDark, etWhite, etUncolored, etHematomas, etMucus, etProblematicFish;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
 
@@ -98,6 +98,8 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
     };
 
     private void assignCtrlVars() {
+        etNoHematoma = findViewById(R.id.etNoHematoma);
+        etNoHematoma.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etLightHematoma = findViewById(R.id.etLightHematoma);
         etLightHematoma.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etHeavyHematoma = findViewById(R.id.etHeavyHematoma);
@@ -122,6 +124,9 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
     private void initControlsFromState() {
         QualityRecord qualityRecord = GlobalState.recQuality;
 
+        if (qualityRecord.noHematoma != null) {
+            etNoHematoma.setText(String.valueOf(qualityRecord.noHematoma));
+        }
         if (qualityRecord.lightHematoma != null) {
             etLightHematoma.setText(String.valueOf(qualityRecord.lightHematoma));
         }
@@ -153,6 +158,10 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
 
     private QualityRecord updateState() {
         QualityRecord qualityRecord = GlobalState.recQuality;
+
+        if (etNoHematoma.getText() != null && !Strings.isEmptyOrWhitespace(etNoHematoma.getText().toString())) {
+            qualityRecord.noHematoma = Integer.valueOf(etNoHematoma.getText().toString());
+        }
 
         if (etLightHematoma.getText() != null && !Strings.isEmptyOrWhitespace(etLightHematoma.getText().toString())) {
             qualityRecord.lightHematoma = Integer.valueOf(etLightHematoma.getText().toString());
@@ -196,7 +205,7 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (GlobalState.recQuality.lightHematoma == null || GlobalState.recQuality.heavyHematoma == null || GlobalState.recQuality.pink == null || GlobalState.recQuality.dark == null || GlobalState.recQuality.white == null || GlobalState.recQuality.uncolored == null || GlobalState.recQuality.hematomas == null || GlobalState.recQuality.mucus == null || GlobalState.recQuality.problematicFish == null) {
+            if (GlobalState.recQuality.noHematoma == null || GlobalState.recQuality.lightHematoma == null || GlobalState.recQuality.heavyHematoma == null || GlobalState.recQuality.pink == null || GlobalState.recQuality.dark == null || GlobalState.recQuality.white == null || GlobalState.recQuality.uncolored == null || GlobalState.recQuality.hematomas == null || GlobalState.recQuality.mucus == null || GlobalState.recQuality.problematicFish == null) {
                 sb.append(String.format("\n%s is missing", "'Some percentages fields'"));
             }
         }

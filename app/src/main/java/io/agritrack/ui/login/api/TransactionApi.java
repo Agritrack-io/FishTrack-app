@@ -10,6 +10,7 @@ import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.dto.tx.PackageTxDTO;
 import io.agritrack.data.dto.tx.PlantTxDTO;
+import io.agritrack.data.dto.tx.PostPackageQualityTxDTO;
 import io.agritrack.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
@@ -46,7 +47,11 @@ public interface TransactionApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/quality")
-    Call<QualityTxDTO> syncQualityTx(@Body QualityTxDTO processTx, @Header("Authorization") String token);
+    Call<QualityTxDTO> syncQualityTx(@Body QualityTxDTO qualityTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/quality/postpackage")
+    Call<PostPackageQualityTxDTO> syncPostPackageQualityTx(@Body PostPackageQualityTxDTO postQualityTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/logger/temp")

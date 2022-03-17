@@ -1,6 +1,8 @@
 package io.agritrack.data.db;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -35,6 +37,7 @@ import io.agritrack.data.dao.tx.FishingTransactionDAO;
 import io.agritrack.data.dao.tx.IfcoTransactionDAO;
 import io.agritrack.data.dao.tx.PackageTransactionDAO;
 import io.agritrack.data.dao.tx.PlantTransactionDAO;
+import io.agritrack.data.dao.tx.PostPackageQualityTransactionDAO;
 import io.agritrack.data.dao.tx.ProcessingTransactionDAO;
 import io.agritrack.data.dao.tx.QualityTransactionDAO;
 import io.agritrack.data.dao.tx.RepairTransactionDAO;
@@ -71,6 +74,7 @@ import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.IfcoTransaction;
 import io.agritrack.data.model.tx.PackageTransaction;
 import io.agritrack.data.model.tx.PlantTransaction;
+import io.agritrack.data.model.tx.PostPackageQualityTransaction;
 import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.data.model.tx.RepairTransaction;
@@ -89,11 +93,11 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
 @Database(entities = {AppUser.class, Site.class, Asset.class, Supplier.class, HarvestRequest.class, Order.class, EncodingSchemeEntity.class,
         CageDetails.class, BinInfo.class, Employee.class, Species.class, Reader.class, IotLogger.class, PlantTransaction.class,
         CollectTransaction.class, StorageTransaction.class, ShippingTransaction.class, FishingTransaction.class,
-        TransportTransaction.class, ProcessingTransaction.class, QualityTransaction.class, PackageTransaction.class, TotesTransaction.class,
+        TransportTransaction.class, ProcessingTransaction.class, QualityTransaction.class, PostPackageQualityTransaction.class, PackageTransaction.class, TotesTransaction.class,
         IfcoTransaction.class, AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class,
         Measurement.class, TemperatureData.class, SeaTemperatureTransaction.class, RepairTransaction.class},
-        version = 15, exportSchema = false)
+        version = 1, exportSchema = false)
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
@@ -147,6 +151,8 @@ public abstract class MobileDB extends RoomDatabase {
     public abstract ProcessingTransactionDAO processingTransactionDAO();
 
     public abstract QualityTransactionDAO qualityTransactionDAO();
+
+    public abstract PostPackageQualityTransactionDAO postPackageQualityTransactionDAO();
 
     public abstract PackageTransactionDAO packageTransactionDAO();
 
