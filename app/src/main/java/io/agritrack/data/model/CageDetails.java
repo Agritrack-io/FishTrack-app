@@ -26,5 +26,5 @@ public class CageDetails {
     public Long site;
 
     @ColumnInfo(name = "last_fed")
-    public String lastFed;
+    public Long lastFed;
 }

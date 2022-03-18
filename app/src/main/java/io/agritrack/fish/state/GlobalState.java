@@ -144,13 +144,8 @@ public class GlobalState {
             txFishing.fishSize = recFishing.fishSize;
             txFishing.ichthyopathologist = recFishing.pathologist;
             txFishing.packagingPlant = recFishing.packagingPlant;
-            if (!Strings.isEmptyOrWhitespace(recFishing.lastFed)) {
-                try {
-                    Date lf = sdf.parse(recFishing.lastFed);
-                    txFishing.lastFeed = lf.getTime();
-                } catch (Exception ignored) {
-                }
-            }
+            txFishing.lastFeed = recFishing.lastFed;
+            txFishing.hlot = recFishing.hlot;
             txFishing.iceAdequacy = recFishing.adequateIce.toString();
             txFishing.iceSupplier = recFishing.iceSupplier;
             txFishing.seaTemperature = recFishing.seaTemperature;

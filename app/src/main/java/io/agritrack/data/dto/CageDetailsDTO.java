@@ -10,7 +10,7 @@ public class CageDetailsDTO {
     public String hlot;
     public String species;
     public Long site;
-    public String last_fed;
+    public Long last_fed;
 
     public static CageDetails convert(CageDetailsDTO detailsDTO) {
         CageDetails cageDetails = new CageDetails();

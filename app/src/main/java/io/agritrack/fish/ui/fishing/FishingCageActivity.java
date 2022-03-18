@@ -184,6 +184,7 @@ public class FishingCageActivity extends AppCompatActivity {
                 GlobalState.recFishing.speciesName = cage.species; //TODO: compare with Requested Species
                 GlobalState.recFishing.pathologist = cage.ichthyopathologist;
                 GlobalState.recFishing.lastFed = cage.lastFed;
+                GlobalState.recFishing.hlot = cage.hlot;
             } else {
                 // TODO:: add alert, no cage corresponding to RFID found in local DB!!
             }

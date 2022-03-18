@@ -32,6 +32,7 @@ public class LocalPreferences {
     public static final String Locale_Key = "localeCode";
     public static final String Logged_In_User_Key = "LoggedinUser";
     public static final String Logged_User_Roles_Key = "LoggedUserRoles";
+    public static final String Fasting_Days = "FastingDays";
 
     public static final String Driver_Names_Key = "DriverNames";
     public static final String Driver_Phones_Key = "DriverPhones";
@@ -216,5 +217,13 @@ public class LocalPreferences {
 
     public static String getDeviceModel() {
         return pref.getString(Device_Key, null);
+    }
+
+    public static Long getFastingDays() {
+        return pref.getLong(Fasting_Days, 2);
+    }
+
+    public static void setFastingDays(Long days){
+        writeValue(Fasting_Days, days);
     }
 }

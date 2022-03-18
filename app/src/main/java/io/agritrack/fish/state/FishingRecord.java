@@ -27,7 +27,7 @@ public class FishingRecord {
     public List<String> availBins;
     public List<String> fishingTeam;
     public String pathologist;
-    public String lastFed;
+    public Long lastFed;
     public Boolean adequateIce = Boolean.TRUE;
     public String iceSupplier;
     public Integer totalFishWeight;
@@ -40,6 +40,7 @@ public class FishingRecord {
     public String packagingPlant;
     public BinTemperatureRecord binTemperatureRecord = new BinTemperatureRecord();
     public BinWeightRecord binWeightRecord = new BinWeightRecord();
+    public String hlot;
 
     public FishingRecord() {
     }
@@ -67,7 +68,7 @@ public class FishingRecord {
         fishingRecord.notes = tx.notes;
         fishingRecord.packagingPlant = tx.packagingPlant;
         if(tx.lastFeed!=null) {
-            fishingRecord.lastFed = sdf.format(new Date(tx.lastFeed));
+            fishingRecord.lastFed = tx.lastFeed;
         }
         fishingRecord.fishingTeam = tx.team;
         fishingRecord.longitude = tx.longitude;
