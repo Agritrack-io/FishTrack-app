@@ -1,5 +1,6 @@
 package io.agritrack.fish.ui.fishing;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
@@ -202,7 +203,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         public void onResponse(Call<FishingTxDTO> call, Response<FishingTxDTO> response) {
             FishingTxDTO rs = response.body();
 
-            if (rs != null) {
+            if (rs != null || IsDemo) {
                 if (recFishing.harvestRqPkId != null) {
                     HarvestRequest delObj = new HarvestRequest();
                     delObj.id = recFishing.harvestRqPkId;

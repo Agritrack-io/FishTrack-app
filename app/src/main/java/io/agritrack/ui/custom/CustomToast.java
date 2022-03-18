@@ -1,5 +1,8 @@
 package io.agritrack.ui.custom;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +14,7 @@ import io.agritrack.R;
 
 public class CustomToast {
 
-    public static void CToast(android.content.Context context, CharSequence msg, int duration){
+    public static void CToast(android.content.Context context, CharSequence msg, int duration) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View layout = inflater.inflate(R.layout.custom_toast_container, null);
 
@@ -21,11 +24,19 @@ public class CustomToast {
         text.setText(msg);
 
         Toast toast = new Toast(context);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER,0,0);
+        //toast.setDuration(Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
         toast.setView(layout);
         toast.show();
+
+        if (IsDemo) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    toast.cancel();
+                }
+            }, 500);
+        }
     }
-
-
 }
