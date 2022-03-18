@@ -3,13 +3,11 @@ package io.agritrack.data.dto.tx;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.agritrack.data.model.BinInfo;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.fish.ui.bo.BinWeightRecord;
 
 public class FishingTxDTO {
 
-    public String hlot;
     public String harvest_request;
     public String platform_rfid;
     public String cage_rfid;
@@ -39,7 +37,6 @@ public class FishingTxDTO {
 
     public static FishingTxDTO convert(FishingTransaction fishing) {
         FishingTxDTO fishingTxDTO = new FishingTxDTO();
-        //fishingTxDTO.hlot = fishing.hlot;
         fishingTxDTO.harvest_request = fishing.harvestRq;
         fishingTxDTO.platform_rfid = fishing.platformRFID;
         fishingTxDTO.cage_rfid = fishing.cageRFID;

@@ -1,7 +1,6 @@
 package io.agritrack.fish.ui.quality.postpackage;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.common.Constants.Greek_Locale;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recQuality;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -31,9 +30,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;

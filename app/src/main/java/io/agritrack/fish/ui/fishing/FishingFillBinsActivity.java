@@ -154,7 +154,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // =================================
         // Adding bin load completion functionality
         btnFillBin.setOnClickListener(view -> {
-            GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin);
+            GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, null,System.currentTimeMillis()/1000l);
             clearSelectedItem();
             isClickable = false;
             btnCurrentBinScan.setEnabled(true);

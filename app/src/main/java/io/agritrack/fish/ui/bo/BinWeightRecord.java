@@ -5,14 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.agritrack.data.model.BinInfo;
-
 public class BinWeightRecord {
 
     private final Map<String, BinRecord> data = new HashMap<>();
 
-    public void addRecord(String binEPC, Integer weight) {
-        this.data.put(binEPC, new BinRecord(binEPC, weight));
+    public void addRecord(String binEPC, Integer weight, Long epochFrom, Long epochTo) {
+        this.data.put(binEPC, new BinRecord(binEPC, weight, epochFrom, epochTo));
     }
 
     public String toJSONText() {
@@ -35,15 +33,19 @@ public class BinWeightRecord {
     public class BinRecord {
         private final Integer weight;
         private final String binEPC;
+        private final Long from;
+        private final Long to;
 
-        public BinRecord(String binEPC, Integer weight) {
+        public BinRecord(String binEPC, Integer weight, Long epochFrom, Long epochTo) {
             this.binEPC = binEPC;
             this.weight = weight;
+            this.from = epochFrom;
+            this.to = epochTo;
         }
 
         @Override
         public String toString() {
-            return String.format("{binEPC:'%s', weight:%4d}", binEPC, weight);
+            return String.format("{binEPC:'%s', weight:%4d, from:%s, to:%s}", binEPC, weight, from, to);
         }
     }
 }

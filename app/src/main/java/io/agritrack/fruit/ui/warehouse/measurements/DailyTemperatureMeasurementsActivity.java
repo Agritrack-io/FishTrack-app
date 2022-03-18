@@ -44,7 +44,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.ui.login.api.TransactionApi;
+import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.LoggerInitFruitDialogFragment;
 import retrofit2.Call;
