@@ -54,7 +54,7 @@ import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.custom.ToggleGroup;
-import io.agritrack.ui.login.api.TransactionApi;
+import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;

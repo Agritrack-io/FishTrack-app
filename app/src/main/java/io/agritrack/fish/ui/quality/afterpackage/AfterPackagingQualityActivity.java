@@ -1,7 +1,6 @@
 package io.agritrack.fish.ui.quality.afterpackage;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recQuality;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -16,7 +15,6 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -26,38 +24,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.Date;
-import java.util.LinkedList;
 
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.barcode.BarcodeScanService;
-import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
-import io.agritrack.data.model.tx.SeaTemperatureTransaction;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
-import io.agritrack.fish.ui.quality.packaging.PackageQualityTemperatureProfilesActivity;
-import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.sound.SoundUtil;
-import io.agritrack.ui.LocationAwareActivity;
-import io.agritrack.ui.adapter.BarcodeRecyclerAdapter;
-import io.agritrack.ui.login.api.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class AfterPackagingQualityActivity extends AppCompatActivity {
 

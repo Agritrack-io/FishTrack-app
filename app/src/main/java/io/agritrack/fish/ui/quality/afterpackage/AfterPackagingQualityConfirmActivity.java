@@ -6,13 +6,11 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recQuality;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -22,7 +20,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.net.SocketTimeoutException;
@@ -32,7 +29,6 @@ import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.common.MeasurementsDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;
@@ -43,16 +39,10 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.quality.packaging.PackageQualityConfirmActivity;
-import io.agritrack.fish.ui.quality.packaging.PackageQualityInfoActivity;
 import io.agritrack.ui.LocationAwareActivity;
-import io.agritrack.ui.login.api.TransactionApi;
+import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
