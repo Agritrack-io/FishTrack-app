@@ -29,6 +29,7 @@ public class QualityRecord {
     public Integer coherent;
     public Integer soft;
     public Integer swollen;
+    public Integer noHematoma;
     public Integer lightHematoma;
     public Integer heavyHematoma;
     public Integer pink;
@@ -49,6 +50,7 @@ public class QualityRecord {
     public Double etT2;
     public Double etT3;
     public String boxSn;
+    public Long timestamp;
 
     public QualityRecord() {
     }

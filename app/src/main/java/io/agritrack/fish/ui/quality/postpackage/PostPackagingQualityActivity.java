@@ -1,4 +1,4 @@
-package io.agritrack.fish.ui.quality.afterpackage;
+package io.agritrack.fish.ui.quality.postpackage;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -23,11 +24,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import io.agritrack.R;
@@ -37,8 +42,9 @@ import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class AfterPackagingQualityActivity extends AppCompatActivity {
+public class PostPackagingQualityActivity extends AppCompatActivity {
 
+    private static long timestamp;
     private EditText etT1, etT2, etT3;
     private TextView tvCurrentDate, tvCurrentLot, tvCurrentBox;
     private ProgressDialog progressDialog;
@@ -50,11 +56,13 @@ public class AfterPackagingQualityActivity extends AppCompatActivity {
             byte[] data = intent.getByteArrayExtra("data");
             if (data != null) {
                 String barcode = new String(data);
-                String currentLot = barcode.substring(18, 24);
-                String currentBox = barcode.substring(barcode.length()-8);
-                tvCurrentLot.setText(currentLot);
-                tvCurrentBox.setText(currentBox);
-                scanning = false;
+                if (barcode.length()>=24) {
+                    String currentLot = barcode.substring(18, 24);
+                    String currentBox = barcode.substring(barcode.length() - 8);
+                    tvCurrentLot.setText(currentLot);
+                    tvCurrentBox.setText(currentBox);
+                    scanning = false;
+                }
             }
         }
     };
@@ -63,21 +71,28 @@ public class AfterPackagingQualityActivity extends AppCompatActivity {
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static String Today() {
-        return java.text.DateFormat.getDateTimeInstance().format(new Date());
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        LocalDateTime now = LocalDateTime.now();
+        Date convertedDatetime = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+        timestamp = convertedDatetime.getTime();
+
+        return dtf.format(now);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_after_packaging_quality);
+        setContentView(R.layout.activity_post_packaging_quality);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderAfterPackagingQuality);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // instantiate ProgressDialog and set style.
-        progressDialog = new ProgressDialog(AfterPackagingQualityActivity.this);
+        progressDialog = new ProgressDialog(PostPackagingQualityActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // initiate raw sound
@@ -93,7 +108,7 @@ public class AfterPackagingQualityActivity extends AppCompatActivity {
         initControlsFromState();
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(AfterPackagingQualityActivity.this);
+            supportDialog = new SupportDialog(PostPackagingQualityActivity.this);
             supportDialog.showDialog();
         });
 
@@ -185,7 +200,7 @@ public class AfterPackagingQualityActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), AfterPackagingQualityConfirmActivity.class);
+                Intent i = new Intent(getApplicationContext(), PostPackagingQualityConfirmActivity.class);
                 startActivity(i);
             }
         });
@@ -255,6 +270,9 @@ public class AfterPackagingQualityActivity extends AppCompatActivity {
         }
         if (etT3.getText() != null && !Strings.isEmptyOrWhitespace(etT3.getText().toString())) {
             recQuality.etT3 = Double.valueOf(etT3.getText().toString());
+        }
+        if (tvCurrentDate.getText() != null && !Strings.isEmptyOrWhitespace(tvCurrentDate.getText().toString())) {
+            recQuality.timestamp = timestamp;
         }
         if (tvCurrentLot.getText() != null && !Strings.isEmptyOrWhitespace(tvCurrentLot.getText().toString())) {
             recQuality.pLot = tvCurrentLot.getText().toString();

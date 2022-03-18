@@ -208,7 +208,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
                     delObj.id = recFishing.harvestRqPkId;
                     db.harvestRequestsDAO().delete(delObj);
                 }
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_fishing_tx_update_failure), Toast.LENGTH_LONG));

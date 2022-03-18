@@ -1,14 +1,8 @@
 package io.agritrack.data.dto.tx;
 
-import androidx.room.ColumnInfo;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
 import java.util.LinkedList;
 import java.util.List;
 
-import io.agritrack.data.converter.StringListConverter;
-import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.data.model.tx.QualityTransaction;
 
 public class QualityTxDTO {
@@ -20,7 +14,9 @@ public class QualityTxDTO {
     public String bin_condition;
     public String ice_condition;
     public String smell_condition;
-    public Double fish_temp;
+    public Double min_fish_temp;
+    public Double avg_fish_temp;
+    public Double max_fish_temp;
     public Integer rigor_mortis;
     public Integer elimination_food;
     public Integer elimination_sperm;
@@ -33,6 +29,7 @@ public class QualityTxDTO {
     public Integer coherent;
     public Integer soft;
     public Integer swollen;
+    public Integer no_hematoma;
     public Integer light_hematoma;
     public Integer heavy_hematoma;
     public Integer pink;
@@ -57,7 +54,9 @@ public class QualityTxDTO {
         qualityTxDto.bin_condition = quality.binCondition;
         qualityTxDto.ice_condition = quality.iceCondition;
         qualityTxDto.smell_condition = quality.smellCondition;
-        qualityTxDto.fish_temp = quality.fishTemp;
+        qualityTxDto.min_fish_temp = quality.minFishTemp;
+        qualityTxDto.avg_fish_temp = quality.avgFishTemp;
+        qualityTxDto.max_fish_temp = quality.maxFishTemp;
         qualityTxDto.rigor_mortis = quality.rigorMortis;
         qualityTxDto.elimination_food = quality.eliminationFood;
         qualityTxDto.elimination_sperm = quality.eliminationSperm;
@@ -70,6 +69,7 @@ public class QualityTxDTO {
         qualityTxDto.coherent = quality.coherent;
         qualityTxDto.soft = quality.soft;
         qualityTxDto.swollen = quality.swollen;
+        qualityTxDto.no_hematoma = quality.noHematoma;
         qualityTxDto.light_hematoma = quality.lightHematoma;
         qualityTxDto.heavy_hematoma = quality.heavyHematoma;
         qualityTxDto.pink = quality.pink;

@@ -43,7 +43,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo3Activity">
         android:layout_marginBottom="32dp"
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
-        android:text="@string/title_quality"
+        android:text="@string/title_quality_receipt"
         android:textColor="@color/yellow"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -102,7 +102,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo3Activity">
             android:padding="1dp">
 
             <TextView
-                android:id="@+id/tvLightHematomaLabel"
+                android:id="@+id/tvNoHematomaLabel"
                 android:layout_width="220dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
@@ -110,16 +110,16 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo3Activity">
                 android:ems="10"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="@string/light_hem"
+                android:text="@string/no_hem"
                 android:textAlignment="viewStart"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvHeavyHematomaLabel"
+                app:layout_constraintBottom_toTopOf="@+id/tvLightHematomaLabel"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/etLightHematoma"
+                android:id="@+id/etNoHematoma"
                 android:layout_width="70dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="8dp"
@@ -132,9 +132,56 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo3Activity">
                 android:textAlignment="viewEnd"
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/etLightHematoma"
+                app:layout_constraintStart_toEndOf="@+id/tvNoHematomaLabel"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvNoHematoma"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:paddingLeft="4dp"
+                android:text="%"
+                android:textAlignment="viewStart"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/etNoHematoma"
+                app:layout_constraintStart_toEndOf="@+id/etNoHematoma"
+                app:layout_constraintTop_toTopOf="@+id/etNoHematoma" />
+
+            <TextView
+                android:id="@+id/tvLightHematomaLabel"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="@string/light_hem"
+                android:textAlignment="viewStart"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size_medium"
+                app:layout_constraintBottom_toTopOf="@+id/tvHeavyHematomaLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvNoHematomaLabel" />
+
+            <EditText
+                android:id="@+id/etLightHematoma"
+                android:layout_width="70dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_rounded_dialog_input"
+                android:ems="10"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd"
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/text_view_font_size_medium"
                 app:layout_constraintBottom_toTopOf="@+id/etHeavyHematoma"
                 app:layout_constraintStart_toEndOf="@+id/tvLightHematomaLabel"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/etNoHematoma" />
 
             <TextView
                 android:id="@+id/tvLightHematoma"
@@ -215,7 +262,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo3Activity">
     <RelativeLayout
         android:id="@+id/moreInfoBLayout"
         android:layout_width="0dp"
-        android:layout_height="330dp"
+        android:layout_height="300dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"

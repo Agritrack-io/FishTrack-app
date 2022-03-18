@@ -34,8 +34,14 @@ public class QualityTransaction {
     @ColumnInfo(name = "smell_condition")
     public String smellCondition;
 
-    @ColumnInfo(name = "fish_temp")
-    public Double fishTemp;
+    @ColumnInfo(name = "min_fish_temp")
+    public Double minFishTemp;
+
+    @ColumnInfo(name = "avg_fish_temp")
+    public Double avgFishTemp;
+
+    @ColumnInfo(name = "max_fish_temp")
+    public Double maxFishTemp;
 
     @ColumnInfo(name = "rigor_mortis")
     public Integer rigorMortis;
@@ -72,6 +78,9 @@ public class QualityTransaction {
 
     @ColumnInfo(name = "swollen")
     public Integer swollen;
+
+    @ColumnInfo(name = "no_hematoma")
+    public Integer noHematoma;
 
     @ColumnInfo(name = "light_hematoma")
     public Integer lightHematoma;

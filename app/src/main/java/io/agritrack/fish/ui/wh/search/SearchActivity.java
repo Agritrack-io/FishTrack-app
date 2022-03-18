@@ -14,10 +14,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,32 +40,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
+import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;
-import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.adapter.FilterableAdapter;
-import io.agritrack.ui.bo.GenericListModel;
-import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class SearchActivity extends AppCompatActivity {
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
-
+    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
     private final ScanHandler mScanHandler = new ScanHandler(this);
 
     private ProgressBar pbProximity;
     private MobileDB db;
     private FilterableAdapter adapterAssets;
-    private ToggleGroup tgSearchAssetType;
+    private Spinner spAssetType;
     private EditText etAssetBarcode;
     private SearchView svSearchAsset;
     private TextView tvProximity;
@@ -73,6 +75,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
     private String selectedBarcode = "";
     private ConstraintLayout selectedItem;
     private ProgressBar searchProgressBar;
+    private String epcPrefix = "BE0019A0000";
 
     private boolean isScanning = false;
 
@@ -118,6 +121,35 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
         // get  references of the controls
         assignCtrlVars();
 
+        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.allNames()) {
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (position % 2 == 0) { // we're on an even row
+                    view.setBackgroundColor(getColor(R.color.white));
+                } else {
+                    view.setBackgroundColor(getColor(R.color.light_grey));
+                }
+                return view;
+            }
+        };
+
+        spAssetType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
+                loadAssetsByTypeFromLocalDB(selectedAssetType);
+                svSearchAsset.setVisibility(View.VISIBLE);
+            }
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+        hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
+        spAssetType.setAdapter(hrAdapter);
+
         // instantiate Local Handler that will process the scanning stream.
         //mScanHandler = new ScanHandler(this);
 
@@ -132,19 +164,16 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
         configFooter();
     }
 
-    @Override
-    public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        if (checkedId == R.id.tbCage) {
-            selectedAssetType = Constants.ftCage;
-            loadCagesFromLocalDB();
-        } else if (checkedId == R.id.tbNet) {
-            selectedAssetType = Constants.ftNet;
-            loadNetsFromLocalDB();
-        } else if (checkedId == R.id.tbBin) {
-            selectedAssetType = Constants.ftBin;
-            loadBinsFromLocalDB();
+    private void loadAssetsByTypeFromLocalDB(String assetType) {
+        // load assets for current Site and filter by asset type (if selected).
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType);
+        if (assetsList != null && !assetsList.isEmpty()) {
+            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfid)).collect(Collectors.toList());
+            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets.getFilter().filter("");
+            adapterAssets.notifyDataSetChanged();
+            this.rvAssets.setAdapter(adapterAssets);
         }
-        svSearchAsset.setVisibility(View.VISIBLE);
     }
 
     protected void configFooter() {
@@ -161,7 +190,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
     }
 
     private void assignCtrlVars() {
-        tgSearchAssetType = findViewById(R.id.tgSearchAssetType);
+        spAssetType = findViewById(R.id.spAssetType);
         svSearchAsset = findViewById(R.id.svSearchAsset);
         etAssetBarcode = findViewById(R.id.etAssetBarcode);
         rvAssets = findViewById(R.id.rvAssets);
@@ -170,7 +199,6 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
         tvProximity = findViewById(R.id.tvProximity);
         ivSupport = findViewById(R.id.ivSupport);
         searchProgressBar = findViewById(R.id.searchProgressBar);
-        tgSearchAssetType.setOnCheckedChangeListener(this);
         rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvAssets.setItemAnimator(new DefaultItemAnimator());
 
@@ -195,7 +223,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
         });
     }
 
-    private void loadCagesFromLocalDB() {
+   /* private void loadCagesFromLocalDB() {
         // load assets for current Site and filter by asset type (if selected).
         List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftCage);
         if (assetsList != null && !assetsList.isEmpty()) {
@@ -226,7 +254,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
             adapterAssets.getFilter().filter("");
             this.rvAssets.setAdapter(adapterAssets);
         }
-    }
+    }*/
 
     @Override
     protected void onStart() {
@@ -266,7 +294,7 @@ public class SearchActivity extends AppCompatActivity implements ToggleGroup.OnC
             isScanning = true;
             btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             btnSearchAsset.setText(R.string.stop_search);
-            uhfReader.setFilterEPC(selectedBarcode);
+            uhfReader.setFilterEPC(epcPrefix + selectedBarcode);
             uhfReader.startSearching();
             mScanHandler.postDelayed(search_runnable, 0);
         } else {

@@ -1,5 +1,7 @@
 package io.agritrack.data.dao.wh;
 
+import android.database.Cursor;
+
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -25,6 +27,9 @@ public interface AssetDAO {
 
     @Query("SELECT * from asset where rfid_barcode=:epcStr LIMIT 1")
     Asset getAssetByEpc(String epcStr);
+
+    @Query("SELECT id, rfid from asset where rfid=:epcStr LIMIT 1")
+    Cursor getAssetCursorByEpc(String epcStr);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Asset... assets);

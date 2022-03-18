@@ -6,7 +6,7 @@ android:id="@+id/fishingStartActivityLayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:background="@color/agri_semi_green"
-tools:context=".fish.ui.quality.afterpackage.AfterPackagingQualityConfirmActivity">
+tools:context=".fish.ui.quality.postpackage.PostPackagingQualityConfirmActivity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
@@ -43,7 +43,7 @@ tools:context=".fish.ui.quality.afterpackage.AfterPackagingQualityConfirmActivit
         android:layout_marginBottom="32dp"
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
-        android:text="@string/title_quality"
+        android:text="@string/title_quality_package"
         android:textColor="@color/yellow"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toBottomOf="parent"

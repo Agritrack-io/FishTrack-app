@@ -161,7 +161,9 @@
     <string name="title_date_lot_dispatch_note">ΗΜΕΡΟΜΗΝΙΑ / LOT / ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ</string>
     <string name="receipt_header">#\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Βούτα \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Κλωβός \u00A0\u00A0\u00A0\u00A0 Kg</string>
 
+    <string name="title_quality_receipt">ΠΟΙΟΤΙΚΟΣ ΕΛΕΓΧΟΣ/PP-DOC-01</string>
     <string name="title_quality">ΠΟΙΟΤΙΚΟΣ ΕΛΕΓΧΟΣ</string>
+    <string name="title_quality_package">ΠΟΙΟΤΙΚΟΣ ΕΛΕΓΧΟΣ/PP-DOC-02</string>
     <string name="choose_quality_type">Επιλέξτε έλεγχο</string>
     <string name="quality_one_step">ΕΝΑΣ ΕΛΕΓΧΟΣ</string>
     <string name="quality_first_step_text">Κατά την Παραλαβή</string>
@@ -205,6 +207,7 @@
     <string name="soft">Μαλακή</string>
     <string name="swollen">Διογκωμένη</string>
     <string name="hematomas">Αιματώματα</string>
+    <string name="no_hem">Καθόλου</string>
     <string name="light_hem">Ελαφριά</string>
     <string name="severe_hem">Έντονα</string>
     <string name="gills">Βράγχια</string>
