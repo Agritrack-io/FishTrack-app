@@ -122,6 +122,40 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
             }
         });
 
+        etShiny.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number1 = etShiny.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etShiny.getText().toString().trim());
+                int number2 = etBlurred.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etBlurred.getText().toString().trim());
+                if (number1+number2!=100 && !Strings.isEmptyOrWhitespace(etShiny.getText().toString()) && !Strings.isEmptyOrWhitespace(etBlurred.getText().toString())){
+                    etShiny.setBackgroundColor(Color.RED);
+                    etBlurred.setBackgroundColor(Color.RED);
+                    CToast(ReceiptQualityMoreInfo2Activity.this, "Το άθροισμα των ποσοστών είναι διαφορετικό από 100%", Toast.LENGTH_SHORT);
+                } else {
+                    etShiny.setBackgroundColor(Color.WHITE);
+                    etBlurred.setBackgroundColor(Color.WHITE);
+                }
+                etBlurred.requestFocus();
+            }
+        });
+
+        etBlurred.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number1 = etShiny.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etShiny.getText().toString().trim());
+                int number2 = etBlurred.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etBlurred.getText().toString().trim());
+                if (number1+number2!=100 && !Strings.isEmptyOrWhitespace(etShiny.getText().toString()) && !Strings.isEmptyOrWhitespace(etBlurred.getText().toString())){
+                    etShiny.setBackgroundColor(Color.RED);
+                    etBlurred.setBackgroundColor(Color.RED);
+                    CToast(ReceiptQualityMoreInfo2Activity.this, "Το άθροισμα των ποσοστών είναι διαφορετικό από 100%", Toast.LENGTH_SHORT);
+                } else {
+                    etShiny.setBackgroundColor(Color.WHITE);
+                    etBlurred.setBackgroundColor(Color.WHITE);
+                }
+                etHealed.requestFocus();
+            }
+        });
+
         configFooter();
     }
 
@@ -238,7 +272,7 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if (!IsDemo) {
+//        if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.smellCondition)) {
                 sb.append(String.format("\n%s is missing", "'Smell condition'"));
             }
@@ -246,7 +280,7 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
             if (GlobalState.recQuality.shiny == null || GlobalState.recQuality.blurred == null || GlobalState.recQuality.healed == null || GlobalState.recQuality.blindEyes == null || GlobalState.recQuality.coherent == null || GlobalState.recQuality.soft == null || GlobalState.recQuality.swollen == null) {
                 sb.append(String.format("\n%s is missing", "'Some percentages fields'"));
             }
-        }
+//        }
 
         return sb.toString();
     }

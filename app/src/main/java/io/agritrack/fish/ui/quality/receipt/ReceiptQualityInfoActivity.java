@@ -292,7 +292,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if (!IsDemo) {
+//        if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.pLot)) {
                 sb.append(String.format("\n%s is missing", "'LOT'"));
             }
@@ -308,7 +308,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
             if (GlobalState.recQuality.maxFishTemp == null) {
                 sb.append(String.format("\n%s is missing", "'Fish max temperature'"));
             }
-        }
+//        }
 
         return sb.toString();
     }

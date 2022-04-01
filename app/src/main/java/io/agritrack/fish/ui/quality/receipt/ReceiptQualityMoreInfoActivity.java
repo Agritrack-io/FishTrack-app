@@ -161,7 +161,7 @@ public class ReceiptQualityMoreInfoActivity extends AppCompatActivity implements
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if (!IsDemo) {
+//        if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.binCondition)) {
                 sb.append(String.format("\n%s is missing", "'Bin condition'"));
             }
@@ -173,7 +173,7 @@ public class ReceiptQualityMoreInfoActivity extends AppCompatActivity implements
             if (GlobalState.recQuality.rigorMortis == null || GlobalState.recQuality.eliminationFood == null || GlobalState.recQuality.eliminationSperm == null || GlobalState.recQuality.parasites == null || GlobalState.recQuality.peeling == null) {
                 sb.append(String.format("\n%s is missing", "'Some percentages fields'"));
             }
-        }
+//        }
 
         return sb.toString();
     }

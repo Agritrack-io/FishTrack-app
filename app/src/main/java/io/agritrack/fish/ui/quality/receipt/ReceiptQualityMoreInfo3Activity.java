@@ -7,9 +7,13 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,6 +48,66 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
+
+        etNoHematoma.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number1 = etNoHematoma.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etNoHematoma.getText().toString().trim());
+                int number2 = etLightHematoma.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etLightHematoma.getText().toString().trim());
+                int number3 = etHeavyHematoma.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etHeavyHematoma.getText().toString().trim());
+                if (number1+number2+number3!=100 && !Strings.isEmptyOrWhitespace(etLightHematoma.getText().toString()) && !Strings.isEmptyOrWhitespace(etHeavyHematoma.getText().toString())){
+                    etNoHematoma.setBackgroundColor(Color.RED);
+                    etLightHematoma.setBackgroundColor(Color.RED);
+                    etHeavyHematoma.setBackgroundColor(Color.RED);
+                    CToast(ReceiptQualityMoreInfo3Activity.this, "Το άθροισμα των ποσοστών είναι διαφορετικό από 100%", Toast.LENGTH_SHORT);
+                } else {
+                    etNoHematoma.setBackgroundColor(Color.WHITE);
+                    etLightHematoma.setBackgroundColor(Color.WHITE);
+                    etHeavyHematoma.setBackgroundColor(Color.WHITE);
+                }
+                etLightHematoma.requestFocus();
+            }
+        });
+
+        etLightHematoma.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number1 = etNoHematoma.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etNoHematoma.getText().toString().trim());
+                int number2 = etLightHematoma.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etLightHematoma.getText().toString().trim());
+                int number3 = etHeavyHematoma.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etHeavyHematoma.getText().toString().trim());
+                if (number1+number2+number3!=100 && !Strings.isEmptyOrWhitespace(etNoHematoma.getText().toString()) && !Strings.isEmptyOrWhitespace(etHeavyHematoma.getText().toString())){
+                    etNoHematoma.setBackgroundColor(Color.RED);
+                    etLightHematoma.setBackgroundColor(Color.RED);
+                    etHeavyHematoma.setBackgroundColor(Color.RED);
+                    CToast(ReceiptQualityMoreInfo3Activity.this, "Το άθροισμα των ποσοστών είναι διαφορετικό από 100%", Toast.LENGTH_SHORT);
+                } else {
+                    etNoHematoma.setBackgroundColor(Color.WHITE);
+                    etLightHematoma.setBackgroundColor(Color.WHITE);
+                    etHeavyHematoma.setBackgroundColor(Color.WHITE);
+                }
+                etHeavyHematoma.requestFocus();
+            }
+        });
+
+        etHeavyHematoma.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number1 = etNoHematoma.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etNoHematoma.getText().toString().trim());
+                int number2 = etLightHematoma.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etLightHematoma.getText().toString().trim());
+                int number3 = etHeavyHematoma.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etHeavyHematoma.getText().toString().trim());
+                if (number1+number2+number3!=100 && !Strings.isEmptyOrWhitespace(etNoHematoma.getText().toString()) && !Strings.isEmptyOrWhitespace(etLightHematoma.getText().toString())){
+                    etNoHematoma.setBackgroundColor(Color.RED);
+                    etLightHematoma.setBackgroundColor(Color.RED);
+                    etHeavyHematoma.setBackgroundColor(Color.RED);
+                    CToast(ReceiptQualityMoreInfo3Activity.this, "Το άθροισμα των ποσοστών είναι διαφορετικό από 100%", Toast.LENGTH_SHORT);
+                } else {
+                    etNoHematoma.setBackgroundColor(Color.WHITE);
+                    etLightHematoma.setBackgroundColor(Color.WHITE);
+                    etHeavyHematoma.setBackgroundColor(Color.WHITE);
+                }
+                etPink.requestFocus();
+            }
+        });
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(ReceiptQualityMoreInfo3Activity.this);
@@ -204,11 +268,11 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if (!IsDemo) {
+//        if (!IsDemo) {
             if (GlobalState.recQuality.noHematoma == null || GlobalState.recQuality.lightHematoma == null || GlobalState.recQuality.heavyHematoma == null || GlobalState.recQuality.pink == null || GlobalState.recQuality.dark == null || GlobalState.recQuality.white == null || GlobalState.recQuality.uncolored == null || GlobalState.recQuality.hematomas == null || GlobalState.recQuality.mucus == null || GlobalState.recQuality.problematicFish == null) {
                 sb.append(String.format("\n%s is missing", "'Some percentages fields'"));
             }
-        }
+//        }
 
         return sb.toString();
     }

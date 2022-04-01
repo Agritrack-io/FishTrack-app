@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;
+import io.agritrack.data.model.EncodingSchemeEntity;
 import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.sound.SoundUtil;
 
@@ -24,8 +25,8 @@ public class ScanInventoryThread implements Runnable {
     private final ICAEN_API uhfReader;
     private boolean scanInProgress = false;
     private String RFID_FILTER;
-    private final int encodingIdx = schemeSvc.encodingIndex();
-    private final int encodingWth = schemeSvc.encodingWidth();
+    private int encodingIdx = schemeSvc.encodingIndex();
+    private int encodingWth = schemeSvc.encodingWidth();
 
 
     public ScanInventoryThread(Handler handler) {
@@ -43,6 +44,11 @@ public class ScanInventoryThread implements Runnable {
 
     public void setFilter(String rfidFilter) {
         this.RFID_FILTER = rfidFilter;
+        EncodingSchemeEntity schemeEntry = schemeSvc.schemeForFilter(rfidFilter);
+        if (schemeEntry!=null){
+            this.encodingIdx = schemeEntry.encoding_index;
+            this.encodingWth = schemeEntry.code.length();
+        }
     }
 
     public void stopReading() {
