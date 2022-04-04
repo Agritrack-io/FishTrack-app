@@ -1,15 +1,18 @@
 package io.agritrack.data.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import java.util.UUID;
 
 @Entity(tableName = "harvest_request")
 public class HarvestRequest {
 
     @PrimaryKey
-    @ColumnInfo
-    public Long id;
+    @NonNull
+    public UUID id;
 
     @ColumnInfo(name = "request_id")
     public String requestId;

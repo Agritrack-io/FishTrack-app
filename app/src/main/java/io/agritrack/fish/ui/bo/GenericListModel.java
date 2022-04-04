@@ -1,5 +1,7 @@
 package io.agritrack.ui.bo;
 
+import java.util.UUID;
+
 /**
  * This class is intended for use in List Adapters.
  * It provides the 'Id' of an entity primary key, a label to be shown on a list
@@ -7,27 +9,27 @@ package io.agritrack.ui.bo;
  */
 public class GenericListModel {
 
-    private Long id;
+    private UUID id;
     private String label;
     private Boolean checked;
 
-    public GenericListModel(Long id, String label) {
+    public GenericListModel(UUID id, String label) {
         this.id = id;
         this.label = label;
         this.checked = Boolean.FALSE;
     }
 
-    public GenericListModel(Long id, String label, Boolean isChecked) {
+    public GenericListModel(UUID id, String label, Boolean isChecked) {
         this.id = id;
         this.label = label;
         this.checked = isChecked;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

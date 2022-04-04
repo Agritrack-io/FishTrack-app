@@ -3,6 +3,7 @@ package io.agritrack.fish.state;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.fish.ui.bo.BinTemperatureRecord;
@@ -33,7 +34,7 @@ public class FishingRecord {
     public Integer totalFishWeight;
     public Short totalBinsUsed;
     public Double seaTemperature;
-    public Long harvestRqPkId;
+    public UUID harvestRqPkId;
     public Double longitude;
     public Double latitude;
     public String notes;

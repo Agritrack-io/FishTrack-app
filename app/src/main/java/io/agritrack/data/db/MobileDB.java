@@ -15,6 +15,7 @@ import io.agritrack.data.converter.LongListConverter;
 import io.agritrack.data.converter.StringListConverter;
 import io.agritrack.data.converter.StringSetConverter;
 import io.agritrack.data.converter.TxStatusEnumConverter;
+import io.agritrack.data.converter.UUIDConverter;
 import io.agritrack.data.dao.AppUserDAO;
 import io.agritrack.data.dao.BinInfoDAO;
 import io.agritrack.data.dao.CageDetailsDAO;
@@ -97,8 +98,8 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
         IfcoTransaction.class, AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class,
         Measurement.class, TemperatureData.class, SeaTemperatureTransaction.class, RepairTransaction.class},
-        version = 1, exportSchema = false)
-@TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class})
+        version = 15, exportSchema = false)
+@TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class, UUIDConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
     private static MobileDB INSTANCE;

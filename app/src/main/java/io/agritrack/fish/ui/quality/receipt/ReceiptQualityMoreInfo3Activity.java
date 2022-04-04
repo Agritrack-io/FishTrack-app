@@ -268,11 +268,11 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-//        if (!IsDemo) {
+        if (!IsDemo) {
             if (GlobalState.recQuality.noHematoma == null || GlobalState.recQuality.lightHematoma == null || GlobalState.recQuality.heavyHematoma == null || GlobalState.recQuality.pink == null || GlobalState.recQuality.dark == null || GlobalState.recQuality.white == null || GlobalState.recQuality.uncolored == null || GlobalState.recQuality.hematomas == null || GlobalState.recQuality.mucus == null || GlobalState.recQuality.problematicFish == null) {
                 sb.append(String.format("\n%s is missing", "'Some percentages fields'"));
             }
-//        }
+        }
 
         return sb.toString();
     }

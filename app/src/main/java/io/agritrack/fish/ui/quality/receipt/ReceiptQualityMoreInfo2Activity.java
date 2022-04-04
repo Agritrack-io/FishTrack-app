@@ -272,7 +272,7 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-//        if (!IsDemo) {
+        if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.smellCondition)) {
                 sb.append(String.format("\n%s is missing", "'Smell condition'"));
             }
@@ -280,7 +280,7 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
             if (GlobalState.recQuality.shiny == null || GlobalState.recQuality.blurred == null || GlobalState.recQuality.healed == null || GlobalState.recQuality.blindEyes == null || GlobalState.recQuality.coherent == null || GlobalState.recQuality.soft == null || GlobalState.recQuality.swollen == null) {
                 sb.append(String.format("\n%s is missing", "'Some percentages fields'"));
             }
-//        }
+        }
 
         return sb.toString();
     }

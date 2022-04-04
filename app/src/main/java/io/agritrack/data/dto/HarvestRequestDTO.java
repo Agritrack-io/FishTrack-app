@@ -1,9 +1,11 @@
 package io.agritrack.data.dto;
 
+import java.util.UUID;
+
 import io.agritrack.data.model.HarvestRequest;
 
 public class HarvestRequestDTO {
-    public Long id;
+    public UUID id;
     public String request_id;
     public String fish_type;
     public String fish_size;

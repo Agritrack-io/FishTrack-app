@@ -256,11 +256,11 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-//        if (!IsDemo) {
+        if (!IsDemo) {
             if (GlobalState.recQuality.qualityBins == null || GlobalState.recQuality.qualityBins.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Received bins'"));
             }
-//        }
+        }
         return sb.toString();
     }
 

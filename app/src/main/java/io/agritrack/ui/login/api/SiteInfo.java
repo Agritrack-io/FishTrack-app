@@ -3,11 +3,12 @@ package io.agritrack.ui.login.api;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class SiteInfo implements Serializable {
 
     @SerializedName("id")
-    private Long id;
+    private UUID id;
 
     @SerializedName("name")
     private String name;
@@ -55,7 +56,7 @@ public class SiteInfo implements Serializable {
     public SiteInfo() {
     }
 
-    public SiteInfo(Long id, String name, String description, String code,
+    public SiteInfo(UUID id, String name, String description, String code,
                     Integer siteLevel, String level1, String level2, String level3,
                     String level4, String country, String region, String customerSite,
                     Double lat, Double lon, Boolean active) {
@@ -82,11 +83,11 @@ public class SiteInfo implements Serializable {
         this.code = code;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

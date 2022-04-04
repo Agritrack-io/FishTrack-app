@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 
 import io.agritrack.data.dto.SiteDTO;
 
@@ -62,8 +63,9 @@ public class LocalPreferences {
         return pref.getString(SelectedSiteName_Key, "N/A");
     }
 
-    public static Long getCurrentSiteId() {
-        return pref.getLong(SelectedSiteId_Key, -1l);
+
+    public static UUID getCurrentSiteId() {
+        return UUID.fromString(pref.getString(SelectedSiteId_Key, "00000000-0000-0000-0000-000000000000"));
     }
 
     public static String getCurrentClusterId() {
@@ -172,6 +174,8 @@ public class LocalPreferences {
                 editor.putString(key, (String) value);
             } else if (value instanceof Long) {
                 editor.putLong(key, (Long) value);
+            } else if (value instanceof UUID) {
+                editor.putString(key, value.toString());
             } else if (value instanceof Boolean) {
                 editor.putBoolean(key, (Boolean) value);
             } else if (value instanceof HashSet) {
