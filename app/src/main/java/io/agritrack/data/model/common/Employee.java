@@ -1,15 +1,19 @@
 package io.agritrack.data.model.common;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.util.UUID;
+
 @Entity(tableName = "employee", indices = {@Index("supervisor"), @Index(value = {"last_name", "first_name"})})
 public class Employee {
 
     @PrimaryKey
-    public Long id;
+    @NonNull
+    public UUID id;
 
     @ColumnInfo(name = "hierarchy_order")
     public Short order;

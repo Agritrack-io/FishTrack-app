@@ -1,10 +1,12 @@
 package io.agritrack.data.dto.wh;
 
+import java.util.UUID;
+
 import io.agritrack.data.model.wh.Asset;
 
 public class AssetDTO {
 
-    public Long id;
+    public UUID id;
     public String rfid;
     public String asset_type;
     public String amCode;

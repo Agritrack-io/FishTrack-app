@@ -1,9 +1,11 @@
 package io.agritrack.data.dto;
 
+import java.util.UUID;
+
 import io.agritrack.data.model.Site;
 
 public class SiteDTO {
-    public Long id;
+    public UUID id;
     public String code;
     public String site_type;
     public String name;

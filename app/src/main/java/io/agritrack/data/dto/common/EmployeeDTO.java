@@ -1,10 +1,12 @@
 package io.agritrack.data.dto.common;
 
+import java.util.UUID;
+
 import io.agritrack.data.model.common.Employee;
 
 public class EmployeeDTO {
 
-    public Long id;
+    public UUID id;
     public Short order;
     public String email;
     public String first_name;

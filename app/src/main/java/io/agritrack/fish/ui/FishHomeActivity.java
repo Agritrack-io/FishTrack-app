@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import io.agritrack.FishTrackApplication;
@@ -242,7 +243,7 @@ public class FishHomeActivity extends AppCompatActivity {
         try {
             SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
             String token = LocalPreferences.getToken();
-            Long siteId = LocalPreferences.getCurrentSiteId();
+            UUID siteId = LocalPreferences.getCurrentSiteId();
             String clusterId = LocalPreferences.getCurrentClusterId();
 
             // sync sites for current cluster

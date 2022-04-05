@@ -106,4 +106,9 @@ public class EncodingSchemeService {
     public String schemeCode(String epc){
         return schemeCode(epc,true);
     }
+
+    public EncodingSchemeEntity schemeForFilter(String filter){
+        EncodingSchemeEntity result = assetTypesMap.get(filter);
+        return result;
+    }
 }

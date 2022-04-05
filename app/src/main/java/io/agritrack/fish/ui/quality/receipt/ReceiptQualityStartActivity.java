@@ -126,9 +126,6 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         // initiate raw sound
         SoundUtil.initSoundPool(this);
 
-        // reset existing Temperature values in stateRecord.
-        recLoggerData.clearData();
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBinsForTransport.setLayoutManager(layoutManager);
         rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
@@ -299,6 +296,9 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
+        // reset existing Temperature values in stateRecord.
+        //recLoggerData.clearData();
+
         scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_BIN);
         scanner_runnable.LowEnergy();

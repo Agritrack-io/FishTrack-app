@@ -3,6 +3,7 @@ package io.agritrack.fish.ui.quality.receipt;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.fish.state.GlobalState.recQuality;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -296,6 +297,8 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             List<MeasurementsDTO> rs = response.body();
 
             if (rs != null || IsDemo) {
+                // reset existing Temperature values in stateRecord.
+                recLoggerData.clearData();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!

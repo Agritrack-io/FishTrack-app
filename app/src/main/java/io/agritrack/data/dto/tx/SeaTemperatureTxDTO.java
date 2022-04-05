@@ -1,12 +1,14 @@
 package io.agritrack.data.dto.tx;
 
+import java.util.UUID;
+
 import io.agritrack.data.model.tx.SeaTemperatureTransaction;
 
 public class SeaTemperatureTxDTO {
 
     public Long measured_at;
     public String site_name;
-    public Long site_id;
+    public UUID site_id;
     public Double ref_temperature;
     public Double cage_temperature;
     public Double lon;

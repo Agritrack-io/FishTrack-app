@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.UUID;
+
 @Entity(tableName = "sea_temperature_transaction")
 public class SeaTemperatureTransaction {
     @PrimaryKey
@@ -13,7 +15,7 @@ public class SeaTemperatureTransaction {
     public Long timestamp;
 
     @ColumnInfo(name = "site_code")
-    public Long siteId;
+    public UUID siteId;
 
     @ColumnInfo(name = "site_name")
     public String siteName;

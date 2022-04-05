@@ -53,11 +53,10 @@ import io.agritrack.ui.service.LocalPreferences;
 
 
 public class FishingFillBinsActivity extends AppCompatActivity {
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
     private Button btnCurrentBinScan, btnNextCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
     private RecyclerView rvWeightBatchesBin;
@@ -154,7 +153,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // =================================
         // Adding bin load completion functionality
         btnFillBin.setOnClickListener(view -> {
-            GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, null,System.currentTimeMillis()/1000l);
+            GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, null, System.currentTimeMillis() / 1000l);
             clearSelectedItem();
             isClickable = false;
             btnCurrentBinScan.setEnabled(true);
@@ -235,7 +234,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
     }
 
@@ -243,7 +242,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
     }
 
@@ -280,6 +279,19 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     private void initControlsFromState() {
         FishingRecord hvst = GlobalState.recFishing;
+
+        if (recFishing.totalFishWeight != null) {
+            tvTotalWeightCount.setText(recFishing.totalFishWeight.toString());
+        }
+
+        if (recFishing.totalBinsUsed != null) {
+            tvUsedBinsCount.setText(recFishing.totalBinsUsed.toString());
+        }
+
+        if (!loadsMap.hasLoads()) {
+            recFishing.binWeightRecord.getBins();
+            tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
+        }
 
         tvAvailableBinsCount.setText(String.valueOf(hvst.availBins.size()));
     }

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import io.agritrack.AgritrackProducts;
 import io.agritrack.FishTrackApplication;
@@ -269,7 +270,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         try {
             SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
             String token = LocalPreferences.getToken();
-            Long siteId = LocalPreferences.getCurrentSiteId();
+            UUID siteId = LocalPreferences.getCurrentSiteId();
             String clusterId = LocalPreferences.getCurrentClusterId();
 
             //Clean encoding scheme table before update

@@ -36,7 +36,7 @@ public class CustomToast {
                 public void run() {
                     toast.cancel();
                 }
-            }, 500);
+            }, 1500);
         }
     }
 }
