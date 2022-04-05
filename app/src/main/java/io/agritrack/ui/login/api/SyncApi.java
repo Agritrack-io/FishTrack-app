@@ -1,6 +1,7 @@
 package io.agritrack.ui.login.api;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.data.dto.AppUserDTO;
 import io.agritrack.data.dto.BinInfoDTO;
@@ -29,11 +30,11 @@ public interface SyncApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/site/{siteId}")
-    Call<SiteDTO> getSiteById(@Path("siteId") Long siteId, @Header("Authorization") String token);
+    Call<SiteDTO> getSiteById(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/harvest-requests/{siteId}")
-    Call<List<HarvestRequestDTO>> getHarvestRequestsBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
+    Call<List<HarvestRequestDTO>> getHarvestRequestsBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/asset/item/{assetId}")
@@ -41,27 +42,27 @@ public interface SyncApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/asset/{siteId}")
-    Call<List<AssetDTO>> getAssetsBySite(@Path("siteId") Long siteId, @Header("Authorization") String token);
+    Call<List<AssetDTO>> getAssetsBySite(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/asset/{siteId}/{assetType}")
-    Call<List<AssetDTO>> getAssetsBySiteAndType(@Path("siteId") Long siteId, @Path("assetType") String assetType, @Header("Authorization") String token);
+    Call<List<AssetDTO>> getAssetsBySiteAndType(@Path("siteId") UUID siteId, @Path("assetType") String assetType, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/user/site/{siteId}")
-    Call<List<AppUserDTO>> getUsersBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
+    Call<List<AppUserDTO>> getUsersBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/employees/{siteId}")
-    Call<List<EmployeeDTO>> getEmployeesBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
+    Call<List<EmployeeDTO>> getEmployeesBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/supplier/{siteId}")
-    Call<List<SupplierDTO>> getSuppliersBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
+    Call<List<SupplierDTO>> getSuppliersBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/customer/{siteId}")
-    Call<List<CustomerDTO>> getCustomersBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
+    Call<List<CustomerDTO>> getCustomersBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/species")
@@ -69,15 +70,15 @@ public interface SyncApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/cage-detail/{siteId}")
-    Call<List<CageDetailsDTO>> getCageDetailsBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
+    Call<List<CageDetailsDTO>> getCageDetailsBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/transport/bin-info/{siteId}")
-    Call<List<BinInfoDTO>> getBinsByPlant(@Path("siteId") Long siteId, @Header("Authorization") String token);
+    Call<List<BinInfoDTO>> getBinsByPlant(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/logger/{siteId}")
-    Call<List<IotLoggerDTO>> getIOTLoggersBySiteId(@Path("siteId") Long siteId, @Header("Authorization") String token);
+    Call<List<IotLoggerDTO>> getIOTLoggersBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/encoding/customer/name/{clusterName}")

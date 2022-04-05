@@ -8,6 +8,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.data.model.common.Employee;
 
@@ -19,7 +20,7 @@ public interface EmployeeDAO {
 
 
     @Query("SELECT * from employee where site=:siteId")
-    List<Employee> getBySite(Long siteId);
+    List<Employee> getBySite(UUID siteId);
 
     @Query("SELECT * from employee where id=:employeeId LIMIT 1")
     Employee getById(Long employeeId);
