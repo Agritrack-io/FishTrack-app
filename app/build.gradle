@@ -128,9 +128,6 @@ dependencies {
     implementation files('libs/ModuleAPI_J.jar')
     implementation files('libs/CAENRFIDLibrary-release.aar')
 
-    // browse local db
-    //debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
-
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

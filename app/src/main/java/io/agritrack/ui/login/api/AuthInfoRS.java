@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class AuthInfo {
+public class AuthInfoRS {
 
     @SerializedName("accessToken")
     private String token;
@@ -24,7 +24,7 @@ public class AuthInfo {
     @SerializedName("roles")
     private List<String> roles;
 
-    public AuthInfo(String token, String type, Long id, String username, String email, List<String> roles) {
+    public AuthInfoRS(String token, String type, Long id, String username, String email, List<String> roles) {
         this.token = token;
         this.type = type;
         this.id = id;

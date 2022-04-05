@@ -18,7 +18,7 @@ import java.util.Map;
 
 import io.agritrack.R;
 import io.agritrack.ui.config.ClusterListViewAdapter;
-import io.agritrack.ui.login.api.SiteInfo;
+import io.agritrack.ui.login.api.SiteInfoRS;
 
 public class ExpandableListDialog {
 
@@ -26,12 +26,12 @@ public class ExpandableListDialog {
     private ExpandableListView xvClusters;
     private final ClusterListViewAdapter clustersAdapter;
     private List<String> clusterIDs;
-    private MutableLiveData<SiteInfo> selectedSite;
+    private MutableLiveData<SiteInfoRS> selectedSite;
 
     private final Activity activity;
     private Dialog dialog;
 
-    public ExpandableListDialog(Activity activity, Map<String, List<SiteInfo>> data, MutableLiveData<SiteInfo> selection, @StringRes int title) {
+    public ExpandableListDialog(Activity activity, Map<String, List<SiteInfoRS>> data, MutableLiveData<SiteInfoRS> selection, @StringRes int title) {
         this.activity = activity;
         this.selectedSite = selection;
 

@@ -1,4 +1,4 @@
-package io.agritrack.ui.login.api;
+package io.agritrack.api.upload;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;

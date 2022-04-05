@@ -1,4 +1,4 @@
-package io.agritrack.ui.login.api;
+package io.agritrack.api.query;
 
 import java.util.List;
 

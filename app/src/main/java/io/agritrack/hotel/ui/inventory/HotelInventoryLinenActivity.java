@@ -51,6 +51,7 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.upload.UploadingApi;
 import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.service.EncodingSchemeService;
@@ -63,7 +64,6 @@ import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
-import io.agritrack.ui.login.api.UploadingApi;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;

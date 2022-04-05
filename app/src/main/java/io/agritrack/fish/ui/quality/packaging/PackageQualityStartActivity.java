@@ -37,32 +37,29 @@ import java.util.List;
 import java.util.Set;
 
 import io.agritrack.R;
-import io.agritrack.fish.state.QualityRecord;
-import io.agritrack.sound.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.ProcessingRecord;
+import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.bo.LoggerReading;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.LoggerInitDialogFragment;
 
 public class PackageQualityStartActivity extends AppCompatActivity {
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
-
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-
-    private boolean intentForProcessing = true;
     private final LinkedList<String[]> listMeasurements = new LinkedList<>();
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
+    private boolean intentForProcessing = true;
     private SingleShotScanner scanner_runnable;
     private MobileDB db;
     private RecyclerView rvBinsForTransport;
@@ -265,7 +262,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
         super.onStop();
         this.stopScanner();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
     }
 
@@ -273,7 +270,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
     }
 

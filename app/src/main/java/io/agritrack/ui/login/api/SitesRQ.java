@@ -4,26 +4,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
-public class SitesRequest {
+public class SitesRQ {
 
     private Double lat;
     private Double lon;
     private Double rad;
     private Integer lvl;
 
-    public SitesRequest(String lat, String lon) {
+    public SitesRQ(String lat, String lon) {
         this(Double.valueOf(lat), Double.valueOf(lon));
     }
 
 
-    public SitesRequest(Double lat, Double lon) {
+    public SitesRQ(Double lat, Double lon) {
         this.lat = lat;
         this.lon = lon;
         this.rad = 5.0d;
         this.lvl = 3;
     }
 
-    public SitesRequest(Double lat, Double lon, Double rad, Integer lvl) {
+    public SitesRQ(Double lat, Double lon, Double rad, Integer lvl) {
         this.lat = lat;
         this.lon = lon;
         this.rad = rad;

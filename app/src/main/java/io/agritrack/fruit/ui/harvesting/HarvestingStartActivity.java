@@ -37,6 +37,7 @@ import java.util.GregorianCalendar;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.query.EnquiryApi;
 import io.agritrack.api.sync.PlantLotEnquiryCallBack;
 import io.agritrack.api.sync.SpeciesByPoleRfidEnquiryCallBack;
 import io.agritrack.common.Filters;
@@ -46,11 +47,9 @@ import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.HarvestRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 

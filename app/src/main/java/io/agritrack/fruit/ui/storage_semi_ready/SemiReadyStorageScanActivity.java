@@ -42,6 +42,7 @@ import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.query.EnquiryApi;
 import io.agritrack.api.sync.CollectionLotEnquiryCallBack;
 import io.agritrack.api.sync.RfidBatchByRfidBarcode;
 import io.agritrack.common.Filters;
@@ -53,7 +54,6 @@ import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
-import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 

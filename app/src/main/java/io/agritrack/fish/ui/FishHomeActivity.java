@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.api.sync.SyncBinsByPackagingSite;
 import io.agritrack.api.sync.SyncCageDetailsCallBack;
@@ -67,7 +68,6 @@ import io.agritrack.fish.ui.transport.TransportStartActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
-import io.agritrack.ui.login.api.SyncApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 

@@ -43,6 +43,7 @@ import java.util.LinkedList;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.query.EnquiryApi;
 import io.agritrack.api.sync.PackagingLotEnquiryCallBack;
 import io.agritrack.barcode.BarcodeScanService;
 import io.agritrack.sound.SoundUtil;
@@ -58,7 +59,6 @@ import io.agritrack.fruit.state.StorageRecord;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
-import io.agritrack.ui.login.api.EnquiryApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 
@@ -258,23 +258,6 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
 
         }
     }
-
-   /* private void invokeEnquiryIfcoBatch(String ifcoBarcode) {
-        try {
-            EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
-            String token = LocalPreferences.getToken();
-
-            // sync collection lot for current Site
-            Call<List<String>> enquiryIfcoBatchByIfcoBarcodeAsyncCall = enquiryService.getIfcoBatch(ifcoBarcode, "Bearer " + token);
-            enquiryIfcoBatchByIfcoBarcodeAsyncCall.enqueue(new IfcoBatchByIfcoBarcode(this.enquiryResult));
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-
-        }
-    }*/
 
     protected void configFooter() {
         ivNext.setOnClickListener(view -> {

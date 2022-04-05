@@ -2,12 +2,9 @@ package io.agritrack.fish.state;
 
 import static io.agritrack.enums.AssetType.ALL;
 
-import com.google.android.gms.common.util.Strings;
-
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -150,7 +147,7 @@ public class GlobalState {
             txFishing.iceSupplier = recFishing.iceSupplier;
             txFishing.seaTemperature = recFishing.seaTemperature;
             txFishing.harvestBinsCnt = recFishing.totalBinsUsed;
-            txFishing.orderedQuantity = recFishing.reqWeight != null ? Integer.valueOf(recFishing.reqWeight) : null;
+            txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight).intValue() : null;
             txFishing.requester = recFishing.requesterName;
             txFishing.totalQty = recFishing.totalFishWeight;
             txFishing.timestamp = System.currentTimeMillis();

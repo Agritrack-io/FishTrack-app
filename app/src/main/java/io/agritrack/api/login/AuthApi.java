@@ -1,8 +1,11 @@
-package io.agritrack.ui.login.api;
+package io.agritrack.api.login;
 
 import java.util.List;
 import java.util.Map;
 
+import io.agritrack.ui.login.api.AuthInfoRS;
+import io.agritrack.ui.login.api.LoginRQ;
+import io.agritrack.ui.login.api.SiteInfoRS;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -14,9 +17,9 @@ public interface AuthApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/auth/login")
-    Call<AuthInfo> login(@Body LoginRQ rq);
+    Call<AuthInfoRS> login(@Body LoginRQ rq);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/auth/coords")
-    Call<List<SiteInfo>> getSites(@QueryMap Map<String, Object> params);
+    Call<List<SiteInfoRS>> getSites(@QueryMap Map<String, Object> params);
 }

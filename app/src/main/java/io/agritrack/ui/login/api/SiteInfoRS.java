@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class SiteInfo implements Serializable {
+public class SiteInfoRS implements Serializable {
 
     @SerializedName("id")
     private Long id;
@@ -52,13 +52,13 @@ public class SiteInfo implements Serializable {
     private Boolean active;
 
 
-    public SiteInfo() {
+    public SiteInfoRS() {
     }
 
-    public SiteInfo(Long id, String name, String description, String code,
-                    Integer siteLevel, String level1, String level2, String level3,
-                    String level4, String country, String region, String customerSite,
-                    Double lat, Double lon, Boolean active) {
+    public SiteInfoRS(Long id, String name, String description, String code,
+                      Integer siteLevel, String level1, String level2, String level3,
+                      String level4, String country, String region, String customerSite,
+                      Double lat, Double lon, Boolean active) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -76,7 +76,7 @@ public class SiteInfo implements Serializable {
         this.active = active;
     }
 
-    public SiteInfo(String name, String description, String code) {
+    public SiteInfoRS(String name, String description, String code) {
         this.name = name;
         this.description = description;
         this.code = code;

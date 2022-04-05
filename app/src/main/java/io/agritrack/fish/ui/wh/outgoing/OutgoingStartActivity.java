@@ -29,7 +29,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.custom.ToggleGroup;
-import io.agritrack.ui.login.api.SiteInfo;
+import io.agritrack.ui.login.api.SiteInfoRS;
 import io.agritrack.ui.service.LocalPreferences;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
@@ -39,7 +39,7 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class OutgoingStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
-    private final MutableLiveData<SiteInfo> toAvramarSelection = new MutableLiveData<>();
+    private final MutableLiveData<SiteInfoRS> toAvramarSelection = new MutableLiveData<>();
     private final MutableLiveData<String> toCustomerSelection = new MutableLiveData<>();
     private final MutableLiveData<String> fromSiteSelection = new MutableLiveData<>();
 
@@ -51,7 +51,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
     private SimpleListDialog siteDialog;
     private String fromSite;
     private String toCustomer;
-    private SiteInfo toSite;
+    private SiteInfoRS toSite;
     private MobileDB db;
 
     private ImageView ivSupport;
@@ -142,11 +142,11 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         ivSupport = findViewById(R.id.ivSupport);
     }
 
-    private Map<String, List<SiteInfo>> fillAvramarData() {
-        Map<String, List<SiteInfo>> result = new HashMap<>();
+    private Map<String, List<SiteInfoRS>> fillAvramarData() {
+        Map<String, List<SiteInfoRS>> result = new HashMap<>();
         List<Site> allSites = db.siteDAO().getAll();
         if (allSites != null && !allSites.isEmpty()) {
-            result = allSites.stream().filter(x -> x.siteLevel == 3).map(s -> new SiteInfo(s.name, s.description, s.lvl2)).collect(Collectors.groupingBy(SiteInfo::getCode));
+            result = allSites.stream().filter(x -> x.siteLevel == 3).map(s -> new SiteInfoRS(s.name, s.description, s.lvl2)).collect(Collectors.groupingBy(SiteInfoRS::getCode));
         }
 
         return result;

@@ -13,17 +13,17 @@ import java.util.List;
 import java.util.Map;
 
 import io.agritrack.R;
-import io.agritrack.ui.login.api.SiteInfo;
+import io.agritrack.ui.login.api.SiteInfoRS;
 
 public class ClusterListViewAdapter extends BaseExpandableListAdapter {
 
     private final Context mCtx;
     //private final List<String> mClusters; // Cluster titles
     // child data in format of Cluster title, Site title
-    private final Map<String, List<SiteInfo>> mSites;
+    private final Map<String, List<SiteInfoRS>> mSites;
     private final List<String> keys;
 
-    public ClusterListViewAdapter(Context context, Map<String, List<SiteInfo>> listSitesData) {
+    public ClusterListViewAdapter(Context context, Map<String, List<SiteInfoRS>> listSitesData) {
         this.mCtx = context;
         this.mSites = listSitesData;
         this.keys = new ArrayList<String>(this.mSites.keySet());
@@ -49,7 +49,7 @@ public class ClusterListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        List<SiteInfo> _sites = this.mSites.get(this.keys.get(groupPosition));
+        List<SiteInfoRS> _sites = this.mSites.get(this.keys.get(groupPosition));
         return _sites.get(childPosition);
     }
 
@@ -85,7 +85,7 @@ public class ClusterListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        final SiteInfo child = (SiteInfo) getChild(groupPosition, childPosition);
+        final SiteInfoRS child = (SiteInfoRS) getChild(groupPosition, childPosition);
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this.mCtx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.site_layout, null);

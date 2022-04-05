@@ -300,6 +300,9 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             // set current State
             state = State.COUNT_SAMPLES;
 
+            // in case StopThread was skipped, reset var to allow for proper execution.
+            readyToDismiss = false;
+
             // read number of Measurements
             short cntSamples = cmd.ReadSamplesCount();
             mScanHandler.sendMessage(createMessage(CmdReadSamplesCnt, cntSamples));
@@ -364,6 +367,9 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
 
         // -------------------------------------
         cmd.setFilterEPC(loggerEPC);
+
+        // TODO: once stopped the logegr required RESET to be re-enabled...
+
         mScanHandler.post(stopLoggerThread);
         // -------------------------------------
     };

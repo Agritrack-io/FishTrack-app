@@ -34,7 +34,9 @@ import io.agritrack.AgritrackProducts;
 import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.login.AuthApi;
 import io.agritrack.api.sync.EncodingSchemeCallBack;
+import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
@@ -62,10 +64,8 @@ import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.su.AppOptionsFragment;
 import io.agritrack.ui.config.ConfigActivity;
-import io.agritrack.ui.login.api.AuthApi;
-import io.agritrack.ui.login.api.AuthInfo;
+import io.agritrack.ui.login.api.AuthInfoRS;
 import io.agritrack.ui.login.api.LoginRQ;
-import io.agritrack.ui.login.api.SyncApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.CAENLoggerActivity;
@@ -256,7 +256,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             } else {
                 AuthApi authService = APIServiceGenerator.createAPI(AuthApi.class);
                 LoginRQ loginRQ = new LoginRQ(username, pin);
-                Call<AuthInfo> authAsyncCall = authService.login(loginRQ);
+                Call<AuthInfoRS> authAsyncCall = authService.login(loginRQ);
                 authAsyncCall.enqueue(new AuthLoginCallBack(loginRQ));
             }
         } catch (Exception e) {
@@ -436,7 +436,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     }
 
     // ##########################
-    public class AuthLoginCallBack implements Callback<AuthInfo> {
+    public class AuthLoginCallBack implements Callback<AuthInfoRS> {
         private final String userName;
 
         public AuthLoginCallBack(LoginRQ loginRQ) {
@@ -444,8 +444,8 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         }
 
         @Override
-        public void onResponse(Call<AuthInfo> call, Response<AuthInfo> response) {
-            AuthInfo rs = response.body();
+        public void onResponse(Call<AuthInfoRS> call, Response<AuthInfoRS> response) {
+            AuthInfoRS rs = response.body();
 
             if (rs != null) {
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(this.userName, rs.getToken(), rs.getRoles()))));
@@ -457,7 +457,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         }
 
         @Override
-        public void onFailure(Call<AuthInfo> call, Throwable error) {
+        public void onFailure(Call<AuthInfoRS> call, Throwable error) {
             // Probably Network Communication Error
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.error_connection_timeout)));

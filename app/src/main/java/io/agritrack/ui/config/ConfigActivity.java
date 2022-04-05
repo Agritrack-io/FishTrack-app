@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.login.AuthApi;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.ConfirmationDialogCommand;
 import io.agritrack.dialog.SupportDialog;
@@ -37,24 +38,23 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.Coordinates;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.login.LoginActivity;
-import io.agritrack.ui.login.api.AuthApi;
-import io.agritrack.ui.login.api.SiteInfo;
-import io.agritrack.ui.login.api.SitesRequest;
+import io.agritrack.ui.login.api.SiteInfoRS;
+import io.agritrack.ui.login.api.SitesRQ;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ConfigActivity extends LocationAwareActivity {
-    private final MutableLiveData<List<SiteInfo>> siteInfoResults = new MutableLiveData<>();
+    private final MutableLiveData<List<SiteInfoRS>> siteInfoResults = new MutableLiveData<>();
     private MobileDB db;
     private TextView tvLongitude, tvLatitude;
     private ImageView btGPS;
     private ExpandableListView xvClusters;
     private ClusterListViewAdapter clustersAdapter;
-    private Map<String, List<SiteInfo>> mapOfSitesPerCluster;
+    private Map<String, List<SiteInfoRS>> mapOfSitesPerCluster;
     private List<String> clusterIDs;
-    private SiteInfo selectedSite;
+    private SiteInfoRS selectedSite;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -105,13 +105,13 @@ public class ConfigActivity extends LocationAwareActivity {
                 confirmSiteSelectionDialog.onConfirm(new ConfirmationDialogCommand() {
                     @Override
                     public void execute(Bundle args) {
-                        SiteInfo siteInfo = (SiteInfo) args.getSerializable("selectedSite");
+                        SiteInfoRS siteInfoRS = (SiteInfoRS) args.getSerializable("selectedSite");
 
                         // persist selected Site to local Preferences.
-                        LocalPreferences.writeValue(SelectedSiteName_Key, siteInfo.getName());
-                        LocalPreferences.writeValue(SelectedSiteId_Key, siteInfo.getId());
-                        LocalPreferences.writeValue(SelectedCluster_Key, siteInfo.getLevel2());
-                        LocalPreferences.writeValue(SelectedSiteLevel_Key, siteInfo.getLevel3());
+                        LocalPreferences.writeValue(SelectedSiteName_Key, siteInfoRS.getName());
+                        LocalPreferences.writeValue(SelectedSiteId_Key, siteInfoRS.getId());
+                        LocalPreferences.writeValue(SelectedCluster_Key, siteInfoRS.getLevel2());
+                        LocalPreferences.writeValue(SelectedSiteLevel_Key, siteInfoRS.getLevel3());
 
                         // move to Login Screen
                         Intent i = new Intent(getAppContext(), LoginActivity.class);
@@ -191,18 +191,18 @@ public class ConfigActivity extends LocationAwareActivity {
         }
 
         AuthApi authService = APIServiceGenerator.createAPI(AuthApi.class);
-        SitesRequest siteRQ = new SitesRequest(LocalPreferences.getLatitude(), LocalPreferences.getLongitude());
-        Call<List<SiteInfo>> getSitesAsyncCall = authService.getSites(siteRQ.toMap());
+        SitesRQ siteRQ = new SitesRQ(LocalPreferences.getLatitude(), LocalPreferences.getLongitude());
+        Call<List<SiteInfoRS>> getSitesAsyncCall = authService.getSites(siteRQ.toMap());
 
-        getSitesAsyncCall.enqueue(new Callback<List<SiteInfo>>() {
+        getSitesAsyncCall.enqueue(new Callback<List<SiteInfoRS>>() {
             @Override
-            public void onResponse(Call<List<SiteInfo>> call, Response<List<SiteInfo>> response) {
-                List<SiteInfo> rs = response.body();
+            public void onResponse(Call<List<SiteInfoRS>> call, Response<List<SiteInfoRS>> response) {
+                List<SiteInfoRS> rs = response.body();
                 siteInfoResults.setValue(rs);
             }
 
             @Override
-            public void onFailure(Call<List<SiteInfo>> call, Throwable t) {
+            public void onFailure(Call<List<SiteInfoRS>> call, Throwable t) {
                 System.out.println(t);
                 Toast.makeText(getAppContext(), render("Plz Check WIFI connection.."), Toast.LENGTH_LONG).show();
             }
@@ -230,7 +230,7 @@ public class ConfigActivity extends LocationAwareActivity {
             }
             if (response.size() > 0) {
                 // Site coordinates may be close to >1 cluster. These sites will be displayed grouped by cluster.
-                mapOfSitesPerCluster = response.stream().collect(Collectors.groupingBy(SiteInfo::getLevel2, Collectors.toCollection(ArrayList::new)));
+                mapOfSitesPerCluster = response.stream().collect(Collectors.groupingBy(SiteInfoRS::getLevel2, Collectors.toCollection(ArrayList::new)));
                 clusterIDs = new LinkedList<>(mapOfSitesPerCluster.keySet());
                 clustersAdapter = new ClusterListViewAdapter(this, mapOfSitesPerCluster);
 

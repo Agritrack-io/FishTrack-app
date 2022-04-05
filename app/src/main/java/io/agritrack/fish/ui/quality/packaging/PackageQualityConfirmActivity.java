@@ -29,6 +29,7 @@ import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.upload.UploadingApi;
 import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.common.MeasurementsDTO;
@@ -42,7 +43,6 @@ import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.fish.api.tx.TransactionApi;
-import io.agritrack.ui.login.api.UploadingApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.MediaType;

@@ -1,6 +1,5 @@
 package io.agritrack.hotel.ui.sync;
 
-import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -29,13 +28,11 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.upload.UploadingApi;
 import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.state.GlobalState;
 import io.agritrack.hotel.ui.HotelHomeActivity;
-import io.agritrack.hotel.ui.inventory.HotelInventoryLinenActivity;
-import io.agritrack.ui.login.api.UploadingApi;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
