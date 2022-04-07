@@ -25,6 +25,7 @@ public abstract class BaseSyncCallBack<T> implements Callback<T> {
     @Override
     public void onFailure(Call<T> call, Throwable t) {
         // Probably Network Communication Error
+        call.request().url();
         syncResult.setValue(getAppContext().getString(R.string.synch_failed));
     }
 }

@@ -26,9 +26,9 @@ public class AssetDTO {
     public Double volume;
     public Double perimeter;
     public Double net_eye_girth;
-    public Long purchase_date;
+    public String purchase_date;
     public Double cost;
-    public Boolean enabled;
+    public String status;
     public Long withdrew_at;
     public Long est_withdrew_at;
     public String comments;
@@ -63,7 +63,7 @@ public class AssetDTO {
         asset.netEyeGirth = assetDTO.net_eye_girth;
         asset.purchaseDate = assetDTO.purchase_date;
         asset.cost = assetDTO.cost;
-        asset.enabled = assetDTO.enabled;
+        asset.status = assetDTO.status;
         asset.withdrewAt = assetDTO.withdrew_at;
         asset.estiWithdrewAt = assetDTO.est_withdrew_at;
         asset.comments = assetDTO.comments;

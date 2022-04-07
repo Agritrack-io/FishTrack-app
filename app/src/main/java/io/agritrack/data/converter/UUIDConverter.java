@@ -7,7 +7,11 @@ import java.util.UUID;
 public class UUIDConverter {
     @TypeConverter
     public static String fromUUID(UUID uuid) {
-        return uuid.toString();
+        if (uuid!=null) {
+            return uuid.toString();
+        } else {
+            return null;
+        }
     }
 
     @TypeConverter

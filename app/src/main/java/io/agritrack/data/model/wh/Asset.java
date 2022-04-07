@@ -10,6 +10,8 @@ import java.util.UUID;
 @Entity(tableName = "asset")
 public class Asset {
 
+
+
     public Asset() {
         this.id = UUID.randomUUID();
     }
@@ -73,13 +75,13 @@ public class Asset {
     public Double netEyeGirth;
 
     @ColumnInfo(name = "purchase_date")
-    public Long purchaseDate;
+    public String purchaseDate;
 
     @ColumnInfo(name = "cost")
     public Double cost;
 
-    @ColumnInfo(name = "enabled")
-    public Boolean enabled;
+    @ColumnInfo(name = "status")
+    public String status;
 
     @ColumnInfo(name = "withdrawal")
     public Long withdrewAt;
