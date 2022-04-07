@@ -56,17 +56,10 @@ public class SiteInfoRS implements Serializable {
     public SiteInfoRS() {
     }
 
-<<<<<<< HEAD:app/src/main/java/io/agritrack/ui/login/api/SiteInfoRS.java
-    public SiteInfoRS(Long id, String name, String description, String code,
+    public SiteInfoRS(UUID id, String name, String description, String code,
                       Integer siteLevel, String level1, String level2, String level3,
                       String level4, String country, String region, String customerSite,
                       Double lat, Double lon, Boolean active) {
-=======
-    public SiteInfo(UUID id, String name, String description, String code,
-                    Integer siteLevel, String level1, String level2, String level3,
-                    String level4, String country, String region, String customerSite,
-                    Double lat, Double lon, Boolean active) {
->>>>>>> b2950740ae786d63fb17d384559721dc7f851561:app/src/main/java/io/agritrack/ui/login/api/SiteInfo.java
         this.id = id;
         this.name = name;
         this.description = description;
