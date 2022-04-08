@@ -6,6 +6,7 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,8 @@ import io.agritrack.ui.service.LocalPreferences;
 public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
 
     private EditText etNoHematoma, etLightHematoma, etHeavyHematoma, etPink, etDark, etWhite, etUncolored, etHematomas, etMucus, etProblematicFish;
+    private String evaluation;
+    private RadioGroup rgTotalEvaluation;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
 
@@ -109,6 +114,98 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
             }
         });
 
+        etPink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number1 = etPink.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etPink.getText().toString().trim());
+                int number2 = etDark.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etDark.getText().toString().trim());
+                int number3 = etWhite.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etWhite.getText().toString().trim());
+                int number4 = etUncolored.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etUncolored.getText().toString().trim());
+                if (number1+number2+number3+number4!=100 && !Strings.isEmptyOrWhitespace(etDark.getText().toString()) && !Strings.isEmptyOrWhitespace(etWhite.getText().toString()) && !Strings.isEmptyOrWhitespace(etUncolored.getText().toString())){
+                    etPink.setBackgroundColor(Color.RED);
+                    etDark.setBackgroundColor(Color.RED);
+                    etWhite.setBackgroundColor(Color.RED);
+                    etUncolored.setBackgroundColor(Color.RED);
+                    CToast(ReceiptQualityMoreInfo3Activity.this, "Το άθροισμα των ποσοστών είναι διαφορετικό από 100%", Toast.LENGTH_SHORT);
+                } else {
+                    etPink.setBackgroundColor(Color.WHITE);
+                    etDark.setBackgroundColor(Color.WHITE);
+                    etWhite.setBackgroundColor(Color.WHITE);
+                    etUncolored.setBackgroundColor(Color.WHITE);
+                }
+                etDark.requestFocus();
+            }
+        });
+
+        etDark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number1 = etPink.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etPink.getText().toString().trim());
+                int number2 = etDark.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etDark.getText().toString().trim());
+                int number3 = etWhite.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etWhite.getText().toString().trim());
+                int number4 = etUncolored.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etUncolored.getText().toString().trim());
+                if (number1+number2+number3+number4!=100 && !Strings.isEmptyOrWhitespace(etPink.getText().toString()) && !Strings.isEmptyOrWhitespace(etWhite.getText().toString()) && !Strings.isEmptyOrWhitespace(etUncolored.getText().toString())){
+                    etPink.setBackgroundColor(Color.RED);
+                    etDark.setBackgroundColor(Color.RED);
+                    etWhite.setBackgroundColor(Color.RED);
+                    etUncolored.setBackgroundColor(Color.RED);
+                    CToast(ReceiptQualityMoreInfo3Activity.this, "Το άθροισμα των ποσοστών είναι διαφορετικό από 100%", Toast.LENGTH_SHORT);
+                } else {
+                    etPink.setBackgroundColor(Color.WHITE);
+                    etDark.setBackgroundColor(Color.WHITE);
+                    etWhite.setBackgroundColor(Color.WHITE);
+                    etUncolored.setBackgroundColor(Color.WHITE);
+                }
+                etWhite.requestFocus();
+            }
+        });
+
+        etWhite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number1 = etPink.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etPink.getText().toString().trim());
+                int number2 = etDark.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etDark.getText().toString().trim());
+                int number3 = etWhite.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etWhite.getText().toString().trim());
+                int number4 = etUncolored.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etUncolored.getText().toString().trim());
+                if (number1+number2+number3+number4!=100 && !Strings.isEmptyOrWhitespace(etPink.getText().toString()) && !Strings.isEmptyOrWhitespace(etDark.getText().toString()) && !Strings.isEmptyOrWhitespace(etUncolored.getText().toString())){
+                    etPink.setBackgroundColor(Color.RED);
+                    etDark.setBackgroundColor(Color.RED);
+                    etWhite.setBackgroundColor(Color.RED);
+                    etUncolored.setBackgroundColor(Color.RED);
+                    CToast(ReceiptQualityMoreInfo3Activity.this, "Το άθροισμα των ποσοστών είναι διαφορετικό από 100%", Toast.LENGTH_SHORT);
+                } else {
+                    etPink.setBackgroundColor(Color.WHITE);
+                    etDark.setBackgroundColor(Color.WHITE);
+                    etWhite.setBackgroundColor(Color.WHITE);
+                    etUncolored.setBackgroundColor(Color.WHITE);
+                }
+                etUncolored.requestFocus();
+            }
+        });
+
+        etUncolored.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number1 = etPink.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etPink.getText().toString().trim());
+                int number2 = etDark.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etDark.getText().toString().trim());
+                int number3 = etWhite.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etWhite.getText().toString().trim());
+                int number4 = etUncolored.getText().toString().trim().isEmpty() ? 0 : Integer.parseInt(etUncolored.getText().toString().trim());
+                if (number1+number2+number3+number4!=100 && !Strings.isEmptyOrWhitespace(etPink.getText().toString()) && !Strings.isEmptyOrWhitespace(etDark.getText().toString()) && !Strings.isEmptyOrWhitespace(etWhite.getText().toString())){
+                    etPink.setBackgroundColor(Color.RED);
+                    etDark.setBackgroundColor(Color.RED);
+                    etWhite.setBackgroundColor(Color.RED);
+                    etUncolored.setBackgroundColor(Color.RED);
+                    CToast(ReceiptQualityMoreInfo3Activity.this, "Το άθροισμα των ποσοστών είναι διαφορετικό από 100%", Toast.LENGTH_SHORT);
+                } else {
+                    etPink.setBackgroundColor(Color.WHITE);
+                    etDark.setBackgroundColor(Color.WHITE);
+                    etWhite.setBackgroundColor(Color.WHITE);
+                    etUncolored.setBackgroundColor(Color.WHITE);
+                }
+                etHematomas.requestFocus();
+            }
+        });
+
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(ReceiptQualityMoreInfo3Activity.this);
             supportDialog.showDialog();
@@ -161,6 +258,36 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
         }
     };
 
+    public void oneRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        int radioButtonID = rgTotalEvaluation.getCheckedRadioButtonId();
+        View radioButton = rgTotalEvaluation.findViewById(radioButtonID);
+        int idx = rgTotalEvaluation.indexOfChild(radioButton);
+
+        switch(view.getId()) {
+            case R.id.simpleRadioButton1:
+                if (checked)
+                    evaluation = String.valueOf(idx +1);
+                break;
+            case R.id.simpleRadioButton2:
+                if (checked)
+                    evaluation = String.valueOf(idx +1);
+                break;
+            case R.id.simpleRadioButton3:
+                if (checked)
+                    evaluation = String.valueOf(idx +1);
+                break;
+            case R.id.simpleRadioButton4:
+                if (checked)
+                    evaluation = String.valueOf(idx +1);
+                break;
+            case R.id.simpleRadioButton5:
+                if (checked)
+                    evaluation = String.valueOf(idx +1);;
+        }
+    }
+
     private void assignCtrlVars() {
         etNoHematoma = findViewById(R.id.etNoHematoma);
         etNoHematoma.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
@@ -182,6 +309,7 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
         etMucus.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
         etProblematicFish = findViewById(R.id.etProblematicFish);
         etProblematicFish.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        rgTotalEvaluation = findViewById(R.id.rgTotalEvaluation);
         ivSupport = findViewById(R.id.ivSupport);
     }
 
@@ -217,6 +345,9 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
         }
         if (qualityRecord.problematicFish != null) {
             etProblematicFish.setText(String.valueOf(qualityRecord.problematicFish));
+        }
+        if (qualityRecord.selectedRgId >-1) {
+            rgTotalEvaluation.check(qualityRecord.selectedRgId);
         }
     }
 
@@ -263,6 +394,14 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
             qualityRecord.problematicFish = Integer.valueOf(etProblematicFish.getText().toString());
         }
 
+        if (rgTotalEvaluation.getCheckedRadioButtonId() > -1) {
+            int radioButtonID = rgTotalEvaluation.getCheckedRadioButtonId();
+            View radioButton = rgTotalEvaluation.findViewById(radioButtonID);
+            int idx = rgTotalEvaluation.indexOfChild(radioButton);
+            qualityRecord.evaluation = String.valueOf(idx+1);
+            qualityRecord.selectedRgId = rgTotalEvaluation.getCheckedRadioButtonId();
+        }
+
         return qualityRecord;
     }
 
@@ -271,6 +410,9 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
         if (!IsDemo) {
             if (GlobalState.recQuality.noHematoma == null || GlobalState.recQuality.lightHematoma == null || GlobalState.recQuality.heavyHematoma == null || GlobalState.recQuality.pink == null || GlobalState.recQuality.dark == null || GlobalState.recQuality.white == null || GlobalState.recQuality.uncolored == null || GlobalState.recQuality.hematomas == null || GlobalState.recQuality.mucus == null || GlobalState.recQuality.problematicFish == null) {
                 sb.append(String.format("\n%s is missing", "'Some percentages fields'"));
+            }
+            if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.evaluation)) {
+                sb.append(String.format("\n%s is missing", "'Overall evaluation'"));
             }
         }
 

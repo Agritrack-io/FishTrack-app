@@ -11,9 +11,13 @@ public class QualityTxDTO {
     public Long timestamp;
     public String plot;
     public List<String> quality_bins = new LinkedList<String>();
+    public Integer no_quality_bins;
     public String bin_condition;
     public String ice_condition;
     public String smell_condition;
+    public Double min_bin_temp;
+    public Double avg_bin_temp;
+    public Double max_bin_temp;
     public Double min_fish_temp;
     public Double avg_fish_temp;
     public Double max_fish_temp;
@@ -39,8 +43,9 @@ public class QualityTxDTO {
     public Integer hematomas;
     public Integer mucus;
     public Integer problematic_fish;
-    public String packaging_site;
-    public String harvest_load;
+    public String overall_evaluation;
+    public String remarks;
+    public String site;
     public String user;
     public String state;
     public Double longitude;
@@ -51,9 +56,13 @@ public class QualityTxDTO {
 
         qualityTxDto.plot = quality.plot;
         qualityTxDto.quality_bins = quality.qualityBins;
+        qualityTxDto.no_quality_bins = quality.noQualityBins;
         qualityTxDto.bin_condition = quality.binCondition;
         qualityTxDto.ice_condition = quality.iceCondition;
         qualityTxDto.smell_condition = quality.smellCondition;
+        qualityTxDto.min_bin_temp = quality.minBinTemp;
+        qualityTxDto.avg_bin_temp = quality.avgBinTemp;
+        qualityTxDto.max_bin_temp = quality.maxBinTemp;
         qualityTxDto.min_fish_temp = quality.minFishTemp;
         qualityTxDto.avg_fish_temp = quality.avgFishTemp;
         qualityTxDto.max_fish_temp = quality.maxFishTemp;
@@ -79,7 +88,9 @@ public class QualityTxDTO {
         qualityTxDto.hematomas = quality.hematomas;
         qualityTxDto.mucus = quality.mucus;
         qualityTxDto.problematic_fish = quality.problematicFish;
-        qualityTxDto.packaging_site = quality.site;
+        qualityTxDto.overall_evaluation = quality.overallEvaluation;
+        qualityTxDto.remarks = quality.remarks;
+        qualityTxDto.site = quality.site;
         qualityTxDto.user = quality.user;
         qualityTxDto.state = quality.state;
         qualityTxDto.timestamp = quality.timestamp;

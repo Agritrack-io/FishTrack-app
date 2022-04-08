@@ -10,6 +10,7 @@ public class QualityRecord {
     public String pLot;
     public String remarks;
     public List<String> qualityBins;
+    public Integer noQualityBins;
     public List<String[]> tempValues;
     public String binCondition;
     public String iceCondition;
@@ -51,6 +52,11 @@ public class QualityRecord {
     public Double etT3;
     public String boxSn;
     public Long timestamp;
+    public String evaluation;
+    public int selectedRgId;
+    public Double minBinTemp;
+    public Double meanBinTemp;
+    public Double maxBinTemp;
 
     public QualityRecord() {
     }

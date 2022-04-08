@@ -283,10 +283,22 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         if (etMaxFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etMaxFishTemp.getText().toString())) {
             qualityRecord.maxFishTemp = Double.valueOf(etMaxFishTemp.getText().toString());
         }
+        if (tvMinTempBin.getText() != null && !Strings.isEmptyOrWhitespace(tvMinTempBin.getText().toString())) {
+            qualityRecord.minBinTemp = Double.valueOf(tvMinTempBin.getText().toString().replace(',', '.'));
+        }
+
+        if (tvMeanTempBin.getText() != null && !Strings.isEmptyOrWhitespace(tvMeanTempBin.getText().toString())) {
+            qualityRecord.meanBinTemp = Double.valueOf(tvMeanTempBin.getText().toString().replace(',', '.'));
+        }
+
+        if (tvMaxTempBin.getText() != null && !Strings.isEmptyOrWhitespace(tvMaxTempBin.getText().toString())) {
+            qualityRecord.maxBinTemp = Double.valueOf(tvMaxTempBin.getText().toString().replace(',', '.'));
+        }
 
         if (mtvRemarks.getText() != null) {
             qualityRecord.remarks = mtvRemarks.getText().toString();
         }
+
         return qualityRecord;
     }
 

@@ -135,7 +135,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityConfirmActivity">
                 android:text="@string/product_lot_confirm_label"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/tvEvaluationLabel"
                 app:layout_constraintEnd_toStartOf="@+id/tvPackagingLot"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsLabel" />
@@ -149,10 +149,36 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityConfirmActivity">
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/tvEvaluation"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvPackagingLotLabel"
                 app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsCount" />
+
+            <TextView
+                android:id="@+id/tvEvaluationLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/confirm_overall_evaluation"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvEvaluation"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPackagingLotLabel" />
+
+            <TextView
+                android:id="@+id/tvEvaluation"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/border_bottom"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvEvaluationLabel"
+                app:layout_constraintTop_toBottomOf="@+id/tvPackagingLot" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -295,5 +321,11 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityConfirmActivity">
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_check_blue" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Switch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
