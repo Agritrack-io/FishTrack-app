@@ -217,6 +217,7 @@
     <string name="uncolored">Αποχρωματισμένα</string>
     <string name="mucus">Βλέννα</string>
     <string name="defective_fish">Προβληματικά ψάρια</string>
+    <string name="overall_evaluation">Συν. αξιολόγηση</string>
     <string name="process_temperatures">Θερμοκρασίες πριν τη συσκευασία</string>
     <string name="high_temp">Max:</string>
     <string name="avg_temp">Avg:</string>
@@ -227,6 +228,7 @@
     <string name="current_date">Ημερομηνία</string>
     <string name="fish_measurements">Θερμοκρασίες ψαριών</string>
     <string name="confirm_lot">LOT:</string>
+    <string name="confirm_overall_evaluation">Συν. αξιολόγηση:</string>
     <string name="confirm_box">S/N:</string>
     <string name="avg_fish_temp_confirm_label">Μέση θερμοκρασία (°C)</string>
 

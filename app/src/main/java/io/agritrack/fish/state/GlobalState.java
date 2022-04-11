@@ -231,6 +231,9 @@ public class GlobalState {
             txQuality.iceCondition = recQuality.iceCondition;
             txQuality.binCondition = recQuality.binCondition;
             txQuality.smellCondition = recQuality.smellCondition;
+            txQuality.minBinTemp = recQuality.minBinTemp;
+            txQuality.avgBinTemp = recQuality.meanBinTemp;
+            txQuality.maxBinTemp = recQuality.maxBinTemp;
             txQuality.minFishTemp = recQuality.minFishTemp;
             txQuality.avgFishTemp = recQuality.meanFishTemp;
             txQuality.maxFishTemp = recQuality.maxFishTemp;
@@ -256,8 +259,10 @@ public class GlobalState {
             txQuality.hematomas = recQuality.hematomas;
             txQuality.mucus = recQuality.mucus;
             txQuality.problematicFish = recQuality.problematicFish;
-            //txProcess.remarks = recProcessing.remarks;
+            txQuality.overallEvaluation = recQuality.evaluation;
+            txQuality.remarks = recQuality.remarks;
             txQuality.qualityBins = recQuality.qualityBins;
+            txQuality.noQualityBins = recQuality.noQualityBins;
             txQuality.user = LocalPreferences.getLoggedInUser("N/A");
             txQuality.site = LocalPreferences.getCurrentSiteName();
             txQuality.timestamp = System.currentTimeMillis();

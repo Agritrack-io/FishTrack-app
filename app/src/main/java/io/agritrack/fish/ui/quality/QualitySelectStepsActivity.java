@@ -47,7 +47,7 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.quality_first_step_text), "PP-DOC-01", ReceiptQualityStartActivity.class));
-        menuItemsList.add(new MenuItem(getString(R.string.quality_second_step_text), "", PackageQualityStartActivity.class));
+        //menuItemsList.add(new MenuItem(getString(R.string.quality_second_step_text), "", PackageQualityStartActivity.class));
         menuItemsList.add(new MenuItem(getString(R.string.quality_third_step_text), "PP-DOC-02", PostPackagingQualityActivity.class));
 
         InventoryMenuAdapter adapter = new InventoryMenuAdapter(this, menuItemsList);
@@ -61,8 +61,12 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
                 switch (position) {
                     case First_Step_Idx:
                         GlobalState.initQualityRecord();
+                        i = new Intent(QualitySelectStepsActivity.this, ReceiptQualityStartActivity.class);
+                        i.putExtra("id", position);
+                        startActivity(i);
 
-                        YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
+                        //
+                        /*YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                         confirmSiteSelectionDlg.setMessage(getText(R.string.quality_select_type));
 
                         Intent finalI = i;
@@ -76,14 +80,14 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
                         });
 
                         FragmentManager fm = getSupportFragmentManager();
-                        confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+                        confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));*/
                         break;
-                    case Second_Step_Idx:
+                    /*case Second_Step_Idx:
                         GlobalState.initQualityRecord();
                         i = new Intent(QualitySelectStepsActivity.this, PackageQualityStartActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);
-                        break;
+                        break;*/
                     case Third_Step_Idx:
                         GlobalState.initQualityRecord();
                         i = new Intent(QualitySelectStepsActivity.this, PostPackagingQualityActivity.class);

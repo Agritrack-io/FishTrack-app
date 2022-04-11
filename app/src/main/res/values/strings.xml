@@ -213,6 +213,7 @@
     <string name="uncolored">Uncolored</string>
     <string name="mucus">Mucus</string>
     <string name="defective_fish">Defective fish</string>
+    <string name="overall_evaluation">Overall evaluation</string>
     <string name="process_temperatures">Process temperatures</string>
     <string name="high_temp">Max:</string>
     <string name="avg_temp">Avg:</string>
@@ -223,6 +224,7 @@
     <string name="current_date">Date</string>
     <string name="fish_measurements">Fish temperatures</string>
     <string name="confirm_lot">LOT:</string>
+    <string name="confirm_overall_evaluation">Overall evaluation:</string>
     <string name="confirm_box">S/N:</string>
     <string name="avg_fish_temp_confirm_label">Mean temperature (°C)</string>
 

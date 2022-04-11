@@ -61,7 +61,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
 
-    private boolean intentForProcessing = false;
+    private boolean intentForProcessing = true;
 
     private final LinkedList<String[]> listMeasurements = new LinkedList<>();
     private SingleShotScanner scanner_runnable;
@@ -108,10 +108,10 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
 
-        if (getIntent() != null) {
+        /*if (getIntent() != null) {
             Bundle bundle = getIntent().getExtras();
             intentForProcessing = bundle != null ? bundle.getBoolean("processing") : intentForProcessing;
-        }
+        }*/
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityStartActivity);
@@ -236,13 +236,14 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             TextView tvBinsCount = findViewById(R.id.tvBinsCount);
-            tvBinsCount.setText(String.valueOf(qualityRecord.qualityBins.size()));
+            tvBinsCount.setText(String.valueOf(qualityRecord.noQualityBins));
         }
     }
 
     private void updateState() {
 
         GlobalState.recQuality.qualityBins = new LinkedList<>(adapterBins.getValues());
+        GlobalState.recQuality.noQualityBins = adapterBins.getItemCount();
         GlobalState.recQuality.tempValues = listMeasurements;
         GlobalState.recQuality.qualityProcessing = intentForProcessing;
         GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
@@ -333,7 +334,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
                             String binEPC = epcStr.substring(11);
 
                             // after bin is identified, initialize the temperatures logger.
-                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
+                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(binEPC);
                             if (logger != null) {
                                 logger_rfid = logger.rfid;
                                 scannedBinEPCs.add(binEPC);

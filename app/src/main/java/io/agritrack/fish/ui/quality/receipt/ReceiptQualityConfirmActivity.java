@@ -61,7 +61,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
     private YesNoDialogFragment confirmGPSSelectionDlg;
 
     private ProgressDialog progressDialog;
-    private TextView tvNumberOfBinsCount, tvDispatchNote, tvPackagingLot, tvSecurityClipNumber, tvUsername;
+    private TextView tvNumberOfBinsCount, tvPackagingLot, tvEvaluation, tvUsername;
     private EditText etPIN;
     private ImageView ivSupport, ivNext, ivBack;
     private boolean proceedWithoutLocation = false;
@@ -154,9 +154,8 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
 
     private void assignCtrlVars() {
         tvNumberOfBinsCount = findViewById(R.id.tvNumberOfBinsCount);
-        tvDispatchNote = findViewById(R.id.tvDispatchNote);
         tvPackagingLot = findViewById(R.id.tvPackagingLot);
-        tvSecurityClipNumber = findViewById(R.id.tvSecurityClipNumber);
+        tvEvaluation = findViewById(R.id.tvEvaluation);
         tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
         ivNext = findViewById(R.id.ivToCongs);
@@ -173,6 +172,10 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
 
         if (qltRecord.qualityBins != null) {
             tvNumberOfBinsCount.setText(String.valueOf(qltRecord.qualityBins.size()));
+        }
+
+        if (!Strings.isEmptyOrWhitespace(qltRecord.evaluation)) {
+            tvEvaluation.setText(qltRecord.evaluation);
         }
 
         //tvNumberOfBinsCount.setText(prcRecord.totalBinsUsed != null ? prcRecord.totalBinsUsed.toString() : "N/A");

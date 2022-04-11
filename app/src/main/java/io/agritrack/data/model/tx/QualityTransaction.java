@@ -28,6 +28,9 @@ public class QualityTransaction {
     @ColumnInfo(name = "quality_bins")
     public List<String> qualityBins;
 
+    @ColumnInfo(name = "no_quality_bins")
+    public Integer noQualityBins;
+
     @ColumnInfo(name = "bin_condition")
     public String binCondition;
 
@@ -36,6 +39,15 @@ public class QualityTransaction {
 
     @ColumnInfo(name = "smell_condition")
     public String smellCondition;
+
+    @ColumnInfo(name = "min_bin_temp")
+    public Double minBinTemp;
+
+    @ColumnInfo(name = "avg_bin_temp")
+    public Double avgBinTemp;
+
+    @ColumnInfo(name = "max_bin_temp")
+    public Double maxBinTemp;
 
     @ColumnInfo(name = "min_fish_temp")
     public Double minFishTemp;
@@ -112,6 +124,9 @@ public class QualityTransaction {
     @ColumnInfo(name = "problematic_fish")
     public Integer problematicFish;
 
+    @ColumnInfo(name = "overall_evaluation")
+    public String overallEvaluation;
+
     @ColumnInfo(name = "site_id")
     public String site;
 
@@ -129,4 +144,7 @@ public class QualityTransaction {
 
     @ColumnInfo(name = "latitude")
     public Double latitude;
+
+    @ColumnInfo(name = "remarks")
+    public String remarks;
 }
