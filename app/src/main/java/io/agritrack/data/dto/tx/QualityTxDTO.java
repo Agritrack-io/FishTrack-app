@@ -2,12 +2,13 @@ package io.agritrack.data.dto.tx;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.data.model.tx.QualityTransaction;
 
 public class QualityTxDTO {
 
-    public Long id;
+    public UUID id;
     public Long timestamp;
     public String plot;
     public List<String> quality_bins = new LinkedList<String>();

@@ -10,9 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -21,19 +19,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.util.List;
-
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.HarvestRequest;
-import io.agritrack.data.model.tx.FishingTransaction;
-import io.agritrack.data.model.wh.Order;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.fishing.FishingStartActivity;
-import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -131,7 +121,7 @@ public class PackagingSelectOrderActivity extends AppCompatActivity implements A
         if (harvestRq != null) {
             GlobalState.recFishing.harvestRqPkId = harvestRq.id;
             GlobalState.recFishing.harvestRq = harvestRq.requestId;
-            GlobalState.recFishing.speciesName = harvestRq.fishName;
+            GlobalState.recFishing.speciesName = harvestRq.species;
             GlobalState.recFishing.cageCode = harvestRq.cageCode;
             GlobalState.recFishing.cageRFID = harvestRq.cageRFID;
             GlobalState.recFishing.requesterName = harvestRq.requester;

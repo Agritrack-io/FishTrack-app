@@ -1,11 +1,13 @@
 package io.agritrack.data.model.tx;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.data.converter.StringListConverter;
 
@@ -13,7 +15,8 @@ import io.agritrack.data.converter.StringListConverter;
 public class QualityTransaction {
 
     @PrimaryKey
-    public Long id;
+    @NonNull
+    public UUID id;
 
     @ColumnInfo(name = "timestamp")
     public Long timestamp;

@@ -21,7 +21,7 @@ public class HarvestRequestDTO {
     public static HarvestRequest convert(HarvestRequestDTO harvestRequestDTO) {
         HarvestRequest harvestRequest = new HarvestRequest();
         harvestRequest.id = harvestRequestDTO.id;
-        harvestRequest.fishName = harvestRequestDTO.fish_type;
+        harvestRequest.species = harvestRequestDTO.fish_type;
         harvestRequest.fishSize = harvestRequestDTO.fish_size;
         harvestRequest.requestId = harvestRequestDTO.request_id;
         harvestRequest.reqQty = harvestRequestDTO.request_quantity;
