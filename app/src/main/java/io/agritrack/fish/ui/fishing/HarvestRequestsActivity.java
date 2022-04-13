@@ -64,7 +64,11 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getAll();
         if (harvestRequests != null && !harvestRequests.isEmpty()) {
             //
+<<<<<<< HEAD
             this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s kg, %s", x.cageCode, x.reqQty, x.fishName))).toArray(GenericListModel[]::new);
+=======
+            this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.id, String.format("%s, %s kg, %s", x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
+>>>>>>> a626d4e0ba338b44db353c7154c8d91454c4208e
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, android.R.layout.simple_list_item_checked, harvestReqs) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
@@ -122,9 +126,10 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
 
         HarvestRequest harvestRq = db.harvestRequestsDAO().getById(member.getRequestId());
         if (harvestRq != null) {
+
             GlobalState.recFishing.harvestRqPkId = harvestRq.requestId;
             //GlobalState.recFishing.harvestRq = harvestRq.requestId;
-            GlobalState.recFishing.speciesName = harvestRq.fishName;
+            GlobalState.recFishing.speciesName = harvestRq.species;
             GlobalState.recFishing.cageCode = harvestRq.cageCode;
             GlobalState.recFishing.expectedCageRFID = harvestRq.cageRFID;
             GlobalState.recFishing.requesterName = harvestRq.requester;

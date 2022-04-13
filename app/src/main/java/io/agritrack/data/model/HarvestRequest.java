@@ -26,7 +26,7 @@ public class HarvestRequest {
     public String requester;
 
     @ColumnInfo(name = "species")
-    public String fishName;
+    public String species;
 
     @ColumnInfo(name = "fish_size")
     public String fishSize;
@@ -48,7 +48,4 @@ public class HarvestRequest {
 
     @ColumnInfo(name = "packaging_plant")
     public String packagingPlant;
-
-   /* @OneToMany(mappedBy = "harvestRequest", fetch = FetchType.LAZY)
-    public List<HarvestLoad> harvestLoads;*/
 }

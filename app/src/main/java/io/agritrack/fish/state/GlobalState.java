@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import io.agritrack.data.db.MobileDB;
@@ -227,6 +228,7 @@ public class GlobalState {
     public static QualityTransaction commitQuality(MobileDB db) {
         try {
             QualityTransaction txQuality = new QualityTransaction();
+            txQuality.id = UUID.randomUUID();
             txQuality.plot = recQuality.pLot;
             txQuality.iceCondition = recQuality.iceCondition;
             txQuality.binCondition = recQuality.binCondition;
