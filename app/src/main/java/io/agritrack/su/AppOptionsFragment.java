@@ -27,19 +27,22 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.ui.config.ConfigActivity;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.CAENLoggerActivity;
+import io.agritrack.ui.tools.ImportCAENLoggersToDBActivity;
 
 
 public class AppOptionsFragment extends DialogFragment {
     public static String TAG = "CaenLoggerDialogFragment";
     private int check = 0;
     private Spinner spProducts;
-    private Button btnSiteSelection, btnRT0012, btnDelCfg, btnTruncDB;
+    private Button btnSiteSelection, btnRT0012, btnImportRT0012, btnDelCfg, btnTruncDB;
     private ToggleButton tbEnvironment;
     private String selectedProduct;
 
     private View.OnClickListener btSiteSelectionClickListener = v -> gotoSiteSelection(v);
 
     private View.OnClickListener btRT0012ClickListener = v -> gotoRT0012(v);
+
+    private View.OnClickListener btImportRT0012ClickListener = v -> gotoImportRT0012(v);
 
     private View.OnClickListener btDelCfgClickListener = v -> delCfg(v);
 
@@ -74,6 +77,7 @@ public class AppOptionsFragment extends DialogFragment {
         spProducts = rootView.findViewById(R.id.spProducts);
         btnSiteSelection = rootView.findViewById(R.id.btnSiteSelection);
         btnRT0012 = rootView.findViewById(R.id.btnRT0012);
+        btnImportRT0012 = rootView.findViewById(R.id.btnImportRT0012);
         btnDelCfg = rootView.findViewById(R.id.btnDelCfg);
         btnTruncDB = rootView.findViewById(R.id.btnTruncDB);
         tbEnvironment = rootView.findViewById(R.id.tbEnvironment);
@@ -82,6 +86,7 @@ public class AppOptionsFragment extends DialogFragment {
         // set onClick listeners for the menu buttons
         btnSiteSelection.setOnClickListener(btSiteSelectionClickListener);
         btnRT0012.setOnClickListener(btRT0012ClickListener);
+        btnImportRT0012.setOnClickListener(btImportRT0012ClickListener);
         btnDelCfg.setOnClickListener(btDelCfgClickListener);
         btnTruncDB.setOnClickListener(btTruncDBClickListener);
         tbEnvironment.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -149,6 +154,13 @@ public class AppOptionsFragment extends DialogFragment {
 
     public void gotoRT0012(View v) {
         Intent i = new Intent(getActivity(), CAENLoggerActivity.class);
+        i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+        startActivity(i);
+        dismiss();
+    }
+
+    public void gotoImportRT0012(View v) {
+        Intent i = new Intent(getActivity(), ImportCAENLoggersToDBActivity.class);
         i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
         startActivity(i);
         dismiss();

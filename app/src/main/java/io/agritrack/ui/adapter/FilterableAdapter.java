@@ -46,7 +46,7 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
 
     @Override
     public int getItemCount() {
-        return arrayListFiltered.size();
+        return arrayListFiltered != null ? arrayListFiltered.size() : 0;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
                     results.values = arrayList;
                 } else {
                     for (GenericListModel item : arrayList) {
-                        if (item.getLabel().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                        if (item != null && item.getLabel() != null && item.getLabel().toLowerCase().contains(constraint.toString().toLowerCase())) {
                             arrayListFilter.add(item);
                         }
                     }
@@ -78,8 +78,8 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
                 arrayListFiltered = (ArrayList<GenericListModel>) results.values;
                 notifyDataSetChanged();
 
-                if (arrayListFiltered.size() == 0) {
-                    Toast.makeText(context, "Not Found", Toast.LENGTH_LONG).show();
+                if (arrayListFiltered==null || arrayListFiltered.size() == 0) {
+                    Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show();
                 }
             }
         };

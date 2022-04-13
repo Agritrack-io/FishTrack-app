@@ -6,10 +6,8 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,10 +21,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,22 +37,26 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import io.agritrack.R;
-import io.agritrack.fish.ui.process.ProcessBinsActivity;
-import io.agritrack.fish.ui.transport.TransportBinsActivity;
-import io.agritrack.rfid.ScanInventoryThread;
-import io.agritrack.sound.SoundUtil;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.bo.LoggerReading;
 import io.agritrack.rfid.SingleShotScanner;
-import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
+import io.agritrack.ui.tools.LoggerInitDialogFragment;
+import android.content.BroadcastReceiver;
+
+import androidx.appcompat.app.AppCompatActivity;
+import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 
 public class FishingBinsActivity extends AppCompatActivity {
 
@@ -63,14 +64,16 @@ public class FishingBinsActivity extends AppCompatActivity {
     protected BroadcastReceiver keyReceiver;
 
     // Local handler that receives the RFID scanner results.
-    private ScanHandler mScanHandler;
+    private final ScanHandler mScanHandler = new ScanHandler(this);
 
-    private ScanInventoryThread scanner_runnable;
+    private SingleShotScanner singleShot_runnable;
     private MobileDB db;
     private TemplateRecyclerAdapter adapterBins;
     private RecyclerView rvBins;
     private TextView tvBinsCount;
     private Button btnScanBin;
+    private LoggerReading loggerReading;
+    private GetTempDataDialog tempLoggerDialog;
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
@@ -92,11 +95,14 @@ public class FishingBinsActivity extends AppCompatActivity {
             selectedItem = view;
         }
     };
-    private String binBarcode;
+    private Set<String> scannedBinEPCs;
+    private String binBarcode = "", binEPC;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
     private ImageView ivInfo;
+
+    private ScanInventoryThread scanner_runnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,9 +114,6 @@ public class FishingBinsActivity extends AppCompatActivity {
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
-
-        // instantiate Local Handler that will process the scanning stream.
-        mScanHandler = new ScanHandler(this);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingBins);
@@ -129,7 +132,11 @@ public class FishingBinsActivity extends AppCompatActivity {
         rvBins.setAdapter(adapterBins);
         rvBins.setNestedScrollingEnabled(false);
 
-        // link trigger/scan button to ClickListener
+        // instantiate a set to hold scanned EPCS.it will be passed to adapter which feeds the ListView.
+        scannedBinEPCs = new LinkedHashSet<>();
+
+        // =================================
+        // RFID scanning functionality
         btnScanBin.setOnClickListener(this::onClick);
 
         // set (any?) previously selected values to activity Controls.
@@ -176,34 +183,25 @@ public class FishingBinsActivity extends AppCompatActivity {
             infoDialog.showDialog();
         });
 
+        loggerReading = new ViewModelProvider(this).get(LoggerReading.class);
+        loggerReading.getReading().observe(this, reading -> {
+            Double temp = (Double) reading.get("LastValue");
+            Long ts = (Long) reading.get("timestamp");
+
+            GlobalState.recFishing.binTemperatureRecord.addRecord(binEPC, ts, temp);
+
+            tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);
+            tempLoggerDialog.showDialog();
+        });
+
         // create Footer
         configFooter();
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        // Listen for Fn key press/release;
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.rfid.FUN_KEY");
-        this.registerReceiver(keyReceiver, filter);
-    }
-
-    @Override
     protected void onStop() {
-        super.onStop();
         this.stopScanner();
-        //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
+        super.onStop();
     }
 
     private void clearSelectedItem() {
@@ -215,10 +213,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToTeam);
         ivNext.setOnClickListener(view -> {
-            //Stop scanning since we navigate to next activity
-            if (scanner_runnable!=null) {
-                scanner_runnable.stopReading();
-            }
+            this.stopScanner();
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -231,10 +226,7 @@ public class FishingBinsActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToMain);
         ivBack.setOnClickListener(view -> {
-            //Stop scanning since we navigate to previous activity
-            if (scanner_runnable!=null) {
-                scanner_runnable.stopReading();
-            }
+            this.stopScanner();
             Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
             startActivity(i);
         });
@@ -306,33 +298,17 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
-        if (scanner_runnable == null) {
-            btnScanBin.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable = new ScanInventoryThread(mScanHandler);
-            scanner_runnable.setFilter(Filters.RFID_BIN);
-            scanner_runnable.startReading();
-            btnScanBin.setText(R.string.stop_scan);
-            mScanHandler.postDelayed(scanner_runnable, 0);
-        } else if (!scanner_runnable.isReading()) {
-            btnScanBin.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable.setFilter(Filters.RFID_BIN);
-            scanner_runnable.startReading();
-            btnScanBin.setText(R.string.stop_scan);
-            mScanHandler.postDelayed(scanner_runnable, 0);
-        } else {
-            btnScanBin.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-            scanner_runnable.stopReading();
-            btnScanBin.setText(R.string.scan_bin);
-            mScanHandler.removeCallbacks(scanner_runnable);
-        }
+        singleShot_runnable = new SingleShotScanner(mScanHandler);
+        singleShot_runnable.setFilter(Filters.RFID_BIN);
+        singleShot_runnable.startReading();
+        mScanHandler.postDelayed(singleShot_runnable, 0);
     }
 
     // ###################################################
     private void stopScanner() {
-        if(this.scanner_runnable !=null) {
-            this.scanner_runnable.stopReading();
-            mScanHandler.removeCallbacks(null);
-            //mScanHandler.removeCallbacks(this.scanner_runnable);
+        if (this.singleShot_runnable != null) {
+            this.singleShot_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.singleShot_runnable);
         }
     }
 
@@ -346,17 +322,36 @@ public class FishingBinsActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 100:
-                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
-                    if (epcList != null && !epcList.isEmpty()) {
-                        epcList.stream().forEach(x->adapterBins.addUniqueItem(x.toString()));
-                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-                        adapterBins.notifyDataSetChanged();
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    String rssi = msg.getData().getString("rssi");
+                    try {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            binEPC = epcStr.substring(11);
+                            // after bin is identified, initialize the temperatures logger.
+                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(binEPC);
+                            if (logger != null) {
+                                scannedBinEPCs.add(epcStr.substring(11));
+                                tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
+                                adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
+                                adapterBins.notifyDataSetChanged();
+
+                                if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
+                                    FragmentManager fm = getSupportFragmentManager();
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, false, true, true);
+                                    loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
+                                }
+                            } else if (!IsDemo) {
+                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     break;
                 case 1980:
                     if (!IsDemo) {
-                        //CToast(getApplicationContext(), render("Scanning is over!!"), Toast.LENGTH_SHORT);
+                        //CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }

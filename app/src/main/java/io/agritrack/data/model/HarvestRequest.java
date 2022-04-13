@@ -10,10 +10,12 @@ import java.util.UUID;
 @Entity(tableName = "harvest_request")
 public class HarvestRequest {
 
+    /*@PrimaryKey
+    @NonNull
+    public UUID id;*/
+
     @PrimaryKey
     @NonNull
-    public UUID id;
-
     @ColumnInfo(name = "request_id")
     public String requestId;
 

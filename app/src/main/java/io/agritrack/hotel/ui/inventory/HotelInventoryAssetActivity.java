@@ -393,10 +393,10 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
                 selectedAssetType = Constants.ftBin;
                 activeFilter = schemeSvc.codeOf(selectedAssetType);
                 break;
-            case R.id.tbPlatform:
+            /*case R.id.tbPlatform:
                 selectedAssetType = Constants.ftPlatform;
                 activeFilter = schemeSvc.codeOf(selectedAssetType);
-                break;
+                break;*/
             default:
                 selectedAssetType = Constants.ftAll;
                 activeFilter = null;

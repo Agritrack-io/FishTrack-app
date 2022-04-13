@@ -16,7 +16,7 @@ public class EmployeeDTO {
     public Long registered_at;
     public String role_description;
     public Long supervisor;
-    public Long site;
+    public UUID site;
     public Long user;
 
     public static Employee convert(EmployeeDTO employeeDTO) {

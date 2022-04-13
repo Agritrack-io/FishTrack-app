@@ -1,4 +1,7 @@
 package io.agritrack.data.dto.common;
+import java.util.ArrayList;
+import java.util.List;
+
 import io.agritrack.data.model.common.IotLogger;
 
 
@@ -10,17 +13,40 @@ public class IotLoggerDTO {
     public String barcode;
     public String rfid;
     public String asset_rfid;
-    public String code;
+    public String vendor;
 
     public static IotLogger convert(IotLoggerDTO iotLoggerDTO) {
         IotLogger iotLogger = new IotLogger();
         iotLogger.id = iotLoggerDTO.id;
         iotLogger.model = iotLoggerDTO.model;
         iotLogger.type = iotLoggerDTO.type;
+        iotLogger.vendor = iotLoggerDTO.vendor;
         iotLogger.barcode = iotLoggerDTO.barcode;
         iotLogger.rfid = iotLoggerDTO.rfid;
         iotLogger.assetRFID = iotLoggerDTO.asset_rfid;
-        iotLogger.code = iotLoggerDTO.code;
         return iotLogger;
+    }
+
+    public static IotLoggerDTO convertDTO(IotLogger iotLogger) {
+        IotLoggerDTO iotLoggerDTO = new IotLoggerDTO();
+        iotLoggerDTO.id = iotLogger.id;
+        iotLoggerDTO.model = iotLogger.model;
+        iotLoggerDTO.type = iotLogger.type;
+        iotLoggerDTO.vendor = iotLogger.vendor;
+        iotLoggerDTO.barcode = iotLogger.barcode;
+        iotLoggerDTO.rfid = iotLogger.rfid;
+        iotLoggerDTO.asset_rfid = iotLogger.assetRFID;
+        return iotLoggerDTO;
+    }
+
+    public static List<IotLoggerDTO> convertListDTO(List<IotLogger> iotLoggers) {
+        List<IotLoggerDTO> result = new ArrayList<>();
+        for (IotLogger iotLogger : iotLoggers) {
+            IotLoggerDTO itemDto = convertDTO(iotLogger);
+            result.add(itemDto);
+        }
+        return result;
+
+
     }
 }

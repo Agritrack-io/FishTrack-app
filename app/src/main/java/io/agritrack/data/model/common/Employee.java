@@ -11,6 +11,10 @@ import java.util.UUID;
 @Entity(tableName = "employee", indices = {@Index("supervisor"), @Index(value = {"last_name", "first_name"})})
 public class Employee {
 
+    public Employee() {
+        this.id = UUID.randomUUID();
+    }
+
     @PrimaryKey
     @NonNull
     public UUID id;
@@ -43,7 +47,7 @@ public class Employee {
     public Long supervisor;
 
     @ColumnInfo(name = "site")
-    public Long site;
+    public UUID site;
 
     @ColumnInfo(name = "user")
     public Long user;

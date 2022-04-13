@@ -85,4 +85,8 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
             }
         }
     }
+
+    public void removeAll() {
+        this.mList.clear();
+    }
 }

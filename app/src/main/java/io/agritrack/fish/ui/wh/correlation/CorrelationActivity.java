@@ -11,12 +11,18 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,40 +41,42 @@ import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Constants;
-import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.wh.Asset;
+import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.bo.GenericListModel;
-import io.agritrack.ui.custom.ToggleGroup;
-import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CorrelationActivity extends LocationAwareActivity implements ToggleGroup.OnCheckedChangeListener{
+public class CorrelationActivity extends LocationAwareActivity{
+    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+    private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
-    private ToggleGroup tgSearchAssetType;
     private SearchView svSearchAsset;
     private RecyclerView rvAssets;
+    private Spinner spAssetType;
     private Button btnScanAssetTag, btnCorrelate;
     private TextView tvCorrAssetBarcode;
     private MobileDB db;
@@ -77,6 +85,7 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
     private String selectedAssetType;
     private String selectedBarcode = "";
     private String activeFilter = null;
+    private String epcPrefix = "BE0019A0000";
     private ConstraintLayout selectedItem;
     // Instantiate a clickListener to be passed to adapterAssets.
     // It will be used to set the selectedBarcode var to the selected item barcode.
@@ -115,6 +124,41 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
 
         // get  references of the controls
         assignCtrlVars();
+
+        String[] names = schemeSvc.distinctNamesOnly();
+        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, names) {
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (position % 2 == 0) { // we're on an even row
+                    view.setBackgroundColor(getColor(R.color.white));
+                } else {
+                    view.setBackgroundColor(getColor(R.color.light_grey));
+                }
+                return view;
+            }
+        };
+
+        spAssetType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
+                loadAssetsByTypeFromLocalDB(selectedAssetType);
+                if (adapterAssets == null) {
+                    svSearchAsset.setVisibility(View.GONE);
+                } else {
+                    svSearchAsset.setVisibility(View.VISIBLE);
+                    adapterAssets.notifyDataSetChanged();
+                }
+            }
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
+
+        hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
+        spAssetType.setAdapter(hrAdapter);
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
@@ -235,13 +279,12 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
     }
 
     private void assignCtrlVars() {
-        tgSearchAssetType = findViewById(R.id.tgSearchAssetType);
+        spAssetType = findViewById(R.id.spAssetType);
         tvCorrAssetBarcode = findViewById(R.id.tvCorrAssetBarcode);
         svSearchAsset = findViewById(R.id.svSearchAsset);
         rvAssets = findViewById(R.id.rvAssets);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
         btnCorrelate = findViewById(R.id.btnCorrelate);
-        tgSearchAssetType.setOnCheckedChangeListener(this);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToWareHouseMenu);
         ivSupport = findViewById(R.id.ivSupport);
@@ -312,68 +355,14 @@ public class CorrelationActivity extends LocationAwareActivity implements Toggle
         return sb.toString();
     }
 
-    @Override
-    public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        if (checkedId == R.id.tbCage) {
-            selectedAssetType = Constants.ftCage;
-            loadCagesFromLocalDB();
-            activeFilter = Filters.RFID_CAGE;
-        } else if (checkedId == R.id.tbNet) {
-            selectedAssetType = Constants.ftNet;
-            loadNetsFromLocalDB();
-            activeFilter = Filters.RFID_NET;
-        } else if (checkedId == R.id.tbBin) {
-            selectedAssetType = Constants.ftBin;
-            loadBinsFromLocalDB();
-            activeFilter = Filters.RFID_BIN;
-        } else if (checkedId == R.id.tbPlatform) {
-            selectedAssetType = Constants.ftPlatform;
-            loadPlatformsFromLocalDB();
-            activeFilter = Filters.RFID_PLATFORM;
-        }
-        svSearchAsset.setVisibility(View.VISIBLE);
-    }
-
-    private void loadCagesFromLocalDB() {
+    private void loadAssetsByTypeFromLocalDB(String assetType) {
         // load assets for current Site and filter by asset type (if selected).
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftCage); //getAssetsForType(selectedAssetType);
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.code)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
-            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
+            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.code)).collect(Collectors.toList());
+            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
             adapterAssets.getFilter().filter("");
-            this.rvAssets.setAdapter(adapterAssets);
-        }
-    }
-
-    private void loadNetsFromLocalDB() {
-        // load assets for current Site and filter by asset type (if selected).
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftNet); //getAssetsForType(selectedAssetType);
-        if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.code)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
-            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
-            adapterAssets.getFilter().filter("");
-            this.rvAssets.setAdapter(adapterAssets);
-        }
-    }
-
-    private void loadBinsFromLocalDB() {
-        // load assets for current Site and filter by asset type (if selected).
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftBin); //getAssetsForType(selectedAssetType);
-        if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.code)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
-            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
-            adapterAssets.getFilter().filter("");
-            this.rvAssets.setAdapter(adapterAssets);
-        }
-    }
-
-    private void loadPlatformsFromLocalDB() {
-        // load assets for current Site and filter by asset type (if selected).
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftPlatform); //getAssetsForType(selectedAssetType);
-        if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.code)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
-            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
-            adapterAssets.getFilter().filter("");
+            adapterAssets.notifyDataSetChanged();
             this.rvAssets.setAdapter(adapterAssets);
         }
     }

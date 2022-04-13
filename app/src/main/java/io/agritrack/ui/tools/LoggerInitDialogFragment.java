@@ -368,7 +368,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         // -------------------------------------
         cmd.setFilterEPC(loggerEPC);
 
-        // TODO: once stopped the logegr required RESET to be re-enabled...
+        // TODO: once stopped the logger required RESET to be re-enabled...
 
         mScanHandler.post(stopLoggerThread);
         // -------------------------------------
@@ -408,10 +408,19 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
             this.loggerEPC = getArguments().getString(LOGGER_EPC);
 
-            // Enable Read button
-            btnRead.setText("Reading Measurements...");
-            btnRead.setBackgroundResource(R.drawable.button_background);
-            btnRead.setOnClickListener(readBtnListener);
+            if (showReadButton){
+                // Enable Read button
+                btnRead.setText("Reading Measurements...");
+                btnRead.setBackgroundResource(R.drawable.button_background);
+                btnRead.setOnClickListener(readBtnListener);
+            } else if (showResetButton){
+                // Enable reset button
+                btnReset.setText("Resetting data logger...");
+                btnReset.setBackgroundResource(R.drawable.button_background);
+                btnReset.setOnClickListener(resetBtnListener);
+
+                mScanHandler.post(resetThread);
+            }
         }
 
         getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
@@ -441,8 +450,12 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         // instantiate Reader Module
         this.cmd = RFIDModuleFactory.getInstance();
 
-        // Press First Button
-        btnRead.callOnClick();
+        if (showReadButton) {
+            // Press First Button
+            btnRead.callOnClick();
+        } else if (showResetButton){
+            btnReset.callOnClick();
+        }
     }
 
     private void startAnimation(View view, Button buttonID) {

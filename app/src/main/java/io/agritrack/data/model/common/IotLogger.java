@@ -16,6 +16,9 @@ public class IotLogger {
     @ColumnInfo(name = "type")
     public String type;
 
+    @ColumnInfo(name = "vendor")
+    public String vendor;
+
     @ColumnInfo(name = "barcode")
     public String barcode;
 
@@ -24,10 +27,4 @@ public class IotLogger {
 
     @ColumnInfo(name = "asset_rfid")
     public String assetRFID;
-
-    @ColumnInfo(name = "site_name")
-    public String siteName;
-
-    @ColumnInfo(name = "code")
-    public String code;
 }

@@ -206,7 +206,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
             if (rs != null || IsDemo) {
                 if (recFishing.harvestRqPkId != null) {
                     HarvestRequest delObj = new HarvestRequest();
-                    delObj.id = recFishing.harvestRqPkId;
+                    //delObj.requestId = recFishing.harvestRqPkId;
                     db.harvestRequestsDAO().delete(delObj);
                 }
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));

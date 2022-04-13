@@ -10,7 +10,7 @@ import java.util.UUID;
 public class GenericListModel {
 
     private UUID id;
-    private String label;
+    private String label, requestId;
     private Boolean checked;
 
     public GenericListModel(UUID id, String label) {
@@ -21,6 +21,22 @@ public class GenericListModel {
 
     public GenericListModel(UUID id, String label, Boolean isChecked) {
         this.id = id;
+        this.label = label;
+        this.checked = isChecked;
+    }
+
+    public GenericListModel(String requestId, String format) {
+        this.requestId = requestId;
+        this.label = format;
+    }
+
+    public GenericListModel(String requestId, Boolean isChecked) {
+        this.requestId = requestId;
+        this.checked = isChecked;
+    }
+
+    public GenericListModel(String requestId, String label, Boolean isChecked) {
+        this.requestId = requestId;
         this.label = label;
         this.checked = isChecked;
     }
@@ -52,5 +68,13 @@ public class GenericListModel {
     @Override
     public String toString() {
         return label;
+    }
+
+    public void setRequestd(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public String getRequestId() {
+        return requestId;
     }
 }

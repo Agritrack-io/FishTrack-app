@@ -16,9 +16,15 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <permission android:name="io.agritrack.content.providers.AqmIdByCageEPCProvider.READ_WRITE" android:protectionLevel="normal"/>
-    <permission android:name="io.agritrack.content.providers.AqmIdByCageEPCProvider.READ_DATABASE" android:protectionLevel="normal"/>
-    <permission android:name="io.agritrack.content.providers.AqmIdByCageEPCProvider.WRITE_DATABASE" android:protectionLevel="normal"/>
+    <permission
+        android:name="io.agritrack.content.providers.AqmIdByCageEPCProvider.READ_WRITE"
+        android:protectionLevel="normal" />
+    <permission
+        android:name="io.agritrack.content.providers.AqmIdByCageEPCProvider.READ_DATABASE"
+        android:protectionLevel="normal" />
+    <permission
+        android:name="io.agritrack.content.providers.AqmIdByCageEPCProvider.WRITE_DATABASE"
+        android:protectionLevel="normal" />
 
     <application
         android:name=".FishTrackApplication"
@@ -31,12 +37,18 @@
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
+
         <provider
-            android:name="io.agritrack.content.providers.AqmIdByCageEPCProvider"
+            android:name=".content.providers.AqmIdByCageEPCProvider"
             android:authorities="io.agritrack.assets"
             android:enabled="true"
             android:exported="true"
             android:permission="io.agritrack.content.providers.AqmIdByCageEPCProvider.READ_WRITE" />
+        <activity
+            android:name=".ui.tools.ImportCAENLoggersToDBActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".fish.ui.quality.postpackage.PostPackagingQualityConfirmActivity"
             android:exported="false"

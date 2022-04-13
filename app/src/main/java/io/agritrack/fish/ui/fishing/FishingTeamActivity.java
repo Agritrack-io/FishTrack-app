@@ -197,7 +197,7 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 memberName = input.getText().toString();
-                candidatesAdapter.add(new GenericListModel(null, memberName, Boolean.TRUE));
+                candidatesAdapter.add(new GenericListModel(memberName, Boolean.TRUE));
                 candidatesAdapter.notifyDataSetChanged();
             }
         });

@@ -78,6 +78,12 @@ public class EncodingSchemeService {
         return assetTypesMap.values().stream().map(x->x.description).collect(Collectors.toList()).toArray(new String[assetTypesMap.size()]);
     }
 
+    public String[] distinctNamesOnly() {
+        List<String> values = assetTypesMap.values().stream().map(x -> x.description).collect(Collectors.toList());
+        values.remove("ALL");
+        return values.toArray(new String[values.size()]);
+    }
+
     public int encodingIndex() {
         return startIdx;
     }

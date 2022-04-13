@@ -37,6 +37,7 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -121,7 +122,8 @@ public class SearchActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.allNames()) {
+        String[] names = schemeSvc.distinctNamesOnly();
+        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, names) {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -139,7 +141,11 @@ public class SearchActivity extends AppCompatActivity {
             {
                 selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
                 loadAssetsByTypeFromLocalDB(selectedAssetType);
-                svSearchAsset.setVisibility(View.VISIBLE);
+                if (adapterAssets == null) {
+                    svSearchAsset.setVisibility(View.GONE);
+                } else {
+                    svSearchAsset.setVisibility(View.VISIBLE);
+                }
             }
             public void onNothingSelected(AdapterView<?> parent)
             {
@@ -166,7 +172,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void loadAssetsByTypeFromLocalDB(String assetType) {
         // load assets for current Site and filter by asset type (if selected).
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType);
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
             List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfid)).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);

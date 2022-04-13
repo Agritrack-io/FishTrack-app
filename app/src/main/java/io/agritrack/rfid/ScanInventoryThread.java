@@ -45,7 +45,7 @@ public class ScanInventoryThread implements Runnable {
     public void setFilter(String rfidFilter) {
         this.RFID_FILTER = rfidFilter;
         EncodingSchemeEntity schemeEntry = schemeSvc.schemeForFilter(rfidFilter);
-        if (schemeEntry!=null){
+        if (schemeEntry!=null && schemeEntry.encoding_index!=null){
             this.encodingIdx = schemeEntry.encoding_index;
             this.encodingWth = schemeEntry.code.length();
         }
@@ -69,7 +69,7 @@ public class ScanInventoryThread implements Runnable {
                 SoundUtil.play(Beep, 1, 1f);
                 final List<RFIDTag> tagList = uhfReader.inventoryRealTime();
                 if (tagList != null && !tagList.isEmpty()) {
-                    Stream<RFIDTag> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || (f.getEpc().indexOf(this.RFID_FILTER) == encodingIdx));
+                    Stream<RFIDTag> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || (f.getEpc().indexOf(this.RFID_FILTER) == encodingIdx && encodingIdx >-1)   || (f.getEpc().indexOf(this.RFID_FILTER) > -1));
                     List<RFIDTag> filteredList = filteredStream.collect(Collectors.toList());
                     for (RFIDTag tag : filteredList) {
                         if (tag != null) {
@@ -77,7 +77,11 @@ public class ScanInventoryThread implements Runnable {
                             if (epcStr.length() <= (encodingWth + encodingIdx)) {
                                 continue;
                             }
-                            epcValues.add(epcStr.substring(encodingIdx));
+                            if (encodingIdx<0){
+                                epcValues.add(epcStr);
+                            } else {
+                                epcValues.add(epcStr.substring(encodingIdx));
+                            }
                         }
                     }
 

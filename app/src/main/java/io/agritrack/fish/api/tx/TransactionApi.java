@@ -2,6 +2,7 @@ package io.agritrack.fish.api.tx;
 
 import java.util.List;
 
+import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.MeasurementsDTO;
 import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.dto.tx.CollectTxDTO;
@@ -108,4 +109,8 @@ public interface TransactionApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/temperatures/cages")
     Call<SeaTemperatureTxDTO> syncSeaTempTx(@Body SeaTemperatureTxDTO seaTemperatureTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/loggers/import")
+    Call<List<IotLoggerDTO>> syncIotLoggers(@Body List<IotLoggerDTO> iotLoggers, @Header("Authorization") String token);
 }

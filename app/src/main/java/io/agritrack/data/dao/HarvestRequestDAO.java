@@ -17,7 +17,7 @@ public interface HarvestRequestDAO {
     @Query("SELECT * from harvest_request")
     List<HarvestRequest> getAll();
 
-    @Query("SELECT * from harvest_request where id=:harvestRequestId LIMIT 1")
+    @Query("SELECT * from harvest_request where request_id=:harvestRequestId LIMIT 1")
     HarvestRequest getById(String harvestRequestId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -34,7 +34,7 @@ public class FishingRecord {
     public Integer totalFishWeight;
     public Short totalBinsUsed;
     public Double seaTemperature;
-    public UUID harvestRqPkId;
+    public String harvestRqPkId;
     public Double longitude;
     public Double latitude;
     public String notes;

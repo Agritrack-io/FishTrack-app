@@ -53,8 +53,6 @@ public class FruitGlobalState {
 
     public static WHTxRecord recWHOutgoing = new WHTxRecord();
 
-
-
     public static RepairRecord recInternalRepair = new RepairRecord();
     public static RepairRecord recExternalRepair = new RepairRecord();
 

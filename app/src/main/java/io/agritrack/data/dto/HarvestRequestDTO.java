@@ -5,9 +5,9 @@ import java.util.UUID;
 import io.agritrack.data.model.HarvestRequest;
 
 public class HarvestRequestDTO {
-    public UUID id;
+    //public UUID id;
     public String request_id;
-    public String fish_type;
+    public String species;
     public String fish_size;
     public String request_quantity;
     public String requester;
@@ -20,8 +20,8 @@ public class HarvestRequestDTO {
 
     public static HarvestRequest convert(HarvestRequestDTO harvestRequestDTO) {
         HarvestRequest harvestRequest = new HarvestRequest();
-        harvestRequest.id = harvestRequestDTO.id;
-        harvestRequest.fishName = harvestRequestDTO.fish_type;
+        //harvestRequest.id = harvestRequestDTO.id;
+        harvestRequest.fishName = harvestRequestDTO.species;
         harvestRequest.fishSize = harvestRequestDTO.fish_size;
         harvestRequest.requestId = harvestRequestDTO.request_id;
         harvestRequest.reqQty = harvestRequestDTO.request_quantity;

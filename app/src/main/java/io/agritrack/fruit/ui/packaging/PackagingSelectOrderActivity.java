@@ -129,7 +129,7 @@ public class PackagingSelectOrderActivity extends AppCompatActivity implements A
 
         HarvestRequest harvestRq = db.harvestRequestsDAO().getById(member.getId().toString());
         if (harvestRq != null) {
-            GlobalState.recFishing.harvestRqPkId = harvestRq.id;
+            //GlobalState.recFishing.harvestRqPkId = harvestRq.id;
             GlobalState.recFishing.harvestRq = harvestRq.requestId;
             GlobalState.recFishing.speciesName = harvestRq.fishName;
             GlobalState.recFishing.cageCode = harvestRq.cageCode;

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.HarvestRequest;
+import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.data.model.common.Measurement;
 import io.agritrack.data.model.common.TemperatureData;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
@@ -53,6 +54,7 @@ public class GlobalState {
 
     public static SeaTemperatureRecord recTools = new SeaTemperatureRecord();
     public static LoggerDataRecord recLoggerData = new LoggerDataRecord();
+    public static AssetRecord assetData = new AssetRecord();
 
     private GlobalState() {
     }
@@ -350,35 +352,7 @@ public class GlobalState {
         }
     }
 
-    public static List<ConsumableTransaction> commitWHBarcodeIncoming(MobileDB db) {
-        try {
-            List<ConsumableTransaction> consumablesList = new ArrayList<>();
-            Set<Map.Entry<String, Integer>> barcodeEntries = recWHIncoming.barcodeItems.entrySet();
 
-            for (Map.Entry<String, Integer> entry : barcodeEntries) {
-                ConsumableTransaction txWHIncoming = new ConsumableTransaction();
-
-                txWHIncoming.state = recWHIncoming.state.name();
-                txWHIncoming.consumableType = (recWHIncoming.consumableType != null) ? recWHIncoming.consumableType.name() : ALL;
-                txWHIncoming.barcode = entry.getKey();
-                txWHIncoming.quantity = entry.getValue();
-                txWHIncoming.timestamp = System.currentTimeMillis();
-                txWHIncoming.from = recWHIncoming.from;
-                txWHIncoming.to = recWHIncoming.to;
-                txWHIncoming.site = recWHIncoming.site;
-                txWHIncoming.longitude = recWHIncoming.longitude;
-                txWHIncoming.latitude = recWHIncoming.latitude;
-
-                consumablesList.add(txWHIncoming);
-            }
-            db.consumableTransactionDAO().insert(consumablesList.toArray(new ConsumableTransaction[consumablesList.size()]));
-
-            return consumablesList;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
 
     public static AssetTransaction commitWHRFIDOutgoing(MobileDB db) {
         try {
@@ -580,6 +554,59 @@ public class GlobalState {
             db.seaTemperatureTransactionDAO().insert(seaTemperatureTransaction);
 
             return seaTemperatureTransaction;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<ConsumableTransaction> commitWHBarcodeIncoming(MobileDB db) {
+        try {
+            List<ConsumableTransaction> consumablesList = new ArrayList<>();
+            Set<Map.Entry<String, Integer>> barcodeEntries = recWHIncoming.barcodeItems.entrySet();
+
+            for (Map.Entry<String, Integer> entry : barcodeEntries) {
+                ConsumableTransaction txWHIncoming = new ConsumableTransaction();
+
+                txWHIncoming.state = recWHIncoming.state.name();
+                txWHIncoming.consumableType = (recWHIncoming.consumableType != null) ? recWHIncoming.consumableType.name() : ALL;
+                txWHIncoming.barcode = entry.getKey();
+                txWHIncoming.quantity = entry.getValue();
+                txWHIncoming.timestamp = System.currentTimeMillis();
+                txWHIncoming.from = recWHIncoming.from;
+                txWHIncoming.to = recWHIncoming.to;
+                txWHIncoming.site = recWHIncoming.site;
+                txWHIncoming.longitude = recWHIncoming.longitude;
+                txWHIncoming.latitude = recWHIncoming.latitude;
+
+                consumablesList.add(txWHIncoming);
+            }
+            db.consumableTransactionDAO().insert(consumablesList.toArray(new ConsumableTransaction[consumablesList.size()]));
+
+            return consumablesList;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<IotLogger> commitIotLoggers(MobileDB db) {
+        try {
+            List<IotLogger> iotLoggerList = new ArrayList<>();
+            List<String> iotLoggers = assetData.loggers;
+            for (String iotLogger : iotLoggers) {
+                IotLogger iot = new IotLogger();
+
+                iot.model = assetData.model;
+                iot.type = assetData.type;
+                iot.vendor = assetData.vendor;
+                iot.rfid = iotLogger;
+
+                iotLoggerList.add(iot);
+            }
+            db.iotLoggerDAO().insert(iotLoggerList.toArray(new IotLogger[iotLoggerList.size()]));
+
+            return iotLoggerList;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
