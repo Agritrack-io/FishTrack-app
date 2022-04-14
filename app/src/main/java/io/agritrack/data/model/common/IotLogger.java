@@ -1,5 +1,6 @@
 package io.agritrack.data.model.common;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -8,7 +9,9 @@ import androidx.room.PrimaryKey;
 public class IotLogger {
 
     @PrimaryKey
-    public Long id;
+    @NonNull
+    @ColumnInfo(name = "rfid")
+    public String rfid;
 
     @ColumnInfo(name = "model")
     public String model;
@@ -21,9 +24,6 @@ public class IotLogger {
 
     @ColumnInfo(name = "barcode")
     public String barcode;
-
-    @ColumnInfo(name = "rfid")
-    public String rfid;
 
     @ColumnInfo(name = "asset_rfid")
     public String assetRFID;

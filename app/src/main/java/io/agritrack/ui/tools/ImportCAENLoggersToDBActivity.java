@@ -1,6 +1,7 @@
 package io.agritrack.ui.tools;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -102,6 +103,9 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderImportDataLoggers);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
 
         // initiate raw sound
         SoundUtil.initSoundPool(this);

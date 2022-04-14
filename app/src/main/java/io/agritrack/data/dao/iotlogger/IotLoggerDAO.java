@@ -17,8 +17,8 @@ public interface IotLoggerDAO {
     @Query("SELECT * from iot_logger")
     LiveData<List<IotLogger>> getAll();
 
-    @Query("SELECT * from iot_logger where id=:iotLoggerId LIMIT 1")
-    IotLogger getById(Long iotLoggerId);
+    @Query("SELECT * from iot_logger where rfid=:iotLoggerId LIMIT 1")
+    IotLogger getById(String iotLoggerId);
 
     @Query("SELECT * from iot_logger where asset_rfid LIKE '%' || :epc || '%' LIMIT 1")
     IotLogger getByAssetRFID(String epc);

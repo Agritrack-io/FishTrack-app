@@ -7,34 +7,31 @@ import io.agritrack.data.model.common.IotLogger;
 
 public class IotLoggerDTO {
 
-    public Long id;
+    public String rfid;
     public String model;
     public String type;
     public String barcode;
-    public String rfid;
     public String asset_rfid;
     public String vendor;
 
     public static IotLogger convert(IotLoggerDTO iotLoggerDTO) {
         IotLogger iotLogger = new IotLogger();
-        iotLogger.id = iotLoggerDTO.id;
+        iotLogger.rfid = iotLoggerDTO.rfid;
         iotLogger.model = iotLoggerDTO.model;
         iotLogger.type = iotLoggerDTO.type;
         iotLogger.vendor = iotLoggerDTO.vendor;
         iotLogger.barcode = iotLoggerDTO.barcode;
-        iotLogger.rfid = iotLoggerDTO.rfid;
         iotLogger.assetRFID = iotLoggerDTO.asset_rfid;
         return iotLogger;
     }
 
     public static IotLoggerDTO convertDTO(IotLogger iotLogger) {
         IotLoggerDTO iotLoggerDTO = new IotLoggerDTO();
-        iotLoggerDTO.id = iotLogger.id;
+        iotLoggerDTO.rfid = iotLogger.rfid;
         iotLoggerDTO.model = iotLogger.model;
         iotLoggerDTO.type = iotLogger.type;
         iotLoggerDTO.vendor = iotLogger.vendor;
         iotLoggerDTO.barcode = iotLogger.barcode;
-        iotLoggerDTO.rfid = iotLogger.rfid;
         iotLoggerDTO.asset_rfid = iotLogger.assetRFID;
         return iotLoggerDTO;
     }
