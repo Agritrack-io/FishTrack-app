@@ -6,8 +6,6 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recQuality;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.fragment.app.FragmentManager;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,31 +16,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.common.MeasurementsDTO;
 import io.agritrack.data.dto.tx.PostPackageQualityTxDTO;
-import io.agritrack.data.dto.tx.QualityTxDTO;
-import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.PostPackageQualityTransaction;
-import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.LocationAwareActivity;
-import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -222,12 +216,13 @@ public class PostPackagingQualityConfirmActivity extends LocationAwareActivity {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_processing_tx_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_postquality_update_failure), Toast.LENGTH_LONG));
             }
         }
 
         @Override
         public void onFailure(Call<PostPackageQualityTxDTO> call, Throwable error) {
+            error.printStackTrace();
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

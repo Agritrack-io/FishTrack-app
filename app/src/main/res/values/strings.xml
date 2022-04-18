@@ -553,4 +553,5 @@
     <string name="laundry">LAUNDRY</string>
     <string name="EncodeScheme_sync_completed">Encoding scheme synchronised successfuly!</string>
     <string name="no_EncodeScheme_found_alert">No Encoding Scheme entry was found!</string>
+    <string name="error_postquality_update_failure">Post-Package quality data update failure!!!</string>
 </resources>

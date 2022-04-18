@@ -1,8 +1,5 @@
 package io.agritrack.fish.state;
 
-import androidx.room.ColumnInfo;
-
-import java.util.LinkedList;
 import java.util.List;
 
 public class QualityRecord {
@@ -45,8 +42,6 @@ public class QualityRecord {
     public Double longitude;
     public Double latitude;
     public String logger_rfid;
-    public boolean qualityProcessing;
-    public String state;
     public Double etT1;
     public Double etT2;
     public Double etT3;

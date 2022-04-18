@@ -1,38 +1,39 @@
 package io.agritrack.data.dto;
 
-import java.util.UUID;
-
 import io.agritrack.data.model.HarvestRequest;
 
 public class HarvestRequestDTO {
-    //public UUID id;
     public String request_id;
-    public String species;
-    public String fish_size;
-    public String request_quantity;
-    public String requester;
+    public String harvest_date;
+    public String plant;
+    public String site;
     public String cage_rfid;
     public String cage_code;
-    public String site;
-    public String user;
+    public String species;
+    public String fish_size;
+    public String avg_weight;
+    public String request_quantity;
+    public String requester;
     public String notes;
-    public String plant;
+    public String user;
+
 
     public static HarvestRequest convert(HarvestRequestDTO harvestRequestDTO) {
         HarvestRequest harvestRequest = new HarvestRequest();
 
-        //harvestRequest.id = harvestRequestDTO.id;
-        harvestRequest.species = harvestRequestDTO.species;
-        harvestRequest.fishSize = harvestRequestDTO.fish_size;
         harvestRequest.requestId = harvestRequestDTO.request_id;
-        harvestRequest.reqQty = harvestRequestDTO.request_quantity;
-        harvestRequest.requester = harvestRequestDTO.requester;
+        harvestRequest.harvestDate = harvestRequestDTO.harvest_date;
+        harvestRequest.packagingPlant = harvestRequestDTO.plant;
+        harvestRequest.site = harvestRequestDTO.site;
         harvestRequest.cageRFID = harvestRequestDTO.cage_rfid;
         harvestRequest.cageCode = harvestRequestDTO.cage_code;
-        harvestRequest.site = harvestRequestDTO.site;
-        harvestRequest.user = harvestRequestDTO.user;
+        harvestRequest.species = harvestRequestDTO.species;
+        harvestRequest.fishSize = harvestRequestDTO.fish_size;
+        harvestRequest.avgWeight = harvestRequestDTO.avg_weight;
+        harvestRequest.reqQty = harvestRequestDTO.request_quantity;
+        harvestRequest.requester = harvestRequestDTO.requester;
         harvestRequest.notes = harvestRequestDTO.notes;
-        harvestRequest.packagingPlant = harvestRequestDTO.plant;
+        harvestRequest.user = harvestRequestDTO.user;
 
         return harvestRequest;
     }
