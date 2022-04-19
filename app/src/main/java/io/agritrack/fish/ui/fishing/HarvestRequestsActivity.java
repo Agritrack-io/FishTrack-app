@@ -64,9 +64,9 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getAll();
         if (harvestRequests != null && !harvestRequests.isEmpty()) {
             //
-            this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s kg, %s", x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
+            this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate, x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
 
-            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, android.R.layout.simple_list_item_checked, harvestReqs) {
+            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, harvestReqs) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);

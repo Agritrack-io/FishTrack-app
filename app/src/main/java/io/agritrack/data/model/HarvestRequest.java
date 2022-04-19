@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity(tableName = "harvest_request")
@@ -33,6 +34,9 @@ public class HarvestRequest {
 
     @ColumnInfo(name = "cage_rfid")
     public String cageRFID;
+
+    @ColumnInfo(name = "harvest_date")
+    public Date harvestDate;
 
     @ColumnInfo(name = "cage_code")
     public String cageCode;

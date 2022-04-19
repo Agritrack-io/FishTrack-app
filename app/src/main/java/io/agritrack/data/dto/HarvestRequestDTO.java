@@ -1,5 +1,6 @@
 package io.agritrack.data.dto;
 
+import java.util.Date;
 import java.util.UUID;
 
 import io.agritrack.data.model.HarvestRequest;
@@ -12,6 +13,7 @@ public class HarvestRequestDTO {
     public String request_quantity;
     public String requester;
     public String cage_rfid;
+    public Date harvest_date;
     public String cage_code;
     public String site;
     public String user;
@@ -28,6 +30,7 @@ public class HarvestRequestDTO {
         harvestRequest.reqQty = harvestRequestDTO.request_quantity;
         harvestRequest.requester = harvestRequestDTO.requester;
         harvestRequest.cageRFID = harvestRequestDTO.cage_rfid;
+        harvestRequest.harvestDate = harvestRequestDTO.harvest_date;
         harvestRequest.cageCode = harvestRequestDTO.cage_code;
         harvestRequest.site = harvestRequestDTO.site;
         harvestRequest.user = harvestRequestDTO.user;
