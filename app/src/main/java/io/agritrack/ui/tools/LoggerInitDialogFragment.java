@@ -141,7 +141,9 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             if(State.RESET.equals(state)) {
                 if(ctrlState.charAt(RST_BIT)=='0' ) {
                     mScanHandler.sendMessage(createMessage(CmdRESET, Reader.READER_ERR.MT_OK_ERR));
-                    mScanHandler.post(initLoggingThread);
+                    if(showInitButton) {
+                        mScanHandler.post(initLoggingThread);
+                    }
                 } else {
                     resetCnt++;
                     if(resetCnt < 3) {
@@ -405,22 +407,24 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         btnInit = rootView.findViewById(R.id.btnInit);
         btnValidate = rootView.findViewById(R.id.btnValidate);
 
-        if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
-            this.loggerEPC = getArguments().getString(LOGGER_EPC);
+        String argLoggerEPC = getArguments().getString(LOGGER_EPC);
 
-            if (showReadButton){
-                // Enable Read button
-                btnRead.setText("Reading Measurements...");
-                btnRead.setBackgroundResource(R.drawable.button_background);
-                btnRead.setOnClickListener(readBtnListener);
-            } else if (showResetButton){
-                // Enable reset button
-                btnReset.setText("Resetting data logger...");
-                btnReset.setBackgroundResource(R.drawable.button_background);
-                btnReset.setOnClickListener(resetBtnListener);
+        if (getArguments() != null && !Strings.isEmptyOrWhitespace(argLoggerEPC)) {
+            this.loggerEPC = argLoggerEPC;
 
-                mScanHandler.post(resetThread);
-            }
+//            if (showReadButton){
+//                // Enable Read button
+//                btnRead.setText("Reading Measurements...");
+//                btnRead.setBackgroundResource(R.drawable.button_background);
+//                btnRead.setOnClickListener(readBtnListener);
+//            } else if (showResetButton){
+//                // Enable reset button
+//                btnReset.setText("Resetting data logger...");
+//                btnReset.setBackgroundResource(R.drawable.button_background);
+//                btnReset.setOnClickListener(resetBtnListener);
+//
+//                mScanHandler.post(resetThread);
+//            }
         }
 
         getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
@@ -440,6 +444,20 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             showReadButton = getArguments().getBoolean(SHOW_READ_BUTTON);
             showInitButton = getArguments().getBoolean(SHOW_INIT_BUTTON);
             showResetButton = getArguments().getBoolean(SHOW_RESET_BUTTON);
+
+            if (showReadButton){
+                // Enable Read button
+                btnRead.setText("Reading Measurements...");
+                btnRead.setBackgroundResource(R.drawable.button_background);
+                btnRead.setOnClickListener(readBtnListener);
+            } else if (showResetButton){
+                // Enable reset button
+                btnReset.setText("Resetting data logger...");
+                btnReset.setBackgroundResource(R.drawable.button_background);
+                btnReset.setOnClickListener(resetBtnListener);
+
+                mScanHandler.post(resetThread);
+            }
         }
     }
 
@@ -606,13 +624,15 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                             // diable Reset Button
                             btnReset.setOnClickListener(null);
 
-                            // enable setup button
-                            btnInit.setVisibility(View.VISIBLE);
-                            btnInit.setOnClickListener(initBtnListener);
-                            btnInit.callOnClick();
-
-                            // close popup
-                            //getDialog().dismiss();
+                            if (showInitButton) {
+                                // enable init button
+                                btnInit.setVisibility(View.VISIBLE);
+                                btnInit.setOnClickListener(initBtnListener);
+                                btnInit.callOnClick();
+                            } else {
+                                // close popup
+                                getDialog().dismiss();
+                            }
                         } else {
                             mActivity.get().getActivity().runOnUiThread(() -> {
                                 btnReset.setText("Reset:: Failed");

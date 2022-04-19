@@ -61,8 +61,6 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
 
-    private boolean intentForProcessing = true;
-
     private final LinkedList<String[]> listMeasurements = new LinkedList<>();
     private SingleShotScanner scanner_runnable;
     private MobileDB db;
@@ -107,11 +105,6 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
-
-        /*if (getIntent() != null) {
-            Bundle bundle = getIntent().getExtras();
-            intentForProcessing = bundle != null ? bundle.getBoolean("processing") : intentForProcessing;
-        }*/
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityStartActivity);
@@ -245,14 +238,8 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         GlobalState.recQuality.qualityBins = new LinkedList<>(adapterBins.getValues());
         GlobalState.recQuality.noQualityBins = adapterBins.getItemCount();
         GlobalState.recQuality.tempValues = listMeasurements;
-        GlobalState.recQuality.qualityProcessing = intentForProcessing;
         GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
         GlobalState.recQuality.logger_rfid = logger_rfid;
-        if (intentForProcessing){
-            GlobalState.recQuality.state = "PROCESSING";
-        } else {
-            GlobalState.recQuality.state = "STORAGE";
-        }
     }
 
     private String validate() {
@@ -344,7 +331,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
 
                                 if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid,  true, intentForProcessing, intentForProcessing);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid,  true, true, false);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {

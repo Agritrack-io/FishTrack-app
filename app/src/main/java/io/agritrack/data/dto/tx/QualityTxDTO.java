@@ -1,5 +1,6 @@
 package io.agritrack.data.dto.tx;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -9,7 +10,7 @@ import io.agritrack.data.model.tx.QualityTransaction;
 public class QualityTxDTO {
 
     public UUID id;
-    public Long timestamp;
+    public Date sampleDate;
     public String plot;
     public List<String> quality_bins = new LinkedList<String>();
     public Integer no_quality_bins;
@@ -48,7 +49,6 @@ public class QualityTxDTO {
     public String remarks;
     public String site;
     public String user;
-    public String state;
     public Double longitude;
     public Double latitude;
 
@@ -93,8 +93,7 @@ public class QualityTxDTO {
         qualityTxDto.remarks = quality.remarks;
         qualityTxDto.site = quality.site;
         qualityTxDto.user = quality.user;
-        qualityTxDto.state = quality.state;
-        qualityTxDto.timestamp = quality.timestamp;
+        qualityTxDto.sampleDate = quality.sampleDate;
         qualityTxDto.longitude = quality.longitude;
         qualityTxDto.latitude = quality.latitude;
 

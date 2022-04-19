@@ -4,27 +4,29 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
 import java.util.Date;
-import java.util.UUID;
 
 @Entity(tableName = "harvest_request")
 public class HarvestRequest {
-
-    /*@PrimaryKey
-    @NonNull
-    public UUID id;*/
-
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "request_id")
     public String requestId;
 
-    @ColumnInfo(name = "request_quantity")
-    public String reqQty;
+    @ColumnInfo(name = "harvest_date")
+    public String harvestDate;
 
-    @ColumnInfo(name = "requester")
-    public String requester;
+    @ColumnInfo(name = "packaging_plant")
+    public String packagingPlant;
+
+    @ColumnInfo(name = "site")
+    public String site;
+
+    @ColumnInfo(name = "cage_rfid")
+    public String cageRFID;
+
+    @ColumnInfo(name = "cage_code")
+    public String cageCode;
 
     @ColumnInfo(name = "species")
     public String species;
@@ -32,24 +34,18 @@ public class HarvestRequest {
     @ColumnInfo(name = "fish_size")
     public String fishSize;
 
-    @ColumnInfo(name = "cage_rfid")
-    public String cageRFID;
+    @ColumnInfo(name = "avg_weight")
+    public String avgWeight;
 
-    @ColumnInfo(name = "harvest_date")
-    public Date harvestDate;
+    @ColumnInfo(name = "request_quantity")
+    public String reqQty;
 
-    @ColumnInfo(name = "cage_code")
-    public String cageCode;
+    @ColumnInfo(name = "requester")
+    public String requester;
 
     @ColumnInfo(name = "notes")
     public String notes;
 
     @ColumnInfo(name = "user_name")
     public String user;
-
-    @ColumnInfo(name = "site_name")
-    public String site;
-
-    @ColumnInfo(name = "packaging_plant")
-    public String packagingPlant;
 }

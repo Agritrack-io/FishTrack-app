@@ -3,6 +3,7 @@ package io.agritrack.fish.state;
 import static io.agritrack.enums.AssetType.ALL;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -267,8 +268,7 @@ public class GlobalState {
             txQuality.noQualityBins = recQuality.noQualityBins;
             txQuality.user = LocalPreferences.getLoggedInUser("N/A");
             txQuality.site = LocalPreferences.getCurrentSiteName();
-            txQuality.timestamp = System.currentTimeMillis();
-            txQuality.state = recQuality.state;
+            txQuality.sampleDate = new Date(System.currentTimeMillis());
             txQuality.longitude = recQuality.longitude;
             txQuality.latitude = recQuality.latitude;
 
@@ -307,9 +307,9 @@ public class GlobalState {
     public static List<TemperatureTimeSeries> commitMeasurements(MobileDB db) {
         List<TemperatureTimeSeries> result = new ArrayList<>();
         try {
-            for(String epc : recLoggerData.data.keySet()) {
+            for (String epc : recLoggerData.data.keySet()) {
                 LoggerDataRecord.TemperatureModel model = recLoggerData.data.get(epc);
-                
+
                 Measurement measurement = new Measurement();
                 measurement.loggerRFID = model.loggerEPC;
                 measurement.retrievedAt = model.retrievedAt;
@@ -353,7 +353,6 @@ public class GlobalState {
             return null;
         }
     }
-
 
 
     public static AssetTransaction commitWHRFIDOutgoing(MobileDB db) {

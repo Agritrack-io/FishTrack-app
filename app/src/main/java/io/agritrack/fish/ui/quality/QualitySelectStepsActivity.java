@@ -9,17 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 
 import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.quality.postpackage.PostPackagingQualityActivity;
-import io.agritrack.fish.ui.quality.packaging.PackageQualityStartActivity;
 import io.agritrack.fish.ui.quality.receipt.ReceiptQualityStartActivity;
 import io.agritrack.ui.adapter.InventoryMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
@@ -27,7 +24,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class QualitySelectStepsActivity extends AppCompatActivity {
 
-    private static final int First_Step_Idx = 0, Second_Step_Idx = 1, Third_Step_Idx = 2;
+    private static final int First_Step_Idx = 0, Second_Step_Idx = 1, Third_Step_Idx = 1;
     private GridView gvQualityMenu;
 
     private ImageView ivSupport;

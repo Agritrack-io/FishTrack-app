@@ -6,6 +6,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,8 +19,8 @@ public class QualityTransaction {
     @NonNull
     public UUID id;
 
-    @ColumnInfo(name = "timestamp")
-    public Long timestamp;
+    @ColumnInfo(name = "sample_date")
+    public Date sampleDate;
 
     @ColumnInfo(name = "plot")
     public String plot;
@@ -135,9 +136,6 @@ public class QualityTransaction {
 
     @ColumnInfo(name = "user_id")
     public String user;
-
-    @ColumnInfo(name = "state")
-    public String state;
 
     @ColumnInfo(name = "longitude")
     public Double longitude;
