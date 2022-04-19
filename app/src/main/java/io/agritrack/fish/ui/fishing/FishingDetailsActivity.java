@@ -1,5 +1,6 @@
 package io.agritrack.fish.ui.fishing;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -59,21 +60,18 @@ public class FishingDetailsActivity extends AppCompatActivity {
 
         tvPathologist.setText(GlobalState.recFishing.pathologist);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String timeStamp = sdf.format(Calendar.getInstance().getTime());
-        LocalDateTime lastFeedDate = GlobalState.recFishing.lastFed;
-        Date date = Date.from(lastFeedDate.atZone(ZoneId.systemDefault()).toInstant());
-        tvLastFed.setText(sdf.format(date));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate lastFeedDate = GlobalState.recFishing.lastFed;
+        tvLastFed.setText(lastFeedDate.format(formatter));
         try {
-            Date date1 = sdf.parse(timeStamp);
-            long diff = date1.getTime() - date.getTime();
-            long daysBetween = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+            LocalDate now = LocalDate.now();
+            long daysBetween = DAYS.between(lastFeedDate, now);
             if (daysBetween>fastingDays){
                 CToast(getApplicationContext(), render("More than 2 days have been spent before last feeding!!!"), Toast.LENGTH_LONG);
             } else if (daysBetween<=(fastingDays-1)){
                 CToast(getApplicationContext(), render("Less than 1 days has been spent before last feeding!!!"), Toast.LENGTH_LONG);
             }
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

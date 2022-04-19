@@ -5,21 +5,22 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.room.TypeConverter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class LocalDateTimeConverter {
+public class LocalDateConverter {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @TypeConverter
-    public static LocalDateTime toDate(String dateString) {
+    public static LocalDate toDate(String dateString) {
         if (dateString == null) {
             return null;
         } else {
-            return LocalDateTime.parse(dateString);
+            return LocalDate.parse(dateString);
         }
     }
 
     @TypeConverter
-    public static String toDateString(LocalDateTime date) {
+    public static String toDateString(LocalDate date) {
         if (date == null) {
             return null;
         } else {

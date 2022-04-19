@@ -4,13 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
-import io.agritrack.data.converter.LocalDateTimeConverter;
+import io.agritrack.data.converter.LocalDateConverter;
 
 @Entity(tableName = "cage_details")
 public class CageDetails {
@@ -34,9 +33,9 @@ public class CageDetails {
     @ColumnInfo(name = "site_id")
     public UUID site;
 
-    @TypeConverters(LocalDateTimeConverter.class)
+    @TypeConverters(LocalDateConverter.class)
     @ColumnInfo(name = "last_fed")
-    public LocalDateTime lastFed;
+    public LocalDate lastFed;
 
     @ColumnInfo(name = "cage_code")
     public String cageCode;

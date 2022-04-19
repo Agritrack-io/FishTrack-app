@@ -1,6 +1,8 @@
 package io.agritrack.data.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.UUID;
 
 import io.agritrack.data.model.CageDetails;
@@ -14,7 +16,7 @@ public class CageDetailsDTO {
     public String hlot;
     public String species;
     public UUID site;
-    public LocalDateTime last_feeding_date;
+    public String last_feeding_date;
 
     public static CageDetails convert(CageDetailsDTO detailsDTO) {
         CageDetails cageDetails = new CageDetails();
@@ -25,7 +27,8 @@ public class CageDetailsDTO {
         cageDetails.hlot = detailsDTO.hlot;
         cageDetails.species = detailsDTO.species;
         cageDetails.site = detailsDTO.site;
-        cageDetails.lastFed = detailsDTO.last_feeding_date;
+        cageDetails.lastFed = LocalDateTime.parse(detailsDTO.last_feeding_date).toLocalDate();
+        //cageDetails.lastFed = detailsDTO.last_feeding_date;
         return cageDetails;
     }
 }

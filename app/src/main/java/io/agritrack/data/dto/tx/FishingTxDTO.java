@@ -1,6 +1,6 @@
 package io.agritrack.data.dto.tx;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class FishingTxDTO {
     public String fish_size;
     public String ice_adequacy;
     public String ice_supplier;
-    public LocalDateTime last_feed;
+    public LocalDate last_feed;
     public String hlot;
     public String requester;
     public Integer ordered_quantity;
@@ -49,7 +49,7 @@ public class FishingTxDTO {
         fishingTxDTO.fish_size = fishing.fishSize;
         fishingTxDTO.ice_adequacy = fishing.iceAdequacy;
         fishingTxDTO.ice_supplier = fishing.iceSupplier;
-        fishingTxDTO.last_feed = fishing.lastFeed;
+        fishingTxDTO.last_feed = fishing.lastFeed;//.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));//+" 00:00:00";
         fishingTxDTO.hlot = fishing.hlot;
         fishingTxDTO.requester = fishing.requester;
         fishingTxDTO.ordered_quantity = fishing.orderedQuantity;
