@@ -5,9 +5,11 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import io.agritrack.data.converter.BinRecordConverter;
+import io.agritrack.data.converter.LocalDateTimeConverter;
 import io.agritrack.data.converter.StringListConverter;
 import io.agritrack.data.converter.TxStatusEnumConverter;
 import io.agritrack.enums.TxStatus;
@@ -55,8 +57,9 @@ public class FishingTransaction {
     @ColumnInfo(name = "ice_supplier")
     public String iceSupplier;
 
+    @TypeConverters(LocalDateTimeConverter.class)
     @ColumnInfo(name = "last_feed")
-    public Long lastFeed;
+    public LocalDateTime lastFeed;
 
     @ColumnInfo(name = "ordered_by")
     public String requester;

@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,12 +61,12 @@ public class FishingDetailsActivity extends AppCompatActivity {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String timeStamp = sdf.format(Calendar.getInstance().getTime());
-        String lastFeedDate = sdf.format(new Date(GlobalState.recFishing.lastFed));
-        tvLastFed.setText(lastFeedDate);
+        LocalDateTime lastFeedDate = GlobalState.recFishing.lastFed;
+        Date date = Date.from(lastFeedDate.atZone(ZoneId.systemDefault()).toInstant());
+        tvLastFed.setText(sdf.format(date));
         try {
             Date date1 = sdf.parse(timeStamp);
-            Date date2 = sdf.parse(lastFeedDate);
-            long diff = date1.getTime() - date2.getTime();
+            long diff = date1.getTime() - date.getTime();
             long daysBetween = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
             if (daysBetween>fastingDays){
                 CToast(getApplicationContext(), render("More than 2 days have been spent before last feeding!!!"), Toast.LENGTH_LONG);

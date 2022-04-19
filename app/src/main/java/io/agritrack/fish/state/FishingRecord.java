@@ -1,6 +1,7 @@
 package io.agritrack.fish.state;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class FishingRecord {
     public List<String> availBins;
     public List<String> fishingTeam;
     public String pathologist;
-    public Long lastFed;
+    public LocalDateTime lastFed;
     public Boolean adequateIce = Boolean.TRUE;
     public String iceSupplier;
     public Integer totalFishWeight;
