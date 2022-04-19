@@ -152,7 +152,7 @@ public class LocalPreferences {
     }
 
     public static String HeaderMsg() {
-        return getLoggedInUser("N/A") + " <-> " + Today();
+        return String.format(getCurrentSiteName()+"\n"+getLoggedInUser("N/A") + " <-> " + Today());
     }
 
     public static String getLoggedInUser(String defVal) {

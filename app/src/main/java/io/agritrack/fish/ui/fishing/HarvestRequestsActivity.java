@@ -57,7 +57,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderHarvestReq);
+        TextView tvHeader = findViewById(R.id.tvHeaderHarvestRequests);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // load Harvest Request fetched via Synch op.

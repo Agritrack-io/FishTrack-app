@@ -67,7 +67,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitleToolbar"
+            app:layout_constraintTop_toBottomOf="@+id/tvHeaderHarvestReq"
             tools:layout_conversion_absoluteHeight="0dp"
             tools:layout_conversion_absoluteWidth="0dp" />
 
@@ -97,12 +97,72 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/harvestReq2Layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
                 android:orientation="vertical"
-                android:padding="1dp">
+                android:padding="1dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <io.agritrack.ui.custom.ToggleGroup
+                    android:id="@+id/tgChooseDate"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvPickHarvestRequest"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ToggleButton
+                        android:id="@+id/tbCage"
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/togglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="TV"
+                        android:textOn="TV"
+                        android:textSize="@dimen/text_view_font_size_medium" />
+
+                    <ToggleButton
+                        android:id="@+id/tbNet"
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/togglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="BED"
+                        android:textOn="BED"
+                        android:textSize="@dimen/text_view_font_size_medium" />
+
+                    <ToggleButton
+                        android:id="@+id/tbBin"
+                        android:layout_width="0dp"
+                        android:layout_height="34dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/togglebutton_selector"
+                        android:gravity="center"
+                        android:textColor="@drawable/button_text_color"
+                        android:textOff="PAINTING"
+                        android:textOn="PAINTING"
+                        android:textSize="@dimen/text_view_font_size_medium" />
+
+                </io.agritrack.ui.custom.ToggleGroup>
 
                 <TextView
                     android:id="@+id/tvPickHarvestRequest"
@@ -118,12 +178,12 @@
                     app:layout_constraintBottom_toTopOf="@+id/lvHarvestRequests"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/tgChooseDate" />
 
                 <ListView
                     android:id="@+id/lvHarvestRequests"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="400dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
