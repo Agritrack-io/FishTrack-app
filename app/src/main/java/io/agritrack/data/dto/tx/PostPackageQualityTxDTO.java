@@ -4,7 +4,7 @@ import io.agritrack.data.model.tx.PostPackageQualityTransaction;
 
 public class PostPackageQualityTxDTO {
 
-    public Long timestamp;
+    public Long sample_date;
     public String plot;
     public String box_sn;
     public Double tempT1;
@@ -25,7 +25,7 @@ public class PostPackageQualityTxDTO {
         qualityTxDto.tempT3 = quality.tempT3;
         qualityTxDto.site = quality.site;
         qualityTxDto.user = quality.user;
-        qualityTxDto.timestamp = quality.timestamp;
+        qualityTxDto.sample_date = quality.sampleDate;
         qualityTxDto.longitude = quality.longitude;
         qualityTxDto.latitude = quality.latitude;
 

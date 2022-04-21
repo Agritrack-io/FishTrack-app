@@ -10,8 +10,8 @@ public class PostPackageQualityTransaction {
     @PrimaryKey
     public Long id;
 
-    @ColumnInfo(name = "timestamp")
-    public Long timestamp;
+    @ColumnInfo(name = "sample_date")
+    public Long sampleDate;
 
     @ColumnInfo(name = "plot")
     public String plot;
