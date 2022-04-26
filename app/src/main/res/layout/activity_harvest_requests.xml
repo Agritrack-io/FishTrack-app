@@ -42,13 +42,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginTop="16dp"
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
             android:text="@string/title_harvest_requests"
             android:textColor="@color/yellow"
             android:textSize="@dimen/title_font_size"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tvHeaderHarvestRequests"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -124,7 +124,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ToggleButton
-                        android:id="@+id/tbCage"
+                        android:id="@+id/tbToday"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_margin="5dp"
@@ -132,12 +132,12 @@
                         android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="TV"
-                        android:textOn="TV"
+                        android:textOff="@string/today"
+                        android:textOn="@string/today"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton
-                        android:id="@+id/tbNet"
+                        android:id="@+id/tbYesterday"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_margin="5dp"
@@ -145,12 +145,12 @@
                         android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="BED"
-                        android:textOn="BED"
+                        android:textOff="@string/yesterday"
+                        android:textOn="@string/yesterday"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton
-                        android:id="@+id/tbBin"
+                        android:id="@+id/tbOlderDays"
                         android:layout_width="0dp"
                         android:layout_height="34dp"
                         android:layout_margin="5dp"
@@ -158,8 +158,8 @@
                         android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="PAINTING"
-                        android:textOn="PAINTING"
+                        android:textOff="@string/older_days"
+                        android:textOn="@string/older_days"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                 </io.agritrack.ui.custom.ToggleGroup>

@@ -17,6 +17,12 @@ public interface HarvestRequestDAO {
     @Query("SELECT * from harvest_request")
     List<HarvestRequest> getAll();
 
+    @Query("SELECT * from harvest_request where harvest_date LIKE '%' || :date || '%'")
+    List<HarvestRequest> getByDate(String date);
+
+    @Query("SELECT * from harvest_request where harvest_date<=:date")
+    List<HarvestRequest> getPreviousDate(String date);
+
     @Query("SELECT * from harvest_request where request_id=:harvestRequestId LIMIT 1")
     HarvestRequest getById(String harvestRequestId);
 

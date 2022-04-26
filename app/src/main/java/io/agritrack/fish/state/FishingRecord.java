@@ -2,10 +2,7 @@ package io.agritrack.fish.state;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.fish.ui.bo.BinTemperatureRecord;
@@ -18,10 +15,10 @@ public class FishingRecord {
     public int requesterPos = -1;
     public String harvestRq;
     public String requesterName;
-    public String reqWeight;
+    public Double reqWeight;
     public int speciesPos = -1;
     public String speciesName;
-    public String fishSize;
+    public Double averageWeight;
     public String platformRFID;
     public String cageRFID;
     public String expectedCageRFID;
@@ -54,9 +51,9 @@ public class FishingRecord {
         fishingRecord.txKey = tx.id;
         fishingRecord.harvestRq = tx.harvestRq;
         fishingRecord.requesterName = tx.requester;
-        fishingRecord.reqWeight = tx.orderedQuantity != null ? tx.orderedQuantity.toString() : null;
+        fishingRecord.reqWeight = tx.orderedQuantity != null ? Double.valueOf(tx.orderedQuantity.toString()) : null;
         fishingRecord.speciesName = tx.fishType;
-        fishingRecord.fishSize = tx.fishSize;
+        fishingRecord.averageWeight = Double.valueOf(tx.averageWeight);
         fishingRecord.platformRFID = tx.platformRFID;
         fishingRecord.cageRFID = tx.cageRFID;
         fishingRecord.cageCode = tx.cageCode;

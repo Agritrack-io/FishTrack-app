@@ -3,6 +3,7 @@ package io.agritrack.fish.ui.fishing;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.BroadcastReceiver;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -30,8 +32,8 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.CageDetails;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
-import io.agritrack.fish.state.GlobalState;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.service.LocalPreferences;
@@ -44,6 +46,8 @@ public class FishingCageActivity extends AppCompatActivity {
     private MobileDB db;
     private Button scanPlatformButton, scanCageButton;
     private TextView tvPlatformRFID, tvCageRFID;
+    private YesNoDialogFragment confirmCageSelectionDlg;
+    private boolean proceedWithoutCage = true;
 
     private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
@@ -66,6 +70,15 @@ public class FishingCageActivity extends AppCompatActivity {
 
         // get references of the controls
         assignCtrlVars();
+
+        confirmCageSelectionDlg = YesNoDialogFragment.instance();
+        confirmCageSelectionDlg.setMessage(getText(R.string.procced_without_cage));
+        confirmCageSelectionDlg.onConfirm(bundle -> {
+            proceedWithoutCage = true;
+        });
+        confirmCageSelectionDlg.onReject(bundle -> {
+            proceedWithoutCage = false;
+        });
 
         // =================================
         // RFID scanning functionality
@@ -141,7 +154,10 @@ public class FishingCageActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToDetails);
         ivNext.setOnClickListener(view -> {
-            updateState();
+            if (proceedWithoutCage) {
+                // Update state and proceed to next
+                updateState();
+            }
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
@@ -168,7 +184,7 @@ public class FishingCageActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        FishingRecord hvst = GlobalState.recFishing;
+        FishingRecord hvst = recFishing;
 
         tvPlatformRFID.setText(hvst.platformRFID);
         tvCageRFID.setText(hvst.cageRFID);
@@ -176,31 +192,30 @@ public class FishingCageActivity extends AppCompatActivity {
 
     private void updateState() {
         CharSequence cageRFID = tvCageRFID.getText();
-
         if (cageRFID != null) {
-            GlobalState.recFishing.cageRFID = cageRFID.toString();
-            CageDetails cage = db.cageDetailsDAO().getByRFId(GlobalState.recFishing.cageRFID);
+            recFishing.cageRFID = cageRFID.toString();
+            CageDetails cage = db.cageDetailsDAO().getByRFId(recFishing.cageRFID);
             if (cage != null) {
-                GlobalState.recFishing.speciesName = cage.species; //TODO: compare with Requested Species
-                GlobalState.recFishing.pathologist = cage.ichthyopathologist;
-                GlobalState.recFishing.lastFed = cage.lastFed;
-                GlobalState.recFishing.hlot = cage.hlot;
+                recFishing.speciesName = cage.species; //TODO: compare with Requested Species
+                recFishing.pathologist = cage.ichthyopathologist;
+                recFishing.lastFed = cage.lastFed;
+                recFishing.hlot = cage.hlot;
             } else {
                 // TODO:: add alert, no cage corresponding to RFID found in local DB!!
             }
         }
 
-        GlobalState.recFishing.platformRFID = tvPlatformRFID.getText().toString();
+        recFishing.platformRFID = tvPlatformRFID.getText().toString();
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.platformRFID)) {
+            if (Strings.isEmptyOrWhitespace(recFishing.platformRFID)) {
                 sb.append(String.format("\n%s is missing", "'Platform tag'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.cageRFID)) {
+            if (Strings.isEmptyOrWhitespace(recFishing.cageRFID)) {
                 sb.append(String.format("\n%s is missing", "'Cage tag'"));
             }
         }
@@ -241,6 +256,14 @@ public class FishingCageActivity extends AppCompatActivity {
                                     tvPlatformRFID.setText(epc);
                                 } else if (epc.startsWith(Filters.RFID_CAGE)) {
                                     tvCageRFID.setText(epc);
+                                    recFishing.cageRFID = epc;
+                                    CageDetails cage = db.cageDetailsDAO().getByRFId(recFishing.cageRFID);
+                                    if (cage != null) {
+                                        if (!recFishing.cageCode.equals(cage.cageCode)){
+                                            FragmentManager fm = getSupportFragmentManager();
+                                            confirmCageSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+                                        }
+                                    }
                                 }
                             }
                         }

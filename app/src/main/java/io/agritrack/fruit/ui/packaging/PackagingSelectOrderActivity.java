@@ -125,7 +125,7 @@ public class PackagingSelectOrderActivity extends AppCompatActivity implements A
             GlobalState.recFishing.cageCode = harvestRq.cageCode;
             GlobalState.recFishing.cageRFID = harvestRq.cageRFID;
             GlobalState.recFishing.requesterName = harvestRq.requester;
-            GlobalState.recFishing.fishSize = harvestRq.fishSize;
+            GlobalState.recFishing.averageWeight = harvestRq.averageWeight;
             GlobalState.recFishing.reqWeight = harvestRq.reqQty;
             GlobalState.recFishing.notes = harvestRq.notes;
             GlobalState.recFishing.packagingPlant = harvestRq.packagingPlant;

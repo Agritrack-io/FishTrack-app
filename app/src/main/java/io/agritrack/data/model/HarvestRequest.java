@@ -31,14 +31,11 @@ public class HarvestRequest {
     @ColumnInfo(name = "species")
     public String species;
 
-    @ColumnInfo(name = "fish_size")
-    public String fishSize;
-
-    @ColumnInfo(name = "avg_weight")
-    public String avgWeight;
+    @ColumnInfo(name = "average_weight")
+    public Double averageWeight;
 
     @ColumnInfo(name = "request_quantity")
-    public String reqQty;
+    public Double reqQty;
 
     @ColumnInfo(name = "requester")
     public String requester;

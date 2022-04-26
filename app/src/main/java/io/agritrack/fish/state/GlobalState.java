@@ -142,7 +142,7 @@ public class GlobalState {
             txFishing.cageCode = recFishing.cageCode;
             txFishing.netRFID = recFishing.netRFID;
             txFishing.fishType = recFishing.speciesName;
-            txFishing.fishSize = recFishing.fishSize;
+            txFishing.averageWeight = String.valueOf(recFishing.averageWeight);
             txFishing.ichthyopathologist = recFishing.pathologist;
             txFishing.packagingPlant = recFishing.packagingPlant;
             txFishing.lastFeed = recFishing.lastFed;

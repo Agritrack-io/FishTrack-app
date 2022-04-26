@@ -15,7 +15,7 @@ public class FishingTxDTO {
     public String cage_code;
     public String net_rfid;
     public String ichthyopathologist;
-    public String fish_type;
+    public String species;
     public String fish_size;
     public String ice_adequacy;
     public String ice_supplier;
@@ -27,7 +27,7 @@ public class FishingTxDTO {
     public Integer total_quantity;
     public Short number_harvest_bins;
     public List<BinWeightRecord.BinRecord> harvest_bins_data;
-    public List<String> team_members = new LinkedList<String>();
+    public List<String> fishing_team = new LinkedList<String>();
     public String status;
     public String temp_data;
     public String user;
@@ -45,11 +45,11 @@ public class FishingTxDTO {
         fishingTxDTO.cage_code = fishing.cageCode;
         fishingTxDTO.net_rfid = fishing.netRFID;
         fishingTxDTO.ichthyopathologist = fishing.ichthyopathologist;
-        fishingTxDTO.fish_type = fishing.fishType;
-        fishingTxDTO.fish_size = fishing.fishSize;
+        fishingTxDTO.species = fishing.fishType;
+        fishingTxDTO.fish_size = fishing.averageWeight;
         fishingTxDTO.ice_adequacy = fishing.iceAdequacy;
         fishingTxDTO.ice_supplier = fishing.iceSupplier;
-        fishingTxDTO.last_feed = fishing.lastFeed;//.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));//+" 00:00:00";
+        //fishingTxDTO.last_feed = fishing.lastFeed;//.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));//+" 00:00:00";
         fishingTxDTO.hlot = fishing.hlot;
         fishingTxDTO.requester = fishing.requester;
         fishingTxDTO.ordered_quantity = fishing.orderedQuantity;
@@ -57,7 +57,7 @@ public class FishingTxDTO {
         fishingTxDTO.total_quantity = fishing.totalQty;
         fishingTxDTO.number_harvest_bins = fishing.harvestBinsCnt;
         fishingTxDTO.harvest_bins_data = fishing.harvestBinsData;
-        fishingTxDTO.team_members = fishing.team;
+        fishingTxDTO.fishing_team = fishing.team;
         fishingTxDTO.status = fishing.txStatus.name();
         fishingTxDTO.user = fishing.user;
         fishingTxDTO.temp_data = fishing.tempData;

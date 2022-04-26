@@ -48,8 +48,8 @@ public class FishingTransaction {
     @ColumnInfo(name = "fish_type")
     public String fishType;
 
-    @ColumnInfo(name = "fish_size")
-    public String fishSize;
+    @ColumnInfo(name = "average_weight")
+    public String averageWeight;
 
     @ColumnInfo(name = "ice_adequacy")
     public String iceAdequacy;

@@ -8,7 +8,6 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -19,13 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.util.Arrays;
-import java.util.List;
-
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.AppUser;
-import io.agritrack.data.model.common.Species;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.FishingRecord;
@@ -38,7 +32,7 @@ public class FishingStartActivity extends AppCompatActivity {
     private MobileDB db;
     private Spinner tvHarvestSpinner, speciesSpinner;
     private EditText etQty;
-    private TextView tvCageName, tvFishSize, tvNotes, tvHarvest, tvFishType, tvRequestedQuantity;
+    private TextView tvCageName, tvAverageWeight, tvNotes, tvHarvest, tvFishType, tvRequestedQuantity;
 
     private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
@@ -133,7 +127,7 @@ public class FishingStartActivity extends AppCompatActivity {
         speciesSpinner = findViewById(R.id.spFishType);*/
         ivSupport = findViewById(R.id.ivSupport);
         tvCageName = findViewById(R.id.tvCageName);
-        tvFishSize = findViewById(R.id.tvFishSize);
+        tvAverageWeight = findViewById(R.id.tvAverageWeight);
         tvNotes = findViewById(R.id.tvNotes);
         tvHarvest = findViewById(R.id.tvHarvest);
         tvFishType = findViewById(R.id.tvFishType);
@@ -165,16 +159,16 @@ public class FishingStartActivity extends AppCompatActivity {
             tvFishType.setText(hvst.speciesName);
         }
 
-        if (!Strings.isEmptyOrWhitespace(hvst.reqWeight)) {
-            tvRequestedQuantity.setText(hvst.reqWeight);
+        if (!Strings.isEmptyOrWhitespace(String.valueOf(hvst.reqWeight))) {
+            tvRequestedQuantity.setText(hvst.reqWeight.toString());
         }
 
         if (!Strings.isEmptyOrWhitespace(hvst.cageCode)) {
             tvCageName.setText(hvst.cageCode);
         }
 
-        if (!Strings.isEmptyOrWhitespace(hvst.fishSize)) {
-            tvFishSize.setText(hvst.fishSize);
+        if (!Strings.isEmptyOrWhitespace(String.valueOf(hvst.averageWeight))) {
+            tvAverageWeight.setText(hvst.averageWeight.toString());
         }
 
         if (!Strings.isEmptyOrWhitespace(hvst.notes)) {
@@ -202,8 +196,8 @@ public class FishingStartActivity extends AppCompatActivity {
             fishingRecord.cageCode = tvCageName.getText().toString();
         }
 
-        if (tvFishSize.getText() != null) {
-            fishingRecord.fishSize = tvFishSize.getText().toString();
+        if (tvAverageWeight.getText() != null) {
+            fishingRecord.averageWeight = Double.valueOf(tvAverageWeight.getText().toString());
         }
         //fishingRecord.reqWeight = etQty.getText() != null ? Double.valueOf(etQty.getText().toString()).intValue() + "" : "0";
 

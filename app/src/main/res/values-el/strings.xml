@@ -58,6 +58,7 @@
     <string name="harvest_details">Λεπτομέρειες συγκομιδής</string>
     <string name="fish_type">Τύπος ψαριού</string>
     <string name="cage">Κλωβός</string>
+    <string name="average_weight">Μέσο βάρος</string>
     <string name="fish_size">Μέγεθος ψαριού</string>
     <string name="notes">Σημειώσεις</string>
     <string name="requested_quantity">Ζητούμενη ποσότητα</string>
@@ -84,6 +85,7 @@
     <string name="name_cage">Κλωβός</string>
     <string name="platform">Πλατφόρμα</string>
     <string name="scan_cage">Σκανάρετε κλωβό</string>
+    <string name="procced_without_cage">"Ο κλωβός που μόλις σκανάρατε δεν είναι ο ίδιος με αυτόν που ζητήθηκε από την εντολή συγκομιδής!! Θέλετε να συνεχίσετε?"</string>
     <string name="name_net">Δίχτυ</string>
     <string name="scan_net">Σκανάρετε δίχτυ</string>
 
@@ -402,6 +404,9 @@
     <string name="error_CorrelationTx_update_failure">Η συσχέτιση απέτυχε να συγχρονιστεί!!!</string>
     <string name="title_harvest_requests">ΕΝΤΟΛΕΣ ΣΥΓΚΟΜΙΔΗΣ</string>
     <string name="select_open_harvest_request">Ανοικτές εντολές συγκομιδής</string>
+    <string name="today">Σημερινές</string>
+    <string name="yesterday">Χθεσινές</string>
+    <string name="older_days">Παλιότερες</string>
     <string name="pick_harvest_request">Παρακαλώ επιλέξτε μία...</string>
     <string name="no_harvest_requests_found_alert">Δεν βρέθηκαν εντολές συγκομιδής!!!</string>
     <string name="harvest_requests_sync_completed">Οι εντολές συγκομιδής συγχονίστηκαν επιτυχώς!</string>

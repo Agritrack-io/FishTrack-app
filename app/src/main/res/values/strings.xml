@@ -57,6 +57,7 @@
     <string name="harvest_details">Harvest details</string>
     <string name="fish_type">Fish Type</string>
     <string name="cage">Cage</string>
+    <string name="average_weight">Average weight</string>
     <string name="fish_size">Fish Size</string>
     <string name="notes">Notes</string>
     <string name="requested_quantity">Requested Quantity</string>
@@ -83,6 +84,7 @@
     <string name="name_cage">Name Cage</string>
     <string name="platform">Platform</string>
     <string name="scan_cage">Scan Cage tag</string>
+    <string name="procced_without_cage">"Cage just scanned is not same with the requested one!! Do you want to proceed?"</string>
     <string name="name_net">Name Net</string>
     <string name="scan_net">Scan Net tag</string>
 
@@ -399,6 +401,9 @@
     <string name="error_CorrelationTx_update_failure">Failed to update Correlation Transaction!!!</string>
     <string name="title_harvest_requests">HARVEST REQUESTS</string>
     <string name="select_open_harvest_request">Currently Open Harvest Requests</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="older_days">Older</string>
     <string name="pick_harvest_request">Please select One...</string>
     <string name="no_harvest_requests_found_alert">No Harvest Request returned from backend!!!</string>
     <string name="harvest_requests_sync_completed">Harvest Request sync completed!</string>

@@ -1,8 +1,6 @@
 package io.agritrack.data.dto;
 
 
-import java.util.Date;
-
 import io.agritrack.data.model.HarvestRequest;
 
 public class HarvestRequestDTO {
@@ -14,8 +12,8 @@ public class HarvestRequestDTO {
     public String cage_code;
     public String species;
     public String fish_size;
-    public String avg_weight;
-    public String request_quantity;
+    public Double avg_weight;
+    public Double request_quantity;
     public String requester;
     public String notes;
     public String user;
@@ -32,8 +30,8 @@ public class HarvestRequestDTO {
         harvestRequest.harvestDate = harvestRequestDTO.harvest_date;
         harvestRequest.cageCode = harvestRequestDTO.cage_code;
         harvestRequest.species = harvestRequestDTO.species;
-        harvestRequest.fishSize = harvestRequestDTO.fish_size;
-        harvestRequest.avgWeight = harvestRequestDTO.avg_weight;
+        //harvestRequest.averageWeight = harvestRequestDTO.fish_size;
+        harvestRequest.averageWeight = harvestRequestDTO.avg_weight;
         harvestRequest.reqQty = harvestRequestDTO.request_quantity;
         harvestRequest.requester = harvestRequestDTO.requester;
         harvestRequest.notes = harvestRequestDTO.notes;

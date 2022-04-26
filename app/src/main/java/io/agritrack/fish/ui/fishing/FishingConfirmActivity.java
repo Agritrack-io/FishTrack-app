@@ -162,7 +162,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         tvUsername.setText(LocalPreferences.getLoggedInUser(""));
 
         tvTotalQuantityCount.setText(recFishing.totalFishWeight != null ? recFishing.totalFishWeight.toString() : "N/A");
-        tvReqQuantityCount.setText(recFishing.reqWeight != null ? recFishing.reqWeight : "N/A");
+        tvReqQuantityCount.setText(recFishing.reqWeight != null ? recFishing.reqWeight.toString() : "N/A");
         tvNumberOfBinsCount.setText(recFishing.totalBinsUsed != null ? recFishing.totalBinsUsed.toString() : "N/A");
         tvNameCage.setText(recFishing.cageRFID != null ? recFishing.cageRFID : "N/A");
         tvTypeOfFishConfirm.setText(recFishing.speciesName != null ? recFishing.speciesName : "N/A");

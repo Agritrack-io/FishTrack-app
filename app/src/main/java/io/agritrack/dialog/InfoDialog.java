@@ -50,12 +50,12 @@ public class InfoDialog {
             tvFishType.setText(hvst.speciesName);
         }
 
-        if (!Strings.isEmptyOrWhitespace(hvst.fishSize)){
-            tvFishSize.setText(hvst.fishSize);
+        if (!Strings.isEmptyOrWhitespace(String.valueOf(hvst.averageWeight))){
+            tvFishSize.setText(hvst.averageWeight.toString());
         }
 
-        if (!Strings.isEmptyOrWhitespace(hvst.reqWeight)){
-            tvRequestedQuantity.setText(hvst.reqWeight);
+        if (!Strings.isEmptyOrWhitespace(String.valueOf(hvst.reqWeight))){
+            tvRequestedQuantity.setText(hvst.reqWeight.toString());
         }
 
         if (!Strings.isEmptyOrWhitespace(hvst.packagingPlant)){

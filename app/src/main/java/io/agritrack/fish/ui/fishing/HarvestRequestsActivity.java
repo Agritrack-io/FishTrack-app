@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import io.agritrack.R;
@@ -30,12 +32,15 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.bo.GenericListModel;
+import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class HarvestRequestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class HarvestRequestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, ToggleGroup.OnCheckedChangeListener {
     private MobileDB db;
     private ListView lvHarvestRequests;
     private GenericListModel[] harvestReqs;
+    private ToggleGroup tgChooseDate;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -56,30 +61,16 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
+        tgChooseDate = findViewById(R.id.tgChooseDate);
+        tgChooseDate.setOnCheckedChangeListener(this);
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderHarvestRequests);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
-        // load Harvest Request fetched via Synch op.
-        List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getAll();
-        if (harvestRequests != null && !harvestRequests.isEmpty()) {
-            //
-            this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate, x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
-
-            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, harvestReqs) {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View view = super.getView(position, convertView, parent);
-                    TextView text = view.findViewById(android.R.id.text1);
-                    text.setTextSize(22);
-                    return view;
-                }
-            };
-            //
-            this.lvHarvestRequests.setAdapter(candidatesAdapter);
-            this.lvHarvestRequests.setOnItemClickListener(this);
-            this.harvestRQcnt = harvestRequests.size();
-        }
+        LocalDate now = LocalDate.now();
+        String nowDate = now.format(formatter);
+        getHarvestReqByDate(nowDate);
 
         ivSupport = findViewById(R.id.ivSupport);
         ivSupport.setOnClickListener(view -> {
@@ -130,10 +121,72 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
             GlobalState.recFishing.cageCode = harvestRq.cageCode;
             GlobalState.recFishing.expectedCageRFID = harvestRq.cageRFID;
             GlobalState.recFishing.requesterName = harvestRq.requester;
-            GlobalState.recFishing.fishSize = harvestRq.fishSize;
+            GlobalState.recFishing.averageWeight = harvestRq.averageWeight;
             GlobalState.recFishing.reqWeight = harvestRq.reqQty;
             GlobalState.recFishing.notes = harvestRq.notes;
             GlobalState.recFishing.packagingPlant = harvestRq.packagingPlant;
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(ToggleGroup group, int checkedId) {
+        LocalDate now = LocalDate.now();
+        String nowDate = now.format(formatter);
+        LocalDate yesterday = now.minusDays(1);
+        String yesterdayDate = yesterday.format(formatter);
+        LocalDate date = now.minusDays(2);
+        String previousDate = date.format(formatter);
+
+        if (checkedId == R.id.tbToday) {
+            getHarvestReqByDate(nowDate);
+        } else if (checkedId == R.id.tbYesterday) {
+            getHarvestReqByDate(yesterdayDate);
+        } else if (checkedId == R.id.tbOlderDays) {
+            getPreviousHarvestReqByDate(previousDate);
+        }
+    }
+
+    private void getHarvestReqByDate(String date){
+        List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getByDate(date);
+        if (harvestRequests != null && !harvestRequests.isEmpty()) {
+            //
+            this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
+
+            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, harvestReqs) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    TextView text = view.findViewById(android.R.id.text1);
+                    text.setTextSize(22);
+                    return view;
+                }
+            };
+            //
+            this.lvHarvestRequests.setAdapter(candidatesAdapter);
+            this.lvHarvestRequests.setOnItemClickListener(this);
+            this.harvestRQcnt = harvestRequests.size();
+        }
+    }
+
+    private void getPreviousHarvestReqByDate(String date){
+        List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getPreviousDate(date);
+        if (harvestRequests != null && !harvestRequests.isEmpty()) {
+            //
+            this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
+
+            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, harvestReqs) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    TextView text = view.findViewById(android.R.id.text1);
+                    text.setTextSize(22);
+                    return view;
+                }
+            };
+            //
+            this.lvHarvestRequests.setAdapter(candidatesAdapter);
+            this.lvHarvestRequests.setOnItemClickListener(this);
+            this.harvestRQcnt = harvestRequests.size();
         }
     }
 
