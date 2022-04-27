@@ -10,7 +10,7 @@ import io.agritrack.data.model.tx.QualityTransaction;
 public class QualityTxDTO {
 
     public UUID id;
-    public Date sampleDate;
+    public Date sample_date;
     public String plot;
     public List<String> quality_bins = new LinkedList<String>();
     public Integer no_quality_bins;
@@ -93,7 +93,7 @@ public class QualityTxDTO {
         qualityTxDto.remarks = quality.remarks;
         qualityTxDto.site = quality.site;
         qualityTxDto.user = quality.user;
-        qualityTxDto.sampleDate = quality.sampleDate;
+        qualityTxDto.sample_date = quality.sampleDate;
         qualityTxDto.longitude = quality.longitude;
         qualityTxDto.latitude = quality.latitude;
 

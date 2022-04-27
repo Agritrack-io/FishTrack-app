@@ -47,7 +47,7 @@ public interface TransactionApi {
     Call<ProcessingTxDTO> syncProcessingTx(@Body ProcessingTxDTO processTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/quality")
+    @POST("/quality/pp1/quality")
     Call<QualityTxDTO> syncQualityTx(@Body QualityTxDTO qualityTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")

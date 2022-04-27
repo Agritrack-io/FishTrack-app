@@ -113,6 +113,9 @@ public class Asset {
     @ColumnInfo(name = "description")
     public String description;
 
+    @ColumnInfo(name = "logger_epc")
+    public String loggerEPC;
+
     /*@Embedded
     public SpatialEntity location;*/
 }

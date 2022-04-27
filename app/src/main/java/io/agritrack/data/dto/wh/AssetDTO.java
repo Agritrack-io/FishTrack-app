@@ -39,6 +39,7 @@ public class AssetDTO {
     public String erp_code;
     public Long insert_in_cage_at;
     public String description;
+    public String logger_epc;
 
     public static Asset convert(AssetDTO assetDTO) {
         Asset asset = new Asset();
@@ -74,6 +75,7 @@ public class AssetDTO {
         asset.erpCode = assetDTO.erp_code;
         asset.insertInCageAt = assetDTO.insert_in_cage_at;
         asset.description = assetDTO.description;
+        asset.loggerEPC = assetDTO.logger_epc;
 
         return asset;
     }

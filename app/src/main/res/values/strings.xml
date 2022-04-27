@@ -84,7 +84,7 @@
     <string name="name_cage">Name Cage</string>
     <string name="platform">Platform</string>
     <string name="scan_cage">Scan Cage tag</string>
-    <string name="procced_without_cage">"Cage just scanned is not same with the requested one!! Do you want to proceed?"</string>
+    <string name="procced_without_cage">"You just scanned cage \'%1$s\', but the requested cage is \'%2$s\'!! Do you want to proceed with the scanned one?"</string>
     <string name="name_net">Name Net</string>
     <string name="scan_net">Scan Net tag</string>
 

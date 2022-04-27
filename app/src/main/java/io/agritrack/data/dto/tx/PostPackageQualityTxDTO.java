@@ -10,7 +10,7 @@ public class PostPackageQualityTxDTO {
     public Double tempT1;
     public Double tempT2;
     public Double tempT3;
-    public String site;
+    public String plant;
     public String user;
     public Double longitude;
     public Double latitude;
@@ -23,7 +23,7 @@ public class PostPackageQualityTxDTO {
         qualityTxDto.tempT1 = quality.tempT1;
         qualityTxDto.tempT2 = quality.tempT2;
         qualityTxDto.tempT3 = quality.tempT3;
-        qualityTxDto.site = quality.site;
+        qualityTxDto.plant = quality.site;
         qualityTxDto.user = quality.user;
         qualityTxDto.sample_date = quality.sampleDate;
         qualityTxDto.longitude = quality.longitude;

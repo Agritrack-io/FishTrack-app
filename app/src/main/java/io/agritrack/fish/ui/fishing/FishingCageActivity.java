@@ -47,7 +47,6 @@ public class FishingCageActivity extends AppCompatActivity {
     private Button scanPlatformButton, scanCageButton;
     private TextView tvPlatformRFID, tvCageRFID;
     private YesNoDialogFragment confirmCageSelectionDlg;
-    private boolean proceedWithoutCage = true;
 
     private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
@@ -72,12 +71,11 @@ public class FishingCageActivity extends AppCompatActivity {
         assignCtrlVars();
 
         confirmCageSelectionDlg = YesNoDialogFragment.instance();
-        confirmCageSelectionDlg.setMessage(getText(R.string.procced_without_cage));
         confirmCageSelectionDlg.onConfirm(bundle -> {
-            proceedWithoutCage = true;
         });
         confirmCageSelectionDlg.onReject(bundle -> {
-            proceedWithoutCage = false;
+            tvCageRFID.setText(null);
+            recFishing.cageRFID = null;
         });
 
         // =================================
@@ -154,10 +152,7 @@ public class FishingCageActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToDetails);
         ivNext.setOnClickListener(view -> {
-            if (proceedWithoutCage) {
-                // Update state and proceed to next
                 updateState();
-            }
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
@@ -204,7 +199,6 @@ public class FishingCageActivity extends AppCompatActivity {
                 // TODO:: add alert, no cage corresponding to RFID found in local DB!!
             }
         }
-
         recFishing.platformRFID = tvPlatformRFID.getText().toString();
     }
 
@@ -256,11 +250,13 @@ public class FishingCageActivity extends AppCompatActivity {
                                     tvPlatformRFID.setText(epc);
                                 } else if (epc.startsWith(Filters.RFID_CAGE)) {
                                     tvCageRFID.setText(epc);
-                                    recFishing.cageRFID = epc;
-                                    CageDetails cage = db.cageDetailsDAO().getByRFId(recFishing.cageRFID);
+                                    CageDetails cage = db.cageDetailsDAO().getByRFId(epc);
                                     if (cage != null) {
                                         if (!recFishing.cageCode.equals(cage.cageCode)){
+                                            String scannedCage = cage.cageCode;
+                                            String orderedCage = recFishing.cageCode;
                                             FragmentManager fm = getSupportFragmentManager();
+                                            confirmCageSelectionDlg.setMessage(getString(R.string.procced_without_cage, scannedCage, orderedCage));
                                             confirmCageSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                                         }
                                     }

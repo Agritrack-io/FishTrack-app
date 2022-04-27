@@ -70,7 +70,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
 
         LocalDate now = LocalDate.now();
         String nowDate = now.format(formatter);
-        getHarvestReqByDate(nowDate);
+        getTodayHarvestReq();
 
         ivSupport = findViewById(R.id.ivSupport);
         ivSupport.setOnClickListener(view -> {
@@ -130,24 +130,25 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
 
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        LocalDate now = LocalDate.now();
+        /*LocalDate now = LocalDate.now();
         String nowDate = now.format(formatter);
         LocalDate yesterday = now.minusDays(1);
         String yesterdayDate = yesterday.format(formatter);
         LocalDate date = now.minusDays(2);
-        String previousDate = date.format(formatter);
+        String previousDate = date.format(formatter);*/
 
         if (checkedId == R.id.tbToday) {
-            getHarvestReqByDate(nowDate);
+            getTodayHarvestReq();
         } else if (checkedId == R.id.tbYesterday) {
-            getHarvestReqByDate(yesterdayDate);
+            getYesterdayHarvestReq();
         } else if (checkedId == R.id.tbOlderDays) {
-            getPreviousHarvestReqByDate(previousDate);
+            getPreviousHarvestReq();
         }
     }
 
-    private void getHarvestReqByDate(String date){
-        List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getByDate(date);
+    private void getTodayHarvestReq(){
+        this.lvHarvestRequests.setAdapter(null);
+        List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getTodayRecord();
         if (harvestRequests != null && !harvestRequests.isEmpty()) {
             //
             this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
@@ -161,15 +162,37 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
                     return view;
                 }
             };
-            //
             this.lvHarvestRequests.setAdapter(candidatesAdapter);
             this.lvHarvestRequests.setOnItemClickListener(this);
             this.harvestRQcnt = harvestRequests.size();
         }
     }
 
-    private void getPreviousHarvestReqByDate(String date){
-        List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getPreviousDate(date);
+    private void getYesterdayHarvestReq(){
+        this.lvHarvestRequests.setAdapter(null);
+        List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getYesterdayRecord();
+        if (harvestRequests != null && !harvestRequests.isEmpty()) {
+            //
+            this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
+
+            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, harvestReqs) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    TextView text = view.findViewById(android.R.id.text1);
+                    text.setTextSize(22);
+                    return view;
+                }
+            };
+            this.lvHarvestRequests.setAdapter(candidatesAdapter);
+            this.lvHarvestRequests.setOnItemClickListener(this);
+            this.harvestRQcnt = harvestRequests.size();
+        }
+    }
+
+    private void getPreviousHarvestReq(){
+        this.lvHarvestRequests.setAdapter(null);
+        List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getPreviousRecord();
         if (harvestRequests != null && !harvestRequests.isEmpty()) {
             //
             this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);

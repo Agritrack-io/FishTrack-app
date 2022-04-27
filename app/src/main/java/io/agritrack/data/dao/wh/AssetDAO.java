@@ -11,6 +11,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.data.model.wh.Asset;
 
 @Dao
@@ -27,6 +28,9 @@ public interface AssetDAO {
 
     @Query("SELECT * from asset where rfid_barcode=:epcStr LIMIT 1")
     Asset getAssetByEpc(String epcStr);
+
+    @Query("SELECT * from asset where logger_epc LIKE '%' || :loggerEPC || '%' LIMIT 1")
+    Asset getByLoggerEPC(String loggerEPC);
 
     @Query("SELECT id, rfid from asset where rfid=:epcStr LIMIT 1")
     Cursor getAssetCursorByEpc(String epcStr);

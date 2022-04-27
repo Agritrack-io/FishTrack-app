@@ -17,11 +17,17 @@ public interface HarvestRequestDAO {
     @Query("SELECT * from harvest_request")
     List<HarvestRequest> getAll();
 
+    @Query("SELECT * from harvest_request where DATE(harvest_date) = DATE('now')")
+    List<HarvestRequest> getTodayRecord();
+
+    @Query("SELECT * from harvest_request where DATE(harvest_date) = DATE('now','-1 day')")
+    List<HarvestRequest> getYesterdayRecord();
+
     @Query("SELECT * from harvest_request where harvest_date LIKE '%' || :date || '%'")
     List<HarvestRequest> getByDate(String date);
 
-    @Query("SELECT * from harvest_request where harvest_date<=:date")
-    List<HarvestRequest> getPreviousDate(String date);
+    @Query("SELECT * from harvest_request WHERE DATE(harvest_date) >= DATE('now', 'weekday 0', '-30 days')  AND DATE(harvest_date) != DATE('now')  AND DATE(harvest_date) != DATE('now','-1 day') ORDER BY harvest_date DESC")
+    List<HarvestRequest> getPreviousRecord();
 
     @Query("SELECT * from harvest_request where request_id=:harvestRequestId LIMIT 1")
     HarvestRequest getById(String harvestRequestId);

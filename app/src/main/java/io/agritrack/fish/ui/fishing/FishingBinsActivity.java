@@ -40,6 +40,7 @@ import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.IotLogger;
+import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
@@ -96,7 +97,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         }
     };
     private Set<String> scannedBinEPCs;
-    private String binBarcode = "", binEPC;
+    private String binBarcode = "", binEPC, loggerEPC;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
@@ -299,7 +300,7 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     protected void onClick(View view) {
         singleShot_runnable = new SingleShotScanner(mScanHandler);
-        singleShot_runnable.setFilter(Filters.RFID_BIN);
+        singleShot_runnable.setFilter(Filters.RFID_LOGGER);
         singleShot_runnable.startReading();
         mScanHandler.postDelayed(singleShot_runnable, 0);
     }
@@ -327,18 +328,22 @@ public class FishingBinsActivity extends AppCompatActivity {
                     String rssi = msg.getData().getString("rssi");
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            binEPC = epcStr.substring(11);
+                            //binEPC = epcStr.substring(11);
+                            loggerEPC = epcStr;
                             // after bin is identified, initialize the temperatures logger.
-                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(binEPC);
-                            if (logger != null) {
-                                scannedBinEPCs.add(epcStr.substring(11));
+                            //IotLogger logger = db.iotLoggerDAO().getByAssetRFID(binEPC);
+                            Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
+                            if (bin != null) {
+                                //scannedBinEPCs.add(epcStr.substring(11));
+                                binEPC = bin.rfid;
+                                scannedBinEPCs.add(bin.rfid);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();
 
-                                if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
+                                if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, false, true, true);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, false, true, true);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {

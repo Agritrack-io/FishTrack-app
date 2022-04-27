@@ -36,7 +36,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityConfirmActivity">
     <TextView
         android:id="@+id/tvTitleToolbar"
         fontPath="fonts/open_sans_semibold.ttf"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
@@ -321,11 +321,5 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityConfirmActivity">
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_check_blue" />
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Switch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

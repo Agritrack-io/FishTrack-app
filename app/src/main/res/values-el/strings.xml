@@ -85,7 +85,7 @@
     <string name="name_cage">Κλωβός</string>
     <string name="platform">Πλατφόρμα</string>
     <string name="scan_cage">Σκανάρετε κλωβό</string>
-    <string name="procced_without_cage">"Ο κλωβός που μόλις σκανάρατε δεν είναι ο ίδιος με αυτόν που ζητήθηκε από την εντολή συγκομιδής!! Θέλετε να συνεχίσετε?"</string>
+    <string name="procced_without_cage">"Μόλις σκανάρατε τον κλωβό \'%1$s\', αλλά δεν είναι ίδιος με τον \'%2$s\', που ζητήθηκε από την εντολή συγκομιδής!! Θέλετε να συνεχίσετε με τον σκαναρισμένο?"</string>
     <string name="name_net">Δίχτυ</string>
     <string name="scan_net">Σκανάρετε δίχτυ</string>
 
