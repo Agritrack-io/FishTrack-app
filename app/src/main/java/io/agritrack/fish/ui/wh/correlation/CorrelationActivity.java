@@ -357,6 +357,7 @@ public class CorrelationActivity extends LocationAwareActivity{
 
     private void loadAssetsByTypeFromLocalDB(String assetType) {
         // load assets for current Site and filter by asset type (if selected).
+        this.rvAssets.setAdapter(null);
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
             List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.code)).collect(Collectors.toList());
