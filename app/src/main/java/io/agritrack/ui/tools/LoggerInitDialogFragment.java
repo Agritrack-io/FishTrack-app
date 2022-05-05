@@ -445,6 +445,10 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             showInitButton = getArguments().getBoolean(SHOW_INIT_BUTTON);
             showResetButton = getArguments().getBoolean(SHOW_RESET_BUTTON);
 
+            btnReset.setVisibility(showResetButton ? View.VISIBLE : View.GONE);
+            btnInit.setVisibility(showInitButton ? View.VISIBLE : View.GONE);
+            btnRead.setVisibility(showReadButton ? View.VISIBLE : View.GONE);
+
             if (showReadButton){
                 // Enable Read button
                 btnRead.setText("Reading Measurements...");

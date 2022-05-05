@@ -3,7 +3,7 @@
     package="studio.carbonylgroup.textfieldboxes" >
 
     <uses-sdk
-        android:minSdkVersion="24"
+        android:minSdkVersion="26"
         android:targetSdkVersion="28" />
 
 </manifest>

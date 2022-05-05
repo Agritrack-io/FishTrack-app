@@ -1,8 +1,9 @@
 package io.agritrack.data.dto;
 
+import com.google.android.gms.common.util.Strings;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.UUID;
 
 import io.agritrack.data.model.CageDetails;
@@ -27,7 +28,10 @@ public class CageDetailsDTO {
         cageDetails.hlot = detailsDTO.hlot;
         cageDetails.species = detailsDTO.species;
         cageDetails.site = detailsDTO.site;
-        cageDetails.lastFed = LocalDateTime.parse(detailsDTO.last_feeding_date).toLocalDate();
+        if(!Strings.isEmptyOrWhitespace(detailsDTO.last_feeding_date)) {
+            LocalDate ld = LocalDateTime.parse(detailsDTO.last_feeding_date).toLocalDate();
+            cageDetails.lastFed = ld;
+        }
         //cageDetails.lastFed = detailsDTO.last_feeding_date;
         return cageDetails;
     }
