@@ -6,6 +6,7 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -39,7 +41,6 @@ import java.util.Set;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.InfoDialog;
@@ -48,16 +49,13 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.bo.LoggerReading;
+import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.LoggerInitDialogFragment;
-import android.content.BroadcastReceiver;
-
-import androidx.appcompat.app.AppCompatActivity;
-import io.agritrack.rfid.ScanInventoryThread;
-import io.agritrack.rfid.X9KeyReceiver;
-import io.agritrack.sound.SoundUtil;
 
 public class FishingBinsActivity extends AppCompatActivity {
 
@@ -345,6 +343,8 @@ public class FishingBinsActivity extends AppCompatActivity {
                                     FragmentManager fm = getSupportFragmentManager();
                                     LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, false, true, true);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
+                                } else {
+                                    CToast(getApplicationContext(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
                                 }
                             } else if (!IsDemo) {
                                 CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);

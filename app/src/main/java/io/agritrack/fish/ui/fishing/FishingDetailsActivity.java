@@ -16,16 +16,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import io.agritrack.R;
 import io.agritrack.dialog.InfoDialog;
@@ -36,14 +28,13 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class FishingDetailsActivity extends AppCompatActivity {
 
+    private static final long fastingDays = LocalPreferences.getFastingDays();
     private SwitchCompat bIceAdequacy;
     private EditText etIceSupplier;
     private TextView tvPathologist, tvLastFed, tvSpecies;
-
     private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
-    private static long fastingDays = LocalPreferences.getFastingDays();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -62,17 +53,21 @@ public class FishingDetailsActivity extends AppCompatActivity {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate lastFeedDate = GlobalState.recFishing.lastFed;
-        tvLastFed.setText(lastFeedDate.format(formatter));
-        try {
-            LocalDate now = LocalDate.now();
-            long daysBetween = DAYS.between(lastFeedDate, now);
-            if (daysBetween>fastingDays){
-                CToast(getApplicationContext(), render("More than 2 days have been spent before last feeding!!!"), Toast.LENGTH_LONG);
-            } else if (daysBetween<=(fastingDays-1)){
-                CToast(getApplicationContext(), render("Less than 1 days has been spent before last feeding!!!"), Toast.LENGTH_LONG);
+        if (lastFeedDate != null) {
+            tvLastFed.setText(lastFeedDate.format(formatter));
+            try {
+                LocalDate now = LocalDate.now();
+                long daysBetween = DAYS.between(lastFeedDate, now);
+                if (daysBetween > fastingDays) {
+                    CToast(getApplicationContext(), render("More than 2 days have been spent before last feeding!!!"), Toast.LENGTH_LONG);
+                } else if (daysBetween <= (fastingDays - 1)) {
+                    CToast(getApplicationContext(), render("Less than 1 days has been spent before last feeding!!!"), Toast.LENGTH_LONG);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            CToast(getApplicationContext(), render("No Last feeding date was found!!!"), Toast.LENGTH_SHORT);
         }
 
         tvSpecies.setText(GlobalState.recFishing.speciesName);

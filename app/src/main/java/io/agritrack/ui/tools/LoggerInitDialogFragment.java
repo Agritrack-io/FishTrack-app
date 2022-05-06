@@ -257,17 +257,21 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     };
     // -------------------------------------------------------------
     protected final View.OnClickListener resetBtnListener = v -> {
-        FragmentActivity mActivity = getActivity();
-        //...setup Reset Button............
-        mActivity.runOnUiThread(() -> {
-            btnReset.setBackgroundResource(R.drawable.button_background);
-            btnReset.setText("Resetting...");
-            startAnimation(getView(), btnReset);
-        });
+        if(!Strings.isEmptyOrWhitespace(loggerEPC)) {
+            FragmentActivity mActivity = getActivity();
+            //...setup Reset Button............
+            mActivity.runOnUiThread(() -> {
+                btnReset.setBackgroundResource(R.drawable.button_background);
+                btnReset.setText("Resetting...");
+                startAnimation(getView(), btnReset);
+            });
 
-        // -------------------------------------
-        cmd.setFilterEPC(loggerEPC);
-        mScanHandler.post(resetThread);
+            // -------------------------------------
+            cmd.setFilterEPC(loggerEPC);
+            mScanHandler.post(resetThread);
+        } else {
+            CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
+        }
     };
     // =============================================================
     final Runnable stopLoggerThread = new Runnable() {
@@ -368,7 +372,11 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         });
 
         // -------------------------------------
-        cmd.setFilterEPC(loggerEPC);
+        if(!Strings.isEmptyOrWhitespace(loggerEPC)) {
+            cmd.setFilterEPC(loggerEPC);
+        } else {
+            CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
+        }
 
         // TODO: once stopped the logger required RESET to be re-enabled...
 
@@ -406,26 +414,6 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         btnSetup = rootView.findViewById(R.id.btnSetup);
         btnInit = rootView.findViewById(R.id.btnInit);
         btnValidate = rootView.findViewById(R.id.btnValidate);
-
-        String argLoggerEPC = getArguments().getString(LOGGER_EPC);
-
-        if (getArguments() != null && !Strings.isEmptyOrWhitespace(argLoggerEPC)) {
-            this.loggerEPC = argLoggerEPC;
-
-//            if (showReadButton){
-//                // Enable Read button
-//                btnRead.setText("Reading Measurements...");
-//                btnRead.setBackgroundResource(R.drawable.button_background);
-//                btnRead.setOnClickListener(readBtnListener);
-//            } else if (showResetButton){
-//                // Enable reset button
-//                btnReset.setText("Resetting data logger...");
-//                btnReset.setBackgroundResource(R.drawable.button_background);
-//                btnReset.setOnClickListener(resetBtnListener);
-//
-//                mScanHandler.post(resetThread);
-//            }
-        }
 
         getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
         WindowManager.LayoutParams p = getDialog().getWindow().getAttributes();
