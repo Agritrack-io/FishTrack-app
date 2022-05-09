@@ -58,6 +58,7 @@ import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.data.model.HarvestRequest;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
@@ -171,19 +172,14 @@ public class FishHomeActivity extends AppCompatActivity {
                             // instantiate a new Fishing Record.
                             fishingRecord = GlobalState.initFishingRecord();
 
-                            // load Harvest Request fetched via Synch op.
-                            List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getAll();
-                            i = new Intent(appCtx, HarvestRequestsActivity.class);
+                            // NO FishingTx in progress
+                            openTx = new FishingTransaction();
+                            openTx.txStatus = TxStatus.PENDING;
+                            fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
 
-                            // Currently Only Harvest Requests created at Web will be handled!!
-                         /* if (harvestRequests != null && !harvestRequests.isEmpty()) {
-                                i = new Intent(appCtx, HarvestRequestsActivity.class);
-                            } else {
-                                // NO FishingTx in progress
-                                openTx = new FishingTransaction();
-                                openTx.txStatus = TxStatus.PENDING;
-                                fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
-                            }*/
+                            // load Harvest Request fetched via Synch op.
+//                            List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getAll();
+                            i = new Intent(appCtx, HarvestRequestsActivity.class);
                         }
                         break;
                     case Transport_Idx:
@@ -278,7 +274,11 @@ public class FishHomeActivity extends AppCompatActivity {
             Call<List<CageDetailsDTO>> syncCageDetailsAsyncCall = syncService.getCageDetailsBySiteId(siteId, "Bearer " + token);
             syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
 
-            // sync Cage Details
+            // sync Bin Info By Target Site
+            Call<List<BinInfoDTO>> syncBinsByTargetSiteAsyncCall = syncService.getBinsByTargetSite(siteId, "Bearer " + token);
+            syncBinsByTargetSiteAsyncCall.enqueue(new SyncBinsByPackagingSite(this.syncResult));
+
+            // sync Bin Info By Plant
             Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getBinsByPlant(siteId, "Bearer " + token);
             syncBinsByPlantAsyncCall.enqueue(new SyncBinsByPackagingSite(this.syncResult));
 

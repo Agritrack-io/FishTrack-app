@@ -12,4 +12,3 @@
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
     android:singleLine="false"
     android:textAppearance="?android:attr/textAppearanceListItemSmall" />
-

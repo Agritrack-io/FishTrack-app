@@ -73,8 +73,12 @@ public interface SyncApi {
     Call<List<CageDetailsDTO>> getCageDetailsBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/transport/bin-info/{siteId}")
+    @GET("/transport/bin-info/plant/{siteId}")
     Call<List<BinInfoDTO>> getBinsByPlant(@Path("siteId") UUID siteId, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/transport/bin-info/site/{siteId}")
+    Call<List<BinInfoDTO>> getBinsByTargetSite(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/logger/{siteId}")

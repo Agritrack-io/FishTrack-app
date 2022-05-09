@@ -136,7 +136,7 @@ public class GlobalState {
             FishingTransaction txFishing = new FishingTransaction();
 
             txFishing.id = recFishing.txKey;
-            txFishing.harvestRq = recFishing.harvestRq;
+            txFishing.harvestRq = recFishing.harvestRqPkId;
             txFishing.platformRFID = recFishing.platformRFID;
             txFishing.cageRFID = recFishing.cageRFID;
             txFishing.cageCode = recFishing.cageCode;
