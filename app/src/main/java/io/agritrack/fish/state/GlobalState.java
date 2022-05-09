@@ -265,7 +265,7 @@ public class GlobalState {
             txQuality.overallEvaluation = recQuality.evaluation;
             txQuality.remarks = recQuality.remarks;
             txQuality.qualityBins = recQuality.qualityBins;
-            txQuality.noQualityBins = recQuality.noQualityBins;
+            txQuality.qualityBinsCnt = recQuality.qualityBinsCnt;
             txQuality.user = LocalPreferences.getLoggedInUser("N/A");
             txQuality.site = LocalPreferences.getCurrentSiteName();
             txQuality.sampleDate = new Date(System.currentTimeMillis());
@@ -312,15 +312,15 @@ public class GlobalState {
 
                 Measurement measurement = new Measurement();
                 measurement.loggerRFID = model.loggerEPC;
+                measurement.assetRFID = model.assetEPC;
                 measurement.retrievedAt = model.retrievedAt;
-                measurement.enabledAt = model.enabledAt;
 
                 long measurementId = db.measurementsDAO().insert(measurement);
                 if (measurementId > 0 && model.values != null && !model.values.isEmpty()) {
                     List<TemperatureData> data = model.values.stream().map(x -> new TemperatureData(measurementId, x[0], Double.valueOf(x[1].replace(',', '.')))).collect(Collectors.toList());
                     db.temperatureDataDAO().insert(data.toArray(new TemperatureData[data.size()]));
                 }
-
+                //TODO:: can't we get it directly from the insert statement?
                 result.add(db.measurementsDAO().getById(measurementId));
             }
 

@@ -7,8 +7,7 @@ public class QualityRecord {
     public String pLot;
     public String remarks;
     public List<String> qualityBins;
-    public Integer noQualityBins;
-    public List<String[]> tempValues;
+    public Integer qualityBinsCnt;
     public String binCondition;
     public String iceCondition;
     public String smellCondition;

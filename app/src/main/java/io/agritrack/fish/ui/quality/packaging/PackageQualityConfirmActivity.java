@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,17 +31,17 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.upload.UploadingApi;
 import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.common.MeasurementsDTO;
+import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.LocationAwareActivity;
-import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.MediaType;
@@ -121,26 +120,23 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
     }
 
     protected void configFooter() {
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(etPIN.getText().toString())) {
-                    CToast(PackageQualityConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
-                    return;
-                }
-                boolean userIsValid = isAuthenticated();
-                if (!userIsValid) {
-                    CToast(PackageQualityConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
-                    return;
-                } else if (mLastLocation != null) {
-                    recQuality.longitude = mLastLocation.getLongitude();
-                    recQuality.latitude = mLastLocation.getLatitude();
-                    proceedWithoutLocation = true;
-                    moveToNextScreen();
-                } else if (!proceedWithoutLocation) {
-                    FragmentManager fm = getSupportFragmentManager();
-                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-                }
+        ivNext.setOnClickListener(v -> {
+            if (TextUtils.isEmpty(etPIN.getText().toString())) {
+                CToast(PackageQualityConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
+                return;
+            }
+            boolean userIsValid = isAuthenticated();
+            if (!userIsValid) {
+                CToast(PackageQualityConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
+                return;
+            } else if (mLastLocation != null) {
+                recQuality.longitude = mLastLocation.getLongitude();
+                recQuality.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else if (!proceedWithoutLocation) {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             }
         });
 
@@ -242,9 +238,9 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
 
             // persist Measurements Record data to local DB.
             List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db);
-            List<MeasurementsDTO> measurementsDTOs = new ArrayList<>();
+            List<TemperatureTimeSeriesDTO> temperatureTimeSeriesDTOs = new ArrayList<>();
             for (TemperatureTimeSeries ts : measurements) {
-                measurementsDTOs.add(MeasurementsDTO.convert(ts));
+                temperatureTimeSeriesDTOs.add(TemperatureTimeSeriesDTO.convert(ts));
             }
 
             // sync Processing records
@@ -252,8 +248,8 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
             syncTxAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncTxCallBack());
 
             // sync Measurements records
-            if (!measurementsDTOs.isEmpty()) {
-                Call<List<MeasurementsDTO>> syncMsAsyncCall = updService.syncMeasurements(measurementsDTOs, "Bearer " + token);
+            if (!temperatureTimeSeriesDTOs.isEmpty()) {
+                Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = updService.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
                 syncMsAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncMsCallBack());
             }
             return true;
@@ -297,10 +293,10 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         }
     }
 
-    public class SyncMsCallBack implements Callback<List<MeasurementsDTO>> {
+    public class SyncMsCallBack implements Callback<List<TemperatureTimeSeriesDTO>> {
         @Override
-        public void onResponse(Call<List<MeasurementsDTO>> call, Response<List<MeasurementsDTO>> response) {
-            List<MeasurementsDTO> rs = response.body();
+        public void onResponse(Call<List<TemperatureTimeSeriesDTO>> call, Response<List<TemperatureTimeSeriesDTO>> response) {
+            List<TemperatureTimeSeriesDTO> rs = response.body();
 
             if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
@@ -311,7 +307,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<List<MeasurementsDTO>> call, Throwable error) {
+        public void onFailure(Call<List<TemperatureTimeSeriesDTO>> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

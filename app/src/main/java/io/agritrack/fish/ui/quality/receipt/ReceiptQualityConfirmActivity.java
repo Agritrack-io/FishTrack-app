@@ -33,7 +33,7 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.upload.UploadingApi;
 import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.common.MeasurementsDTO;
+import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.QualityTransaction;
@@ -239,9 +239,11 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
 
             // persist Measurements Record data to local DB.
             List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db);
-            List<MeasurementsDTO> measurementsDTOs = new ArrayList<>();
+            List<TemperatureTimeSeriesDTO> temperatureTimeSeriesDTOs = new ArrayList<>();
             for (TemperatureTimeSeries ts : measurements) {
-                measurementsDTOs.add(MeasurementsDTO.convert(ts));
+                TemperatureTimeSeriesDTO measurementDTO = TemperatureTimeSeriesDTO.convert(ts);
+                measurementDTO.lot = tx.plot;
+                temperatureTimeSeriesDTOs.add(measurementDTO);
             }
 
             // sync Processing records
@@ -249,8 +251,8 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             syncTxAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncTxCallBack());
 
             // sync Measurements records
-            if (!measurementsDTOs.isEmpty()) {
-                Call<List<MeasurementsDTO>> syncMsAsyncCall = updService.syncMeasurements(measurementsDTOs, "Bearer " + token);
+            if (!temperatureTimeSeriesDTOs.isEmpty()) {
+                Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = updService.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
                 syncMsAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncMsCallBack());
             }
             return true;
@@ -294,10 +296,10 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         }
     }
 
-    public class SyncMsCallBack implements Callback<List<MeasurementsDTO>> {
+    public class SyncMsCallBack implements Callback<List<TemperatureTimeSeriesDTO>> {
         @Override
-        public void onResponse(Call<List<MeasurementsDTO>> call, Response<List<MeasurementsDTO>> response) {
-            List<MeasurementsDTO> rs = response.body();
+        public void onResponse(Call<List<TemperatureTimeSeriesDTO>> call, Response<List<TemperatureTimeSeriesDTO>> response) {
+            List<TemperatureTimeSeriesDTO> rs = response.body();
 
             if (rs != null || IsDemo) {
                 // reset existing Temperature values in stateRecord.
@@ -310,7 +312,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<List<MeasurementsDTO>> call, Throwable error) {
+        public void onFailure(Call<List<TemperatureTimeSeriesDTO>> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

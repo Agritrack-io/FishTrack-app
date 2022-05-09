@@ -46,19 +46,15 @@ import io.agritrack.caen.api.RFIDModuleFactory;
 
 public class LoggerInitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
 
-    private static final String SHOW_READ_BUTTON = "ShowReadButton";
-    private static final String SHOW_INIT_BUTTON = "ShowInitButton";
-    private static final String SHOW_RESET_BUTTON = "ShowResetButton";
-    private boolean showReadButton = false;
-    private boolean showInitButton = false;
-    private boolean showResetButton = false;
-
-
     public enum State {STOP_LOGGER, COUNT_SAMPLES, READ_VALUES, RESET, INIT};
+
+    private static final String SHOW_READ_BUTTON = "ShowReadButton", SHOW_INIT_BUTTON = "ShowInitButton", SHOW_RESET_BUTTON = "ShowResetButton";
+    private boolean showReadButton = false, showInitButton = false, showResetButton = false;
+
     private static final int RST_BIT = 4, RFU_BIT = 3, LE_BIT = 2, DE_BIT = 1, RFSL_BIT = 0;
-    private static final int LEVEL_INCREMENT = 1000;
-    private static final int MAX_LEVEL = 10000;
+    private static final int LEVEL_INCREMENT = 1000, MAX_LEVEL = 10000;
     private static final String LOGGER_EPC = "FishLoggerEPC";
+    private static final String ASSET_EPC = "HarvestBinEPC";
     public static String TAG = "CaenLoggerDialogFragment";
 
     private Button btnRead, btnReset, btnSetup, btnInit, btnValidate;
@@ -67,6 +63,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     private final CAENCommandsHandler mScanHandler = new CAENCommandsHandler(this);
     private ICAEN_API cmd;
     private String loggerEPC;
+    private String assetEPC;
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0, resetCnt = 0;
     private Short cntSamples = 0;
@@ -335,8 +332,8 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                 List<String[]> measurements = cmd.ReadSamples(cntSamples);
 
                 if (measurements != null) {
-                    long now = System.currentTimeMillis() / 1000L;
-                    recLoggerData.addDataSet(loggerEPC, now, null, measurements);
+                    long now = System.currentTimeMillis();
+                    recLoggerData.addDataSet(loggerEPC, assetEPC, now, measurements);
 
                     // update buttons based on values read...
                     mScanHandler.sendMessage(createMessage(CmdReadData, (short) measurements.size()));
@@ -378,8 +375,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
         }
 
-        // TODO: once stopped the logger required RESET to be re-enabled...
-
+        //WARNING: once stopped the logger required RESET to be re-enabled...
         mScanHandler.post(stopLoggerThread);
         // -------------------------------------
     };
@@ -393,10 +389,11 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         // Use `newInstance` instead as shown below
     }
 
-    public static LoggerInitDialogFragment newInstance(String epc, boolean showReadButton, boolean showResetButton, boolean showInitButton) {
+    public static LoggerInitDialogFragment newInstance(String loggerEPC, String assetEPC, boolean showReadButton, boolean showResetButton, boolean showInitButton) {
         LoggerInitDialogFragment frag = new LoggerInitDialogFragment();
         Bundle args = new Bundle();
-        args.putString(LOGGER_EPC, epc);
+        args.putString(LOGGER_EPC, loggerEPC);
+        args.putString(ASSET_EPC, assetEPC);
         args.putBoolean(SHOW_READ_BUTTON, showReadButton);
         args.putBoolean(SHOW_INIT_BUTTON, showInitButton);
         args.putBoolean(SHOW_RESET_BUTTON, showResetButton);
@@ -429,6 +426,9 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         super.onViewCreated(view, savedInstanceState);
 
         if (getArguments() != null) {
+            this.loggerEPC =  getArguments().getString(LOGGER_EPC);
+            this.assetEPC = getArguments().getString(ASSET_EPC);
+
             showReadButton = getArguments().getBoolean(SHOW_READ_BUTTON);
             showInitButton = getArguments().getBoolean(SHOW_INIT_BUTTON);
             showResetButton = getArguments().getBoolean(SHOW_RESET_BUTTON);

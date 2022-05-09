@@ -57,7 +57,7 @@ public class QualityTxDTO {
 
         qualityTxDto.plot = quality.plot;
         qualityTxDto.quality_bins = quality.qualityBins;
-        qualityTxDto.no_quality_bins = quality.noQualityBins;
+        qualityTxDto.no_quality_bins = quality.qualityBinsCnt;
         qualityTxDto.bin_condition = quality.binCondition;
         qualityTxDto.ice_condition = quality.iceCondition;
         qualityTxDto.smell_condition = quality.smellCondition;

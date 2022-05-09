@@ -37,7 +37,7 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.common.MeasurementsDTO;
+import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.dialog.SupportDialog;
@@ -168,12 +168,12 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
 
         // sync Measurements records
         if (fullMeasurements != null && !fullMeasurements.isEmpty()) {
-            List<MeasurementsDTO> measurementsDTOs = new ArrayList<>();
+            List<TemperatureTimeSeriesDTO> temperatureTimeSeriesDTOs = new ArrayList<>();
             for(TemperatureTimeSeries ts : fullMeasurements) {
-                measurementsDTOs.add(MeasurementsDTO.convert(ts));
+                temperatureTimeSeriesDTOs.add(TemperatureTimeSeriesDTO.convert(ts));
             }
 
-            Call<List<MeasurementsDTO>> syncMsAsyncCall = updService.syncMeasurements(measurementsDTOs, "Bearer " + token);
+            Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = updService.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
             syncMsAsyncCall.enqueue(new DailyTemperatureMeasurementsActivity.SyncMsCallBack());
         }
     }
@@ -255,10 +255,10 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
         }
     }
 
-    private class SyncMsCallBack implements Callback<List<MeasurementsDTO>> {
+    private class SyncMsCallBack implements Callback<List<TemperatureTimeSeriesDTO>> {
         @Override
-        public void onResponse(Call<List<MeasurementsDTO>> call, Response<List<MeasurementsDTO>> response) {
-            List<MeasurementsDTO> rs = response.body();
+        public void onResponse(Call<List<TemperatureTimeSeriesDTO>> call, Response<List<TemperatureTimeSeriesDTO>> response) {
+            List<TemperatureTimeSeriesDTO> rs = response.body();
 
             if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
@@ -269,7 +269,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onFailure(Call<List<MeasurementsDTO>> call, Throwable error) {
+        public void onFailure(Call<List<TemperatureTimeSeriesDTO>> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

@@ -13,9 +13,9 @@ public class Measurement {
     @ColumnInfo(name = "logger_rfid")
     public String loggerRFID;
 
+    @ColumnInfo(name = "asset_rfid")
+    public String assetRFID;
+
     @ColumnInfo(name = "retrieved_at")
     public Long retrievedAt;
-
-    @ColumnInfo(name = "enabled_at")
-    public String enabledAt;
 }

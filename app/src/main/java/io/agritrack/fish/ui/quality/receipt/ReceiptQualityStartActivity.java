@@ -3,7 +3,6 @@ package io.agritrack.fish.ui.quality.receipt;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.BroadcastReceiver;
@@ -23,7 +22,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +32,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import io.agritrack.R;
@@ -45,7 +42,6 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
-import io.agritrack.fish.ui.bo.LoggerReading;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
@@ -61,7 +57,6 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
 
-    private final LinkedList<String[]> listMeasurements = new LinkedList<>();
     private SingleShotScanner scanner_runnable;
     private MobileDB db;
     private RecyclerView rvBinsForTransport;
@@ -96,7 +91,6 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     private ImageView ivSupport;
     private Button btnScanBin;
     private SupportDialog supportDialog;
-    private LoggerReading loggerReading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,20 +162,6 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
-        // ------- instantiate a ViewModel to fetch Temperature measurements ----
-        loggerReading = new ViewModelProvider(this).get(LoggerReading.class);
-        loggerReading.getReading().observe(this, reading -> {
-            List<String[]> values = (List<String[]>) reading.get("Measurements");
-            String epc = (String) reading.get("EPC");
-            Long ts = (Long) reading.get("timestamp");
-
-            recLoggerData.addDataSet(epc, System.currentTimeMillis() / 1000L, null, values);
-
-            //TODO: check if dialog display will be invoked here or in fragment
-//            tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);
-//            tempLoggerDialog.showDialog();
-        });
-
         configFooter();
     }
 
@@ -229,15 +209,14 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             TextView tvBinsCount = findViewById(R.id.tvBinsCount);
-            tvBinsCount.setText(String.valueOf(qualityRecord.noQualityBins));
+            tvBinsCount.setText(String.valueOf(qualityRecord.qualityBinsCnt));
         }
     }
 
     private void updateState() {
 
         GlobalState.recQuality.qualityBins = new LinkedList<>(adapterBins.getValues());
-        GlobalState.recQuality.noQualityBins = adapterBins.getItemCount();
-        GlobalState.recQuality.tempValues = listMeasurements;
+        GlobalState.recQuality.qualityBinsCnt = adapterBins.getItemCount();
         GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
         GlobalState.recQuality.logger_rfid = logger_rfid;
     }
@@ -331,7 +310,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
 
                                 if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid,  true, true, false);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, binEPC,true, true, false);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {

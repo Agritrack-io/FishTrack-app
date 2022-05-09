@@ -30,7 +30,7 @@ public class QualityTransaction {
     public List<String> qualityBins;
 
     @ColumnInfo(name = "no_quality_bins")
-    public Integer noQualityBins;
+    public Integer qualityBinsCnt;
 
     @ColumnInfo(name = "bin_condition")
     public String binCondition;

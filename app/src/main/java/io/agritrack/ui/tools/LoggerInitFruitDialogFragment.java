@@ -316,8 +316,10 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                 List<String[]> measurements = cmd.ReadSamples(cntSamples);
 
                 if (measurements != null) {
-                    long now = System.currentTimeMillis() / 1000L;
-                    recLoggerData.addDataSet(loggerEPC, now, null, measurements);
+                    long now = System.currentTimeMillis();
+
+                    //TODO:: set correct assetEPC
+                    recLoggerData.addDataSet(loggerEPC, loggerEPC, now, measurements);
 
                     // update buttons based on values read...
                     mScanHandler.sendMessage(createMessage(CmdReadData, (short) measurements.size()));

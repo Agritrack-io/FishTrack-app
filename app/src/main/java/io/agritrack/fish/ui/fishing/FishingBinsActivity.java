@@ -341,7 +341,7 @@ public class FishingBinsActivity extends AppCompatActivity {
 
                                 if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, false, true, true);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC , false, true, true);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 } else {
                                     CToast(getApplicationContext(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);

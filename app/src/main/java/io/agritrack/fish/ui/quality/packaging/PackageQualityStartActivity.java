@@ -56,7 +56,6 @@ import io.agritrack.ui.tools.LoggerInitDialogFragment;
 public class PackageQualityStartActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-    private final LinkedList<String[]> listMeasurements = new LinkedList<>();
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     private boolean intentForProcessing = true;
@@ -232,7 +231,6 @@ public class PackageQualityStartActivity extends AppCompatActivity {
     private void updateState() {
 
         GlobalState.recQuality.qualityBins = new LinkedList<>(adapterBins.getValues());
-        GlobalState.recQuality.tempValues = listMeasurements;
         GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
         GlobalState.recQuality.logger_rfid = logger_rfid;
     }
@@ -316,7 +314,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
 
                                 if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, true, intentForProcessing, intentForProcessing);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, epcStr, true, intentForProcessing, intentForProcessing);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {
