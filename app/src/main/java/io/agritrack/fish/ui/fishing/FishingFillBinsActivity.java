@@ -68,6 +68,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private BinLoadsMap loadsMap;
     private String selectedCatch;
     private ConstraintLayout selectedItem;
+    private long epochFrom;
     // Instantiate a clickListener to be passed to adapterCatches.
     // It will be used to set the catch var to the selected catch.
     private final View.OnClickListener catchesOnClickListener = new View.OnClickListener() {
@@ -97,6 +98,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
+    private boolean isClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +155,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // =================================
         // Adding bin load completion functionality
         btnFillBin.setOnClickListener(view -> {
-            GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, null, System.currentTimeMillis() / 1000l);
+            isClicked = true;
+            GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, epochFrom, System.currentTimeMillis() / 1000l);
             clearSelectedItem();
             isClickable = false;
             btnCurrentBinScan.setEnabled(true);
@@ -164,6 +167,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             btnDeleteCatch.setTextColor(Color.DKGRAY);
             view.setEnabled(false);
             ((Button) view).setTextColor(Color.DKGRAY);
+            epochFrom = 0;
         });
 
         btnDeleteCatch.setOnClickListener(view -> {
@@ -247,6 +251,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
+        isClicked = false;
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_BIN);
         scanner_runnable.HighEnergy();
@@ -299,6 +304,10 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
+            if (!isClicked){
+                CToast(getApplicationContext(), render(R.string.fill_bin), Toast.LENGTH_LONG);
+                return;
+            }
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -311,6 +320,10 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToDetails);
         ivBack.setOnClickListener(view -> {
+            if (!isClicked){
+                CToast(getApplicationContext(), render(R.string.fill_bin), Toast.LENGTH_LONG);
+                return;
+            }
             Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
             startActivity(i);
         });
@@ -401,6 +414,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
                             adapterCatches.notifyDataSetChanged();
                             tvUsedBinsCount.setText(loadsMap.loadsCnt());
+                            epochFrom = System.currentTimeMillis() / 1000l;
                         });
 
                         btnNextCatch.setEnabled(true);

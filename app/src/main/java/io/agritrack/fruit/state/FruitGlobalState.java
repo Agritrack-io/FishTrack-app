@@ -534,9 +534,9 @@ public class FruitGlobalState {
             txCorrelation.site = recCorrelation.subSite;
             txCorrelation.assetType = (recCorrelation.assetType != null) ? recCorrelation.assetType : null;
             txCorrelation.assetRFID = recCorrelation.poleRFID;
-            txCorrelation.loggerType = (recCorrelation.loggerType != null) ? recCorrelation.loggerType : null;
-            txCorrelation.loggerRFID = recCorrelation.loggerRFID;
-            txCorrelation.barcode = recCorrelation.poleBarcode;
+            txCorrelation.type = (recCorrelation.loggerType != null) ? recCorrelation.loggerType : null;
+            txCorrelation.rfid = recCorrelation.loggerRFID;
+            txCorrelation.assetCode = recCorrelation.poleBarcode;
             txCorrelation.user = LocalPreferences.getLoggedInUser("N/A");
             txCorrelation.timestamp = System.currentTimeMillis();
             txCorrelation.longitude = recCorrelation.longitude;

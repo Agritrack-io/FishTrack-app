@@ -50,11 +50,11 @@ public class InfoDialog {
             tvFishType.setText(hvst.speciesName);
         }
 
-        if (!Strings.isEmptyOrWhitespace(String.valueOf(hvst.averageWeight))){
+        if (hvst.averageWeight!=null){
             tvFishSize.setText(hvst.averageWeight.toString());
         }
 
-        if (!Strings.isEmptyOrWhitespace(String.valueOf(hvst.reqWeight))){
+        if (hvst.reqWeight!=null){
             tvRequestedQuantity.setText(hvst.reqWeight.toString());
         }
 

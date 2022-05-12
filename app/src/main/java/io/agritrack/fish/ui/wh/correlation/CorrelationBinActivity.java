@@ -6,34 +6,31 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.SearchView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
@@ -47,65 +44,39 @@ import java.util.stream.Collectors;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Constants;
+import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
+import io.agritrack.data.model.Site;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.wh.Asset;
-import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.WhMenuActivity;
+import io.agritrack.fruit.state.FruitGlobalState;
+import io.agritrack.fruit.ui.warehouse.correlation.FruitCorrelationActivity;
+import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
-import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CorrelationActivity extends LocationAwareActivity{
-    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
-    // Local handler that receives the RFID scanner results.
-    private final ScanHandler mScanHandler = new ScanHandler(this);
-    private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-    // listens to trigger button clicks.
+public class CorrelationBinActivity extends LocationAwareActivity {
+
     protected BroadcastReceiver keyReceiver;
-    private SearchView svSearchAsset;
-    private RecyclerView rvAssets;
-    private Spinner spAssetType;
-    private Button btnScanAssetTag, btnCorrelate;
-    private TextView tvCorrAssetBarcode;
+
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    private final CorrelationBinActivity.ScanHandler mScanHandler = new CorrelationBinActivity.ScanHandler(this);
     private MobileDB db;
-    private YesNoDialogFragment confirmGPSSelectionDlg;
-    private FilterableAdapter adapterAssets;
-    private String selectedAssetType;
-    private String selectedBarcode = "";
-    private String activeFilter = null;
-    private String epcPrefix = "BE0019A0000";
-    private ConstraintLayout selectedItem;
-    // Instantiate a clickListener to be passed to adapterAssets.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
+    private Button btnScanAssetTag, btnCorrelate;
+    private TextView tvCorrBinBarcode, tvCorrTempLoggerBarcode;
+    private EditText etAssetBarcode;
     private ProgressDialog progressDialog;
+    private YesNoDialogFragment confirmGPSSelectionDlg;
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
@@ -113,52 +84,14 @@ public class CorrelationActivity extends LocationAwareActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_correlation);
-
-        // activate GPS location update feature.
-        super.findLocation();
+        setContentView(R.layout.activity_correlation_bin);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderCorrelation);
+        TextView tvHeader = findViewById(R.id.tvHeaderBinCorrelation);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
-
-        String[] names = schemeSvc.distinctNamesOnly();
-        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, names) {
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                if (position % 2 == 0) { // we're on an even row
-                    view.setBackgroundColor(getColor(R.color.white));
-                } else {
-                    view.setBackgroundColor(getColor(R.color.light_grey));
-                }
-                return view;
-            }
-        };
-
-        spAssetType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
-                selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
-                loadAssetsByTypeFromLocalDB(selectedAssetType);
-                if (adapterAssets == null) {
-                    svSearchAsset.setVisibility(View.GONE);
-                } else {
-                    svSearchAsset.setVisibility(View.VISIBLE);
-                    adapterAssets.notifyDataSetChanged();
-                }
-            }
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-
-            }
-        });
-
-        hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
-        spAssetType.setAdapter(hrAdapter);
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
@@ -172,19 +105,21 @@ public class CorrelationActivity extends LocationAwareActivity{
         });
 
         // instantiate ProgressDialog and set style.
-        progressDialog = new ProgressDialog(CorrelationActivity.this);
+        progressDialog = new ProgressDialog(CorrelationBinActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        // get an instance of local
+        // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
 
         btnCorrelate.setOnClickListener(view -> {
-            GlobalState.recWHCorrelation.assetType = selectedAssetType;
-            //GlobalState.recWHCorrelation.barcode = !Strings.isEmptyOrWhitespace(selectedBarcode) ? selectedBarcode : null; //tvCorrAssetBarcode.getText() != null ? tvCorrAssetBarcode.getText().toString() : null;
-            GlobalState.recWHCorrelation.rfid = tvCorrAssetBarcode.getText() != null ? tvCorrAssetBarcode.getText().toString() : null;
+            GlobalState.recWHCorrelation.assetType = Constants.ftBin;
+            GlobalState.recWHCorrelation.assetCode = etAssetBarcode.getText() != null ? etAssetBarcode.getText().toString() : null;
+            GlobalState.recWHCorrelation.assetRFID = tvCorrBinBarcode.getText() != null ? tvCorrBinBarcode.getText().toString() : null;
+            GlobalState.recWHCorrelation.type = Constants.ftDataLogger;
+            GlobalState.recWHCorrelation.rfid = tvCorrTempLoggerBarcode.getText() != null ? tvCorrTempLoggerBarcode.getText().toString() : null;
 
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -204,7 +139,7 @@ public class CorrelationActivity extends LocationAwareActivity{
         });
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(CorrelationActivity.this);
+            supportDialog = new SupportDialog(CorrelationBinActivity.this);
             supportDialog.showDialog();
         });
 
@@ -218,7 +153,7 @@ public class CorrelationActivity extends LocationAwareActivity{
 
             if (proceed) {
                 // move to next activity.
-                Intent i = new Intent(getApplicationContext(), CorrelationActivity.class);
+                Intent i = new Intent(getApplicationContext(), CorrelationBinActivity.class);
                 startActivity(i);
             }
         }
@@ -252,64 +187,26 @@ public class CorrelationActivity extends LocationAwareActivity{
     }
 
     protected void configFooter() {
-        ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+        ivBack.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
             startActivity(i);
-                /*String v = validate();
-                if (!Strings.isEmptyOrWhitespace(v)) {
-                    CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-                    return;
-                }
-
-                if (mLastLocation != null) {
-                    recWHCorrelation.longitude = mLastLocation.getLongitude();
-                    recWHCorrelation.latitude = mLastLocation.getLatitude();
-                    proceedWithoutLocation = true;
-                    moveToNextScreen();
-                } else {
-                    FragmentManager fm = getSupportFragmentManager();
-                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-                }*/
         });
 
-        ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+        ivNext.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
             startActivity(i);
         });
     }
 
     private void assignCtrlVars() {
-        spAssetType = findViewById(R.id.spAssetType);
-        tvCorrAssetBarcode = findViewById(R.id.tvCorrAssetBarcode);
-        svSearchAsset = findViewById(R.id.svSearchAsset);
-        rvAssets = findViewById(R.id.rvAssets);
+        etAssetBarcode = findViewById(R.id.etAssetBarcode);
+        tvCorrBinBarcode = findViewById(R.id.tvCorrBinBarcode);
+        tvCorrTempLoggerBarcode = findViewById(R.id.tvCorrTempLoggerBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
         btnCorrelate = findViewById(R.id.btnCorrelate);
         ivNext = findViewById(R.id.ivToCongs);
-        ivBack = findViewById(R.id.ivBackToWareHouseMenu);
+        ivBack = findViewById(R.id.ivBackToCorrelationMenu);
         ivSupport = findViewById(R.id.ivSupport);
-        rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        rvAssets.setItemAnimator(new DefaultItemAnimator());
-
-        if (adapterAssets == null) {
-            svSearchAsset.setVisibility(View.GONE);
-        }
-
-        svSearchAsset.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapterAssets.getFilter().filter(newText);
-                return false;
-            }
-        });
-        svSearchAsset.setOnClickListener(view -> {
-            int kk = 0;
-        });
     }
 
     private boolean correlate() {
@@ -328,7 +225,7 @@ public class CorrelationActivity extends LocationAwareActivity{
 
             // sync WH Correlation Tx
             Call<CorrelationTxDTO> syncTxAsyncCall = updService.syncCorrelationTx(CorrelationTxDTO.convert(tx), "Bearer " + token);
-            syncTxAsyncCall.enqueue(new SyncTxCallBack());
+            syncTxAsyncCall.enqueue(new CorrelationBinActivity.SyncTxCallBack());
 
             return true;
         } catch (Exception e) {
@@ -344,33 +241,24 @@ public class CorrelationActivity extends LocationAwareActivity{
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            /*if (Strings.isEmptyOrWhitespace(GlobalState.recWHCorrelatin.barcode)) {
-                sb.append(String.format("\n%s is missing", "'Asset BARCODE'"));
-            }*/
+            if (Strings.isEmptyOrWhitespace(recWHCorrelation.assetCode)) {
+                sb.append(String.format("\n%s is missing", "'Bin code'"));
+            }
+
+            if (Strings.isEmptyOrWhitespace(recWHCorrelation.assetRFID)) {
+                sb.append(String.format("\n%s is missing", "'Bin RFID'"));
+            }
 
             if (Strings.isEmptyOrWhitespace(GlobalState.recWHCorrelation.rfid)) {
-                sb.append(String.format("\n%s is missing", "'Asset RFID'"));
+                sb.append(String.format("\n%s is missing", "'Logger RFID'"));
             }
         }
         return sb.toString();
     }
 
-    private void loadAssetsByTypeFromLocalDB(String assetType) {
-        // load assets for current Site and filter by asset type (if selected).
-        this.rvAssets.setAdapter(null);
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
-        if (assetsList != null && !assetsList.isEmpty()) {
-            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.code)).collect(Collectors.toList());
-            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
-            adapterAssets.getFilter().filter("");
-            adapterAssets.notifyDataSetChanged();
-            this.rvAssets.setAdapter(adapterAssets);
-        }
-    }
-
     protected void onClick(View view) {
-        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
-        scanner_runnable.setFilter(activeFilter);
+        MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
+        scanner_runnable.setFilters(Filters.RFID_BIN, Filters.RFID_LOGGER);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
@@ -382,7 +270,9 @@ public class CorrelationActivity extends LocationAwareActivity{
 
             if (rs != null) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
-                tvCorrAssetBarcode.setText("");
+                tvCorrBinBarcode.setText("");
+                tvCorrTempLoggerBarcode.setText("");
+                etAssetBarcode.setText("");
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_CorrelationTx_update_failure), Toast.LENGTH_LONG));
@@ -409,9 +299,9 @@ public class CorrelationActivity extends LocationAwareActivity{
 
     // ###################################################
     private class ScanHandler extends Handler {
-        private final WeakReference<CorrelationActivity> mActivity;
+        private final WeakReference<CorrelationBinActivity> mActivity;
 
-        public ScanHandler(CorrelationActivity activity) {
+        public ScanHandler(CorrelationBinActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -419,11 +309,20 @@ public class CorrelationActivity extends LocationAwareActivity{
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    String epcStr = msg.getData().getString("epc");
-                    String rssi = msg.getData().getString("rssi");
+                    ArrayList<CharSequence> tags = msg.getData().getCharSequenceArrayList("epc");
                     try {
-                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            tvCorrAssetBarcode.setText(epcStr);
+                        if (!CollectionUtils.isEmpty(tags)) {
+                            for (CharSequence tag : tags) {
+                                String epc = tag.toString();
+                                if (epc.indexOf(Filters.RFID_BIN) > -1) {
+                                    GlobalState.recWHCorrelation.assetRFID = epc;
+                                    tvCorrBinBarcode.setText(epc);
+                                }
+                                else if (epc.indexOf(Filters.RFID_LOGGER) > -1){
+                                    GlobalState.recWHCorrelation.rfid = epc;
+                                    tvCorrTempLoggerBarcode.setText(epc);
+                                }
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

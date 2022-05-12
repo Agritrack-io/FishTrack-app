@@ -39,6 +39,8 @@ public class FishingTransaction {
     @ColumnInfo(name = "cage_code")
     public String cageCode;
 
+
+
     @ColumnInfo(name = "net_rfid")
     public String netRFID;
 
@@ -112,4 +114,5 @@ public class FishingTransaction {
 
     @ColumnInfo(name = "latitude")
     public Double latitude;
+
 }

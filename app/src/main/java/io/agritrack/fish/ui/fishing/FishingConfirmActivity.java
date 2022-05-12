@@ -30,10 +30,10 @@ import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.LocationAwareActivity;
-import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -205,10 +205,13 @@ public class FishingConfirmActivity extends LocationAwareActivity {
 
             if (rs != null || IsDemo) {
                 if (recFishing.harvestRqPkId != null) {
-                    HarvestRequest delObj = new HarvestRequest();
-                    //delObj.requestId = recFishing.harvestRqPkId;
-                    db.harvestRequestsDAO().delete(delObj);
+                    HarvestRequest hDelObj = new HarvestRequest();
+                    hDelObj.requestId = recFishing.harvestRqPkId;
+                    db.harvestRequestsDAO().delete(hDelObj);
                 }
+                FishingTransaction delObj = new FishingTransaction();
+                delObj.id = recFishing.txKey;
+                db.fishingTransactionDAO().delete(delObj);
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Fishing TX on backend!!!

@@ -43,6 +43,7 @@
     <string name="menu_title_external">External</string>
     <string name="menu_title_cage">Cage</string>
     <string name="menu_title_net">Net</string>
+    <string name="menu_title_cage_net">Cage-Net</string>
     <string name="menu_title_bin">Bin</string>
     <string name="menu_title_platform">Platform</string>
 
@@ -55,6 +56,7 @@
     <string name="choose_harvest">Harvest initiator</string>
     <string name="harvest_initiator">Harvest initiator</string>
     <string name="harvest_details">Harvest details</string>
+    <string name="delete_fishing_tx">Do you want to cancel this fishing transaction?</string>
     <string name="fish_type">Fish Type</string>
     <string name="cage">Cage</string>
     <string name="average_weight">Average weight</string>
@@ -62,7 +64,7 @@
     <string name="notes">Notes</string>
     <string name="requested_quantity">Requested Quantity</string>
     <string name="packaging_plant">Packaging Plant</string>
-    <string name="scan_platform">Scan Platform tag</string>
+    <string name="scan_platform">Scan Platform</string>
     <string name="barcode_platform">Barcode of Platform</string>
 
     <string name="title_user_date_platform">USER NAME / DATE / PLATFORM</string>
@@ -83,10 +85,11 @@
     <string name="scan_cage_nets">Please scan cage and net</string>
     <string name="name_cage">Name Cage</string>
     <string name="platform">Platform</string>
-    <string name="scan_cage">Scan Cage tag</string>
-    <string name="procced_without_cage">"You just scanned cage \'%1$s\', but the requested cage is \'%2$s\'!! Do you want to proceed with the scanned one?"</string>
+    <string name="scan_cage">Scan Cage</string>
+    <string name="confirm_cage">"Please type in \%1$s\!"</string>
+    <string name="proceed_without_cage">"Wrong cage \(%1$s\)! Do you want to proceed with this one?"</string>
     <string name="name_net">Name Net</string>
-    <string name="scan_net">Scan Net tag</string>
+    <string name="scan_net">Scan Net</string>
 
     <string name="title_cage_quantity_no_bins">CAGE / REQUESTED QUANTITY / # BINS</string>
     <string name="choose_sea_temp">Choose sea temp</string>
@@ -111,6 +114,7 @@
     <string name="fish_catch_weight">Fish Catch Weight</string>
     <string name="fishing_catches">Fishing Catches</string>
     <string name="fishing_summary">Fishing Summary</string>
+    <string name="fill_bin">Please press BIN FILLED</string>
     <string name="total_weight">TOTAL WEIGHT (Kg):</string>
     <string name="used_bins">USED BINS:</string>
     <string name="available_bins">AVAILABLE BINS:</string>
@@ -299,14 +303,16 @@
     <string name="sync_sites">Please wait, syncing sites...</string>
 
     <string name="title_correlation">CORRELATION</string>
+    <string name="title_correlation_menu">CORRELATION MENU</string>
     <string name="title_user_date_asset_type">USER NAME / DATE / ASSET TYPE</string>
     <string name="choose_cage">Choose cage</string>
     <string name="title_correlate_cage">Correlate cage</string>
     <string name="search_cage">Search cage</string>
     <string name="search_net">Search net</string>
     <string name="title_correlate_net">Correlate net</string>
+    <string name="net_select_correlation_type">Is the net stored in the warehouse?</string>
     <string name="title_correlate_bin">Correlate bin</string>
-    <string name="type_code_of_bin">Type code of bin</string>
+    <string name="title_correlate_cage_net">Correlate cage-net</string>
     <string name="type_code_of_platform">Type code of platform</string>
     <string name="choose_net">Choose net</string>
     <string name="choose_bin">Choose bin</string>
@@ -316,6 +322,10 @@
     <string name="barcode_net">Barcode of Net</string>
     <string name="link_temp_tag">Link temp tag</string>
     <string name="barcode_bin">Barcode of Bin</string>
+    <string name="type_code_of_bin">Type bin code</string>
+    <string name="type_code_of_cage">Or type cage code</string>
+    <string name="type_code_of_net">Or type net code</string>
+    <string name="title_correlate_platform">Correlate platform</string>
     <string name="barcode_temp_tag">Barcode of Temp tag</string>
 
     <string name="title_search">SEARCH</string>
@@ -395,7 +405,7 @@
     <string name="scan_asset_tag">Scan Asset</string>
     <string name="button_correlate">Correlate</string>
     <string name="title_correlate_asset">Correlate Asset</string>
-    <string name="scan_rfid_rag">Asset RFID</string>
+    <string name="scan_rfid_rag">RFID</string>
     <string name="title_select_asset_barcode">Asset BARCODE</string>
     <string name="error_AssetTx_tx_update_failure">Failed to update asset transaction!!!</string>
     <string name="error_CorrelationTx_update_failure">Failed to update Correlation Transaction!!!</string>

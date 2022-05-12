@@ -6,14 +6,19 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,15 +30,18 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.CageDetails;
+import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
+import io.agritrack.fish.state.GlobalState;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.service.LocalPreferences;
@@ -47,6 +55,7 @@ public class FishingCageActivity extends AppCompatActivity {
     private Button scanPlatformButton, scanCageButton;
     private TextView tvPlatformRFID, tvCageRFID;
     private YesNoDialogFragment confirmCageSelectionDlg;
+    private String cageCode = "", scannedCage;
 
     private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
@@ -72,6 +81,7 @@ public class FishingCageActivity extends AppCompatActivity {
 
         confirmCageSelectionDlg = YesNoDialogFragment.instance();
         confirmCageSelectionDlg.onConfirm(bundle -> {
+            showAddDialog();
         });
         confirmCageSelectionDlg.onReject(bundle -> {
             tvCageRFID.setText(null);
@@ -178,6 +188,57 @@ public class FishingCageActivity extends AppCompatActivity {
         ivInfo = findViewById(R.id.ivInfo);
     }
 
+    @SuppressLint("StringFormatMatches")
+    private void showAddDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.confirm_cage,scannedCage));
+        builder.show();
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+//Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Boolean wantToCloseDialog = false;
+                cageCode = input.getText().toString();
+                if (cageCode.equalsIgnoreCase(scannedCage)){
+                    recFishing.typedCageCode = cageCode.toUpperCase(Locale.ROOT);
+                    input.getShowSoftInputOnFocus();
+                    wantToCloseDialog = true;
+                } else {
+                    builder.setMessage("Wrong typing");
+                    wantToCloseDialog = false;
+                }
+                //Do stuff, possibly set wantToCloseDialog to true then...
+                if(wantToCloseDialog)
+                    dialog.dismiss();
+                //else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+    }
+
     private void initControlsFromState() {
         FishingRecord hvst = recFishing;
 
@@ -253,10 +314,9 @@ public class FishingCageActivity extends AppCompatActivity {
                                     CageDetails cage = db.cageDetailsDAO().getByRFId(epc);
                                     if (cage != null) {
                                         if (!recFishing.cageCode.equals(cage.cageCode)){
-                                            String scannedCage = cage.cageCode;
-                                            String orderedCage = recFishing.cageCode;
+                                            scannedCage = cage.cageCode;
                                             FragmentManager fm = getSupportFragmentManager();
-                                            confirmCageSelectionDlg.setMessage(getString(R.string.procced_without_cage, scannedCage, orderedCage));
+                                            confirmCageSelectionDlg.setMessage(getString(R.string.proceed_without_cage, scannedCage));
                                             confirmCageSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
                                         }
                                     }

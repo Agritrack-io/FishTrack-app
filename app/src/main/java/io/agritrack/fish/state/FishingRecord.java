@@ -41,6 +41,7 @@ public class FishingRecord {
     public BinTemperatureRecord binTemperatureRecord = new BinTemperatureRecord();
     public BinWeightRecord binWeightRecord = new BinWeightRecord();
     public String hlot;
+    public String typedCageCode;
 
     public FishingRecord() {
     }
@@ -53,7 +54,7 @@ public class FishingRecord {
         fishingRecord.requesterName = tx.requester;
         fishingRecord.reqWeight = tx.orderedQuantity != null ? Double.valueOf(tx.orderedQuantity.toString()) : null;
         fishingRecord.speciesName = tx.fishType;
-        fishingRecord.averageWeight = Double.valueOf(tx.averageWeight);
+        fishingRecord.averageWeight = tx.averageWeight != null ? Double.valueOf(tx.averageWeight) : null;
         fishingRecord.platformRFID = tx.platformRFID;
         fishingRecord.cageRFID = tx.cageRFID;
         fishingRecord.cageCode = tx.cageCode;

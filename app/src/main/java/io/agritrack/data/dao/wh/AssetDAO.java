@@ -10,6 +10,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.data.model.wh.Asset;
@@ -20,13 +21,16 @@ public interface AssetDAO {
     @Query("SELECT * from asset")
     List<Asset> getAll();
 
-    @Query("SELECT * from asset where upper(asset_type)=:assetType LIMIT 100")
+    @Query("SELECT * from asset where upper(asset_type)=:assetType LIMIT 300")
     List<Asset> getAssetsForType(String assetType);
 
     @Query("SELECT * from asset where id=:assetId LIMIT 1")
     Asset getById(Long assetId);
 
-    @Query("SELECT * from asset where rfid_barcode=:epcStr LIMIT 1")
+    @Query("SELECT * from asset where code=:assetCode LIMIT 1")
+    Asset getByCode(String assetCode);
+
+    @Query("SELECT * from asset where rfid=:epcStr LIMIT 1")
     Asset getAssetByEpc(String epcStr);
 
     @Query("SELECT * from asset where logger_epc LIKE '%' || :loggerEPC || '%' LIMIT 1")

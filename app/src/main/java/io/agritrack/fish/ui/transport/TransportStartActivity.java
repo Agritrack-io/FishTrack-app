@@ -21,6 +21,7 @@ import java.util.Set;
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
+import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
@@ -30,6 +31,7 @@ import io.agritrack.ui.service.LocalPreferences;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recTransport;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class TransportStartActivity extends AppCompatActivity {
@@ -127,7 +129,7 @@ public class TransportStartActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        TransportationRecord trns = GlobalState.recTransport;
+        TransportationRecord trns = recTransport;
 
         if (trns.sitePos > -1) {
             spPackagingSite.setSelection(trns.sitePos);
@@ -179,29 +181,32 @@ public class TransportStartActivity extends AppCompatActivity {
         transportationRecord.refrigeratedTruck = swRefrigeratedTruck.isChecked();
         transportationRecord.parallelTransport = swParallelTransport.isChecked();
 
+        TransportTransaction txTransport = new TransportTransaction();
+        recTransport.txKey = db.transportTransactionDAO().insert(txTransport);
+
         return transportationRecord;
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.packagingSite)) {
+            if (Strings.isEmptyOrWhitespace(recTransport.packagingSite)) {
                 sb.append(String.format("\n%s is missing", "'Packaging site'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverName)) {
+            if (Strings.isEmptyOrWhitespace(recTransport.driverName)) {
                 sb.append(String.format("\n%s is missing", "'Driver name'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.driverPhone)) {
+            if (Strings.isEmptyOrWhitespace(recTransport.driverPhone)) {
                 sb.append(String.format("\n%s is missing", "'Driver phone'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.licensePlate)) {
+            if (Strings.isEmptyOrWhitespace(recTransport.licensePlate)) {
                 sb.append(String.format("\n%s is missing", "'License plate'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recTransport.clipNumber)) {
+            if (Strings.isEmptyOrWhitespace(recTransport.clipNumber)) {
                 sb.append(String.format("\n%s is missing", "'Security clip number'"));
             }
         }

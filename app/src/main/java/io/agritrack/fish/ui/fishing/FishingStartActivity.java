@@ -15,13 +15,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
@@ -33,10 +36,12 @@ public class FishingStartActivity extends AppCompatActivity {
     private Spinner tvHarvestSpinner, speciesSpinner;
     private EditText etQty;
     private TextView tvCageName, tvAverageWeight, tvNotes, tvHarvest, tvFishType, tvRequestedQuantity;
+    private YesNoDialogFragment confirmDeleteFishingDlg;
 
     private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
+    private boolean proceed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,19 @@ public class FishingStartActivity extends AppCompatActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        confirmDeleteFishingDlg = YesNoDialogFragment.instance();
+        confirmDeleteFishingDlg.setMessage(getText(R.string.delete_fishing_tx));
+        confirmDeleteFishingDlg.onConfirm(bundle -> {
+            FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
+            db.fishingTransactionDAO().delete(openTx);
+            proceed = true;
+            moveToNextScreen();
+        });
+        confirmDeleteFishingDlg.onReject(bundle -> {
+            proceed = true;
+            moveToNextScreen();
+        });
 
         /*// load users with Harvest role and fill in the spHarvest Spinner.
         List<AppUser> harvestRequestUsers = db.userDAO().getByRole("ROLE_HARVEST");
@@ -93,9 +111,15 @@ public class FishingStartActivity extends AppCompatActivity {
             infoDialog.showDialog();
         });
 
-
         // create Footer
         configFooter();
+    }
+
+    private void moveToNextScreen() {
+        if (proceed) {
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            startActivity(i);
+        }
     }
 
     protected void configFooter() {
@@ -113,12 +137,13 @@ public class FishingStartActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
+            if (!proceed){
+                FragmentManager fm = getSupportFragmentManager();
+                confirmDeleteFishingDlg.showNow(fm, getString(R.string.confirm_selection));
+            }
             if (IsDemo) {
                 db.fishingTransactionDAO().deleteAll();
             }
-
-            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
-            startActivity(i);
         });
     }
 
@@ -159,7 +184,7 @@ public class FishingStartActivity extends AppCompatActivity {
             tvFishType.setText(hvst.speciesName);
         }
 
-        if (!Strings.isEmptyOrWhitespace(String.valueOf(hvst.reqWeight))) {
+        if (hvst.reqWeight!=null) {
             tvRequestedQuantity.setText(hvst.reqWeight.toString());
         }
 
@@ -167,7 +192,7 @@ public class FishingStartActivity extends AppCompatActivity {
             tvCageName.setText(hvst.cageCode);
         }
 
-        if (!Strings.isEmptyOrWhitespace(String.valueOf(hvst.averageWeight))) {
+        if (hvst.averageWeight!=null) {
             tvAverageWeight.setText(hvst.averageWeight.toString());
         }
 
@@ -196,7 +221,7 @@ public class FishingStartActivity extends AppCompatActivity {
             fishingRecord.cageCode = tvCageName.getText().toString();
         }
 
-        if (tvAverageWeight.getText() != null) {
+        if (tvAverageWeight.getText() != null && !Strings.isEmptyOrWhitespace(tvAverageWeight.getText().toString())) {
             fishingRecord.averageWeight = Double.valueOf(tvAverageWeight.getText().toString());
         }
         //fishingRecord.reqWeight = etQty.getText() != null ? Double.valueOf(etQty.getText().toString()).intValue() + "" : "0";

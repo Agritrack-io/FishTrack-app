@@ -52,6 +52,10 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_harvest_requests);
 
+        // set Header Info
+        TextView tvHeader = findViewById(R.id.tvHeaderHarvestRequests);
+        tvHeader.setText(LocalPreferences.HeaderMsg());
+
         // get main controls references
         this.lvHarvestRequests = findViewById(R.id.lvHarvestRequests);
 
@@ -63,13 +67,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
 
         tgChooseDate = findViewById(R.id.tgChooseDate);
         tgChooseDate.setOnCheckedChangeListener(this);
-
-        // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderHarvestRequests);
-        tvHeader.setText(LocalPreferences.HeaderMsg());
-
-        LocalDate now = LocalDate.now();
-        String nowDate = now.format(formatter);
+        tgChooseDate.check(R.id.tbToday);
         getTodayHarvestReq();
 
         ivSupport = findViewById(R.id.ivSupport);

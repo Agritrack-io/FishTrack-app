@@ -21,6 +21,7 @@ public class TransportationRecord {
 
     public Double longitude;
     public Double latitude;
+    public long txKey;
 
     public TransportationRecord() {
     }

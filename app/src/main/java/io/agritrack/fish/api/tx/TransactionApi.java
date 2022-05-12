@@ -91,6 +91,14 @@ public interface TransactionApi {
     Call<CorrelationTxDTO> syncCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/asset/correlate")
+    Call<String> syncAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/asset/inter-correlate")
+    Call<CorrelationTxDTO> syncAssetWithAssetCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/inventory/box")
     Call<TotesInventoryDTO> syncTotesInventoryTx(@Body TotesInventoryDTO rFIDInventory, @Header("Authorization") String token);
 

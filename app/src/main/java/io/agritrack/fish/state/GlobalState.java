@@ -139,7 +139,7 @@ public class GlobalState {
             txFishing.harvestRq = recFishing.harvestRqPkId;
             txFishing.platformRFID = recFishing.platformRFID;
             txFishing.cageRFID = recFishing.cageRFID;
-            txFishing.cageCode = recFishing.cageCode;
+            txFishing.cageCode = recFishing.typedCageCode;
             txFishing.netRFID = recFishing.netRFID;
             txFishing.fishType = recFishing.speciesName;
             txFishing.averageWeight = String.valueOf(recFishing.averageWeight);
@@ -177,6 +177,7 @@ public class GlobalState {
         try {
             TransportTransaction txTransport = new TransportTransaction();
 
+            txTransport.id = recTransport.txKey;
             txTransport.destination = recTransport.packagingSite;
             txTransport.driverName = recTransport.driverName;
             txTransport.driverPhone = recTransport.driverPhone;
@@ -193,7 +194,7 @@ public class GlobalState {
             txTransport.longitude = recTransport.longitude;
             txTransport.latitude = recTransport.latitude;
 
-            db.transportTransactionDAO().insert(txTransport);
+            db.transportTransactionDAO().update(txTransport);
             return txTransport;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -494,8 +495,11 @@ public class GlobalState {
         try {
             CorrelationTransaction txCorrelation = new CorrelationTransaction();
             txCorrelation.assetType = recWHCorrelation.assetType;
-            txCorrelation.barcode = recWHCorrelation.barcode;
-            txCorrelation.assetRFID = recWHCorrelation.rfid;
+            txCorrelation.assetRFID = recWHCorrelation.assetRFID;
+            txCorrelation.assetCode = recWHCorrelation.assetCode;
+            txCorrelation.rfid = recWHCorrelation.rfid;
+            txCorrelation.type = recWHCorrelation.type;
+            txCorrelation.code = recWHCorrelation.code;
             txCorrelation.timestamp = System.currentTimeMillis();
             txCorrelation.longitude = recWHCorrelation.longitude;
             txCorrelation.latitude = recWHCorrelation.latitude;

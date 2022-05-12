@@ -1,12 +1,14 @@
 package io.agritrack.fish.state;
 
-import io.agritrack.enums.AssetType;
-
 public class WHCorrelationRecord {
     public String assetType;
-    public String barcode = null;
+    public String assetRFID;
+    public String assetCode;
     public String rfid = null;
+    public String type;
+    public String code = null;
 
     public Double longitude;
     public Double latitude;
+
 }

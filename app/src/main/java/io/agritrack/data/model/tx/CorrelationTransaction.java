@@ -22,17 +22,20 @@ public class CorrelationTransaction {
     @ColumnInfo(name = "asset_type")
     public String assetType;
 
-    @ColumnInfo(name = "barcode")
-    public String barcode;
+    @ColumnInfo(name = "asset_code")
+    public String assetCode;
 
     @ColumnInfo(name = "asset_rfid")
     public String assetRFID;
 
-    @ColumnInfo(name = "logger_type")
-    public String loggerType;
+    @ColumnInfo(name = "type")
+    public String type;
 
-    @ColumnInfo(name = "logger_rfid")
-    public String loggerRFID;
+    @ColumnInfo(name = "code")
+    public String code;
+
+    @ColumnInfo(name = "rfid")
+    public String rfid;
 
     @ColumnInfo(name = "longitude")
     public Double longitude;

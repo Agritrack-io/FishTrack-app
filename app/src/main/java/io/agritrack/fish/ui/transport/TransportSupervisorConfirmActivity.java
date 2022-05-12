@@ -3,6 +3,7 @@ package io.agritrack.fish.ui.transport;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fish.state.GlobalState.recTransport;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -27,6 +28,7 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.TransportTxDTO;
+import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -220,6 +222,9 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
             TransportTxDTO rs = response.body();
 
             if (rs != null || IsDemo) {
+                TransportTransaction delObj = new TransportTransaction();
+                delObj.id = recTransport.txKey;
+                db.transportTransactionDAO().delete(delObj);
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Transport TX on backend!!!

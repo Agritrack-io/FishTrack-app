@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.wh.correlation.CorrelationMenuActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
@@ -49,7 +50,7 @@ public class WhMenuActivity extends AppCompatActivity {
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), IncomingStartActivity.class, R.drawable.incoming));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_outgoing), OutgoingStartActivity.class, R.drawable.outgoing));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), InventoryStartActivity.class, R.drawable.inventory));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationActivity.class, R.drawable.correlation));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationMenuActivity.class, R.drawable.correlation));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), SearchActivity.class, R.drawable.search));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
@@ -73,7 +74,7 @@ public class WhMenuActivity extends AppCompatActivity {
                         i = new Intent(appCtx, InventoryStartActivity.class);
                         break;
                     case Correlation_Idx:
-                        i = new Intent(appCtx, CorrelationActivity.class);
+                        i = new Intent(appCtx, CorrelationMenuActivity.class);
                         break;
                     case Search_Idx:
                         i = new Intent(appCtx, SearchActivity.class);
