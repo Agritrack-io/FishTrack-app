@@ -70,11 +70,14 @@ public class SingleShotScanner implements Runnable {
                         Bundle b = new Bundle();
 
                         String tagStr = tag.get().getEpc();
-                        if (!trimEPCFlag) {
+                        b.putString("epc", tagStr);
+
+                        //TODO:: The following code should be deleted as the scanner should return whole EPC
+                        /*if (!trimEPCFlag) {
                             b.putString("epc", tagStr);
                         } else {
                             b.putString("epc", (tagStr.length() > 12) ? tagStr.substring(11) : "N/A");
-                        }
+                        }*/
 
                         msg.setData(b);
                         mScanHandler.sendMessage(msg);

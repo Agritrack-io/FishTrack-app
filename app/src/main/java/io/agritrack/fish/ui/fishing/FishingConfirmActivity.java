@@ -158,13 +158,26 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         etPIN = findViewById(R.id.etPasswordFishing);
     }
 
+    private boolean deleteTx(){
+        try {
+            System.out.println("About to delete fishing tx");
+            FishingTransaction delObj = new FishingTransaction();
+            delObj.id = recFishing.txKey;
+            db.fishingTransactionDAO().delete(delObj);
+            return true;
+        } catch (Exception x){
+            x.printStackTrace();
+            return false;
+        }
+    }
+
     private void initControlsFromState() {
         tvUsername.setText(LocalPreferences.getLoggedInUser(""));
 
         tvTotalQuantityCount.setText(recFishing.totalFishWeight != null ? recFishing.totalFishWeight.toString() : "N/A");
         tvReqQuantityCount.setText(recFishing.reqWeight != null ? recFishing.reqWeight.toString() : "N/A");
         tvNumberOfBinsCount.setText(recFishing.totalBinsUsed != null ? recFishing.totalBinsUsed.toString() : "N/A");
-        tvNameCage.setText(recFishing.cageRFID != null ? recFishing.cageRFID : "N/A");
+        tvNameCage.setText(recFishing.cageCode != null ? recFishing.cageCode : "N/A");
         tvTypeOfFishConfirm.setText(recFishing.speciesName != null ? recFishing.speciesName : "N/A");
     }
 
@@ -186,6 +199,13 @@ public class FishingConfirmActivity extends LocationAwareActivity {
             // persist Fishing Record data to local DB.
             FishingTransaction tx = GlobalState.commitFishing(db, Boolean.TRUE);
 
+            // Delete harvest request since it is executed
+            if (recFishing.harvestRq != null) {
+                HarvestRequest hDelObj = new HarvestRequest();
+                hDelObj.requestId = recFishing.harvestRq;
+                db.harvestRequestsDAO().delete(hDelObj);
+            }
+
             // sync fish species
             Call<FishingTxDTO> syncTxAsyncCall = updService.syncFishingTx(FishingTxDTO.convert(tx), "Bearer " + token);
             syncTxAsyncCall.enqueue(new SyncTxCallBack());
@@ -204,14 +224,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
             FishingTxDTO rs = response.body();
 
             if (rs != null || IsDemo) {
-                if (recFishing.harvestRqPkId != null) {
-                    HarvestRequest hDelObj = new HarvestRequest();
-                    hDelObj.requestId = recFishing.harvestRqPkId;
-                    db.harvestRequestsDAO().delete(hDelObj);
-                }
-                FishingTransaction delObj = new FishingTransaction();
-                delObj.id = recFishing.txKey;
-                db.fishingTransactionDAO().delete(delObj);
+                deleteTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Fishing TX on backend!!!

@@ -407,9 +407,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                     String epcStr = msg.getData().getString("epc");
                     if (!Strings.isEmptyOrWhitespace(epcStr)) {
                         new Handler(Looper.getMainLooper()).post(() -> {
-                            String epc = epcStr.substring(11);
+                            String epc = epcStr.substring(14);
                             tvCurrentBin.setText(epc);
-                            currentBin = epc;
+                            currentBin = epcStr;
                             adapterCatches.setValues(loadsMap.getLoads(currentBin));
                             tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
                             adapterCatches.notifyDataSetChanged();

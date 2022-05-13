@@ -12,18 +12,15 @@ public class FishingRecord {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
 
     public long txKey;
-    public int requesterPos = -1;
     public String harvestRq;
     public String requesterName;
     public Double reqWeight;
-    public int speciesPos = -1;
     public String speciesName;
     public Double averageWeight;
     public String platformRFID;
     public String cageRFID;
     public String expectedCageRFID;
     public String cageCode; //Cage code assigned by Avramar
-    public String netRFID;
     public List<String> availBins;
     public List<String> fishingTeam;
     public String pathologist;
@@ -32,15 +29,12 @@ public class FishingRecord {
     public String iceSupplier;
     public Integer totalFishWeight;
     public Short totalBinsUsed;
-    public Double seaTemperature;
-    public String harvestRqPkId;
     public Double longitude;
     public Double latitude;
     public String notes;
     public String packagingPlant;
     public BinTemperatureRecord binTemperatureRecord = new BinTemperatureRecord();
     public BinWeightRecord binWeightRecord = new BinWeightRecord();
-    public String hlot;
     public String typedCageCode;
 
     public FishingRecord() {
@@ -58,14 +52,11 @@ public class FishingRecord {
         fishingRecord.platformRFID = tx.platformRFID;
         fishingRecord.cageRFID = tx.cageRFID;
         fishingRecord.cageCode = tx.cageCode;
-        fishingRecord.netRFID = tx.netRFID;
-        fishingRecord.availBins = tx.harvestBins;
         fishingRecord.pathologist = tx.ichthyopathologist;
         fishingRecord.adequateIce = Boolean.TRUE;
         fishingRecord.iceSupplier = tx.iceSupplier;
         fishingRecord.totalFishWeight = tx.totalQty;
         fishingRecord.totalBinsUsed = tx.harvestBinsCnt;
-        fishingRecord.seaTemperature = tx.seaTemperature;
         fishingRecord.notes = tx.notes;
         fishingRecord.packagingPlant = tx.packagingPlant;
         if(tx.lastFeed!=null) {

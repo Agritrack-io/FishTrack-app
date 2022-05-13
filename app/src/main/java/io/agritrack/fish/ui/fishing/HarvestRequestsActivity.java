@@ -113,10 +113,10 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         HarvestRequest harvestRq = db.harvestRequestsDAO().getById(member.getRequestId());
         if (harvestRq != null) {
 
-            GlobalState.recFishing.harvestRqPkId = harvestRq.requestId;
-            //GlobalState.recFishing.harvestRq = harvestRq.requestId;
+            GlobalState.recFishing.harvestRq = harvestRq.requestId;
             GlobalState.recFishing.speciesName = harvestRq.species;
             GlobalState.recFishing.cageCode = harvestRq.cageCode;
+            GlobalState.recFishing.typedCageCode = harvestRq.cageCode;
             GlobalState.recFishing.expectedCageRFID = harvestRq.cageRFID;
             GlobalState.recFishing.requesterName = harvestRq.requester;
             GlobalState.recFishing.averageWeight = harvestRq.averageWeight;

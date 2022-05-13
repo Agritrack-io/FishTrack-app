@@ -62,7 +62,9 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.tvItemName.setText(mList.get(position));
+        String epc = mList.get(position);
+        String tag = epc.length()>10? epc.substring(epc.length()-10) : epc;
+        holder.tvItemName.setText(tag);
         holder.tvItemSNo.setText(String.valueOf(position + 1) + ".");
     }
 

@@ -27,9 +27,6 @@ public class FishingTransaction {
     @ColumnInfo(name = "harvest_request")
     public String harvestRq;
 
-    @ColumnInfo(name = "hlot")
-    public String hlot;
-
     @ColumnInfo(name = "platform_rfid")
     public String platformRFID;
 
@@ -38,11 +35,6 @@ public class FishingTransaction {
 
     @ColumnInfo(name = "cage_code")
     public String cageCode;
-
-
-
-    @ColumnInfo(name = "net_rfid")
-    public String netRFID;
 
     @ColumnInfo(name = "ichthyopathologist")
     public String ichthyopathologist;
@@ -69,18 +61,11 @@ public class FishingTransaction {
     @ColumnInfo(name = "ordered_quantity")
     public Integer orderedQuantity;
 
-    @ColumnInfo(name = "sea_temperature")
-    public Double seaTemperature;
-
     @ColumnInfo(name = "total_quantity")
     public Integer totalQty;
 
     @ColumnInfo(name = "number_harvest_bins")
     public Short harvestBinsCnt;
-
-    @TypeConverters(StringListConverter.class)
-    @ColumnInfo(name = "harvest_bins")
-    public List<String> harvestBins;
 
     @TypeConverters(BinRecordConverter.class)
     @ColumnInfo(name = "harvest_bins_data")
@@ -103,9 +88,6 @@ public class FishingTransaction {
     @ColumnInfo(name = "packaging_plant")
     public String packagingPlant;
 
-    @ColumnInfo(name = "temp_data")
-    public String tempData;
-
     @ColumnInfo(name = "user_name")
     public String user;
 
@@ -114,5 +96,4 @@ public class FishingTransaction {
 
     @ColumnInfo(name = "latitude")
     public Double latitude;
-
 }

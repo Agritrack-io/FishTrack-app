@@ -136,20 +136,16 @@ public class GlobalState {
             FishingTransaction txFishing = new FishingTransaction();
 
             txFishing.id = recFishing.txKey;
-            txFishing.harvestRq = recFishing.harvestRqPkId;
+            txFishing.harvestRq = recFishing.harvestRq;
             txFishing.platformRFID = recFishing.platformRFID;
             txFishing.cageRFID = recFishing.cageRFID;
-            txFishing.cageCode = recFishing.typedCageCode;
-            txFishing.netRFID = recFishing.netRFID;
+            txFishing.cageCode = recFishing.cageCode;
             txFishing.fishType = recFishing.speciesName;
             txFishing.averageWeight = String.valueOf(recFishing.averageWeight);
             txFishing.ichthyopathologist = recFishing.pathologist;
             txFishing.packagingPlant = recFishing.packagingPlant;
-            txFishing.lastFeed = recFishing.lastFed;
-            txFishing.hlot = recFishing.hlot;
             txFishing.iceAdequacy = recFishing.adequateIce.toString();
             txFishing.iceSupplier = recFishing.iceSupplier;
-            txFishing.seaTemperature = recFishing.seaTemperature;
             txFishing.harvestBinsCnt = recFishing.totalBinsUsed;
             txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight).intValue() : null;
             txFishing.requester = recFishing.requesterName;
@@ -158,7 +154,6 @@ public class GlobalState {
             txFishing.harvestBinsData = recFishing.binWeightRecord.getBins();//.toJSONText();
             txFishing.team = recFishing.fishingTeam;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
-            txFishing.tempData = recFishing.binTemperatureRecord.toJSONText();
             txFishing.user = LocalPreferences.getLoggedInUser("N/A");
             txFishing.site = LocalPreferences.getCurrentSiteName();
             txFishing.longitude = recFishing.longitude;

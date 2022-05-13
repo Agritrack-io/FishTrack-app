@@ -267,6 +267,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 binBarcode = input.getText().toString();
+                //TODO:: Encode properly the bin barcode value, add prefix
                 adapterBins.addUniqueItem(binBarcode);
                 adapterBins.notifyDataSetChanged();
                 tvBinsCount.setText(String.valueOf(adapterBins.getValues().size()));

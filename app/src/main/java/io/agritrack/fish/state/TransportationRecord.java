@@ -6,7 +6,6 @@ import java.util.List;
 
 public class TransportationRecord {
     public String packagingSite;
-    public String destinationCompany;
     public String driverName;
     public String driverPhone;
     public String licensePlate;

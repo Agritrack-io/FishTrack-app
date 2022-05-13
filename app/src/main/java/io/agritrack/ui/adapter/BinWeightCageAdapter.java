@@ -70,7 +70,8 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         BinDetails currBin = mList.get(position);
-        holder.tvItemName.setText(currBin.epc);
+        String tag = currBin.epc.length()>10? currBin.epc.substring(currBin.epc.length()-10) : currBin.epc;
+        holder.tvItemName.setText(tag);
         if (!Strings.isEmptyOrWhitespace(currBin.cage))
             holder.tvCage.setText(currBin.cage);
         if (currBin.weight != null)

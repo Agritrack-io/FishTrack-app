@@ -64,10 +64,12 @@ public class MultipleFilterSingleShotScanner implements Runnable {
                     if(!optionalTags.isEmpty()) {
                         for (Optional<RFIDTag> optionalTag : optionalTags) {
                             if (optionalTag.isPresent())
-                                if (optionalTag.get().getEpc().indexOf(Filters.RFID_LOGGER) > -1)
+                                result.add(optionalTag.get().getEpc());
+                            //TODO:: The following code will be removed as the scanner should return the whole EPC
+                                /*if (optionalTag.get().getEpc().indexOf(Filters.RFID_LOGGER) > -1)
                                     result.add(optionalTag.get().getEpc());
                                 else
-                                    result.add(optionalTag.get().getEpc().substring(11));
+                                    result.add(optionalTag.get().getEpc().substring(11));*/
                         }
                         TextUtils.join(",", result);
 

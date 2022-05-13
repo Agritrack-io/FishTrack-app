@@ -36,21 +36,19 @@ import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.CageDetails;
-import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
-import io.agritrack.fish.state.GlobalState;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class FishingCageActivity extends AppCompatActivity {
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button scanPlatformButton, scanCageButton;
     private TextView tvPlatformRFID, tvCageRFID;
@@ -139,7 +137,7 @@ public class FishingCageActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
     }
 
@@ -148,7 +146,7 @@ public class FishingCageActivity extends AppCompatActivity {
         super.onStop();
         this.stopScanner();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
     }
 
@@ -162,7 +160,7 @@ public class FishingCageActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToDetails);
         ivNext.setOnClickListener(view -> {
-                updateState();
+            updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
@@ -191,7 +189,7 @@ public class FishingCageActivity extends AppCompatActivity {
     @SuppressLint("StringFormatMatches")
     private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.confirm_cage,scannedCage));
+        builder.setTitle(getString(R.string.confirm_cage, scannedCage));
         builder.show();
         // Set up the input
         final EditText input = new EditText(this);
@@ -209,15 +207,14 @@ public class FishingCageActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
 //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
-        {
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Boolean wantToCloseDialog = false;
                 cageCode = input.getText().toString();
-                if (cageCode.equalsIgnoreCase(scannedCage)){
+                if (cageCode.equalsIgnoreCase(scannedCage)) {
                     recFishing.typedCageCode = cageCode.toUpperCase(Locale.ROOT);
+                    recFishing.cageCode = recFishing.typedCageCode;
                     input.getShowSoftInputOnFocus();
                     wantToCloseDialog = true;
                 } else {
@@ -225,7 +222,7 @@ public class FishingCageActivity extends AppCompatActivity {
                     wantToCloseDialog = false;
                 }
                 //Do stuff, possibly set wantToCloseDialog to true then...
-                if(wantToCloseDialog)
+                if (wantToCloseDialog)
                     dialog.dismiss();
                 //else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
             }
@@ -242,25 +239,21 @@ public class FishingCageActivity extends AppCompatActivity {
     private void initControlsFromState() {
         FishingRecord hvst = recFishing;
 
-        tvPlatformRFID.setText(hvst.platformRFID);
-        tvCageRFID.setText(hvst.cageRFID);
+        tvPlatformRFID.setText(hvst.platformRFID != null ? hvst.platformRFID.substring(14) : null);
+        tvCageRFID.setText(hvst.cageRFID != null ? hvst.cageRFID.substring(14) : null);
     }
 
     private void updateState() {
-        CharSequence cageRFID = tvCageRFID.getText();
-        if (cageRFID != null) {
-            recFishing.cageRFID = cageRFID.toString();
+        if (recFishing.cageRFID != null) {
             CageDetails cage = db.cageDetailsDAO().getByRFId(recFishing.cageRFID);
             if (cage != null) {
                 recFishing.speciesName = cage.species; //TODO: compare with Requested Species
                 recFishing.pathologist = cage.ichthyopathologist;
                 recFishing.lastFed = cage.lastFed;
-                recFishing.hlot = cage.hlot;
             } else {
                 // TODO:: add alert, no cage corresponding to RFID found in local DB!!
             }
         }
-        recFishing.platformRFID = tvPlatformRFID.getText().toString();
     }
 
     private String validate() {
@@ -307,13 +300,17 @@ public class FishingCageActivity extends AppCompatActivity {
                         if (!epcList.isEmpty()) {
                             for (CharSequence epcCharSeq : epcList) {
                                 String epc = epcCharSeq.toString();
-                                if (epc.startsWith(Filters.RFID_PLATFORM)) {
-                                    tvPlatformRFID.setText(epc);
-                                } else if (epc.startsWith(Filters.RFID_CAGE)) {
-                                    tvCageRFID.setText(epc);
+                                String tag = epc.substring(11);
+                                String label = tag.substring(3);
+                                if (tag.startsWith(Filters.RFID_PLATFORM)) {
+                                    tvPlatformRFID.setText(label);
+                                    recFishing.platformRFID = epc;
+                                } else if (tag.startsWith(Filters.RFID_CAGE)) {
+                                    tvCageRFID.setText(label);
+                                    recFishing.cageRFID = epc;
                                     CageDetails cage = db.cageDetailsDAO().getByRFId(epc);
                                     if (cage != null) {
-                                        if (!recFishing.cageCode.equals(cage.cageCode)){
+                                        if (!recFishing.cageCode.equals(cage.cageCode)) {
                                             scannedCage = cage.cageCode;
                                             FragmentManager fm = getSupportFragmentManager();
                                             confirmCageSelectionDlg.setMessage(getString(R.string.proceed_without_cage, scannedCage));
