@@ -47,6 +47,7 @@ import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,7 +59,7 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final CorrelationPlatformActivity.ScanHandler mScanHandler = new CorrelationPlatformActivity.ScanHandler(this);
     private MobileDB db;
-    private Button btnScanAssetTag, btnCorrelate;
+    private Button btnScanAssetTag;
     private TextView tvCorrPlatformBarcode;
     private EditText etPlatformBarcode;
     private ProgressDialog progressDialog;
@@ -100,27 +101,10 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
 
-        btnCorrelate.setOnClickListener(view -> {
-            recWHCorrelation.type = Constants.ftPlatform;
-            recWHCorrelation.code = etPlatformBarcode.getText() != null ? etPlatformBarcode.getText().toString() : null;
-            recWHCorrelation.rfid = tvCorrPlatformBarcode.getText() != null ? tvCorrPlatformBarcode.getText().toString() : null;
+        /*btnCorrelate.setOnClickListener(view -> {
 
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-                return;
-            }
-            if (mLastLocation != null) {
-                recWHCorrelation.longitude = mLastLocation.getLongitude();
-                recWHCorrelation.latitude = mLastLocation.getLatitude();
-                proceedWithoutLocation = true;
-                moveToNextScreen();
-            } else {
-                FragmentManager fm = getSupportFragmentManager();
-                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            }
             //correlate();
-        });
+        });*/
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(CorrelationPlatformActivity.this);
@@ -177,8 +161,24 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         });
 
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
-            startActivity(i);
+            recWHCorrelation.type = Constants.ftPlatform;
+            recWHCorrelation.code = etPlatformBarcode.getText() != null ? etPlatformBarcode.getText().toString() : null;
+            recWHCorrelation.rfid = tvCorrPlatformBarcode.getText() != null ? tvCorrPlatformBarcode.getText().toString() : null;
+
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+            if (mLastLocation != null) {
+                recWHCorrelation.longitude = mLastLocation.getLongitude();
+                recWHCorrelation.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            }
         });
     }
 
@@ -186,7 +186,6 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         etPlatformBarcode = findViewById(R.id.etPlatformBarcode);
         tvCorrPlatformBarcode = findViewById(R.id.tvCorrPlatformBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
-        btnCorrelate = findViewById(R.id.btnCorrelate);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);
         ivSupport = findViewById(R.id.ivSupport);
@@ -209,7 +208,7 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
             // sync WH Correlation Tx
             ArrayList<CorrelationTxDTO> dtos = new ArrayList<>();
             dtos.add(CorrelationTxDTO.convert(tx));
-            Call<String> syncTxAsyncCall = updService.syncAssetCorrelationTx(dtos, "Bearer " + token);
+            Call<ResponseBody> syncTxAsyncCall = updService.syncAssetCorrelationTx(dtos, "Bearer " + token);
             syncTxAsyncCall.enqueue(new CorrelationPlatformActivity.SyncTxCallBack());
 
             return true;
@@ -244,10 +243,10 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
-    public class SyncTxCallBack implements Callback<String> {
+    public class SyncTxCallBack implements Callback<ResponseBody> {
         @Override
-        public void onResponse(Call<String> call, Response<String> response) {
-            String rs = response.body();
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            ResponseBody rs = response.body();
 
             if (rs != null) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
@@ -260,7 +259,7 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<String> call, Throwable error) {
+        public void onFailure(Call<ResponseBody> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

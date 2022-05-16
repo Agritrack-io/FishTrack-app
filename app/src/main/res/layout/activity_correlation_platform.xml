@@ -143,12 +143,12 @@ tools:context=".fish.ui.wh.correlation.CorrelationPlatformActivity">
     <RelativeLayout
         android:id="@+id/correlateBLayout"
         android:layout_width="0dp"
-        android:layout_height="320dp"
+        android:layout_height="400dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnCorrelate"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/correlateALayout">
@@ -211,7 +211,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationPlatformActivity">
             android:textSize="18sp" />
     </RelativeLayout>
 
-    <Button
+   <!-- <Button
         android:id="@+id/btnCorrelate"
         android:layout_width="180dp"
         android:layout_height="80dp"
@@ -226,7 +226,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationPlatformActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/correlateBLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/correlateBLayout" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -280,7 +280,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationPlatformActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/home_new" />
+        app:srcCompat="@drawable/ic_check_blue" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

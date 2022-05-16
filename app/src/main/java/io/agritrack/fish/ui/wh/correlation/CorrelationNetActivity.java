@@ -6,29 +6,25 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -56,6 +52,7 @@ import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,34 +67,14 @@ public class CorrelationNetActivity extends LocationAwareActivity {
     private SearchView svSearchAsset;
     private RecyclerView rvNets;
     private TextView tvCorrNetBarcode;
-    private EditText etNetBarcode;
     private FilterableAdapter adapterAssets;
     private ProgressDialog progressDialog;
     private YesNoDialogFragment confirmGPSSelectionDlg;
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
-    private ConstraintLayout selectedItem;
     private String selectedBarcode = "";
-    // Instantiate a clickListener to be passed to adapterAssets.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,10 +115,6 @@ public class CorrelationNetActivity extends LocationAwareActivity {
             //correlate();
         });*/
 
-        if (etNetBarcode!=null){
-            selectedBarcode = etNetBarcode.getText().toString();
-        }
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(CorrelationNetActivity.this);
             supportDialog.showDialog();
@@ -169,7 +142,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
             List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.code)).collect(Collectors.toList());
-            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
             this.rvNets.setAdapter(adapterAssets);
@@ -211,7 +184,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
 
         ivNext.setOnClickListener(view -> {
             recWHCorrelation.type = Constants.ftNet;
-            recWHCorrelation.code = selectedBarcode;//.getText() != null ? etAssetBarcode.getText().toString() : null;
+            recWHCorrelation.code = selectedBarcode;
             recWHCorrelation.rfid = tvCorrNetBarcode.getText() != null ? tvCorrNetBarcode.getText().toString() : null;
 
             String v = validate();
@@ -234,7 +207,6 @@ public class CorrelationNetActivity extends LocationAwareActivity {
     private void assignCtrlVars() {
         svSearchAsset = findViewById(R.id.svSearchAsset);
         rvNets = findViewById(R.id.rvNets);
-        etNetBarcode = findViewById(R.id.etNetBarcode);
         tvCorrNetBarcode = findViewById(R.id.tvCorrNetBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
         btnCorrelate = findViewById(R.id.btnCorrelate);
@@ -282,7 +254,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
             // sync WH Correlation Tx
             ArrayList<CorrelationTxDTO> dtos = new ArrayList<>();
             dtos.add(CorrelationTxDTO.convert(tx));
-            Call<String> syncTxAsyncCall = updService.syncAssetCorrelationTx(dtos, "Bearer " + token);
+            Call<ResponseBody> syncTxAsyncCall = updService.syncAssetCorrelationTx(dtos, "Bearer " + token);
             syncTxAsyncCall.enqueue(new CorrelationNetActivity.SyncTxCallBack());
 
             return true;
@@ -317,15 +289,14 @@ public class CorrelationNetActivity extends LocationAwareActivity {
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
-    public class SyncTxCallBack implements Callback<String> {
+    public class SyncTxCallBack implements Callback<ResponseBody> {
         @Override
-        public void onResponse(Call<String> call, Response<String> response) {
-            String rs = response.body();
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            ResponseBody rs = response.body();
 
             if (rs != null) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
                 tvCorrNetBarcode.setText("");
-                etNetBarcode.setText("");
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_CorrelationTx_update_failure), Toast.LENGTH_LONG));
@@ -333,7 +304,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<String> call, Throwable error) {
+        public void onFailure(Call<ResponseBody> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

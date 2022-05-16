@@ -85,7 +85,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
     <RelativeLayout
         android:id="@+id/correlateAssetLayout"
         android:layout_width="0dp"
-        android:layout_height="360dp"
+        android:layout_height="400dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
@@ -124,7 +124,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvNets"
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -132,12 +132,12 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
                 android:background="@drawable/bg_rounded_input_spinner"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/etNetBarcode"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/svSearchAsset" />
 
-            <EditText
+            <!--<EditText
                 android:id="@+id/etNetBarcode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -158,7 +158,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvNets" />
+                app:layout_constraintTop_toBottomOf="@+id/rvNets" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -177,7 +177,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
     <RelativeLayout
         android:id="@+id/correlateBLayout"
         android:layout_width="0dp"
-        android:layout_height="190dp"
+        android:layout_height="150dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"

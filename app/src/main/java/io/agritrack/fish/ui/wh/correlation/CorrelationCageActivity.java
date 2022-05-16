@@ -26,6 +26,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,6 +56,7 @@ import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,33 +71,12 @@ public class CorrelationCageActivity extends LocationAwareActivity {
     private SearchView svSearchAsset;
     private RecyclerView rvCages;
     private TextView tvCorrCageBarcode;
-    private EditText etCageBarcode;
     private FilterableAdapter adapterAssets;
     private ProgressDialog progressDialog;
     private YesNoDialogFragment confirmGPSSelectionDlg;
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
-    private ConstraintLayout selectedItem;
-    private String selectedBarcode = "";
-    // Instantiate a clickListener to be passed to adapterAssets.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,17 +113,6 @@ public class CorrelationCageActivity extends LocationAwareActivity {
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
 
-        /*btnCorrelate.setOnClickListener(view -> {
-
-
-
-            //correlate();
-        });*/
-
-        if (etCageBarcode!=null){
-            selectedBarcode = etCageBarcode.getText().toString();
-        }
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(CorrelationCageActivity.this);
             supportDialog.showDialog();
@@ -167,10 +137,11 @@ public class CorrelationCageActivity extends LocationAwareActivity {
     private void loadCagesFromLocalDB(String assetType) {
         // load assets for current Site and filter by asset type (if selected).
         this.rvCages.setAdapter(null);
+        this.rvCages.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
             List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.code)).collect(Collectors.toList());
-            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
             this.rvCages.setAdapter(adapterAssets);
@@ -212,7 +183,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
 
         ivNext.setOnClickListener(view -> {
             GlobalState.recWHCorrelation.type = Constants.ftCage;
-            GlobalState.recWHCorrelation.code = selectedBarcode;//.getText() != null ? etAssetBarcode.getText().toString() : null;
+            GlobalState.recWHCorrelation.code = adapterAssets.getSelectedValue();;
             GlobalState.recWHCorrelation.rfid = tvCorrCageBarcode.getText() != null ? tvCorrCageBarcode.getText().toString() : null;
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -234,7 +205,6 @@ public class CorrelationCageActivity extends LocationAwareActivity {
     private void assignCtrlVars() {
         svSearchAsset = findViewById(R.id.svSearchAsset);
         rvCages = findViewById(R.id.rvCages);
-        etCageBarcode = findViewById(R.id.etCageBarcode);
         tvCorrCageBarcode = findViewById(R.id.tvCorrCageBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
         btnCorrelate = findViewById(R.id.btnCorrelate);
@@ -275,14 +245,14 @@ public class CorrelationCageActivity extends LocationAwareActivity {
 
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
-            Asset cage = db.assetDAO().getByCode(selectedBarcode);
+            Asset cage = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
             cage.rfid = GlobalState.recWHCorrelation.assetRFID;
             db.assetDAO().update(cage);
 
             // sync WH Correlation Tx
             ArrayList<CorrelationTxDTO> dtos = new ArrayList<>();
             dtos.add(CorrelationTxDTO.convert(tx));
-            Call<String> syncTxAsyncCall = updService.syncAssetCorrelationTx(dtos, "Bearer " + token);
+            Call<ResponseBody> syncTxAsyncCall = updService.syncAssetCorrelationTx(dtos, "Bearer " + token);
             syncTxAsyncCall.enqueue(new CorrelationCageActivity.SyncTxCallBack());
 
             return true;
@@ -317,15 +287,14 @@ public class CorrelationCageActivity extends LocationAwareActivity {
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
-    public class SyncTxCallBack implements Callback<String> {
+    public class SyncTxCallBack implements Callback<ResponseBody> {
         @Override
-        public void onResponse(Call<String> call, Response<String> response) {
-            String rs = response.body();
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            ResponseBody rs = response.body();
 
             if (rs != null) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
                 tvCorrCageBarcode.setText("");
-                etCageBarcode.setText("");
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_CorrelationTx_update_failure), Toast.LENGTH_LONG));
@@ -333,7 +302,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<String> call, Throwable error) {
+        public void onFailure(Call<ResponseBody> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

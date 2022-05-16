@@ -10,7 +10,6 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
@@ -27,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -46,7 +44,6 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
@@ -60,17 +57,16 @@ import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
-import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CorrelationActivity extends LocationAwareActivity{
+public class CorrelationActivity extends LocationAwareActivity {
     private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
+    private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-    private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
@@ -86,25 +82,6 @@ public class CorrelationActivity extends LocationAwareActivity{
     private String selectedBarcode = "";
     private String activeFilter = null;
     private String epcPrefix = "BE0019A0000";
-    private ConstraintLayout selectedItem;
-    // Instantiate a clickListener to be passed to adapterAssets.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
     private ProgressDialog progressDialog;
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
@@ -140,8 +117,7 @@ public class CorrelationActivity extends LocationAwareActivity{
         };
 
         spAssetType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
                 loadAssetsByTypeFromLocalDB(selectedAssetType);
                 if (adapterAssets == null) {
@@ -151,8 +127,8 @@ public class CorrelationActivity extends LocationAwareActivity{
                     adapterAssets.notifyDataSetChanged();
                 }
             }
-            public void onNothingSelected(AdapterView<?> parent)
-            {
+
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -211,7 +187,7 @@ public class CorrelationActivity extends LocationAwareActivity{
         configFooter();
     }
 
-    private void moveToNextScreen(){
+    private void moveToNextScreen() {
         if (proceedWithoutLocation) {
             // Update state and proceed to next
             Boolean proceed = correlate();
@@ -361,7 +337,7 @@ public class CorrelationActivity extends LocationAwareActivity{
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
             List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.code)).collect(Collectors.toList());
-            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
             this.rvAssets.setAdapter(adapterAssets);

@@ -72,7 +72,7 @@ public class CorrelationBinActivity extends LocationAwareActivity {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final CorrelationBinActivity.ScanHandler mScanHandler = new CorrelationBinActivity.ScanHandler(this);
     private MobileDB db;
-    private Button btnScanAssetTag, btnCorrelate;
+    private Button btnScanAssetTag;
     private TextView tvCorrBinBarcode, tvCorrTempLoggerBarcode;
     private EditText etAssetBarcode;
     private ProgressDialog progressDialog;
@@ -114,29 +114,10 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
 
-        btnCorrelate.setOnClickListener(view -> {
-            GlobalState.recWHCorrelation.assetType = Constants.ftBin;
-            GlobalState.recWHCorrelation.assetCode = etAssetBarcode.getText() != null ? etAssetBarcode.getText().toString() : null;
-            GlobalState.recWHCorrelation.assetRFID = tvCorrBinBarcode.getText() != null ? tvCorrBinBarcode.getText().toString() : null;
-            GlobalState.recWHCorrelation.type = Constants.ftDataLogger;
-            GlobalState.recWHCorrelation.rfid = tvCorrTempLoggerBarcode.getText() != null ? tvCorrTempLoggerBarcode.getText().toString() : null;
+        /*btnCorrelate.setOnClickListener(view -> {
 
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-                return;
-            }
-            if (mLastLocation != null) {
-                recWHCorrelation.longitude = mLastLocation.getLongitude();
-                recWHCorrelation.latitude = mLastLocation.getLatitude();
-                proceedWithoutLocation = true;
-                moveToNextScreen();
-            } else {
-                FragmentManager fm = getSupportFragmentManager();
-                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            }
             //correlate();
-        });
+        });*/
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(CorrelationBinActivity.this);
@@ -193,8 +174,26 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         });
 
         ivNext.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
-            startActivity(i);
+            GlobalState.recWHCorrelation.assetType = Constants.ftBin;
+            GlobalState.recWHCorrelation.assetCode = etAssetBarcode.getText() != null ? etAssetBarcode.getText().toString() : null;
+            GlobalState.recWHCorrelation.assetRFID = tvCorrBinBarcode.getText() != null ? tvCorrBinBarcode.getText().toString() : null;
+            GlobalState.recWHCorrelation.type = Constants.ftDataLogger;
+            GlobalState.recWHCorrelation.rfid = tvCorrTempLoggerBarcode.getText() != null ? tvCorrTempLoggerBarcode.getText().toString() : null;
+
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+            if (mLastLocation != null) {
+                recWHCorrelation.longitude = mLastLocation.getLongitude();
+                recWHCorrelation.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            }
         });
     }
 
@@ -203,7 +202,6 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         tvCorrBinBarcode = findViewById(R.id.tvCorrBinBarcode);
         tvCorrTempLoggerBarcode = findViewById(R.id.tvCorrTempLoggerBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
-        btnCorrelate = findViewById(R.id.btnCorrelate);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);
         ivSupport = findViewById(R.id.ivSupport);
@@ -224,7 +222,9 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
 
             // sync WH Correlation Tx
-            Call<CorrelationTxDTO> syncTxAsyncCall = updService.syncCorrelationTx(CorrelationTxDTO.convert(tx), "Bearer " + token);
+            ArrayList<CorrelationTxDTO> dtos = new ArrayList<>();
+            dtos.add(CorrelationTxDTO.convert(tx));
+            Call<String> syncTxAsyncCall = updService.syncAssetWithAssetCorrelationTx(dtos, "Bearer " + token);
             syncTxAsyncCall.enqueue(new CorrelationBinActivity.SyncTxCallBack());
 
             return true;
@@ -263,10 +263,10 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
-    public class SyncTxCallBack implements Callback<CorrelationTxDTO> {
+    public class SyncTxCallBack implements Callback<String> {
         @Override
-        public void onResponse(Call<CorrelationTxDTO> call, Response<CorrelationTxDTO> response) {
-            CorrelationTxDTO rs = response.body();
+        public void onResponse(Call<String> call, Response<String> response) {
+            String rs = response.body();
 
             if (rs != null) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
@@ -280,7 +280,7 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<CorrelationTxDTO> call, Throwable error) {
+        public void onFailure(Call<String> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
@@ -314,13 +314,14 @@ public class CorrelationBinActivity extends LocationAwareActivity {
                         if (!CollectionUtils.isEmpty(tags)) {
                             for (CharSequence tag : tags) {
                                 String epc = tag.toString();
+                                String label = epc.length()>15 ? epc.substring(14) : epc;
                                 if (epc.indexOf(Filters.RFID_BIN) > -1) {
                                     GlobalState.recWHCorrelation.assetRFID = epc;
-                                    tvCorrBinBarcode.setText(epc);
+                                    tvCorrBinBarcode.setText(label);
                                 }
                                 else if (epc.indexOf(Filters.RFID_LOGGER) > -1){
                                     GlobalState.recWHCorrelation.rfid = epc;
-                                    tvCorrTempLoggerBarcode.setText(epc);
+                                    tvCorrTempLoggerBarcode.setText(label);
                                 }
                             }
                         }

@@ -7,7 +7,6 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,26 +39,28 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
-import io.agritrack.data.service.EncodingSchemeService;
-import io.agritrack.sound.SoundUtil;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;
+import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class SearchActivity extends AppCompatActivity {
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
     private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
     private final ScanHandler mScanHandler = new ScanHandler(this);
-
+    private final ICAEN_API uhfReader = RFIDModuleFactory.getInstance();
+    // **************************************************************
+    private final Runnable search_runnable = new SearchRunnable();
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
     private ProgressBar pbProximity;
     private MobileDB db;
     private FilterableAdapter adapterAssets;
@@ -74,33 +74,9 @@ public class SearchActivity extends AppCompatActivity {
     private Button btnSearchAsset;
     private String selectedAssetType;
     private String selectedBarcode = "";
-    private ConstraintLayout selectedItem;
     private ProgressBar searchProgressBar;
     private String epcPrefix = "BE0019A0000";
-
     private boolean isScanning = false;
-
-    private final ICAEN_API uhfReader = RFIDModuleFactory.getInstance();
-
-    // Instantiate a clickListener to be passed to adapterAssets.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-            etAssetBarcode.setText(selectedBarcode);
-
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,8 +113,7 @@ public class SearchActivity extends AppCompatActivity {
         };
 
         spAssetType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
                 loadAssetsByTypeFromLocalDB(selectedAssetType);
                 if (adapterAssets == null) {
@@ -147,8 +122,8 @@ public class SearchActivity extends AppCompatActivity {
                     svSearchAsset.setVisibility(View.VISIBLE);
                 }
             }
-            public void onNothingSelected(AdapterView<?> parent)
-            {
+
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -175,7 +150,7 @@ public class SearchActivity extends AppCompatActivity {
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
             List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfid)).collect(Collectors.toList());
-            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
             this.rvAssets.setAdapter(adapterAssets);
@@ -186,46 +161,12 @@ public class SearchActivity extends AppCompatActivity {
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             //Stop searching since we navigate to previous activity
-            if (mScanHandler !=null) {
+            if (mScanHandler != null) {
                 mScanHandler.removeCallbacks(search_runnable);
             }
 
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
-        });
-    }
-
-    private void assignCtrlVars() {
-        spAssetType = findViewById(R.id.spAssetType);
-        svSearchAsset = findViewById(R.id.svSearchAsset);
-        etAssetBarcode = findViewById(R.id.etAssetBarcode);
-        rvAssets = findViewById(R.id.rvAssets);
-        btnSearchAsset = findViewById(R.id.btnSearchAsset);
-        pbProximity = findViewById(R.id.pbProximity);
-        tvProximity = findViewById(R.id.tvProximity);
-        ivSupport = findViewById(R.id.ivSupport);
-        searchProgressBar = findViewById(R.id.searchProgressBar);
-        rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        rvAssets.setItemAnimator(new DefaultItemAnimator());
-
-        if (adapterAssets == null) {
-            svSearchAsset.setVisibility(View.GONE);
-        }
-        svSearchAsset.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapterAssets.getFilter().filter(newText);
-                return false;
-            }
-        });
-        svSearchAsset.setOnClickListener(view -> {
-            pbProximity.setProgress(0);
-            tvProximity.setText(null);
         });
     }
 
@@ -261,6 +202,40 @@ public class SearchActivity extends AppCompatActivity {
             this.rvAssets.setAdapter(adapterAssets);
         }
     }*/
+
+    private void assignCtrlVars() {
+        spAssetType = findViewById(R.id.spAssetType);
+        svSearchAsset = findViewById(R.id.svSearchAsset);
+        etAssetBarcode = findViewById(R.id.etAssetBarcode);
+        rvAssets = findViewById(R.id.rvAssets);
+        btnSearchAsset = findViewById(R.id.btnSearchAsset);
+        pbProximity = findViewById(R.id.pbProximity);
+        tvProximity = findViewById(R.id.tvProximity);
+        ivSupport = findViewById(R.id.ivSupport);
+        searchProgressBar = findViewById(R.id.searchProgressBar);
+        rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rvAssets.setItemAnimator(new DefaultItemAnimator());
+
+        if (adapterAssets == null) {
+            svSearchAsset.setVisibility(View.GONE);
+        }
+        svSearchAsset.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapterAssets.getFilter().filter(newText);
+                return false;
+            }
+        });
+        svSearchAsset.setOnClickListener(view -> {
+            pbProximity.setProgress(0);
+            tvProximity.setText(null);
+        });
+    }
 
     @Override
     protected void onStart() {
@@ -366,9 +341,6 @@ public class SearchActivity extends AppCompatActivity {
             return (int) (Math.abs(rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI) * 100);
         }
     }
-
-    // **************************************************************
-    private final Runnable search_runnable = new SearchRunnable();
 
     private final class SearchRunnable implements Runnable {
 

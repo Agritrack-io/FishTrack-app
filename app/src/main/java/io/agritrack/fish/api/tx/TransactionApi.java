@@ -22,6 +22,7 @@ import io.agritrack.data.dto.wh.CoInventoryDTO;
 import io.agritrack.data.dto.wh.IfcoInventoryDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryDTO;
 import io.agritrack.data.dto.wh.TotesInventoryDTO;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
@@ -92,11 +93,11 @@ public interface TransactionApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/asset/correlate")
-    Call<String> syncAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
+    Call<ResponseBody> syncAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/asset/inter-correlate")
-    Call<CorrelationTxDTO> syncAssetWithAssetCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
+    Call<String> syncAssetWithAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/inventory/box")

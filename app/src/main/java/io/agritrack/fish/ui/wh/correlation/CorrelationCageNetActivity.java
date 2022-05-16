@@ -6,10 +6,6 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -19,10 +15,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
@@ -53,10 +51,9 @@ import retrofit2.Response;
 
 public class CorrelationCageNetActivity extends LocationAwareActivity {
 
-    protected BroadcastReceiver keyReceiver;
-
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final CorrelationCageNetActivity.ScanHandler mScanHandler = new CorrelationCageNetActivity.ScanHandler(this);
+    protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button btnScanAssetTag, btnCorrelate;
     private TextView tvCorrCageBarcode, tvCorrNetBarcode, tvCageCode, tvNetCode;
@@ -65,12 +62,12 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_correlation_cage_net);
-        
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderCageNetCorrelation);
         tvHeader.setText(LocalPreferences.HeaderMsg());
@@ -112,7 +109,7 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
         configFooter();
     }
 
-    private void moveToNextScreen(){
+    private void moveToNextScreen() {
         if (proceedWithoutLocation) {
             // Update state and proceed to next
             Boolean proceed = correlate();
@@ -208,7 +205,9 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
 
             // sync WH Correlation Tx
-            Call<CorrelationTxDTO> syncTxAsyncCall = updService.syncCorrelationTx(CorrelationTxDTO.convert(tx), "Bearer " + token);
+            ArrayList<CorrelationTxDTO> dtos = new ArrayList<>();
+            dtos.add(CorrelationTxDTO.convert(tx));
+            Call<String> syncTxAsyncCall = updService.syncAssetWithAssetCorrelationTx(dtos, "Bearer " + token);
             syncTxAsyncCall.enqueue(new CorrelationCageNetActivity.SyncTxCallBack());
 
             return true;
@@ -243,10 +242,10 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
-    public class SyncTxCallBack implements Callback<CorrelationTxDTO> {
+    public class SyncTxCallBack implements Callback<String> {
         @Override
-        public void onResponse(Call<CorrelationTxDTO> call, Response<CorrelationTxDTO> response) {
-            CorrelationTxDTO rs = response.body();
+        public void onResponse(Call<String> call, Response<String> response) {
+            String rs = response.body();
 
             if (rs != null) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
@@ -259,7 +258,7 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<CorrelationTxDTO> call, Throwable error) {
+        public void onFailure(Call<String> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
@@ -298,8 +297,7 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
                                     tvCorrCageBarcode.setText(epc);
                                     Asset cage = db.assetDAO().getAssetByEpc(epc);
                                     tvCageCode.setText(cage.code);
-                                }
-                                else if (epc.indexOf(Filters.RFID_NET) > -1){
+                                } else if (epc.indexOf(Filters.RFID_NET) > -1) {
                                     GlobalState.recWHCorrelation.rfid = epc;
                                     tvCorrNetBarcode.setText(epc);
                                     Asset net = db.assetDAO().getAssetByEpc(epc);

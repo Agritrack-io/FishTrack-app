@@ -7,7 +7,6 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,19 +38,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
-import io.agritrack.data.service.EncodingSchemeService;
-import io.agritrack.sound.SoundUtil;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;
-import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;
+import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.FilterableAdapter;
-import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class HotelSearchActivity extends AppCompatActivity {
@@ -79,28 +75,7 @@ public class HotelSearchActivity extends AppCompatActivity {
     private Button btnSearchAsset;
     private String selectedAssetType;
     private String selectedBarcode = "";
-    private ConstraintLayout selectedItem;
     private String epcPrefix = "BE0019A0000";
-
-    // Instantiate a clickListener to be passed to adapterAssets.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-            etAssetBarcode.setText(selectedBarcode);
-
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
     private ProgressBar searchProgressBar;
     private boolean isScanning = false;
 
@@ -138,14 +113,13 @@ public class HotelSearchActivity extends AppCompatActivity {
         };
 
         spLinenType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
                 loadLinenByTypeFromLocalDB(selectedAssetType);
                 svSearchAsset.setVisibility(View.VISIBLE);
             }
-            public void onNothingSelected(AdapterView<?> parent)
-            {
+
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -172,7 +146,7 @@ public class HotelSearchActivity extends AppCompatActivity {
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType);
         if (assetsList != null && !assetsList.isEmpty()) {
             List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfidBarcode)).collect(Collectors.toList());
-            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets, itemsClickListener);
+            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
             this.rvAssets.setAdapter(adapterAssets);
@@ -231,7 +205,7 @@ public class HotelSearchActivity extends AppCompatActivity {
         ImageView ivBack = findViewById(R.id.ivBackToHotelHome);
         ivBack.setOnClickListener(view -> {
             //Stop searching since we navigate to previous activity
-            if (mScanHandler !=null) {
+            if (mScanHandler != null) {
                 mScanHandler.removeCallbacks(search_runnable);
             }
 

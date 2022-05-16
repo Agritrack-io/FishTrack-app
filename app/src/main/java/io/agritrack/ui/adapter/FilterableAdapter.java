@@ -1,6 +1,7 @@
 package io.agritrack.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,22 +20,25 @@ import io.agritrack.ui.bo.GenericListModel;
 public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.viewHolder> implements Filterable {
 
     private final Context context;
-    private View.OnClickListener itemsClickListener;
     private final ArrayList<GenericListModel> arrayList;
     private ArrayList<GenericListModel> arrayListFiltered;
     private int selectedPos = RecyclerView.NO_POSITION;
+    private String selectedValue = null;
 
-    public FilterableAdapter(Context context, ArrayList<GenericListModel> arrayList, View.OnClickListener clickListener) {
+    public FilterableAdapter(Context context, ArrayList<GenericListModel> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
         this.arrayListFiltered = arrayList;
-        this.itemsClickListener = clickListener;
+    }
+
+    public String getSelectedValue(){
+        return this.selectedValue;
     }
 
     @Override
     public viewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(context).inflate(R.layout.simple_recycler_view_item, viewGroup, false);
-        return new viewHolder(view, this.itemsClickListener);
+        return new viewHolder(view);
     }
 
     @Override
@@ -42,6 +46,7 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
         viewHolder.label.setText(arrayListFiltered.get(position).getLabel());
         viewHolder.itemView.setSelected(selectedPos == position);
 
+        viewHolder.itemView.setBackgroundColor(selectedPos == position ? Color.GRAY : Color.TRANSPARENT);
     }
 
     @Override
@@ -78,7 +83,7 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
                 arrayListFiltered = (ArrayList<GenericListModel>) results.values;
                 notifyDataSetChanged();
 
-                if (arrayListFiltered==null || arrayListFiltered.size() == 0) {
+                if (arrayListFiltered == null || arrayListFiltered.size() == 0) {
                     Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -86,13 +91,28 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
         return filter;
     }
 
-    public class viewHolder extends RecyclerView.ViewHolder {
+    public class viewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView label;
 
-        public viewHolder(View itemView, View.OnClickListener itemsClickListener) {
+        public viewHolder(View itemView) {
             super(itemView);
             label = (TextView) itemView.findViewById(R.id.tvRecyclerItem);
-            itemView.setOnClickListener(itemsClickListener);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            // Below line is just like a safety check, because sometimes holder could be null,
+            // in that case, getAdapterPosition() will return RecyclerView.NO_POSITION
+            if (getAdapterPosition() == RecyclerView.NO_POSITION) return;
+
+            // Updating old as well as new positions
+            notifyItemChanged(selectedPos);
+            selectedPos = getAdapterPosition();
+            selectedValue = this.label.getText().toString();
+            notifyItemChanged(selectedPos);
+
+            // Do your another stuff for your onClick
         }
     }
 }
