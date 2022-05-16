@@ -183,8 +183,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
 
         ivNext.setOnClickListener(view -> {
             GlobalState.recWHCorrelation.type = Constants.ftCage;
-            GlobalState.recWHCorrelation.code = adapterAssets.getSelectedValue();;
-            GlobalState.recWHCorrelation.rfid = tvCorrCageBarcode.getText() != null ? tvCorrCageBarcode.getText().toString() : null;
+            GlobalState.recWHCorrelation.code = adapterAssets.getSelectedValue();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
@@ -332,11 +331,11 @@ public class CorrelationCageActivity extends LocationAwareActivity {
             switch (msg.what) {
                 case 1:
                     String epcStr = msg.getData().getString("epc");
-
+                    String label = epcStr.length()>15 ? epcStr.substring(14) : epcStr;
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            GlobalState.recWHCorrelation.assetRFID = epcStr;
-                            tvCorrCageBarcode.setText(epcStr);
+                            GlobalState.recWHCorrelation.rfid = epcStr;
+                            tvCorrCageBarcode.setText(label);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

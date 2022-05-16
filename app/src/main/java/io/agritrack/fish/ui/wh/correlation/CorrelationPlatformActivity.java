@@ -163,7 +163,7 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(view -> {
             recWHCorrelation.type = Constants.ftPlatform;
             recWHCorrelation.code = etPlatformBarcode.getText() != null ? etPlatformBarcode.getText().toString() : null;
-            recWHCorrelation.rfid = tvCorrPlatformBarcode.getText() != null ? tvCorrPlatformBarcode.getText().toString() : null;
+            //recWHCorrelation.rfid = tvCorrPlatformBarcode.getText() != null ? tvCorrPlatformBarcode.getText().toString() : null;
 
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -289,11 +289,11 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
             switch (msg.what) {
                 case 1:
                     String epcStr = msg.getData().getString("epc");
-
+                    String label = epcStr.length()>15 ? epcStr.substring(14) : epcStr;
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            GlobalState.recWHCorrelation.assetRFID = epcStr;
-                            tvCorrPlatformBarcode.setText(epcStr);
+                            GlobalState.recWHCorrelation.rfid = epcStr;
+                            tvCorrPlatformBarcode.setText(label);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

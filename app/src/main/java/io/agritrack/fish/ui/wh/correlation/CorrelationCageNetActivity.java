@@ -45,6 +45,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -157,9 +158,9 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
 
         ivNext.setOnClickListener(view -> {
             GlobalState.recWHCorrelation.assetType = Constants.ftCage;
-            GlobalState.recWHCorrelation.assetRFID = tvCorrCageBarcode.getText() != null ? tvCorrCageBarcode.getText().toString() : null;
+            //GlobalState.recWHCorrelation.assetRFID = tvCorrCageBarcode.getText() != null ? tvCorrCageBarcode.getText().toString() : null;
             GlobalState.recWHCorrelation.type = Constants.ftNet;
-            GlobalState.recWHCorrelation.rfid = tvCorrNetBarcode.getText() != null ? tvCorrNetBarcode.getText().toString() : null;
+            //GlobalState.recWHCorrelation.rfid = tvCorrNetBarcode.getText() != null ? tvCorrNetBarcode.getText().toString() : null;
 
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -207,7 +208,7 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
             // sync WH Correlation Tx
             ArrayList<CorrelationTxDTO> dtos = new ArrayList<>();
             dtos.add(CorrelationTxDTO.convert(tx));
-            Call<String> syncTxAsyncCall = updService.syncAssetWithAssetCorrelationTx(dtos, "Bearer " + token);
+            Call<ResponseBody> syncTxAsyncCall = updService.syncAssetWithAssetCorrelationTx(dtos, "Bearer " + token);
             syncTxAsyncCall.enqueue(new CorrelationCageNetActivity.SyncTxCallBack());
 
             return true;
@@ -228,8 +229,16 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
                 sb.append(String.format("\n%s is missing", "'Cage RFID'"));
             }
 
+            if (Strings.isEmptyOrWhitespace(recWHCorrelation.assetCode)) {
+                sb.append(String.format("\n%s is missing", "'Cage code'"));
+            }
+
             if (Strings.isEmptyOrWhitespace(GlobalState.recWHCorrelation.rfid)) {
                 sb.append(String.format("\n%s is missing", "'Net RFID'"));
+            }
+
+            if (Strings.isEmptyOrWhitespace(recWHCorrelation.code)) {
+                sb.append(String.format("\n%s is missing", "'Net code'"));
             }
         }
         return sb.toString();
@@ -242,10 +251,10 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
-    public class SyncTxCallBack implements Callback<String> {
+    public class SyncTxCallBack implements Callback<ResponseBody> {
         @Override
-        public void onResponse(Call<String> call, Response<String> response) {
-            String rs = response.body();
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            ResponseBody rs = response.body();
 
             if (rs != null) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
@@ -258,7 +267,7 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<String> call, Throwable error) {
+        public void onFailure(Call<ResponseBody> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
@@ -292,16 +301,25 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
                         if (!CollectionUtils.isEmpty(tags)) {
                             for (CharSequence tag : tags) {
                                 String epc = tag.toString();
+                                String label = epc.length()>15 ? epc.substring(14) : epc;
                                 if (epc.indexOf(Filters.RFID_CAGE) > -1) {
                                     GlobalState.recWHCorrelation.assetRFID = epc;
-                                    tvCorrCageBarcode.setText(epc);
+                                    tvCorrCageBarcode.setText(label);
                                     Asset cage = db.assetDAO().getAssetByEpc(epc);
+                                    if (cage == null){
+                                        CToast(getApplicationContext(), "Please correlate cage with RFID, go to Correlation Menu, and tap Cage", Toast.LENGTH_LONG);
+                                    }
                                     tvCageCode.setText(cage.code);
+                                    recWHCorrelation.assetCode = cage.code;
                                 } else if (epc.indexOf(Filters.RFID_NET) > -1) {
                                     GlobalState.recWHCorrelation.rfid = epc;
-                                    tvCorrNetBarcode.setText(epc);
+                                    tvCorrNetBarcode.setText(label);
                                     Asset net = db.assetDAO().getAssetByEpc(epc);
+                                    if (net == null){
+                                        CToast(getApplicationContext(), "Please correlate net with RFID, go to Correlation Menu, and tap Net", Toast.LENGTH_LONG);
+                                    }
                                     tvNetCode.setText(net.code);
+                                    recWHCorrelation.code = net.code;
                                 }
                             }
                         }

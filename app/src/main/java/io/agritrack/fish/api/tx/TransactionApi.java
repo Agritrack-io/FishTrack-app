@@ -97,7 +97,7 @@ public interface TransactionApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/asset/inter-correlate")
-    Call<String> syncAssetWithAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
+    Call<ResponseBody> syncAssetWithAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/inventory/box")

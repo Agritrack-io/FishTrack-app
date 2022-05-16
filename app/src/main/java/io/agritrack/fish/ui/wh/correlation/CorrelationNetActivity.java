@@ -23,6 +23,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -73,7 +74,6 @@ public class CorrelationNetActivity extends LocationAwareActivity {
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
-    private String selectedBarcode = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,11 +110,6 @@ public class CorrelationNetActivity extends LocationAwareActivity {
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
 
-        /*btnCorrelate.setOnClickListener(view -> {
-
-            //correlate();
-        });*/
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(CorrelationNetActivity.this);
             supportDialog.showDialog();
@@ -139,6 +134,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
     private void loadNetsFromLocalDB(String assetType) {
         // load assets for current Site and filter by asset type (if selected).
         this.rvNets.setAdapter(null);
+        this.rvNets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
             List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.code)).collect(Collectors.toList());
@@ -184,8 +180,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
 
         ivNext.setOnClickListener(view -> {
             recWHCorrelation.type = Constants.ftNet;
-            recWHCorrelation.code = selectedBarcode;
-            recWHCorrelation.rfid = tvCorrNetBarcode.getText() != null ? tvCorrNetBarcode.getText().toString() : null;
+            recWHCorrelation.code = adapterAssets.getSelectedValue();
 
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -247,7 +242,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
 
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
-            Asset net = db.assetDAO().getByCode(selectedBarcode);
+            Asset net = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
             net.rfid = GlobalState.recWHCorrelation.assetRFID;
             db.assetDAO().update(net);
 
@@ -334,11 +329,11 @@ public class CorrelationNetActivity extends LocationAwareActivity {
             switch (msg.what) {
                 case 1:
                     String epcStr = msg.getData().getString("epc");
-
+                    String label = epcStr.length()>15 ? epcStr.substring(14) : epcStr;
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            GlobalState.recWHCorrelation.assetRFID = epcStr;
-                            tvCorrNetBarcode.setText(epcStr);
+                            GlobalState.recWHCorrelation.rfid = epcStr;
+                            tvCorrNetBarcode.setText(label);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

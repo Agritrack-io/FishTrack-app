@@ -61,6 +61,7 @@ import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -176,9 +177,7 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(view -> {
             GlobalState.recWHCorrelation.assetType = Constants.ftBin;
             GlobalState.recWHCorrelation.assetCode = etAssetBarcode.getText() != null ? etAssetBarcode.getText().toString() : null;
-            GlobalState.recWHCorrelation.assetRFID = tvCorrBinBarcode.getText() != null ? tvCorrBinBarcode.getText().toString() : null;
             GlobalState.recWHCorrelation.type = Constants.ftDataLogger;
-            GlobalState.recWHCorrelation.rfid = tvCorrTempLoggerBarcode.getText() != null ? tvCorrTempLoggerBarcode.getText().toString() : null;
 
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -224,7 +223,7 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             // sync WH Correlation Tx
             ArrayList<CorrelationTxDTO> dtos = new ArrayList<>();
             dtos.add(CorrelationTxDTO.convert(tx));
-            Call<String> syncTxAsyncCall = updService.syncAssetWithAssetCorrelationTx(dtos, "Bearer " + token);
+            Call<ResponseBody> syncTxAsyncCall = updService.syncAssetWithAssetCorrelationTx(dtos, "Bearer " + token);
             syncTxAsyncCall.enqueue(new CorrelationBinActivity.SyncTxCallBack());
 
             return true;
@@ -263,10 +262,10 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
-    public class SyncTxCallBack implements Callback<String> {
+    public class SyncTxCallBack implements Callback<ResponseBody> {
         @Override
-        public void onResponse(Call<String> call, Response<String> response) {
-            String rs = response.body();
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            ResponseBody rs = response.body();
 
             if (rs != null) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
@@ -280,7 +279,7 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<String> call, Throwable error) {
+        public void onFailure(Call<ResponseBody> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
