@@ -5,6 +5,8 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import java.util.UUID;
+
 @Entity(tableName = "correlation_transaction")
 public class CorrelationTransaction {
     @PrimaryKey
@@ -14,7 +16,10 @@ public class CorrelationTransaction {
     public String user;
 
     @ColumnInfo(name = "site")
-    public String site;
+    public UUID site;
+
+    @ColumnInfo(name = "sub_site")
+    public String subSite;
 
     @ColumnInfo(name = "timestamp")
     public Long timestamp;

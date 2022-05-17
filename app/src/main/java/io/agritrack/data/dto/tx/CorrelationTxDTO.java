@@ -1,5 +1,8 @@
 package io.agritrack.data.dto.tx;
 
+import java.util.UUID;
+
+import io.agritrack.common.Constants;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 
 public class CorrelationTxDTO {
@@ -10,8 +13,9 @@ public class CorrelationTxDTO {
     public String type;
     public String code;
     public String user;
-    public String site;
+    public UUID site;
     public Long timestamp;
+    public boolean create_if_empty = false;
     public Double longitude;
     public Double latitude;
 
@@ -28,6 +32,7 @@ public class CorrelationTxDTO {
         correlationTxDTO.timestamp = corrTx.timestamp;
         correlationTxDTO.longitude = corrTx.longitude;
         correlationTxDTO.latitude = corrTx.latitude;
+        correlationTxDTO.create_if_empty = corrTx.type.equalsIgnoreCase(Constants.ftBin) || corrTx.type.equalsIgnoreCase(Constants.ftPlatform) ? true : false;
 
         return correlationTxDTO;
     }

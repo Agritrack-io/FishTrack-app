@@ -163,7 +163,6 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(view -> {
             recWHCorrelation.type = Constants.ftPlatform;
             recWHCorrelation.code = etPlatformBarcode.getText() != null ? etPlatformBarcode.getText().toString() : null;
-            //recWHCorrelation.rfid = tvCorrPlatformBarcode.getText() != null ? tvCorrPlatformBarcode.getText().toString() : null;
 
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {

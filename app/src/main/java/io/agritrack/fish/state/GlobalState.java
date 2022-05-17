@@ -498,6 +498,7 @@ public class GlobalState {
             txCorrelation.timestamp = System.currentTimeMillis();
             txCorrelation.longitude = recWHCorrelation.longitude;
             txCorrelation.latitude = recWHCorrelation.latitude;
+            txCorrelation.site = LocalPreferences.getCurrentSiteId();
 
             db.correlationTransactionDAO().insert(txCorrelation);
 
@@ -545,7 +546,6 @@ public class GlobalState {
             SeaTemperatureTransaction seaTemperatureTransaction = new SeaTemperatureTransaction();
             seaTemperatureTransaction.timestamp = System.currentTimeMillis();
             seaTemperatureTransaction.siteName = LocalPreferences.getCurrentSiteName();
-            seaTemperatureTransaction.siteId = LocalPreferences.getCurrentSiteId();
             seaTemperatureTransaction.refTemp = recTools.referencePointTemp;
             seaTemperatureTransaction.cageTemp = recTools.cageTemp;
             seaTemperatureTransaction.longitude = recTools.longitude;

@@ -243,7 +243,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
             Asset net = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
-            net.rfid = GlobalState.recWHCorrelation.assetRFID;
+            net.rfid = GlobalState.recWHCorrelation.rfid;
             db.assetDAO().update(net);
 
             // sync WH Correlation Tx

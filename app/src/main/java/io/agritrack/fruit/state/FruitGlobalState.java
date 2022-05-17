@@ -531,7 +531,7 @@ public class FruitGlobalState {
         try {
             CorrelationTransaction txCorrelation = new CorrelationTransaction();
 
-            txCorrelation.site = recCorrelation.subSite;
+            txCorrelation.subSite = recCorrelation.subSite; //TODO: add site info
             txCorrelation.assetType = (recCorrelation.assetType != null) ? recCorrelation.assetType : null;
             txCorrelation.assetRFID = recCorrelation.poleRFID;
             txCorrelation.type = (recCorrelation.loggerType != null) ? recCorrelation.loggerType : null;

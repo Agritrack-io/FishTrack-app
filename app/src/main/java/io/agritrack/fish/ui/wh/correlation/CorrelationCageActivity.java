@@ -245,7 +245,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
             Asset cage = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
-            cage.rfid = GlobalState.recWHCorrelation.assetRFID;
+            cage.rfid = GlobalState.recWHCorrelation.rfid;
             db.assetDAO().update(cage);
 
             // sync WH Correlation Tx
