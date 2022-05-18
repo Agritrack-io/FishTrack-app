@@ -1,6 +1,5 @@
 package io.agritrack.data.dao.tx;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -16,7 +15,7 @@ import io.agritrack.data.model.tx.CorrelationTransaction;
 public interface CorrelationTransactionDAO {
 
     @Query("SELECT * from correlation_transaction")
-    LiveData<List<CorrelationTransaction>> getAll();
+    List<CorrelationTransaction> getAll();
 
     @Query("SELECT * from correlation_transaction where id=:correlationTransactionId LIMIT 1")
     CorrelationTransaction getById(Long correlationTransactionId);
@@ -28,7 +27,7 @@ public interface CorrelationTransactionDAO {
     void delete(CorrelationTransaction correlationTransaction);
 
     @Query("DELETE from correlation_transaction")
-    void deleteAll();
+    int deleteAll();
 
     @Update
     void update(CorrelationTransaction correlationTransaction);

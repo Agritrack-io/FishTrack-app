@@ -89,7 +89,7 @@ public interface TransactionApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/asset/logger/correlate")
-    Call<CorrelationTxDTO> syncCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
+    Call<CorrelationTxDTO> syncLoggerCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/asset/correlate")

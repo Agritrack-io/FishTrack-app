@@ -16,7 +16,7 @@ public class APIServiceGenerator {
 //    private static final String BASE_URL = "http://fishtrack-be.eu-central-1.elasticbeanstalk.com";
     //private static final String BASE_URL = "http://192.168.1.15:5000";
     //private static final String BASE_URL = "http://3.123.142.122:5002";
-    private static final String BASE_URL = "http://192.168.150.163:5000";
+    private static final String BASE_URL = "http://192.168.150.183:5000";
 
 
     private static final Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());

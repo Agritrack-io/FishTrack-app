@@ -229,7 +229,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
             CorrelationTransaction tx = FruitGlobalState.commitWHCorrelation(db);
 
             // sync WH Correlation Tx
-            Call<CorrelationTxDTO> syncTxAsyncCall = updService.syncCorrelationTx(CorrelationTxDTO.convert(tx), "Bearer " + token);
+            Call<CorrelationTxDTO> syncTxAsyncCall = updService.syncLoggerCorrelationTx(CorrelationTxDTO.convert(tx), "Bearer " + token);
             syncTxAsyncCall.enqueue(new FruitCorrelationActivity.SyncTxCallBack());
 
             return true;

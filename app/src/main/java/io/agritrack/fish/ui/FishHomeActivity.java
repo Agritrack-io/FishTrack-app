@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.sync.PendingCorrelationTxCallBack;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.api.sync.SyncBinsByPackagingSite;
@@ -54,11 +55,13 @@ import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
+import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
-import io.agritrack.data.model.HarvestRequest;
+import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
+import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
@@ -71,6 +74,7 @@ import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
 import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 public class FishHomeActivity extends AppCompatActivity {
@@ -221,6 +225,7 @@ public class FishHomeActivity extends AppCompatActivity {
             syncCounter = 1;
             showProgressDialog(getString(R.string.syncing));
             invokeSyncAll();
+            invokeUploadPendingAll();
         });
 
         configHeader();
@@ -233,6 +238,43 @@ public class FishHomeActivity extends AppCompatActivity {
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(i);
         });
+    }
+
+    private void invokeUploadPendingAll() {
+        try {
+            SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
+            TransactionApi pendingTxSvc = APIServiceGenerator.createAPI(TransactionApi.class);
+            String token = LocalPreferences.getToken();
+            UUID siteId = LocalPreferences.getCurrentSiteId();
+            String clusterId = LocalPreferences.getCurrentClusterId();
+
+            // select all SIMPLE pending correlation TXs (identification events, e.g. correlate rfid <--> code)
+            List<CorrelationTransaction> correlationTXs = db.correlationTransactionDAO().getAll();
+            if(!correlationTXs.isEmpty()) {
+                // filter out the simple correlation transactions
+                List<CorrelationTransaction> identifications = correlationTXs.stream().filter(f -> f.assetRFID == null).collect(Collectors.toList());
+                // filter out the inter-correlation transactions
+                List<CorrelationTransaction> interCorrelations = correlationTXs.stream().filter(f -> f.assetRFID != null).collect(Collectors.toList());
+
+                if(!identifications.isEmpty()) {
+                    List<CorrelationTxDTO> identificationDTOs = identifications.stream().map(tx -> CorrelationTxDTO.convert(tx)).collect(Collectors.toList());
+
+                    Call<ResponseBody> assetIdentificationAsyncCall = pendingTxSvc.syncAssetCorrelationTx(identificationDTOs, "Bearer " + token);
+                    assetIdentificationAsyncCall.enqueue(new PendingCorrelationTxCallBack(this.syncResult));
+                }
+
+                if(!interCorrelations.isEmpty()) {
+                    List<CorrelationTxDTO> interCorrelationDTOs = interCorrelations.stream().map(tx -> CorrelationTxDTO.convert(tx)).collect(Collectors.toList());
+
+                    Call<ResponseBody> assetInterCorrelationAsyncCall = pendingTxSvc.syncAssetWithAssetCorrelationTx(interCorrelationDTOs, "Bearer " + token);
+                    assetInterCorrelationAsyncCall.enqueue(new PendingCorrelationTxCallBack(this.syncResult));
+                }
+            }
+        } catch (Exception e) {
+
+        } finally {
+
+        }
     }
 
     private void invokeSyncAll() {

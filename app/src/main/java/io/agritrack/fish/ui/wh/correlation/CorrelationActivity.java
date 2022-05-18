@@ -303,7 +303,7 @@ public class CorrelationActivity extends LocationAwareActivity {
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
 
             // sync WH Correlation Tx
-            Call<CorrelationTxDTO> syncTxAsyncCall = updService.syncCorrelationTx(CorrelationTxDTO.convert(tx), "Bearer " + token);
+            Call<CorrelationTxDTO> syncTxAsyncCall = updService.syncLoggerCorrelationTx(CorrelationTxDTO.convert(tx), "Bearer " + token);
             syncTxAsyncCall.enqueue(new SyncTxCallBack());
 
             return true;

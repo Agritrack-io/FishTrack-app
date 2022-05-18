@@ -569,4 +569,6 @@
     <string name="EncodeScheme_sync_completed">Encoding scheme synchronised successfuly!</string>
     <string name="no_EncodeScheme_found_alert">No Encoding Scheme entry was found!</string>
     <string name="error_postquality_update_failure">Post-Package quality data update failure!!!</string>
+    <string name="pending_correlation_tx_upload_completed">Pending correlations succesfully uploaded!</string>
+    <string name="pending_correlation_tx_upload_failure_alert">Failed to upload pending correlations!</string>
 </resources>
