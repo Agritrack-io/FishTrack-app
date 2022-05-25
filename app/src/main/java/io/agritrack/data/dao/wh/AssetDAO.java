@@ -21,7 +21,7 @@ public interface AssetDAO {
     @Query("SELECT * from asset")
     List<Asset> getAll();
 
-    @Query("SELECT * from asset where upper(asset_type)=:assetType LIMIT 300")
+    @Query("SELECT * from asset where upper(asset_type)=:assetType LIMIT 1000")
     List<Asset> getAssetsForType(String assetType);
 
     @Query("SELECT * from asset where id=:assetId LIMIT 1")

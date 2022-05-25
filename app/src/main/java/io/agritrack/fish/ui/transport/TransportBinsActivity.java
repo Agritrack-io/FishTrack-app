@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,26 +62,6 @@ public class TransportBinsActivity extends AppCompatActivity {
 
     private ImageButton ivAddBin, ivDeleteBin;
     private Button scanButton;
-    private String selectedBarcode;
-    private ConstraintLayout selectedItem;
-    // Instantiate a clickListener to be passed to adapterBins.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
     private String binBarcode;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -109,7 +90,8 @@ public class TransportBinsActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBinsForTransport.setLayoutManager(layoutManager);
         rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
-        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
+        rvBinsForTransport.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>());
         rvBinsForTransport.setAdapter(adapterBins);
         rvBinsForTransport.setNestedScrollingEnabled(false);
 
@@ -120,13 +102,11 @@ public class TransportBinsActivity extends AppCompatActivity {
         initControlsFromState();
 
         ivDeleteBin.setOnClickListener(view -> {
-            clearSelectedItem();
-
-            if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
+            if (!Strings.isEmptyOrWhitespace(adapterBins.getSelectedValue())) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
-                confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
-                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + selectedBarcode);
+                confirmSiteSelectionDlg.args().putString("selectedBarcode", adapterBins.getSelectedValue());
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + adapterBins.getSelectedLabel());
 
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
@@ -134,7 +114,7 @@ public class TransportBinsActivity extends AppCompatActivity {
                         adapterBins.removeItem(barcode);
                         adapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-                        selectedBarcode = null;
+                        adapterBins.clearSelectedValue();
                     }
                 });
 
@@ -156,12 +136,6 @@ public class TransportBinsActivity extends AppCompatActivity {
 
         // create Footer
         configFooter();
-    }
-
-    private void clearSelectedItem() {
-        if (selectedItem != null) {
-            selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-        }
     }
 
     private void assignCtrlVars() {

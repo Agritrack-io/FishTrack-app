@@ -8,7 +8,7 @@ import io.agritrack.enums.ConsumableType;
 import io.agritrack.enums.WarehouseTxState;
 
 public class WHTxRecord {
-
+    public long txKey;
     public String assetType;
     public ConsumableType consumableType;
     public String incomingItemType, selectedToggleButtonTo, selectedToggleButtonFrom;

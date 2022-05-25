@@ -4,6 +4,7 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
+import static io.agritrack.fish.state.GlobalState.recProcessing;
 import static io.agritrack.fish.state.GlobalState.recQuality;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -36,6 +37,7 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
+import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -265,12 +267,26 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         }
     }
 
+    private boolean deleteQualityTx(){
+        try {
+            System.out.println("About to delete quality tx");
+            QualityTransaction delObj = new QualityTransaction();
+            delObj.id = recQuality.txKey;
+            db.qualityTransactionDAO().delete(delObj);
+            return true;
+        } catch (Exception x){
+            x.printStackTrace();
+            return false;
+        }
+    }
+
     public class SyncTxCallBack implements Callback<QualityTxDTO> {
         @Override
         public void onResponse(Call<QualityTxDTO> call, Response<QualityTxDTO> response) {
             QualityTxDTO rs = response.body();
 
             if (rs != null || IsDemo) {
+                deleteQualityTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!

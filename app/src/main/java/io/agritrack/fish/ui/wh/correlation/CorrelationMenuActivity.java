@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import io.agritrack.R;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
@@ -41,11 +42,11 @@ public class CorrelationMenuActivity extends AppCompatActivity {
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_cage), CorrelationCageActivity.class, R.drawable.transport));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_net), CorrelationNetActivity.class, R.drawable.transport));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_cage_net), CorrelationCageNetActivity.class, R.drawable.transport));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_bin), CorrelationBinActivity.class, R.drawable.ic_barang_masuk));
-        menuItemsList.add(new MenuItem(getString(R.string.platform), CorrelationPlatformActivity.class, R.drawable.ic_barang_masuk));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_cage), CorrelationCageActivity.class, R.drawable.cage));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_net), CorrelationNetActivity.class, R.drawable.net));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_cage_net), CorrelationCageNetActivity.class, R.drawable.cage_net));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_bin), CorrelationBinActivity.class, R.drawable.bin));
+        menuItemsList.add(new MenuItem(getString(R.string.platform), CorrelationPlatformActivity.class, R.drawable.platform));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvCorrelationMenu.setAdapter(adapter);
@@ -57,18 +58,23 @@ public class CorrelationMenuActivity extends AppCompatActivity {
 
                 switch (position) {
                     case Cage_Idx:
+                        GlobalState.initWHCorrelationRecord();
                         i = new Intent(appCtx, CorrelationCageActivity.class);
                         break;
                     case Net_Idx:
+                        GlobalState.initWHCorrelationRecord();
                         i = new Intent(appCtx, CorrelationNetActivity.class);
                         break;
                     case Cage_Net_Idx:
+                        GlobalState.initWHCorrelationRecord();
                         i = new Intent(appCtx, CorrelationCageNetActivity.class);
                         break;
                     case Bin_Idx:
+                        GlobalState.initWHCorrelationRecord();
                         i = new Intent(appCtx, CorrelationBinActivity.class);
                         break;
                     case Platform_Idx:
+                        GlobalState.initWHCorrelationRecord();
                         i = new Intent(appCtx, CorrelationPlatformActivity.class);
                         break;
                     default:

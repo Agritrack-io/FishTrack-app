@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.PendingCorrelationTxCallBack;
+import io.agritrack.api.sync.PendingFishingTxCallBack;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.api.sync.SyncBinsByPackagingSite;
@@ -39,6 +41,7 @@ import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
 import io.agritrack.api.sync.SyncCustomersCallBack;
 import io.agritrack.api.sync.SyncEmployeesCallBack;
+import io.agritrack.api.sync.SyncFoodSkuCallBack;
 import io.agritrack.api.sync.SyncHarvestRequestCallBack;
 import io.agritrack.api.sync.SyncIOTLoggersCallBack;
 import io.agritrack.api.sync.SyncSpeciesCallBack;
@@ -56,14 +59,18 @@ import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
+import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
+import io.agritrack.data.dto.wh.FoodSkuDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.data.model.wh.FoodSku;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
@@ -187,9 +194,11 @@ public class FishHomeActivity extends AppCompatActivity {
                         }
                         break;
                     case Transport_Idx:
+                        GlobalState.initTransportationRecord();
                         i = new Intent(appCtx, TransportStartActivity.class);
                         break;
                     case Receiving_Idx:
+                        GlobalState.initProcessingRecord();
                         i = new Intent(appCtx, ProcessBinsActivity.class);
                         break;
                     case Packaging_Quality_Idx:
@@ -248,6 +257,19 @@ public class FishHomeActivity extends AppCompatActivity {
             UUID siteId = LocalPreferences.getCurrentSiteId();
             String clusterId = LocalPreferences.getCurrentClusterId();
 
+
+            // select all SIMPLE pending correlation TXs (identification events, e.g. correlate rfid <--> code)
+            List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAll();
+            if(!fishingTXs.isEmpty()) {
+                for (FishingTransaction fishingTX : fishingTXs) {
+                    Call<FishingTxDTO> fishingTxAsyncCall = pendingTxSvc.syncFishingTx(FishingTxDTO.convert(fishingTX), "Bearer " + token);
+                    fishingTxAsyncCall.enqueue(new PendingFishingTxCallBack(this.syncResult));
+                }
+            }
+
+
+
+            //===================================================================================================
             // select all SIMPLE pending correlation TXs (identification events, e.g. correlate rfid <--> code)
             List<CorrelationTransaction> correlationTXs = db.correlationTransactionDAO().getAll();
             if(!correlationTXs.isEmpty()) {
@@ -331,6 +353,10 @@ public class FishHomeActivity extends AppCompatActivity {
             // sync IOT Loggers
             Call<List<IotLoggerDTO>> syncIOTLoggersAsyncCall = syncService.getIOTLoggersBySiteId(siteId, "Bearer " + token);
             syncIOTLoggersAsyncCall.enqueue(new SyncIOTLoggersCallBack(this.syncResult));
+
+            // sync Food sku
+            Call<List<FoodSkuDTO>> syncFoodSkuAsyncCall = syncService.getFoodSkus("Bearer " + token);
+            syncFoodSkuAsyncCall.enqueue(new SyncFoodSkuCallBack(this.syncResult));
 
         } catch (Exception e) {
             e.printStackTrace();

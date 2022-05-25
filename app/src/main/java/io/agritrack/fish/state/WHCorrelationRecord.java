@@ -1,6 +1,7 @@
 package io.agritrack.fish.state;
 
 public class WHCorrelationRecord {
+    public long txKey;
     public String assetType;
     public String assetRFID;
     public String assetCode;

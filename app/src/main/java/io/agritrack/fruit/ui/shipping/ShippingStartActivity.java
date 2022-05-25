@@ -139,7 +139,7 @@ public class ShippingStartActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvIfcoForShipping.setLayoutManager(layoutManager);
         rvIfcoForShipping.setItemAnimator(new DefaultItemAnimator());
-        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
+        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>());
         rvIfcoForShipping.setAdapter(adapterIfco);
         rvIfcoForShipping.setNestedScrollingEnabled(false);
 

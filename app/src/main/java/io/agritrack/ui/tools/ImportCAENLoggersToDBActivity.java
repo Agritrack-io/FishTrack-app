@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -71,26 +72,7 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
     private TemplateRecyclerAdapter adapterInventoryItems;
     private Button scanButton;
     private EditText etVendor, etType, etModel;
-    private String selectedBarcode, loggerBarcode;
-    private ConstraintLayout selectedItem;
-    // Instantiate a clickListener to be passed to adapterBins.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
+    private String loggerBarcode;
     private ImageButton ivAddItem, ivDeleteItem;
     private TextView tvItemsCnt;
     private ProgressDialog progressDialog;
@@ -119,7 +101,8 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvInventoryItems.setLayoutManager(layoutManager);
         rvInventoryItems.setItemAnimator(new DefaultItemAnimator());
-        adapterInventoryItems = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
+        rvInventoryItems.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        adapterInventoryItems = new TemplateRecyclerAdapter(this, new ArrayList<>());
         rvInventoryItems.setAdapter(adapterInventoryItems);
         rvInventoryItems.setNestedScrollingEnabled(false);
 
@@ -131,13 +114,12 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         ivDeleteItem.setOnClickListener(view -> {
-            clearSelectedItem();
 
-            if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
+            if (!Strings.isEmptyOrWhitespace(adapterInventoryItems.getSelectedValue())) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
-                confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
-                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + selectedBarcode);
+                confirmSiteSelectionDlg.args().putString("selectedBarcode", adapterInventoryItems.getSelectedValue());
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + adapterInventoryItems.getSelectedLabel());
 
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
@@ -145,7 +127,7 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
                         adapterInventoryItems.removeItem(barcode);
                         adapterInventoryItems.notifyDataSetChanged();
                         tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemCount()));
-                        selectedBarcode = null;
+                        adapterInventoryItems.clearSelectedValue();
                     }
                 });
 
@@ -270,12 +252,6 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
-    private void clearSelectedItem() {
-        if (selectedItem != null) {
-            selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-        }
-    }
-
     private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Type BARCODE");
@@ -381,7 +357,7 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_fishing_tx_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_import_daqta_loggers), Toast.LENGTH_LONG));
             }
         }
 

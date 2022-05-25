@@ -43,6 +43,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.ResponseBody;
@@ -68,6 +69,9 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_correlation_cage_net);
+
+        // trigger + Fn keys will have the same effect as if clicking on Scan button
+        keyReceiver = new X9KeyReceiver(this::onClick);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderCageNetCorrelation);
@@ -244,6 +248,19 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
         return sb.toString();
     }
 
+    private boolean deleteCorrelationTx(){
+        try {
+            System.out.println("About to delete correlate tx");
+            CorrelationTransaction delObj = new CorrelationTransaction();
+            delObj.id = recWHCorrelation.txKey;
+            db.correlationTransactionDAO().delete(delObj);
+            return true;
+        } catch (Exception x){
+            x.printStackTrace();
+            return false;
+        }
+    }
+
     protected void onClick(View view) {
         MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
         scanner_runnable.setFilters(Filters.RFID_CAGE, Filters.RFID_NET);
@@ -257,6 +274,7 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
             ResponseBody rs = response.body();
 
             if (rs != null) {
+                deleteCorrelationTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
                 tvCorrCageBarcode.setText("");
                 tvCorrNetBarcode.setText("");

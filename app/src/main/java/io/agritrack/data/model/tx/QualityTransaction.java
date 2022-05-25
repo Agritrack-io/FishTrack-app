@@ -17,7 +17,7 @@ public class QualityTransaction {
 
     @PrimaryKey
     @NonNull
-    public UUID id;
+    public long id;
 
     @ColumnInfo(name = "sample_date")
     public Date sampleDate;

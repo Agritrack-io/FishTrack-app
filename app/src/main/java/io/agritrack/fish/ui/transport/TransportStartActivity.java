@@ -181,9 +181,6 @@ public class TransportStartActivity extends AppCompatActivity {
         transportationRecord.refrigeratedTruck = swRefrigeratedTruck.isChecked();
         transportationRecord.parallelTransport = swParallelTransport.isChecked();
 
-        TransportTransaction txTransport = new TransportTransaction();
-        recTransport.txKey = db.transportTransactionDAO().insert(txTransport);
-
         return transportationRecord;
     }
 

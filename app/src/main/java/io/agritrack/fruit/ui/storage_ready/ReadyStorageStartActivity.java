@@ -139,7 +139,7 @@ public class ReadyStorageStartActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvIfcoForStorage.setLayoutManager(layoutManager);
         rvIfcoForStorage.setItemAnimator(new DefaultItemAnimator());
-        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
+        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>());
         rvIfcoForStorage.setAdapter(adapterIfco);
         rvIfcoForStorage.setNestedScrollingEnabled(false);
 

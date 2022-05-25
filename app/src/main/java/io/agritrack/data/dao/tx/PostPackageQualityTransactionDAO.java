@@ -24,6 +24,9 @@ public interface PostPackageQualityTransactionDAO {
     @Insert
     void insert(PostPackageQualityTransaction... qualityTxs);
 
+    @Insert
+    long insert(PostPackageQualityTransaction qualityTxs);
+
     @Delete
     void delete(PostPackageQualityTransaction qualityTx);
 

@@ -24,6 +24,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +41,7 @@ import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.IotLogger;
+import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
@@ -66,28 +68,8 @@ public class PackageQualityStartActivity extends AppCompatActivity {
     private TemplateRecyclerAdapter adapterBins;
 
     private ImageButton ivDeleteBin;
-    private String selectedBarcode;
-    private ConstraintLayout selectedItem;
-    // Instantiate a clickListener to be passed to adapterBins.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
     private Set<String> scannedBinEPCs;
-    private String logger_rfid;
+    private String loggerEPC, binEPC;
     private ImageView ivSupport;
     private Button btnScanBin;
     private SupportDialog supportDialog;
@@ -117,7 +99,8 @@ public class PackageQualityStartActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBinsForTransport.setLayoutManager(layoutManager);
         rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
-        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
+        rvBinsForTransport.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>());
         rvBinsForTransport.setAdapter(adapterBins);
         rvBinsForTransport.setNestedScrollingEnabled(false);
 
@@ -132,13 +115,11 @@ public class PackageQualityStartActivity extends AppCompatActivity {
         initControlsFromState();
 
         ivDeleteBin.setOnClickListener(view -> {
-            clearSelectedItem();
-
-            if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
+            if (!Strings.isEmptyOrWhitespace(adapterBins.getSelectedValue())) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
-                confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
-                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + selectedBarcode);
+                confirmSiteSelectionDlg.args().putString("selectedBarcode", adapterBins.getSelectedValue());
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + adapterBins.getSelectedLabel());
 
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
@@ -146,7 +127,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
                         adapterBins.removeItem(barcode);
                         adapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-                        selectedBarcode = null;
+                        adapterBins.clearSelectedValue();
                     }
                 });
 
@@ -178,12 +159,6 @@ public class PackageQualityStartActivity extends AppCompatActivity {
         });
 
         configFooter();
-    }
-
-    private void clearSelectedItem() {
-        if (selectedItem != null) {
-            selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-        }
     }
 
     private void assignCtrlVars() {
@@ -232,7 +207,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
 
         GlobalState.recQuality.qualityBins = new LinkedList<>(adapterBins.getValues());
         GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
-        GlobalState.recQuality.logger_rfid = logger_rfid;
+        GlobalState.recQuality.logger_rfid = loggerEPC;
     }
 
     private String validate() {
@@ -273,7 +248,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
 
     protected void onClick(View view) {
         scanner_runnable = new SingleShotScanner(mScanHandler);
-        scanner_runnable.setFilter(Filters.RFID_BIN);
+        scanner_runnable.setFilter(Filters.RFID_LOGGER);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
@@ -301,20 +276,22 @@ public class PackageQualityStartActivity extends AppCompatActivity {
                     String rssi = msg.getData().getString("rssi");
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            String binEPC = epcStr.substring(11);
+                            //String binEPC = epcStr.substring(11);
+                            loggerEPC = epcStr;
 
                             // after bin is identified, initialize the temperatures logger.
-                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
-                            if (logger != null) {
-                                logger_rfid = logger.rfid;
-                                scannedBinEPCs.add(binEPC);
+                            //IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
+                            Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
+                            if (bin != null) {
+                                binEPC = bin.rfid;
+                                scannedBinEPCs.add(bin.rfid);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();
 
-                                if (!Strings.isEmptyOrWhitespace(logger.rfid)) {
+                                if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(logger.rfid, epcStr, true, intentForProcessing, intentForProcessing);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, true, intentForProcessing, intentForProcessing);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {

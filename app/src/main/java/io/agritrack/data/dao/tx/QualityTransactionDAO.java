@@ -23,6 +23,9 @@ public interface QualityTransactionDAO {
     @Insert
     void insert(QualityTransaction... qualityTxs);
 
+    @Insert
+    long insert(QualityTransaction qualityTxs);
+
     @Delete
     void delete(QualityTransaction qualityTx);
 

@@ -27,6 +27,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -74,26 +75,6 @@ public class FishingBinsActivity extends AppCompatActivity {
     private LoggerReading loggerReading;
     private GetTempDataDialog tempLoggerDialog;
     private ImageButton ivAddBin, ivDeleteBin;
-    private String selectedBarcode;
-    private ConstraintLayout selectedItem;
-    // Instantiate a clickListener to be passed to adapterBins Adapter.
-    // It will be used to point the selectedBarcode variable to the selected item barcode value.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
-
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };
     private Set<String> scannedBinEPCs;
     private String binBarcode = "", binEPC, loggerEPC;
     private ImageView ivSupport;
@@ -127,7 +108,8 @@ public class FishingBinsActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBins.setLayoutManager(layoutManager);
         rvBins.setItemAnimator(new DefaultItemAnimator());
-        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsClickListener);
+        rvBins.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>());
         rvBins.setAdapter(adapterBins);
         rvBins.setNestedScrollingEnabled(false);
 
@@ -142,13 +124,12 @@ public class FishingBinsActivity extends AppCompatActivity {
         initControlsFromState();
 
         ivDeleteBin.setOnClickListener(view -> {
-            clearSelectedItem();
 
-            if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
+            if (!Strings.isEmptyOrWhitespace(adapterBins.getSelectedValue())) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
-                confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
-                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + selectedBarcode);
+                confirmSiteSelectionDlg.args().putString("selectedBarcode", adapterBins.getSelectedValue());
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + adapterBins.getSelectedLabel());
 
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
@@ -156,7 +137,7 @@ public class FishingBinsActivity extends AppCompatActivity {
                         adapterBins.removeItem(barcode);
                         adapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-                        selectedBarcode = null;
+                        adapterBins.clearSelectedValue();
                     }
                 });
 
@@ -201,12 +182,6 @@ public class FishingBinsActivity extends AppCompatActivity {
     protected void onStop() {
         this.stopScanner();
         super.onStop();
-    }
-
-    private void clearSelectedItem() {
-        if (selectedItem != null) {
-            selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-        }
     }
 
     protected void configFooter() {
@@ -327,13 +302,10 @@ public class FishingBinsActivity extends AppCompatActivity {
                     String rssi = msg.getData().getString("rssi");
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            //binEPC = epcStr.substring(11);
                             loggerEPC = epcStr;
                             // after bin is identified, initialize the temperatures logger.
-                            //IotLogger logger = db.iotLoggerDAO().getByAssetRFID(binEPC);
                             Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
                             if (bin != null) {
-                                //scannedBinEPCs.add(epcStr.substring(11));
                                 binEPC = bin.rfid;
                                 scannedBinEPCs.add(bin.rfid);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));

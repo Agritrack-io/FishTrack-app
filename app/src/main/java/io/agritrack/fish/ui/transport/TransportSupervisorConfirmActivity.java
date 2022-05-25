@@ -5,6 +5,7 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fish.state.GlobalState.recTransport;
+import static io.agritrack.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
@@ -28,6 +29,7 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.TransportTxDTO;
+import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.dialog.SupportDialog;
@@ -216,15 +218,26 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
         }
     }
 
+    private boolean deleteTransportTx(){
+        try {
+            System.out.println("About to delete transport tx");
+            TransportTransaction delObj = new TransportTransaction();
+            delObj.id = recTransport.txKey;
+            db.transportTransactionDAO().delete(delObj);
+            return true;
+        } catch (Exception x){
+            x.printStackTrace();
+            return false;
+        }
+    }
+
     public class SyncTxCallBack implements Callback<TransportTxDTO> {
         @Override
         public void onResponse(Call<TransportTxDTO> call, Response<TransportTxDTO> response) {
             TransportTxDTO rs = response.body();
 
             if (rs != null || IsDemo) {
-                TransportTransaction delObj = new TransportTransaction();
-                delObj.id = recTransport.txKey;
-                db.transportTransactionDAO().delete(delObj);
+                deleteTransportTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Transport TX on backend!!!
