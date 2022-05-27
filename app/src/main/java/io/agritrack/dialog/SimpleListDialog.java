@@ -26,7 +26,6 @@ public class SimpleListDialog {
     private RecyclerView rvItems;
     private final TemplateRecyclerAdapter itemsAdapter;
     private MutableLiveData<String> liveItem;
-    private String selectedItem;
 
     private final Activity activity;
     private Dialog dialog;
@@ -36,7 +35,6 @@ public class SimpleListDialog {
         public void onClick(View v) {
             ConstraintLayout view = (ConstraintLayout) v;
             TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedItem = tvRecyclerItem.getText().toString();
 
             liveItem.setValue(itemsAdapter.getSelectedValue());
         }
@@ -59,9 +57,10 @@ public class SimpleListDialog {
         itemsAdapter = new TemplateRecyclerAdapter(this.activity, data);
         rvItems.setAdapter(itemsAdapter);
         rvItems.setNestedScrollingEnabled(false);
+
+        rvItems.setOnClickListener(itemsClickListener);
         // since there Sites available, display them in  a list.
         rvItems.setVisibility(View.VISIBLE);
-        liveItem.setValue(itemsAdapter.getSelectedValue());
     }
 
     public void showDialog() {

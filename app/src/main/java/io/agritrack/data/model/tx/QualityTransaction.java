@@ -16,8 +16,7 @@ import io.agritrack.data.converter.StringListConverter;
 public class QualityTransaction {
 
     @PrimaryKey
-    @NonNull
-    public long id;
+    public Long id;
 
     @ColumnInfo(name = "sample_date")
     public Date sampleDate;

@@ -41,6 +41,7 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.ConsumableTxDTO;
 import io.agritrack.data.model.tx.ConsumableTransaction;
+import io.agritrack.data.model.wh.FoodSku;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.ConsumableType;
@@ -76,9 +77,16 @@ public class IncomingConsumableActivity extends LocationAwareActivity implements
         public void onReceive(Context context, Intent intent) {
             byte[] data = intent.getByteArrayExtra("data");
             if (data != null) {
+                // get an instance of local DB
+                db = MobileDB.getInstance(getAppContext());
                 String barcode = new String(data);
-                adapterIncomingItems.addItem(barcode);
-                adapterIncomingItems.notifyDataSetChanged();
+                if (barcode.length()>=24 && barcode.substring(0,2).equalsIgnoreCase("02")) {
+                    String gtin = barcode.substring(2, 16);
+                    FoodSku food = db.foodSkuDAO().getByGtin(gtin);
+                    adapterIncomingItems.addItem(food.description);
+                    adapterIncomingItems.notifyDataSetChanged();
+                    scanning = false;
+                }
                 //tvInventoryItemsCount.setText("# "+String.valueOf(adapterIncomingItems.getItemCount()));
                 scanning = false;
             }
