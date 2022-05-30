@@ -137,7 +137,7 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 android:text="@string/product_code"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/etNextEPCLabel"
+                app:layout_constraintBottom_toTopOf="@+id/tvFilterEPCLabel"
                 app:layout_constraintEnd_toStartOf="@+id/tvProductCode"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinenTypeLabel" />
@@ -153,10 +153,38 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/etNextEPC"
+                app:layout_constraintBottom_toTopOf="@+id/tvFilterEPC"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvProductCodeLabel"
                 app:layout_constraintTop_toBottomOf="@+id/btnLinenType" />
+
+            <TextView
+                android:id="@+id/tvFilterEPCLabel"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_epc"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/etNextEPCLabel"
+                app:layout_constraintEnd_toStartOf="@+id/tvFilterEPC"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvProductCodeLabel" />
+
+            <TextView
+                android:id="@+id/tvFilterEPC"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/border_bottom"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/etNextEPC"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvFilterEPCLabel"
+                app:layout_constraintTop_toBottomOf="@+id/tvProductCode" />
 
             <TextView
                 android:id="@+id/etNextEPCLabel"
@@ -169,7 +197,7 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 app:layout_constraintEnd_toStartOf="@+id/etNextEPC"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvProductCodeLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/tvFilterEPCLabel" />
 
             <EditText
                 android:id="@+id/etNextEPC"
@@ -185,7 +213,7 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 app:layout_constraintBottom_toTopOf="@+id/ivProgOutcome"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/etNextEPCLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvProductCode" />
+                app:layout_constraintTop_toBottomOf="@+id/tvFilterEPC" />
 
             <TextView
                 android:id="@+id/tvProgOutcome"

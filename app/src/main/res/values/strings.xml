@@ -559,6 +559,7 @@
     <string name="next_epc">Next EPC</string>
     <string name="prog_outcome">Outcome</string>
     <string name="write_epc">Write EPC</string>
+    <string name="filter_epc">Filter EPC</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -583,4 +584,5 @@
     <string name="pending_correlation_tx_upload_failure_alert">Failed to upload pending correlations!</string>
     <string name="pending_fishing_tx_upload_failure_alert">Failed to upload pending fishing tx!</string>
     <string name="pending_fishing_tx_upload_completed">Pending fishing tx succesfully uploaded!</string>
+
 </resources>
