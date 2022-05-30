@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     private List<String> mList;
     private final LayoutInflater mLayoutInflater;
     public boolean isClickable = true;
+    private MutableLiveData<String> liveItem;
     private int selectedPos = RecyclerView.NO_POSITION;
     private String selectedValue = null;
     private String selectedLabel = null;
@@ -45,6 +47,10 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
 
     public void setValues(List<String> values) {
         this.mList = values;
+    }
+
+    public void setItemObserver(MutableLiveData<String> mld){
+        this.liveItem = mld;
     }
 
     public void addUniqueItem(String val) {
@@ -106,6 +112,9 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
             selectedValue = mList.get(selectedPos);
             selectedLabel = selectedValue.length()>10? selectedValue.substring(selectedValue.length()-10) : selectedValue;
             notifyItemChanged(selectedPos);
+            if (liveItem!=null){
+                liveItem.setValue(selectedValue);
+            }
 
             // Do your another stuff for your onClick
         }

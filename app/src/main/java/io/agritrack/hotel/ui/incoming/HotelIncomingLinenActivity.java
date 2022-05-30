@@ -116,7 +116,7 @@ public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity
         // get  references of the controls
         assignCtrlVars();
 
-        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.allNames()) {
+        ArrayAdapter<String> linenTypeAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.allNames()) {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -128,8 +128,8 @@ public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity
                 return view;
             }
         };
-        hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
-        spLinenType.setAdapter(hrAdapter);
+        linenTypeAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
+        spLinenType.setAdapter(linenTypeAdapter);
 
         spLinenType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)

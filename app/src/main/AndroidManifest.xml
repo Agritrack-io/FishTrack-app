@@ -38,18 +38,21 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
+            android:name=".ui.tools.ProgramLinenTagsActivity"
+            android:exported="false" />
+        <activity
             android:name=".fish.ui.wh.correlation.CorrelationCageNetActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.wh.correlation.CorrelationPlatformActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.wh.correlation.CorrelationNetActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".fish.ui.wh.correlation.CorrelationCageActivity"
             android:exported="false"
