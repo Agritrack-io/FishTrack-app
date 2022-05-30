@@ -30,6 +30,7 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.PostPackageQualityTxDTO;
 import io.agritrack.data.model.tx.PostPackageQualityTransaction;
+import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
@@ -207,12 +208,26 @@ public class PostPackagingQualityConfirmActivity extends LocationAwareActivity {
         }
     }
 
+    private boolean deletePostQualityTx(){
+        try {
+            System.out.println("About to delete quality tx");
+            PostPackageQualityTransaction delObj = new PostPackageQualityTransaction();
+            delObj.id = recQuality.txKey;
+            db.postPackageQualityTransactionDAO().delete(delObj);
+            return true;
+        } catch (Exception x){
+            x.printStackTrace();
+            return false;
+        }
+    }
+
     public class SyncTxCallBack implements Callback<PostPackageQualityTxDTO> {
         @Override
         public void onResponse(Call<PostPackageQualityTxDTO> call, Response<PostPackageQualityTxDTO> response) {
             PostPackageQualityTxDTO rs = response.body();
 
             if (rs != null || IsDemo) {
+                deletePostQualityTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!

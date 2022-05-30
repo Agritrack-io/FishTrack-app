@@ -189,7 +189,8 @@ public class GlobalState {
             txTransport.longitude = recTransport.longitude;
             txTransport.latitude = recTransport.latitude;
 
-            db.transportTransactionDAO().update(txTransport);
+            recTransport.txKey = db.transportTransactionDAO().insert(txTransport);
+
             return txTransport;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -213,7 +214,7 @@ public class GlobalState {
             txProcess.longitude = recProcessing.longitude;
             txProcess.latitude = recProcessing.latitude;
 
-            db.processingTransactionDAO().insert(txProcess);
+            recProcessing.txKey = db.processingTransactionDAO().insert(txProcess);
 
             return txProcess;
         } catch (Exception ex) {
@@ -225,7 +226,7 @@ public class GlobalState {
     public static QualityTransaction commitQuality(MobileDB db) {
         try {
             QualityTransaction txQuality = new QualityTransaction();
-            txQuality.id = UUID.randomUUID();
+            //txQuality.id = UUID.randomUUID();
             txQuality.plot = recQuality.pLot;
             txQuality.iceCondition = recQuality.iceCondition;
             txQuality.binCondition = recQuality.binCondition;
@@ -268,7 +269,7 @@ public class GlobalState {
             txQuality.longitude = recQuality.longitude;
             txQuality.latitude = recQuality.latitude;
 
-            db.qualityTransactionDAO().insert(txQuality);
+            recQuality.txKey = db.qualityTransactionDAO().insert(txQuality);
 
             return txQuality;
         } catch (Exception ex) {
@@ -291,7 +292,7 @@ public class GlobalState {
             txQuality.longitude = recQuality.longitude;
             txQuality.latitude = recQuality.latitude;
 
-            db.postPackageQualityTransactionDAO().insert(txQuality);
+            recQuality.txKey = db.postPackageQualityTransactionDAO().insert(txQuality);
 
             return txQuality;
         } catch (Exception ex) {
@@ -500,7 +501,7 @@ public class GlobalState {
             txCorrelation.latitude = recWHCorrelation.latitude;
             txCorrelation.site = LocalPreferences.getCurrentSiteId();
 
-            db.correlationTransactionDAO().insert(txCorrelation);
+            recWHCorrelation.txKey = db.correlationTransactionDAO().insert(txCorrelation);
 
             return txCorrelation;
         } catch (Exception ex) {

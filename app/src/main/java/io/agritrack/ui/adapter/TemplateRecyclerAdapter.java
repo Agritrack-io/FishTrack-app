@@ -1,6 +1,7 @@
 package io.agritrack.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +18,25 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     private List<String> mList;
     private final LayoutInflater mLayoutInflater;
     public boolean isClickable = true;
-
-    private View.OnClickListener itemsClickListener;
+    private int selectedPos = RecyclerView.NO_POSITION;
+    private String selectedValue = null;
+    private String selectedLabel = null;
 
     public TemplateRecyclerAdapter(Context context, List<String> values) {
         this.mList = values;
         this.mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public TemplateRecyclerAdapter(Context context, List<String> values, View.OnClickListener clickListener) {
-        this.mList = values;
-        this.mLayoutInflater = LayoutInflater.from(context);
-        this.itemsClickListener = clickListener;
+    public String getSelectedValue(){
+        return this.selectedValue;
+    }
+
+    public String getSelectedLabel(){
+        return this.selectedLabel;
+    }
+
+    public void clearSelectedValue(){
+        this.selectedValue = null;
     }
 
     public List<String> getValues() {
@@ -57,13 +65,15 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mLayoutInflater.inflate(R.layout.simple_recycler_view_item, parent, false);
-        return new MyViewHolder(view, this.itemsClickListener);
+        return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         String epc = mList.get(position);
         String tag = epc.length()>10? epc.substring(epc.length()-10) : epc;
+        holder.itemView.setSelected(selectedPos == position);
+        holder.itemView.setBackgroundColor(selectedPos == position ? Color.GRAY : Color.TRANSPARENT);
         holder.tvItemName.setText(tag);
         holder.tvItemSNo.setText(String.valueOf(position + 1) + ".");
     }
@@ -73,18 +83,31 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         return mList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView tvItemName, tvItemSNo;
 
-        public MyViewHolder(@NonNull View itemView, View.OnClickListener itemsClickListener) {
+        public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             tvItemName = itemView.findViewById(R.id.tvRecyclerItem);
             tvItemSNo = itemView.findViewById(R.id.tvRecyclerItemSNo);
+            itemView.setOnClickListener(this);
+        }
 
-            if (itemsClickListener != null && isClickable) {
-                itemView.setOnClickListener(itemsClickListener);
-            }
+        @Override
+        public void onClick(View v) {
+            // Below line is just like a safety check, because sometimes holder could be null,
+            // in that case, getAdapterPosition() will return RecyclerView.NO_POSITION
+            if (getAdapterPosition() == RecyclerView.NO_POSITION) return;
+
+            // Updating old as well as new positions
+            notifyItemChanged(selectedPos);
+            selectedPos = getAdapterPosition();
+            selectedValue = mList.get(selectedPos);
+            selectedLabel = selectedValue.length()>10? selectedValue.substring(selectedValue.length()-10) : selectedValue;
+            notifyItemChanged(selectedPos);
+
+            // Do your another stuff for your onClick
         }
     }
 

@@ -3,6 +3,7 @@ package io.agritrack.api.sync;
 import java.util.List;
 import java.util.UUID;
 
+import io.agritrack.data.dao.wh.FoodSkuDAO;
 import io.agritrack.data.dto.AppUserDTO;
 import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.CageDetailsDTO;
@@ -15,6 +16,7 @@ import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
+import io.agritrack.data.dto.wh.FoodSkuDTO;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -83,6 +85,10 @@ public interface SyncApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/logger/{siteId}")
     Call<List<IotLoggerDTO>> getIOTLoggersBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/food-codes")
+    Call<List<FoodSkuDTO>> getFoodSkus(@Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/encoding/customer/name/{clusterName}")

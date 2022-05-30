@@ -81,13 +81,13 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
             }
         });
 
-        fromSiteSelection.observe(this, response -> {
+        /*fromSiteSelection.observe(this, response -> {
             if (response != null) {
                 fromSite = response;
                 tvIncomingFrom.setText(fromSite);
                 siteDialog.dismiss();
             }
-        });
+        });*/
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(HotelIncomingStartActivity.this);

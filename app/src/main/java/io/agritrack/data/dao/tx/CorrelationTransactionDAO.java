@@ -23,6 +23,9 @@ public interface CorrelationTransactionDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(CorrelationTransaction... correlationTransactions);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insert(CorrelationTransaction correlationTransactions);
+
     @Delete
     void delete(CorrelationTransaction correlationTransaction);
 

@@ -50,6 +50,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.service.LocalPreferences;
@@ -79,6 +80,9 @@ public class CorrelationNetActivity extends LocationAwareActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_correlation_net);
+
+        // trigger + Fn keys will have the same effect as if clicking on Scan button
+        keyReceiver = new X9KeyReceiver(this::onClick);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderNetCorrelation);
@@ -277,6 +281,19 @@ public class CorrelationNetActivity extends LocationAwareActivity {
         return sb.toString();
     }
 
+    private boolean deleteCorrelationTx(){
+        try {
+            System.out.println("About to delete correlate tx");
+            CorrelationTransaction delObj = new CorrelationTransaction();
+            delObj.id = recWHCorrelation.txKey;
+            db.correlationTransactionDAO().delete(delObj);
+            return true;
+        } catch (Exception x){
+            x.printStackTrace();
+            return false;
+        }
+    }
+
     protected void onClick(View view) {
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_NET);
@@ -290,6 +307,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
             ResponseBody rs = response.body();
 
             if (rs != null) {
+                deleteCorrelationTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
                 tvCorrNetBarcode.setText("");
             } else {

@@ -401,6 +401,7 @@
     <string name="error_shipping_tx_update_failure">Failed to update Shipping transaction!!!</string>
     <string name="error_processing_tx_update_failure">Failed to update Packaging transaction!!!</string>
     <string name="error_temperatures_tx_update_failure">Failed to update Measurements transaction!!!</string>
+    <string name="error_import_daqta_loggers">Import data loggers update failure!!!</string>
     <string name="no_epc_filter_selected">Please enter the tag to search for...</string>
     <string name="scan_asset_tag">Scan Asset</string>
     <string name="button_correlate">Correlate</string>
@@ -531,6 +532,8 @@
     <string name="scan_temp_logger">Temperature logger</string>
     <string name="IOTLoggers_sync_completed">IOTLoggers sync completed!</string>
     <string name="no_IOTLoggers_found_alert">No IOTLogger returned from backend!!!</string>
+    <string name="food_sku_sync_completed">Food sku sync completed!</string>
+    <string name="no_food_sku_found_alert">No Food sku returned from backend!!!</string>
     <string name="menu_title_tools">Logger Tools</string>
 
     <string name="procced_without_location">"GPS coordinates wasn't found. Do you want to proceed without getting them?"</string>
@@ -571,4 +574,6 @@
     <string name="error_postquality_update_failure">Post-Package quality data update failure!!!</string>
     <string name="pending_correlation_tx_upload_completed">Pending correlations succesfully uploaded!</string>
     <string name="pending_correlation_tx_upload_failure_alert">Failed to upload pending correlations!</string>
+    <string name="pending_fishing_tx_upload_failure_alert">Failed to upload pending fishing tx!</string>
+    <string name="pending_fishing_tx_upload_completed">Pending fishing tx succesfully uploaded!</string>
 </resources>

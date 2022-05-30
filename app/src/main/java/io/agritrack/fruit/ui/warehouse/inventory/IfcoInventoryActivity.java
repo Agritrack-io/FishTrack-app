@@ -140,7 +140,7 @@ public class IfcoInventoryActivity extends LocationAwareActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvInventoryIfco.setLayoutManager(layoutManager);
         rvInventoryIfco.setItemAnimator(new DefaultItemAnimator());
-        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>(), itemsOnClickListener);
+        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>());
         rvInventoryIfco.setAdapter(adapterIfco);
         rvInventoryIfco.setNestedScrollingEnabled(false);
 

@@ -6,13 +6,6 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -21,14 +14,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
@@ -38,8 +31,6 @@ import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -47,19 +38,14 @@ import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
-import io.agritrack.data.model.Site;
 import io.agritrack.data.model.tx.CorrelationTransaction;
-import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fruit.state.FruitGlobalState;
-import io.agritrack.fruit.ui.warehouse.correlation.FruitCorrelationActivity;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
-import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.LocationAwareActivity;
-import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -68,24 +54,29 @@ import retrofit2.Response;
 
 public class CorrelationBinActivity extends LocationAwareActivity {
 
-    protected BroadcastReceiver keyReceiver;
-
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final CorrelationBinActivity.ScanHandler mScanHandler = new CorrelationBinActivity.ScanHandler(this);
+    protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button btnScanAssetTag;
-    private TextView tvCorrBinBarcode, tvCorrTempLoggerBarcode;
+    private TextView tvCorrBinBarcode, tvCorrTempLoggerBarcode, tvCounter;
     private EditText etAssetBarcode;
     private ProgressDialog progressDialog;
     private YesNoDialogFragment confirmGPSSelectionDlg;
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
+    private long txCounter = 0;
     private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_correlation_bin);
+
+        txCounter = 0;
+
+        // trigger + Fn keys will have the same effect as if clicking on Scan button
+        keyReceiver = new X9KeyReceiver(this::onClick);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderBinCorrelation);
@@ -115,11 +106,6 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
 
-        /*btnCorrelate.setOnClickListener(view -> {
-
-            //correlate();
-        });*/
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(CorrelationBinActivity.this);
             supportDialog.showDialog();
@@ -128,16 +114,16 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         configFooter();
     }
 
-    private void moveToNextScreen(){
+    private void moveToNextScreen() {
         if (proceedWithoutLocation) {
             // Update state and proceed to next
             Boolean proceed = correlate();
 
-            if (proceed) {
-                // move to next activity.
-                Intent i = new Intent(getApplicationContext(), CorrelationBinActivity.class);
-                startActivity(i);
-            }
+            GlobalState.initWHCorrelationRecord();
+            etAssetBarcode.setText("");
+            tvCorrBinBarcode.setText("");
+            tvCorrTempLoggerBarcode.setText("");
+            tvCounter.setText(String.valueOf(txCounter));
         }
     }
 
@@ -200,6 +186,7 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         etAssetBarcode = findViewById(R.id.etAssetBarcode);
         tvCorrBinBarcode = findViewById(R.id.tvCorrBinBarcode);
         tvCorrTempLoggerBarcode = findViewById(R.id.tvCorrTempLoggerBarcode);
+        tvCounter = findViewById(R.id.tvCounter);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);
@@ -220,6 +207,8 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
 
+            txCounter++;
+
             // sync WH Correlation Tx
             ArrayList<CorrelationTxDTO> dtos = new ArrayList<>();
             dtos.add(CorrelationTxDTO.convert(tx));
@@ -234,6 +223,8 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             return false;
         } finally {
             progressDialog.dismiss();
+            /*List<CorrelationTransaction> corrTx = db.correlationTransactionDAO().getAll();
+            CToast(this, "Size:" + corrTx.size(), Toast.LENGTH_LONG);*/
         }
     }
 
@@ -255,6 +246,19 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         return sb.toString();
     }
 
+    private boolean deleteCorrelationTx(){
+        try {
+            System.out.println("About to delete correlate tx");
+            CorrelationTransaction delObj = new CorrelationTransaction();
+            delObj.id = recWHCorrelation.txKey;
+            db.correlationTransactionDAO().delete(delObj);
+            return true;
+        } catch (Exception x){
+            x.printStackTrace();
+            return false;
+        }
+    }
+
     protected void onClick(View view) {
         MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
         scanner_runnable.setFilters(Filters.RFID_BIN, Filters.RFID_LOGGER);
@@ -268,6 +272,7 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             ResponseBody rs = response.body();
 
             if (rs != null) {
+                deleteCorrelationTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
                 tvCorrBinBarcode.setText("");
                 tvCorrTempLoggerBarcode.setText("");
@@ -313,12 +318,11 @@ public class CorrelationBinActivity extends LocationAwareActivity {
                         if (!CollectionUtils.isEmpty(tags)) {
                             for (CharSequence tag : tags) {
                                 String epc = tag.toString();
-                                String label = epc.length()>15 ? epc.substring(14) : epc;
+                                String label = epc.length() > 15 ? epc.substring(14) : epc;
                                 if (epc.indexOf(Filters.RFID_BIN) > -1) {
                                     GlobalState.recWHCorrelation.assetRFID = epc;
                                     tvCorrBinBarcode.setText(label);
-                                }
-                                else if (epc.indexOf(Filters.RFID_LOGGER) > -1){
+                                } else if (epc.indexOf(Filters.RFID_LOGGER) > -1) {
                                     GlobalState.recWHCorrelation.rfid = epc;
                                     tvCorrTempLoggerBarcode.setText(label);
                                 }

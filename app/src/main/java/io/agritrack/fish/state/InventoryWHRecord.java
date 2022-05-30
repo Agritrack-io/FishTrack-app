@@ -7,6 +7,7 @@ import io.agritrack.enums.AssetType;
 import io.agritrack.enums.ConsumableType;
 
 public class InventoryWHRecord {
+    public long txKey;
     public String selectedSite = null;
     public String assetType;
     public ConsumableType consumableType;

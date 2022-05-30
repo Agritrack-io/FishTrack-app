@@ -2,6 +2,7 @@ package io.agritrack.fish.state;
 import java.util.List;
 
 public class ProcessingRecord {
+    public long txKey;
     public String dispatchNote;
     public String securityClip;
 

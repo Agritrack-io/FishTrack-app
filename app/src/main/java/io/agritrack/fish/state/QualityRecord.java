@@ -3,7 +3,7 @@ package io.agritrack.fish.state;
 import java.util.List;
 
 public class QualityRecord {
-
+    public long txKey;
     public String pLot;
     public String remarks;
     public List<String> qualityBins;

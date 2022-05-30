@@ -3,6 +3,7 @@ package io.agritrack.fish.ui.wh.correlation;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -47,12 +48,14 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
+import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.service.LocalPreferences;
@@ -82,6 +85,9 @@ public class CorrelationCageActivity extends LocationAwareActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_correlation_cage);
+
+        // trigger + Fn keys will have the same effect as if clicking on Scan button
+        keyReceiver = new X9KeyReceiver(this::onClick);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderCageCorrelation);
@@ -279,6 +285,19 @@ public class CorrelationCageActivity extends LocationAwareActivity {
         return sb.toString();
     }
 
+    private boolean deleteCorrelationTx(){
+        try {
+            System.out.println("About to delete correlate tx");
+            CorrelationTransaction delObj = new CorrelationTransaction();
+            delObj.id = recWHCorrelation.txKey;
+            db.correlationTransactionDAO().delete(delObj);
+            return true;
+        } catch (Exception x){
+            x.printStackTrace();
+            return false;
+        }
+    }
+
     protected void onClick(View view) {
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_CAGE);
@@ -292,6 +311,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
             ResponseBody rs = response.body();
 
             if (rs != null) {
+                deleteCorrelationTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
                 tvCorrCageBarcode.setText("");
             } else {

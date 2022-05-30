@@ -39,10 +39,12 @@ import io.agritrack.api.login.AuthApi;
 import io.agritrack.api.sync.EncodingSchemeCallBack;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
+import io.agritrack.api.sync.SyncBinsByPackagingSite;
 import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
 import io.agritrack.api.sync.SyncCustomersCallBack;
 import io.agritrack.api.sync.SyncEmployeesCallBack;
+import io.agritrack.api.sync.SyncFoodSkuCallBack;
 import io.agritrack.api.sync.SyncHarvestRequestCallBack;
 import io.agritrack.api.sync.SyncIOTLoggersCallBack;
 import io.agritrack.api.sync.SyncSpeciesCallBack;
@@ -50,6 +52,7 @@ import io.agritrack.api.sync.SyncSuppliersCallBack;
 import io.agritrack.api.sync.SyncUsersCallBack;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.AppUserDTO;
+import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.EncodingSchemeDTO;
 import io.agritrack.data.dto.HarvestRequestDTO;
@@ -60,6 +63,7 @@ import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
+import io.agritrack.data.dto.wh.FoodSkuDTO;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.hotel.ui.HotelHomeActivity;
@@ -70,6 +74,7 @@ import io.agritrack.ui.login.api.LoginRQ;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.CAENLoggerActivity;
+import io.agritrack.ui.tools.ImportCAENLoggersToDBActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -170,6 +175,11 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                     AppOptionsFragment optionsDlg = AppOptionsFragment.newInstance();
                     optionsDlg.show(fm, AppOptionsFragment.TAG);
                     fm.executePendingTransactions();
+                } else if ("logger".equals(username) && "8888".equals(pin)) {
+                    Intent i = new Intent(getApplicationContext(), ImportCAENLoggersToDBActivity.class);
+                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+                    startActivity(i);
+                    finish();
                 } else {
                     // display spinning progress bar
                     toggleProgress(Boolean.TRUE, R.string.authenticating);
@@ -320,6 +330,13 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             Call<List<EncodingSchemeDTO>> syncEncodingShemeAsyncCall = syncService.getEncodingSchemeByCustomerName(clusterId, "Bearer " + token);
             syncEncodingShemeAsyncCall.enqueue(new EncodingSchemeCallBack(this.syncResult));
 
+            // sync Food sku
+            Call<List<FoodSkuDTO>> syncFoodSkuAsyncCall = syncService.getFoodSkus("Bearer " + token);
+            syncFoodSkuAsyncCall.enqueue(new SyncFoodSkuCallBack(this.syncResult));
+
+            // sync Bin Info By Plant
+            Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getBinsByPlant(siteId, "Bearer " + token);
+            syncBinsByPlantAsyncCall.enqueue(new SyncBinsByPackagingSite(this.syncResult));
 
             goToProductMenu();
 

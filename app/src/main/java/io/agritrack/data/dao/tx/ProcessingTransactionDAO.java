@@ -23,6 +23,9 @@ public interface ProcessingTransactionDAO {
     @Insert
     void insert(ProcessingTransaction... processingTxs);
 
+    @Insert
+    long insert(ProcessingTransaction processingTxs);
+
     @Delete
     void delete(ProcessingTransaction processingTx);
 

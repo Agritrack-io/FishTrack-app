@@ -4,6 +4,7 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recProcessing;
+import static io.agritrack.fish.state.GlobalState.recTransport;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
@@ -28,6 +29,7 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.data.model.tx.ProcessingTransaction;
+import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
@@ -206,12 +208,26 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
         }
     }
 
+    private boolean deleteProcessTx(){
+        try {
+            System.out.println("About to delete process tx");
+            ProcessingTransaction delObj = new ProcessingTransaction();
+            delObj.id = recProcessing.txKey;
+            db.processingTransactionDAO().delete(delObj);
+            return true;
+        } catch (Exception x){
+            x.printStackTrace();
+            return false;
+        }
+    }
+
     public class SyncTxCallBack implements Callback<ProcessingTxDTO> {
         @Override
         public void onResponse(Call<ProcessingTxDTO> call, Response<ProcessingTxDTO> response) {
             ProcessingTxDTO rs = response.body();
 
             if (rs != null || IsDemo) {
+                deleteProcessTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!

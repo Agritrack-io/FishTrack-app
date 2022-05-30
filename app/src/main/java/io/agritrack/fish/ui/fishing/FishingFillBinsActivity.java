@@ -26,9 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -66,35 +66,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private String currentBin;
     private Integer weightOfBin;
     private BinLoadsMap loadsMap;
-    private String selectedCatch;
-    private ConstraintLayout selectedItem;
     private long epochFrom;
-    // Instantiate a clickListener to be passed to adapterCatches.
-    // It will be used to set the catch var to the selected catch.
-    private final View.OnClickListener catchesOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (isClickable) {
-                ConstraintLayout view = (ConstraintLayout) v;
-                TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-                selectedCatch = tvRecyclerItem.getText().toString();
-
-                if (selectedItem != null) {
-                    selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-                }
-
-                v.setSelected(true);
-                v.setSoundEffectsEnabled(true);
-                view.setBackgroundColor(Color.GRAY);
-                selectedItem = view;
-
-                btnDeleteCatch.setEnabled(true);
-                btnDeleteCatch.setTextColor(getColor(R.color.aqua));
-            } else {
-                v.setSoundEffectsEnabled(false);
-            }
-        }
-    };
     private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
@@ -121,7 +93,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvWeightBatchesBin.setLayoutManager(layoutManager);
         rvWeightBatchesBin.setItemAnimator(new DefaultItemAnimator());
-        adapterCatches = new TemplateRecyclerAdapter(this, new ArrayList<>(), catchesOnClickListener);
+        rvWeightBatchesBin.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        adapterCatches = new TemplateRecyclerAdapter(this, new ArrayList<>());
         isClickable = adapterCatches.isClickable;
         rvWeightBatchesBin.setAdapter(adapterCatches);
         rvWeightBatchesBin.setNestedScrollingEnabled(false);
@@ -142,11 +115,12 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // =================================
         // Adding fish catch functionality
         btnNextCatch.setOnClickListener(view -> {
-            clearSelectedItem();
             btnCurrentBinScan.setEnabled(false);
             btnCurrentBinScan.setTextColor(Color.DKGRAY);
             btnFillBin.setEnabled(true);
             btnFillBin.setTextColor(getColor(R.color.aqua));
+            btnDeleteCatch.setEnabled(true);
+            btnDeleteCatch.setTextColor(getColor(R.color.aqua));
 
             //show Message box
             showCatchDialog();
@@ -157,7 +131,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         btnFillBin.setOnClickListener(view -> {
             isClicked = true;
             GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, epochFrom, System.currentTimeMillis() / 1000l);
-            clearSelectedItem();
             isClickable = false;
             btnCurrentBinScan.setEnabled(true);
             btnCurrentBinScan.setTextColor(getColor(R.color.aqua));
@@ -172,11 +145,11 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         btnDeleteCatch.setOnClickListener(view -> {
 
-            if (!Strings.isEmptyOrWhitespace(selectedCatch)) {
+            if (!Strings.isEmptyOrWhitespace(adapterCatches.getSelectedValue())) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
-                confirmSiteSelectionDlg.args().putString("selectedCatch", selectedCatch);
-                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + selectedCatch + " kg");
+                confirmSiteSelectionDlg.args().putString("selectedCatch", adapterCatches.getSelectedValue());
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + adapterCatches.getSelectedValue() + " kg");
 
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String aCatch = bundle.getString("selectedCatch");
@@ -187,21 +160,20 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                         tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
                         tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
 
-                        selectedCatch = null;
+                        adapterCatches.clearSelectedValue();
                         btnDeleteCatch.setEnabled(false);
                         btnDeleteCatch.setTextColor(Color.DKGRAY);
                     }
                 });
 
                 confirmSiteSelectionDlg.onReject(bundle -> {
-                    selectedCatch = null;
+                    adapterCatches.clearSelectedValue();
                     btnDeleteCatch.setEnabled(false);
                     btnDeleteCatch.setTextColor(Color.DKGRAY);
                 });
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-                clearSelectedItem();
             } else {
                 // <delete> Button was pressed without selecting a Catch first.
                 CToast(getApplicationContext(), render("Plz select a Catch to delete!!"), Toast.LENGTH_LONG);
@@ -276,12 +248,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         ivInfo = findViewById(R.id.ivInfo);
     }
 
-    private void clearSelectedItem() {
-        if (selectedItem != null) {
-            selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-        }
-    }
-
     private void initControlsFromState() {
         FishingRecord hvst = GlobalState.recFishing;
 
@@ -304,7 +270,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToConfirm);
         ivNext.setOnClickListener(view -> {
-            if (!isClicked){
+            if (!isClicked) {
                 CToast(getApplicationContext(), render(R.string.fill_bin), Toast.LENGTH_LONG);
                 return;
             }
@@ -320,7 +286,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToDetails);
         ivBack.setOnClickListener(view -> {
-            if (!isClicked){
+            if (!isClicked) {
                 CToast(getApplicationContext(), render(R.string.fill_bin), Toast.LENGTH_LONG);
                 return;
             }

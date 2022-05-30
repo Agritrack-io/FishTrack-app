@@ -6,10 +6,6 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -24,7 +20,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.util.CollectionUtils;
+import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
@@ -43,8 +41,8 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.ResponseBody;
@@ -54,10 +52,9 @@ import retrofit2.Response;
 
 public class CorrelationPlatformActivity extends LocationAwareActivity {
 
-    protected BroadcastReceiver keyReceiver;
-
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final CorrelationPlatformActivity.ScanHandler mScanHandler = new CorrelationPlatformActivity.ScanHandler(this);
+    protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button btnScanAssetTag;
     private TextView tvCorrPlatformBarcode;
@@ -72,6 +69,9 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_correlation_platform);
+
+        // trigger + Fn keys will have the same effect as if clicking on Scan button
+        keyReceiver = new X9KeyReceiver(this::onClick);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderPlatformCorrelation);
@@ -101,11 +101,6 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
 
-        /*btnCorrelate.setOnClickListener(view -> {
-
-            //correlate();
-        });*/
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(CorrelationPlatformActivity.this);
             supportDialog.showDialog();
@@ -114,15 +109,15 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         configFooter();
     }
 
-    private void moveToNextScreen(){
+    private void moveToNextScreen() {
         if (proceedWithoutLocation) {
             // Update state and proceed to next
             Boolean proceed = correlate();
 
             if (proceed) {
-                // move to next activity.
-                Intent i = new Intent(getApplicationContext(), CorrelationPlatformActivity.class);
-                startActivity(i);
+                GlobalState.initWHCorrelationRecord();
+                tvCorrPlatformBarcode.setText("");
+                etPlatformBarcode.setText("");
             }
         }
     }
@@ -235,6 +230,19 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         return sb.toString();
     }
 
+    private boolean deleteCorrelationTx(){
+        try {
+            System.out.println("About to delete correlate tx");
+            CorrelationTransaction delObj = new CorrelationTransaction();
+            delObj.id = recWHCorrelation.txKey;
+            db.correlationTransactionDAO().delete(delObj);
+            return true;
+        } catch (Exception x){
+            x.printStackTrace();
+            return false;
+        }
+    }
+
     protected void onClick(View view) {
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_PLATFORM);
@@ -248,6 +256,7 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
             ResponseBody rs = response.body();
 
             if (rs != null) {
+                deleteCorrelationTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
                 tvCorrPlatformBarcode.setText("");
                 etPlatformBarcode.setText("");
@@ -288,7 +297,7 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
             switch (msg.what) {
                 case 1:
                     String epcStr = msg.getData().getString("epc");
-                    String label = epcStr.length()>15 ? epcStr.substring(14) : epcStr;
+                    String label = epcStr.length() > 15 ? epcStr.substring(14) : epcStr;
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
                             GlobalState.recWHCorrelation.rfid = epcStr;

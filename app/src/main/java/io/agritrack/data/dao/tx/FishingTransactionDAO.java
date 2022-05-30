@@ -1,6 +1,5 @@
 package io.agritrack.data.dao.tx;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -16,7 +15,7 @@ import io.agritrack.data.model.tx.FishingTransaction;
 public interface FishingTransactionDAO {
 
     @Query("SELECT * from fishing_transaction")
-    LiveData<List<FishingTransaction>> getAll();
+    List<FishingTransaction> getAll();
 
     @Query("SELECT * from fishing_transaction where id=:fishingTransactionId LIMIT 1")
     FishingTransaction getById(Long fishingTransactionId);
@@ -34,7 +33,7 @@ public interface FishingTransactionDAO {
     void delete(FishingTransaction fishingTransaction);
 
     @Query("DELETE from fishing_transaction")
-    void deleteAll();
+    int deleteAll();
 
     @Update
     void update(FishingTransaction fishingTransaction);

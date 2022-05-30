@@ -48,6 +48,7 @@ import io.agritrack.data.dao.tx.TransportTransactionDAO;
 import io.agritrack.data.dao.wh.AssetDAO;
 import io.agritrack.data.dao.wh.CoInventoryDAO;
 import io.agritrack.data.dao.wh.CoInventoryItemDAO;
+import io.agritrack.data.dao.wh.FoodSkuDAO;
 import io.agritrack.data.dao.wh.OrderDAO;
 import io.agritrack.data.dao.wh.RFIDInventoryDAO;
 import io.agritrack.data.dao.wh.RFIDInventoryItemDAO;
@@ -85,18 +86,19 @@ import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.data.model.wh.CoInventory;
 import io.agritrack.data.model.wh.CoInventoryItem;
+import io.agritrack.data.model.wh.FoodSku;
 import io.agritrack.data.model.wh.Order;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
 
-@Database(entities = {AppUser.class, Site.class, Asset.class, Supplier.class, HarvestRequest.class, Order.class, EncodingSchemeEntity.class,
+@Database(entities = {AppUser.class, Site.class, Asset.class, FoodSku.class, Supplier.class, HarvestRequest.class, Order.class, EncodingSchemeEntity.class,
         CageDetails.class, BinInfo.class, Employee.class, Species.class, Reader.class, IotLogger.class, PlantTransaction.class,
         CollectTransaction.class, StorageTransaction.class, ShippingTransaction.class, FishingTransaction.class,
         TransportTransaction.class, ProcessingTransaction.class, QualityTransaction.class, PostPackageQualityTransaction.class, PackageTransaction.class, TotesTransaction.class,
         IfcoTransaction.class, AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class,
         Measurement.class, TemperatureData.class, SeaTemperatureTransaction.class, RepairTransaction.class},
-        version = 1, exportSchema = false)
+        version = 15, exportSchema = false)
 
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class, UUIDConverter.class})
 public abstract class MobileDB extends RoomDatabase {
@@ -125,6 +127,8 @@ public abstract class MobileDB extends RoomDatabase {
     public abstract AppUserDAO userDAO();
 
     public abstract AssetDAO assetDAO();
+
+    public abstract FoodSkuDAO foodSkuDAO();
 
     public abstract EncodingSchemeDAO encodingSchemeDAO();
 

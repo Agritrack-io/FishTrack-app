@@ -12,6 +12,7 @@ import androidx.annotation.StringRes;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,7 +26,6 @@ public class SimpleListDialog {
     private RecyclerView rvItems;
     private final TemplateRecyclerAdapter itemsAdapter;
     private MutableLiveData<String> liveItem;
-    private String selectedItem;
 
     private final Activity activity;
     private Dialog dialog;
@@ -35,15 +35,15 @@ public class SimpleListDialog {
         public void onClick(View v) {
             ConstraintLayout view = (ConstraintLayout) v;
             TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedItem = tvRecyclerItem.getText().toString();
 
-            liveItem.setValue(selectedItem);
+            liveItem.setValue(itemsAdapter.getSelectedValue());
         }
     };
 
     public SimpleListDialog(Activity activity, List<String> data, MutableLiveData<String> selection, @StringRes int title) {
         this.activity = activity;
         this.liveItem = selection;
+
 
         setDialog();
         findViews();
@@ -53,9 +53,12 @@ public class SimpleListDialog {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.activity);
         rvItems.setLayoutManager(layoutManager);
         rvItems.setItemAnimator(new DefaultItemAnimator());
-        itemsAdapter = new TemplateRecyclerAdapter(this.activity, data, itemsClickListener);
+        rvItems.addItemDecoration(new DividerItemDecoration(this.activity, DividerItemDecoration.VERTICAL));
+        itemsAdapter = new TemplateRecyclerAdapter(this.activity, data);
         rvItems.setAdapter(itemsAdapter);
         rvItems.setNestedScrollingEnabled(false);
+
+        rvItems.setOnClickListener(itemsClickListener);
         // since there Sites available, display them in  a list.
         rvItems.setVisibility(View.VISIBLE);
     }
