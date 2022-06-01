@@ -114,7 +114,7 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
 
         });
 
-        List<String> adapterData = typeEPCSMap.entrySet().stream().map(x -> String.format("%s [%s]", schemeSvc.nameOf(x.getKey()), x.getValue())).collect(Collectors.toList());
+        List<String> adapterData = typeEPCSMap.entrySet().stream().map(x -> String.format("%s: %s [%s]",x.getKey(), schemeSvc.nameOf(x.getKey()), x.getValue())).collect(Collectors.toList());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvEPCsPerType.setLayoutManager(layoutManager);
@@ -197,6 +197,10 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
                     // Update local cache values for current product code
                     typeEPCSMap.put(currentProductCode, currSerialNumber);
                     LocalPreferences.setLinenRFID(currentProductCode, currSerialNumber);
+
+                    final List<String> adapterData1 = typeEPCSMap.entrySet().stream().map(x -> String.format("%s: %s [%s]", x.getKey(), schemeSvc.nameOf(x.getKey()), x.getValue())).collect(Collectors.toList());
+                    adapterEPC.setValues(adapterData1);
+                    adapterEPC.notifyDataSetChanged();
 
                     // Lock next EPC field
                     etNextEPC.setEnabled(false);
@@ -296,7 +300,6 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
-        x9programmer.LowPowerLevel();
         scanner = new SingleShotScanner(mScanHandler);
         scanner.startReading();
         mScanHandler.postDelayed(scanner, 0);
@@ -317,12 +320,15 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
             mActivity = new WeakReference<>(activity);
         }
 
+        @SuppressLint("StringFormatMatches")
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
                     String epcStr = msg.getData().getString("epc");
                     String rssi = msg.getData().getString("rssi");
+                    tvProgOutcome.setText("");
+                    ivProgOutcome.setColorFilter(null);
 
                     if (!Strings.isEmptyOrWhitespace(epcStr)) {
                         if (epcStr.length() > 8) {
@@ -336,7 +342,7 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
                             btnWriteEPC.setEnabled(false);
                             btnWriteEPC.setTextColor(Color.DKGRAY);
                             FragmentManager fm = getSupportFragmentManager();
-                            confirmWriteEpcDlg.setMessage(getString(R.string.proceed_with_written_epc));
+                            confirmWriteEpcDlg.setMessage(getString(R.string.proceed_with_written_epc, epcStr));
                             confirmWriteEpcDlg.showNow(fm, getString(R.string.confirm_selection));
                             //CToast(getApplicationContext(), render("Tag is already programmed!!"), Toast.LENGTH_SHORT);
                         }
