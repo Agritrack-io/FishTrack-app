@@ -43,7 +43,7 @@ public class SimpleListDialog {
         rvItems.setLayoutManager(layoutManager);
         rvItems.setItemAnimator(new DefaultItemAnimator());
         rvItems.addItemDecoration(new DividerItemDecoration(this.activity, DividerItemDecoration.VERTICAL));
-        itemsAdapter = new TemplateRecyclerAdapter(this.activity, data);
+        itemsAdapter = new TemplateRecyclerAdapter(this.activity, data, false);
         rvItems.setAdapter(itemsAdapter);
         rvItems.setNestedScrollingEnabled(false);
 

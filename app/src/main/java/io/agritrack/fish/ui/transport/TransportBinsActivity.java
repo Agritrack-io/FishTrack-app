@@ -91,7 +91,7 @@ public class TransportBinsActivity extends AppCompatActivity {
         rvBinsForTransport.setLayoutManager(layoutManager);
         rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
         rvBinsForTransport.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(),true);
         rvBinsForTransport.setAdapter(adapterBins);
         rvBinsForTransport.setNestedScrollingEnabled(false);
 

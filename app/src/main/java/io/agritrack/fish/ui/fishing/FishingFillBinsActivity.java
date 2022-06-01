@@ -94,7 +94,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         rvWeightBatchesBin.setLayoutManager(layoutManager);
         rvWeightBatchesBin.setItemAnimator(new DefaultItemAnimator());
         rvWeightBatchesBin.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapterCatches = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterCatches = new TemplateRecyclerAdapter(this, new ArrayList<>(),true);
         isClickable = adapterCatches.isClickable;
         rvWeightBatchesBin.setAdapter(adapterCatches);
         rvWeightBatchesBin.setNestedScrollingEnabled(false);

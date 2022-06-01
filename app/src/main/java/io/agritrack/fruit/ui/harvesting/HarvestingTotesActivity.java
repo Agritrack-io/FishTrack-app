@@ -112,7 +112,7 @@ public class HarvestingTotesActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvUsedTotesHarvest.setLayoutManager(layoutManager);
         rvUsedTotesHarvest.setItemAnimator(new DefaultItemAnimator());
-        adapterTotes = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterTotes = new TemplateRecyclerAdapter(this, new ArrayList<>(),true);
         rvUsedTotesHarvest.setAdapter(adapterTotes);
         rvUsedTotesHarvest.setNestedScrollingEnabled(false);
 

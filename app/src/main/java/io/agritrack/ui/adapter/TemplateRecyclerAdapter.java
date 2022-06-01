@@ -19,14 +19,20 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     private List<String> mList;
     private final LayoutInflater mLayoutInflater;
     public boolean isClickable = true;
+    private boolean isEPC = true;
     private MutableLiveData<String> liveItem;
     private int selectedPos = RecyclerView.NO_POSITION;
     private String selectedValue = null;
     private String selectedLabel = null;
 
     public TemplateRecyclerAdapter(Context context, List<String> values) {
+        this(context,values,true);
+    }
+
+    public TemplateRecyclerAdapter(Context context, List<String> values, boolean isEPC) {
         this.mList = values;
         this.mLayoutInflater = LayoutInflater.from(context);
+        this.isEPC = isEPC;
     }
 
     public String getSelectedValue(){
@@ -77,9 +83,12 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         String epc = mList.get(position);
-        String tag = epc.length()>10? epc.substring(epc.length()-10) : epc;
+        String tag = isEPC? epc.substring(epc.length()-10) : epc;
         holder.itemView.setSelected(selectedPos == position);
         holder.itemView.setBackgroundColor(selectedPos == position ? Color.GRAY : Color.TRANSPARENT);
+        if(!isEPC) {
+            holder.tvItemName.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+        }
         holder.tvItemName.setText(tag);
         holder.tvItemSNo.setText(String.valueOf(position + 1) + ".");
     }

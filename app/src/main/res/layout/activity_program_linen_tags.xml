@@ -83,12 +83,12 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
     app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
     <RelativeLayout
-        android:id="@+id/editDataLayout"
+        android:id="@+id/editDataALayout"
         android:layout_width="0dp"
-        android:layout_height="280dp"
+        android:layout_height="150dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@id/inventoryLoggersLayout"
+        app:layout_constraintBottom_toTopOf="@id/editDataBLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -120,10 +120,10 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 android:layout_height="50dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/border_bottom"
+                android:background="@drawable/button_press_effect"
                 android:text="@string/press_for_types"
                 android:textAlignment="viewStart"
-                android:textColor="@color/black"
+                android:textColor="@color/agri_green"
                 android:textSize="@dimen/text_view_font_size_small"
                 app:layout_constraintBottom_toTopOf="@+id/tvProductCode"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -137,7 +137,7 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 android:text="@string/product_code"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvFilterEPCLabel"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvProductCode"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvLinenTypeLabel" />
@@ -153,10 +153,43 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvFilterEPC"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvProductCodeLabel"
                 app:layout_constraintTop_toBottomOf="@+id/btnLinenType" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:background="@color/agri_semi_green"
+            android:paddingHorizontal="8dp"
+            android:text="@string/select_code"
+            android:textColor="@color/label_blue"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/editDataBLayout"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toTopOf="@id/inventoryLoggersLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editDataALayout">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/shape_rounded_corner_with_shadow"
+            android:orientation="vertical"
+            android:padding="15dp">
 
             <TextView
                 android:id="@+id/tvFilterEPCLabel"
@@ -169,7 +202,7 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 app:layout_constraintEnd_toStartOf="@+id/tvFilterEPC"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvProductCodeLabel" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvFilterEPC"
@@ -184,7 +217,7 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 app:layout_constraintBottom_toTopOf="@+id/etNextEPC"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvFilterEPCLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvProductCode" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/etNextEPCLabel"
@@ -206,7 +239,10 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/border_bottom"
+                android:digits="0123456789ABCDEF"
                 android:enabled="false"
+                android:inputType="textCapCharacters"
+                android:maxLength="4"
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
@@ -216,7 +252,7 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 app:layout_constraintTop_toBottomOf="@+id/tvFilterEPC" />
 
             <TextView
-                android:id="@+id/tvProgOutcome"
+                android:id="@+id/tvProgOutcomeLabel"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:text="@string/prog_outcome"
@@ -224,12 +260,25 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etNextEPCLabel"/>
+                app:layout_constraintTop_toBottomOf="@+id/etNextEPCLabel" />
+
+            <TextView
+                android:id="@+id/tvProgOutcome"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/border_bottom"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvProgOutcomeLabel"
+                app:layout_constraintTop_toBottomOf="@+id/etNextEPC" />
 
             <ImageView
                 android:id="@+id/ivProgOutcome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvProgOutcome"
@@ -254,7 +303,7 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
     <RelativeLayout
         android:id="@+id/inventoryLoggersLayout"
         android:layout_width="0dp"
-        android:layout_height="290dp"
+        android:layout_height="200dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -262,7 +311,7 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editDataLayout">
+        app:layout_constraintTop_toBottomOf="@+id/editDataBLayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

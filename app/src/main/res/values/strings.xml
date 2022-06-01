@@ -553,13 +553,18 @@
     <string name="proceed_change_status">Are you sure to change status to \'%1$s\' for these %2$d items?</string>
     <string name="proceed_insert_new_rfid">You are about to insert %1$d new items to live inventory. Are you sure?</string>
     <string name="program_tags">Program tags</string>
+    <string name="select_code">Product info</string>
     <string name="type_linen">Linen type</string>
     <string name="press_for_types">Press for types</string>
     <string name="product_code">Product code</string>
-    <string name="next_epc">Next EPC</string>
+    <string name="next_epc">Next RFID</string>
     <string name="prog_outcome">Outcome</string>
     <string name="write_epc">Write EPC</string>
-    <string name="filter_epc">Filter EPC</string>
+    <string name="filter_epc">Filter RFID</string>
+    <string name="success">Success</string>
+    <string name="failure">Failure</string>
+    <string name="proceed_with_written_epc">This RFID haw already been programmed!! Are you sure to program it again?</string>
+    <string name="confirm_writing_epc">Enter 2222 to confirm</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

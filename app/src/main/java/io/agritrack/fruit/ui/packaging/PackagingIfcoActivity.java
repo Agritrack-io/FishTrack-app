@@ -115,7 +115,7 @@ public class PackagingIfcoActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvInventoryIfco.setLayoutManager(layoutManager);
         rvInventoryIfco.setItemAnimator(new DefaultItemAnimator());
-        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>(),true);
         rvInventoryIfco.setAdapter(adapterIfco);
         rvInventoryIfco.setNestedScrollingEnabled(false);
 

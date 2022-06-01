@@ -555,13 +555,18 @@
     <string name="proceed_change_status">Είστε σίγουρος για να αλλάξετε την κατάσταση σε \'%1$s\' για αυτά τα %2$d τεμάχια?</string>
     <string name="proceed_insert_new_rfid">Πρόκειται να εισάγετε %1$d νέα τεμάχια στο απόθεμά σας. Είστε σίγουρος?</string>
     <string name="program_tags">Προγραμματισμός ετικετών</string>
+    <string name="select_code">Στοιχεία προϊόντος</string>
     <string name="type_linen">Είδος λινού</string>
     <string name="press_for_types">Επιλέξτε τύπο</string>
     <string name="product_code">Κωδικός προϊόντος</string>
-    <string name="next_epc">Επόμενο EPC</string>
+    <string name="next_epc">Επόμενο RFID</string>
     <string name="prog_outcome">Αποτέλεσμα</string>
     <string name="write_epc">Γράψε EPC</string>
-    <string name="filter_epc">Παλιό EPC</string>
+    <string name="filter_epc">Παλιό RFID</string>
+    <string name="success">Επιτυχία</string>
+    <string name="failure">Αποτυχία</string>
+    <string name="proceed_with_written_epc">Αυτό το RFID έχει ήδη προγραμματιστεί!! Είστε σίγουρος ότι θέλετε να το προγραμματίσετε πάλι?</string>
+    <string name="confirm_writing_epc">Προς επιβεβαίωση, πληκτρολογήστε 2222</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
