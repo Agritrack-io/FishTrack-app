@@ -576,4 +576,5 @@
     <string name="pending_correlation_tx_upload_failure_alert">Failed to upload pending correlations!</string>
     <string name="pending_fishing_tx_upload_failure_alert">Failed to upload pending fishing tx!</string>
     <string name="pending_fishing_tx_upload_completed">Pending fishing tx succesfully uploaded!</string>
+    <string name="bt_not_supported">Bluetooth not supported!</string>
 </resources>

@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
 
+import io.agritrack.common.FishTrackUtils;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.fish.ui.bo.BinTemperatureRecord;
 import io.agritrack.fish.ui.bo.BinWeightRecord;
@@ -48,7 +49,7 @@ public class FishingRecord {
         fishingRecord.requesterName = tx.requester;
         fishingRecord.reqWeight = tx.orderedQuantity != null ? Double.valueOf(tx.orderedQuantity.toString()) : null;
         fishingRecord.speciesName = tx.fishType;
-        fishingRecord.averageWeight = tx.averageWeight != null ? Double.valueOf(tx.averageWeight) : null;
+        fishingRecord.averageWeight = FishTrackUtils.isNumeric(tx.averageWeight) ? Double.valueOf(tx.averageWeight) : null;
         fishingRecord.platformRFID = tx.platformRFID;
         fishingRecord.cageRFID = tx.cageRFID;
         fishingRecord.cageCode = tx.cageCode;

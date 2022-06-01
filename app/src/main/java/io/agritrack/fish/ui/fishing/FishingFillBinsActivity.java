@@ -7,6 +7,8 @@ import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -53,12 +55,16 @@ import io.agritrack.ui.service.LocalPreferences;
 
 
 public class FishingFillBinsActivity extends AppCompatActivity {
+    private final static int REQUEST_ENABLE_BT = 1;
+    private BluetoothAdapter bluetoothAdapter;
+
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
-    private Button btnCurrentBinScan, btnNextCatch, btnDeleteCatch, btnFillBin;
+    private Button btnCurrentBinScan, btnAddCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
+    private ImageView ivBT;
     private RecyclerView rvWeightBatchesBin;
     private TemplateRecyclerAdapter adapterCatches;
     private boolean isClickable;
@@ -101,8 +107,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         // initially only scan button is active.
         btnCurrentBinScan.setEnabled(true);
-        btnNextCatch.setEnabled(false);
-        btnNextCatch.setTextColor(Color.DKGRAY);
+        btnAddCatch.setEnabled(false);
+        btnAddCatch.setTextColor(Color.DKGRAY);
         btnDeleteCatch.setEnabled(false);
         btnDeleteCatch.setTextColor(Color.DKGRAY);
         btnFillBin.setEnabled(false);
@@ -114,7 +120,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         // =================================
         // Adding fish catch functionality
-        btnNextCatch.setOnClickListener(view -> {
+        btnAddCatch.setOnClickListener(view -> {
             btnCurrentBinScan.setEnabled(false);
             btnCurrentBinScan.setTextColor(Color.DKGRAY);
             btnFillBin.setEnabled(true);
@@ -134,8 +140,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             isClickable = false;
             btnCurrentBinScan.setEnabled(true);
             btnCurrentBinScan.setTextColor(getColor(R.color.aqua));
-            btnNextCatch.setEnabled(false);
-            btnNextCatch.setTextColor(Color.DKGRAY);
+            btnAddCatch.setEnabled(false);
+            btnAddCatch.setTextColor(Color.DKGRAY);
             btnDeleteCatch.setEnabled(false);
             btnDeleteCatch.setTextColor(Color.DKGRAY);
             view.setEnabled(false);
@@ -222,6 +228,21 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             unregisterReceiver(keyReceiver);
     }
 
+    protected void enableBT() {
+        BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter(); // bluetoothManager.getAdapter();
+        if (bluetoothAdapter == null) {
+            CToast(getApplicationContext(), render(R.string.bt_not_supported), Toast.LENGTH_LONG);
+            ivBT.setColorFilter(getAppContext().getResources().getColor(R.color.agri_green));
+        } else {
+            if (!bluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
+
+        }
+    }
+
     protected void onClick(View view) {
         isClicked = false;
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
@@ -235,7 +256,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     private void assignCtrlVars() {
         btnCurrentBinScan = findViewById(R.id.btnScanCurrentBin);
-        btnNextCatch = findViewById(R.id.btnAddCatch);
+        btnAddCatch = findViewById(R.id.btnAddCatch);
         btnDeleteCatch = findViewById(R.id.btnDeleteCatch);
         btnFillBin = findViewById(R.id.btnEndBin);
         tvCurrentBin = findViewById(R.id.tvBinName);
@@ -246,6 +267,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         rvWeightBatchesBin = findViewById(R.id.rvWeightBatchesBin);
         ivSupport = findViewById(R.id.ivSupport);
         ivInfo = findViewById(R.id.ivInfo);
+        ivBT = findViewById(R.id.ivBT);
     }
 
     private void initControlsFromState() {
@@ -383,8 +405,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             epochFrom = System.currentTimeMillis() / 1000l;
                         });
 
-                        btnNextCatch.setEnabled(true);
-                        btnNextCatch.setTextColor(getColor(R.color.aqua));
+                        btnAddCatch.setEnabled(true);
+                        btnAddCatch.setTextColor(getColor(R.color.aqua));
                         if (adapterCatches.getItemCount() != 0) {
                             btnFillBin.setEnabled(true);
                             btnFillBin.setTextColor(getColor(R.color.aqua));
