@@ -117,10 +117,11 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
             <Button
                 android:id="@+id/btnLinenType"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/button_press_effect"
+                android:paddingStart="10dp"
                 android:text="@string/press_for_types"
                 android:textAlignment="viewStart"
                 android:textColor="@color/agri_green"
@@ -226,7 +227,7 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 android:text="@string/next_epc"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/ivProgOutcome"
+                app:layout_constraintBottom_toTopOf="@+id/tvProgOutcomeLabel"
                 app:layout_constraintEnd_toStartOf="@+id/etNextEPC"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -260,6 +261,7 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvProgOutcome"
                 app:layout_constraintTop_toBottomOf="@+id/etNextEPCLabel" />
 
             <TextView
@@ -271,6 +273,7 @@ tools:context=".ui.tools.ProgramLinenTagsActivity">
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivProgOutcome"
                 app:layout_constraintStart_toEndOf="@+id/tvProgOutcomeLabel"
                 app:layout_constraintTop_toBottomOf="@+id/etNextEPC" />
 
