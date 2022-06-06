@@ -73,8 +73,10 @@ import io.agritrack.ui.login.api.AuthInfoRS;
 import io.agritrack.ui.login.api.LoginRQ;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
+import io.agritrack.ui.tools.BlueToothScaleActivity;
 import io.agritrack.ui.tools.CAENLoggerActivity;
 import io.agritrack.ui.tools.ImportCAENLoggersToDBActivity;
+import io.agritrack.ui.tools.ProgramLinenTagsActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -177,6 +179,16 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                     fm.executePendingTransactions();
                 } else if ("logger".equals(username) && "8888".equals(pin)) {
                     Intent i = new Intent(getApplicationContext(), ImportCAENLoggersToDBActivity.class);
+                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+                    startActivity(i);
+                    finish();
+                } else if ("linen".equals(username) && "8888".equals(pin)) {
+                    Intent i = new Intent(getApplicationContext(), ProgramLinenTagsActivity.class);
+                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+                    startActivity(i);
+                    finish();
+                } else if ("scale".equals(username) && "8888".equals(pin)) {
+                    Intent i = new Intent(getApplicationContext(), BlueToothScaleActivity.class);
                     i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
                     startActivity(i);
                     finish();

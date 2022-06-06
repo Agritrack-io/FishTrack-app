@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.StringRes;
@@ -25,25 +27,12 @@ public class SimpleListDialog {
     private TextView tvTitle;
     private RecyclerView rvItems;
     private final TemplateRecyclerAdapter itemsAdapter;
-    private MutableLiveData<String> liveItem;
 
     private final Activity activity;
     private Dialog dialog;
 
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-
-            liveItem.setValue(itemsAdapter.getSelectedValue());
-        }
-    };
-
-    public SimpleListDialog(Activity activity, List<String> data, MutableLiveData<String> selection, @StringRes int title) {
+    public SimpleListDialog(Activity activity, List<String> data, MutableLiveData<String> liveData, @StringRes int title) {
         this.activity = activity;
-        this.liveItem = selection;
-
 
         setDialog();
         findViews();
@@ -54,11 +43,12 @@ public class SimpleListDialog {
         rvItems.setLayoutManager(layoutManager);
         rvItems.setItemAnimator(new DefaultItemAnimator());
         rvItems.addItemDecoration(new DividerItemDecoration(this.activity, DividerItemDecoration.VERTICAL));
-        itemsAdapter = new TemplateRecyclerAdapter(this.activity, data);
+        itemsAdapter = new TemplateRecyclerAdapter(this.activity, data, false);
         rvItems.setAdapter(itemsAdapter);
         rvItems.setNestedScrollingEnabled(false);
 
-        rvItems.setOnClickListener(itemsClickListener);
+        itemsAdapter.setItemObserver(liveData);
+
         // since there Sites available, display them in  a list.
         rvItems.setVisibility(View.VISIBLE);
     }

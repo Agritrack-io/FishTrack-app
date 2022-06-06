@@ -11,7 +11,7 @@ import com.uhf.api.cls.Reader;
 import cn.pda.serialport.Tools;
 
 public class BX6100Programmer  extends AbstractX9Programmer {
-    private final short timeout = 10000;
+    private final short timeout = 500;
     private final String accessPwd = "00000000";
     private final int filterStartAddress = 2;
     private UHFRManager mUhfRManager;
@@ -90,8 +90,9 @@ public class BX6100Programmer  extends AbstractX9Programmer {
         if(this.mUhfRManager != null) {
             byte[] epcBytes = Tools.HexString2Bytes(epc) ;
             byte[] accessBytes = Tools.HexString2Bytes(accessPwd) ;
+            byte[] fdataBytes = Tools.HexString2Bytes(fdata) ;
 
-            this.mUhfRManager.writeTagEPCByFilter(epcBytes, accessBytes, this.timeout, epcBytes, 1, 2, true);
+            return this.mUhfRManager.writeTagEPCByFilter(epcBytes, accessBytes, this.timeout, fdataBytes, 1, 2, true);
 //            this.mUhfRManager.writeTagEPCByFilter(byte[] data, byte[] accesspwd, short timeout, byte[] fdata, int fbank, int fstartaddr, boolean matching);
         }
         return null;
@@ -111,5 +112,10 @@ public class BX6100Programmer  extends AbstractX9Programmer {
         this.mUhfRManager.setCancleInventoryFilter();
 
         return true;
+    }
+
+    @Override
+    public void close() {
+        this.mUhfRManager.close();
     }
 }

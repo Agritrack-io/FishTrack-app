@@ -143,7 +143,7 @@ public class TotesInventoryActivity extends LocationAwareActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvInventoryTotes.setLayoutManager(layoutManager);
         rvInventoryTotes.setItemAnimator(new DefaultItemAnimator());
-        adapterTotes = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterTotes = new TemplateRecyclerAdapter(this, new ArrayList<>(),true);
         rvInventoryTotes.setAdapter(adapterTotes);
         rvInventoryTotes.setNestedScrollingEnabled(false);
 

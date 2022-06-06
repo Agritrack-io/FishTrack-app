@@ -131,7 +131,7 @@ public class IncomingIfcoActivity extends LocationAwareActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvIncomingIfco.setLayoutManager(layoutManager);
         rvIncomingIfco.setItemAnimator(new DefaultItemAnimator());
-        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterIfco = new TemplateRecyclerAdapter(this, new ArrayList<>(),true);
         rvIncomingIfco.setAdapter(adapterIfco);
         rvIncomingIfco.setNestedScrollingEnabled(false);
 

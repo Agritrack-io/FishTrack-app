@@ -126,7 +126,7 @@ public class PackagingStartActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTotesForPackage.setLayoutManager(layoutManager);
         rvTotesForPackage.setItemAnimator(new DefaultItemAnimator());
-        adapterTotes = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterTotes = new TemplateRecyclerAdapter(this, new ArrayList<>(),true);
         rvTotesForPackage.setAdapter(adapterTotes);
         rvTotesForPackage.setNestedScrollingEnabled(false);
 

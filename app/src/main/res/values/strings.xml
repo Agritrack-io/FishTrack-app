@@ -252,7 +252,7 @@
 
     <string name="welcome">Welcome</string>
     <string name="authenticating">Please wait, authenticating user</string>
-    <string name="syncing">Please wait, syncing data...</string>
+    <string name="syncing">Please wait, syncing data&#8230;</string>
 
     <string name="title_date_type_of_asset">DATE / TYPE OF ASSET</string>
     <string name="title_outgoing">OUTGOING</string>
@@ -299,8 +299,8 @@
     <string name="choose_site">Choose site</string>
     <string name="select_asset_type">Asset type</string>
     <string name="select_consumable_type">Consumable type</string>
-    <string name="acquire_coordinates">Please wait, acquiring GPS coordinates...</string>
-    <string name="sync_sites">Please wait, syncing sites...</string>
+    <string name="acquire_coordinates">Please wait, acquiring GPS coordinates&#8230;</string>
+    <string name="sync_sites">Please wait, syncing sites&#8230;</string>
 
     <string name="title_correlation">CORRELATION</string>
     <string name="title_correlation_menu">CORRELATION MENU</string>
@@ -381,7 +381,7 @@
     <string name="incoming_assets">Incoming assets</string>
     <string name="number_of_assets"># of assets:</string>
     <string name="outgoing_assets">Outgoing assets</string>
-    <string name="acquire_cluster_info">Plz wait, fetching cluster/site data...</string>
+    <string name="acquire_cluster_info">Plz wait, fetching cluster/site data&#8230;</string>
     <string name="no_sites_found_alert">No Sites Info found!!!</string>
     <string name="synch_failed">Synchronization failed. Plz check your Internet connection!!!</string>
     <string name="no_users_found_alert">No User Info found!!!</string>
@@ -390,7 +390,7 @@
     <string name="no_species_found_alert">No Fish Species Info found!!!</string>
     <string name="stop_scan">STOP Scanning</string>
     <string name="stop_search">STOP Searching</string>
-    <string name="no_cage_details_found_alert">No CageDetail data found...</string>
+    <string name="no_cage_details_found_alert">No CageDetail data found&#8230;</string>
     <string name="missing_pin">Please type in the PIN!!</string>
     <string name="invalid_password">Wrong PIN!!!</string>
     <string name="error_connection_timeout">Connection Timeout!!!</string>
@@ -402,7 +402,7 @@
     <string name="error_processing_tx_update_failure">Failed to update Packaging transaction!!!</string>
     <string name="error_temperatures_tx_update_failure">Failed to update Measurements transaction!!!</string>
     <string name="error_import_daqta_loggers">Import data loggers update failure!!!</string>
-    <string name="no_epc_filter_selected">Please enter the tag to search for...</string>
+    <string name="no_epc_filter_selected">Please enter the tag to search for&#8230;</string>
     <string name="scan_asset_tag">Scan Asset</string>
     <string name="button_correlate">Correlate</string>
     <string name="title_correlate_asset">Correlate Asset</string>
@@ -415,7 +415,7 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="older_days">Older</string>
-    <string name="pick_harvest_request">Please select One...</string>
+    <string name="pick_harvest_request">Please select One&#8230;</string>
     <string name="no_harvest_requests_found_alert">No Harvest Request returned from backend!!!</string>
     <string name="harvest_requests_sync_completed">Harvest Request sync completed!</string>
     <string name="no_collection_tx_found_alert">No Harvest tx returned from backend!!!</string>
@@ -437,15 +437,15 @@
     <string name="agritrack_info">Agritrack Info</string>
     <string name="agritrack_adr">Marathonos 50, Anixi \n14569, Greece</string>
     <string name="agritrack_tel">Tel: +30 21 0814 4474</string>
-    <string name="agritrack_hours">Call  center hours: 10:00 - 17:00</string>
+    <string name="agritrack_hours">Call  center hours: 10:00 &#8211; 17:00</string>
     <string name="urgent_request">For urgent request</string>
     <string name="contact_immediately">Contact me immediately</string>
     <string name="request_description">Please describe your request</string>
     <string name="describe">Description</string>
     <string name="enter_pin_support">PIN</string>
 
-    <string name="init_temp_logger">Initialize temperature logger...</string>
-    <string name="get_temp_data">Get temperature data...</string>
+    <string name="init_temp_logger">Initialize temperature logger&#8230;</string>
+    <string name="get_temp_data">Get temperature data&#8230;</string>
 
     <string name="hello">Hello World, CamTestActivity!</string>
 
@@ -453,7 +453,7 @@
     <string name="btn_capture">Click</string>
 
     <!-- Toast Messages -->
-    <string name="camera_not_found">No cameraTest harware found</string>
+    <string name="camera_not_found">No cameraTest hardware found</string>
     <string name="photo_taken">Your photo</string>
     <!-- End of Fish strings -->
 
@@ -552,6 +552,19 @@
     <string name="new_status">New status</string>
     <string name="proceed_change_status">Are you sure to change status to \'%1$s\' for these %2$d items?</string>
     <string name="proceed_insert_new_rfid">You are about to insert %1$d new items to live inventory. Are you sure?</string>
+    <string name="program_tags">Program tags</string>
+    <string name="select_code">Product info</string>
+    <string name="type_linen">Linen type</string>
+    <string name="press_for_types">Press for types</string>
+    <string name="product_code">Product code</string>
+    <string name="next_epc">Next RFID</string>
+    <string name="prog_outcome">Outcome</string>
+    <string name="write_epc">Write EPC</string>
+    <string name="filter_epc">Filter RFID</string>
+    <string name="success">Success</string>
+    <string name="failure">Failure</string>
+    <string name="proceed_with_written_epc">This RFID haw already been programmed!! Are you sure to program it again?</string>
+    <string name="confirm_writing_epc">Enter 2222 to confirm</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -572,9 +585,9 @@
     <string name="EncodeScheme_sync_completed">Encoding scheme synchronised successfuly!</string>
     <string name="no_EncodeScheme_found_alert">No Encoding Scheme entry was found!</string>
     <string name="error_postquality_update_failure">Post-Package quality data update failure!!!</string>
-    <string name="pending_correlation_tx_upload_completed">Pending correlations succesfully uploaded!</string>
+    <string name="pending_correlation_tx_upload_completed">Pending correlations successfully uploaded!</string>
     <string name="pending_correlation_tx_upload_failure_alert">Failed to upload pending correlations!</string>
     <string name="pending_fishing_tx_upload_failure_alert">Failed to upload pending fishing tx!</string>
-    <string name="pending_fishing_tx_upload_completed">Pending fishing tx succesfully uploaded!</string>
+    <string name="pending_fishing_tx_upload_completed">Pending fishing tx successfully uploaded!</string>
     <string name="bt_not_supported">Bluetooth not supported!</string>
 </resources>

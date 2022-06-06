@@ -109,7 +109,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         rvBins.setLayoutManager(layoutManager);
         rvBins.setItemAnimator(new DefaultItemAnimator());
         rvBins.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(), true);
         rvBins.setAdapter(adapterBins);
         rvBins.setNestedScrollingEnabled(false);
 

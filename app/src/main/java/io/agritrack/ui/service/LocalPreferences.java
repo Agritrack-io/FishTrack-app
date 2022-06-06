@@ -159,6 +159,14 @@ public class LocalPreferences {
         return pref.getString(Logged_In_User_Key, defVal);
     }
 
+    public static String getLinenRFID(String productCode) {
+        return pref.getString("Linen-"+productCode, null);
+    }
+
+    public static void setLinenRFID(String productCode, String rfid) {
+        writeValue("Linen-"+productCode, rfid);
+    }
+
     public static Long getLoginDiffInHours() {
         long loginUnixTime = getLoginTime();
         long unixTime = System.currentTimeMillis() / 1000L;

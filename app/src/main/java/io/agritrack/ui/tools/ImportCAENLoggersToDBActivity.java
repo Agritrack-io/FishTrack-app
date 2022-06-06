@@ -102,7 +102,7 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
         rvInventoryItems.setLayoutManager(layoutManager);
         rvInventoryItems.setItemAnimator(new DefaultItemAnimator());
         rvInventoryItems.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapterInventoryItems = new TemplateRecyclerAdapter(this, new ArrayList<>());
+        adapterInventoryItems = new TemplateRecyclerAdapter(this, new ArrayList<>(),true);
         rvInventoryItems.setAdapter(adapterInventoryItems);
         rvInventoryItems.setNestedScrollingEnabled(false);
 

@@ -36,7 +36,6 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
 
     private final MutableLiveData<String> fromSelection = new MutableLiveData<>();
     private final MutableLiveData<String> toSiteSelection = new MutableLiveData<>();
-    private final MutableLiveData<String> fromSiteSelection = new MutableLiveData<>();
     private TextView tvIncomingFrom, tvIncomingTo;
     private ToggleGroup tgIncomingSource, tgIncomingDestination;
     private String selectedToggleButtonFrom, selectedToggleButtonTo;
@@ -44,7 +43,6 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
     private SimpleListDialog siteDialog;
     private String fromSupplier;
     private String toSite;
-    private String fromSite;
     private MobileDB db;
 
     private ImageView ivSupport;
@@ -80,14 +78,6 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
                 siteDialog.dismiss();
             }
         });
-
-        /*fromSiteSelection.observe(this, response -> {
-            if (response != null) {
-                fromSite = response;
-                tvIncomingFrom.setText(fromSite);
-                siteDialog.dismiss();
-            }
-        });*/
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(HotelIncomingStartActivity.this);

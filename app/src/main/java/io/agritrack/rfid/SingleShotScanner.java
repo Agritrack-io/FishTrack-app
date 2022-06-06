@@ -14,12 +14,18 @@ import java.util.stream.Stream;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;
+import io.agritrack.data.model.EncodingSchemeEntity;
+import io.agritrack.data.service.EncodingSchemeService;
 
 public class SingleShotScanner implements Runnable {
+    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
+
     private ICAEN_API uhfReader;
     private Handler mScanHandler;
     private String RFID_FILTER = null;
     private Boolean trimEPCFlag = Boolean.TRUE;
+    private int encodingIdx = schemeSvc.encodingIndex();
+    private int encodingWth = schemeSvc.encodingWidth();
 
     public SingleShotScanner(Handler handler) {
         super();
@@ -52,6 +58,11 @@ public class SingleShotScanner implements Runnable {
     public void setFilter(String rfidFilter) {
         this.RFID_FILTER = rfidFilter;
         this.trimEPCFlag = (RFID_BIN.equalsIgnoreCase(rfidFilter) || RFID_LOGGER.equalsIgnoreCase(rfidFilter)) ? Boolean.FALSE : Boolean.TRUE;
+        EncodingSchemeEntity schemeEntry = schemeSvc.schemeForFilter(rfidFilter);
+        if (schemeEntry!=null && schemeEntry.encoding_index!=null){
+            this.encodingIdx = schemeEntry.encoding_index;
+            this.encodingWth = schemeEntry.code.length();
+        }
     }
 
     @Override
@@ -61,7 +72,8 @@ public class SingleShotScanner implements Runnable {
             if (uhfReader != null) {
                 final List<RFIDTag> tagList = uhfReader.inventoryByTimer(); //inventoryRealTime();
                 if (tagList != null && !tagList.isEmpty()) {
-                    Stream<RFIDTag> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || f.getEpc().indexOf(this.RFID_FILTER) == 11);
+                    Stream<RFIDTag> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || (f.getEpc().indexOf(this.RFID_FILTER) == encodingIdx && encodingIdx >-1)   || (f.getEpc().indexOf(this.RFID_FILTER) > -1));
+                    //Stream<RFIDTag> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || f.getEpc().indexOf(this.RFID_FILTER) == 11);
                     Optional<RFIDTag> tag = filteredStream.sorted((y, x) -> Integer.compare(x.getRssi(), y.getRssi())).findFirst();
 
                     if (tag.isPresent()) {
@@ -71,13 +83,6 @@ public class SingleShotScanner implements Runnable {
 
                         String tagStr = tag.get().getEpc();
                         b.putString("epc", tagStr);
-
-                        //TODO:: The following code should be deleted as the scanner should return whole EPC
-                        /*if (!trimEPCFlag) {
-                            b.putString("epc", tagStr);
-                        } else {
-                            b.putString("epc", (tagStr.length() > 12) ? tagStr.substring(11) : "N/A");
-                        }*/
 
                         msg.setData(b);
                         mScanHandler.sendMessage(msg);
