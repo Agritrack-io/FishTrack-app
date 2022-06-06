@@ -121,6 +121,31 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
         });
     }
 
+    private void initControlsFromState() {
+
+        if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonFrom)) {
+            tgOutgoingSource.setCheckedStateForView(R.id.tbFromSite, true);
+            if(siteDialog != null) {
+                siteDialog.dismiss();
+            }
+        }
+
+        if (Constants.ftSupplier.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
+            tgOutgoingDestination.setCheckedStateForView(R.id.tbOutLaundry, true);
+            if(customerDialog != null) {
+                customerDialog.dismiss();
+            }
+        }
+
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.from)) {
+            tvOutgoingFrom.setText(GlobalState.recWHOutgoing.from);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.to)) {
+            tvOutgoingTo.setText(GlobalState.recWHOutgoing.to);
+        }
+    }
+
     private void assignCtrlVars() {
         tvOutgoingFrom = findViewById(R.id.tvOutgoingFrom);
         tvOutgoingTo = findViewById(R.id.tvOutgoingTo);
@@ -153,27 +178,14 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
 
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        if (checkedId == R.id.tbSite) {
+        if (checkedId == R.id.tbFromSite) {
             siteDialog = new SimpleListDialog(HotelOutgoingStartActivity.this, fillSubSiteData(), fromSiteSelection, R.string.select_subsite);
             siteDialog.showDialog();
             selectedToggleButtonFrom = Constants.ftSite;
-        } else if (checkedId == R.id.tbAssetFrom) {
-            GlobalState.recWHOutgoing.from = Constants.ftAsset;
-            tvOutgoingFrom.setText("ROOM");
-        } else if (checkedId == R.id.tbCarFrom) {
-            GlobalState.recWHOutgoing.from = Constants.ftAsset;
-            tvOutgoingFrom.setText("CAR");
-        } else if (checkedId == R.id.tbAvramar) {
-            siteDialog = new SimpleListDialog(HotelOutgoingStartActivity.this, fillSubSiteData(), toSiteSelection, R.string.select_subsite);
-            siteDialog.showDialog();
-            selectedToggleButtonTo = Constants.ftAvramar;
-        } else if (checkedId == R.id.tbSupplier) {
+        } else if (checkedId == R.id.tbOutLaundry) {
             customerDialog = new SimpleListDialog(HotelOutgoingStartActivity.this, fillLaundryList(), toCustomerSelection, R.string.select_customer);
             customerDialog.showDialog();
             selectedToggleButtonTo = Constants.ftSupplier;
-        } else if (checkedId == R.id.tbOutAssetTo) {
-            GlobalState.recWHOutgoing.to = Constants.ftAsset;
-            tvOutgoingTo.setText("OTHER");
         }
     }
 
@@ -211,34 +223,5 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
         }
 
         return sb.toString();
-    }
-
-    private void initControlsFromState() {
-
-        if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonFrom)) {
-            tgOutgoingSource.setCheckedStateForView(R.id.tbSite, true);
-            if(siteDialog != null) {
-                siteDialog.dismiss();
-            }
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonFrom)) {
-            tgOutgoingSource.check(R.id.tbAssetFrom);
-        }
-
-        if (Constants.ftCustomer.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
-            tgOutgoingDestination.setCheckedStateForView(R.id.tbCustomer, true);
-            if(customerDialog != null) {
-                customerDialog.dismiss();
-            }
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
-            tgOutgoingDestination.check(R.id.tbOutAssetTo);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.from)) {
-            tvOutgoingFrom.setText(GlobalState.recWHOutgoing.from);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.to)) {
-            tvOutgoingTo.setText(GlobalState.recWHOutgoing.to);
-        }
     }
 }

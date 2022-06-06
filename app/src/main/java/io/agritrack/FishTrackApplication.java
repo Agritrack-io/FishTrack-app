@@ -20,7 +20,7 @@ public class FishTrackApplication extends Application {
     //This global variable is used to supply country info where is required
     public static final String COUNTRY = "gr";//[gr, es]
     //When true, no validation is performed in selected activities. This feature is enabled for Presentations and Demos.
-    public static final boolean IsDemo = true;//false;
+    public static final boolean IsDemo = false;//false;
     private static Context mContext;
 
     public static Context getAppContext() {

@@ -270,7 +270,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         rvWeightBatchesBin.setLayoutManager(layoutManager);
         rvWeightBatchesBin.setItemAnimator(new DefaultItemAnimator());
         rvWeightBatchesBin.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapterCatches = new TemplateRecyclerAdapter(this, new ArrayList<>(), true);
+        adapterCatches = new TemplateRecyclerAdapter(this, new ArrayList<>(), false);
         isClickable = adapterCatches.isClickable;
         rvWeightBatchesBin.setAdapter(adapterCatches);
         rvWeightBatchesBin.setNestedScrollingEnabled(false);
@@ -390,8 +390,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
 
-        if (btReceiver != null)
-            unregisterReceiver(btReceiver);
+        /*if (btReceiver != null)
+            unregisterReceiver(btReceiver);*/
     }
 
     @Override
@@ -401,10 +401,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
-
-        // Don't forget to unregister the ACTION_FOUND (Bluetooth) receiver.
-        if (btReceiver != null)
-            unregisterReceiver(btReceiver);
     }
 
     protected void onClick(View view) {

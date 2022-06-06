@@ -63,6 +63,9 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
         // get  references of the controls
         assignCtrlVars();
 
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
+
         fromSelection.observe(this, response -> {
             if (response != null) {
                 fromSupplier = response;
@@ -118,6 +121,31 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
         });
     }
 
+    private void initControlsFromState() {
+
+        if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonTo)) {
+            tgIncomingDestination.setCheckedStateForView(R.id.tbSite, true);
+            if(siteDialog != null) {
+                siteDialog.dismiss();
+            }
+        }
+
+        if (Constants.ftSupplier.equalsIgnoreCase(GlobalState.recWHIncoming.selectedToggleButtonFrom)) {
+            tgIncomingSource.setCheckedStateForView(R.id.tbSupplier, true);
+            if(supplierDialog != null) {
+                supplierDialog.dismiss();
+            }
+        }
+
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.from)) {
+            tvIncomingFrom.setText(GlobalState.recWHIncoming.from);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.to)) {
+            tvIncomingTo.setText(GlobalState.recWHIncoming.to);
+        }
+    }
+
     private List<String> fillSiteData(String siteTp) {
         List<String> result = new ArrayList<>();
         List<Site> allSuppliers = db.siteDAO().getAllBySiteType(siteTp);
@@ -144,22 +172,10 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
             supplierDialog = new SimpleListDialog(HotelIncomingStartActivity.this, fillSiteData("LAUNDRY"), fromSelection, R.string.select_supplier);
             supplierDialog.showDialog();
             selectedToggleButtonFrom = Constants.ftSupplier;
-        } else if (checkedId == R.id.tbAssetFrom) {
-            GlobalState.recWHIncoming.from = Constants.ftAsset;
-            tvIncomingFrom.setText("OTHER");
-            selectedToggleButtonFrom = Constants.ftAsset;
         } else if (checkedId == R.id.tbSite) {
             siteDialog = new SimpleListDialog(HotelIncomingStartActivity.this, fillSubSiteData(), toSiteSelection, R.string.select_subsite);
             siteDialog.showDialog();
             selectedToggleButtonTo = Constants.ftSite;
-        } else if (checkedId == R.id.tbAssetTo) {
-            GlobalState.recWHIncoming.to = Constants.ftAsset;
-            tvIncomingTo.setText("ROOM");
-            selectedToggleButtonTo = Constants.ftAsset;
-        } else if (checkedId == R.id.tbCarTo) {
-            GlobalState.recWHIncoming.to = Constants.ftAsset;
-            tvIncomingTo.setText("CAR");
-            selectedToggleButtonTo = Constants.ftAsset;
         }
     }
 

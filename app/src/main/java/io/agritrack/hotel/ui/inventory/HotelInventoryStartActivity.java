@@ -40,7 +40,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class HotelInventoryStartActivity extends AppCompatActivity {
     private MobileDB db;
-    private static final int Asset_Idx = 0, Consumable_Idx = 1;
+    private static final int /*Asset_Idx = 0,*/ Consumable_Idx = 0;
     private GridView gvInventoryMenu;
     private Spinner spSite;
 
@@ -73,7 +73,7 @@ public class HotelInventoryStartActivity extends AppCompatActivity {
         }
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
-        menuItemsList.add(new MenuItem(getString(R.string.item_inventory_asset), getString(R.string.up_item_inventory_asset), HotelInventoryAssetActivity.class));
+        //menuItemsList.add(new MenuItem(getString(R.string.item_inventory_asset), getString(R.string.up_item_inventory_asset), HotelInventoryAssetActivity.class));
         menuItemsList.add(new MenuItem("LINEN", getString(R.string.up_item_inventory_asset), HotelInventoryLinenActivity.class));
 
         InventoryMenuAdapter adapter = new InventoryMenuAdapter(this, menuItemsList);
@@ -85,7 +85,7 @@ public class HotelInventoryStartActivity extends AppCompatActivity {
                 Intent i = new Intent(appCtx, HotelInventoryStartActivity.class);
 
                 switch (position) {
-                    case Asset_Idx:
+                    /*case Asset_Idx:
                         updateState();
                         String vl = validate();
                         if (!Strings.isEmptyOrWhitespace(vl)) {
@@ -93,7 +93,7 @@ public class HotelInventoryStartActivity extends AppCompatActivity {
                         } else {
                             i = new Intent(appCtx, HotelInventoryAssetActivity.class);
                             break;
-                        }
+                        }*/
                     case Consumable_Idx:
                         updateState();
                         String vld = validate();
