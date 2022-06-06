@@ -115,7 +115,12 @@ public class BX6100Programmer  extends AbstractX9Programmer {
     }
 
     @Override
-    public void close() {
-        this.mUhfRManager.close();
+    public void stopProgramming() {
+        if (this.mUhfRManager != null) {
+            this.mUhfRManager.setCancleInventoryFilter();
+            this.mUhfRManager.asyncStopReading();
+            this.mUhfRManager.stopTagInventory();
+            this.mUhfRManager.setGen2session(false);
+        }
     }
 }

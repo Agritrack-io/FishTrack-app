@@ -445,7 +445,6 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     clearSelectedItem();
                     Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.schemeCode(g), Collectors.toCollection(ArrayList::new)));
-                    //Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> g.substring(0, 4), Collectors.toCollection(ArrayList::new)));
                     if (adapterInventoryItems == null) {
                         adapterInventoryItems = new TreelikeAdapter(HotelChangeStatusActivity.this, values);
                         xvInventoryItems.setAdapter(adapterInventoryItems);
@@ -488,7 +487,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
 
                 // add some general attributes describing the inventory, i.e. be similar to FISH WH inventory
                 jGenerator.writeStringField("user", LocalPreferences.getLoggedInUser("n/a"));
-                jGenerator.writeStringField("site", recWHInventory.subSite);
+                jGenerator.writeStringField("site", LocalPreferences.getCurrentSiteName());
                 jGenerator.writeNumberField("created_at", System.currentTimeMillis());
                 jGenerator.writeNumberField("latitude", recWHInventory.latitude);
                 jGenerator.writeNumberField("longitude", recWHInventory.longitude);

@@ -495,8 +495,10 @@ public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity
                         }
                         adapterIncomingItems.notifyDataSetChanged();
                     }
-                    tvGroupsCnt.setText(String.valueOf(adapterIncomingItems.getGroupCount()));
-                    tvItemsCnt.setText(String.valueOf(adapterIncomingItems.getItemsCount()));
+                    if (adapterIncomingItems != null) {
+                        tvGroupsCnt.setText(String.valueOf(adapterIncomingItems.getGroupCount()));
+                        tvItemsCnt.setText(String.valueOf(adapterIncomingItems.getItemsCount()));
+                    }
                     break;
                 case 1980:
                     if (!IsDemo) {

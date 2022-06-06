@@ -12,6 +12,7 @@ import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -190,50 +191,40 @@ public class FishingCageActivity extends AppCompatActivity {
     private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.confirm_cage, scannedCage));
-        builder.show();
         // Set up the input
         final EditText input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        AlertDialog dialog = builder.create();
+        AlertDialog dialog = builder.setTitle(getString(R.string.confirm_cage, scannedCage))
+                .setView(input)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        boolean wantToCloseDialog = false;
+                        cageCode = input.getText().toString();
+                        if (cageCode.equalsIgnoreCase(scannedCage)) {
+                            recFishing.typedCageCode = cageCode.toUpperCase(Locale.ROOT);
+                            recFishing.cageCode = recFishing.typedCageCode;
+                            input.getShowSoftInputOnFocus();
+                            wantToCloseDialog = true;
+                        } else {
+                            builder.setMessage("Wrong typing");
+                            wantToCloseDialog = false;
+                        }
+                        //Do stuff, possibly set wantToCloseDialog to true then...
+                        if (wantToCloseDialog)
+                            dialog.dismiss();
+                        //else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).create();
         dialog.show();
-//Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Boolean wantToCloseDialog = false;
-                cageCode = input.getText().toString();
-                if (cageCode.equalsIgnoreCase(scannedCage)) {
-                    recFishing.typedCageCode = cageCode.toUpperCase(Locale.ROOT);
-                    recFishing.cageCode = recFishing.typedCageCode;
-                    input.getShowSoftInputOnFocus();
-                    wantToCloseDialog = true;
-                } else {
-                    builder.setMessage("Wrong typing");
-                    wantToCloseDialog = false;
-                }
-                //Do stuff, possibly set wantToCloseDialog to true then...
-                if (wantToCloseDialog)
-                    dialog.dismiss();
-                //else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
     }
 
     private void initControlsFromState() {

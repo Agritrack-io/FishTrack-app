@@ -18,9 +18,12 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.TIME_WAITTAG_CMDREADBASE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.TIME_WAITTAG_CMDWRITE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.TIME_WAITTAG_WRITEPAGE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.USERBANK;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.widget.Toast;
 
+import com.google.android.gms.common.util.Strings;
 import com.handheld.uhfr.UHFRManager;
 import com.uhf.api.cls.Reader;
 
@@ -29,6 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import cn.pda.serialport.Tools;
+import io.agritrack.R;
 import io.agritrack.caen.pojo.RFIDTag;
 
 public class BX6100Commander extends AbstractCAENCommander {
@@ -287,8 +291,14 @@ public class BX6100Commander extends AbstractCAENCommander {
     public boolean startReading() {
         if (this.mUhfRManager == null) {
             this.mUhfRManager = UHFRManager.getInstance();
+            if (this.mUhfRManager == null){
+                CToast(null, render("Couldn't find RFID module, please retry!!"), Toast.LENGTH_SHORT);
+                return false;
+            }
         }
-        this.mUhfRManager.setCancleInventoryFilter();
+        if (!Strings.isEmptyOrWhitespace(this.tagToSearch)) {
+            this.mUhfRManager.setCancleInventoryFilter();
+        }
         this.mUhfRManager.setGen2session(true);
         Reader.READER_ERR result = this.mUhfRManager.asyncStartReading();
 
