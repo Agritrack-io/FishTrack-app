@@ -2,6 +2,7 @@
     <string name="empty" />
     <string name="app_name">FishTrack</string>
     <string name="app_name_tomato">TomatoTrack</string>
+    <string name="app_name_hotel">LinenTrack</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
 
     <string name="label_copyright_splash">Copyright AgriTrack v1.0.0</string>
@@ -589,5 +590,6 @@
     <string name="pending_correlation_tx_upload_failure_alert">Failed to upload pending correlations!</string>
     <string name="pending_fishing_tx_upload_failure_alert">Failed to upload pending fishing tx!</string>
     <string name="pending_fishing_tx_upload_completed">Pending fishing tx succesfully uploaded!</string>
+
 
 </resources>

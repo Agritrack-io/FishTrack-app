@@ -27,6 +27,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,7 +76,6 @@ public class HotelSearchActivity extends AppCompatActivity {
     private Button btnSearchAsset;
     private String selectedAssetType;
     private String selectedBarcode = "";
-    private String epcPrefix = "BE0019A0000";
     private ProgressBar searchProgressBar;
     private boolean isScanning = false;
 
@@ -99,7 +99,28 @@ public class HotelSearchActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.allNames()) {
+        etAssetBarcode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (etAssetBarcode.getText().toString().trim().length() < 8) {
+                        etAssetBarcode.setError("Type 8 digits");
+                    } else {
+                        // your code here
+                        etAssetBarcode.setError(null);
+                    }
+                } else {
+                    if (etAssetBarcode.getText().toString().trim().length() < 8) {
+                        etAssetBarcode.setError("Type 8 digits");
+                    } else {
+                        // your code here
+                        etAssetBarcode.setError(null);
+                    }
+                }
+            }
+        });
+
+        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.distinctNamesOnly()) {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -141,11 +162,13 @@ public class HotelSearchActivity extends AppCompatActivity {
         configFooter();
     }
 
-    private void loadLinenByTypeFromLocalDB(String assetType) {
+    private void loadLinenByTypeFromLocalDB(String description) {
         // load assets for current Site and filter by asset type (if selected).
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType);
+        this.rvAssets.setAdapter(null);
+        this.rvAssets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        List<Asset> assetsList = db.assetDAO().getLinensForType(description);
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfidBarcode)).collect(Collectors.toList());
+            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfid)).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
@@ -276,7 +299,7 @@ public class HotelSearchActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
-        selectedBarcode = etAssetBarcode.getText().toString();
+        selectedBarcode = adapterAssets.getSelectedValue() != null ? adapterAssets.getSelectedValue() : etAssetBarcode.getText().toString();
         if (Strings.isEmptyOrWhitespace(selectedBarcode)) {
             runOnUiThread(() -> CToast(getAppContext(), render(R.string.no_epc_filter_selected), Toast.LENGTH_LONG));
             return;
@@ -286,7 +309,7 @@ public class HotelSearchActivity extends AppCompatActivity {
             isScanning = true;
             btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             btnSearchAsset.setText(R.string.stop_search);
-            uhfReader.setFilterEPC(epcPrefix + selectedBarcode);
+            uhfReader.setFilterEPC(selectedBarcode);
             uhfReader.startSearching();
             mScanHandler.postDelayed(search_runnable, 0);
         } else {

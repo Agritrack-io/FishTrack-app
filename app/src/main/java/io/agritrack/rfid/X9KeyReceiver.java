@@ -33,7 +33,9 @@ public class X9KeyReceiver extends BroadcastReceiver {
                 startTime = System.currentTimeMillis();
                 //this.clickBtn.callOnClick();
 
-                this.onClick.onClick(null);
+                if (this.onClick != null) {
+                    this.onClick.onClick(null);
+                }
             } else if (keyDown) {
                 startTime = System.currentTimeMillis();
             } else {

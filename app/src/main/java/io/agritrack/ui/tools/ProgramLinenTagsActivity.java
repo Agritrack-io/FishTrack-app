@@ -231,13 +231,16 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        super.onStop();
+        scanner.HighEnergy();
         //unregister the receiver
         this.stopScanner();
         if (x9programmer != null) {
-            x9programmer.close();
+            x9programmer.stopProgramming();
         }
-
-        super.onStop();
+        //unregister the receiver
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     @SuppressLint("StringFormatMatches")
@@ -254,7 +257,7 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Boolean wantToCloseDialog = false;
+                        boolean wantToCloseDialog = false;
                         String code = input.getText().toString();
                         if (code.equalsIgnoreCase("2222")) {
                             btnWriteEPC.setEnabled(true);
@@ -294,6 +297,15 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
+            //Stop scanning since we navigate to next activity
+            if (mScanHandler!=null) {
+                stopScanner();
+            }
+
+            //Stop scanning since we navigate to previous activity
+            if (scanner != null) {
+                scanner.stopReading();
+            }
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(i);
         });
@@ -301,6 +313,7 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
 
     protected void onClick(View view) {
         scanner = new SingleShotScanner(mScanHandler);
+        scanner.LowEnergy();
         scanner.startReading();
         mScanHandler.postDelayed(scanner, 0);
     }

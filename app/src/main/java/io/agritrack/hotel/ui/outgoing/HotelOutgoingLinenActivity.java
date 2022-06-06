@@ -531,8 +531,10 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity {
                         }
                         adapterOutgoingItems.notifyDataSetChanged();
                     }
-                    tvGroupsCnt.setText(String.valueOf(adapterOutgoingItems.getGroupCount()));
-                    tvItemsCnt.setText(String.valueOf(adapterOutgoingItems.getItemsCount()));
+                    if (adapterOutgoingItems != null) {
+                        tvGroupsCnt.setText(String.valueOf(adapterOutgoingItems.getGroupCount()));
+                        tvItemsCnt.setText(String.valueOf(adapterOutgoingItems.getItemsCount()));
+                    }
                     break;
                 case 1980:
                     if (!IsDemo) {
