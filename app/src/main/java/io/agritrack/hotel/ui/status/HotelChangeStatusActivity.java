@@ -452,9 +452,11 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                         adapterInventoryItems.appendItems(values);
                     }
                     adapterInventoryItems.notifyDataSetChanged();
-                    tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
-                    tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
-                    totalItems = Math.toIntExact(adapterInventoryItems.getItemsCount());
+                    if (adapterInventoryItems != null) {
+                        tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
+                        tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
+                        totalItems = Math.toIntExact(adapterInventoryItems.getItemsCount());
+                    }
                     break;
                 case 1980:
                     if (!IsDemo) {
