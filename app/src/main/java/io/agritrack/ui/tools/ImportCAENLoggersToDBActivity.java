@@ -355,6 +355,7 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
 
             if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
+                db.iotLoggerDAO().deleteAll();
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_import_daqta_loggers), Toast.LENGTH_LONG));

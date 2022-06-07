@@ -351,6 +351,7 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ResourceType")
     private QualityRecord updateState() {
         QualityRecord qualityRecord = GlobalState.recQuality;
 
@@ -394,7 +395,7 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
             qualityRecord.problematicFish = Integer.valueOf(etProblematicFish.getText().toString());
         }
 
-        if (rgTotalEvaluation.getCheckedRadioButtonId() > -1) {
+        if (rgTotalEvaluation.getCheckedRadioButtonId() > 0) {
             int radioButtonID = rgTotalEvaluation.getCheckedRadioButtonId();
             View radioButton = rgTotalEvaluation.findViewById(radioButtonID);
             int idx = rgTotalEvaluation.indexOfChild(radioButton);

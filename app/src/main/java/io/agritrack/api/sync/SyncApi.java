@@ -43,7 +43,7 @@ public interface SyncApi {
     Call<AssetDTO> getAssetById(@Path("assetId") String assetId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/asset/{siteId}")
+    @GET("/asset/{siteId}?level=2")
     Call<List<AssetDTO>> getAssetsBySite(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")

@@ -1,16 +1,20 @@
 package io.agritrack.data.dto.tx;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import io.agritrack.data.model.tx.QualityTransaction;
 
 public class QualityTxDTO {
 
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+
     public UUID id;
-    public Date sample_date;
+    public String sample_date;
     public String plot;
     public List<String> quality_bins = new LinkedList<String>();
     public Integer no_quality_bins;
@@ -47,7 +51,7 @@ public class QualityTxDTO {
     public Integer problematic_fish;
     public String overall_evaluation;
     public String remarks;
-    public String site;
+    public String plant;
     public String user;
     public Double longitude;
     public Double latitude;
@@ -91,9 +95,9 @@ public class QualityTxDTO {
         qualityTxDto.problematic_fish = quality.problematicFish;
         qualityTxDto.overall_evaluation = quality.overallEvaluation;
         qualityTxDto.remarks = quality.remarks;
-        qualityTxDto.site = quality.site;
+        qualityTxDto.plant = quality.site;
         qualityTxDto.user = quality.user;
-        qualityTxDto.sample_date = quality.sampleDate;
+        qualityTxDto.sample_date = dateFormat.format(quality.sampleDate);
         qualityTxDto.longitude = quality.longitude;
         qualityTxDto.latitude = quality.latitude;
 

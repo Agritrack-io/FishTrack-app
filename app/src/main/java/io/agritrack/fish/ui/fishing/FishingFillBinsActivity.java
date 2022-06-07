@@ -69,8 +69,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
 
-    private BluetoothAdapter bluetoothAdapter;
-    private Set<BluetoothDevice> pairedDevices;
+//    private BluetoothAdapter bluetoothAdapter;
+//    private Set<BluetoothDevice> pairedDevices;
 
     private Button btnCurrentBinScan, btnAddCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
@@ -219,47 +219,47 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         assignCtrlVars();
 
         // enable Bluetooth Features
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter == null) {
-            ivBT.setVisibility(View.INVISIBLE);
-            CToast(this, render("Bluetooth is NOT Available"), Toast.LENGTH_SHORT);
-        } else {
-            ivBT.setVisibility(View.VISIBLE);
-            CToast(this, render("Bluetooth is Available"), Toast.LENGTH_SHORT);
-
-            // Set image according to bluetooth status (on/off)
-            if (bluetoothAdapter.isEnabled()) {
-                ivBT.setColorFilter(getColor(R.color.agri_blue));
-            } else {
-                ivBT.setColorFilter(getColor(R.color.agri_red));
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    ActivityCompat.requestPermissions(FishingFillBinsActivity.this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ENABLE_BT);
-                    // here to request the missing permissions, and then overriding
-                    // public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-
-                // Intent to On Bluetooth
-                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                //  startActivityForResult(intent, REQUEST_ENABLE_BT);
-
-                activityResultLauncher.launch(intent);
-
-//            mOnBtn.setOnClickListener(this);          // Turn on Bluetooth btn click
-//            mDiscoverBtn.setOnClickListener(this);    // Discover bluetooth btn click
-//            mOffBtn.setOnClickListener(this);         // Turn off Bluetooth btn click
-//            mPairedBtn.setOnClickListener(this);      // Get Paired devices button click
-            }
-
-
-            if (bluetoothAdapter.isDiscovering()) {
-                bluetoothAdapter.cancelDiscovery();
-            }
-            bluetoothAdapter.startDiscovery();
-        }
+//        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        if (bluetoothAdapter == null) {
+//            ivBT.setVisibility(View.INVISIBLE);
+//            CToast(this, render("Bluetooth is NOT Available"), Toast.LENGTH_SHORT);
+//        } else {
+//            ivBT.setVisibility(View.VISIBLE);
+//            CToast(this, render("Bluetooth is Available"), Toast.LENGTH_SHORT);
+//
+//            // Set image according to bluetooth status (on/off)
+//            if (bluetoothAdapter.isEnabled()) {
+//                ivBT.setColorFilter(getColor(R.color.agri_blue));
+//            } else {
+//                ivBT.setColorFilter(getColor(R.color.agri_red));
+//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
+//                    // TODO: Consider calling
+//                    ActivityCompat.requestPermissions(FishingFillBinsActivity.this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ENABLE_BT);
+//                    // here to request the missing permissions, and then overriding
+//                    // public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+//                    // to handle the case where the user grants the permission. See the documentation
+//                    // for ActivityCompat#requestPermissions for more details.
+//                    return;
+//                }
+//
+//                // Intent to On Bluetooth
+//                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//                //  startActivityForResult(intent, REQUEST_ENABLE_BT);
+//
+//                activityResultLauncher.launch(intent);
+//
+////            mOnBtn.setOnClickListener(this);          // Turn on Bluetooth btn click
+////            mDiscoverBtn.setOnClickListener(this);    // Discover bluetooth btn click
+////            mOffBtn.setOnClickListener(this);         // Turn off Bluetooth btn click
+////            mPairedBtn.setOnClickListener(this);      // Get Paired devices button click
+//            }
+//
+//
+//            if (bluetoothAdapter.isDiscovering()) {
+//                bluetoothAdapter.cancelDiscovery();
+//            }
+//            bluetoothAdapter.startDiscovery();
+//        }
         //**************************************************
 
 
