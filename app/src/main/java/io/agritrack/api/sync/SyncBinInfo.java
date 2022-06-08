@@ -12,9 +12,9 @@ import io.agritrack.data.dto.BinInfoDTO;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class SyncBinsByPackagingSite extends BaseSyncCallBack<List<BinInfoDTO>>{
+public class SyncBinInfo extends BaseSyncCallBack<List<BinInfoDTO>>{
 
-    public SyncBinsByPackagingSite(MutableLiveData<String> syncResult) {
+    public SyncBinInfo(MutableLiveData<String> syncResult) {
         super(syncResult);
     }
 

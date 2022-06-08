@@ -6,16 +6,12 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,7 +30,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -45,7 +40,6 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Set;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -63,14 +57,9 @@ import io.agritrack.ui.service.LocalPreferences;
 
 
 public class FishingFillBinsActivity extends AppCompatActivity {
-    private static final int REQUEST_ENABLE_BT = 0;
-    private static final int REQUEST_DISCOVER_BT = 1;
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-
-//    private BluetoothAdapter bluetoothAdapter;
-//    private Set<BluetoothDevice> pairedDevices;
 
     private Button btnCurrentBinScan, btnAddCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
@@ -90,36 +79,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private boolean isClicked = false;
 
 
-    // Create a BroadcastReceiver for ACTION_FOUND.
-    private final BroadcastReceiver btReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Discovery has found a device. Get the BluetoothDevice object and its info from the Intent.
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress(); // MAC address
-            } else if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-                switch(state) {
-                    case BluetoothAdapter.STATE_OFF:
-
-                        break;
-                    case BluetoothAdapter.STATE_TURNING_OFF:
-
-                        break;
-                    case BluetoothAdapter.STATE_ON:
-
-                        break;
-                    case BluetoothAdapter.STATE_TURNING_ON:
-
-                        break;
-                }
-
-            }
-        }
-    };
-
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     //
@@ -132,76 +91,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                     Intent data = result.getData();
                 }
             });
-
-/*
-    View.OnClickListener ivBTListener = v -> {
-        switch (v.getId()) {
-
-            // Turn on Bluetooth btn click
-            case R.id.ivBT:
-
-                if (!bluetoothAdapter.isEnabled()) {
-
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        ActivityCompat.requestPermissions(FishingFillBinsActivity.this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ENABLE_BT);
-                        // here to request the missing permissions, and then overriding
-                        // public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
-
-                    // Intent to On Bluetooth
-                    Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    //  startActivityForResult(intent, REQUEST_ENABLE_BT);
-
-                    activityResultLauncher.launch(intent);
-                } else {
-                    CToast(this, render("Bluetooth is already ON."), Toast.LENGTH_SHORT);
-                }
-                break;
-
-            // Discover bluetooth btn click
-            case R.id.discoverableBtn:
-
-                if (!bluetoothAdapter.isDiscovering()) {
-                    CToast(this, render("Making Your BT Device Discoverable."), Toast.LENGTH_SHORT);
-                    Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                    //startActivityForResult(intent ,REQUEST_DISCOVER_BT);
-                    activityResultLauncher.launch(intent);
-                }
-                break;
-
-            // Turn off Bluetooth btn click
-            case R.id.offBtn:
-
-                if (bluetoothAdapter.isEnabled()) {
-                    bluetoothAdapter.disable();
-                    CToast(this, render("Turning Bluetooth Off."), Toast.LENGTH_SHORT);
-                    ivBT.setColorFilter(getColor(R.color.agri_red));
-                } else {
-                    CToast(this, render("Bluetooth is already off."), Toast.LENGTH_SHORT);
-                }
-
-                break;
-            // Get Paired devices button click
-            case R.id.pairedBtn:
-
-                if (bluetoothAdapter.isEnabled()) {
-                    mPairedTv.setText("Paired Devices");
-                    Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
-                    for (BluetoothDevice device : devices) {
-                        mPairedTv.append("\nDevice: " + device.getName() + ", " + device);
-                    }
-                } else {
-                    //bluetooth is off so can't get paired devices
-                    CToast(this, render("Turn ON Bluetooth to get paired devices."), Toast.LENGTH_SHORT);
-                }
-                break;
-        }
-    };
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,51 +106,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         // get  references of the controls
         assignCtrlVars();
-
-        // enable Bluetooth Features
-//        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//        if (bluetoothAdapter == null) {
-//            ivBT.setVisibility(View.INVISIBLE);
-//            CToast(this, render("Bluetooth is NOT Available"), Toast.LENGTH_SHORT);
-//        } else {
-//            ivBT.setVisibility(View.VISIBLE);
-//            CToast(this, render("Bluetooth is Available"), Toast.LENGTH_SHORT);
-//
-//            // Set image according to bluetooth status (on/off)
-//            if (bluetoothAdapter.isEnabled()) {
-//                ivBT.setColorFilter(getColor(R.color.agri_blue));
-//            } else {
-//                ivBT.setColorFilter(getColor(R.color.agri_red));
-//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
-//                    // TODO: Consider calling
-//                    ActivityCompat.requestPermissions(FishingFillBinsActivity.this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, REQUEST_ENABLE_BT);
-//                    // here to request the missing permissions, and then overriding
-//                    // public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-//                    // to handle the case where the user grants the permission. See the documentation
-//                    // for ActivityCompat#requestPermissions for more details.
-//                    return;
-//                }
-//
-//                // Intent to On Bluetooth
-//                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//                //  startActivityForResult(intent, REQUEST_ENABLE_BT);
-//
-//                activityResultLauncher.launch(intent);
-//
-////            mOnBtn.setOnClickListener(this);          // Turn on Bluetooth btn click
-////            mDiscoverBtn.setOnClickListener(this);    // Discover bluetooth btn click
-////            mOffBtn.setOnClickListener(this);         // Turn off Bluetooth btn click
-////            mPairedBtn.setOnClickListener(this);      // Get Paired devices button click
-//            }
-//
-//
-//            if (bluetoothAdapter.isDiscovering()) {
-//                bluetoothAdapter.cancelDiscovery();
-//            }
-//            bluetoothAdapter.startDiscovery();
-//        }
-        //**************************************************
-
 
         // initialize the map for each bin's loads.
         loadsMap = new BinLoadsMap();
@@ -385,19 +229,14 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
-
-        /*if (btReceiver != null)
-            unregisterReceiver(btReceiver);*/
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
