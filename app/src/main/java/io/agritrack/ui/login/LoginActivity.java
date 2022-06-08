@@ -39,7 +39,7 @@ import io.agritrack.api.login.AuthApi;
 import io.agritrack.api.sync.EncodingSchemeCallBack;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
-import io.agritrack.api.sync.SyncBinsByPackagingSite;
+import io.agritrack.api.sync.SyncBinInfo;
 import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
 import io.agritrack.api.sync.SyncCustomersCallBack;
@@ -73,7 +73,6 @@ import io.agritrack.ui.login.api.AuthInfoRS;
 import io.agritrack.ui.login.api.LoginRQ;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.BlueToothScaleActivity;
 import io.agritrack.ui.tools.CAENLoggerActivity;
 import io.agritrack.ui.tools.ImportCAENLoggersToDBActivity;
 import io.agritrack.ui.tools.ProgramLinenTagsActivity;
@@ -184,11 +183,6 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                     finish();
                 } else if ("linen".equals(username) && "8888".equals(pin)) {
                     Intent i = new Intent(getApplicationContext(), ProgramLinenTagsActivity.class);
-                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-                    startActivity(i);
-                    finish();
-                } else if ("scale".equals(username) && "8888".equals(pin)) {
-                    Intent i = new Intent(getApplicationContext(), BlueToothScaleActivity.class);
                     i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
                     startActivity(i);
                     finish();
@@ -346,9 +340,9 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             Call<List<FoodSkuDTO>> syncFoodSkuAsyncCall = syncService.getFoodSkus("Bearer " + token);
             syncFoodSkuAsyncCall.enqueue(new SyncFoodSkuCallBack(this.syncResult));
 
-            // sync Bin Info By Plant
-            Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getBinsByPlant(siteId, "Bearer " + token);
-            syncBinsByPlantAsyncCall.enqueue(new SyncBinsByPackagingSite(this.syncResult));
+            // sync All Bin Info
+            Call<List<BinInfoDTO>> syncAllsBinInfoAsyncCall = syncService.getCompleteBinLedger("Bearer " + token);
+            syncAllsBinInfoAsyncCall.enqueue(new SyncBinInfo(this.syncResult));
 
             goToProductMenu();
 

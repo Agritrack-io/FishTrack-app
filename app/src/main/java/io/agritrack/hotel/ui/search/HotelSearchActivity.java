@@ -273,33 +273,34 @@ public class HotelSearchActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        super.onStart();
         // Listen for Fn key press/release;
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.rfid.FUN_KEY");
         this.registerReceiver(keyReceiver, filter);
         this.uhfReader.HighPowerLevel();
-        super.onStart();
     }
 
     @Override
     protected void onStop() {
-        this.uhfReader.LowPowerLevel();
+        super.onStop();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
-        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
-        super.onDestroy();
     }
 
     protected void onClick(View view) {
-        selectedBarcode = adapterAssets.getSelectedValue() != null ? adapterAssets.getSelectedValue() : etAssetBarcode.getText().toString();
+        if (adapterAssets != null) {
+            selectedBarcode = adapterAssets.getSelectedValue() != null ? adapterAssets.getSelectedValue() : etAssetBarcode.getText().toString();
+        }
         if (Strings.isEmptyOrWhitespace(selectedBarcode)) {
             runOnUiThread(() -> CToast(getAppContext(), render(R.string.no_epc_filter_selected), Toast.LENGTH_LONG));
             return;

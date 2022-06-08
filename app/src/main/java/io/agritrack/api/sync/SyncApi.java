@@ -3,7 +3,6 @@ package io.agritrack.api.sync;
 import java.util.List;
 import java.util.UUID;
 
-import io.agritrack.data.dao.wh.FoodSkuDAO;
 import io.agritrack.data.dto.AppUserDTO;
 import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.CageDetailsDTO;
@@ -51,6 +50,10 @@ public interface SyncApi {
     Call<List<AssetDTO>> getAssetsBySiteAndType(@Path("siteId") UUID siteId, @Path("assetType") String assetType, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/asset/type/HARVEST_BIN")
+    Call<List<AssetDTO>> getAssetsByHarvestBinType(@Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/user/site/{siteId}")
     Call<List<AppUserDTO>> getUsersBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
@@ -75,8 +78,8 @@ public interface SyncApi {
     Call<List<CageDetailsDTO>> getCageDetailsBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/transport/bin-info/plant/{siteId}")
-    Call<List<BinInfoDTO>> getBinsByPlant(@Path("siteId") UUID siteId, @Header("Authorization") String token);
+    @GET("/transport/bin-info")
+    Call<List<BinInfoDTO>> getCompleteBinLedger(@Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/transport/bin-info/site/{siteId}")
@@ -93,8 +96,4 @@ public interface SyncApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/encoding/customer/name/{clusterName}")
     Call<List<EncodingSchemeDTO>> getEncodingSchemeByCustomerName(@Path("clusterName") String customerName, @Header("Authorization") String token);
-
-
-
-
 }

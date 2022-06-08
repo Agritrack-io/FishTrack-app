@@ -27,31 +27,20 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
-import io.agritrack.api.sync.SyncBinsByPackagingSite;
-import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
 import io.agritrack.api.sync.SyncCustomersCallBack;
 import io.agritrack.api.sync.SyncEmployeesCallBack;
-import io.agritrack.api.sync.SyncHarvestRequestCallBack;
-import io.agritrack.api.sync.SyncIOTLoggersCallBack;
-import io.agritrack.api.sync.SyncSpeciesCallBack;
 import io.agritrack.api.sync.SyncSuppliersCallBack;
 import io.agritrack.api.sync.SyncUsersCallBack;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.AppUserDTO;
-import io.agritrack.data.dto.BinInfoDTO;
-import io.agritrack.data.dto.CageDetailsDTO;
-import io.agritrack.data.dto.HarvestRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.CustomerDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
-import io.agritrack.data.dto.common.IotLoggerDTO;
-import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.dialog.SupportDialog;
@@ -222,10 +211,6 @@ public class HotelHomeActivity extends AppCompatActivity {
             Call<List<SiteDTO>> syncSitesAsyncCall = syncService.getSitesByCluster(clusterId, "Bearer " + token);
             syncSitesAsyncCall.enqueue(new SyncClusterSitesCallBack(this.syncResult));
 
-            // sync harvestRequests for current Site
-            Call<List<HarvestRequestDTO>> syncHarvestResAsyncCall = syncService.getHarvestRequestsBySiteId(siteId, "Bearer " + token);
-            syncHarvestResAsyncCall.enqueue(new SyncHarvestRequestCallBack(this.syncResult));
-
             // sync users
             Call<List<AppUserDTO>> syncUsersAsyncCall = syncService.getUsersBySiteId(siteId, "Bearer " + token);
             syncUsersAsyncCall.enqueue(new SyncUsersCallBack(this.syncResult));
@@ -245,23 +230,6 @@ public class HotelHomeActivity extends AppCompatActivity {
             // sync assets  (cages, nets, bins, platforms)
             Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
             syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
-
-            // sync Cage Details
-            Call<List<CageDetailsDTO>> syncCageDetailsAsyncCall = syncService.getCageDetailsBySiteId(siteId, "Bearer " + token);
-            syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
-
-            // sync Cage Details
-            Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getBinsByPlant(siteId, "Bearer " + token);
-            syncBinsByPlantAsyncCall.enqueue(new SyncBinsByPackagingSite(this.syncResult));
-
-            // sync fish species
-            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.getProduct(), "Bearer " + token);
-            syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
-
-            // sync IOT Loggers
-            Call<List<IotLoggerDTO>> syncIOTLoggersAsyncCall = syncService.getIOTLoggersBySiteId(siteId, "Bearer " + token);
-            syncIOTLoggersAsyncCall.enqueue(new SyncIOTLoggersCallBack(this.syncResult));
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

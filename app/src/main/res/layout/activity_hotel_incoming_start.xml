@@ -118,20 +118,6 @@ tools:context=".hotel.ui.incoming.HotelIncomingStartActivity">
                 app:singleSelection="true">
 
                 <ToggleButton
-                    android:id="@+id/tbAvramar"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="HOTEL"
-                    android:textOn="HOTEL"
-                    android:textSize="@dimen/text_view_font_size_medium"
-                    android:visibility="gone" />
-
-                <ToggleButton
                     android:id="@+id/tbSupplier"
                     android:layout_width="120dp"
                     android:layout_height="60dp"
@@ -143,22 +129,6 @@ tools:context=".hotel.ui.incoming.HotelIncomingStartActivity">
                     android:textOff="@string/laundry"
                     android:textOn="@string/laundry"
                     android:textSize="@dimen/text_view_font_size_medium" />
-
-
-                <ToggleButton
-                    android:id="@+id/tbAssetFrom"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="OTHER"
-                    android:textOn="OTHER"
-                    android:textSize="@dimen/text_view_font_size_medium"
-                    android:visibility="gone"/>
-
 
             </io.agritrack.ui.custom.ToggleGroup>
 
@@ -248,35 +218,6 @@ tools:context=".hotel.ui.incoming.HotelIncomingStartActivity">
                     android:textOff="@string/menu_title_warehouse"
                     android:textOn="@string/menu_title_warehouse"
                     android:textSize="@dimen/text_view_font_size_medium" />
-
-                <ToggleButton
-                    android:id="@+id/tbAssetTo"
-                    android:layout_width="150dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="ROOM"
-                    android:textOn="ROOM"
-                    android:textSize="@dimen/text_view_font_size_medium"
-                    android:visibility="gone"/>
-
-                <ToggleButton
-                    android:id="@+id/tbCarTo"
-                    android:layout_width="150dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/togglebutton_selector"
-                    android:gravity="center"
-                    android:textColor="@drawable/button_text_color"
-                    android:textOff="CAR"
-                    android:textOn="CAR"
-                    android:textSize="@dimen/text_view_font_size_medium"
-                    android:visibility="gone"/>
-
 
             </io.agritrack.ui.custom.ToggleGroup>
 

@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ import io.agritrack.api.sync.PendingCorrelationTxCallBack;
 import io.agritrack.api.sync.PendingFishingTxCallBack;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
-import io.agritrack.api.sync.SyncBinsByPackagingSite;
+import io.agritrack.api.sync.SyncBinInfo;
 import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
 import io.agritrack.api.sync.SyncCustomersCallBack;
@@ -64,13 +63,11 @@ import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.data.dto.wh.FoodSkuDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
-import io.agritrack.data.model.wh.FoodSku;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
@@ -331,20 +328,20 @@ public class FishHomeActivity extends AppCompatActivity {
             syncCustomersAsyncCall.enqueue(new SyncCustomersCallBack(this.syncResult));
 
             // sync assets  (cages, nets, bins, platforms)
-            Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
-            syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
+//            Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
+//            syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
+
+            // sync only Harvest_Bins assets
+            Call<List<AssetDTO>> syncHarvestBinsAsyncCall = syncService.getAssetsByHarvestBinType("Bearer " + token);
+            syncHarvestBinsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
 
             // sync Cage Details
             Call<List<CageDetailsDTO>> syncCageDetailsAsyncCall = syncService.getCageDetailsBySiteId(siteId, "Bearer " + token);
             syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
 
-            // sync Bin Info By Target Site
-            Call<List<BinInfoDTO>> syncBinsByTargetSiteAsyncCall = syncService.getBinsByTargetSite(siteId, "Bearer " + token);
-            syncBinsByTargetSiteAsyncCall.enqueue(new SyncBinsByPackagingSite(this.syncResult));
-
-            // sync Bin Info By Plant
-            Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getBinsByPlant(siteId, "Bearer " + token);
-            syncBinsByPlantAsyncCall.enqueue(new SyncBinsByPackagingSite(this.syncResult));
+            // sync Bin Info (complete BinLedger)
+            Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getCompleteBinLedger("Bearer " + token);
+            syncBinsByPlantAsyncCall.enqueue(new SyncBinInfo(this.syncResult));
 
             // sync fish species
             Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.getProduct(), "Bearer " + token);
