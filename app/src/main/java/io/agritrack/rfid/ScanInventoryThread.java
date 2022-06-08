@@ -34,6 +34,14 @@ public class ScanInventoryThread implements Runnable {
         mScanHandler = handler;
     }
 
+    public void LowEnergy() {
+        uhfReader.LowPowerLevel();
+    }
+
+    public void HighEnergy() {
+        uhfReader.HighPowerLevel();
+    }
+
     public boolean startReading() {
         if (uhfReader!=null) {
             this.scanInProgress = true;
@@ -77,11 +85,11 @@ public class ScanInventoryThread implements Runnable {
                             if (epcStr.length() <= (encodingWth + encodingIdx)) {
                                 continue;
                             }
-                            if (encodingIdx<0){
+//                            if (encodingIdx<0){
                                 epcValues.add(epcStr);
-                            } else {
+                           /* } else {
                                 epcValues.add(epcStr.substring(encodingIdx));
-                            }
+                            }*/
                         }
                     }
 

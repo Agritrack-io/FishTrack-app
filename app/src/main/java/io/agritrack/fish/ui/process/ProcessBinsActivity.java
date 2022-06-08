@@ -199,14 +199,6 @@ public class  ProcessBinsActivity extends AppCompatActivity {
             unregisterReceiver(keyReceiver);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //unregister the receiver
-        if(keyReceiver != null)
-            unregisterReceiver(keyReceiver);
-    }
-
     private void clearSelectedItem() {
         if (selectedItem != null) {
             selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
@@ -267,6 +259,7 @@ public class  ProcessBinsActivity extends AppCompatActivity {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             scanner_runnable = new ScanInventoryThread(mScanHandler);
             scanner_runnable.setFilter(Filters.RFID_BIN);
+            scanner_runnable.LowEnergy();
             scanner_runnable.startReading();
             scanButton.setText(R.string.stop_scan);
         } else if (!scanner_runnable.isReading()) {
