@@ -82,8 +82,6 @@ public class FishingBinsActivity extends AppCompatActivity {
     private InfoDialog infoDialog;
     private ImageView ivInfo;
 
-    private ScanInventoryThread scanner_runnable;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

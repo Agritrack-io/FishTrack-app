@@ -6,13 +6,11 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,15 +24,10 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.Site;
 import io.agritrack.data.model.common.Customer;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.TransportationRecord;
-import io.agritrack.fish.ui.transport.TransportStartActivity;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.state.ShippingRecord;
-import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class ShippingDetailsActivity extends AppCompatActivity {

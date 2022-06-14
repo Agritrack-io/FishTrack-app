@@ -21,7 +21,6 @@ import java.util.Set;
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
-import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
@@ -34,7 +33,7 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recTransport;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-public class TransportStartActivity extends AppCompatActivity {
+public class TransportInfoActivity extends AppCompatActivity {
 
     private MobileDB db;
     private SwitchCompat swRefrigeratedTruck, swParallelTransport;
@@ -90,7 +89,7 @@ public class TransportStartActivity extends AppCompatActivity {
         initControlsFromState();
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(TransportStartActivity.this);
+            supportDialog = new SupportDialog(TransportInfoActivity.this);
             supportDialog.showDialog();
         });
 
@@ -116,14 +115,14 @@ public class TransportStartActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), TransportBinsActivity.class);
+                Intent i = new Intent(getApplicationContext(), TransportDriverConfirmActivity.class);
                 startActivity(i);
             }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), TransportBinsActivity.class);
             startActivity(i);
         });
     }
@@ -155,33 +154,29 @@ public class TransportStartActivity extends AppCompatActivity {
         swParallelTransport.setChecked(trns.parallelTransport);
     }
 
-    private TransportationRecord updateState() {
-        TransportationRecord transportationRecord = GlobalState.initTransportationRecord();
-
+    private  void updateState() {
         if (spPackagingSite.getSelectedItem() != null) {
-            transportationRecord.packagingSite = spPackagingSite.getSelectedItem().toString();
+            recTransport.packagingSite = spPackagingSite.getSelectedItem().toString();
         }
-        transportationRecord.sitePos = spPackagingSite.getSelectedItemPosition();
+        recTransport.sitePos = spPackagingSite.getSelectedItemPosition();
 
         if (etDriverName.getText() != null) {
-            transportationRecord.driverName = etDriverName.getText().toString();
-            LocalPreferences.addDriverName(transportationRecord.driverName);
+            recTransport.driverName = etDriverName.getText().toString();
+            LocalPreferences.addDriverName(recTransport.driverName);
         }
         if (etDriverPhone.getText() != null) {
-            transportationRecord.driverPhone = etDriverPhone.getText().toString();
-            LocalPreferences.addDriverPhone(transportationRecord.driverPhone);
+            recTransport.driverPhone = etDriverPhone.getText().toString();
+            LocalPreferences.addDriverPhone(recTransport.driverPhone);
         }
         if (etLicensePlate.getText() != null) {
-            transportationRecord.licensePlate = etLicensePlate.getText().toString();
-            LocalPreferences.addLicensePlate(transportationRecord.licensePlate);
+            recTransport.licensePlate = etLicensePlate.getText().toString();
+            LocalPreferences.addLicensePlate(recTransport.licensePlate);
         }
         if (etSecurityClip.getText() != null) {
-            transportationRecord.clipNumber = etSecurityClip.getText().toString();
+            recTransport.clipNumber = etSecurityClip.getText().toString();
         }
-        transportationRecord.refrigeratedTruck = swRefrigeratedTruck.isChecked();
-        transportationRecord.parallelTransport = swParallelTransport.isChecked();
-
-        return transportationRecord;
+        recTransport.refrigeratedTruck = swRefrigeratedTruck.isChecked();
+        recTransport.parallelTransport = swParallelTransport.isChecked();
     }
 
     private String validate() {

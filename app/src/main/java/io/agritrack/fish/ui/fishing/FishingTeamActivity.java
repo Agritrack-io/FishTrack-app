@@ -142,7 +142,7 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
     private void initControlsFromState() {
 
-        if (GlobalState.recFishing.fishingTeam != null) {
+        if (GlobalState.recFishing.fishingTeam != null && !GlobalState.recFishing.fishingTeam.isEmpty()) {
             int[] matchingIndices = IntStream.range(0, this.candidates.size())
                     .filter(i -> GlobalState.recFishing.fishingTeam.contains(this.candidates.get(i).toString()))
                     .toArray();

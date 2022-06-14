@@ -54,6 +54,14 @@ public interface SyncApi {
     Call<List<AssetDTO>> getAssetsByHarvestBinType(@Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/asset/type/CAGE")
+    Call<List<AssetDTO>> getAssetsByCageType(@Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/asset/type/NET")
+    Call<List<AssetDTO>> getAssetsByNetType(@Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/user/site/{siteId}")
     Call<List<AppUserDTO>> getUsersBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 

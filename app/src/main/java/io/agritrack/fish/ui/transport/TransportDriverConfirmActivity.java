@@ -67,7 +67,7 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
 
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToTransportBins);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), TransportBinsActivity.class);
+            Intent i = new Intent(getApplicationContext(), TransportInfoActivity.class);
             startActivity(i);
         });
 

@@ -17,7 +17,7 @@ import io.agritrack.data.model.tx.TransportTransaction;
 public interface TransportTransactionDAO {
 
     @Query("SELECT * from transport_transaction")
-    LiveData<List<TransportTransaction>> getAll();
+    List<TransportTransaction> getAll();
 
     @Query("SELECT * from transport_transaction where id=:transportId LIMIT 1")
     TransportTransaction getById(Long transportId);
@@ -32,7 +32,7 @@ public interface TransportTransactionDAO {
     void delete(TransportTransaction transport);
 
     @Query("DELETE from transport_transaction")
-    void deleteAll();
+    int deleteAll();
 
     @Update
     void update(TransportTransaction transport);

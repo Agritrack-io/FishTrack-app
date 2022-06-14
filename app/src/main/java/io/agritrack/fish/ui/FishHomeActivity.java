@@ -33,8 +33,8 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.PendingCorrelationTxCallBack;
 import io.agritrack.api.sync.PendingFishingTxCallBack;
+import io.agritrack.api.sync.PendingTransportTxCallBack;
 import io.agritrack.api.sync.SyncApi;
-import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.api.sync.SyncBinInfo;
 import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
@@ -59,10 +59,11 @@ import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.dto.tx.FishingTxDTO;
-import io.agritrack.data.dto.wh.AssetDTO;
+import io.agritrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.data.dto.wh.FoodSkuDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.api.tx.TransactionApi;
@@ -73,7 +74,8 @@ import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
-import io.agritrack.fish.ui.transport.TransportStartActivity;
+import io.agritrack.fish.ui.transport.TransportBinsActivity;
+import io.agritrack.fish.ui.transport.TransportInfoActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
@@ -122,7 +124,7 @@ public class FishHomeActivity extends AppCompatActivity {
             menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), QualitySelectStepsActivity.class, R.drawable.quality));
         }
         if (roleCanAccessMenu(userRoles, Transport_Idx)) {
-            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportStartActivity.class, R.drawable.transport));
+            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
         }
         if (roleCanAccessMenu(userRoles, Warehouse_Idx)) {
             menuItemsSet.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
@@ -192,7 +194,7 @@ public class FishHomeActivity extends AppCompatActivity {
                         break;
                     case Transport_Idx:
                         GlobalState.initTransportationRecord();
-                        i = new Intent(appCtx, TransportStartActivity.class);
+                        i = new Intent(appCtx, TransportBinsActivity.class);
                         break;
                     case Receiving_Idx:
                         GlobalState.initProcessingRecord();
@@ -255,7 +257,7 @@ public class FishHomeActivity extends AppCompatActivity {
             String clusterId = LocalPreferences.getCurrentClusterId();
 
 
-            // select all SIMPLE pending correlation TXs (identification events, e.g. correlate rfid <--> code)
+            // select all pending fishing TXs
             List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAll();
             if(!fishingTXs.isEmpty()) {
                 for (FishingTransaction fishingTX : fishingTXs) {
@@ -263,6 +265,33 @@ public class FishHomeActivity extends AppCompatActivity {
                     fishingTxAsyncCall.enqueue(new PendingFishingTxCallBack(this.syncResult));
                 }
             }
+
+            // select all pending transport TXs
+            List<TransportTransaction> transportTXs = db.transportTransactionDAO().getAll();
+            if(!transportTXs.isEmpty()) {
+                for (TransportTransaction transportTX : transportTXs) {
+                    Call<TransportTxDTO> transportTxAsyncCall = pendingTxSvc.syncTransportTx(TransportTxDTO.convert(transportTX), "Bearer " + token);
+                    transportTxAsyncCall.enqueue(new PendingTransportTxCallBack(this.syncResult));
+                }
+            }
+
+            /*// select all SIMPLE pending correlation TXs (identification events, e.g. correlate rfid <--> code)
+            List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAll();
+            if(!fishingTXs.isEmpty()) {
+                for (FishingTransaction fishingTX : fishingTXs) {
+                    Call<FishingTxDTO> fishingTxAsyncCall = pendingTxSvc.syncFishingTx(FishingTxDTO.convert(fishingTX), "Bearer " + token);
+                    fishingTxAsyncCall.enqueue(new PendingFishingTxCallBack(this.syncResult));
+                }
+            }
+
+            // select all SIMPLE pending correlation TXs (identification events, e.g. correlate rfid <--> code)
+            List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAll();
+            if(!fishingTXs.isEmpty()) {
+                for (FishingTransaction fishingTX : fishingTXs) {
+                    Call<FishingTxDTO> fishingTxAsyncCall = pendingTxSvc.syncFishingTx(FishingTxDTO.convert(fishingTX), "Bearer " + token);
+                    fishingTxAsyncCall.enqueue(new PendingFishingTxCallBack(this.syncResult));
+                }
+            }*/
 
 
 
@@ -330,10 +359,6 @@ public class FishHomeActivity extends AppCompatActivity {
             // sync assets  (cages, nets, bins, platforms)
 //            Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
 //            syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
-
-            // sync only Harvest_Bins assets
-            Call<List<AssetDTO>> syncHarvestBinsAsyncCall = syncService.getAssetsByHarvestBinType("Bearer " + token);
-            syncHarvestBinsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
 
             // sync Cage Details
             Call<List<CageDetailsDTO>> syncCageDetailsAsyncCall = syncService.getCageDetailsBySiteId(siteId, "Bearer " + token);
