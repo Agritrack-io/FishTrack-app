@@ -21,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -118,7 +117,6 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
             GlobalState.recFishing.cageCode = harvestRq.cageCode;
             GlobalState.recFishing.typedCageCode = harvestRq.cageCode;
             GlobalState.recFishing.expectedCageRFID = harvestRq.cageRFID;
-            GlobalState.recFishing.requesterName = harvestRq.requester;
             GlobalState.recFishing.averageWeight = harvestRq.averageWeight;
             GlobalState.recFishing.reqWeight = harvestRq.reqQty;
             GlobalState.recFishing.notes = harvestRq.notes;
@@ -193,7 +191,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getPreviousRecord();
         if (harvestRequests != null && !harvestRequests.isEmpty()) {
             //
-            this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
+            this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate, x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
 
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, harvestReqs) {
                 @Override

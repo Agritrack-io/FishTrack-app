@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import io.agritrack.data.db.MobileDB;
@@ -148,7 +147,6 @@ public class GlobalState {
             txFishing.iceSupplier = recFishing.iceSupplier;
             txFishing.harvestBinsCnt = recFishing.totalBinsUsed;
             txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight).intValue() : null;
-            txFishing.requester = recFishing.requesterName;
             txFishing.totalQty = recFishing.totalFishWeight;
             txFishing.timestamp = System.currentTimeMillis();
             txFishing.harvestBinsData = recFishing.binWeightRecord.getBins();//.toJSONText();

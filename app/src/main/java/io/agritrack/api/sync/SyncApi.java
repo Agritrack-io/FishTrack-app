@@ -34,7 +34,7 @@ public interface SyncApi {
     Call<SiteDTO> getSiteById(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/harvest-requests/{siteId}")
+    @GET("/fishing-requests/{siteId}")
     Call<List<HarvestRequestDTO>> getHarvestRequestsBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
