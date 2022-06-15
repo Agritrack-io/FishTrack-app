@@ -331,13 +331,14 @@
 
                 <EditText
                     android:id="@+id/etSecurityClip"
-                    android:layout_width="160dp"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="1dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginEnd="7dp"
                     android:background="@drawable/bg_rounded_dialog_input"
                     android:ems="10"
+                    android:digits="0123456789,"
                     android:inputType="number|textMultiLine"
                     android:padding="5dp"
                     android:paddingStart="10dp"
