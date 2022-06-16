@@ -329,6 +329,11 @@
     <string name="type_code_of_net">Ή πληκτρολογήστε κωδικό</string>
     <string name="title_correlate_platform">Συσχέτιση πλατφόρμας</string>
     <string name="barcode_temp_tag">Barcode ετικέτας θερμοκρασίας</string>
+    <string name="sync_asset_choise">Παρακαλώ επιλέξτε πάγια για συγχρονισμό</string>
+    <string name="all">Όλα</string>
+    <string name="sync">Συγχρόνισε</string>
+    <string name="sync_asset_message_1">Ο συγχρονισμός των παγίων θα διαρκέσει έως δύο λεπτά.</string>
+    <string name="sync_asset_message_2">Ο συγχρονισμός των παγίων θα διαρκέσει έως δύο λεπτά. Παρακαλώ περιμένετε!!!</string>
 
     <string name="title_search">ΑΝΑΖΗΤΗΣΗ</string>
     <string name="search">Αναζήτηση</string>

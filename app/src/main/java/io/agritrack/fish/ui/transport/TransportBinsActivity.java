@@ -2,6 +2,7 @@ package io.agritrack.fish.ui.transport;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recTransport;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
@@ -42,6 +43,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
@@ -207,7 +209,7 @@ public class TransportBinsActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), TransportDriverConfirmActivity.class);
+                Intent i = new Intent(getApplicationContext(), TransportInfoActivity.class);
                 startActivity(i);
             }
         });
@@ -219,7 +221,7 @@ public class TransportBinsActivity extends AppCompatActivity {
                 scanner_runnable.stopReading();
             }
 
-            Intent i = new Intent(getApplicationContext(), TransportStartActivity.class);
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);
         });
     }
@@ -267,8 +269,12 @@ public class TransportBinsActivity extends AppCompatActivity {
 
     }
 
-    private void updateState() {
-        GlobalState.recTransport.availBins = new LinkedList<>(adapterBins.getValues());
+    private TransportationRecord updateState() {
+        TransportationRecord transportationRecord = GlobalState.initTransportationRecord();
+
+        transportationRecord.availBins = new LinkedList<>(adapterBins.getValues());
+
+        return transportationRecord;
     }
 
     private String validate() {

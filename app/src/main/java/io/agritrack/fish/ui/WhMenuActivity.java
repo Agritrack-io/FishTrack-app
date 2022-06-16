@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.SyncAssetDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.wh.correlation.CorrelationMenuActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
@@ -32,7 +33,8 @@ public class WhMenuActivity extends AppCompatActivity {
     private static final int Incoming_Idx = 0, Outgoing_Idx = 1, Inventory_Idx = 2, Correlation_Idx = 3, Search_Idx = 4;
     GridView gvWhMainMenu;
 
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivRefresh;
+    private SyncAssetDialog syncAssetDialog;
     private SupportDialog supportDialog;
 
     @Override
@@ -86,6 +88,12 @@ public class WhMenuActivity extends AppCompatActivity {
                 i.putExtra("id", position);
                 startActivity(i);
             }
+        });
+
+        ivRefresh = findViewById(R.id.ivRefresh);
+        ivRefresh.setOnClickListener(view -> {
+            syncAssetDialog = new SyncAssetDialog(WhMenuActivity.this);
+            syncAssetDialog.showDialog();
         });
 
         ivSupport = findViewById(R.id.ivSupport);

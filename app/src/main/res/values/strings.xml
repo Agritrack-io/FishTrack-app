@@ -328,6 +328,11 @@
     <string name="type_code_of_net">Or type net code</string>
     <string name="title_correlate_platform">Correlate platform</string>
     <string name="barcode_temp_tag">Barcode of Temp tag</string>
+    <string name="sync_asset_choise">Please select assets to sync</string>
+    <string name="all">All</string>
+    <string name="sync">Synchronize</string>
+    <string name="sync_asset_message_1">Asset sync will take up to 2 minutes.</string>
+    <string name="sync_asset_message_2">Asset sync will take up to 2 minutes. Please wait!!!</string>
 
     <string name="title_search">SEARCH</string>
     <string name="search">Search</string>
@@ -591,4 +596,6 @@
     <string name="pending_fishing_tx_upload_failure_alert">Failed to upload pending fishing tx!</string>
     <string name="pending_fishing_tx_upload_completed">Pending fishing tx successfully uploaded!</string>
     <string name="bt_not_supported">Bluetooth not supported!</string>
+
+
 </resources>

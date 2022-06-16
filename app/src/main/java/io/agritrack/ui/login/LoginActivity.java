@@ -267,7 +267,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             AuthenticationService userService = new AuthenticationService();
             boolean authenticatedUser = userService.authenticateUser(db, username, pin);
 
-            if (hoursSinceLastLogin <= 2 && authenticatedUser) {
+            if (hoursSinceLastLogin <= 10 && authenticatedUser) {
                 LocalPreferences.updateLoginTime();
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(username, LocalPreferences.getToken(), LocalPreferences.getUserRoles()))));
             } else {
@@ -316,9 +316,13 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             Call<List<CustomerDTO>> syncCustomersAsyncCall = syncService.getCustomersBySiteId(siteId, "Bearer " + token);
             syncCustomersAsyncCall.enqueue(new SyncCustomersCallBack(this.syncResult));
 
-            // sync assets  (cages, nets, bins, platforms)
+            /*// sync assets  (cages, nets, bins, platforms)
             Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
-            syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
+            syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));*/
+
+            // sync only Harvest_Bins assets
+            Call<List<AssetDTO>> syncHarvestBinsAsyncCall = syncService.getAssetsByHarvestBinType("Bearer " + token);
+            syncHarvestBinsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
 
             // sync Cage Details
             Call<List<CageDetailsDTO>> syncCageDetailsAsyncCall = syncService.getCageDetailsBySiteId(siteId, "Bearer " + token);

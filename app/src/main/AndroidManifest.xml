@@ -355,7 +355,7 @@
             android:name=".fish.ui.transport.TransportBinsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fish.ui.transport.TransportStartActivity"
+            android:name=".fish.ui.transport.TransportInfoActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.fishing.FishingConfirmActivity"

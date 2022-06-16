@@ -89,6 +89,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
     private ConstraintLayout selectedItem;
     private String selectedBarcode, selectedStatus;
     private Spinner spStatus;
+    private String fileName = null;
 
     private ProgressDialog progressDialog;
 
@@ -368,7 +369,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
             String token = LocalPreferences.getToken();
 
             // save data in a local file.
-            String fileName = storeRecordToLocalJSONFile();
+            fileName = storeRecordToLocalJSONFile();
             if (fileName != null) {
                 File jsonFile = new File(HotelChangeStatusActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
 
@@ -468,7 +469,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
     }
 
     private String storeRecordToLocalJSONFile() {
-        String fileName = null;
+        //String fileName = null;
 
         // if WHIncoming record contains data, then save it to a local file.
         if (recWHInventory.items != null && recWHInventory.items.size() > 0) {
@@ -530,8 +531,18 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
     public class InventoryFileUploadCallBack implements Callback<ResponseBody> {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            boolean success = true;
             try {
-                if (response.body() != null) {
+                if(response.code() != 200){
+                    if (response.code() == 500){
+                        FileUtils.deleteInventoryFile(HotelChangeStatusActivity.this, fileName);
+                        success = false;
+                    } else {
+                        success = false;
+                        runOnUiThread(() -> CToast(getApplicationContext(), response.message(), Toast.LENGTH_LONG));
+                    }
+                }
+                if (success) {
                     String fileName = response.body().string();
                     boolean res = FileUtils.deleteInventoryFile(HotelChangeStatusActivity.this, fileName);
                     if (res) {

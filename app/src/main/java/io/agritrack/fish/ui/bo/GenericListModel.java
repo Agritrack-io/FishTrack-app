@@ -11,6 +11,7 @@ public class GenericListModel {
 
     private UUID id;
     private String label, requestId;
+    private String[] labels;
     private Boolean checked;
 
     public GenericListModel(UUID id, String label) {
@@ -22,6 +23,12 @@ public class GenericListModel {
     public GenericListModel(UUID id, String label, Boolean isChecked) {
         this.id = id;
         this.label = label;
+        this.checked = isChecked;
+    }
+
+    public GenericListModel(UUID id, String[] labels, Boolean isChecked) {
+        this.id = id;
+        this.labels = labels;
         this.checked = isChecked;
     }
 
