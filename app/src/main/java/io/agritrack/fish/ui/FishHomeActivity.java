@@ -41,7 +41,7 @@ import io.agritrack.api.sync.SyncClusterSitesCallBack;
 import io.agritrack.api.sync.SyncCustomersCallBack;
 import io.agritrack.api.sync.SyncEmployeesCallBack;
 import io.agritrack.api.sync.SyncFoodSkuCallBack;
-import io.agritrack.api.sync.SyncHarvestRequestCallBack;
+import io.agritrack.api.sync.SyncFishingRequestCallBack;
 import io.agritrack.api.sync.SyncIOTLoggersCallBack;
 import io.agritrack.api.sync.SyncSpeciesCallBack;
 import io.agritrack.api.sync.SyncSuppliersCallBack;
@@ -50,7 +50,7 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.AppUserDTO;
 import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.CageDetailsDTO;
-import io.agritrack.data.dto.HarvestRequestDTO;
+import io.agritrack.data.dto.FishingRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.CustomerDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
@@ -188,7 +188,7 @@ public class FishHomeActivity extends AppCompatActivity {
                             fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
 
                             // load Harvest Request fetched via Synch op.
-//                            List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getAll();
+//                            List<FishingRequest> harvestRequests = db.harvestRequestsDAO().getAll();
                             i = new Intent(appCtx, HarvestRequestsActivity.class);
                         }
                         break;
@@ -337,8 +337,8 @@ public class FishHomeActivity extends AppCompatActivity {
             syncSitesAsyncCall.enqueue(new SyncClusterSitesCallBack(this.syncResult));
 
             // sync harvestRequests for current Site
-            Call<List<HarvestRequestDTO>> syncHarvestResAsyncCall = syncService.getHarvestRequestsBySiteId(siteId, "Bearer " + token);
-            syncHarvestResAsyncCall.enqueue(new SyncHarvestRequestCallBack(this.syncResult));
+            Call<List<FishingRequestDTO>> syncHarvestResAsyncCall = syncService.getFishingRequestsBySiteId(siteId, "Bearer " + token);
+            syncHarvestResAsyncCall.enqueue(new SyncFishingRequestCallBack(this.syncResult));
 
             // sync users
             Call<List<AppUserDTO>> syncUsersAsyncCall = syncService.getUsersBySiteId(siteId, "Bearer " + token);

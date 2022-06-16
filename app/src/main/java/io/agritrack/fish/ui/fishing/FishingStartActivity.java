@@ -71,33 +71,6 @@ public class FishingStartActivity extends AppCompatActivity {
             moveToNextScreen();
         });
 
-        /*// load users with Harvest role and fill in the spHarvest Spinner.
-        List<AppUser> harvestRequestUsers = db.userDAO().getByRole("ROLE_HARVEST");
-        if (harvestRequestUsers != null && !harvestRequestUsers.isEmpty()) {
-            String[] harvestRequester = harvestRequestUsers.stream().map(x -> x.email).toArray(String[]::new);
-            ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, harvestRequester);
-            hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-            harvestSpinner.setAdapter(hrAdapter);
-
-            if (!Strings.isEmptyOrWhitespace(recFishing.requesterName)) {
-                recFishing.requesterPos = Arrays.asList(harvestRequester).indexOf(recFishing.requesterName);
-            }
-        }
-
-        // load fish species and fill in the spFishType Spinner.
-        List<Species> fishSpecies = db.speciesDAO().getAll();
-        if (fishSpecies != null && !fishSpecies.isEmpty()) {
-            String[] species = fishSpecies.stream().map(x -> x.localName).toArray(String[]::new);
-            ArrayAdapter<String> spAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, species);
-            spAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
-            speciesSpinner.setAdapter(spAdapter);
-
-            if (!Strings.isEmptyOrWhitespace(recFishing.speciesName)) {
-                recFishing.speciesPos = Arrays.asList(species).indexOf(recFishing.speciesName);
-            }
-        }*/
-        // =================================
-
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
@@ -148,8 +121,6 @@ public class FishingStartActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
-        /*harvestSpinner = findViewById(R.id.spHarvest);
-        speciesSpinner = findViewById(R.id.spFishType);*/
         ivSupport = findViewById(R.id.ivSupport);
         tvCageName = findViewById(R.id.tvCageName);
         tvAverageWeight = findViewById(R.id.tvAverageWeight);
@@ -163,18 +134,6 @@ public class FishingStartActivity extends AppCompatActivity {
     private void initControlsFromState() {
 
         FishingRecord hvst = recFishing;
-
-        /*if (hvst.requesterPos > -1) {
-            harvestSpinner.setSelection(hvst.requesterPos);
-        }
-
-        if (hvst.speciesPos > -1) {
-            speciesSpinner.setSelection(hvst.speciesPos);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(hvst.reqWeight)) {
-            etQty.setText(hvst.reqWeight);
-        }*/
 
         if (!Strings.isEmptyOrWhitespace(hvst.requesterName)) {
             tvHarvest.setText(hvst.requesterName);
@@ -205,17 +164,6 @@ public class FishingStartActivity extends AppCompatActivity {
     private FishingRecord updateState() {
         FishingRecord fishingRecord = recFishing;
 
-        /*if (harvestSpinner.getSelectedItem() != null) {
-            fishingRecord.requesterName = harvestSpinner.getSelectedItem().toString();
-        }
-        fishingRecord.requesterPos = harvestSpinner.getSelectedItemPosition();
-        if (speciesSpinner.getSelectedItem() != null) {
-            fishingRecord.speciesName = speciesSpinner.getSelectedItem().toString();
-        }
-        fishingRecord.speciesPos = speciesSpinner.getSelectedItemPosition();
-        if (etQty.getText() != null) {
-            fishingRecord.reqWeight = etQty.getText().toString();
-        }*/
 
         if (tvCageName.getText() != null) {
             fishingRecord.cageCode = tvCageName.getText().toString();

@@ -4,10 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import java.util.Date;
 
-@Entity(tableName = "harvest_request")
-public class HarvestRequest {
+@Entity(tableName = "fishing_request")
+public class FishingRequest {
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "request_id")
@@ -42,7 +41,4 @@ public class HarvestRequest {
 
     @ColumnInfo(name = "notes")
     public String notes;
-
-    @ColumnInfo(name = "user_name")
-    public String user;
 }

@@ -1,33 +1,33 @@
 package io.agritrack.api.sync;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
+
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.HarvestRequestDTO;
+import io.agritrack.data.dto.FishingRequestDTO;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import static io.agritrack.FishTrackApplication.getAppContext;
+public class SyncFishingRequestCallBack extends BaseSyncCallBack<List<FishingRequestDTO>> {
 
-public class SyncHarvestRequestCallBack extends BaseSyncCallBack<List<HarvestRequestDTO>> {
-
-    public SyncHarvestRequestCallBack(MutableLiveData<String> syncResult) {
+    public SyncFishingRequestCallBack(MutableLiveData<String> syncResult) {
         super(syncResult);
     }
 
     @Override
-    public void onResponse(Call<List<HarvestRequestDTO>> call, Response<List<HarvestRequestDTO>> response) {
-        List<HarvestRequestDTO> harvestReqDTOs = response.body();
+    public void onResponse(Call<List<FishingRequestDTO>> call, Response<List<FishingRequestDTO>> response) {
+        List<FishingRequestDTO> fishingReqDTOs = response.body();
 
-        if (harvestReqDTOs != null) {
+        if (fishingReqDTOs != null) {
             // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 
-            for (HarvestRequestDTO harvestRequestDTO : harvestReqDTOs) {
-                db.harvestRequestsDAO().insert(HarvestRequestDTO.convert(harvestRequestDTO));
+            for (FishingRequestDTO fishingRequestDTO : fishingReqDTOs) {
+                db.fishingRequestsDAO().insert(FishingRequestDTO.convert(fishingRequestDTO));
             }
             // Harvest Requests sync succeeded.
             syncResult.setValue(getAppContext().getString(R.string.harvest_requests_sync_completed));

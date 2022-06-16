@@ -21,13 +21,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.util.Strings;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.HarvestRequest;
+import io.agritrack.data.model.FishingRequest;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
@@ -37,8 +36,8 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class HarvestRequestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, ToggleGroup.OnCheckedChangeListener {
     private MobileDB db;
-    private ListView lvHarvestRequests;
-    private GenericListModel[] harvestReqs;
+    private ListView lvFishingRequests;
+    private GenericListModel[] fishingRQs;
     private ToggleGroup tgChooseDate;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -57,10 +56,10 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get main controls references
-        this.lvHarvestRequests = findViewById(R.id.lvHarvestRequests);
+        this.lvFishingRequests = findViewById(R.id.lvHarvestRequests);
 
         // define if single or multiple choice mode will be used to display the checkboxes.
-        this.lvHarvestRequests.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        this.lvFishingRequests.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
@@ -107,18 +106,18 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         CheckedTextView v = (CheckedTextView) view;
         boolean currentCheck = v.isChecked();
-        GenericListModel member = (GenericListModel) this.lvHarvestRequests.getItemAtPosition(position);
+        GenericListModel member = (GenericListModel) this.lvFishingRequests.getItemAtPosition(position);
         member.setChecked(!currentCheck);
 
-        HarvestRequest harvestRq = db.harvestRequestsDAO().getById(member.getRequestId());
+        FishingRequest harvestRq = db.fishingRequestsDAO().getById(member.getRequestId());
         if (harvestRq != null) {
 
-            GlobalState.recFishing.harvestRq = harvestRq.requestId;
+            GlobalState.recFishing.fishingRq = harvestRq.requestId;
+            GlobalState.recFishing.requesterName = harvestRq.requester;
             GlobalState.recFishing.speciesName = harvestRq.species;
             GlobalState.recFishing.cageCode = harvestRq.cageCode;
             GlobalState.recFishing.typedCageCode = harvestRq.cageCode;
             GlobalState.recFishing.expectedCageRFID = harvestRq.cageRFID;
-            GlobalState.recFishing.requesterName = harvestRq.requester;
             GlobalState.recFishing.averageWeight = harvestRq.averageWeight;
             GlobalState.recFishing.reqWeight = harvestRq.reqQty;
             GlobalState.recFishing.notes = harvestRq.notes;
@@ -145,13 +144,13 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
     }
 
     private void getTodayHarvestReq(){
-        this.lvHarvestRequests.setAdapter(null);
-        List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getTodayRecord();
-        if (harvestRequests != null && !harvestRequests.isEmpty()) {
+        this.lvFishingRequests.setAdapter(null);
+        List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getTodayRecord();
+        if (fishingRequests != null && !fishingRequests.isEmpty()) {
             //
-            this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
+            this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
 
-            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, harvestReqs) {
+            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);
@@ -160,20 +159,20 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
                     return view;
                 }
             };
-            this.lvHarvestRequests.setAdapter(candidatesAdapter);
-            this.lvHarvestRequests.setOnItemClickListener(this);
-            this.harvestRQcnt = harvestRequests.size();
+            this.lvFishingRequests.setAdapter(candidatesAdapter);
+            this.lvFishingRequests.setOnItemClickListener(this);
+            this.harvestRQcnt = fishingRequests.size();
         }
     }
 
     private void getYesterdayHarvestReq(){
-        this.lvHarvestRequests.setAdapter(null);
-        List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getYesterdayRecord();
-        if (harvestRequests != null && !harvestRequests.isEmpty()) {
+        this.lvFishingRequests.setAdapter(null);
+        List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getYesterdayRecord();
+        if (fishingRequests != null && !fishingRequests.isEmpty()) {
             //
-            this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
+            this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
 
-            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, harvestReqs) {
+            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);
@@ -182,20 +181,20 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
                     return view;
                 }
             };
-            this.lvHarvestRequests.setAdapter(candidatesAdapter);
-            this.lvHarvestRequests.setOnItemClickListener(this);
-            this.harvestRQcnt = harvestRequests.size();
+            this.lvFishingRequests.setAdapter(candidatesAdapter);
+            this.lvFishingRequests.setOnItemClickListener(this);
+            this.harvestRQcnt = fishingRequests.size();
         }
     }
 
     private void getPreviousHarvestReq(){
-        this.lvHarvestRequests.setAdapter(null);
-        List<HarvestRequest> harvestRequests = db.harvestRequestsDAO().getPreviousRecord();
-        if (harvestRequests != null && !harvestRequests.isEmpty()) {
+        this.lvFishingRequests.setAdapter(null);
+        List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getPreviousRecord();
+        if (fishingRequests != null && !fishingRequests.isEmpty()) {
             //
-            this.harvestReqs = harvestRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
+            this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s kg, %s", x.harvestDate, x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
 
-            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, harvestReqs) {
+            ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);
@@ -205,9 +204,9 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
                 }
             };
             //
-            this.lvHarvestRequests.setAdapter(candidatesAdapter);
-            this.lvHarvestRequests.setOnItemClickListener(this);
-            this.harvestRQcnt = harvestRequests.size();
+            this.lvFishingRequests.setAdapter(candidatesAdapter);
+            this.lvFishingRequests.setOnItemClickListener(this);
+            this.harvestRQcnt = fishingRequests.size();
         }
     }
 

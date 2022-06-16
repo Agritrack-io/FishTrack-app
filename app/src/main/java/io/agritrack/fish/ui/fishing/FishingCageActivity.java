@@ -12,7 +12,6 @@ import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -246,6 +245,7 @@ public class FishingCageActivity extends AppCompatActivity {
                 recFishing.speciesName = cage.species; //TODO: compare with Requested Species
                 recFishing.pathologist = cage.ichthyopathologist;
                 recFishing.lastFed = cage.lastFed;
+                recFishing.hlot = cage.hlot;
             } else {
                 // TODO:: add alert, no cage corresponding to RFID found in local DB!!
             }

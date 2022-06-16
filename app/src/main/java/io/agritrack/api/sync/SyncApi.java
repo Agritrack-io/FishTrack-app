@@ -7,7 +7,7 @@ import io.agritrack.data.dto.AppUserDTO;
 import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.EncodingSchemeDTO;
-import io.agritrack.data.dto.HarvestRequestDTO;
+import io.agritrack.data.dto.FishingRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.CustomerDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
@@ -34,8 +34,8 @@ public interface SyncApi {
     Call<SiteDTO> getSiteById(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/harvest-requests/{siteId}")
-    Call<List<HarvestRequestDTO>> getHarvestRequestsBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
+    @GET("/fishing-requests/{siteId}")
+    Call<List<FishingRequestDTO>> getFishingRequestsBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/asset/item/{assetId}")

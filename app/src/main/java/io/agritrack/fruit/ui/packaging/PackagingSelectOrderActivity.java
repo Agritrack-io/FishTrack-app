@@ -5,8 +5,6 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,11 +15,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.HarvestRequest;
+import io.agritrack.data.model.FishingRequest;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fruit.ui.FruitHomeActivity;
@@ -117,14 +117,13 @@ public class PackagingSelectOrderActivity extends AppCompatActivity implements A
         io.agritrack.ui.bo.GenericListModel member = (io.agritrack.ui.bo.GenericListModel) this.lvOpenOrders.getItemAtPosition(position);
         member.setChecked(!currentCheck);
 
-        HarvestRequest harvestRq = db.harvestRequestsDAO().getById(member.getId().toString());
+        FishingRequest harvestRq = db.fishingRequestsDAO().getById(member.getId().toString());
         if (harvestRq != null) {
             //GlobalState.recFishing.harvestRqPkId = harvestRq.id;
-            GlobalState.recFishing.harvestRq = harvestRq.requestId;
+            GlobalState.recFishing.fishingRq = harvestRq.requestId;
             GlobalState.recFishing.speciesName = harvestRq.species;
             GlobalState.recFishing.cageCode = harvestRq.cageCode;
             GlobalState.recFishing.cageRFID = harvestRq.cageRFID;
-            GlobalState.recFishing.requesterName = harvestRq.requester;
             GlobalState.recFishing.averageWeight = harvestRq.averageWeight;
             GlobalState.recFishing.reqWeight = harvestRq.reqQty;
             GlobalState.recFishing.notes = harvestRq.notes;

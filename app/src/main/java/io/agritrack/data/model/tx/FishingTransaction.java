@@ -24,8 +24,8 @@ public class FishingTransaction {
     @ColumnInfo(name = "timestamp")
     public Long timestamp;
 
-    @ColumnInfo(name = "harvest_request")
-    public String harvestRq;
+    @ColumnInfo(name = "fishing_request")
+    public String fishingRq;
 
     @ColumnInfo(name = "platform_rfid")
     public String platformRFID;
@@ -35,6 +35,9 @@ public class FishingTransaction {
 
     @ColumnInfo(name = "cage_code")
     public String cageCode;
+
+    @ColumnInfo(name = "hlot")
+    public String hlot;
 
     @ColumnInfo(name = "ichthyopathologist")
     public String ichthyopathologist;

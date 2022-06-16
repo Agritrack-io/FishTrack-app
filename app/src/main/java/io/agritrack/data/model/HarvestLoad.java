@@ -21,5 +21,5 @@ public class HarvestLoad {
 
   /*  @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "harvest_request_id", foreignKey = @ForeignKey(name="FK_HarvestLoad_Harvest_Request"))
-    public HarvestRequest harvestRequest;*/
+    public FishingRequest harvestRequest;*/
 }
