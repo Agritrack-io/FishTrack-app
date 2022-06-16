@@ -100,6 +100,12 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
         public BinDetails(CharSequence x) {
             this.epc = x.toString();
         }
+
+        public BinDetails(String epc, Double binWeight, String cageCode) {
+            this.epc = epc.toString();
+            this.weight = binWeight;
+            this.cage = cageCode;
+        }
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

@@ -73,7 +73,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             _avgT = stats.getAverage();
 
             holder.setMeasurements(key, model.values);
-            holder.tvBinEPC.setText(key);
+            holder.tvBinEPC.setText(key.substring(key.length()-10));
             holder.tvHigh.setText(String.format("%.2f\u2103", _highT));
             holder.tvAvg.setText(String.format("%.2f\u2103", _avgT));
             holder.tvLow.setText(String.format("%.2f\u2103", _lowT));

@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.android.hdhe.uhf.reader.UhfReader;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -26,6 +28,9 @@ public class MultipleFilterSingleShotScanner implements Runnable {
     public MultipleFilterSingleShotScanner(Handler handler) {
         super();
         uhfReader = RFIDModuleFactory.getInstance();
+        if (uhfReader!=null) {
+            uhfReader.clearEPCFilter();
+        }
         mScanHandler = handler;
     }
 

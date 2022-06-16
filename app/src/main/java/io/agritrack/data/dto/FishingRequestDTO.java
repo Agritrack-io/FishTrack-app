@@ -14,7 +14,7 @@ public class FishingRequestDTO {
     public Double avg_weight;
     public Double request_quantity;
     public String requester;
-    public String notes;
+    public String comments;
 
 
     public static FishingRequest convert(FishingRequestDTO fishingRequestDTO) {
@@ -31,7 +31,7 @@ public class FishingRequestDTO {
         fishingRequest.averageWeight = fishingRequestDTO.avg_weight;
         fishingRequest.reqQty = fishingRequestDTO.request_quantity;
         fishingRequest.requester = fishingRequestDTO.requester;
-        fishingRequest.notes = fishingRequestDTO.notes;
+        fishingRequest.notes = fishingRequestDTO.comments;
 
         return fishingRequest;
     }

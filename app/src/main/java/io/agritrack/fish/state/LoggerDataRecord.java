@@ -10,7 +10,7 @@ public class LoggerDataRecord {
     public Double highT, lowT, avgT;
 
     public void addDataSet(String loggerEPC, String assetEPC, Long retrievedAt, List<String[]> values) {
-        this.data.put(loggerEPC, new TemperatureModel(loggerEPC, assetEPC, retrievedAt, values));
+        this.data.put(assetEPC, new TemperatureModel(loggerEPC, assetEPC, retrievedAt, values));
     }
 
     public List<String[]> getValues(String epc) {
@@ -30,7 +30,7 @@ public class LoggerDataRecord {
 
     public class TemperatureModel {
         public final String loggerEPC;
-        public final String assetEPC;
+        public String assetEPC;
         public final Long retrievedAt;
         public final List<String[]> values;
 
@@ -43,7 +43,7 @@ public class LoggerDataRecord {
 
         @Override
         public String toString() {
-            return String.format("{EPC:'%s', asset:'%s', retrievedAt:%s, values:%s}", loggerEPC, retrievedAt, values);
+            return String.format("{EPC:'%s', asset:'%s', retrievedAt:%s, values:%s}", assetEPC, retrievedAt, values);
         }
     }
 }

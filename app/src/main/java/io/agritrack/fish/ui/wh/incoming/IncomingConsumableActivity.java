@@ -80,12 +80,13 @@ public class IncomingConsumableActivity extends LocationAwareActivity implements
                 // get an instance of local DB
                 db = MobileDB.getInstance(getAppContext());
                 String barcode = new String(data);
-                if (barcode.length()>=24 && barcode.substring(0,2).equalsIgnoreCase("02")) {
+                if (barcode.length()>=24 && barcode.startsWith("02")) {
                     String gtin = barcode.substring(2, 16);
                     FoodSku food = db.foodSkuDAO().getByGtin(gtin);
-                    adapterIncomingItems.addItem(food.description);
-                    adapterIncomingItems.notifyDataSetChanged();
-                    scanning = false;
+                    if (food!=null) {
+                        adapterIncomingItems.addItem(food.description);
+                        adapterIncomingItems.notifyDataSetChanged();
+                    }
                 }
                 //tvInventoryItemsCount.setText("# "+String.valueOf(adapterIncomingItems.getItemCount()));
                 scanning = false;

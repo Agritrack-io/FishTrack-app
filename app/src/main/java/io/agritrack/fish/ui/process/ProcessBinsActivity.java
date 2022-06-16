@@ -271,16 +271,6 @@ public class  ProcessBinsActivity extends AppCompatActivity {
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
             scanner_runnable.stopReading();
             scanButton.setText(R.string.scan_bin);
-
-            //Add code to retrieve bin info from local DB
-            List<BinWeightCageAdapter.BinDetails> binsList = adapterBins.getValues();
-            for (BinWeightCageAdapter.BinDetails bin : binsList){
-                BinInfo tmpBin = db.binInfoDAO().getByRFId(bin.epc);
-                if (tmpBin!=null){
-                    bin.weight = tmpBin.totalWeight;
-                    bin.cage = tmpBin.cage;
-                }
-            }
         }
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
@@ -343,10 +333,10 @@ public class  ProcessBinsActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 100:
-                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
+                    ArrayList<String> epcList = msg.getData().getStringArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        epcList.stream().forEach(x -> adapterBins.addUniqueItem(new BinWeightCageAdapter.BinDetails(x)));
+                        epcList.stream().forEach(x -> adapterBins.addUniqueItem(loadBinInfo(x)));
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         adapterBins.notifyDataSetChanged();
                     }
@@ -358,6 +348,16 @@ public class  ProcessBinsActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    private BinWeightCageAdapter.BinDetails loadBinInfo(String epc){
+        //Add code to retrieve bin info from local DB
+            BinInfo tmpBin = db.binInfoDAO().getByRFId(epc);
+            if (tmpBin!=null) {
+                return new BinWeightCageAdapter.BinDetails(epc, tmpBin.totalWeight, tmpBin.cage);
+            } else {
+                return new BinWeightCageAdapter.BinDetails(epc);
+            }
     }
 
     private List<BinWeightCageAdapter.BinDetails> convertEPCsToBinDetails(Set<String> epcs){
