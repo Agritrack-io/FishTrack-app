@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.HarvestRequest;
+import io.agritrack.data.model.FishingRequest;
 import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.data.model.common.Measurement;
 import io.agritrack.data.model.common.TemperatureData;
@@ -40,7 +40,7 @@ public class GlobalState {
 
     public static HarvestRecord recHarvest = new HarvestRecord();
     public static FishingRecord recFishing = new FishingRecord();
-    public static List<HarvestRequest> recHarvestRequests = new LinkedList<>();
+    public static List<FishingRequest> recFishingRequests = new LinkedList<>();
     public static TransportationRecord recTransport = new TransportationRecord();
     public static ProcessingRecord recProcessing = new ProcessingRecord();
     public static QualityRecord recQuality = new QualityRecord();
@@ -60,9 +60,9 @@ public class GlobalState {
     private GlobalState() {
     }
 
-    public static List<HarvestRequest> initHarvestReq() {
-        recHarvestRequests = new LinkedList<>();
-        return recHarvestRequests;
+    public static List<FishingRequest> initHarvestReq() {
+        recFishingRequests = new LinkedList<>();
+        return recFishingRequests;
     }
 
     public static FishingRecord initFishingRecord() {
@@ -135,11 +135,14 @@ public class GlobalState {
             FishingTransaction txFishing = new FishingTransaction();
 
             txFishing.id = recFishing.txKey;
-            txFishing.harvestRq = recFishing.harvestRq;
+            txFishing.fishingRq = recFishing.fishingRq;
+            txFishing.requester = recFishing.requesterName;
             txFishing.platformRFID = recFishing.platformRFID;
             txFishing.cageRFID = recFishing.cageRFID;
             txFishing.cageCode = recFishing.cageCode;
             txFishing.fishType = recFishing.speciesName;
+            txFishing.hlot = recFishing.hlot;
+            txFishing.lastFeed = recFishing.lastFed;
             txFishing.averageWeight = String.valueOf(recFishing.averageWeight);
             txFishing.ichthyopathologist = recFishing.pathologist;
             txFishing.packagingPlant = recFishing.packagingPlant;

@@ -20,7 +20,7 @@ public class RFIDTag {
         this.epc = epc;
     }
 
-    public int getRssi() {
+    public Integer getRssi() {
         return rssi;
     }
 

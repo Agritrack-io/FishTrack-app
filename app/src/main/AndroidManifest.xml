@@ -29,10 +29,10 @@
     <application
         android:name=".FishTrackApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_hotel"
-        android:label="@string/app_name_hotel"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_launcher_hotel"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/FishTrack"
         android:usesCleartextTraffic="true"

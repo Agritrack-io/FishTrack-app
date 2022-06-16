@@ -164,17 +164,6 @@ public class FishingStartActivity extends AppCompatActivity {
     private FishingRecord updateState() {
         FishingRecord fishingRecord = recFishing;
 
-        /*if (harvestSpinner.getSelectedItem() != null) {
-            fishingRecord.requesterName = harvestSpinner.getSelectedItem().toString();
-        }
-        fishingRecord.requesterPos = harvestSpinner.getSelectedItemPosition();
-        if (speciesSpinner.getSelectedItem() != null) {
-            fishingRecord.speciesName = speciesSpinner.getSelectedItem().toString();
-        }
-        fishingRecord.speciesPos = speciesSpinner.getSelectedItemPosition();
-        if (etQty.getText() != null) {
-            fishingRecord.reqWeight = etQty.getText().toString();
-        }*/
 
         if (tvCageName.getText() != null) {
             fishingRecord.cageCode = tvCageName.getText().toString();

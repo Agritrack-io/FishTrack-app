@@ -25,7 +25,7 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.FishingTxDTO;
-import io.agritrack.data.model.HarvestRequest;
+import io.agritrack.data.model.FishingRequest;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
@@ -200,10 +200,10 @@ public class FishingConfirmActivity extends LocationAwareActivity {
             FishingTransaction tx = GlobalState.commitFishing(db, Boolean.TRUE);
 
             // Delete harvest request since it is executed
-            if (recFishing.harvestRq != null) {
-                HarvestRequest hDelObj = new HarvestRequest();
-                hDelObj.requestId = recFishing.harvestRq;
-                db.harvestRequestsDAO().delete(hDelObj);
+            if (recFishing.fishingRq != null) {
+                FishingRequest hDelObj = new FishingRequest();
+                hDelObj.requestId = recFishing.fishingRq;
+                db.fishingRequestsDAO().delete(hDelObj);
             }
 
             // sync fish species

@@ -13,7 +13,7 @@ public class FishingRecord {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
 
     public long txKey;
-    public String harvestRq;
+    public String fishingRq;
     public String requesterName;
     public Double reqWeight;
     public String speciesName;
@@ -22,6 +22,7 @@ public class FishingRecord {
     public String cageRFID;
     public String expectedCageRFID;
     public String cageCode; //Cage code assigned by Avramar
+    public String hlot;
     public List<String> availBins;
     public List<String> fishingTeam;
     public String pathologist;
@@ -45,7 +46,7 @@ public class FishingRecord {
         FishingRecord fishingRecord = new FishingRecord();
 
         fishingRecord.txKey = tx.id;
-        fishingRecord.harvestRq = tx.harvestRq;
+        fishingRecord.fishingRq = tx.fishingRq;
         fishingRecord.requesterName = tx.requester;
         fishingRecord.reqWeight = tx.orderedQuantity != null ? Double.valueOf(tx.orderedQuantity.toString()) : null;
         fishingRecord.speciesName = tx.fishType;

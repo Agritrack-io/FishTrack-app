@@ -21,7 +21,7 @@ import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.HarvestRequest;
+import io.agritrack.data.model.FishingRequest;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fruit.ui.FruitHomeActivity;
@@ -117,10 +117,10 @@ public class PackagingSelectOrderActivity extends AppCompatActivity implements A
         io.agritrack.ui.bo.GenericListModel member = (io.agritrack.ui.bo.GenericListModel) this.lvOpenOrders.getItemAtPosition(position);
         member.setChecked(!currentCheck);
 
-        HarvestRequest harvestRq = db.harvestRequestsDAO().getById(member.getId().toString());
+        FishingRequest harvestRq = db.fishingRequestsDAO().getById(member.getId().toString());
         if (harvestRq != null) {
             //GlobalState.recFishing.harvestRqPkId = harvestRq.id;
-            GlobalState.recFishing.harvestRq = harvestRq.requestId;
+            GlobalState.recFishing.fishingRq = harvestRq.requestId;
             GlobalState.recFishing.speciesName = harvestRq.species;
             GlobalState.recFishing.cageCode = harvestRq.cageCode;
             GlobalState.recFishing.cageRFID = harvestRq.cageRFID;

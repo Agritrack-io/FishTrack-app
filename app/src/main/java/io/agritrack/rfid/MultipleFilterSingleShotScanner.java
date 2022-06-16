@@ -6,6 +6,7 @@ import android.os.Message;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,6 @@ import java.util.Set;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;
-import io.agritrack.common.Filters;
 
 public class MultipleFilterSingleShotScanner implements Runnable {
 
@@ -45,7 +45,6 @@ public class MultipleFilterSingleShotScanner implements Runnable {
         this.RFID_FILTERS = rfidFilters;
     }
 
-
     public void setFilters(String... rfidFilters) {
         this.RFID_FILTERS = rfidFilters;
     }
@@ -65,11 +64,6 @@ public class MultipleFilterSingleShotScanner implements Runnable {
                         for (Optional<RFIDTag> optionalTag : optionalTags) {
                             if (optionalTag.isPresent())
                                 result.add(optionalTag.get().getEpc());
-                            //TODO:: The following code will be removed as the scanner should return the whole EPC
-                                /*if (optionalTag.get().getEpc().indexOf(Filters.RFID_LOGGER) > -1)
-                                    result.add(optionalTag.get().getEpc());
-                                else
-                                    result.add(optionalTag.get().getEpc().substring(11));*/
                         }
                         TextUtils.join(",", result);
 
@@ -105,7 +99,8 @@ public class MultipleFilterSingleShotScanner implements Runnable {
     private List<Optional<RFIDTag>> filterTags(List<RFIDTag> tagList) {
         Set<Optional<RFIDTag>> filteredTags = new HashSet<>();
         for (String filter : this.RFID_FILTERS) {
-            Optional<RFIDTag> aTag = tagList.stream().sorted((y, x) -> Integer.compare(x.getRssi(), y.getRssi())).filter(i -> i.getEpc().indexOf(filter) == 11).findFirst();
+            //Optional<RFIDTag> aTag = tagList.stream().sorted((y, x) -> Integer.compare(x.getRssi(), y.getRssi())).filter(i -> i.getEpc().indexOf(filter) == 11).findFirst();
+            Optional<RFIDTag> aTag = tagList.stream().filter(i -> i.getEpc().indexOf(filter) == 11).min(Comparator.comparing(RFIDTag::getRssi));
             filteredTags.add(aTag);
         }
         return new ArrayList<>(filteredTags);
