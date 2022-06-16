@@ -89,7 +89,12 @@ public class FishingCageActivity extends AppCompatActivity {
 
         // =================================
         // RFID scanning functionality
-        scanPlatformButton.setOnClickListener(view -> {
+
+        scanPlatformButton.setOnClickListener(this::onClick);
+
+        scanCageButton.setOnClickListener(this::onClick);
+
+        /*scanPlatformButton.setOnClickListener(view -> {
             MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
             scanner_runnable.setFilter(new String[]{Filters.RFID_PLATFORM});
             scanner_runnable.LowEnergy();
@@ -106,7 +111,7 @@ public class FishingCageActivity extends AppCompatActivity {
             mScanHandler.postDelayed(scanner_runnable, 0);
             scanner_runnable.HighEnergy();
         });
-        // =================================
+        // =================================*/
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
