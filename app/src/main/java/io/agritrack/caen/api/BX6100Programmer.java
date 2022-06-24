@@ -92,8 +92,9 @@ public class BX6100Programmer  extends AbstractX9Programmer {
             byte[] accessBytes = Tools.HexString2Bytes(accessPwd) ;
             byte[] fdataBytes = Tools.HexString2Bytes(fdata) ;
 
-            return this.mUhfRManager.writeTagEPCByFilter(epcBytes, accessBytes, this.timeout, fdataBytes, 1, 2, true);
-//            this.mUhfRManager.writeTagEPCByFilter(byte[] data, byte[] accesspwd, short timeout, byte[] fdata, int fbank, int fstartaddr, boolean matching);
+            Reader.READER_ERR outcome = this.mUhfRManager.writeTagEPCByFilter(epcBytes, accessBytes, this.timeout, fdataBytes, 1, 2, true);
+            this.mUhfRManager.setCancleInventoryFilter();
+            return outcome;
         }
         return null;
     }

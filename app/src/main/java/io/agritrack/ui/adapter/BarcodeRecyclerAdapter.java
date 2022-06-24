@@ -51,6 +51,16 @@ public class BarcodeRecyclerAdapter extends RecyclerView.Adapter<BarcodeRecycler
         }
     }
 
+    public void addItems(String barcode, int items) {
+        if (!this.mData.containsKey(barcode)) {
+            this.mList.add(barcode);
+            this.mData.put(barcode, items);
+        } else {
+            Integer cnt = this.mData.get(barcode);
+            this.mData.put(barcode, cnt + items);
+        }
+    }
+
     public void removeItem(String key) {
         Integer cnt = this.mData.get(key);
         if (cnt > 1) {

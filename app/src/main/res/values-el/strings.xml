@@ -27,6 +27,7 @@
     <string name="item_home_adapter_menu_item">Στοιχείο μενού</string>
 
     <string name="menu_title_fishing">Αλίευση</string>
+    <string name="menu_title_test_temp">Έλεγχος θερμοκρασίας</string>
     <string name="menu_title_transport">Μεταφορά</string>
     <string name="menu_title_fish_receiving">Παραλαβή</string>
     <string name="menu_title_fish_packaging">Ποιοτικός έλεγχος</string>
@@ -127,6 +128,8 @@
     <string name="fishing_confirm">Επιβεβαιώστε τα παρακάτω στοιχεία</string>
     <string name="fishing_enter_pin">Εισάγετε κωδικό</string>
 
+    <string name="title_test_temp">ΕΛΕΓΧΟΣ ΘΕΡΜΟΚΡΑΣΙΑΣ</string>
+    <string name="current_temp">Η θερμοκρασία της βούτας είναι</string>
 
     <string name="title_transport">ΜΕΤΑΦΟΡΑ</string>
     <string name="title_packaging_site_company_license_plate">ΣΥΣΚΕΥΑΣΤΗΡΙΟ / ΕΤΑΙΡΕΙΑ / ΠΙΝΑΚΙΔΑ</string>
@@ -559,8 +562,11 @@
     <string name="menu_title_status">Αλλαγή κατάστασης</string>
     <string name="new_status">Νέα κατάσταση</string>
     <string name="proceed_change_status">Είστε σίγουρος για να αλλάξετε την κατάσταση σε \'%1$s\' για αυτά τα %2$d τεμάχια?</string>
+    <string name="scan_search">Διάβασε και εντόπισε</string>
     <string name="proceed_insert_new_rfid">Πρόκειται να εισάγετε %1$d νέα τεμάχια στο απόθεμά σας. Είστε σίγουρος?</string>
     <string name="program_tags">Προγραμματισμός ετικετών</string>
+    <string name="scan_non_programmed_assets">Απρογραμμάτιστα</string>
+    <string name="search_linen">Εντοπισμός</string>
     <string name="select_code">Στοιχεία προϊόντος</string>
     <string name="type_linen">Είδος</string>
     <string name="press_for_types">Επιλέξτε τύπο</string>

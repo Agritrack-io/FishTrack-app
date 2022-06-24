@@ -22,9 +22,7 @@ import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
@@ -47,7 +45,7 @@ public class TransportInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transport_start);
+        setContentView(R.layout.activity_transport_info);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderTransportStart);

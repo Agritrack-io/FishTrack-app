@@ -82,11 +82,24 @@ public class IncomingConsumableActivity extends LocationAwareActivity implements
                 String barcode = new String(data);
                 if (barcode.length()>=24 && barcode.startsWith("02")) {
                     String gtin = barcode.substring(2, 16);
+                    int items = Integer.parseInt(barcode.substring(18, 20));
+                    FoodSku food = db.foodSkuDAO().getByGtin(gtin);
+                    if (food!=null) {
+                        adapterIncomingItems.addItems(food.description, items);
+                        adapterIncomingItems.notifyDataSetChanged();
+                    }
+                } else {
+
+                }
+                if (barcode.length()>=24 && barcode.startsWith("01")) {
+                    String gtin = barcode.substring(2, 16);
                     FoodSku food = db.foodSkuDAO().getByGtin(gtin);
                     if (food!=null) {
                         adapterIncomingItems.addItem(food.description);
                         adapterIncomingItems.notifyDataSetChanged();
                     }
+                } else {
+
                 }
                 //tvInventoryItemsCount.setText("# "+String.valueOf(adapterIncomingItems.getItemCount()));
                 scanning = false;
@@ -442,7 +455,7 @@ public class IncomingConsumableActivity extends LocationAwareActivity implements
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render("Consumable tx update failure!!!"), Toast.LENGTH_LONG));
             }
         }
 

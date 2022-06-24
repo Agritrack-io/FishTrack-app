@@ -6,9 +6,12 @@ import static io.agritrack.common.Filters.RFID_LOGGER;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.agritrack.caen.api.ICAEN_API;
@@ -24,6 +27,7 @@ public class SingleShotScanner implements Runnable {
     private Handler mScanHandler;
     private String RFID_FILTER = null;
     private Boolean trimEPCFlag = Boolean.TRUE;
+    private Integer maxLength = null;
     private int encodingIdx = schemeSvc.encodingIndex();
     private int encodingWth = schemeSvc.encodingWidth();
 
@@ -65,6 +69,10 @@ public class SingleShotScanner implements Runnable {
         }
     }
 
+    public void setMaxLength(Integer maxLength){
+        this.maxLength = maxLength;
+    }
+
     @Override
     public void run() {
         int idx = 0;
@@ -72,23 +80,28 @@ public class SingleShotScanner implements Runnable {
             if (uhfReader != null) {
                 final List<RFIDTag> tagList = uhfReader.inventoryByTimer(); //inventoryRealTime();
                 if (tagList != null && !tagList.isEmpty()) {
-                    Stream<RFIDTag> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || (f.getEpc().indexOf(this.RFID_FILTER) == encodingIdx && encodingIdx >-1)   || (f.getEpc().indexOf(this.RFID_FILTER) > -1));
-                    //Stream<RFIDTag> filteredStream = tagList.stream().filter(f -> this.RFID_FILTER == null || f.getEpc().indexOf(this.RFID_FILTER) == 11);
-                    Optional<RFIDTag> tag = filteredStream.sorted((y, x) -> Integer.compare(x.getRssi(), y.getRssi())).findFirst();
+
+                    Message msg = new Message();
+                    msg.what = 1;
+                    Bundle b = new Bundle();
+
+                    List<RFIDTag> filteredList = null;
+                    if (this.maxLength != null){
+                        filteredList = tagList.stream().filter(f -> f.getEpc().length() > maxLength).collect(Collectors.toList());
+                        b.putLong("cnt", filteredList.size());
+                    } else {
+                        filteredList = tagList.stream().filter(f -> this.RFID_FILTER == null || (f.getEpc().indexOf(this.RFID_FILTER) == encodingIdx && encodingIdx > -1) || (f.getEpc().indexOf(this.RFID_FILTER) > -1)).collect(Collectors.toList());
+                    }
+                    Optional<RFIDTag> tag = filteredList.stream().sorted((y, x) -> Integer.compare(x.getRssi(), y.getRssi())).findFirst();
 
                     if (tag.isPresent()) {
-                        Message msg = new Message();
-                        msg.what = 1;
-                        Bundle b = new Bundle();
-
                         String tagStr = tag.get().getEpc();
                         b.putString("epc", tagStr);
-
-                        msg.setData(b);
-                        mScanHandler.sendMessage(msg);
-                        mScanHandler.removeCallbacks(this);
-                        break;
                     }
+                    msg.setData(b);
+                    mScanHandler.sendMessage(msg);
+                    mScanHandler.removeCallbacks(this);
+                    break;
                 }
             }
             // to avoid possible endless loop.

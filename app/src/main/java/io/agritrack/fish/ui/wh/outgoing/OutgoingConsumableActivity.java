@@ -41,6 +41,7 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.ConsumableTxDTO;
 import io.agritrack.data.model.tx.ConsumableTransaction;
+import io.agritrack.data.model.wh.FoodSku;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.ConsumableType;
@@ -102,10 +103,30 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
         public void onReceive(Context context, Intent intent) {
             byte[] data = intent.getByteArrayExtra("data");
             if (data != null) {
+                // get an instance of local DB
+                db = MobileDB.getInstance(getAppContext());
                 String barcode = new String(data);
-                adapterOutgoingItems.addItem(barcode);
-                adapterOutgoingItems.notifyDataSetChanged();
-                //tvInventoryItemsCount.setText("# "+String.valueOf(adapterIncomingItems.getItemCount()));
+                if (barcode.length()>=24 && barcode.startsWith("02")) {
+                    String gtin = barcode.substring(2, 16);
+                    int items = Integer.parseInt(barcode.substring(18, 20));
+                    FoodSku food = db.foodSkuDAO().getByGtin(gtin);
+                    if (food!=null) {
+                        adapterOutgoingItems.addItems(food.description, items);
+                        adapterOutgoingItems.notifyDataSetChanged();
+                    }
+                } else {
+
+                }
+                if (barcode.length()>=24 && barcode.startsWith("01")) {
+                    String gtin = barcode.substring(2, 16);
+                    FoodSku food = db.foodSkuDAO().getByGtin(gtin);
+                    if (food!=null) {
+                        adapterOutgoingItems.addItem(food.description);
+                        adapterOutgoingItems.notifyDataSetChanged();
+                    }
+                } else {
+
+                }
                 scanning = false;
             }
         }

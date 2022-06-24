@@ -27,6 +27,7 @@
     <string name="item_home_adapter_menu_item">Menu item</string>
 
     <string name="menu_title_fishing">Fishing</string>
+    <string name="menu_title_test_temp">Test temperature</string>
     <string name="menu_title_transport">Transport</string>
     <string name="menu_title_fish_receiving">Receipt</string>
     <string name="menu_title_fish_packaging">Quality</string>
@@ -126,6 +127,8 @@
     <string name="fishing_confirm">Confirm details</string>
     <string name="fishing_enter_pin">Enter PIN</string>
 
+    <string name="title_test_temp">TEST TEMPERATURE</string>
+    <string name="current_temp">Bin temperature is</string>
 
     <string name="title_transport">TRANSPORT</string>
     <string name="title_packaging_site_company_license_plate">PACKAGING SITE / COMPANY / LICENSE PLATE</string>
@@ -558,7 +561,10 @@
     <string name="new_status">New status</string>
     <string name="proceed_change_status">Are you sure to change status to \'%1$s\' for these %2$d items?</string>
     <string name="proceed_insert_new_rfid">You are about to insert %1$d new items to live inventory. Are you sure?</string>
+    <string name="scan_search">Scan and search</string>
     <string name="program_tags">Program tags</string>
+    <string name="scan_non_programmed_assets">Not programmed</string>
+    <string name="search_linen">Detect</string>
     <string name="select_code">Product info</string>
     <string name="type_linen">Type</string>
     <string name="press_for_types">Press for types</string>
@@ -596,6 +602,4 @@
     <string name="pending_fishing_tx_upload_failure_alert">Failed to upload pending fishing tx!</string>
     <string name="pending_fishing_tx_upload_completed">Pending fishing tx successfully uploaded!</string>
     <string name="bt_not_supported">Bluetooth not supported!</string>
-
-
 </resources>

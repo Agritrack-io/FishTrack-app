@@ -349,7 +349,7 @@ public class FishHomeActivity extends AppCompatActivity {
             syncEmployeesAsyncCall.enqueue(new SyncEmployeesCallBack(this.syncResult));
 
             // sync suppliers
-            Call<List<SupplierDTO>> syncSuppliersAsyncCall = syncService.getSuppliersBySiteId(siteId, "Bearer " + token);
+            Call<List<SupplierDTO>> syncSuppliersAsyncCall = syncService.getAllSuppliers("Bearer " + token);
             syncSuppliersAsyncCall.enqueue(new SyncSuppliersCallBack(this.syncResult));
 
             // sync customers

@@ -43,6 +43,7 @@ import io.agritrack.data.dto.wh.CoInventoryDTO;
 import io.agritrack.data.dto.wh.CoInventoryItemDTO;
 import io.agritrack.data.model.wh.CoInventory;
 import io.agritrack.data.model.wh.CoInventoryItem;
+import io.agritrack.data.model.wh.FoodSku;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.ConsumableType;
@@ -78,9 +79,30 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
         public void onReceive(Context context, Intent intent) {
             byte[] data = intent.getByteArrayExtra("data");
             if (data != null) {
+                // get an instance of local DB
+                db = MobileDB.getInstance(getAppContext());
                 String barcode = new String(data);
-                adapterInventoryItems.addItem(barcode);
-                adapterInventoryItems.notifyDataSetChanged();
+                if (barcode.length()>=24 && barcode.startsWith("02")) {
+                    String gtin = barcode.substring(2, 16);
+                    int items = Integer.parseInt(barcode.substring(18, 20));
+                    FoodSku food = db.foodSkuDAO().getByGtin(gtin);
+                    if (food!=null) {
+                        adapterInventoryItems.addItems(food.description, items);
+                        adapterInventoryItems.notifyDataSetChanged();
+                    }
+                } else {
+
+                }
+                if (barcode.length()>=24 && barcode.startsWith("01")) {
+                    String gtin = barcode.substring(2, 16);
+                    FoodSku food = db.foodSkuDAO().getByGtin(gtin);
+                    if (food!=null) {
+                        adapterInventoryItems.addItem(food.description);
+                        adapterInventoryItems.notifyDataSetChanged();
+                    }
+                } else {
+
+                }
                 tvInventoryItemsCount.setText("# " + String.valueOf(adapterInventoryItems.getItemCount()));
                 scanning = false;
             }

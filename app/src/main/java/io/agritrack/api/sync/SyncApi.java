@@ -46,6 +46,11 @@ public interface SyncApi {
     Call<List<AssetDTO>> getAssetsBySite(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/hotel/inventory/linen")
+    Call<List<AssetDTO>> getAllLinens(@Header("Authorization") String token);
+
+
+    @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/asset/{siteId}/{assetType}")
     Call<List<AssetDTO>> getAssetsBySiteAndType(@Path("siteId") UUID siteId, @Path("assetType") String assetType, @Header("Authorization") String token);
 
@@ -72,6 +77,10 @@ public interface SyncApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/supplier/{siteId}")
     Call<List<SupplierDTO>> getSuppliersBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/suppliers")
+    Call<List<SupplierDTO>> getAllSuppliers(@Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/customer/{siteId}")

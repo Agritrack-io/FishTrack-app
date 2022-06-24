@@ -228,7 +228,7 @@ public class HotelHomeActivity extends AppCompatActivity {
             syncCustomersAsyncCall.enqueue(new SyncCustomersCallBack(this.syncResult));
 
             // sync assets  (cages, nets, bins, platforms)
-            Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
+            Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAllLinens("Bearer " + token);
             syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
         } catch (Exception e) {
             e.printStackTrace();

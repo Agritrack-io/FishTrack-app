@@ -308,9 +308,9 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             Call<List<EmployeeDTO>> syncEmployeesAsyncCall = syncService.getEmployeesBySiteId(siteId, "Bearer " + token);
             syncEmployeesAsyncCall.enqueue(new SyncEmployeesCallBack(this.syncResult));
 
-            // sync suppliers
+            /*// sync suppliers
             Call<List<SupplierDTO>> syncSuppliersAsyncCall = syncService.getSuppliersBySiteId(siteId, "Bearer " + token);
-            syncSuppliersAsyncCall.enqueue(new SyncSuppliersCallBack(this.syncResult));
+            syncSuppliersAsyncCall.enqueue(new SyncSuppliersCallBack(this.syncResult));*/
 
             // sync customers
             Call<List<CustomerDTO>> syncCustomersAsyncCall = syncService.getCustomersBySiteId(siteId, "Bearer " + token);

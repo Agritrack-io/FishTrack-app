@@ -12,6 +12,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,11 +22,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,6 +44,9 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.caen.api.BX6100Programmer;
+import io.agritrack.caen.api.ICAEN_API;
+import io.agritrack.caen.api.RFIDModuleFactory;
+import io.agritrack.caen.pojo.RFIDTag;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SimpleListDialog;
@@ -49,25 +54,33 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.login.LoginActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class ProgramLinenTagsActivity extends AppCompatActivity {
     private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
+    private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
     // Local handler that receives the RFID scanner results.
     private final ProgramLinenTagsActivity.ScanHandler mScanHandler = new ProgramLinenTagsActivity.ScanHandler(this);
     private final MutableLiveData<String> currentTypeSelection = new MutableLiveData<>();
+    private final Runnable search_runnable = new SearchRunnable();
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
+    private ICAEN_API uhfReader = null;
     private SimpleListDialog linenTypeDialog;
     private MobileDB db;
     private BX6100Programmer x9programmer;
     private Map<String, String> typeEPCSMap;
     private TextView tvProductCode, tvItemsCnt, tvFilterEPC, tvProgOutcome;
-    private Button btnLinenType, btnWriteEPC;
+    private Button btnLinenType, btnWriteEPC, btnScan, btnSearch;
+    private Long notProgrammedTagsCount = null;
+    private String candidateTag = null;
     private SingleShotScanner scanner;
     private YesNoDialogFragment confirmWriteEpcDlg;
+    private TextView tvProximity;
+    private ProgressBar pbProximity;
     private EditText etNextEPC;
     private RecyclerView rvEPCsPerType;
     private TemplateRecyclerAdapter adapterEPC;
@@ -75,6 +88,7 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
     private String currentType, currentProductCode;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
+    private boolean isScanning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +111,8 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
+        SoundUtil.initSoundPool(ProgramLinenTagsActivity.this);
+
         // Initialize type EPCs map
         for (String productName : schemeSvc.distinctNamesOnly()) {
             String productCode = schemeSvc.codeOf(productName);
@@ -114,7 +130,10 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
 
         });
 
-        List<String> adapterData = typeEPCSMap.entrySet().stream().map(x -> String.format("%s: %s [%s]",x.getKey(), schemeSvc.nameOf(x.getKey()), x.getValue())).collect(Collectors.toList());
+        notProgrammedTagsCount = null;
+        candidateTag = null;
+
+        List<String> adapterData = typeEPCSMap.entrySet().stream().map(x -> String.format("%s: %s [%s]", x.getKey(), schemeSvc.nameOf(x.getKey()), x.getValue())).collect(Collectors.toList());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvEPCsPerType.setLayoutManager(layoutManager);
@@ -169,6 +188,11 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
             }
         });
 
+        btnScan.setOnClickListener(this::onClick);
+
+        btnSearch.setOnClickListener(this::onClick);
+
+
         btnLinenType.setOnClickListener(view -> {
             linenTypeDialog = new SimpleListDialog(ProgramLinenTagsActivity.this, Arrays.asList(schemeSvc.distinctNamesOnly()), currentTypeSelection, R.string.type_linen);
             linenTypeDialog.showDialog();
@@ -185,6 +209,7 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(filterEPCStr)) {
                 Reader.READER_ERR res = x9programmer.writeTagEPCByFilter(currentProductCode + currSerialNumber, filterEPCStr);
                 if (Reader.READER_ERR.MT_OK_ERR.compareTo(res) == 0) {
+                    candidateTag = null;
                     tvProgOutcome.setText(R.string.success);
                     tvProgOutcome.setTextColor(Color.GREEN);
                     ivProgOutcome.setColorFilter(Color.GREEN);
@@ -204,6 +229,8 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
 
                     // Lock next EPC field
                     etNextEPC.setEnabled(false);
+                    btnWriteEPC.setEnabled(false);
+                    btnWriteEPC.setTextColor(Color.DKGRAY);
                 } else {
                     tvProgOutcome.setText(R.string.failure);
                     tvProgOutcome.setTextColor(Color.RED);
@@ -232,9 +259,11 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        scanner.HighEnergy();
-        //unregister the receiver
-        this.stopScanner();
+        if (scanner != null) {
+            scanner.HighEnergy();
+            //unregister the receiver
+            this.stopScanner();
+        }
         if (x9programmer != null) {
             x9programmer.stopProgramming();
         }
@@ -290,6 +319,10 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
         ivProgOutcome = findViewById(R.id.ivProgOutcome);
         tvItemsCnt = findViewById(R.id.tvItemsCnt);
         btnWriteEPC = findViewById(R.id.btnWriteEPC);
+        btnScan = findViewById(R.id.btnScan);
+        btnSearch = findViewById(R.id.btnSearch);
+        pbProximity = findViewById(R.id.pbProximity);
+        tvProximity = findViewById(R.id.tvProximity);
         rvEPCsPerType = findViewById(R.id.rvEPCsPerType);
         ivSupport = findViewById(R.id.ivSupport);
     }
@@ -298,7 +331,7 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
         ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
             //Stop scanning since we navigate to next activity
-            if (mScanHandler!=null) {
+            if (mScanHandler != null) {
                 stopScanner();
             }
 
@@ -311,11 +344,71 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
         });
     }
 
-    protected void onClick(View view) {
-        scanner = new SingleShotScanner(mScanHandler);
-        scanner.LowEnergy();
+    protected void scanUnprogrammed(){
+        if (scanner == null) {
+            scanner = new SingleShotScanner(mScanHandler);
+        }
+        scanner.setMaxLength(8);
+        scanner.setFilter(null);
+        scanner.HighEnergy();
+
         scanner.startReading();
         mScanHandler.postDelayed(scanner, 0);
+
+        btnSearch.setEnabled(true);
+        btnSearch.setTextColor(Color.GREEN);
+        btnWriteEPC.setEnabled(true);
+        btnWriteEPC.setTextColor(Color.GREEN);
+    }
+
+    protected void detectUnprogrammed() {
+        uhfReader = RFIDModuleFactory.getInstance();
+        if (Strings.isEmptyOrWhitespace(candidateTag)) {
+            runOnUiThread(() -> CToast(getAppContext(), render(R.string.no_epc_filter_selected), Toast.LENGTH_LONG));
+            return;
+        }
+
+        if (!isScanning) {
+            isScanning = true;
+            btnSearch.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+            btnSearch.setText(R.string.stop_search);
+            uhfReader.setFilterEPC(candidateTag);
+            uhfReader.startSearching();
+            mScanHandler.postDelayed(search_runnable, 0);
+            btnScan.setEnabled(false);
+            btnScan.setTextColor(Color.DKGRAY);
+            btnWriteEPC.setEnabled(false);
+            btnWriteEPC.setTextColor(Color.DKGRAY);
+        } else {
+            isScanning = false;
+            btnSearch.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+            btnSearch.setText(R.string.search_linen);
+            pbProximity.setProgress(0);
+            tvProximity.setText(R.string.proximity);
+            uhfReader.stopSearching();
+            mScanHandler.removeCallbacks(search_runnable);
+            btnScan.setEnabled(true);
+            btnScan.setTextColor(Color.GREEN);
+            btnWriteEPC.setEnabled(true);
+            btnWriteEPC.setTextColor(Color.GREEN);
+            //uhfReader.CloseReader();
+        }
+    }
+
+    protected void onClick(View view) {
+        if(view!=null){
+            if(view.getId() == btnScan.getId()){
+                scanUnprogrammed();
+            } else if (view.getId() == btnSearch.getId()) {
+                detectUnprogrammed();
+            }
+        } else {
+            if (candidateTag == null) {
+                scanUnprogrammed();
+            } else {
+                detectUnprogrammed();
+            }
+        }
     }
 
     // ###################################################
@@ -339,17 +432,26 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 1:
                     String epcStr = msg.getData().getString("epc");
+                    notProgrammedTagsCount = msg.getData().getLong("cnt");
                     String rssi = msg.getData().getString("rssi");
                     tvProgOutcome.setText("");
                     ivProgOutcome.setColorFilter(null);
 
+                    if (notProgrammedTagsCount > 0) {
+                        tvItemsCnt.setText(notProgrammedTagsCount.toString());
+                    } else {
+                        tvItemsCnt.setText(notProgrammedTagsCount.toString());
+                        CToast(getApplicationContext(), render("No unprogrammed tags were found!!"), Toast.LENGTH_LONG);
+                    }
+
                     if (!Strings.isEmptyOrWhitespace(epcStr)) {
                         if (epcStr.length() > 8) {
+                            candidateTag = epcStr;
                             tvFilterEPC.setText(epcStr);
-                            tvFilterEPC.setTextColor(Color.GREEN);
+                            //tvFilterEPC.setTextColor(Color.GREEN);
                             btnWriteEPC.setEnabled(true);
                             btnWriteEPC.setTextColor(Color.GREEN);
-                        } else {
+                        } /*else {
                             tvFilterEPC.setText(epcStr);
                             tvFilterEPC.setTextColor(Color.RED);
                             btnWriteEPC.setEnabled(false);
@@ -358,17 +460,76 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
                             confirmWriteEpcDlg.setMessage(getString(R.string.proceed_with_written_epc, epcStr));
                             confirmWriteEpcDlg.showNow(fm, getString(R.string.confirm_selection));
                             //CToast(getApplicationContext(), render("Tag is already programmed!!"), Toast.LENGTH_SHORT);
+                        }*/
+                    }
+                    break;
+                case 10:
+                    int rssi_from_tag = msg.getData().getInt("rssi");
+                    //System.out.println("RSSI:" + rssi_from_tag);
+                    int rssi_norm = normalize(rssi_from_tag);
+
+                    if (rssi_norm > 5 && rssi_norm < 95) {
+                        mActivity.get().tvProximity.setText(String.valueOf(rssi_norm));
+                        mActivity.get().pbProximity.setProgress(rssi_norm);
+                        if (rssi_norm < 95 && rssi_norm >= 80) {
+                            toneG.startTone(ToneGenerator.TONE_DTMF_D, 200);
+                        } else if (rssi_norm < 80 && rssi_norm >= 60) {
+                            toneG.startTone(ToneGenerator.TONE_DTMF_9, 130);
+                        } else if (rssi_norm < 60 && rssi_norm >= 40) {
+                            toneG.startTone(ToneGenerator.TONE_DTMF_5, 100);
+                        } else {
+                            toneG.startTone(ToneGenerator.TONE_DTMF_1, 50);
                         }
+                    } else if (rssi_norm >= 95) {
+                        toneG.startTone(ToneGenerator.TONE_DTMF_D, 300);
+                        mActivity.get().tvProximity.setText(">= 95%");
+                        mActivity.get().pbProximity.setProgress(100);
                     } else {
-                        CToast(getApplicationContext(), render("No Tag was detected!!"), Toast.LENGTH_SHORT);
+                        toneG.startTone(ToneGenerator.TONE_DTMF_1, 10);
+                        mActivity.get().tvProximity.setText("<= 5%");
+                        mActivity.get().pbProximity.setProgress(0);
                     }
                     break;
                 case 1980:
                     if (!IsDemo) {
+                        mActivity.get().tvProximity.setText("");
+                        mActivity.get().pbProximity.setProgress(0);
                         //CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
                     }
                     break;
             }
+        }
+
+        private int normalize(double rssi) {
+            final double MAX_RSSI = -35d;
+            final double MIN_RSSI = -70;
+            rssi = rssi > MAX_RSSI ? MAX_RSSI : rssi;
+            rssi = rssi < MIN_RSSI ? MIN_RSSI : rssi;
+            return (int) (Math.abs(rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI) * 100);
+        }
+    }
+
+    private final class SearchRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                List<RFIDTag> tagList = uhfReader.search();
+
+                if (tagList != null && !tagList.isEmpty()) {
+                    RFIDTag tag = tagList.get(0);
+                    Message msg = new Message();
+                    msg.what = 10;
+                    Bundle b = new Bundle();
+                    b.putInt("rssi", tag.getRssi());
+                    b.putString("epc", tag.getEpc());
+                    msg.setData(b);
+                    mScanHandler.sendMessage(msg);
+                }
+            } catch (Exception ignored) {
+                ignored.printStackTrace();
+            }
+            mScanHandler.post(search_runnable);
         }
     }
 }
