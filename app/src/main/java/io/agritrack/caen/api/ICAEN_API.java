@@ -97,7 +97,7 @@ public interface ICAEN_API {
     /* This function returns the READ_INTERVAL value */
     Short ReadInterval();
 
-    /* This function returns the READ_SAMPLES_COUNT value */
+    /* This function returns the ADDR_LAST_SAMPLE value */
     Double ReadLastSample();
 
     /* This function returns the READ_SAMPLES_COUNT value */
