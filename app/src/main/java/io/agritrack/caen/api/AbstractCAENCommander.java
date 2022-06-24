@@ -346,7 +346,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
         return null;
     }
 
-    /* This function returns the READ_SAMPLES_COUNT value */
+    /* This function returns the ADDR_LAST_SAMPLE value */
     @Override
     public Double ReadLastSample() {
         try {
@@ -362,7 +362,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
         return null;
     }
 
-    /* This function returns the READ_SAMPLES_COUNT value */
+    /* This function returns the ADDR_SAMPLES_CNT value */
     @Override
     public Short ReadSamplesCount() {
         try {
