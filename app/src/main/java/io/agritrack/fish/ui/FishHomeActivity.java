@@ -74,6 +74,7 @@ import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
+import io.agritrack.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.fish.ui.transport.TransportBinsActivity;
 import io.agritrack.fish.ui.transport.TransportInfoActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
@@ -84,7 +85,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 public class FishHomeActivity extends AppCompatActivity {
-    private static final int Fishing_Idx = 0, Transport_Idx = 1, Receiving_Idx = 2, Packaging_Quality_Idx = 3, Warehouse_Idx = 4, /*Maintenance_Idx = 5,*/
+    private static final int Fishing_Idx = 0, Test_Temp_Idx = 1, Transport_Idx = 2, Receiving_Idx = 3, Packaging_Quality_Idx = 4, Warehouse_Idx = 5, /*Maintenance_Idx = 5,*/
             SeaTemp_Idx = 6;
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
@@ -116,6 +117,9 @@ public class FishHomeActivity extends AppCompatActivity {
         Set<MenuItem> menuItemsSet = new LinkedHashSet<MenuItem>();
         if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
             menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
+        }
+        if (roleCanAccessMenu(userRoles, Test_Temp_Idx)) {
+            menuItemsSet.add(new MenuItem(Test_Temp_Idx, getString(R.string.menu_title_test_temp), TestBinTempActivity.class, R.drawable.sea_temp));
         }
         if (roleCanAccessMenu(userRoles, Receiving_Idx)) {
             menuItemsSet.add(new MenuItem(Receiving_Idx, getString(R.string.menu_title_fish_receiving), ProcessBinsActivity.class, R.drawable.processing));
@@ -191,6 +195,9 @@ public class FishHomeActivity extends AppCompatActivity {
 //                            List<FishingRequest> harvestRequests = db.harvestRequestsDAO().getAll();
                             i = new Intent(appCtx, HarvestRequestsActivity.class);
                         }
+                        break;
+                    case Test_Temp_Idx:
+                        i = new Intent(appCtx, TestBinTempActivity.class);
                         break;
                     case Transport_Idx:
                         GlobalState.initTransportationRecord();
@@ -402,6 +409,7 @@ public class FishHomeActivity extends AppCompatActivity {
 
     private void assignPrivilegesToRoles() {
         Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Test_Temp_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Receiving_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Packaging_Quality_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Transport_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});

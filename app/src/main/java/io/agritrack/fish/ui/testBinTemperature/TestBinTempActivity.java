@@ -5,10 +5,6 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,41 +16,61 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 
 import io.agritrack.R;
+import io.agritrack.caen.api.ICAEN_API;
+import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.bo.LoggerReading;
-import io.agritrack.fish.ui.fishing.FishingBinsActivity;
-import io.agritrack.fish.ui.fishing.FishingCageActivity;
-import io.agritrack.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.LoggerInitDialogFragment;
 
 public class TestBinTempActivity extends AppCompatActivity {
 
-    private TextView tvCurrentTemp, tvCurrentBin;
-    private String binBarcode = "", binEPC, loggerEPC;
-    private Button btnScanBin;
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
-
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-    private LoggerReading loggerReading;
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
+    private TextView tvCurrentTemp, tvCurrentBin;
+    private Button btnScanBin;
+    private ICAEN_API cmd;
+    final Runnable readLastSampleThread = new Runnable() {
+        @Override
+        public void run() {
+            // read CONTROL register state
+            Double lastTemp = cmd.ReadLastSample();
+
+            try {
+                Thread.sleep(1000l);
+            } catch (Exception x) {
+            }
+
+            if (lastTemp != null) {
+                Message msg = new Message();
+                msg.what = 200;
+                Bundle b = new Bundle();
+                b.putString("value", lastTemp.toString());
+
+                msg.setData(b);
+                mScanHandler.sendMessage(msg);
+            } else {
+                CToast(getApplicationContext(), render("Data logger hasn't been initialized!!"), Toast.LENGTH_LONG);
+            }
+        }
+    };
     private SingleShotScanner singleShot_runnable;
-    private GetTempDataDialog tempLoggerDialog;
     private MobileDB db;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -81,17 +97,6 @@ public class TestBinTempActivity extends AppCompatActivity {
         // RFID scanning functionality
         btnScanBin.setOnClickListener(this::onClick);
 
-        loggerReading = new ViewModelProvider(this).get(LoggerReading.class);
-        loggerReading.getReading().observe(this, reading -> {
-            Double temp = (Double) reading.get("LastValue");
-            Long ts = (Long) reading.get("timestamp");
-
-            //GlobalState.recFishing.binTemperatureRecord.addRecord(binEPC, ts, temp);
-
-            tempLoggerDialog = new GetTempDataDialog(TestBinTempActivity.this, temp, binEPC);
-            tempLoggerDialog.showDialog();
-        });
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(TestBinTempActivity.this);
             supportDialog.showDialog();
@@ -105,6 +110,13 @@ public class TestBinTempActivity extends AppCompatActivity {
     protected void onStop() {
         this.stopScanner();
         super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        // instantiate Reader Module
+        super.onStart();
+        this.cmd = RFIDModuleFactory.getInstance();
     }
 
     protected void configFooter() {
@@ -153,15 +165,13 @@ public class TestBinTempActivity extends AppCompatActivity {
                     String rssi = msg.getData().getString("rssi");
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            loggerEPC = epcStr;
                             // after bin is identified, initialize the temperatures logger.
-                            Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
+                            Asset bin = db.assetDAO().getByLoggerEPC(epcStr);
                             if (bin != null) {
-                                binEPC = bin.rfid;
-                                tvCurrentBin.setText(binEPC.substring(binEPC.length()-10));
-
-                                if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-
+                                String binEPC = bin.rfid;
+                                tvCurrentBin.setText(binEPC.substring(binEPC.length() - 10));
+                                if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                                    mScanHandler.post(readLastSampleThread);
                                 } else {
                                     CToast(getApplicationContext(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
                                 }
@@ -172,6 +182,10 @@ public class TestBinTempActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    break;
+                case 200:
+                    String lastTemp = msg.getData().getString("value");
+                    tvCurrentTemp.setText(lastTemp);
                     break;
                 case 1980:
                     if (!IsDemo) {

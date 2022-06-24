@@ -38,8 +38,9 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
-            android:name=".TestBinTempActivity"
-            android:exported="false" />
+            android:name=".fish.ui.testBinTemperature.TestBinTempActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.tools.ProgramLinenTagsActivity"
             android:exported="false"
