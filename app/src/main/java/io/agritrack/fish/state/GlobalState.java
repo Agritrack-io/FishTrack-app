@@ -16,6 +16,7 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.FishingRequest;
 import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.data.model.common.Measurement;
+import io.agritrack.data.model.common.SortingTimeSeries;
 import io.agritrack.data.model.common.TemperatureData;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.AssetTransaction;
@@ -302,6 +303,33 @@ public class GlobalState {
         }
     }
 
+    public static List<SortingTimeSeries> commitSortingMeasurements(MobileDB db) {
+        List<SortingTimeSeries> result = new ArrayList<>();
+        try {
+            for (String epc : recLoggerData.data.keySet()) {
+                LoggerDataRecord.TemperatureModel model = recLoggerData.data.get(epc);
+
+                Measurement measurement = new Measurement();
+                measurement.loggerRFID = model.loggerEPC;
+                measurement.assetRFID = model.assetEPC;
+                measurement.retrievedAt = model.retrievedAt;
+
+                long measurementId = db.measurementsDAO().insert(measurement);
+                if (measurementId > 0 && model.values != null && !model.values.isEmpty()) {
+                    List<TemperatureData> data = model.values.stream().map(x -> new TemperatureData(measurementId, x[0], Double.valueOf(x[1].replace(',', '.')))).collect(Collectors.toList());
+                    db.temperatureDataDAO().insert(data.toArray(new TemperatureData[data.size()]));
+                }
+                //TODO:: can't we get it directly from the insert statement?
+                result.add(db.measurementsDAO().getByMeasId(measurementId));
+            }
+
+            return result;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     public static List<TemperatureTimeSeries> commitMeasurements(MobileDB db) {
         List<TemperatureTimeSeries> result = new ArrayList<>();
         try {
@@ -343,7 +371,7 @@ public class GlobalState {
             txWHIncoming.longitude = recWHIncoming.longitude;
             txWHIncoming.latitude = recWHIncoming.latitude;
 
-            db.assetTransactionDAO().insert(txWHIncoming);
+            recWHIncoming.txKey = db.assetTransactionDAO().insert(txWHIncoming);
 
             return txWHIncoming;
         } catch (Exception ex) {

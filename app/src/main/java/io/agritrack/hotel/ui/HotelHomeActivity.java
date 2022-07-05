@@ -29,6 +29,10 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.sync.PendingAssetTxCallBack;
+import io.agritrack.api.sync.PendingCorrelationTxCallBack;
+import io.agritrack.api.sync.PendingFishingTxCallBack;
+import io.agritrack.api.sync.PendingTransportTxCallBack;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
@@ -42,8 +46,17 @@ import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.CustomerDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
+import io.agritrack.data.dto.tx.AssetTxDTO;
+import io.agritrack.data.dto.tx.CorrelationTxDTO;
+import io.agritrack.data.dto.tx.FishingTxDTO;
+import io.agritrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
+import io.agritrack.data.model.tx.AssetTransaction;
+import io.agritrack.data.model.tx.CorrelationTransaction;
+import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.hotel.ui.incoming.HotelIncomingStartActivity;
 import io.agritrack.hotel.ui.inventory.HotelInventoryStartActivity;
@@ -55,6 +68,7 @@ import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
 import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 public class HotelHomeActivity extends AppCompatActivity {
@@ -186,6 +200,7 @@ public class HotelHomeActivity extends AppCompatActivity {
             syncCounter = 1;
             showProgressDialog(getString(R.string.syncing));
             invokeSyncAll();
+            invokeUploadPendingAll();
         });
 
         configFooter();
@@ -198,6 +213,26 @@ public class HotelHomeActivity extends AppCompatActivity {
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(i);
         });
+    }
+
+    private void invokeUploadPendingAll() {
+        try {
+            TransactionApi pendingTxSvc = APIServiceGenerator.createAPI(TransactionApi.class);
+            String token = LocalPreferences.getToken();
+
+            // select all pending asset TXs
+            List<AssetTransaction> assetTXs = db.assetTransactionDAO().getAll();
+            if(!assetTXs.isEmpty()) {
+                for (AssetTransaction assetTX : assetTXs) {
+                    Call<AssetTxDTO> assetTxAsyncCall = pendingTxSvc.syncRFIDIOTx(AssetTxDTO.convert(assetTX), "Bearer " + token);
+                    assetTxAsyncCall.enqueue(new PendingAssetTxCallBack(this.syncResult));
+                }
+            }
+        } catch (Exception e) {
+
+        } finally {
+
+        }
     }
 
     private void invokeSyncAll() {

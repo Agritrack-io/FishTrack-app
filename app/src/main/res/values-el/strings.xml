@@ -31,6 +31,7 @@
     <string name="menu_title_transport">Μεταφορά</string>
     <string name="menu_title_fish_receiving">Παραλαβή</string>
     <string name="menu_title_fish_packaging">Ποιοτικός έλεγχος</string>
+    <string name="menu_title_bin_overturn">Ανατροπή βούτας</string>
     <string name="menu_title_warehouse">Αποθήκη</string>
     <string name="menu_title_maintenance">Συντήρηση</string>
     <string name="menu_title_sea_temp">Θερμοκρασία θάλασσας</string>
@@ -90,6 +91,7 @@
     <string name="platform">Πλατφόρμα</string>
     <string name="scan_cage">Διάβασε κλωβό</string>
     <string name="confirm_cage">"Παρακαλώ πληκτρολογήστε \%1$s\!"</string>
+    <string name="wrong_typing_cage">"Λάθος πληκτρολόγηση! \nΠαρακαλώ πληκτρολογήστε \%1$s\!"</string>
     <string name="proceed_without_cage">"Λάθος κλωβός \(%1$s\)! Θέλετε να συνεχίσετε με αυτόν?"</string>
     <string name="name_net">Δίχτυ</string>
     <string name="scan_net">Σκανάρετε δίχτυ</string>
@@ -257,6 +259,9 @@
     <string name="dispatch_note_confirm_label">Δελτίο αποστολής:</string>
     <string name="product_lot_confirm_label">LOT:</string>
     <string name="fish_condition_confirm_label">Κατάσταση ψαριών:</string>
+
+    <string name="title_overturn">ΑΝΑΤΡΟΠΗ ΒΟΥΤΑΣ</string>
+    <string name="choose_production_line">Γραμμή παραγωγής</string>
 
     <string name="title_date_type_of_asset">ΗΜΕΡΟΜΗΝΙΑ / ΤΥΠΟΣ ΠΑΓΙΟΥ</string>
     <string name="title_outgoing">ΕΞΕΡΧΟΜΕΝΑ</string>

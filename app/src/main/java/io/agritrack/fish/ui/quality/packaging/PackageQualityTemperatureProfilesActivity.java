@@ -46,7 +46,7 @@ public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity
         assignCtrlVars();
 
         // get main controls references
-        this.lvTempProfiles = findViewById(R.id.lvTempProfiles);
+        this.lvTempProfiles = findViewById(R.id.ibTempProfiles);
 
         tempProfileAdapter = new TemperatureProfileAdapter(this);
         lvTempProfiles.setAdapter(tempProfileAdapter);
@@ -68,7 +68,7 @@ public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity
     }
 
     private void assignCtrlVars() {
-        lvTempProfiles = findViewById(R.id.lvTempProfiles);
+        lvTempProfiles = findViewById(R.id.ibTempProfiles);
         ivSupport = findViewById(R.id.ivSupport);
     }
 

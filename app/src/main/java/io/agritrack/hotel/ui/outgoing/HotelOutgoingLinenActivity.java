@@ -3,6 +3,8 @@ package io.agritrack.hotel.ui.outgoing;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
+import static io.agritrack.fish.state.GlobalState.recWHIncoming;
 import static io.agritrack.fish.state.GlobalState.recWHOutgoing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -44,6 +46,7 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.model.tx.AssetTransaction;
+import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -477,12 +480,26 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity {
         }
     }
 
+    private boolean deleteTx(){
+        try {
+            System.out.println("About to delete asset tx");
+            AssetTransaction delObj = new AssetTransaction();
+            delObj.id = recWHOutgoing.txKey;
+            db.assetTransactionDAO().delete(delObj);
+            return true;
+        } catch (Exception x){
+            x.printStackTrace();
+            return false;
+        }
+    }
+
     public class SyncTxCallBack implements Callback<AssetTxDTO> {
         @Override
         public void onResponse(Call<AssetTxDTO> call, Response<AssetTxDTO> response) {
             AssetTxDTO rs = response.body();
 
             if (rs != null || IsDemo) {
+                deleteTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!

@@ -180,7 +180,7 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
     }
 
     private WHTxRecord updateState() {
-        WHTxRecord whIncomingRecord = GlobalState.recWHIncoming;
+        WHTxRecord whIncomingRecord = GlobalState.initWHIncomingRecord();
 
         if (!Strings.isEmptyOrWhitespace(selectedToggleButtonFrom)) {
             whIncomingRecord.selectedToggleButtonFrom = selectedToggleButtonFrom;

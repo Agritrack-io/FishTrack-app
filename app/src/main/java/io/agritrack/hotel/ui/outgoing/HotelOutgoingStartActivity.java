@@ -190,7 +190,7 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
     }
 
     private WHTxRecord updateState() {
-        WHTxRecord whOutgoingRecord = GlobalState.recWHOutgoing;
+        WHTxRecord whOutgoingRecord = GlobalState.initWHOutgoingRecord();
 
         if (!Strings.isEmptyOrWhitespace(selectedToggleButtonFrom)) {
             whOutgoingRecord.selectedToggleButtonFrom = selectedToggleButtonFrom;

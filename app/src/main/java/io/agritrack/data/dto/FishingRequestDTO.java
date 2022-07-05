@@ -15,6 +15,7 @@ public class FishingRequestDTO {
     public Double request_quantity;
     public String requester;
     public String comments;
+    public Short itin_no;
 
 
     public static FishingRequest convert(FishingRequestDTO fishingRequestDTO) {
@@ -32,6 +33,7 @@ public class FishingRequestDTO {
         fishingRequest.reqQty = fishingRequestDTO.request_quantity;
         fishingRequest.requester = fishingRequestDTO.requester;
         fishingRequest.notes = fishingRequestDTO.comments;
+        fishingRequest.itinSNo = fishingRequestDTO.itin_no;
 
         return fishingRequest;
     }

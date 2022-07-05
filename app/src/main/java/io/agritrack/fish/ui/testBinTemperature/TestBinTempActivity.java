@@ -7,12 +7,17 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
+import java.text.DecimalFormat;
 
 import io.agritrack.R;
 import io.agritrack.caen.api.ICAEN_API;
@@ -35,6 +41,7 @@ import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.bo.LoggerReading;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class TestBinTempActivity extends AppCompatActivity {
@@ -43,30 +50,39 @@ public class TestBinTempActivity extends AppCompatActivity {
     private final ScanHandler mScanHandler = new ScanHandler(this);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
+    private ProgressBar progressBar;
     private TextView tvCurrentTemp, tvCurrentBin;
     private Button btnScanBin;
     private ICAEN_API cmd;
     final Runnable readLastSampleThread = new Runnable() {
         @Override
         public void run() {
+            if (cmd.ReadSamplesCount()<1){
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
+                CToast(getApplicationContext(), render("Data logger hasn't been initialized!!"), Toast.LENGTH_LONG);
+                return;
+            }
+            //cmd.LowPowerLevel();
             // read CONTROL register state
             Double lastTemp = cmd.ReadLastSample();
 
             try {
-                Thread.sleep(1000l);
+                Thread.sleep(500l);
             } catch (Exception x) {
             }
+
+            progressBar.setVisibility(ProgressBar.INVISIBLE);
 
             if (lastTemp != null) {
                 Message msg = new Message();
                 msg.what = 200;
                 Bundle b = new Bundle();
-                b.putString("value", lastTemp.toString());
+                b.putDouble("value", lastTemp);
 
                 msg.setData(b);
                 mScanHandler.sendMessage(msg);
             } else {
-                CToast(getApplicationContext(), render("Data logger hasn't been initialized!!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render("Please retry to get last temp!!"), Toast.LENGTH_LONG);
             }
         }
     };
@@ -85,6 +101,9 @@ public class TestBinTempActivity extends AppCompatActivity {
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
+
+        // initiate raw sound
+        SoundUtil.initSoundPool(this);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderTestTemp);
@@ -108,15 +127,32 @@ public class TestBinTempActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        this.stopScanner();
         super.onStop();
+        this.stopScanner();
+        //unregister the receiver
+        if(keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     @Override
     protected void onStart() {
         // instantiate Reader Module
         super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+
+        // instantiate Reader Module
         this.cmd = RFIDModuleFactory.getInstance();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //unregister the receiver
+        if(keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     protected void configFooter() {
@@ -129,13 +165,18 @@ public class TestBinTempActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnScanBin = findViewById(R.id.btnScanBin);
         tvCurrentTemp = findViewById(R.id.tvCurrentTemp);
+        Typeface type = Typeface.createFromAsset(getAssets(),"fonts/digital-7.ttf");
+        tvCurrentTemp.setTypeface(type);
         tvCurrentBin = findViewById(R.id.tvCurrentBin);
         ivSupport = findViewById(R.id.ivSupport);
     }
 
     protected void onClick(View view) {
+        tvCurrentTemp.setText("");
+        tvCurrentBin.setText("");
         singleShot_runnable = new SingleShotScanner(mScanHandler);
         singleShot_runnable.setFilter(Filters.RFID_LOGGER);
         singleShot_runnable.startReading();
@@ -170,22 +211,25 @@ public class TestBinTempActivity extends AppCompatActivity {
                             if (bin != null) {
                                 String binEPC = bin.rfid;
                                 tvCurrentBin.setText(binEPC.substring(binEPC.length() - 10));
-                                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                                    mScanHandler.post(readLastSampleThread);
-                                } else {
-                                    CToast(getApplicationContext(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
-                                }
+                                progressBar.setVisibility(ProgressBar.VISIBLE);
+                                progressBar.setProgress(0);
+                                cmd.setFilterEPC(epcStr);
+                                mScanHandler.post(readLastSampleThread);
                             } else if (!IsDemo) {
+                                progressBar.setVisibility(ProgressBar.INVISIBLE);
                                 CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
                             }
+                        } else {
+                            progressBar.setVisibility(ProgressBar.INVISIBLE);
+                            CToast(getApplicationContext(), render("Please scan bin again!!"), Toast.LENGTH_SHORT);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     break;
                 case 200:
-                    String lastTemp = msg.getData().getString("value");
-                    tvCurrentTemp.setText(lastTemp);
+                    Double lastTemp = msg.getData().getDouble("value");
+                    tvCurrentTemp.setText(String.format(new DecimalFormat("##.##").format(lastTemp) + "°C"));
                     break;
                 case 1980:
                     if (!IsDemo) {

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -67,7 +68,7 @@ public class HotelSearchActivity extends AppCompatActivity {
     private MobileDB db;
     private FilterableAdapter adapterAssets;
     private Spinner spLinenType;
-    private EditText etAssetBarcode;
+    private AutoCompleteTextView etAssetBarcode;
     private SearchView svSearchAsset;
     private TextView tvProximity;
     private ImageView ivSupport;
@@ -299,9 +300,18 @@ public class HotelSearchActivity extends AppCompatActivity {
 
     protected void onClick(View view) {
         if (adapterAssets != null) {
-            selectedBarcode = adapterAssets.getSelectedValue() != null ? adapterAssets.getSelectedValue() : etAssetBarcode.getText().toString();
+            if (adapterAssets.getSelectedValue() != null) {
+                selectedBarcode = adapterAssets.getSelectedValue();
+                etAssetBarcode.setText(selectedBarcode);
+            }
         }
-        if (Strings.isEmptyOrWhitespace(selectedBarcode)) {
+        if (!Strings.isEmptyOrWhitespace(etAssetBarcode.getText().toString())) {
+            if (adapterAssets != null && adapterAssets.getSelectedValue() != null) {
+                adapterAssets.clearSelectedValue();
+            }
+            selectedBarcode = etAssetBarcode.getText().toString();
+        }
+        if(Strings.isEmptyOrWhitespace(selectedBarcode)){
             runOnUiThread(() -> CToast(getAppContext(), render(R.string.no_epc_filter_selected), Toast.LENGTH_LONG));
             return;
         }

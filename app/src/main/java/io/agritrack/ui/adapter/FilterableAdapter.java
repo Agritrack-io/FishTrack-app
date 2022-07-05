@@ -35,6 +35,10 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
         return this.selectedValue;
     }
 
+    public void clearSelectedValue(){
+        this.selectedValue = null;
+    }
+
     @Override
     public viewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(context).inflate(R.layout.simple_recycler_view_item, viewGroup, false);

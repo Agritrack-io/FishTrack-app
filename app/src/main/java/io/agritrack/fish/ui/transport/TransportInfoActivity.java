@@ -60,10 +60,11 @@ public class TransportInfoActivity extends AppCompatActivity {
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
         List<Site> packagingSites = db.siteDAO().getAllProcessingPlants();
         if (packagingSites != null && !packagingSites.isEmpty()) {
-            String[] packagingSite = packagingSites.stream().map(x -> x.name).toArray(String[]::new);
+            String[] packagingSite = packagingSites.stream().map(x -> x.name).sorted().toArray(String[]::new);
             ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, packagingSite);
             hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
             spPackagingSite.setAdapter(hrAdapter);
+            spPackagingSite.setSelection(hrAdapter.getPosition("VONITSA PP"));
         }
 
         // AutoCompleteTextView driverNames, driverPhones, licensePlates

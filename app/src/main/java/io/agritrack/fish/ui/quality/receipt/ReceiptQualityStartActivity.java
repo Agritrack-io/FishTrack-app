@@ -283,7 +283,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
 
                                 if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC,true, true, false);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC,true, true, true);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {

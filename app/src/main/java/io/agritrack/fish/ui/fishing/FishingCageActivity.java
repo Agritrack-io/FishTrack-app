@@ -137,9 +137,17 @@ public class FishingCageActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
+
         MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
         scanner_runnable.LowEnergy();
-        scanner_runnable.setFilter(new String[]{Filters.RFID_PLATFORM, Filters.RFID_CAGE});
+        if(view!=null){
+            if(view.getId() == scanCageButton.getId()){
+                scanner_runnable.setFilter(new String[]{Filters.RFID_CAGE});
+            } else if (view.getId() == scanPlatformButton.getId()) {
+                scanner_runnable.setFilter(new String[]{Filters.RFID_PLATFORM});
+            }
+        }
+        //scanner_runnable.setFilter(new String[]{Filters.RFID_PLATFORM, Filters.RFID_CAGE});
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
     }
@@ -175,7 +183,56 @@ public class FishingCageActivity extends AppCompatActivity {
 
     @SuppressLint("StringFormatMatches")
     private void showAddDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(input)
+                .setTitle(getString(R.string.confirm_cage, scannedCage))
+                .setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        boolean wantToCloseDialog;
+                        cageCode = input.getText().toString();
+                        if (cageCode.equalsIgnoreCase(scannedCage)) {
+                            recFishing.typedCageCode = cageCode.toUpperCase(Locale.ROOT);
+                            recFishing.cageCode = recFishing.typedCageCode;
+                            input.getShowSoftInputOnFocus();
+                            wantToCloseDialog = true;
+                        } else {
+                            dialog.setTitle(getString(R.string.wrong_typing_cage, scannedCage));
+                            wantToCloseDialog = false;
+                        }
+                        //Do stuff, possibly set wantToCloseDialog to true then...
+                        if (wantToCloseDialog)
+                            dialog.dismiss();
+
+                        input.setText("");
+
+                        /*//Dismiss once everything is OK.
+                        dialog.dismiss();*/
+                    }
+                });
+            }
+        });
+        dialog.show();
+        dialog.setCanceledOnTouchOutside(false);
+
+
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.confirm_cage, scannedCage));
         // Set up the input
         final EditText input = new EditText(this);
@@ -188,7 +245,7 @@ public class FishingCageActivity extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        boolean wantToCloseDialog = false;
+                        boolean wantToCloseDialog;
                         cageCode = input.getText().toString();
                         if (cageCode.equalsIgnoreCase(scannedCage)) {
                             recFishing.typedCageCode = cageCode.toUpperCase(Locale.ROOT);
@@ -211,6 +268,7 @@ public class FishingCageActivity extends AppCompatActivity {
                     }
                 }).create();
         dialog.show();
+        dialog.setCanceledOnTouchOutside(false);*/
     }
 
     private void initControlsFromState() {

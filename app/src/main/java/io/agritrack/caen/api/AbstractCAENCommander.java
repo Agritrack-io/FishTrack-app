@@ -346,7 +346,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
         return null;
     }
 
-    /* This function returns the ADDR_LAST_SAMPLE value */
+    /* This function returns the LAST_SAMPLE value */
     @Override
     public Double ReadLastSample() {
         try {

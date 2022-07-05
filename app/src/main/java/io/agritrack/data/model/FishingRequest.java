@@ -41,4 +41,7 @@ public class FishingRequest {
 
     @ColumnInfo(name = "notes")
     public String notes;
+
+    @ColumnInfo(name = "itin_no")
+    public Short itinSNo;
 }
