@@ -88,6 +88,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="4dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/outgoingCLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +104,7 @@
 
                 <io.agritrack.ui.custom.ToggleGroup
                     android:id="@+id/tgOutgoingItemType"
-                    android:layout_width="0dp"
+                    android:layout_width="300dp"
                     android:layout_height="70dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginStart="8dp"
@@ -141,7 +142,8 @@
                         android:textColor="@drawable/button_text_color"
                         android:textOff="@string/item_inventory_consumable"
                         android:textOn="@string/item_inventory_consumable"
-                        android:textSize="@dimen/text_view_font_size_medium" />
+                        android:textSize="@dimen/text_view_font_size_medium"
+                        android:visibility="gone" />
 
                 </io.agritrack.ui.custom.ToggleGroup>
 
@@ -183,7 +185,7 @@
 
                 <io.agritrack.ui.custom.ToggleGroup
                     android:id="@+id/tgOutgoingDestination"
-                    android:layout_width="fill_parent"
+                    android:layout_width="300dp"
                     android:layout_height="70dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginStart="8dp"
@@ -219,7 +221,8 @@
                         android:textColor="@drawable/button_text_color"
                         android:textOff="@string/customer"
                         android:textOn="@string/customer"
-                        android:textSize="@dimen/text_view_font_size_medium" />
+                        android:textSize="@dimen/text_view_font_size_medium"
+                        android:visibility="gone" />
 
 
                     <ToggleButton
@@ -233,7 +236,8 @@
                         android:textColor="@drawable/button_text_color"
                         android:textOff="@string/asset"
                         android:textOn="@string/asset"
-                        android:textSize="@dimen/text_view_font_size_medium" />
+                        android:textSize="@dimen/text_view_font_size_medium"
+                        android:visibility="gone" />
 
 
                 </io.agritrack.ui.custom.ToggleGroup>
@@ -336,7 +340,8 @@
                         android:textColor="@drawable/button_text_color"
                         android:textOff="@string/asset"
                         android:textOn="@string/asset"
-                        android:textSize="@dimen/text_view_font_size_medium" />
+                        android:textSize="@dimen/text_view_font_size_medium"
+                        android:visibility="gone" />
 
                 </io.agritrack.ui.custom.ToggleGroup>
 

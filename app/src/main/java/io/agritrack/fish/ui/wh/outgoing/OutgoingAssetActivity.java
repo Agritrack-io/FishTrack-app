@@ -524,7 +524,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        Map<String, List<String>> values = epcList.stream().map(x -> x.toString()).collect(Collectors.groupingBy(g -> schemeSvc.schemeCode(g), Collectors.toCollection(ArrayList::new)));
+                        Map<String, List<String>> values = epcList.stream().map(x -> x.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
 
                         if (adapterOutgoingItems == null) {
                             adapterOutgoingItems = new TreelikeAdapter(mActivity.get(), values);

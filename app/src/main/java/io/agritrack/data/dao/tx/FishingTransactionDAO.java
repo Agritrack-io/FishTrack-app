@@ -20,7 +20,7 @@ public interface FishingTransactionDAO {
     @Query("SELECT * from fishing_transaction where id=:fishingTransactionId LIMIT 1")
     FishingTransaction getById(Long fishingTransactionId);
 
-    @Query("SELECT * from fishing_transaction where user_name=:userName and status='NONE' or status='PENDING' LIMIT 1")
+    @Query("SELECT * from fishing_transaction where user_name=:userName and status='NONE' or status='PENDING' order by timestamp desc LIMIT 1")
     FishingTransaction getMostRecentOpenTx(String userName);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -35,6 +35,6 @@ public interface FishingTransactionDAO {
     @Query("DELETE from fishing_transaction")
     int deleteAll();
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(FishingTransaction fishingTransaction);
 }

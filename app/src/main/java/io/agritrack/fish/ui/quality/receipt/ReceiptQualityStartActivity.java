@@ -178,10 +178,11 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
 
         if (qualityRecord.qualityBins != null) {
             adapterBins.setValues(new LinkedList<String>(qualityRecord.qualityBins));
+            scannedBinEPCs.addAll(qualityRecord.qualityBins);
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             TextView tvBinsCount = findViewById(R.id.tvBinsCount);
-            tvBinsCount.setText(String.valueOf(qualityRecord.qualityBinsCnt));
+            tvBinsCount.setText(String.valueOf(qualityRecord.qualityBins.size()));
         }
     }
 

@@ -30,6 +30,9 @@ public interface TemperatureDataDAO {
     @Query("DELETE from temperature_data")
     void deleteAll();
 
+    @Query("DELETE from temperature_data where measurement_id=:mId")
+    void deleteByMeasurementId(Long mId);
+
     @Update
     void update(TemperatureData item);
 }

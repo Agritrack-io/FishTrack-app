@@ -50,12 +50,13 @@ public class FishingRecord {
         fishingRecord.requesterName = tx.requester;
         fishingRecord.reqWeight = tx.orderedQuantity != null ? Double.valueOf(tx.orderedQuantity.toString()) : null;
         fishingRecord.speciesName = tx.fishType;
+        fishingRecord.availBins = tx.availBins;
         fishingRecord.averageWeight = FishTrackUtils.isNumeric(tx.averageWeight) ? Double.valueOf(tx.averageWeight) : null;
         fishingRecord.platformRFID = tx.platformRFID;
         fishingRecord.cageRFID = tx.cageRFID;
         fishingRecord.cageCode = tx.cageCode;
         fishingRecord.pathologist = tx.ichthyopathologist;
-        fishingRecord.adequateIce = Boolean.TRUE;
+        fishingRecord.adequateIce = "TRUE".equalsIgnoreCase(tx.iceAdequacy) ? Boolean.TRUE : Boolean.FALSE;
         fishingRecord.iceSupplier = tx.iceSupplier;
         fishingRecord.totalFishWeight = tx.totalQty;
         fishingRecord.totalBinsUsed = tx.harvestBinsCnt;
@@ -63,6 +64,9 @@ public class FishingRecord {
         fishingRecord.packagingPlant = tx.packagingPlant;
         if(tx.lastFeed!=null) {
             fishingRecord.lastFed = tx.lastFeed;
+        }
+        for (BinWeightRecord.BinRecord rec : tx.harvestBinsData){
+            fishingRecord.binWeightRecord.addRecord(rec.binEPC,rec.weight,rec.from, rec.to);
         }
         fishingRecord.fishingTeam = tx.team;
         fishingRecord.longitude = tx.longitude;

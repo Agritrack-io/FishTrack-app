@@ -45,7 +45,8 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
 
     private TextView tvOutgoingFrom, tvOutgoingTo;
     private ToggleGroup tgOutgoingSource, tgOutgoingDestination, tgOutgoingItemType;
-    private String selectedOutgoingItemType, selectedToggleButtonFrom, selectedToggleButtonTo;
+    private String selectedToggleButtonFrom, selectedToggleButtonTo;
+    private String selectedOutgoingItemType = Constants.ftAsset;
     private ExpandableListDialog avramarDialog;
     private SimpleListDialog customerDialog;
     private SimpleListDialog siteDialog;

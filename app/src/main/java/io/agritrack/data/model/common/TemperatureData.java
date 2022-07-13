@@ -27,4 +27,9 @@ public class TemperatureData {
         this.timestamp = ts;
         this.value = val;
     }
+
+    public String[] rawData(){
+        String _val = this.value!=null ? this.value.toString() : "N/A";
+        return new String[]{this.timestamp, _val};
+    }
 }

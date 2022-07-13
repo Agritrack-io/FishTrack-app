@@ -15,6 +15,9 @@ public class FishingRequest {
     @ColumnInfo(name = "harvest_date")
     public String harvestDate;
 
+    @ColumnInfo(name = "farm_arrival")
+    public String farmArrival;
+
     @ColumnInfo(name = "packaging_plant")
     public String packagingPlant;
 
@@ -36,8 +39,14 @@ public class FishingRequest {
     @ColumnInfo(name = "request_quantity")
     public Double reqQty;
 
+    @ColumnInfo(name = "quantity")
+    public Double quantity;
+
     @ColumnInfo(name = "requester")
     public String requester;
+
+    @ColumnInfo(name = "driver")
+    public String driver;
 
     @ColumnInfo(name = "notes")
     public String notes;

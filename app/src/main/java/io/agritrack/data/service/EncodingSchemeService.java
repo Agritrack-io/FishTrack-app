@@ -100,7 +100,7 @@ public class EncodingSchemeService {
         if (epc.length() <= (idx + codeWidth)) {
             return "XXXX";
         }
-        String code = epc.substring(idx, codeWidth);
+        String code = epc.substring(idx, idx + codeWidth);
         boolean validCode = codesSet.contains(code);
         if (validCode) {
             return code;
@@ -111,6 +111,10 @@ public class EncodingSchemeService {
 
     public String schemeCode(String epc){
         return schemeCode(epc,true);
+    }
+
+    public String nativeSchemeCode(String epc){
+        return schemeCode(epc,false);
     }
 
     public EncodingSchemeEntity schemeForFilter(String filter){

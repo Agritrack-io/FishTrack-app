@@ -45,7 +45,8 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
 
     private TextView tvIncomingFrom, tvIncomingTo;
     private ToggleGroup tgIncomingSource, tgIncomingDestination, tgIncomingItemType;
-    private String selectedIncomingItemType, selectedToggleButtonFrom, selectedToggleButtonTo;
+    private String selectedToggleButtonFrom, selectedToggleButtonTo;
+    private String selectedIncomingItemType = Constants.ftAsset;
     private ExpandableListDialog avramarDialog;
     private SimpleListDialog supplierDialog;
     private SimpleListDialog siteDialog;
@@ -231,9 +232,9 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.incomingItemType)) {
+            /*if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.incomingItemType)) {
                 sb.append(String.format("\n%s is missing", "'Item type'"));
-            }
+            }*/
 
             if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.from)) {
                 sb.append(String.format("\n%s is missing", "'Source site'"));

@@ -1,5 +1,6 @@
 package io.agritrack.ui.tools;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdINIT;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdReadData;
@@ -43,6 +44,9 @@ import java.util.List;
 import io.agritrack.R;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
+import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.common.TemperatureTimeSeries;
+import io.agritrack.fish.state.GlobalState;
 
 public class LoggerInitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
 
@@ -55,6 +59,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     private static final int LEVEL_INCREMENT = 1000, MAX_LEVEL = 10000;
     private static final String LOGGER_EPC = "FishLoggerEPC";
     private static final String ASSET_EPC = "HarvestBinEPC";
+    private static final String PROD_LANE = "Production Lane";
     public static String TAG = "CaenLoggerDialogFragment";
 
     private Button btnRead, btnReset, btnSetup, btnInit, btnValidate;
@@ -64,6 +69,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     private ICAEN_API cmd;
     private String loggerEPC;
     private String assetEPC;
+    private String productionLane;
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0, resetCnt = 0;
     private Short cntSamples = 0;
@@ -333,7 +339,9 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
 
                 if (measurements != null) {
                     long now = System.currentTimeMillis();
-                    recLoggerData.addDataSet(loggerEPC, assetEPC, now, measurements);
+                    recLoggerData.addDataSet(loggerEPC, assetEPC, productionLane, now, measurements);
+
+                    GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), assetEPC);
 
                     // update buttons based on values read...
                     mScanHandler.sendMessage(createMessage(CmdReadData, (short) measurements.size()));
@@ -402,6 +410,20 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         return frag;
     }
 
+    public static LoggerInitDialogFragment newInstance(String loggerEPC, String assetEPC, String productionLane, boolean showReadButton, boolean showResetButton, boolean showInitButton) {
+        LoggerInitDialogFragment frag = new LoggerInitDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(LOGGER_EPC, loggerEPC);
+        args.putString(ASSET_EPC, assetEPC);
+        args.putString(PROD_LANE, productionLane);
+        args.putBoolean(SHOW_READ_BUTTON, showReadButton);
+        args.putBoolean(SHOW_INIT_BUTTON, showInitButton);
+        args.putBoolean(SHOW_RESET_BUTTON, showResetButton);
+        frag.setArguments(args);
+
+        return frag;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_dialog_fruit_init_logger, container, false);
@@ -428,6 +450,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         if (getArguments() != null) {
             this.loggerEPC =  getArguments().getString(LOGGER_EPC);
             this.assetEPC = getArguments().getString(ASSET_EPC);
+            this.productionLane = getArguments().getString(PROD_LANE);
 
             showReadButton = getArguments().getBoolean(SHOW_READ_BUTTON);
             showInitButton = getArguments().getBoolean(SHOW_INIT_BUTTON);

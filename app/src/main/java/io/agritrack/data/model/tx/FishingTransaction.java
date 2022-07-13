@@ -75,6 +75,10 @@ public class FishingTransaction {
     public List<BinWeightRecord.BinRecord> harvestBinsData;
 
     @TypeConverters(StringListConverter.class)
+    @ColumnInfo(name = "avail_bins")
+    public List<String> availBins;
+
+    @TypeConverters(StringListConverter.class)
     @ColumnInfo(name = "team_members")
     public List<String> team;
 

@@ -64,7 +64,11 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         List<String> _sites = this.mValues.get(this.keys.get(groupPosition));
-        return _sites.get(childPosition);
+        if (_sites.get(childPosition).length()>=24) {
+            return _sites.get(childPosition).substring(14);
+        } else {
+            return null;
+        }
     }
 
     @Override

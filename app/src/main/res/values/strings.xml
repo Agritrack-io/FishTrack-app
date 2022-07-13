@@ -270,6 +270,8 @@
     <string name="outgoing_details">Outgoing details</string>
     <string name="outgoing">Outgoing</string>
 
+    <string name="title_internal_asset">INTERNAL ASSET</string>
+
     <string name="incoming_items">Items</string>
     <string name="incoming">Incoming</string>
     <string name="number_of_items"># of items:</string>
@@ -548,6 +550,8 @@
     <string name="no_IOTLoggers_found_alert">No IOTLogger returned from backend!!!</string>
     <string name="food_sku_sync_completed">Food sku sync completed!</string>
     <string name="no_food_sku_found_alert">No Food sku returned from backend!!!</string>
+    <string name="sea_temp_sync_completed">Sea temperatures sync completed!</string>
+    <string name="no_sea_temp_found_alert">No Sea temperatures returned from backend!!!</string>
     <string name="menu_title_tools">Logger Tools</string>
 
     <string name="procced_without_location">"GPS coordinates wasn't found. Do you want to proceed without getting them?"</string>
@@ -609,4 +613,5 @@
     <string name="pending_asset_tx_upload_failure_alert">Failed to upload pending asset tx!</string>
     <string name="pending_asset_tx_upload_completed">Pending asset tx successfully uploaded!</string>
     <string name="bt_not_supported">Bluetooth not supported!</string>
+
 </resources>

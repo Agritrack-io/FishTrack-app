@@ -50,6 +50,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.bo.BinLoadsMap;
+import io.agritrack.fish.ui.bo.BinWeightRecord;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
@@ -150,7 +151,15 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // Adding bin load completion functionality
         btnFillBin.setOnClickListener(view -> {
             isClicked = true;
-            GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, epochFrom, System.currentTimeMillis() / 1000l);
+            if(weightOfBin != null) {
+                BinWeightRecord.BinRecord currRec = recFishing.binWeightRecord.getRecordForEPC(currentBin);
+                if (currRec != null){
+                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.from, System.currentTimeMillis() / 1000l);
+                } else {
+                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, epochFrom, System.currentTimeMillis() / 1000l);
+                }
+                weightOfBin = null;
+            }
             isClickable = false;
             btnCurrentBinScan.setEnabled(true);
             btnCurrentBinScan.setTextColor(getColor(R.color.aqua));
@@ -286,6 +295,13 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         }
 
         tvAvailableBinsCount.setText(String.valueOf(hvst.availBins.size()));
+
+        if (!recFishing.binWeightRecord.isEmpty()){
+            for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBins()){
+                loadsMap.addLoad(bin.binEPC,bin.weight+"");
+            }
+        }
+        //txFishing.harvestBinsData = brecFishing.binWeightRecord.getBins();
     }
 
     protected void configFooter() {
@@ -307,10 +323,11 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToDetails);
         ivBack.setOnClickListener(view -> {
-            if (!isClicked) {
+            if (!isClicked && loadsMap.hasLoads()) {
                 CToast(getApplicationContext(), render(R.string.fill_bin), Toast.LENGTH_LONG);
                 return;
             }
+            updateState();
             Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
             startActivity(i);
         });

@@ -27,4 +27,16 @@ public class SeaTemperatureTxDTO {
 
         return seaTemperatureTxDTO;
     }
+
+    public static SeaTemperatureTransaction convert(SeaTemperatureTxDTO seaTemperatureTxDTO) {
+        SeaTemperatureTransaction seaTemperatureTransaction = new SeaTemperatureTransaction();
+
+        seaTemperatureTransaction.timestamp = seaTemperatureTxDTO.measured_at;
+        seaTemperatureTransaction.siteName = seaTemperatureTxDTO.site_name;
+        seaTemperatureTransaction.siteId = seaTemperatureTxDTO.site_id;
+        seaTemperatureTransaction.refTemp = seaTemperatureTxDTO.ref_temperature;
+        seaTemperatureTransaction.cageTemp = seaTemperatureTxDTO.cage_temperature;
+
+        return seaTemperatureTransaction;
+    }
 }

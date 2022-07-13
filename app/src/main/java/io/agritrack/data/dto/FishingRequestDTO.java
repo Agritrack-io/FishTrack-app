@@ -6,6 +6,7 @@ import io.agritrack.data.model.FishingRequest;
 public class FishingRequestDTO {
     public String request_id;
     public String harvest_date;
+    public String farm_arrival;
     public String plant;
     public String site;
     public String cage_rfid;
@@ -13,7 +14,9 @@ public class FishingRequestDTO {
     public String species;
     public Double avg_weight;
     public Double request_quantity;
+    public Double quantity;
     public String requester;
+    public String driver;
     public String comments;
     public Short itin_no;
 
@@ -23,6 +26,11 @@ public class FishingRequestDTO {
 
         fishingRequest.requestId = fishingRequestDTO.request_id;
         fishingRequest.harvestDate = fishingRequestDTO.harvest_date;
+        if (fishingRequestDTO.farm_arrival!=null) {
+            fishingRequest.farmArrival = fishingRequestDTO.farm_arrival.replace("T"," ");
+        } else {
+            fishingRequest.farmArrival = null;
+        }
         fishingRequest.packagingPlant = fishingRequestDTO.plant;
         fishingRequest.site = fishingRequestDTO.site;
         fishingRequest.cageRFID = fishingRequestDTO.cage_rfid;
@@ -31,6 +39,8 @@ public class FishingRequestDTO {
         fishingRequest.species = fishingRequestDTO.species;
         fishingRequest.averageWeight = fishingRequestDTO.avg_weight;
         fishingRequest.reqQty = fishingRequestDTO.request_quantity;
+        fishingRequest.quantity = fishingRequestDTO.quantity;
+        fishingRequest.driver = fishingRequestDTO.driver;
         fishingRequest.requester = fishingRequestDTO.requester;
         fishingRequest.notes = fishingRequestDTO.comments;
         fishingRequest.itinSNo = fishingRequestDTO.itin_no;

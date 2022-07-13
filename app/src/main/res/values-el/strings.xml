@@ -270,6 +270,8 @@
     <string name="outgoing_details">Πληροφορίες εξερχομένων</string>
     <string name="outgoing">Εξερχόμενα</string>
 
+    <string name="title_internal_asset">ΕΣΩΤΕΡΙΚΑ ΠΑΓΙΑ</string>
+
     <string name="incoming_items">Εισερχόμενα είδη</string>
     <string name="incoming">Εισερχόμενα</string>
     <string name="number_of_items"># τεμαχίων:</string>
@@ -551,6 +553,8 @@
     <string name="no_IOTLoggers_found_alert">Δεν βρέθηκαν καταγραφικά!!!</string>
     <string name="food_sku_sync_completed">Οι κωδικοί τροφών συγχρονίστηκαν επιτυχώς!</string>
     <string name="no_food_sku_found_alert">Δεν βρέθηκαν κωδικοί τροφών!!!</string>
+    <string name="sea_temp_sync_completed">Οι θερμοκρασίες θάλασσας συγχρονίστηκαν επιτυχώς!</string>
+    <string name="no_sea_temp_found_alert">Δεν βρέθηκαν θερμοκρασίες θάλασσας!!!</string>
     <string name="menu_title_tools">Εργαλεία καταγραφικών</string>
 
     <string name="procced_without_location">"Οι συντεταγμένες GPS δεν βρέθηκαν. \nΕπιλέξτε: \n  'Όχι', για νέα προσπάθεια \n  'Ναι', για να συνεχίσετε."</string>

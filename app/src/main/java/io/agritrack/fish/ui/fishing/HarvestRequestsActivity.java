@@ -119,7 +119,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
             GlobalState.recFishing.typedCageCode = harvestRq.cageCode;
             GlobalState.recFishing.expectedCageRFID = harvestRq.cageRFID;
             GlobalState.recFishing.averageWeight = harvestRq.averageWeight;
-            GlobalState.recFishing.reqWeight = harvestRq.reqQty;
+            GlobalState.recFishing.reqWeight = harvestRq.quantity;
             GlobalState.recFishing.notes = harvestRq.notes;
             GlobalState.recFishing.packagingPlant = harvestRq.packagingPlant;
         }
@@ -147,8 +147,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         this.lvFishingRequests.setAdapter(null);
         List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getTodayRecord();
         if (fishingRequests != null && !fishingRequests.isEmpty()) {
-            //this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, "%s, %s, %s kg, %s", x.itinSNo, x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
-            this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.harvestDate, x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
+            this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species))).toArray(GenericListModel[]::new);
 
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {
                 @Override
@@ -170,7 +169,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getYesterdayRecord();
         if (fishingRequests != null && !fishingRequests.isEmpty()) {
             //this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
-            this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.harvestDate, x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
+            this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species))).toArray(GenericListModel[]::new);
 
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {
                 @Override
@@ -192,7 +191,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getPreviousRecord();
         if (fishingRequests != null && !fishingRequests.isEmpty()) {
             //
-            this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.harvestDate, x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
+            this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species))).toArray(GenericListModel[]::new);
 
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {
                 @Override

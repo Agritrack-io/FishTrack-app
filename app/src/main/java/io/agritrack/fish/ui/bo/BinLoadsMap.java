@@ -39,7 +39,7 @@ public class BinLoadsMap {
     }
 
     public boolean hasLoads() {
-        return this.loads==null || this.loads.isEmpty();
+        return this.loads==null || !this.loads.isEmpty();
     }
 
     public String loadsCnt() {
@@ -47,13 +47,13 @@ public class BinLoadsMap {
     }
 
     public Integer weightOf(String bin) {
-        if(Strings.isEmptyOrWhitespace(bin)) {
+        if(Strings.isEmptyOrWhitespace(bin) || !loads.containsKey(bin)) {
             return 0;
         }
 
         Integer total = 0;
         for(String w : loads.get(bin)) {
-            total += Integer.valueOf(w);
+            total += !Strings.isEmptyOrWhitespace(w) ? Integer.valueOf(w) : 0; //TextUtils.isDigitsOnly(
         }
         return total;
     }

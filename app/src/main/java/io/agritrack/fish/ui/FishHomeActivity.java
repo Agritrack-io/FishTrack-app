@@ -17,6 +17,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.common.util.Strings;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -43,6 +45,7 @@ import io.agritrack.api.sync.SyncEmployeesCallBack;
 import io.agritrack.api.sync.SyncFoodSkuCallBack;
 import io.agritrack.api.sync.SyncFishingRequestCallBack;
 import io.agritrack.api.sync.SyncIOTLoggersCallBack;
+import io.agritrack.api.sync.SyncSeaTempCallBack;
 import io.agritrack.api.sync.SyncSpeciesCallBack;
 import io.agritrack.api.sync.SyncSuppliersCallBack;
 import io.agritrack.api.sync.SyncUsersCallBack;
@@ -59,6 +62,7 @@ import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.dto.tx.FishingTxDTO;
+import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
 import io.agritrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.data.dto.wh.FoodSkuDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
@@ -182,7 +186,7 @@ public class FishHomeActivity extends AppCompatActivity {
 
                         // default Next Activity is FishingStart...
                         i = new Intent(appCtx, FishingStartActivity.class);
-                        if (openTx != null) {
+                        if (openTx != null && !Strings.isEmptyOrWhitespace(openTx.fishingRq)) {
                             // there is a FishingTx in progress
                             fishingRecord = FishingRecord.convert(openTx);
                             GlobalState.recFishing = fishingRecord;
@@ -191,12 +195,14 @@ public class FishHomeActivity extends AppCompatActivity {
                             fishingRecord = GlobalState.initFishingRecord();
 
                             // NO FishingTx in progress
-                            openTx = new FishingTransaction();
-                            openTx.txStatus = TxStatus.PENDING;
-                            fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
+                            if (openTx == null){
+                                openTx = new FishingTransaction();
+                                openTx.txStatus = TxStatus.PENDING;
+                                fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
+                            } else {
+                                fishingRecord.txKey = openTx.id;
+                            }
 
-                            // load Harvest Request fetched via Synch op.
-//                            List<FishingRequest> harvestRequests = db.harvestRequestsDAO().getAll();
                             i = new Intent(appCtx, HarvestRequestsActivity.class);
                         }
                         break;
@@ -393,6 +399,10 @@ public class FishHomeActivity extends AppCompatActivity {
             // sync Food sku
             Call<List<FoodSkuDTO>> syncFoodSkuAsyncCall = syncService.getFoodSkus("Bearer " + token);
             syncFoodSkuAsyncCall.enqueue(new SyncFoodSkuCallBack(this.syncResult));
+
+            // sync sea temperature
+            Call<List<SeaTemperatureTxDTO>> syncSeaTempAsyncCall = syncService.getSeaTemp(siteId,"Bearer " + token);
+            syncSeaTempAsyncCall.enqueue(new SyncSeaTempCallBack(this.syncResult));
 
         } catch (Exception e) {
             e.printStackTrace();

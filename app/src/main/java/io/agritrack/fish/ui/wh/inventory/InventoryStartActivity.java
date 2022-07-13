@@ -38,7 +38,7 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 public class InventoryStartActivity extends AppCompatActivity {
 
     private MobileDB db;
-    private static final int Asset_Idx = 0, Consumable_Idx = 1;
+    private static final int Asset_Idx = 0/*, Consumable_Idx = 1*/;
     private GridView gvInventoryMenu;
     private Spinner spSite;
 
@@ -71,7 +71,7 @@ public class InventoryStartActivity extends AppCompatActivity {
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.item_inventory_asset), getString(R.string.up_item_inventory_asset), InventoryAssetActivity.class));
-        menuItemsList.add(new MenuItem(getString(R.string.item_inventory_consumable), getString(R.string.down_item_inventory_consumable), InventoryConsumableActivity.class));
+        //menuItemsList.add(new MenuItem(getString(R.string.item_inventory_consumable), getString(R.string.down_item_inventory_consumable), InventoryConsumableActivity.class));
 
         InventoryMenuAdapter adapter = new InventoryMenuAdapter(this, menuItemsList);
 
@@ -91,7 +91,7 @@ public class InventoryStartActivity extends AppCompatActivity {
                             i = new Intent(appCtx, InventoryAssetActivity.class);
                             break;
                         }
-                    case Consumable_Idx:
+                    /*case Consumable_Idx:
                         updateState();
                         String vld = validate();
                         if (!Strings.isEmptyOrWhitespace(vld)) {
@@ -99,7 +99,7 @@ public class InventoryStartActivity extends AppCompatActivity {
                         } else {
                             i = new Intent(appCtx, InventoryConsumableActivity.class);
                             break;
-                        }
+                        }*/
                     default:
                 }
 

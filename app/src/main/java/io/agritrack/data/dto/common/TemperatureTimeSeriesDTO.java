@@ -9,6 +9,7 @@ import io.agritrack.data.model.common.TemperatureTimeSeries;
 
 public class TemperatureTimeSeriesDTO {
     public String lot;
+    public String production_lane;
     public String logger_rfid;
     public String asset_rfid;
     public Long retrieved_at;
@@ -21,6 +22,7 @@ public class TemperatureTimeSeriesDTO {
         temperatureTimeSeriesDTO.interval = DefaultInterval;
         temperatureTimeSeriesDTO.logger_rfid = measurement.measurement.loggerRFID;
         temperatureTimeSeriesDTO.asset_rfid = measurement.measurement.assetRFID;
+        temperatureTimeSeriesDTO.production_lane = measurement.measurement.productionLane;
         temperatureTimeSeriesDTO.values = measurement.data.stream().map(x-> new TemperatureDataDTO(x.timestamp, x.value)).collect(Collectors.toList());
 
         return temperatureTimeSeriesDTO;

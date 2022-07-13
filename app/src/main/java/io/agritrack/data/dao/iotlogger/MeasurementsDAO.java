@@ -12,7 +12,6 @@ import androidx.room.Update;
 import java.util.List;
 
 import io.agritrack.data.model.common.Measurement;
-import io.agritrack.data.model.common.SortingTimeSeries;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 
 @Dao
@@ -20,15 +19,15 @@ public interface MeasurementsDAO {
 
     @Transaction
     @Query("SELECT * from measurements")
-    LiveData<List<TemperatureTimeSeries>> getAll();
+    List<TemperatureTimeSeries> getAll();
 
     @Transaction
     @Query("SELECT * from measurements where id=:measurementsId LIMIT 1")
     TemperatureTimeSeries getById(Long measurementsId);
 
     @Transaction
-    @Query("SELECT * from measurements where id=:measurementsId LIMIT 1")
-    SortingTimeSeries getByMeasId(Long measurementsId);
+    @Query("SELECT * from measurements where asset_rfid=:epc LIMIT 1")
+    TemperatureTimeSeries getByEPC(String epc);
 
     @Transaction
     @Query("SELECT * from measurements where retrieved_at=:retrievedAt")

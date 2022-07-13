@@ -41,6 +41,10 @@ public class FishTrackApplication extends Application {
         super.onCreate();
         mContext = this;
 
+        if (PRODUCT!=null) {
+            setProduct(PRODUCT);
+        }
+
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this);
         }

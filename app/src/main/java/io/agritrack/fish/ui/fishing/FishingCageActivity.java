@@ -40,6 +40,7 @@ import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
+import io.agritrack.fish.state.GlobalState;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.service.LocalPreferences;
@@ -289,6 +290,7 @@ public class FishingCageActivity extends AppCompatActivity {
             } else {
                 // TODO:: add alert, no cage corresponding to RFID found in local DB!!
             }
+            GlobalState.commitFishing(db, Boolean.FALSE);
         }
     }
 

@@ -466,7 +466,7 @@ public class InventoryAssetActivity extends LocationAwareActivity {
                 case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     clearSelectedItem();
-                    Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.schemeCode(g), Collectors.toCollection(ArrayList::new)));
+                    Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
                     if (adapterInventoryItems == null) {
                         adapterInventoryItems = new TreelikeAdapter(InventoryAssetActivity.this, values);
                         xvInventoryItems.setAdapter(adapterInventoryItems);

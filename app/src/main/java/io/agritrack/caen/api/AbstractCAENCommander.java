@@ -383,7 +383,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
 
     @Override
     public List<String[]> ReadSamples(int samplesCnt, int intervalSeconds) throws Exception {
-        long startTSmSec = System.currentTimeMillis() - (samplesCnt * intervalSeconds) * 1000L;
+        long startTSmSec = (long) (System.currentTimeMillis() - 0.5*(samplesCnt * intervalSeconds) * 1000L);
         return ReadSamples(samplesCnt, intervalSeconds, startTSmSec);
     }
 

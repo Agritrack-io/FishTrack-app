@@ -18,4 +18,7 @@ public class Measurement {
 
     @ColumnInfo(name = "retrieved_at")
     public Long retrievedAt;
+
+    @ColumnInfo(name = "production_lane")
+    public String productionLane;
 }

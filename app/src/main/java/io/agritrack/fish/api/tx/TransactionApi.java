@@ -56,7 +56,7 @@ public interface TransactionApi {
     Call<PostPackageQualityTxDTO> syncPostPackageQualityTx(@Body PostPackageQualityTxDTO postQualityTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/logger/temp")
+    @POST("/fish/logger/temp")
     Call<List<TemperatureTimeSeriesDTO>> syncMeasurements(@Body List<TemperatureTimeSeriesDTO> measurements, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")

@@ -4,7 +4,6 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
-import static io.agritrack.fish.state.GlobalState.recProcessing;
 import static io.agritrack.fish.state.GlobalState.recQuality;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -37,15 +36,14 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
-import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.LocationAwareActivity;
-import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.MediaType;
@@ -267,14 +265,14 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         }
     }
 
-    private boolean deleteQualityTx(){
+    private boolean deleteQualityTx() {
         try {
             System.out.println("About to delete quality tx");
             QualityTransaction delObj = new QualityTransaction();
             delObj.id = recQuality.txKey;
             db.qualityTransactionDAO().delete(delObj);
             return true;
-        } catch (Exception x){
+        } catch (Exception x) {
             x.printStackTrace();
             return false;
         }
@@ -320,6 +318,8 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             if (rs != null || IsDemo) {
                 // reset existing Temperature values in stateRecord.
                 recLoggerData.clearData();
+                db.temperatureDataDAO().deleteAll();
+                db.measurementsDAO().deleteAll();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!
@@ -349,7 +349,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
-                if (response.body()!=null) {
+                if (response.body() != null) {
                     String fileName = response.body().string();
                     boolean res = FileUtils.deletePhotoFile(ReceiptQualityConfirmActivity.this, fileName);
                     if (res) {

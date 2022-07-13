@@ -14,6 +14,7 @@ import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
+import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.data.dto.wh.FoodSkuDTO;
 import retrofit2.Call;
@@ -109,6 +110,10 @@ public interface SyncApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/food-codes")
     Call<List<FoodSkuDTO>> getFoodSkus(@Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/temperatures/cages/{siteId}")
+    Call<List<SeaTemperatureTxDTO>> getSeaTemp(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/encoding/customer/name/{clusterName}")

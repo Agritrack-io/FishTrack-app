@@ -13,6 +13,10 @@ public class LoggerDataRecord {
         this.data.put(assetEPC, new TemperatureModel(loggerEPC, assetEPC, retrievedAt, values));
     }
 
+    public void addDataSet(String loggerEPC, String assetEPC, String productionLane, Long retrievedAt, List<String[]> values) {
+        this.data.put(assetEPC, new TemperatureModel(loggerEPC, assetEPC, productionLane, retrievedAt, values));
+    }
+
     public List<String[]> getValues(String epc) {
         List<String[]> result = null;
         if (data != null) {
@@ -31,12 +35,21 @@ public class LoggerDataRecord {
     public class TemperatureModel {
         public final String loggerEPC;
         public String assetEPC;
+        public String productionLane;
         public final Long retrievedAt;
         public final List<String[]> values;
 
         public TemperatureModel(String loggerEPC, String assetEPC, Long retrievedAt, List<String[]> measurements) {
             this.loggerEPC = loggerEPC;
             this.assetEPC = assetEPC;
+            this.retrievedAt = retrievedAt;
+            this.values = measurements;
+        }
+
+        public TemperatureModel(String loggerEPC, String assetEPC, String productionLane, Long retrievedAt, List<String[]> measurements) {
+            this.loggerEPC = loggerEPC;
+            this.assetEPC = assetEPC;
+            this.productionLane = productionLane;
             this.retrievedAt = retrievedAt;
             this.values = measurements;
         }

@@ -6,11 +6,6 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -28,6 +23,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
@@ -42,23 +42,17 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
-import io.agritrack.data.dto.tx.QualityTxDTO;
-import io.agritrack.data.model.common.SortingTimeSeries;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
-import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.LoggerDataRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.quality.receipt.ReceiptQualityConfirmActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.TemperatureProfileAdapter;
-import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.LoggerInitDialogFragment;
 import retrofit2.Call;
@@ -67,12 +61,11 @@ import retrofit2.Response;
 
 public class BinTurnoverActivity extends AppCompatActivity {
 
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
-
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private ProgressDialog progressDialog;
     private RecyclerView lvTempProfiles;
@@ -126,10 +119,10 @@ public class BinTurnoverActivity extends AppCompatActivity {
 
         // configure image button to display last measurements set.
         ibShowValues.setOnClickListener(v -> {
-            if(!Strings.isEmptyOrWhitespace(binEPC)) {
+            if (!Strings.isEmptyOrWhitespace(binEPC)) {
                 List<String[]> values = recLoggerData.getValues(binEPC);
 
-                if(values!=null) {
+                if (values != null) {
                     Map<String, LoggerDataRecord.TemperatureModel> data = recLoggerData.data;
                     tempProfileAdapter.refill(data);
 
@@ -166,6 +159,17 @@ public class BinTurnoverActivity extends AppCompatActivity {
         configFooter();
     }
 
+    private void moveToNextScreen() {
+        Boolean proceed = updateState();
+
+        if (proceed) {
+            // move to next activity.
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            startActivity(i);
+        }
+    }
+
+
     private void assignCtrlVars() {
         btnScanBin = findViewById(R.id.btnScanBin);
         lvTempProfiles = findViewById(R.id.lvTempProfiles);
@@ -179,13 +183,11 @@ public class BinTurnoverActivity extends AppCompatActivity {
         ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
             stopScanner();
-            updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
-                startActivity(i);
+                moveToNextScreen();
             }
         });
 
@@ -207,17 +209,15 @@ public class BinTurnoverActivity extends AppCompatActivity {
             //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
             // persist Measurements Record data to local DB.
-            List<SortingTimeSeries> measurements = GlobalState.commitSortingMeasurements(db);
-            List<TemperatureTimeSeriesDTO> temperatureTimeSeriesDTOs = new ArrayList<>();
-            for (SortingTimeSeries ts : measurements) {
-                //TemperatureTimeSeriesDTO measurementDTO = TemperatureTimeSeriesDTO.convert(ts);
-                //measurementDTO.lot = tx.plot;
-                //temperatureTimeSeriesDTOs.add(measurementDTO);
+            List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db);
+            List<TemperatureTimeSeriesDTO> sortingTimeSeriesDTOs = new ArrayList<>();
+            for (TemperatureTimeSeries ts : measurements) {
+                sortingTimeSeriesDTOs.add(TemperatureTimeSeriesDTO.convert(ts));
             }
 
             // sync Measurements records
-            if (!temperatureTimeSeriesDTOs.isEmpty()) {
-                Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = updService.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
+            if (!sortingTimeSeriesDTOs.isEmpty()) {
+                Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = updService.syncMeasurements(sortingTimeSeriesDTOs, "Bearer " + token);
                 syncMsAsyncCall.enqueue(new BinTurnoverActivity.SyncMsCallBack());
             }
             return true;
@@ -228,17 +228,12 @@ public class BinTurnoverActivity extends AppCompatActivity {
         } finally {
             progressDialog.dismiss();
         }
-        //GlobalState.recQuality.qualityBins = new LinkedList<>(adapterBins.getValues());
-        //GlobalState.recQuality.qualityBinsCnt = adapterBins.getItemCount();
-
-        //GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
-        //GlobalState.recQuality.logger_rfid = loggerEPC;
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (GlobalState.recQuality.logger_rfid == null || GlobalState.recQuality.logger_rfid.isEmpty()) {
+            if (binEPC == null) {
                 sb.append(String.format("\n%s is missing", "'Bin to overturn'"));
             }
         }
@@ -259,21 +254,22 @@ public class BinTurnoverActivity extends AppCompatActivity {
         super.onStop();
         this.stopScanner();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        this.stopScanner();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
     }
 
     protected void onClick(View view) {
         // reset existing Temperature values in stateRecord.
-        recLoggerData.clearData();
+        //recLoggerData.clearData();
 
         scanner_runnable = new SingleShotScanner(mScanHandler);
         tvCurrentBin.setText("");
@@ -314,12 +310,11 @@ public class BinTurnoverActivity extends AppCompatActivity {
                             if (bin != null) {
                                 binEPC = bin.rfid;
                                 tvCurrentBin.setText(binEPC.substring(binEPC.length() - 10));
-                                //adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
-                                //adapterBins.notifyDataSetChanged();
 
                                 if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC,true, true, false);
+                                    String productionLane = spProductionLine.getSelectedItem().toString();
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, productionLane, true, true, false);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {
@@ -350,6 +345,8 @@ public class BinTurnoverActivity extends AppCompatActivity {
             if (rs != null || IsDemo) {
                 // reset existing Temperature values in stateRecord.
                 recLoggerData.clearData();
+                db.temperatureDataDAO().deleteAll();
+                db.measurementsDAO().deleteAll();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!

@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.fishing;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import io.agritrack.R;
+import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.FishingRecord;
@@ -27,6 +29,8 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class FishingDetailsActivity extends AppCompatActivity {
+
+    private MobileDB db;
 
     private static final long fastingDays = LocalPreferences.getFastingDays();
     private SwitchCompat bIceAdequacy;
@@ -42,35 +46,15 @@ public class FishingDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_details);
 
+        // get an instance of local DB
+        db = MobileDB.getInstance(getAppContext());
+
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingDetails);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
         assignCtrlVars();
-
-        tvPathologist.setText(GlobalState.recFishing.pathologist);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate lastFeedDate = GlobalState.recFishing.lastFed;
-        if (lastFeedDate != null) {
-            tvLastFed.setText(lastFeedDate.format(formatter));
-            try {
-                LocalDate now = LocalDate.now();
-                long daysBetween = DAYS.between(lastFeedDate, now);
-                if (daysBetween > fastingDays) {
-                    CToast(getApplicationContext(), render("More than 2 days have been spent before last feeding!!!"), Toast.LENGTH_LONG);
-                } else if (daysBetween <= (fastingDays - 1)) {
-                    CToast(getApplicationContext(), render("Less than 1 days has been spent before last feeding!!!"), Toast.LENGTH_LONG);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            CToast(getApplicationContext(), render("No Last feeding date was found!!!"), Toast.LENGTH_SHORT);
-        }
-
-        tvSpecies.setText(GlobalState.recFishing.speciesName);
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
@@ -116,10 +100,35 @@ public class FishingDetailsActivity extends AppCompatActivity {
     private void initControlsFromState() {
         FishingRecord hvst = GlobalState.recFishing;
 
+        tvSpecies.setText(hvst.speciesName);
+        tvPathologist.setText(hvst.pathologist);
+        etIceSupplier.setText(hvst.iceSupplier);
+        bIceAdequacy.setChecked(hvst.adequateIce);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate lastFeedDate = hvst.lastFed;
+        if (lastFeedDate != null) {
+            tvLastFed.setText(lastFeedDate.format(formatter));
+            try {
+                LocalDate now = LocalDate.now();
+                long daysBetween = DAYS.between(lastFeedDate, now);
+                if (daysBetween > fastingDays) {
+                    CToast(getApplicationContext(), render("More than 2 days have been spent before last feeding!!!"), Toast.LENGTH_LONG);
+                } else if (daysBetween <= (fastingDays - 1)) {
+                    CToast(getApplicationContext(), render("Less than 1 days has been spent before last feeding!!!"), Toast.LENGTH_LONG);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            CToast(getApplicationContext(), render("No Last feeding date was found!!!"), Toast.LENGTH_SHORT);
+        }
     }
 
     private void updateState() {
         GlobalState.recFishing.adequateIce = bIceAdequacy.isChecked();
         GlobalState.recFishing.iceSupplier = etIceSupplier.getText().toString();
+
+        GlobalState.commitFishing(db, Boolean.FALSE);
     }
 }

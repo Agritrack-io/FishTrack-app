@@ -1,5 +1,6 @@
 package io.agritrack.fish.state;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.enums.AssetType.ALL;
 
 import java.nio.charset.StandardCharsets;
@@ -16,7 +17,6 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.FishingRequest;
 import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.data.model.common.Measurement;
-import io.agritrack.data.model.common.SortingTimeSeries;
 import io.agritrack.data.model.common.TemperatureData;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.AssetTransaction;
@@ -82,7 +82,23 @@ public class GlobalState {
     }
 
     public static QualityRecord initQualityRecord() {
+        MobileDB db = MobileDB.getInstance(getAppContext());
         recQuality = new QualityRecord();
+        List<TemperatureTimeSeries> existingMeasurements = db.measurementsDAO().getAll();
+        if (!existingMeasurements.isEmpty()) {
+            recQuality.qualityBins = new LinkedList<>();
+        }
+        for (TemperatureTimeSeries ts : existingMeasurements) {
+            Measurement m = ts.measurement;
+            List<TemperatureData> _temperatureData = ts.data;
+            List<String[]> _dat = new ArrayList<>();
+            for (TemperatureData _temperatureD : _temperatureData) {
+                _dat.add(_temperatureD.rawData());
+            }
+            recLoggerData.addDataSet(m.loggerRFID, m.assetRFID, m.productionLane, m.retrievedAt, _dat);
+            recQuality.qualityBins.add(m.assetRFID);
+        }
+
         return recQuality;
     }
 
@@ -149,6 +165,7 @@ public class GlobalState {
             txFishing.packagingPlant = recFishing.packagingPlant;
             txFishing.iceAdequacy = recFishing.adequateIce.toString();
             txFishing.iceSupplier = recFishing.iceSupplier;
+            txFishing.availBins = recFishing.availBins;
             txFishing.harvestBinsCnt = recFishing.totalBinsUsed;
             txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight).intValue() : null;
             txFishing.totalQty = recFishing.totalFishWeight;
@@ -212,7 +229,7 @@ public class GlobalState {
             txProcess.receivedBins = recProcessing.availBins;
             txProcess.securityClipNumber = recProcessing.securityClip;
             txProcess.user = LocalPreferences.getLoggedInUser("N/A");
-            txProcess.site = LocalPreferences.getCurrentSiteId().toString();
+            txProcess.site = LocalPreferences.getCurrentSiteName();
             txProcess.longitude = recProcessing.longitude;
             txProcess.latitude = recProcessing.latitude;
 
@@ -303,43 +320,22 @@ public class GlobalState {
         }
     }
 
-    public static List<SortingTimeSeries> commitSortingMeasurements(MobileDB db) {
-        List<SortingTimeSeries> result = new ArrayList<>();
-        try {
-            for (String epc : recLoggerData.data.keySet()) {
-                LoggerDataRecord.TemperatureModel model = recLoggerData.data.get(epc);
-
-                Measurement measurement = new Measurement();
-                measurement.loggerRFID = model.loggerEPC;
-                measurement.assetRFID = model.assetEPC;
-                measurement.retrievedAt = model.retrievedAt;
-
-                long measurementId = db.measurementsDAO().insert(measurement);
-                if (measurementId > 0 && model.values != null && !model.values.isEmpty()) {
-                    List<TemperatureData> data = model.values.stream().map(x -> new TemperatureData(measurementId, x[0], Double.valueOf(x[1].replace(',', '.')))).collect(Collectors.toList());
-                    db.temperatureDataDAO().insert(data.toArray(new TemperatureData[data.size()]));
-                }
-                //TODO:: can't we get it directly from the insert statement?
-                result.add(db.measurementsDAO().getByMeasId(measurementId));
-            }
-
-            return result;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
     public static List<TemperatureTimeSeries> commitMeasurements(MobileDB db) {
         List<TemperatureTimeSeries> result = new ArrayList<>();
+
         try {
             for (String epc : recLoggerData.data.keySet()) {
                 LoggerDataRecord.TemperatureModel model = recLoggerData.data.get(epc);
-
+                TemperatureTimeSeries meas = db.measurementsDAO().getByEPC(epc);
+                if (meas != null) {
+                    result.add(meas);
+                    continue;
+                }
                 Measurement measurement = new Measurement();
                 measurement.loggerRFID = model.loggerEPC;
                 measurement.assetRFID = model.assetEPC;
                 measurement.retrievedAt = model.retrievedAt;
+                measurement.productionLane = model.productionLane;
 
                 long measurementId = db.measurementsDAO().insert(measurement);
                 if (measurementId > 0 && model.values != null && !model.values.isEmpty()) {
@@ -354,6 +350,32 @@ public class GlobalState {
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
+        }
+    }
+
+    public static void commitMeasurement(MobileDB db, String epc) {
+
+        try {
+            TemperatureTimeSeries meas = db.measurementsDAO().getByEPC(epc);
+            if (meas != null) {
+                return;
+            }
+            LoggerDataRecord.TemperatureModel model = recLoggerData.data.get(epc);
+
+            Measurement measurement = new Measurement();
+            measurement.loggerRFID = model.loggerEPC;
+            measurement.assetRFID = model.assetEPC;
+            measurement.retrievedAt = model.retrievedAt;
+            measurement.productionLane = model.productionLane;
+
+            long measurementId = db.measurementsDAO().insert(measurement);
+            if (measurementId > 0 && model.values != null && !model.values.isEmpty()) {
+                List<TemperatureData> data = model.values.stream().map(x -> new TemperatureData(measurementId, x[0], Double.valueOf(x[1].replace(',', '.')))).collect(Collectors.toList());
+                db.temperatureDataDAO().insert(data.toArray(new TemperatureData[data.size()]));
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
