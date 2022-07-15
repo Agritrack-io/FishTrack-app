@@ -35,6 +35,9 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.PendingCorrelationTxCallBack;
 import io.agritrack.api.sync.PendingFishingTxCallBack;
+import io.agritrack.api.sync.PendingPostQualityTxCallBack;
+import io.agritrack.api.sync.PendingProcessTxCallBack;
+import io.agritrack.api.sync.PendingQualityTxCallBack;
 import io.agritrack.api.sync.PendingTransportTxCallBack;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncBinInfo;
@@ -42,8 +45,8 @@ import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
 import io.agritrack.api.sync.SyncCustomersCallBack;
 import io.agritrack.api.sync.SyncEmployeesCallBack;
-import io.agritrack.api.sync.SyncFoodSkuCallBack;
 import io.agritrack.api.sync.SyncFishingRequestCallBack;
+import io.agritrack.api.sync.SyncFoodSkuCallBack;
 import io.agritrack.api.sync.SyncIOTLoggersCallBack;
 import io.agritrack.api.sync.SyncSeaTempCallBack;
 import io.agritrack.api.sync.SyncSpeciesCallBack;
@@ -60,13 +63,23 @@ import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
+import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.dto.tx.FishingTxDTO;
+import io.agritrack.data.dto.tx.PostPackageQualityTxDTO;
+import io.agritrack.data.dto.tx.ProcessingTxDTO;
+import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
 import io.agritrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.data.dto.wh.FoodSkuDTO;
+import io.agritrack.data.model.common.Measurement;
+import io.agritrack.data.model.common.TemperatureData;
+import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.data.model.tx.PostPackageQualityTransaction;
+import io.agritrack.data.model.tx.ProcessingTransaction;
+import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
@@ -78,6 +91,7 @@ import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
+import io.agritrack.fish.ui.quality.receipt.ReceiptQualityConfirmActivity;
 import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
 import io.agritrack.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.fish.ui.transport.TransportBinsActivity;
@@ -195,7 +209,7 @@ public class FishHomeActivity extends AppCompatActivity {
                             fishingRecord = GlobalState.initFishingRecord();
 
                             // NO FishingTx in progress
-                            if (openTx == null){
+                            if (openTx == null) {
                                 openTx = new FishingTransaction();
                                 openTx.txStatus = TxStatus.PENDING;
                                 fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
@@ -279,7 +293,7 @@ public class FishHomeActivity extends AppCompatActivity {
 
             // select all pending fishing TXs
             List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAll();
-            if(!fishingTXs.isEmpty()) {
+            if (!fishingTXs.isEmpty()) {
                 for (FishingTransaction fishingTX : fishingTXs) {
                     Call<FishingTxDTO> fishingTxAsyncCall = pendingTxSvc.syncFishingTx(FishingTxDTO.convert(fishingTX), "Bearer " + token);
                     fishingTxAsyncCall.enqueue(new PendingFishingTxCallBack(this.syncResult));
@@ -288,50 +302,57 @@ public class FishHomeActivity extends AppCompatActivity {
 
             // select all pending transport TXs
             List<TransportTransaction> transportTXs = db.transportTransactionDAO().getAll();
-            if(!transportTXs.isEmpty()) {
+            if (!transportTXs.isEmpty()) {
                 for (TransportTransaction transportTX : transportTXs) {
                     Call<TransportTxDTO> transportTxAsyncCall = pendingTxSvc.syncTransportTx(TransportTxDTO.convert(transportTX), "Bearer " + token);
                     transportTxAsyncCall.enqueue(new PendingTransportTxCallBack(this.syncResult));
                 }
             }
 
-            /*// select all SIMPLE pending correlation TXs (identification events, e.g. correlate rfid <--> code)
-            List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAll();
-            if(!fishingTXs.isEmpty()) {
-                for (FishingTransaction fishingTX : fishingTXs) {
-                    Call<FishingTxDTO> fishingTxAsyncCall = pendingTxSvc.syncFishingTx(FishingTxDTO.convert(fishingTX), "Bearer " + token);
-                    fishingTxAsyncCall.enqueue(new PendingFishingTxCallBack(this.syncResult));
+            // select all pending receipt TXs
+            List<ProcessingTransaction> processTXs = db.processingTransactionDAO().getAll();
+            if (!processTXs.isEmpty()) {
+                for (ProcessingTransaction processTX : processTXs) {
+                    Call<ProcessingTxDTO> processTxAsyncCall = pendingTxSvc.syncProcessingTx(ProcessingTxDTO.convert(processTX), "Bearer " + token);
+                    processTxAsyncCall.enqueue(new PendingProcessTxCallBack(this.syncResult));
                 }
             }
 
-            // select all SIMPLE pending correlation TXs (identification events, e.g. correlate rfid <--> code)
-            List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAll();
-            if(!fishingTXs.isEmpty()) {
-                for (FishingTransaction fishingTX : fishingTXs) {
-                    Call<FishingTxDTO> fishingTxAsyncCall = pendingTxSvc.syncFishingTx(FishingTxDTO.convert(fishingTX), "Bearer " + token);
-                    fishingTxAsyncCall.enqueue(new PendingFishingTxCallBack(this.syncResult));
+            // select all pending quality TXs
+            List<QualityTransaction> qualityTXs = db.qualityTransactionDAO().getAll();
+            if (!qualityTXs.isEmpty()) {
+                for (QualityTransaction qualityTX : qualityTXs) {
+                    Call<QualityTxDTO> qualityTxAsyncCall = pendingTxSvc.syncQualityTx(QualityTxDTO.convert(qualityTX), "Bearer " + token);
+                    qualityTxAsyncCall.enqueue(new PendingQualityTxCallBack(this.syncResult));
                 }
-            }*/
+            }
 
-
+            // select all pending quality TXs
+            List<PostPackageQualityTransaction> postQualityTXs = db.postPackageQualityTransactionDAO().getAll();
+            if (!postQualityTXs.isEmpty()) {
+                for (PostPackageQualityTransaction postQualityTX : postQualityTXs) {
+                    Call<PostPackageQualityTxDTO> postQualityTxAsyncCall = pendingTxSvc.syncPostPackageQualityTx(PostPackageQualityTxDTO.convert(postQualityTX), "Bearer " + token);
+                    postQualityTxAsyncCall.enqueue(new PendingPostQualityTxCallBack(this.syncResult));
+                }
+            }
 
             //===================================================================================================
             // select all SIMPLE pending correlation TXs (identification events, e.g. correlate rfid <--> code)
             List<CorrelationTransaction> correlationTXs = db.correlationTransactionDAO().getAll();
-            if(!correlationTXs.isEmpty()) {
+            if (!correlationTXs.isEmpty()) {
                 // filter out the simple correlation transactions
                 List<CorrelationTransaction> identifications = correlationTXs.stream().filter(f -> f.assetRFID == null).collect(Collectors.toList());
                 // filter out the inter-correlation transactions
                 List<CorrelationTransaction> interCorrelations = correlationTXs.stream().filter(f -> f.assetRFID != null).collect(Collectors.toList());
 
-                if(!identifications.isEmpty()) {
+                if (!identifications.isEmpty()) {
                     List<CorrelationTxDTO> identificationDTOs = identifications.stream().map(tx -> CorrelationTxDTO.convert(tx)).collect(Collectors.toList());
 
                     Call<ResponseBody> assetIdentificationAsyncCall = pendingTxSvc.syncAssetCorrelationTx(identificationDTOs, "Bearer " + token);
                     assetIdentificationAsyncCall.enqueue(new PendingCorrelationTxCallBack(this.syncResult));
                 }
 
-                if(!interCorrelations.isEmpty()) {
+                if (!interCorrelations.isEmpty()) {
                     List<CorrelationTxDTO> interCorrelationDTOs = interCorrelations.stream().map(tx -> CorrelationTxDTO.convert(tx)).collect(Collectors.toList());
 
                     Call<ResponseBody> assetInterCorrelationAsyncCall = pendingTxSvc.syncAssetWithAssetCorrelationTx(interCorrelationDTOs, "Bearer " + token);
@@ -401,7 +422,7 @@ public class FishHomeActivity extends AppCompatActivity {
             syncFoodSkuAsyncCall.enqueue(new SyncFoodSkuCallBack(this.syncResult));
 
             // sync sea temperature
-            Call<List<SeaTemperatureTxDTO>> syncSeaTempAsyncCall = syncService.getSeaTemp(siteId,"Bearer " + token);
+            Call<List<SeaTemperatureTxDTO>> syncSeaTempAsyncCall = syncService.getSeaTemp(siteId, "Bearer " + token);
             syncSeaTempAsyncCall.enqueue(new SyncSeaTempCallBack(this.syncResult));
 
         } catch (Exception e) {

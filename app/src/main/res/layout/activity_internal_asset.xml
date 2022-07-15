@@ -84,7 +84,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
     <RelativeLayout
         android:id="@+id/internalAssetALayout"
         android:layout_width="0dp"
-        android:layout_height="160dp"
+        android:layout_height="150dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -97,6 +97,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
             android:background="@drawable/shape_rounded_corner_with_shadow"
             android:orientation="horizontal"
             android:padding="1dp">
@@ -106,7 +107,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="50dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_rounded_dialog_non_input"
@@ -127,7 +128,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="24dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/button_press_effect"
                 android:text="@string/scan_assets"
                 android:textColor="@color/yellow"
@@ -146,7 +147,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="@string/scan_asset_tag"
+            android:text="@string/scan_net"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
 
@@ -156,7 +157,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
     <RelativeLayout
         android:id="@+id/internalAssetBLayout"
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="210dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -182,8 +183,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/tvInternalFrom"
+                app:layout_constraintBottom_toTopOf="@+id/tvAssetEPCFrom"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -210,18 +210,40 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="@string/asset"
-                    android:textOn="@string/asset"
+                    android:textOff="@string/cage"
+                    android:textOn="@string/cage"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
             </io.agritrack.ui.custom.ToggleGroup>
+
+            <TextView
+                android:id="@+id/tvAssetEPCFrom"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/text_view_font_size_medium"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toTopOf="@+id/tvInternalFrom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tgInternalSource" />
 
             <TextView
                 android:id="@+id/tvInternalFrom"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_rounded_dialog_non_input"
@@ -238,7 +260,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tgInternalSource" />
+                app:layout_constraintTop_toBottomOf="@+id/tvAssetEPCFrom" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
@@ -257,7 +279,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
     <RelativeLayout
         android:id="@+id/internalAssetCLayout"
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="210dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -283,8 +305,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/tvInternalTo"
+                app:layout_constraintBottom_toTopOf="@+id/tvAssetEPCTo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -311,19 +332,41 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
                     android:background="@drawable/togglebutton_selector"
                     android:gravity="center"
                     android:textColor="@drawable/button_text_color"
-                    android:textOff="@string/asset"
-                    android:textOn="@string/asset"
+                    android:textOff="@string/cage"
+                    android:textOn="@string/cage"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
 
             </io.agritrack.ui.custom.ToggleGroup>
 
             <TextView
+                android:id="@+id/tvAssetEPCTo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/text_view_font_size_medium"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toTopOf="@+id/tvInternalTo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tgInternalDestination" />
+
+            <TextView
                 android:id="@+id/tvInternalTo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_rounded_dialog_non_input"
@@ -340,7 +383,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tgInternalDestination" />
+                app:layout_constraintTop_toBottomOf="@+id/tvAssetEPCTo" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

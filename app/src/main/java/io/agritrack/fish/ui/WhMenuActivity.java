@@ -17,6 +17,7 @@ import io.agritrack.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.SyncAssetDialog;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.wh.InternalAssetActivity;
 import io.agritrack.fish.ui.wh.correlation.CorrelationMenuActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
@@ -30,7 +31,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class WhMenuActivity extends AppCompatActivity {
 
-    private static final int Incoming_Idx = 0, Outgoing_Idx = 1, Inventory_Idx = 2, Correlation_Idx = 3, Search_Idx = 4;
+    private static final int Incoming_Idx = 0, Outgoing_Idx = 1, InternalIdx = 2, Inventory_Idx = 3, Correlation_Idx = 4, Search_Idx = 5;
     GridView gvWhMainMenu;
 
     private ImageView ivSupport, ivRefresh;
@@ -51,6 +52,7 @@ public class WhMenuActivity extends AppCompatActivity {
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), IncomingStartActivity.class, R.drawable.incoming));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_outgoing), OutgoingStartActivity.class, R.drawable.outgoing));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_internal), InternalAssetActivity.class, R.drawable.internal_asset));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), InventoryStartActivity.class, R.drawable.inventory));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationMenuActivity.class, R.drawable.correlation));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), SearchActivity.class, R.drawable.search));
@@ -71,6 +73,10 @@ public class WhMenuActivity extends AppCompatActivity {
                     case Outgoing_Idx:
                         GlobalState.initWHOutgoingRecord();
                         i = new Intent(appCtx, OutgoingStartActivity.class);
+                        break;
+                    case InternalIdx:
+                        GlobalState.initWHInternalRecord();
+                        i = new Intent(appCtx, InternalAssetActivity.class);
                         break;
                     case Inventory_Idx:
                         i = new Intent(appCtx, InventoryStartActivity.class);

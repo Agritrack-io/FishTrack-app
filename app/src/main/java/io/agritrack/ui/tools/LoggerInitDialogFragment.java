@@ -70,6 +70,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     private String loggerEPC;
     private String assetEPC;
     private String productionLane;
+    private String lot;
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0, resetCnt = 0;
     private Short cntSamples = 0;

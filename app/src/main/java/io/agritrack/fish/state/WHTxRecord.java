@@ -24,4 +24,5 @@ public class WHTxRecord {
 
     public Double longitude;
     public Double latitude;
+    public String internalItem;
 }

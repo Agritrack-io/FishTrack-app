@@ -9,6 +9,10 @@ public class Constants {
     public static final String ftAsset = "ASSET";
     public static final String ftConsumable = "CONSUMABLE";
     public static final String ftSite = "SITE";
+    public static String ftSiteFrom = "SITE FROM";
+    public static String ftSiteTo = "SITE TO";
+    public static final String ftCageFrom = "CAGE FROM";
+    public static final String ftCageTo = "CAGE TO";
     public static final String ftCustomer = "CUSTOMER";
 
     public static final String ftCage = "CAGE";

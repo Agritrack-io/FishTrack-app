@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -16,22 +17,22 @@ import io.agritrack.data.model.tx.QualityTransaction;
 public interface PostPackageQualityTransactionDAO {
 
     @Query("SELECT * from post_package_quality_transaction")
-    LiveData<List<PostPackageQualityTransaction>> getAll();
+    List<PostPackageQualityTransaction> getAll();
 
     @Query("SELECT * from post_package_quality_transaction where id=:qualityTxId LIMIT 1")
     PostPackageQualityTransaction getById(Long qualityTxId);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(PostPackageQualityTransaction... qualityTxs);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(PostPackageQualityTransaction qualityTxs);
 
     @Delete
     void delete(PostPackageQualityTransaction qualityTx);
 
     @Query("DELETE from post_package_quality_transaction")
-    void deleteAll();
+    int deleteAll();
 
     @Update
     void update(PostPackageQualityTransaction qualityTx);

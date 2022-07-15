@@ -48,6 +48,7 @@ public class GlobalState {
 
     public static WHTxRecord recWHIncoming = new WHTxRecord();
     public static WHTxRecord recWHOutgoing = new WHTxRecord();
+    public static WHTxRecord recWHInternal = new WHTxRecord();
     public static WHCorrelationRecord recWHCorrelation = new WHCorrelationRecord();
     public static InventoryWHRecord recWHInventory = new InventoryWHRecord();
 
@@ -110,6 +111,11 @@ public class GlobalState {
     public static WHTxRecord initWHOutgoingRecord() {
         recWHOutgoing = new WHTxRecord();
         return recWHOutgoing;
+    }
+
+    public static WHTxRecord initWHInternalRecord() {
+        recWHInternal = new WHTxRecord();
+        return recWHInternal;
     }
 
     public static WHCorrelationRecord initWHCorrelationRecord() {
@@ -191,7 +197,7 @@ public class GlobalState {
         try {
             TransportTransaction txTransport = new TransportTransaction();
 
-            txTransport.id = recTransport.txKey;
+            //txTransport.id = recTransport.txKey;
             txTransport.destination = recTransport.packagingSite;
             txTransport.driverName = recTransport.driverName;
             txTransport.driverPhone = recTransport.driverPhone;
@@ -220,6 +226,8 @@ public class GlobalState {
     public static ProcessingTransaction commitProcessing(MobileDB db) {
         try {
             ProcessingTransaction txProcess = new ProcessingTransaction();
+
+            //txProcess.id = recProcessing.txKey;
             txProcess.dispatchNote = recProcessing.dispatchNote;
             txProcess.cleanTruck = Boolean.toString(recProcessing.cleanTruck);
             txProcess.smells = Boolean.toString(recProcessing.smellyTruck);
@@ -300,6 +308,8 @@ public class GlobalState {
     public static PostPackageQualityTransaction commitPostPackageQuality(MobileDB db) {
         try {
             PostPackageQualityTransaction txQuality = new PostPackageQualityTransaction();
+
+            //txQuality.id = recQuality.txKey;
             txQuality.plot = recQuality.pLot;
             txQuality.boxSn = recQuality.boxSn;
             txQuality.tempT1 = recQuality.etT1;
@@ -425,6 +435,29 @@ public class GlobalState {
             return null;
         }
     }
+
+    /*public static AssetTransaction commitWHRFIDInternal(MobileDB db) {
+        try {
+            AssetTransaction txWHInternal = new AssetTransaction();
+            txWHInternal.state = recWHIncoming.state.name();
+            txWHIncoming.assetType = (recWHIncoming.assetType != null) ? recWHIncoming.assetType : ALL;
+            txWHIncoming.itemRFIDs = recWHIncoming.items;
+            txWHIncoming.from = recWHIncoming.from;
+            txWHIncoming.to = recWHIncoming.to;
+            txWHIncoming.site = recWHIncoming.site;
+            txWHIncoming.timestamp = System.currentTimeMillis();
+            txWHIncoming.userId = LocalPreferences.getLoggedInUser("N/A");
+            txWHIncoming.longitude = recWHIncoming.longitude;
+            txWHIncoming.latitude = recWHIncoming.latitude;
+
+            recWHIncoming.txKey = db.assetTransactionDAO().insert(txWHIncoming);
+
+            return txWHIncoming;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }*/
 
     public static List<ConsumableTransaction> commitWHBarcodeOutgoing(MobileDB db) {
         try {

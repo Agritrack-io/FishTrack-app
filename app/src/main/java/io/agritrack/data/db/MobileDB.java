@@ -66,6 +66,7 @@ import io.agritrack.data.model.common.Reader;
 import io.agritrack.data.model.common.Species;
 import io.agritrack.data.model.common.Supplier;
 import io.agritrack.data.model.common.TemperatureData;
+import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.AssetTransaction;
 import io.agritrack.data.model.tx.CollectTransaction;
 import io.agritrack.data.model.tx.ConsumableTransaction;

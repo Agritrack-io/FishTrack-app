@@ -446,6 +446,7 @@
     <string name="delete_selected_item">"About to delete: "</string>
     <string name="delete_all_items">"Do you want to clear all items?"</string>
     <string name="select_site">Please select site</string>
+    <string name="select_cage">Please scan cage</string>
     <string name="select_supplier">Please select supplier</string>
     <string name="select_customer">Please select customer</string>
     <string name="select_subsite">Please select sub-site</string>
@@ -610,6 +611,12 @@
     <string name="pending_correlation_tx_upload_failure_alert">Failed to upload pending correlations!</string>
     <string name="pending_fishing_tx_upload_failure_alert">Failed to upload pending fishing tx!</string>
     <string name="pending_fishing_tx_upload_completed">Pending fishing tx successfully uploaded!</string>
+    <string name="pending_transport_tx_upload_failure_alert">Failed to upload pending transport tx!</string>
+    <string name="pending_transport_tx_upload_completed">Pending transport tx successfully uploaded!</string>
+    <string name="pending_process_tx_upload_failure_alert">Failed to upload pending process tx!</string>
+    <string name="pending_process_tx_upload_completed">Pending process tx successfully uploaded!</string>
+    <string name="pending_quality_tx_upload_failure_alert">Failed to upload pending quality tx!</string>
+    <string name="pending_quality_tx_upload_completed">Pending quality tx successfully uploaded!</string>
     <string name="pending_asset_tx_upload_failure_alert">Failed to upload pending asset tx!</string>
     <string name="pending_asset_tx_upload_completed">Pending asset tx successfully uploaded!</string>
     <string name="bt_not_supported">Bluetooth not supported!</string>

@@ -1,6 +1,7 @@
 package io.agritrack.data.model.common;
 
 import androidx.room.Embedded;
+import androidx.room.Entity;
 import androidx.room.Relation;
 
 import java.util.List;

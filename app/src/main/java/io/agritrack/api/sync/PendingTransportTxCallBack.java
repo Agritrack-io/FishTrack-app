@@ -28,13 +28,13 @@ public class PendingTransportTxCallBack extends BaseSyncCallBack<TransportTxDTO>
             db = MobileDB.getInstance(getAppContext());
 
             int rowsAffected = db.transportTransactionDAO().deleteAll();
-            Log.i("Pending Fishings.", String.format("deleted %s rows from FishingTransactions...", rowsAffected));
+            Log.i("Pending Transportations.", String.format("deleted %s rows from TransportTransactions...", rowsAffected));
 
             // Sites sync succeeded.
-            syncResult.setValue(getAppContext().getString(R.string.pending_fishing_tx_upload_completed));
+            syncResult.setValue(getAppContext().getString(R.string.pending_transport_tx_upload_completed));
         } else {
             //  no Sites found
-            syncResult.setValue(getAppContext().getString(R.string.pending_fishing_tx_upload_failure_alert));
+            syncResult.setValue(getAppContext().getString(R.string.pending_transport_tx_upload_failure_alert));
         }
     }
 }
