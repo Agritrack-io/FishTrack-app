@@ -21,4 +21,7 @@ public class Measurement {
 
     @ColumnInfo(name = "production_lane")
     public String productionLane;
+
+    @ColumnInfo(name = "lot")
+    public String lot;
 }

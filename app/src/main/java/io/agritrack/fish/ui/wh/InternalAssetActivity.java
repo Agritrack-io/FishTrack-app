@@ -3,12 +3,10 @@ package io.agritrack.fish.ui.wh;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fish.state.GlobalState.recWHIncoming;
 import static io.agritrack.fish.state.GlobalState.recWHInternal;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 
@@ -31,7 +29,10 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -40,11 +41,9 @@ import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.AssetTxDTO;
-import io.agritrack.data.model.CageDetails;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.tx.AssetTransaction;
 import io.agritrack.data.model.wh.Asset;
-import io.agritrack.dialog.ExpandableListDialog;
 import io.agritrack.dialog.ScanAssetDialog;
 import io.agritrack.dialog.SimpleListDialog;
 import io.agritrack.dialog.SupportDialog;
@@ -52,21 +51,13 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.WarehouseTxState;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.fish.ui.fishing.FishingBinsActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingAssetActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingConsumableActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingStartActivity;
-import io.agritrack.fish.ui.wh.outgoing.OutgoingAssetActivity;
-import io.agritrack.fish.ui.wh.outgoing.OutgoingStartActivity;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.SiteInfoRS;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.LoggerInitDialogFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -78,20 +69,16 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+    private final MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
     private Button btnScanAsset;
-    private SingleShotScanner singleShot_runnable;
     private final MutableLiveData<String> toSiteSelection = new MutableLiveData<>();
     private final MutableLiveData<String> fromSiteSelection = new MutableLiveData<>();
-    private final MutableLiveData<String> toAssetSelection = new MutableLiveData<>();
-    private final MutableLiveData<String> fromAssetSelection = new MutableLiveData<>();
     private TextView tvInternalFrom, tvInternalTo, tvAssetEPC, tvAssetEPCTo, tvAssetEPCFrom;
     private ToggleGroup tgInternalSource, tgInternalDestination;
     private String selectedToggleButtonFrom, selectedToggleButtonTo;
     private SimpleListDialog siteDialog;
-    private ScanAssetDialog assetDialog;
-    private SiteInfoRS site;
     private boolean proceedWithoutLocation = false;
-    private String toSite, fromSite, toAsset, fromAsset;
+    private String toSite, fromSite;
     private MobileDB db;
     private YesNoDialogFragment confirmGPSSelectionDlg;
     private ProgressDialog progressDialog;
@@ -123,6 +110,7 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
                 toSite = response;
                 tvAssetEPCTo.setText("");
                 tvInternalTo.setText(toSite);
+                recWHInternal.toSite = toSite;
                 siteDialog.dismiss();
             }
         });
@@ -132,23 +120,8 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
                 fromSite = response;
                 tvAssetEPCFrom.setText("");
                 tvInternalFrom.setText(fromSite);
+                recWHInternal.fromSite = fromSite;
                 siteDialog.dismiss();
-            }
-        });
-
-        toAssetSelection.observe(this, response -> {
-            if (response != null) {
-                toAsset = response;
-                tvInternalTo.setText(toAsset);
-                assetDialog.dismiss();
-            }
-        });
-
-        fromAssetSelection.observe(this, response -> {
-            if (response != null) {
-                fromAsset = response;
-                tvInternalFrom.setText(fromAsset);
-                assetDialog.dismiss();
             }
         });
 
@@ -233,35 +206,21 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
     protected void configFooter() {
         ivNext.setOnClickListener(view -> {
             //Stop scanning since we navigate to next activity
-            if (singleShot_runnable!=null) {
+            if (scanner_runnable!=null) {
                 stopScanner();
             }
-            if (!Strings.isEmptyOrWhitespace(selectedToggleButtonFrom)) {
-                recWHInternal.selectedToggleButtonFrom = selectedToggleButtonFrom;
-            }
 
-            if (!Strings.isEmptyOrWhitespace(selectedToggleButtonTo)) {
-                recWHInternal.selectedToggleButtonTo = selectedToggleButtonTo;
-            }
-
-            if (!Strings.isEmptyOrWhitespace(String.valueOf(tvInternalFrom))) {
-                recWHInternal.from = tvInternalFrom.getText().toString();
-            }
-
-            if (!Strings.isEmptyOrWhitespace(String.valueOf(tvInternalTo))) {
-                recWHInternal.to = tvInternalTo.getText().toString();
-            }
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
                 return;
             }
-            GlobalState.recWHIncoming.state = WarehouseTxState.Internal;
-            GlobalState.recWHIncoming.site = LocalPreferences.getCurrentSiteName();
+            recWHInternal.state = WarehouseTxState.Internal;
+            recWHInternal.site = LocalPreferences.getCurrentSiteName();
 
             if (mLastLocation != null) {
-                recWHIncoming.longitude = mLastLocation.getLongitude();
-                recWHIncoming.latitude = mLastLocation.getLatitude();
+                recWHInternal.longitude = mLastLocation.getLongitude();
+                recWHInternal.latitude = mLastLocation.getLatitude();
                 proceedWithoutLocation = true;
                 moveToNextScreen();
             } else {
@@ -272,7 +231,7 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
 
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
-            if (singleShot_runnable!=null) {
+            if (scanner_runnable!=null) {
                 stopScanner();
             }
 
@@ -291,22 +250,6 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
         return result;
     }
 
-    private List<String> loadCagesFromLocalDB() {
-        // load assets for current Site and filter by asset type (if selected).
-        List<String> result = new ArrayList<>();
-        List<Asset> assetsList = db.assetDAO().getAssetsForTypeAndSite(Constants.ftCage, LocalPreferences.getCurrentSiteName());
-        if (assetsList != null && !assetsList.isEmpty()) {
-            result = assetsList.stream().map(s -> s.code).collect(Collectors.toList());
-
-            /*List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid)).collect(Collectors.toList());
-            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
-            adapterAssets.getFilter().filter("");
-            this.rvAssets.setAdapter(adapterAssets);*/
-        }
-
-        return result;
-    }
-
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
         if (checkedId == R.id.tbSiteFrom) {
@@ -320,15 +263,9 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
         } else if (checkedId == R.id.tbAssetFrom) {
             tgInternalSource.findViewById(R.id.tbAssetFrom).setOnClickListener(this::onClick);
             selectedToggleButtonFrom = Constants.ftCageFrom;
-            /*assetDialog = new ScanAssetDialog(InternalAssetActivity.this, fromAssetSelection, R.string.select_cage);
-            assetDialog.showDialog();
-            selectedToggleButtonFrom = Constants.ftCageFrom;*/
         } else if (checkedId == R.id.tbAssetTo) {
             tgInternalDestination.findViewById(R.id.tbAssetTo).setOnClickListener(this::onClick);
             selectedToggleButtonTo = Constants.ftCageTo;
-            /*assetDialog = new ScanAssetDialog(InternalAssetActivity.this, toAssetSelection, R.string.select_cage);
-            assetDialog.showDialog();
-            selectedToggleButtonTo = Constants.ftCageTo;*/
         }
     }
 
@@ -344,7 +281,7 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
             String token = LocalPreferences.getToken();
 
             // persist WHIncomingAssetTX Record data to local DB.
-            AssetTransaction tx = GlobalState.commitWHRFIDIncoming(db);
+            AssetTransaction tx = GlobalState.commitWHRFIDInternal(db);
 
             // sync WH Incoming Tx
             Call<AssetTxDTO> syncTxAsyncCall = updService.syncRFIDIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
@@ -363,15 +300,15 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(recWHInternal.internalItem)) {
+            if (recWHInternal.items == null || recWHInternal.items.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Asset'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.from)) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.fromSite) && Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.fromAsset)) {
                 sb.append(String.format("\n%s is missing", "'Source'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.to)) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.toSite) && Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.toAsset)) {
                 sb.append(String.format("\n%s is missing", "'Target'"));
             }
         }
@@ -380,14 +317,13 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
     }
 
     protected void onClick(View view) {
-        /*singleShot_runnable = new SingleShotScanner(mScanHandler);
-        singleShot_runnable.setFilter(Filters.RFID_NET);
-        singleShot_runnable.startReading();*/
 
-        MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
         scanner_runnable.LowEnergy();
         if(view!=null){
-            if(view.getId() == tgInternalSource.findViewById(R.id.tbAssetFrom).getId() || view.getId() == tgInternalDestination.findViewById(R.id.tbAssetTo).getId() ){
+            if (view.getId() == tgInternalSource.findViewById(R.id.tbAssetFrom).getId()) {
+                scanner_runnable.setFilter(new String[]{Filters.RFID_CAGE});
+            } else if (view.getId() == tgInternalDestination.findViewById(R.id.tbAssetTo).getId()){
+                //tgInternalSource.clearCheck();
                 scanner_runnable.setFilter(new String[]{Filters.RFID_CAGE});
             } else if (view.getId() == btnScanAsset.getId()) {
                 scanner_runnable.setFilter(new String[]{Filters.RFID_NET});
@@ -399,9 +335,9 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
 
     // ###################################################
     private void stopScanner() {
-        if (this.singleShot_runnable != null) {
-            this.singleShot_runnable.stopReading();
-            mScanHandler.removeCallbacks(this.singleShot_runnable);
+        if (this.scanner_runnable != null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.scanner_runnable);
         }
     }
 
@@ -447,17 +383,6 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    /*String epcStr = msg.getData().getString("epc");
-                    String rssi = msg.getData().getString("rssi");
-                    try {
-                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            tvAssetEPC.setText(epcStr.substring(epcStr.length()-10));
-                            recWHInternal.internalItem = epcStr;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }*/
-
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     try {
                         if (!epcList.isEmpty()) {
@@ -467,7 +392,10 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
                                 String label = tag.substring(3);
                                 if (tag.startsWith(Filters.RFID_NET)) {
                                     tvAssetEPC.setText(label);
-                                    recWHInternal.internalItem = epc;
+                                    Map<String, List<String>> _items = new TreeMap<>();
+                                    _items.put(Filters.RFID_NET, Collections.singletonList(epc));
+                                    recWHInternal.items = _items;
+                                    recWHInternal.assetType = Constants.ftNet;
                                 } else if (tag.startsWith(Filters.RFID_CAGE)) {
                                     if (tgInternalSource.getCheckedRadioButtonId() == R.id.tbAssetFrom){
                                         tvAssetEPCFrom.setText(label);
@@ -478,7 +406,7 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
                                             return;
                                         }
                                         tvInternalFrom.setText(cage.code);
-                                        recWHInternal.from = tvInternalFrom.getText().toString();
+                                        recWHInternal.fromAsset = epc;
                                     } else if (tgInternalDestination.getCheckedRadioButtonId() == R.id.tbAssetTo){
                                         tvAssetEPCTo.setText(label);
                                         Asset cage = db.assetDAO().getAssetByEpc(epc);
@@ -488,7 +416,7 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
                                             return;
                                         }
                                         tvInternalTo.setText(cage.code);
-                                        recWHInternal.to = tvInternalTo.getText().toString();
+                                        recWHInternal.toAsset = epc;
                                     }
                                 }
                             }

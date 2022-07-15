@@ -209,7 +209,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
             //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
             // persist Measurements Record data to local DB.
-            List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db);
+            List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db, null);
             List<TemperatureTimeSeriesDTO> sortingTimeSeriesDTOs = new ArrayList<>();
             for (TemperatureTimeSeries ts : measurements) {
                 sortingTimeSeriesDTOs.add(TemperatureTimeSeriesDTO.convert(ts));

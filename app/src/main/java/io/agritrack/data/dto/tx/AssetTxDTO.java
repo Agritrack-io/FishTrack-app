@@ -14,6 +14,8 @@ public class AssetTxDTO {
     public String asset_type;
     public String source_site;
     public String target_site;
+    public String source_asset;
+    public String target_asset;
     public Map<String, List<String>> rfid_items;
     public String state;
     public String site;
@@ -29,8 +31,10 @@ public class AssetTxDTO {
         assetTxDTO.asset_type = assetTx.assetType;
         assetTxDTO.state = assetTx.state;
         assetTxDTO.rfid_items = assetTx.itemRFIDs;
-        assetTxDTO.source_site = assetTx.from;
-        assetTxDTO.target_site = assetTx.to;
+        assetTxDTO.source_site = assetTx.fromSite;
+        assetTxDTO.target_site = assetTx.toSite;
+        assetTxDTO.source_asset = assetTx.fromAsset;
+        assetTxDTO.target_asset = assetTx.toAsset;
         assetTxDTO.site = assetTx.site;
         assetTxDTO.user = assetTx.userId;
         assetTxDTO.created_at = assetTx.timestamp;

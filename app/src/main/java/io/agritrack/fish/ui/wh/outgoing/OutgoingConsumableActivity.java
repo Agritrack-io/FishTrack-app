@@ -353,12 +353,12 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
     private void initControlsFromState() {
         WHTxRecord outgoingWHRecord = GlobalState.recWHOutgoing;
 
-        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.from)) {
-            tvOutgoingProcessFrom.setText(outgoingWHRecord.from);
+        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.fromSite)) {
+            tvOutgoingProcessFrom.setText(outgoingWHRecord.fromSite);
         }
 
-        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.to)) {
-            tvOutgoingProcessTo.setText(outgoingWHRecord.to);
+        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.toSite)) {
+            tvOutgoingProcessTo.setText(outgoingWHRecord.toSite);
         }
     }
 

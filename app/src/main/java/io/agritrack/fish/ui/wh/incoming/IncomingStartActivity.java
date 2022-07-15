@@ -184,7 +184,7 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
             supplierDialog.showDialog();
             selectedToggleButtonFrom = Constants.ftSupplier;
         } else if (checkedId == R.id.tbAssetFrom) {
-            GlobalState.recWHIncoming.from = Constants.ftAsset;
+            GlobalState.recWHIncoming.fromSite = Constants.ftAsset;
             tvIncomingFrom.setText(Constants.ftAsset);
             selectedToggleButtonFrom = Constants.ftAsset;
         } else if (checkedId == R.id.tbSite) {
@@ -192,7 +192,7 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
             siteDialog.showDialog();
             selectedToggleButtonTo = Constants.ftSite;
         } else if (checkedId == R.id.tbAssetTo) {
-            GlobalState.recWHIncoming.to = Constants.ftAsset;
+            GlobalState.recWHIncoming.toSite = Constants.ftAsset;
             tvIncomingTo.setText(Constants.ftAsset);
             selectedToggleButtonTo = Constants.ftAsset;
         }
@@ -219,11 +219,11 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
         }
 
         if (!Strings.isEmptyOrWhitespace(String.valueOf(tvIncomingFrom))) {
-            whIncomingRecord.from = tvIncomingFrom.getText().toString();
+            whIncomingRecord.fromSite = tvIncomingFrom.getText().toString();
         }
 
         if (!Strings.isEmptyOrWhitespace(String.valueOf(tvIncomingTo))) {
-            whIncomingRecord.to = tvIncomingTo.getText().toString();
+            whIncomingRecord.toSite = tvIncomingTo.getText().toString();
         }
 
         return whIncomingRecord;
@@ -236,11 +236,11 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
                 sb.append(String.format("\n%s is missing", "'Item type'"));
             }*/
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.from)) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.fromSite)) {
                 sb.append(String.format("\n%s is missing", "'Source site'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.to)) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.toSite)) {
                 sb.append(String.format("\n%s is missing", "'Target site'"));
             }
         }
@@ -273,12 +273,12 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
             tgIncomingItemType.check(R.id.tbConsumable);
         }
 
-        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.from)) {
-            tvIncomingFrom.setText(GlobalState.recWHIncoming.from);
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.fromSite)) {
+            tvIncomingFrom.setText(GlobalState.recWHIncoming.fromSite);
         }
 
-        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.to)) {
-            tvIncomingTo.setText(GlobalState.recWHIncoming.to);
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.toSite)) {
+            tvIncomingTo.setText(GlobalState.recWHIncoming.toSite);
         }
     }
 }

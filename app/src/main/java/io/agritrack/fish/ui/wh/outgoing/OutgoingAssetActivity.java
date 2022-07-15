@@ -41,8 +41,6 @@ import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.common.Constants;
-import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.model.tx.AssetTransaction;
@@ -59,7 +57,6 @@ import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
-import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -407,12 +404,12 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
     private void initControlsFromState() {
         WHTxRecord outgoingWHRecord = GlobalState.recWHOutgoing;
 
-        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.from)) {
-            tvOutgoingProcessFrom.setText(outgoingWHRecord.from);
+        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.fromSite)) {
+            tvOutgoingProcessFrom.setText(outgoingWHRecord.fromSite);
         }
 
-        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.to)) {
-            tvOutgoingProcessTo.setText(outgoingWHRecord.to);
+        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.toSite)) {
+            tvOutgoingProcessTo.setText(outgoingWHRecord.toSite);
         }
 
         if (outgoingWHRecord.items != null) {
@@ -420,36 +417,6 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
             adapterOutgoingItems.notifyDataSetChanged();
         }
     }
-
-    /*private void showAddDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Type item BARCODE");
-
-        // Set up the input
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                itemBarcode = input.getText().toString();
-                adapterOutgoingItems.addItem(itemBarcode);
-                adapterOutgoingItems.notifyDataSetChanged();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-
-    }*/
 
     protected void onClick(View view) {
         if (scanner_runnable == null) {

@@ -46,6 +46,10 @@ public class MultipleFilterSingleShotScanner implements Runnable {
         return uhfReader.startReading();
     }
 
+    public void stopReading() {
+        uhfReader.StopReading();
+    }
+
     public void setFilter(String[] rfidFilters) {
         this.RFID_FILTERS = rfidFilters;
     }

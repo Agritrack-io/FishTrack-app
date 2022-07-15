@@ -437,8 +437,8 @@ public class FruitGlobalState {
             txWHOutgoing.state = recWHOutgoing.state.name();
             txWHOutgoing.assetType = (recWHOutgoing.assetType != null) ? recWHOutgoing.assetType : ALL;
             txWHOutgoing.itemRFIDs = recWHOutgoing.items;
-            txWHOutgoing.from = recWHOutgoing.from;
-            txWHOutgoing.to = recWHOutgoing.to;
+            txWHOutgoing.fromSite = recWHOutgoing.fromSite;
+            txWHOutgoing.toSite = recWHOutgoing.toSite;
             txWHOutgoing.site = recWHOutgoing.site;
             txWHOutgoing.timestamp = System.currentTimeMillis();
             txWHOutgoing.longitude = recWHOutgoing.longitude;
@@ -466,8 +466,8 @@ public class FruitGlobalState {
                 txWHOutgoing.barcode = entry.getKey();
                 txWHOutgoing.quantity = entry.getValue();
                 txWHOutgoing.timestamp = System.currentTimeMillis();
-                txWHOutgoing.from = recWHOutgoing.from;
-                txWHOutgoing.to = recWHOutgoing.to;
+                txWHOutgoing.from = recWHOutgoing.fromSite;
+                txWHOutgoing.to = recWHOutgoing.toSite;
                 txWHOutgoing.site = recWHOutgoing.site;
                 txWHOutgoing.longitude = recWHOutgoing.longitude;
                 txWHOutgoing.latitude = recWHOutgoing.latitude;

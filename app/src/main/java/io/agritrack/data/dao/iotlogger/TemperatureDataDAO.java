@@ -18,6 +18,9 @@ public interface TemperatureDataDAO {
     @Query("SELECT * from temperature_data")
     LiveData<List<TemperatureData>> getAll();
 
+    @Query("SELECT * from temperature_data where measurement_id=:mId")
+    List<TemperatureData> getByMeasurementId(Long mId);
+
     @Query("SELECT * from temperature_data where id=:temperatureId LIMIT 1")
     TemperatureData getById(Long temperatureId);
 

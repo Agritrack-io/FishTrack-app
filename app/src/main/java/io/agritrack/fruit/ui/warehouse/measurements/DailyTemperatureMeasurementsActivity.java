@@ -164,7 +164,7 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
         String token = LocalPreferences.getToken();
 
         // persist Measurements Record data to local DB.
-        List<TemperatureTimeSeries> fullMeasurements = GlobalState.commitMeasurements(db);
+        List<TemperatureTimeSeries> fullMeasurements = GlobalState.commitMeasurements(db, null);
 
         // sync Measurements records
         if (fullMeasurements != null && !fullMeasurements.isEmpty()) {

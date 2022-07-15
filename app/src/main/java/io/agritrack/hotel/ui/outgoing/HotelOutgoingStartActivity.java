@@ -137,12 +137,12 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
             }
         }
 
-        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.from)) {
-            tvOutgoingFrom.setText(GlobalState.recWHOutgoing.from);
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.fromSite)) {
+            tvOutgoingFrom.setText(GlobalState.recWHOutgoing.fromSite);
         }
 
-        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.to)) {
-            tvOutgoingTo.setText(GlobalState.recWHOutgoing.to);
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.toSite)) {
+            tvOutgoingTo.setText(GlobalState.recWHOutgoing.toSite);
         }
     }
 
@@ -201,11 +201,11 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
         }
 
         if (!Strings.isEmptyOrWhitespace(String.valueOf(tvOutgoingFrom))) {
-            whOutgoingRecord.from = tvOutgoingFrom.getText().toString();
+            whOutgoingRecord.fromSite = tvOutgoingFrom.getText().toString();
         }
 
         if (!Strings.isEmptyOrWhitespace(String.valueOf(tvOutgoingTo))) {
-            whOutgoingRecord.to = tvOutgoingTo.getText().toString();
+            whOutgoingRecord.toSite = tvOutgoingTo.getText().toString();
         }
         return whOutgoingRecord;
     }
@@ -213,11 +213,11 @@ public class HotelOutgoingStartActivity extends AppCompatActivity implements Tog
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.to)) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.toSite)) {
                 sb.append(String.format("\n%s is missing", "'Target site'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.from)) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.fromSite)) {
                 sb.append(String.format("\n%s is missing", "'Source site'"));
             }
         }

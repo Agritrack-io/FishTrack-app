@@ -35,11 +35,17 @@ public class AssetTransaction {
     @ColumnInfo(name = "state")
     public String state;
 
-    @ColumnInfo(name = "source")
-    public String from;
+    @ColumnInfo(name = "source_site")
+    public String fromSite;
 
-    @ColumnInfo(name = "dest")
-    public String to;
+    @ColumnInfo(name = "dest_site")
+    public String toSite;
+
+    @ColumnInfo(name = "source_asset")
+    public String fromAsset;
+
+    @ColumnInfo(name = "dest_asset")
+    public String toAsset;
 
     @ColumnInfo(name = "longitude")
     public Double longitude;

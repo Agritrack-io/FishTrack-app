@@ -137,12 +137,12 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
             }
         }
 
-        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.from)) {
-            tvIncomingFrom.setText(GlobalState.recWHIncoming.from);
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.fromSite)) {
+            tvIncomingFrom.setText(GlobalState.recWHIncoming.fromSite);
         }
 
-        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.to)) {
-            tvIncomingTo.setText(GlobalState.recWHIncoming.to);
+        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.toSite)) {
+            tvIncomingTo.setText(GlobalState.recWHIncoming.toSite);
         }
     }
 
@@ -191,11 +191,11 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
         }
 
         if (!Strings.isEmptyOrWhitespace(String.valueOf(tvIncomingFrom))) {
-            whIncomingRecord.from = tvIncomingFrom.getText().toString();
+            whIncomingRecord.fromSite = tvIncomingFrom.getText().toString();
         }
 
         if (!Strings.isEmptyOrWhitespace(String.valueOf(tvIncomingTo))) {
-            whIncomingRecord.to = tvIncomingTo.getText().toString();
+            whIncomingRecord.toSite = tvIncomingTo.getText().toString();
         }
 
         return whIncomingRecord;
@@ -204,11 +204,11 @@ public class HotelIncomingStartActivity extends AppCompatActivity implements Tog
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.from)) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.fromSite)) {
                 sb.append(String.format("\n%s is missing", "'Source site'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.to)) {
+            if (Strings.isEmptyOrWhitespace(GlobalState.recWHIncoming.toSite)) {
                 sb.append(String.format("\n%s is missing", "'Target site'"));
             }
         }

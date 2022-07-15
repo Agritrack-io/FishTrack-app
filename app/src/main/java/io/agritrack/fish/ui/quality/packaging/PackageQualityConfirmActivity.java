@@ -237,7 +237,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
             QualityTransaction tx = GlobalState.commitQuality(db);
 
             // persist Measurements Record data to local DB.
-            List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db);
+            List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db, tx.plot);
             List<TemperatureTimeSeriesDTO> temperatureTimeSeriesDTOs = new ArrayList<>();
             for (TemperatureTimeSeries ts : measurements) {
                 temperatureTimeSeriesDTOs.add(TemperatureTimeSeriesDTO.convert(ts));

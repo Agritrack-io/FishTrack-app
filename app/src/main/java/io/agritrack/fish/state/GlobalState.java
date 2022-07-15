@@ -330,7 +330,7 @@ public class GlobalState {
         }
     }
 
-    public static List<TemperatureTimeSeries> commitMeasurements(MobileDB db) {
+    public static List<TemperatureTimeSeries> commitMeasurements(MobileDB db, String plot) {
         List<TemperatureTimeSeries> result = new ArrayList<>();
 
         try {
@@ -346,6 +346,7 @@ public class GlobalState {
                 measurement.assetRFID = model.assetEPC;
                 measurement.retrievedAt = model.retrievedAt;
                 measurement.productionLane = model.productionLane;
+                measurement.lot = plot;
 
                 long measurementId = db.measurementsDAO().insert(measurement);
                 if (measurementId > 0 && model.values != null && !model.values.isEmpty()) {
@@ -395,8 +396,8 @@ public class GlobalState {
             txWHIncoming.state = recWHIncoming.state.name();
             txWHIncoming.assetType = (recWHIncoming.assetType != null) ? recWHIncoming.assetType : ALL;
             txWHIncoming.itemRFIDs = recWHIncoming.items;
-            txWHIncoming.from = recWHIncoming.from;
-            txWHIncoming.to = recWHIncoming.to;
+            txWHIncoming.fromSite = recWHIncoming.fromSite;
+            txWHIncoming.toSite = recWHIncoming.toSite;
             txWHIncoming.site = recWHIncoming.site;
             txWHIncoming.timestamp = System.currentTimeMillis();
             txWHIncoming.userId = LocalPreferences.getLoggedInUser("N/A");
@@ -419,8 +420,8 @@ public class GlobalState {
             txWHOutgoing.state = recWHOutgoing.state.name();
             txWHOutgoing.assetType = (recWHOutgoing.assetType != null) ? recWHOutgoing.assetType : ALL;
             txWHOutgoing.itemRFIDs = recWHOutgoing.items;
-            txWHOutgoing.from = recWHOutgoing.from;
-            txWHOutgoing.to = recWHOutgoing.to;
+            txWHOutgoing.fromSite = recWHOutgoing.fromSite;
+            txWHOutgoing.toSite = recWHOutgoing.toSite;
             txWHOutgoing.site = recWHOutgoing.site;
             txWHOutgoing.timestamp = System.currentTimeMillis();
             txWHOutgoing.userId = LocalPreferences.getLoggedInUser("N/A");
@@ -436,28 +437,30 @@ public class GlobalState {
         }
     }
 
-    /*public static AssetTransaction commitWHRFIDInternal(MobileDB db) {
+    public static AssetTransaction commitWHRFIDInternal(MobileDB db) {
         try {
             AssetTransaction txWHInternal = new AssetTransaction();
-            txWHInternal.state = recWHIncoming.state.name();
-            txWHIncoming.assetType = (recWHIncoming.assetType != null) ? recWHIncoming.assetType : ALL;
-            txWHIncoming.itemRFIDs = recWHIncoming.items;
-            txWHIncoming.from = recWHIncoming.from;
-            txWHIncoming.to = recWHIncoming.to;
-            txWHIncoming.site = recWHIncoming.site;
-            txWHIncoming.timestamp = System.currentTimeMillis();
-            txWHIncoming.userId = LocalPreferences.getLoggedInUser("N/A");
-            txWHIncoming.longitude = recWHIncoming.longitude;
-            txWHIncoming.latitude = recWHIncoming.latitude;
+            txWHInternal.state = recWHInternal.state.name();
+            txWHInternal.assetType = (recWHInternal.assetType != null) ? recWHInternal.assetType : ALL;
+            txWHInternal.itemRFIDs = recWHInternal.items;
+            txWHInternal.fromSite = recWHInternal.fromSite;
+            txWHInternal.toSite = recWHInternal.toSite;
+            txWHInternal.fromAsset = recWHInternal.fromAsset;
+            txWHInternal.toAsset = recWHInternal.toAsset;
+            txWHInternal.site = recWHInternal.site;
+            txWHInternal.timestamp = System.currentTimeMillis();
+            txWHInternal.userId = LocalPreferences.getLoggedInUser("N/A");
+            txWHInternal.longitude = recWHInternal.longitude;
+            txWHInternal.latitude = recWHInternal.latitude;
 
-            recWHIncoming.txKey = db.assetTransactionDAO().insert(txWHIncoming);
+            recWHInternal.txKey = db.assetTransactionDAO().insert(txWHInternal);
 
-            return txWHIncoming;
+            return txWHInternal;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
-    }*/
+    }
 
     public static List<ConsumableTransaction> commitWHBarcodeOutgoing(MobileDB db) {
         try {
@@ -472,8 +475,8 @@ public class GlobalState {
                 txWHOutgoing.barcode = entry.getKey();
                 txWHOutgoing.quantity = entry.getValue();
                 txWHOutgoing.timestamp = System.currentTimeMillis();
-                txWHOutgoing.from = recWHOutgoing.from;
-                txWHOutgoing.to = recWHOutgoing.to;
+                txWHOutgoing.from = recWHOutgoing.fromSite;
+                txWHOutgoing.to = recWHOutgoing.toSite;
                 txWHOutgoing.site = recWHOutgoing.site;
                 txWHOutgoing.longitude = recWHOutgoing.longitude;
                 txWHOutgoing.latitude = recWHOutgoing.latitude;
@@ -658,8 +661,8 @@ public class GlobalState {
                 txWHIncoming.barcode = entry.getKey();
                 txWHIncoming.quantity = entry.getValue();
                 txWHIncoming.timestamp = System.currentTimeMillis();
-                txWHIncoming.from = recWHIncoming.from;
-                txWHIncoming.to = recWHIncoming.to;
+                txWHIncoming.from = recWHIncoming.fromSite;
+                txWHIncoming.to = recWHIncoming.toSite;
                 txWHIncoming.site = recWHIncoming.site;
                 txWHIncoming.longitude = recWHIncoming.longitude;
                 txWHIncoming.latitude = recWHIncoming.latitude;

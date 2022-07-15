@@ -352,12 +352,12 @@ public class IncomingConsumableActivity extends LocationAwareActivity implements
     private void initControlsFromState() {
         WHTxRecord WHTxRecord = GlobalState.recWHIncoming;
 
-        if (!Strings.isEmptyOrWhitespace(WHTxRecord.from)) {
-            tvIncomingProcessFrom.setText(WHTxRecord.from);
+        if (!Strings.isEmptyOrWhitespace(WHTxRecord.fromSite)) {
+            tvIncomingProcessFrom.setText(WHTxRecord.fromSite);
         }
 
-        if (!Strings.isEmptyOrWhitespace(WHTxRecord.to)) {
-            tvIncomingProcessTo.setText(WHTxRecord.to);
+        if (!Strings.isEmptyOrWhitespace(WHTxRecord.toSite)) {
+            tvIncomingProcessTo.setText(WHTxRecord.toSite);
         }
     }
 

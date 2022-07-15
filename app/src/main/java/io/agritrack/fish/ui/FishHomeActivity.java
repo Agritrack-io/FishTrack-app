@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.sync.PendindQualityMeasurementsTxCallBack;
 import io.agritrack.api.sync.PendingCorrelationTxCallBack;
 import io.agritrack.api.sync.PendingFishingTxCallBack;
 import io.agritrack.api.sync.PendingPostQualityTxCallBack;
@@ -86,6 +87,7 @@ import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.state.LoggerDataRecord;
 import io.agritrack.fish.ui.binTurnover.BinTurnoverActivity;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
@@ -327,13 +329,24 @@ public class FishHomeActivity extends AppCompatActivity {
                 }
             }
 
-            // select all pending quality TXs
+            // select all pending post quality TXs
             List<PostPackageQualityTransaction> postQualityTXs = db.postPackageQualityTransactionDAO().getAll();
             if (!postQualityTXs.isEmpty()) {
                 for (PostPackageQualityTransaction postQualityTX : postQualityTXs) {
                     Call<PostPackageQualityTxDTO> postQualityTxAsyncCall = pendingTxSvc.syncPostPackageQualityTx(PostPackageQualityTxDTO.convert(postQualityTX), "Bearer " + token);
                     postQualityTxAsyncCall.enqueue(new PendingPostQualityTxCallBack(this.syncResult));
                 }
+            }
+
+            // select all pending post quality TXs
+            List<TemperatureTimeSeriesDTO> temperatureTimeSeriesDTOs = new ArrayList<>();
+            for ( TemperatureTimeSeries ts : db.measurementsDAO().getAll()){
+                temperatureTimeSeriesDTOs.add(TemperatureTimeSeriesDTO.convert(ts));
+            }
+
+            if (!temperatureTimeSeriesDTOs.isEmpty()) {
+                Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = pendingTxSvc.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
+                syncMsAsyncCall.enqueue(new PendindQualityMeasurementsTxCallBack(this.syncResult));
             }
 
             //===================================================================================================

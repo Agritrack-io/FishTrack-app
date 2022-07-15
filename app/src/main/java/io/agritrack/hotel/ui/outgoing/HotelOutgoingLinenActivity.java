@@ -3,8 +3,6 @@ package io.agritrack.hotel.ui.outgoing;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
-import static io.agritrack.fish.state.GlobalState.recWHIncoming;
 import static io.agritrack.fish.state.GlobalState.recWHOutgoing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -46,7 +44,6 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.model.tx.AssetTransaction;
-import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -408,12 +405,12 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity {
     private void initControlsFromState() {
         WHTxRecord outgoingWHRecord = GlobalState.recWHOutgoing;
 
-        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.from)) {
-            tvOutgoingProcessFrom.setText(outgoingWHRecord.from);
+        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.fromSite)) {
+            tvOutgoingProcessFrom.setText(outgoingWHRecord.fromSite);
         }
 
-        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.to)) {
-            tvOutgoingProcessTo.setText(outgoingWHRecord.to);
+        if (!Strings.isEmptyOrWhitespace(outgoingWHRecord.toSite)) {
+            tvOutgoingProcessTo.setText(outgoingWHRecord.toSite);
         }
 
         if (outgoingWHRecord.items != null) {
