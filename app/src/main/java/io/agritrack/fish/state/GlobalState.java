@@ -3,6 +3,10 @@ package io.agritrack.fish.state;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.enums.AssetType.ALL;
 
+import android.content.Intent;
+
+import com.google.android.gms.common.util.Strings;
+
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -34,6 +38,8 @@ import io.agritrack.data.model.wh.CoInventoryItem;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.enums.TxStatus;
+import io.agritrack.fish.ui.fishing.FishingStartActivity;
+import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class GlobalState {
@@ -83,9 +89,9 @@ public class GlobalState {
     }
 
     public static QualityRecord initQualityRecord() {
-        MobileDB db = MobileDB.getInstance(getAppContext());
+        //MobileDB db = MobileDB.getInstance(getAppContext());
         recQuality = new QualityRecord();
-        List<TemperatureTimeSeries> existingMeasurements = db.measurementsDAO().getAll();
+        /*List<TemperatureTimeSeries> existingMeasurements = db.measurementsDAO().getAll();
         if (!existingMeasurements.isEmpty()) {
             recQuality.qualityBins = new LinkedList<>();
         }
@@ -98,7 +104,7 @@ public class GlobalState {
             }
             recLoggerData.addDataSet(m.loggerRFID, m.assetRFID, m.productionLane, m.retrievedAt, _dat);
             recQuality.qualityBins.add(m.assetRFID);
-        }
+        }*/
 
         return recQuality;
     }
@@ -250,10 +256,11 @@ public class GlobalState {
         }
     }
 
-    public static QualityTransaction commitQuality(MobileDB db) {
+    public static QualityTransaction commitQuality(MobileDB db, Boolean finalCommit) {
         try {
             QualityTransaction txQuality = new QualityTransaction();
-            //txQuality.id = UUID.randomUUID();
+
+            txQuality.id = recQuality.txKey;
             txQuality.plot = recQuality.pLot;
             txQuality.iceCondition = recQuality.iceCondition;
             txQuality.binCondition = recQuality.binCondition;
@@ -287,16 +294,19 @@ public class GlobalState {
             txQuality.mucus = recQuality.mucus;
             txQuality.problematicFish = recQuality.problematicFish;
             txQuality.overallEvaluation = recQuality.evaluation;
+            txQuality.selectedRgId = recQuality.selectedRgId;
             txQuality.remarks = recQuality.remarks;
             txQuality.qualityBins = recQuality.qualityBins;
             txQuality.qualityBinsCnt = recQuality.qualityBinsCnt;
+            txQuality.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
             txQuality.user = LocalPreferences.getLoggedInUser("N/A");
             txQuality.site = LocalPreferences.getCurrentSiteName();
             txQuality.sampleDate = new Date(System.currentTimeMillis());
+            txQuality.timestamp = System.currentTimeMillis();
             txQuality.longitude = recQuality.longitude;
             txQuality.latitude = recQuality.latitude;
 
-            recQuality.txKey = db.qualityTransactionDAO().insert(txQuality);
+            db.qualityTransactionDAO().update(txQuality);
 
             return txQuality;
         } catch (Exception ex) {
@@ -338,6 +348,10 @@ public class GlobalState {
                 LoggerDataRecord.TemperatureModel model = recLoggerData.data.get(epc);
                 TemperatureTimeSeries meas = db.measurementsDAO().getByEPC(epc);
                 if (meas != null) {
+                    if (meas.measurement.productionLane==null) {
+                        meas.measurement.lot = plot;
+                        db.measurementsDAO().update(meas.measurement);
+                    }
                     result.add(meas);
                     continue;
                 }
@@ -364,11 +378,11 @@ public class GlobalState {
         }
     }
 
-    public static void commitMeasurement(MobileDB db, String epc) {
+    public static void commitMeasurement(MobileDB db, String epc, String productionLane) {
 
         try {
             TemperatureTimeSeries meas = db.measurementsDAO().getByEPC(epc);
-            if (meas != null) {
+            if (meas != null && productionLane==null) {
                 return;
             }
             LoggerDataRecord.TemperatureModel model = recLoggerData.data.get(epc);

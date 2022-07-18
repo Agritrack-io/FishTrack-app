@@ -26,7 +26,7 @@ public interface MeasurementsDAO {
     TemperatureTimeSeries getById(Long measurementsId);
 
     @Transaction
-    @Query("SELECT * from measurements where asset_rfid=:epc LIMIT 1")
+    @Query("SELECT * from measurements where asset_rfid=:epc order by retrieved_at desc LIMIT 1")
     TemperatureTimeSeries getByEPC(String epc);
 
     @Transaction
@@ -43,8 +43,8 @@ public interface MeasurementsDAO {
     void delete(Measurement measurement);
 
     @Query("DELETE from measurements")
-    void deleteAll();
+    int deleteAll();
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(Measurement measurement);
 }

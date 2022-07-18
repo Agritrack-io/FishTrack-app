@@ -617,6 +617,8 @@
     <string name="pending_process_tx_upload_completed">Pending process tx successfully uploaded!</string>
     <string name="pending_quality_tx_upload_failure_alert">Failed to upload pending quality tx!</string>
     <string name="pending_quality_tx_upload_completed">Pending quality tx successfully uploaded!</string>
+    <string name="pending_measurement_tx_upload_failure_alert">Failed to upload pending measurement tx!</string>
+    <string name="pending_measurement_tx_upload_completed">Pending measurement tx successfully uploaded!</string>
     <string name="pending_asset_tx_upload_failure_alert">Failed to upload pending asset tx!</string>
     <string name="pending_asset_tx_upload_completed">Pending asset tx successfully uploaded!</string>
     <string name="bt_not_supported">Bluetooth not supported!</string>

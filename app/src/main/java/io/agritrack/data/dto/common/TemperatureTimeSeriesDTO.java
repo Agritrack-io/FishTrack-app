@@ -23,6 +23,7 @@ public class TemperatureTimeSeriesDTO {
         temperatureTimeSeriesDTO.logger_rfid = measurement.measurement.loggerRFID;
         temperatureTimeSeriesDTO.asset_rfid = measurement.measurement.assetRFID;
         temperatureTimeSeriesDTO.production_lane = measurement.measurement.productionLane;
+        temperatureTimeSeriesDTO.lot = measurement.measurement.lot;
         temperatureTimeSeriesDTO.values = measurement.data.stream().map(x-> new TemperatureDataDTO(x.timestamp, x.value)).collect(Collectors.toList());
 
         return temperatureTimeSeriesDTO;

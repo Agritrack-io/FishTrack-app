@@ -11,12 +11,24 @@ import java.util.List;
 import java.util.UUID;
 
 import io.agritrack.data.converter.StringListConverter;
+import io.agritrack.data.converter.TxStatusEnumConverter;
+import io.agritrack.enums.TxStatus;
 
 @Entity(tableName = "quality_transaction")
 public class QualityTransaction {
 
     @PrimaryKey
     public Long id;
+
+    @ColumnInfo(name = "timestamp")
+    public Long timestamp;
+
+    @TypeConverters(TxStatusEnumConverter.class)
+    @ColumnInfo(name = "status")
+    public TxStatus txStatus = TxStatus.NONE;
+
+    @ColumnInfo(name = "user_name")
+    public String user;
 
     @ColumnInfo(name = "sample_date")
     public Date sampleDate;
@@ -133,9 +145,6 @@ public class QualityTransaction {
     @ColumnInfo(name = "harvest_load_id")
     public String harvestLoad;
 
-    @ColumnInfo(name = "user_id")
-    public String user;
-
     @ColumnInfo(name = "longitude")
     public Double longitude;
 
@@ -144,4 +153,7 @@ public class QualityTransaction {
 
     @ColumnInfo(name = "remarks")
     public String remarks;
+
+    @ColumnInfo(name = "selected_rq_id")
+    public int selectedRgId;
 }

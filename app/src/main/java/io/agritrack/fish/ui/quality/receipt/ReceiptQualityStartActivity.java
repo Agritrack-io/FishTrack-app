@@ -192,6 +192,8 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         GlobalState.recQuality.qualityBinsCnt = adapterBins.getItemCount();
         GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
         GlobalState.recQuality.logger_rfid = loggerEPC;
+
+        GlobalState.commitQuality(db, Boolean.FALSE);
     }
 
     private String validate() {

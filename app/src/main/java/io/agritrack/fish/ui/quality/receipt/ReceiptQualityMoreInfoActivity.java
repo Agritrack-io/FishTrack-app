@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.quality.receipt;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -18,6 +19,7 @@ import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
 import io.agritrack.common.InputFilterMinMax;
+import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
@@ -26,6 +28,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class ReceiptQualityMoreInfoActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
+    private MobileDB db;
     private ToggleGroup tgBinCondition;
     private String selectedBinCondition;
     private ToggleGroup tgIceCondition;
@@ -42,6 +45,9 @@ public class ReceiptQualityMoreInfoActivity extends AppCompatActivity implements
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityMoreInfo);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // get an instance of local DB
+        db = MobileDB.getInstance(getAppContext());
 
         // get  references of the controls
         assignCtrlVars();
@@ -155,6 +161,8 @@ public class ReceiptQualityMoreInfoActivity extends AppCompatActivity implements
 
         qualityRecord.binCondition = selectedBinCondition;
         qualityRecord.iceCondition = selectedIceCondition;
+
+        GlobalState.commitQuality(db, Boolean.FALSE);
 
         return qualityRecord;
     }

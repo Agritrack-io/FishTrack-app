@@ -29,14 +29,15 @@ public class PendindQualityMeasurementsTxCallBack extends BaseSyncCallBack<List<
             // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 
-            int rowsAffected = db.postPackageQualityTransactionDAO().deleteAll();
-            Log.i("Pending post qualities.", String.format("deleted %s rows from PostQualityTransactions...", rowsAffected));
+            db.temperatureDataDAO().deleteAll();
+            int rowsAffected = db.measurementsDAO().deleteAll();
+            Log.i("Pending measurements.", String.format("deleted %s rows from MeasurementsTransactions...", rowsAffected));
 
             // Sites sync succeeded.
-            syncResult.setValue(getAppContext().getString(R.string.pending_quality_tx_upload_completed));
+            syncResult.setValue(getAppContext().getString(R.string.pending_measurement_tx_upload_completed));
         } else {
             //  no Sites found
-            syncResult.setValue(getAppContext().getString(R.string.pending_quality_tx_upload_failure_alert));
+            syncResult.setValue(getAppContext().getString(R.string.pending_measurement_tx_upload_failure_alert));
         }
     }
 }

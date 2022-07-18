@@ -1,8 +1,24 @@
 package io.agritrack.fish.state;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import io.agritrack.common.FishTrackUtils;
+import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.common.Measurement;
+import io.agritrack.data.model.common.TemperatureData;
+import io.agritrack.data.model.common.TemperatureTimeSeries;
+import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.data.model.tx.QualityTransaction;
+import io.agritrack.fish.ui.bo.BinWeightRecord;
+
 public class QualityRecord {
+
+    private MobileDB db;
     public long txKey;
     public String pLot;
     public String remarks;
@@ -53,5 +69,51 @@ public class QualityRecord {
     public Double maxBinTemp;
 
     public QualityRecord() {
+    }
+
+    public static QualityRecord convert(QualityTransaction tx) {
+
+        QualityRecord qualityRecord = new QualityRecord();
+
+        qualityRecord.txKey = tx.id;
+        qualityRecord.pLot = tx.plot;
+        qualityRecord.remarks = tx.remarks;
+        qualityRecord.qualityBins = tx.qualityBins;
+        qualityRecord.qualityBinsCnt = tx.qualityBinsCnt;
+        qualityRecord.binCondition = tx.binCondition;
+        qualityRecord.iceCondition = tx.iceCondition;
+        qualityRecord.smellCondition = tx.smellCondition;
+        qualityRecord.minFishTemp = tx.minFishTemp;
+        qualityRecord.meanFishTemp = tx.avgFishTemp;
+        qualityRecord.maxFishTemp = tx.maxFishTemp;
+        qualityRecord.rigorMortis = tx.rigorMortis;
+        qualityRecord.eliminationFood = tx.eliminationFood;
+        qualityRecord.eliminationSperm = tx.eliminationSperm;
+        qualityRecord.parasites = tx.parasites;
+        qualityRecord.peeling = tx.peeling;
+        qualityRecord.shiny = tx.shiny;
+        qualityRecord.blurred = tx.blurred;
+        qualityRecord.healed = tx.healed;
+        qualityRecord.blindEyes = tx.blindEyes;
+        qualityRecord.coherent = tx.coherent;
+        qualityRecord.soft = tx.soft;
+        qualityRecord.swollen = tx.swollen;
+        qualityRecord.noHematoma = tx.noHematoma;
+        qualityRecord.lightHematoma = tx.lightHematoma;
+        qualityRecord.heavyHematoma = tx.heavyHematoma;
+        qualityRecord.pink = tx.pink;
+        qualityRecord.dark = tx.dark;
+        qualityRecord.white = tx.white;
+        qualityRecord.uncolored = tx.uncolored;
+        qualityRecord.hematomas = tx.hematomas;
+        qualityRecord.mucus = tx.mucus;
+        qualityRecord.problematicFish = tx.problematicFish;
+        qualityRecord.evaluation = tx.overallEvaluation;
+        qualityRecord.selectedRgId = tx.selectedRgId;
+        qualityRecord.minBinTemp = tx.minBinTemp;
+        qualityRecord.meanBinTemp = tx.avgBinTemp;
+        qualityRecord.maxBinTemp = tx.maxBinTemp;
+
+        return qualityRecord;
     }
 }

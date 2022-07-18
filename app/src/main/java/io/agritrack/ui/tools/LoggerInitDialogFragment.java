@@ -342,7 +342,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                     long now = System.currentTimeMillis();
                     recLoggerData.addDataSet(loggerEPC, assetEPC, productionLane, now, measurements);
 
-                    GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), assetEPC);
+                    GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), assetEPC , productionLane);
 
                     // update buttons based on values read...
                     mScanHandler.sendMessage(createMessage(CmdReadData, (short) measurements.size()));

@@ -1,5 +1,9 @@
 package io.agritrack.fish.ui.quality;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,12 +14,27 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.common.util.Strings;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import io.agritrack.R;
+import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.common.Measurement;
+import io.agritrack.data.model.common.TemperatureData;
+import io.agritrack.data.model.common.TemperatureTimeSeries;
+import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.enums.TxStatus;
+import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.fishing.FishingStartActivity;
+import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.quality.postpackage.PostPackagingQualityActivity;
 import io.agritrack.fish.ui.quality.receipt.ReceiptQualityStartActivity;
 import io.agritrack.ui.adapter.InventoryMenuAdapter;
@@ -24,6 +43,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class QualitySelectStepsActivity extends AppCompatActivity {
 
+    private MobileDB db;
     private static final int First_Step_Idx = 0, Second_Step_Idx = 1, Third_Step_Idx = 1;
     private GridView gvQualityMenu;
 
@@ -39,6 +59,9 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
         TextView tvHeader = findViewById(R.id.tvHeaderPackageQualitySelect);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
+
         // get  references of the controls
         assignCtrlVars();
 
@@ -52,12 +75,56 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
         gvQualityMenu.setAdapter(adapter);
         gvQualityMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                //final Context appCtx = getApplicationContext();
+                final Context appCtx = getApplicationContext();
                 Intent i = new Intent(QualitySelectStepsActivity.this, ReceiptQualityStartActivity.class);
 
                 switch (position) {
                     case First_Step_Idx:
-                        GlobalState.initQualityRecord();
+
+                        QualityTransaction openTx = db.qualityTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
+                        QualityRecord qualityRecord;
+
+                        // default Next Activity is FishingStart...
+                        i = new Intent(appCtx, ReceiptQualityStartActivity.class);
+                        if (openTx != null) {
+                            // there is a FishingTx in progress
+                            qualityRecord = QualityRecord.convert(openTx);
+
+                            List<TemperatureTimeSeries> existingMeasurements = db.measurementsDAO().getAll();
+                            if (!existingMeasurements.isEmpty()) {
+                                qualityRecord.qualityBins = new LinkedList<>();
+
+                                for (TemperatureTimeSeries ts : existingMeasurements) {
+                                    Measurement m = ts.measurement;
+                                    List<TemperatureData> _temperatureData = ts.data;
+                                    List<String[]> _dat = new ArrayList<>();
+                                    for (TemperatureData _temperatureD : _temperatureData) {
+                                        _dat.add(_temperatureD.rawData());
+                                    }
+                                    recLoggerData.addDataSet(m.loggerRFID, m.assetRFID, m.productionLane, m.retrievedAt, _dat);
+                                    qualityRecord.qualityBins.add(m.assetRFID);
+                                }
+                            }
+
+
+                            GlobalState.recQuality = qualityRecord;
+                        } else {
+                            // instantiate a new Fishing Record.
+                            qualityRecord = GlobalState.initQualityRecord();
+
+                            // NO FishingTx in progress
+                            if (openTx == null) {
+                                openTx = new QualityTransaction();
+                                openTx.txStatus = TxStatus.PENDING;
+                                qualityRecord.txKey = db.qualityTransactionDAO().insert(openTx);
+                            } else {
+                                qualityRecord.txKey = openTx.id;
+                            }
+
+                            //i = new Intent(appCtx, HarvestRequestsActivity.class);
+                        }
+
+                        //GlobalState.initQualityRecord();
                         i = new Intent(QualitySelectStepsActivity.this, ReceiptQualityStartActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);

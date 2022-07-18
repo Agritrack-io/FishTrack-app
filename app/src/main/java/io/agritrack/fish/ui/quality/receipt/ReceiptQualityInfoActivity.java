@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.quality.receipt;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -32,6 +33,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import io.agritrack.R;
+import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
@@ -39,6 +41,8 @@ import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class ReceiptQualityInfoActivity extends AppCompatActivity {
+
+    private MobileDB db;
     private static final int pic_id = 123;
     private final MutableLiveData<Bitmap> photoResult = new MutableLiveData<>();
     private EditText mtvRemarks, etPlot, etMinFishTemp, etMeanFishTemp, etMaxFishTemp;
@@ -75,6 +79,9 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityInfo);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // get an instance of local DB
+        db = MobileDB.getInstance(getAppContext());
 
         // get  references of the controls
         assignCtrlVars();
@@ -298,6 +305,8 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         if (mtvRemarks.getText() != null) {
             qualityRecord.remarks = mtvRemarks.getText().toString();
         }
+
+        GlobalState.commitQuality(db, Boolean.FALSE);
 
         return qualityRecord;
     }

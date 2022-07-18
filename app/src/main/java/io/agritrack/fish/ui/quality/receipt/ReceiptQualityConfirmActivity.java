@@ -235,7 +235,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             syncAllPhotos();
 
             // persist Processing Record data to local DB.
-            QualityTransaction tx = GlobalState.commitQuality(db);
+            QualityTransaction tx = GlobalState.commitQuality(db, Boolean.TRUE);
 
             // persist Measurements Record data to local DB.
             List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db, tx.plot);

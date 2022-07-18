@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.quality.receipt;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -26,6 +27,7 @@ import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.R;
 import io.agritrack.common.InputFilterMinMax;
+import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
@@ -33,6 +35,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
 
+    private MobileDB db;
     private EditText etNoHematoma, etLightHematoma, etHeavyHematoma, etPink, etDark, etWhite, etUncolored, etHematomas, etMucus, etProblematicFish;
     private String evaluation;
     private RadioGroup rgTotalEvaluation;
@@ -47,6 +50,9 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityMoreInfo3);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // get an instance of local DB
+        db = MobileDB.getInstance(getAppContext());
 
         // get  references of the controls
         assignCtrlVars();
@@ -402,6 +408,8 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
             qualityRecord.evaluation = String.valueOf(idx+1);
             qualityRecord.selectedRgId = rgTotalEvaluation.getCheckedRadioButtonId();
         }
+
+        GlobalState.commitQuality(db, Boolean.FALSE);
 
         return qualityRecord;
     }
