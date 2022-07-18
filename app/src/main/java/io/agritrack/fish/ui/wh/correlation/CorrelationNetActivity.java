@@ -347,9 +347,9 @@ public class CorrelationNetActivity extends LocationAwareActivity {
             switch (msg.what) {
                 case 1:
                     String epcStr = msg.getData().getString("epc");
-                    String label = epcStr.length()>15 ? epcStr.substring(14) : epcStr;
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            String label = epcStr.length()>15 ? epcStr.substring(14) : epcStr;
                             GlobalState.recWHCorrelation.rfid = epcStr;
                             tvCorrNetBarcode.setText(label);
                         }

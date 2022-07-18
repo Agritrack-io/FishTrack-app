@@ -407,6 +407,7 @@ public class GlobalState {
     public static AssetTransaction commitWHRFIDIncoming(MobileDB db) {
         try {
             AssetTransaction txWHIncoming = new AssetTransaction();
+
             txWHIncoming.state = recWHIncoming.state.name();
             txWHIncoming.assetType = (recWHIncoming.assetType != null) ? recWHIncoming.assetType : ALL;
             txWHIncoming.itemRFIDs = recWHIncoming.items;
