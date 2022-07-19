@@ -1,11 +1,6 @@
 package io.agritrack.fish.state;
 
-import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.enums.AssetType.ALL;
-
-import android.content.Intent;
-
-import com.google.android.gms.common.util.Strings;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
@@ -38,8 +33,6 @@ import io.agritrack.data.model.wh.CoInventoryItem;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.enums.TxStatus;
-import io.agritrack.fish.ui.fishing.FishingStartActivity;
-import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class GlobalState {
@@ -516,6 +509,7 @@ public class GlobalState {
             txWHRFIDInventory.latitude = recWHInventory.latitude;
             long _id = db.rFIDInventoryDAO().insert(txWHRFIDInventory);
             txWHRFIDInventory.id = _id;
+            txWHRFIDInventory.user = LocalPreferences.getLoggedInUser("N/A");
 
             return txWHRFIDInventory;
         } catch (Exception ex) {
