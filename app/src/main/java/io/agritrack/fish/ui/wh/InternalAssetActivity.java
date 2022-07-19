@@ -54,6 +54,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.SiteInfoRS;
@@ -94,6 +95,9 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderInternalAsset);
         tvHeader.setText(LocalPreferences.HeaderMsg());
+
+        // trigger + Fn keys will have the same effect as if clicking on Scan button
+        keyReceiver = new X9KeyReceiver(this::onClick);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
@@ -198,6 +202,7 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopScanner();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
@@ -317,8 +322,7 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
     }
 
     protected void onClick(View view) {
-
-        scanner_runnable.LowEnergy();
+        scanner_runnable.HighEnergy();
         if(view!=null){
             if (view.getId() == tgInternalSource.findViewById(R.id.tbAssetFrom).getId()) {
                 scanner_runnable.setFilter(new String[]{Filters.RFID_CAGE});
