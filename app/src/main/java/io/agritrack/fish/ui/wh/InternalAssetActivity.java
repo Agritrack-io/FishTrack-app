@@ -3,12 +3,8 @@ package io.agritrack.fish.ui.wh;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recWHIncoming;
 import static io.agritrack.fish.state.GlobalState.recWHInternal;
 import static io.agritrack.ui.custom.CustomToast.CToast;
-
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -22,6 +18,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -44,7 +43,6 @@ import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.tx.AssetTransaction;
 import io.agritrack.data.model.wh.Asset;
-import io.agritrack.dialog.ScanAssetDialog;
 import io.agritrack.dialog.SimpleListDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -53,11 +51,9 @@ import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.custom.ToggleGroup;
-import io.agritrack.ui.login.api.SiteInfoRS;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;

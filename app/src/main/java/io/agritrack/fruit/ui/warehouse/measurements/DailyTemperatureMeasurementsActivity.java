@@ -217,20 +217,20 @@ public class DailyTemperatureMeasurementsActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    String epcStr = msg.getData().getString("epc");
+                    String assetEPC = msg.getData().getString("epc");
                     String rssi = msg.getData().getString("rssi");
                     try {
-                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                        if (!Strings.isEmptyOrWhitespace(assetEPC)) {
                             runOnUiThread(() -> {
-                                tvPoleName.setText(epcStr);
+                                tvPoleName.setText(assetEPC);
                             });
 
                             // after bin is identified, initialize the temperatures logger.
-                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(epcStr);
+                            IotLogger logger = db.iotLoggerDAO().getByAssetRFID(assetEPC);
 
                             if (logger != null && !Strings.isEmptyOrWhitespace(logger.rfid)) {
                                 loggerEPC = logger.rfid;
-                                LoggerInitFruitDialogFragment loggerDlg = LoggerInitFruitDialogFragment.newInstance(logger.rfid);
+                                LoggerInitFruitDialogFragment loggerDlg = LoggerInitFruitDialogFragment.newInstance(logger.rfid, assetEPC);
                                 loggerDlg.show(fm, LoggerInitFruitDialogFragment.TAG);
                             } else if (!IsDemo) {
                                 CToast(getApplicationContext(), render("No IOT Logger was found linked to this Pole!!"), Toast.LENGTH_SHORT);

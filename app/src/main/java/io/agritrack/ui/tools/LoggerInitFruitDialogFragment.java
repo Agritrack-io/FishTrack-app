@@ -48,7 +48,8 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     private static final int RST_BIT = 4, RFU_BIT = 3, LE_BIT = 2, DE_BIT = 1, RFSL_BIT = 0;
     private static final int LEVEL_INCREMENT = 1000;
     private static final int MAX_LEVEL = 10000;
-    private static final String LOGGER_EPC = "FruitLoggerEPC";
+    private static final String LOGGER_EPC = "LoggerEPC";
+    private static final String ASSET_EPC = "HarvestBinEPC";
     public static String TAG = "CaenLoggerDialogFragment";
 
     private Button btnRead, btnReset, btnSetup, btnInit, btnValidate;
@@ -57,6 +58,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
     private final CAENCommandsHandler mScanHandler = new CAENCommandsHandler(this);
     private ICAEN_API cmd;
     private String loggerEPC;
+    private String assetEPC;
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0, resetCnt = 0;
     private Short cntSamples = 0;
@@ -319,7 +321,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
                     long now = System.currentTimeMillis();
 
                     //TODO:: set correct assetEPC
-                    recLoggerData.addDataSet(loggerEPC, loggerEPC, now, measurements);
+                    recLoggerData.addDataSet(loggerEPC, assetEPC, now, measurements);
 
                     // update buttons based on values read...
                     mScanHandler.sendMessage(createMessage(CmdReadData, (short) measurements.size()));
@@ -365,10 +367,11 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
         // Use `newInstance` instead as shown below
     }
 
-    public static LoggerInitFruitDialogFragment newInstance(String epc) {
+    public static LoggerInitFruitDialogFragment newInstance(String epc, String assetEPC) {
         LoggerInitFruitDialogFragment frag = new LoggerInitFruitDialogFragment();
         Bundle args = new Bundle();
         args.putString(LOGGER_EPC, epc);
+        args.putString(ASSET_EPC, assetEPC);
         frag.setArguments(args);
 
         return frag;
@@ -387,6 +390,7 @@ public class LoggerInitFruitDialogFragment extends DialogFragment implements Tim
 
         if (getArguments() != null && !Strings.isEmptyOrWhitespace(getArguments().getString(LOGGER_EPC))) {
             this.loggerEPC = getArguments().getString(LOGGER_EPC);
+            this.assetEPC = getArguments().getString(ASSET_EPC);
 
             // Enable Read button
             btnRead.setText("Reading Measurements...");
