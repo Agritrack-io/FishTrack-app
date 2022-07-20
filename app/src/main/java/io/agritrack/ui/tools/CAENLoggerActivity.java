@@ -334,14 +334,12 @@ public class CAENLoggerActivity extends AppCompatActivity {
         // -------------------------------------
         SingleShotScanner singleShot_runnable = new SingleShotScanner(mScanHandler);
         singleShot_runnable.setFilter(Filters.RFID_LOGGER);
-        singleShot_runnable.LowEnergy();
         singleShot_runnable.startReading();
         mScanHandler.post(singleShot_runnable);
         // -------------------------------------
         btnReset.setEnabled(true);
         btnInit.setEnabled(true);
         btnDisableLogging.setEnabled(true);
-        singleShot_runnable.HighEnergy();
         // -------------------------------------
         // Hide ProgressBar
         mScanHandler.postDelayed(hideProgressThread, 800l);

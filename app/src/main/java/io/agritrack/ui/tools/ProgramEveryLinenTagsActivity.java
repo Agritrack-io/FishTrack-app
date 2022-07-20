@@ -232,7 +232,6 @@ public class ProgramEveryLinenTagsActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        scanner.HighEnergy();
         //unregister the receiver
         this.stopScanner();
         if (x9programmer != null) {

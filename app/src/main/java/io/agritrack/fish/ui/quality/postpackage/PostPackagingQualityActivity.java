@@ -15,8 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.view.KeyEvent;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -140,44 +138,35 @@ public class PostPackagingQualityActivity extends AppCompatActivity {
             }
         });
 
-        etT1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!Strings.isEmptyOrWhitespace(etT1.getText().toString()) && Double.parseDouble(etT1.getText().toString()) > 7){
-                    etT1.setBackgroundColor(Color.RED);
-                } else if (!Strings.isEmptyOrWhitespace(etT1.getText().toString()) && Double.parseDouble(etT1.getText().toString()) <= 7){
-                    etT1.setBackgroundColor(Color.WHITE);
-                }
-                etT2.requestFocus();
+        etT1.setOnClickListener(v -> {
+            if (!Strings.isEmptyOrWhitespace(etT1.getText().toString()) && Double.parseDouble(etT1.getText().toString()) > 7){
+                etT1.setBackgroundColor(Color.RED);
+            } else if (!Strings.isEmptyOrWhitespace(etT1.getText().toString()) && Double.parseDouble(etT1.getText().toString()) <= 7){
+                etT1.setBackgroundColor(Color.WHITE);
             }
+            etT2.requestFocus();
         });
 
-        etT2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!Strings.isEmptyOrWhitespace(etT2.getText().toString()) && Double.parseDouble(etT2.getText().toString()) > 7){
-                    etT2.setBackgroundColor(Color.RED);
-                } else if (!Strings.isEmptyOrWhitespace(etT2.getText().toString()) && Double.parseDouble(etT2.getText().toString()) <= 7){
-                    etT2.setBackgroundColor(Color.WHITE);
-                }
-                etT3.requestFocus();
+        etT2.setOnClickListener(v -> {
+            if (!Strings.isEmptyOrWhitespace(etT2.getText().toString()) && Double.parseDouble(etT2.getText().toString()) > 7){
+                etT2.setBackgroundColor(Color.RED);
+            } else if (!Strings.isEmptyOrWhitespace(etT2.getText().toString()) && Double.parseDouble(etT2.getText().toString()) <= 7){
+                etT2.setBackgroundColor(Color.WHITE);
             }
+            etT3.requestFocus();
         });
 
-        etT3.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (!Strings.isEmptyOrWhitespace(etT3.getText().toString()) && Double.parseDouble(etT3.getText().toString()) > 7){
-                    etT3.setBackgroundColor(Color.RED);
-                } else if (!Strings.isEmptyOrWhitespace(etT3.getText().toString()) && Double.parseDouble(etT3.getText().toString()) <= 7){
-                    etT3.setBackgroundColor(Color.WHITE);
-                }
-                if(actionId==EditorInfo.IME_ACTION_DONE){
-                    //Clear focus here from edittext
-                    etT3.clearFocus();
-                }
-                return false;
+        etT3.setOnEditorActionListener((v, actionId, event) -> {
+            if (!Strings.isEmptyOrWhitespace(etT3.getText().toString()) && Double.parseDouble(etT3.getText().toString()) > 7){
+                etT3.setBackgroundColor(Color.RED);
+            } else if (!Strings.isEmptyOrWhitespace(etT3.getText().toString()) && Double.parseDouble(etT3.getText().toString()) <= 7){
+                etT3.setBackgroundColor(Color.WHITE);
             }
+            if(actionId==EditorInfo.IME_ACTION_DONE){
+                //Clear focus here from edittext
+                etT3.clearFocus();
+            }
+            return false;
         });
 
         etT1.setFilters(new InputFilter[]{textFilter});

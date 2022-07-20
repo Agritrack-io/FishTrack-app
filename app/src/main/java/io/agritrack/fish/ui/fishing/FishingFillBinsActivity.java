@@ -255,11 +255,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         isClicked = false;
         SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_BIN);
-        scanner_runnable.HighEnergy();
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
         isClickable = true;
-        scanner_runnable.LowEnergy();
     }
 
     private void assignCtrlVars() {

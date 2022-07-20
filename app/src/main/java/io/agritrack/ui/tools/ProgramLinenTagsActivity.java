@@ -260,7 +260,6 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if (scanner != null) {
-            scanner.HighEnergy();
             //unregister the receiver
             this.stopScanner();
         }
@@ -350,7 +349,6 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
         }
         scanner.setMaxLength(8);
         scanner.setFilter(null);
-        scanner.HighEnergy();
 
         scanner.startReading();
         mScanHandler.postDelayed(scanner, 0);
