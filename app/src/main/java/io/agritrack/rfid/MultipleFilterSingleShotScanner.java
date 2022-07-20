@@ -58,6 +58,7 @@ public class MultipleFilterSingleShotScanner implements Runnable {
         uhfReader.StopReading();
     }
 
+    //set filters by encoding index
     public void setFilter(String[] rfidFilters) {
         for(String rfidFilter : rfidFilters) {
             EncodingSchemeEntity schemeEntry = schemeSvc.schemeForFilter(rfidFilter);
