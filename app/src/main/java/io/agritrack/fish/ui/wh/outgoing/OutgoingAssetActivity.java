@@ -294,6 +294,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopScanner();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);

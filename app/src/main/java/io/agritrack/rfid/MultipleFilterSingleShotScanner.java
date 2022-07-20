@@ -17,12 +17,17 @@ import java.util.Set;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;
+import io.agritrack.data.model.EncodingSchemeEntity;
+import io.agritrack.data.service.EncodingSchemeService;
 
 public class MultipleFilterSingleShotScanner implements Runnable {
+    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
 
-    private final ICAEN_API uhfReader;
+    private ICAEN_API uhfReader;
     private final Handler mScanHandler;
     private String[] RFID_FILTERS = null;
+    private int encodingIdx = schemeSvc.encodingIndex();
+    private int encodingWth = schemeSvc.encodingWidth();
 
 
     public MultipleFilterSingleShotScanner(Handler handler) {
@@ -43,7 +48,10 @@ public class MultipleFilterSingleShotScanner implements Runnable {
     }
 
     public boolean startReading() {
-        return uhfReader.startReading();
+        if(uhfReader == null) {
+            uhfReader = RFIDModuleFactory.getInstance();
+        }
+        return true;// uhfReader.startReading();
     }
 
     public void stopReading() {
@@ -51,7 +59,14 @@ public class MultipleFilterSingleShotScanner implements Runnable {
     }
 
     public void setFilter(String[] rfidFilters) {
-        this.RFID_FILTERS = rfidFilters;
+        for(String rfidFilter : rfidFilters) {
+            EncodingSchemeEntity schemeEntry = schemeSvc.schemeForFilter(rfidFilter);
+            if (schemeEntry != null && schemeEntry.encoding_index != null) {
+                this.encodingIdx = schemeEntry.encoding_index;
+                this.encodingWth = schemeEntry.code.length();
+            }
+            this.RFID_FILTERS = rfidFilters;
+        }
     }
 
     public void setFilters(String... rfidFilters) {
@@ -64,8 +79,13 @@ public class MultipleFilterSingleShotScanner implements Runnable {
         while (true) {
             idx++;
             if (uhfReader != null) {
-                final List<RFIDTag> tagList = uhfReader.inventoryRealTime();
+                final List<RFIDTag> tagList = uhfReader.inventoryByTimer(); //inventoryRealTime();
                 if (tagList != null && !tagList.isEmpty()) {
+
+                    Message msg = new Message();
+                    msg.what = 1;
+                    Bundle b = new Bundle();
+
                     ArrayList<CharSequence> result = new ArrayList<>();
                     List<Optional<RFIDTag>> optionalTags = filterTags(tagList);
 
@@ -76,9 +96,9 @@ public class MultipleFilterSingleShotScanner implements Runnable {
                         }
                         TextUtils.join(",", result);
 
-                        Message msg = new Message();
+                       /* Message msg = new Message();
                         msg.what = 1;
-                        Bundle b = new Bundle();
+                        Bundle b = new Bundle();*/
 
                         b.putCharSequenceArrayList("epc", result);
 
@@ -109,7 +129,7 @@ public class MultipleFilterSingleShotScanner implements Runnable {
         Set<Optional<RFIDTag>> filteredTags = new HashSet<>();
         for (String filter : this.RFID_FILTERS) {
             //Optional<RFIDTag> aTag = tagList.stream().sorted((y, x) -> Integer.compare(x.getRssi(), y.getRssi())).filter(i -> i.getEpc().indexOf(filter) == 11).findFirst();
-            Optional<RFIDTag> aTag = tagList.stream().filter(i -> i.getEpc().indexOf(filter) == 11).min(Comparator.comparing(RFIDTag::getRssi));
+            Optional<RFIDTag> aTag = tagList.stream().filter(i -> i.getEpc().indexOf(filter) == encodingIdx && encodingIdx > -1).min(Comparator.comparing(RFIDTag::getRssi));
             filteredTags.add(aTag);
         }
         return new ArrayList<>(filteredTags);
