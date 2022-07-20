@@ -6,13 +6,10 @@ import static io.agritrack.common.Filters.RFID_LOGGER;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
@@ -38,6 +35,8 @@ public class SingleShotScanner implements Runnable {
             uhfReader.clearEPCFilter();
         }
         mScanHandler = handler;
+        // use by default high energy. Explicitly set to Low Energy (after initialization) where required.
+        this.HighEnergy();
     }
 
     public void LowEnergy() {
@@ -52,7 +51,7 @@ public class SingleShotScanner implements Runnable {
         if(uhfReader == null) {
             uhfReader = RFIDModuleFactory.getInstance();
         }
-        return true;// uhfReader.startReading();
+        return true;
     }
 
     public void stopReading() {

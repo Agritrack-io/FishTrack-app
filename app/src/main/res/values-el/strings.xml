@@ -159,7 +159,7 @@
     <string name="phone_number">Αριθμός κινητού</string>
     <string name="username">Όνομα χρήστη</string>
     <string name="insert_user_details">Παρακαλώ εισάγετε το όνομα χρήστη και το κινητό σας τηλέφωνο, να λάβετε SMS με τον κωδικό σας</string>
-    <string name="forgot_your_pin_success">Ο κψδικός σας έχει σταλεί στο κινητό σας τηλέφωνο. Παρακαλώ πατήστε το κουμπί για να εισέλθετε στην εφαρμογή.</string>
+    <string name="forgot_your_pin_success">Ο κωδικός σας έχει σταλεί στο κινητό σας τηλέφωνο. Παρακαλώ πατήστε το κουμπί για να εισέλθετε στην εφαρμογή.</string>
     <string name="forgot_your_pin_failure">Υπήρξε ένα πρόβλημα με την αποστολή του SMS ή με τα στοιχεία που εισάγατε. Παρακαλώ πατήστε το κουμπί για να προσπαθήσετε ξανά.</string>
     <string name="login_failed">Η είσοδος απέτυχε</string>
 
@@ -436,16 +436,16 @@
     <string name="older_days">Παλιότερες</string>
     <string name="pick_harvest_request">Παρακαλώ επιλέξτε μία...</string>
     <string name="no_harvest_requests_found_alert">Δεν βρέθηκαν εντολές συγκομιδής!!!</string>
-    <string name="harvest_requests_sync_completed">Οι εντολές συγκομιδής συγχονίστηκαν επιτυχώς!</string>
+    <string name="harvest_requests_sync_completed">Οι εντολές συγκομιδής συγχρονίστηκαν επιτυχώς!</string>
     <string name="no_collection_tx_found_alert">Δεν βρέθηκαν συγκομιδές!!!</string>
-    <string name="collection_tx_sync_completed">Οι συγκομιδές συγχονίστηκαν επιτυχώς!</string>
-    <string name="sites_sync_completed">Οι χώροι συγχονίστηκαν επιτυχώς!</string>
-    <string name="species_sync_completed">Τα είδη ψαριών συγχονίστηκαν επιτυχώς!</string>
-    <string name="cage_details_sync_completed">Οι λεπτομέρειες κλωβών συγχονίστηκαν επιτυχώς!</string>
-    <string name="assets_sync_completed">Τα πάγια συγχονίστηκαν επιτυχώς!</string>
-    <string name="employees_sync_completed">Οι εργαζόμενοι συγχονίστηκαν επιτυχώς!</string>
-    <string name="customers_sync_completed">Οι πελάτες συγχονίστηκαν επιτυχώς!</string>
-    <string name="users_sync_completed">Οι χρήστες συγχονίστηκαν επιτυχώς!</string>
+    <string name="collection_tx_sync_completed">Οι συγκομιδές συγχρονίστηκαν επιτυχώς!</string>
+    <string name="sites_sync_completed">Οι χώροι συγχρονίστηκαν επιτυχώς!</string>
+    <string name="species_sync_completed">Τα είδη ψαριών συγχρονίστηκαν επιτυχώς!</string>
+    <string name="cage_details_sync_completed">Οι λεπτομέρειες κλωβών συγχρονίστηκαν επιτυχώς!</string>
+    <string name="assets_sync_completed">Τα πάγια συγχρονίστηκαν επιτυχώς!</string>
+    <string name="employees_sync_completed">Οι εργαζόμενοι συγχρονίστηκαν επιτυχώς!</string>
+    <string name="customers_sync_completed">Οι πελάτες συγχρονίστηκαν επιτυχώς!</string>
+    <string name="users_sync_completed">Οι χρήστες συγχρονίστηκαν επιτυχώς!</string>
     <string name="delete_selected_item">"Προς διαγραφή: "</string>
     <string name="delete_all_items">"Θέλετε να διαγράψετε όλη τη λίστα?"</string>
     <string name="select_site">Παρακαλώ επιλέξτε χώρο</string>
@@ -464,7 +464,7 @@
     <string name="describe">Περιγραφή</string>
     <string name="enter_pin_support">PIN</string>
 
-    <string name="init_temp_logger">Αρχικοποίηση καταγραφλεα θερμοκρασίας...</string>
+    <string name="init_temp_logger">Αρχικοποίηση καταγραφέα θερμοκρασίας...</string>
     <string name="get_temp_data">Ανάκτηση θερμοκρασιών...</string>
 
     <string name="hello">Hello World, CamTestActivity!</string>

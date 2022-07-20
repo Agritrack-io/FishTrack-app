@@ -115,7 +115,12 @@ public interface SyncApi {
     @GET("/temperatures/cages/{siteId}")
     Call<List<SeaTemperatureTxDTO>> getSeaTemp(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
+    //due to sync problems, this call is replaced by  .getEncodingScheme(token)
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/encoding/customer/name/{clusterName}")
     Call<List<EncodingSchemeDTO>> getEncodingSchemeByCustomerName(@Path("clusterName") String customerName, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/encoding")
+    Call<List<EncodingSchemeDTO>> getEncodingScheme(@Header("Authorization") String token);
 }

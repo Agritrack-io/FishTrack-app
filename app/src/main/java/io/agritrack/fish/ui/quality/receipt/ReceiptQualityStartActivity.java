@@ -8,7 +8,6 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -38,7 +36,6 @@ import java.util.Set;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -243,10 +240,8 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
 
         scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_LOGGER);
-        scanner_runnable.LowEnergy();
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
-        scanner_runnable.HighEnergy();
     }
 
     // ###################################################

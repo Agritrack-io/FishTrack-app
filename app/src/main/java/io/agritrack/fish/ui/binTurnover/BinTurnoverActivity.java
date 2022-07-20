@@ -274,10 +274,8 @@ public class BinTurnoverActivity extends AppCompatActivity {
         scanner_runnable = new SingleShotScanner(mScanHandler);
         tvCurrentBin.setText("");
         scanner_runnable.setFilter(Filters.RFID_LOGGER);
-        scanner_runnable.LowEnergy();
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
-        scanner_runnable.HighEnergy();
     }
 
     // ###################################################

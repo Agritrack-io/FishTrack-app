@@ -45,7 +45,6 @@ import io.agritrack.R;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.fish.state.GlobalState;
 
 public class LoggerInitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
@@ -97,7 +96,6 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         if(state.charAt(LE_BIT)=='0') {
             status += "logging OFF ";
         }
-
 
         return state; //"".equalsIgnoreCase(status) ? state : status ;
     }
