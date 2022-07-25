@@ -328,6 +328,8 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
             } else if (view.getId() == btnScanAsset.getId()) {
                 scanner_runnable.setFilter(new String[]{Filters.RFID_NET});
             }
+        } else {
+            scanner_runnable.setFilters(Filters.RFID_NET);
         }
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);

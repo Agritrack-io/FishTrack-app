@@ -153,10 +153,10 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             isClicked = true;
             if(weightOfBin != null) {
                 BinWeightRecord.BinRecord currRec = recFishing.binWeightRecord.getRecordForEPC(currentBin);
-                if (currRec != null){
-                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.from, System.currentTimeMillis() / 1000l);
-                } else {
-                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, epochFrom, System.currentTimeMillis() / 1000l);
+                if (currRec != null && currRec.from != null){
+                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.init,  currRec.from, System.currentTimeMillis() / 1000l);
+                } else if(currRec.from == null) {
+                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.init, epochFrom, System.currentTimeMillis() / 1000l);
                 }
                 weightOfBin = null;
             }
@@ -413,7 +413,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             tvCurrentBin.setText(epc);
                             currentBin = epcStr;
                             adapterCatches.setValues(loadsMap.getLoads(currentBin));
-                            tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
+                            //if (recFishing.binWeightRecord.getRecordForEPC(currentBin).weight != null) {
+                                tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
+                            //}
                             adapterCatches.notifyDataSetChanged();
                             tvUsedBinsCount.setText(loadsMap.loadsCnt());
                             epochFrom = System.currentTimeMillis() / 1000l;

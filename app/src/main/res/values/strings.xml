@@ -42,7 +42,7 @@
     <string name="menu_title_correlation">Correlation</string>
     <string name="menu_title_search">Search</string>
 
-    <string name="menu_title_internal">Internal</string>
+    <string name="menu_title_internal">Internal track</string>
     <string name="menu_title_external">External</string>
     <string name="menu_title_cage">Cage</string>
     <string name="menu_title_net">Net</string>
@@ -105,6 +105,7 @@
     <string name="ice_adequacy">Ice adequacy</string>
     <string name="choose_ice_supplier">Ice supplier</string>
 
+    <string name="fasting_days_notification">"Average sea temperature of three last days is \%1$s\! \n Minimum fasting days are \%2$s\! \n Please confirm that these \%2$s\ have passed before last feeding!"</string>
 
     <string name="no">NO</string>
     <string name="yes">YES</string>

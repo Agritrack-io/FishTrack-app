@@ -27,7 +27,7 @@ public class PendingFishingTxCallBack extends BaseSyncCallBack<FishingTxDTO> {
             // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 
-            int rowsAffected = db.fishingTransactionDAO().deleteAll();
+            int rowsAffected = db.fishingTransactionDAO().deleteAllCompleted();
             Log.i("Pending Fishings.", String.format("deleted %s rows from FishingTransactions...", rowsAffected));
 
             // Sites sync succeeded.

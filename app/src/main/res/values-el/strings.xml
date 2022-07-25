@@ -43,7 +43,7 @@
     <string name="menu_title_search">Αναζήτηση</string>
     <string name="menu_title_synchronize">Αρχεία προς Συγχρονισμό</string>
 
-    <string name="menu_title_internal">Εσωτερικά</string>
+    <string name="menu_title_internal">Εσωτερική κίνηση</string>
     <string name="menu_title_external">Εξωτερική</string>
     <string name="menu_title_cage">Κλωβός</string>
     <string name="menu_title_net">Δίχτυ</string>
@@ -106,6 +106,7 @@
     <string name="ice_adequacy">Επάρκεια πάγου</string>
     <string name="choose_ice_supplier">Επιλέξτε προμηθευτή πάγου</string>
 
+    <string name="fasting_days_notification">"Η μέση θερμοκρασία της θάλασσας των τελευταίων τριών ημερών είναι \%1$s\! \n Οι ελάχιστες ημέρες νηστείας είναι \%2$s\! \n Παρακαλώ επιβεβαιώστε ότι \%2$s\ ημέρες έχουν περάσει από την τελευταία χορήγηση τροφής!"</string>
 
     <string name="no">ΟΧΙ</string>
     <string name="yes">ΝΑΙ</string>

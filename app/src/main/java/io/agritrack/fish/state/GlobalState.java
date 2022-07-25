@@ -642,7 +642,7 @@ public class GlobalState {
         try {
             SeaTemperatureTransaction seaTemperatureTransaction = new SeaTemperatureTransaction();
             seaTemperatureTransaction.timestamp = System.currentTimeMillis();
-            seaTemperatureTransaction.siteName = LocalPreferences.getCurrentSiteName();
+            seaTemperatureTransaction.siteId = LocalPreferences.getCurrentSiteName();
             seaTemperatureTransaction.refTemp = recTools.referencePointTemp;
             seaTemperatureTransaction.cageTemp = recTools.cageTemp;
             seaTemperatureTransaction.longitude = recTools.longitude;

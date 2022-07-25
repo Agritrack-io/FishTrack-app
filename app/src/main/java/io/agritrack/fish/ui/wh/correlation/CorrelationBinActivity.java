@@ -55,10 +55,11 @@ import retrofit2.Response;
 public class CorrelationBinActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
-    private final CorrelationBinActivity.ScanHandler mScanHandler = new CorrelationBinActivity.ScanHandler(this);
+    private final ScanHandler mScanHandler = new ScanHandler(this);
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button btnScanAssetTag;
+    private final MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
     private TextView tvCorrBinBarcode, tvCorrTempLoggerBarcode, tvCounter;
     private EditText etAssetBarcode;
     private ProgressDialog progressDialog;
@@ -127,6 +128,13 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         }
     }
 
+    private void stopScanner() {
+        if (this.scanner_runnable != null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.scanner_runnable);
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -138,29 +146,29 @@ public class CorrelationBinActivity extends LocationAwareActivity {
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onStop();
+        stopScanner();
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        super.onPause();
+        stopScanner();
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     protected void configFooter() {
         ivBack.setOnClickListener(view -> {
+            stopScanner();
             Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
             startActivity(i);
         });
 
         ivNext.setOnClickListener(view -> {
+            stopScanner();
             GlobalState.recWHCorrelation.assetType = Constants.ftBin;
             GlobalState.recWHCorrelation.assetCode = etAssetBarcode.getText() != null ? etAssetBarcode.getText().toString() : null;
             GlobalState.recWHCorrelation.type = Constants.ftDataLogger;
@@ -260,7 +268,6 @@ public class CorrelationBinActivity extends LocationAwareActivity {
     }
 
     protected void onClick(View view) {
-        MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
         scanner_runnable.setFilters(Filters.RFID_BIN, Filters.RFID_LOGGER);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);

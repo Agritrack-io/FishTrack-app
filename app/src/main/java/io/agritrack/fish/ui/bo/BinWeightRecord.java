@@ -9,8 +9,8 @@ public class BinWeightRecord {
 
     private final Map<String, BinRecord> data = new HashMap<>();
 
-    public void addRecord(String binEPC, Integer weight, Long epochFrom, Long epochTo) {
-        this.data.put(binEPC, new BinRecord(binEPC, weight, epochFrom, epochTo));
+    public void addRecord(String binEPC, Integer weight, Long epochInit, Long epochFrom, Long epochTo) {
+        this.data.put(binEPC, new BinRecord(binEPC, weight, epochInit, epochFrom, epochTo));
     }
 
     public BinRecord getRecordForEPC(String epc){
@@ -42,17 +42,20 @@ public class BinWeightRecord {
         public final String binEPC;
         public final Long from;
         public final Long to;
+        public final Long init;
 
-        public BinRecord(String binEPC, Integer weight, Long epochFrom, Long epochTo) {
+
+        public BinRecord(String binEPC, Integer weight, Long epochInit, Long epochFrom, Long epochTo) {
             this.binEPC = binEPC;
             this.weight = weight;
+            this.init = epochInit;
             this.from = epochFrom;
             this.to = epochTo;
         }
 
         @Override
         public String toString() {
-            return String.format("{binEPC:'%s', weight:%4d, from:%s, to:%s}", binEPC, weight, from, to);
+            return String.format("{binEPC:'%s', weight:%4d, init:%s, from:%s, to:%s}", binEPC, weight, init, from, to);
         }
     }
 }

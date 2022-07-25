@@ -66,7 +66,7 @@ public class FishingRecord {
             fishingRecord.lastFed = tx.lastFeed;
         }
         for (BinWeightRecord.BinRecord rec : tx.harvestBinsData){
-            fishingRecord.binWeightRecord.addRecord(rec.binEPC,rec.weight,rec.from, rec.to);
+            fishingRecord.binWeightRecord.addRecord(rec.binEPC,rec.weight, rec.init, rec.from, rec.to);
         }
         fishingRecord.fishingTeam = tx.team;
         fishingRecord.longitude = tx.longitude;

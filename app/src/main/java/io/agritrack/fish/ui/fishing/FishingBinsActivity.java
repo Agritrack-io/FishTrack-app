@@ -9,7 +9,6 @@ import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -50,7 +48,6 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.bo.LoggerReading;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
@@ -60,12 +57,10 @@ import io.agritrack.ui.tools.LoggerInitDialogFragment;
 
 public class FishingBinsActivity extends AppCompatActivity {
 
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
-
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
     private SingleShotScanner singleShot_runnable;
     private MobileDB db;
     private TemplateRecyclerAdapter adapterBins;
@@ -299,27 +294,26 @@ public class FishingBinsActivity extends AppCompatActivity {
                     String epcStr = msg.getData().getString("epc");
                     String rssi = msg.getData().getString("rssi");
                     try {
-                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                        if (!Strings.isEmptyOrWhitespace(epcStr) && epcStr != null) {
                             loggerEPC = epcStr;
                             // after bin is identified, initialize the temperatures logger.
                             Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
                             if (bin != null) {
                                 binEPC = bin.rfid;
                                 scannedBinEPCs.add(bin.rfid);
+                                GlobalState.recFishing.binWeightRecord.addRecord(binEPC, 0, System.currentTimeMillis() / 1000l, null,null);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();
 
-                                if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-                                    FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC , false, true, true);
-                                    loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
-                                } else {
-                                    CToast(getApplicationContext(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
-                                }
+                                FragmentManager fm = getSupportFragmentManager();
+                                LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, false, true, true);
+                                loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                             } else if (!IsDemo) {
-                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
+                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!! Please correlate bin!"), Toast.LENGTH_LONG);
                             }
+                        } else {
+                            CToast(getApplicationContext(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_LONG);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

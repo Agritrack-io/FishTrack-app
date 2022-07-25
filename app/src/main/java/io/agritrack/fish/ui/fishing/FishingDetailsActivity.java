@@ -5,6 +5,7 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,13 +18,25 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.tx.SeaTemperatureTransaction;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.SyncAssetDialog;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.ui.service.LocalPreferences;
@@ -97,6 +110,7 @@ public class FishingDetailsActivity extends AppCompatActivity {
         ivInfo = findViewById(R.id.ivInfo);
     }
 
+    @SuppressLint("StringFormatMatches")
     private void initControlsFromState() {
         FishingRecord hvst = GlobalState.recFishing;
 
@@ -105,7 +119,41 @@ public class FishingDetailsActivity extends AppCompatActivity {
         etIceSupplier.setText(hvst.iceSupplier);
         bIceAdequacy.setChecked(hvst.adequateIce);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate fromDate = LocalDate.now().minusDays(3);
+        long millis = fromDate.atTime(LocalTime.NOON).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        Double avg = db.seaTemperatureTransactionDAO().getAv(millis);
+
+        double minFastDays = 40 / avg;
+        int minFastingDays = (int) minFastDays;
+        for (int i=0; i < 4; i++) {
+            CToast(getApplicationContext(), render(getString(R.string.fasting_days_notification, avg, minFastingDays)), Toast.LENGTH_LONG);
+        }
+        /*Double totalTemp = 0.0;
+        Map<String,Double> data = new HashMap<>();
+        for (SeaTemperatureTransaction temp : lastThree){
+            java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getAppContext());
+            Date date = new Date(temp.timestamp);
+            String date2 = dateFormat.format(date);
+            if(!data.containsKey(date2))
+            data.put(date2,temp.refTemp);
+        }
+
+        HashMap<String,Double> data2 = data.entrySet().stream()
+                .limit(3)
+                .collect(HashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), Map::putAll);
+
+        for (String key: data2.keySet()) {
+            totalTemp =+ data2.get(key);
+        }
+
+        double avgTemp = totalTemp / 3;
+        double minFastDays = 40 / avgTemp;
+        int minFastingDays = (int) minFastDays;
+        for (int i=0; i < 4; i++) {
+            CToast(getApplicationContext(), render(getString(R.string.fasting_days_notification, avgTemp,minFastingDays)), Toast.LENGTH_LONG);
+        }*/
+
+        /*DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate lastFeedDate = hvst.lastFed;
         if (lastFeedDate != null) {
             tvLastFed.setText(lastFeedDate.format(formatter));
@@ -122,7 +170,7 @@ public class FishingDetailsActivity extends AppCompatActivity {
             }
         } else {
             CToast(getApplicationContext(), render("No Last feeding date was found!!!"), Toast.LENGTH_SHORT);
-        }
+        }*/
     }
 
     private void updateState() {

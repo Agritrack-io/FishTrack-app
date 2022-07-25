@@ -72,6 +72,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
     private MobileDB db;
     private Button btnScanAssetTag, btnCorrelate;
     private SearchView svSearchAsset;
+    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     private RecyclerView rvCages;
     private TextView tvCorrCageBarcode;
     private FilterableAdapter adapterAssets;
@@ -154,6 +155,13 @@ public class CorrelationCageActivity extends LocationAwareActivity {
         }
     }
 
+    private void stopScanner() {
+        if (this.scanner_runnable != null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.scanner_runnable);
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -165,29 +173,29 @@ public class CorrelationCageActivity extends LocationAwareActivity {
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onStop();
+        stopScanner();
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        super.onPause();
+        stopScanner();
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     protected void configFooter() {
         ivBack.setOnClickListener(view -> {
+            stopScanner();
             Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
             startActivity(i);
         });
 
         ivNext.setOnClickListener(view -> {
+            stopScanner();
             GlobalState.recWHCorrelation.type = Constants.ftCage;
             GlobalState.recWHCorrelation.code = adapterAssets.getSelectedValue();
             String v = validate();
@@ -299,7 +307,6 @@ public class CorrelationCageActivity extends LocationAwareActivity {
     }
 
     protected void onClick(View view) {
-        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_CAGE);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);

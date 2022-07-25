@@ -15,10 +15,7 @@ public class SeaTemperatureTransaction {
     public Long timestamp;
 
     @ColumnInfo(name = "site_code")
-    public UUID siteId;
-
-    @ColumnInfo(name = "site_name")
-    public String siteName;
+    public String siteId;
 
     @ColumnInfo(name = "ref_temperature")
     public Double refTemp;

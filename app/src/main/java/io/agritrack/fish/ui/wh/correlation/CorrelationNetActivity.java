@@ -67,6 +67,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
     private MobileDB db;
     private Button btnScanAssetTag, btnCorrelate;
     private SearchView svSearchAsset;
+    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     private RecyclerView rvNets;
     private TextView tvCorrNetBarcode;
     private FilterableAdapter adapterAssets;
@@ -149,6 +150,13 @@ public class CorrelationNetActivity extends LocationAwareActivity {
         }
     }
 
+    private void stopScanner() {
+        if (this.scanner_runnable != null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.scanner_runnable);
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -160,29 +168,29 @@ public class CorrelationNetActivity extends LocationAwareActivity {
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onStop();
+        stopScanner();
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        super.onPause();
+        stopScanner();
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     protected void configFooter() {
         ivBack.setOnClickListener(view -> {
+            stopScanner();
             Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
             startActivity(i);
         });
 
         ivNext.setOnClickListener(view -> {
+            stopScanner();
             recWHCorrelation.type = Constants.ftNet;
             recWHCorrelation.code = adapterAssets.getSelectedValue();
 
@@ -295,7 +303,6 @@ public class CorrelationNetActivity extends LocationAwareActivity {
     }
 
     protected void onClick(View view) {
-        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_NET);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);

@@ -17,6 +17,9 @@ public interface FishingTransactionDAO {
     @Query("SELECT * from fishing_transaction")
     List<FishingTransaction> getAll();
 
+    @Query("SELECT * from fishing_transaction where status='COMPLETED'")
+    List<FishingTransaction> getAllCompleted();
+
     @Query("SELECT * from fishing_transaction where id=:fishingTransactionId LIMIT 1")
     FishingTransaction getById(Long fishingTransactionId);
 
@@ -34,6 +37,9 @@ public interface FishingTransactionDAO {
 
     @Query("DELETE from fishing_transaction")
     int deleteAll();
+
+    @Query("DELETE from fishing_transaction where status='COMPLETED'")
+    int deleteAllCompleted();
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(FishingTransaction fishingTransaction);

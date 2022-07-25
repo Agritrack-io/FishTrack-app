@@ -57,6 +57,7 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button btnScanAssetTag;
+    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     private TextView tvCorrPlatformBarcode;
     private EditText etPlatformBarcode;
     private ProgressDialog progressDialog;
@@ -122,6 +123,13 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         }
     }
 
+    private void stopScanner() {
+        if (this.scanner_runnable != null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.scanner_runnable);
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -133,29 +141,29 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onStop();
+        stopScanner();
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
-        super.onPause();
+        stopScanner();
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     protected void configFooter() {
         ivBack.setOnClickListener(view -> {
+            stopScanner();
             Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
             startActivity(i);
         });
 
         ivNext.setOnClickListener(view -> {
+            stopScanner();
             recWHCorrelation.type = Constants.ftPlatform;
             recWHCorrelation.code = etPlatformBarcode.getText() != null ? etPlatformBarcode.getText().toString() : null;
 
@@ -244,7 +252,7 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
     }
 
     protected void onClick(View view) {
-        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+
         scanner_runnable.setFilter(Filters.RFID_PLATFORM);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);

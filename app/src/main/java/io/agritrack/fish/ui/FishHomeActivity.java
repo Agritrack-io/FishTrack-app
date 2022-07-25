@@ -294,7 +294,7 @@ public class FishHomeActivity extends AppCompatActivity {
 
 
             // select all pending fishing TXs
-            List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAll();
+            List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAllCompleted();
             if (!fishingTXs.isEmpty()) {
                 for (FishingTransaction fishingTX : fishingTXs) {
                     Call<FishingTxDTO> fishingTxAsyncCall = pendingTxSvc.syncFishingTx(FishingTxDTO.convert(fishingTX), "Bearer " + token);

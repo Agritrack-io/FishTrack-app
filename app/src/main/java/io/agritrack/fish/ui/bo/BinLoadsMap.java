@@ -5,11 +5,13 @@ import android.widget.Toast;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class BinLoadsMap {
@@ -30,6 +32,9 @@ public class BinLoadsMap {
 
     public List<String> getLoads(String bin) {
         List<String> curLoads = loads.get(bin);
+        while (curLoads.contains("0")) {
+            curLoads.remove("0");
+        }
         if(curLoads==null) {
             curLoads=new ArrayList<>();
             loads.put(bin, curLoads);
@@ -47,7 +52,7 @@ public class BinLoadsMap {
     }
 
     public Integer weightOf(String bin) {
-        if(Strings.isEmptyOrWhitespace(bin) || !loads.containsKey(bin)) {
+        if(Strings.isEmptyOrWhitespace(bin) || !loads.containsKey(bin)) {  //|| recFishing.binWeightRecord.getRecordForEPC(bin).weight == null
             return 0;
         }
 
