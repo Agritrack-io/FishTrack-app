@@ -32,12 +32,14 @@ public class BinLoadsMap {
 
     public List<String> getLoads(String bin) {
         List<String> curLoads = loads.get(bin);
-        while (curLoads.contains("0")) {
-            curLoads.remove("0");
-        }
-        if(curLoads==null) {
-            curLoads=new ArrayList<>();
-            loads.put(bin, curLoads);
+        if (curLoads != null) {
+            while (curLoads.contains("0")) {
+                curLoads.remove("0");
+            }
+            if (curLoads == null) {
+                curLoads = new ArrayList<>();
+                loads.put(bin, curLoads);
+            }
         }
 
         return curLoads;
