@@ -10,6 +10,7 @@ public class BinInfoDTO {
     public Double total_weight;
     public String farm;
     public Long last_update;
+    public Long inited_at;
 
     public static BinInfo convert(BinInfoDTO binInfoDTO) {
         BinInfo binInfo = new BinInfo();
@@ -19,6 +20,7 @@ public class BinInfoDTO {
         binInfo.totalWeight = binInfoDTO.total_weight;
         binInfo.farm = binInfoDTO.farm;
         binInfo.lastUpdate = binInfoDTO.last_update;
+        binInfo.initedAt = binInfoDTO.inited_at;
 
         return binInfo;
     }

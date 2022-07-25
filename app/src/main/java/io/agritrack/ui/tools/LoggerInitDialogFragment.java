@@ -58,6 +58,8 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     private static final int LEVEL_INCREMENT = 1000, MAX_LEVEL = 10000;
     private static final String LOGGER_EPC = "FishLoggerEPC";
     private static final String ASSET_EPC = "HarvestBinEPC";
+    private static final String INITED_AT = "InitedAt";
+
     private static final String PROD_LANE = "Production Lane";
     public static String TAG = "CaenLoggerDialogFragment";
 
@@ -69,6 +71,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
     private String loggerEPC;
     private String assetEPC;
     private String productionLane;
+    private Long initedAt;
     private String lot;
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0, resetCnt = 0;
@@ -333,8 +336,13 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             state = State.READ_VALUES;
 
             try {
+                List<String[]> measurements;
                 // read the measurements from logger based on samples count.
-                List<String[]> measurements = cmd.ReadSamples(cntSamples);
+                if (initedAt!=null) {
+                    measurements = cmd.ReadSamplesWithInitTime(cntSamples, initedAt);
+                } else {
+                    measurements = cmd.ReadSamples(cntSamples);
+                }
 
                 if (measurements != null) {
                     long now = System.currentTimeMillis();
@@ -409,6 +417,20 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         return frag;
     }
 
+    public static LoggerInitDialogFragment newInstance(String loggerEPC, String assetEPC, Long initedAt, boolean showReadButton, boolean showResetButton, boolean showInitButton) {
+        LoggerInitDialogFragment frag = new LoggerInitDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(LOGGER_EPC, loggerEPC);
+        args.putString(ASSET_EPC, assetEPC);
+        args.putLong(INITED_AT, initedAt);
+        args.putBoolean(SHOW_READ_BUTTON, showReadButton);
+        args.putBoolean(SHOW_INIT_BUTTON, showInitButton);
+        args.putBoolean(SHOW_RESET_BUTTON, showResetButton);
+        frag.setArguments(args);
+
+        return frag;
+    }
+
     public static LoggerInitDialogFragment newInstance(String loggerEPC, String assetEPC, String productionLane, boolean showReadButton, boolean showResetButton, boolean showInitButton) {
         LoggerInitDialogFragment frag = new LoggerInitDialogFragment();
         Bundle args = new Bundle();
@@ -449,6 +471,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         if (getArguments() != null) {
             this.loggerEPC =  getArguments().getString(LOGGER_EPC);
             this.assetEPC = getArguments().getString(ASSET_EPC);
+            this.initedAt = getArguments().getLong(INITED_AT);
             this.productionLane = getArguments().getString(PROD_LANE);
 
             showReadButton = getArguments().getBoolean(SHOW_READ_BUTTON);

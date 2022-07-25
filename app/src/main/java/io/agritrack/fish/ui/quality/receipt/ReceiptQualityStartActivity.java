@@ -36,6 +36,7 @@ import java.util.Set;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.BinInfo;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -45,6 +46,7 @@ import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
+import io.agritrack.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.LoggerInitDialogFragment;
@@ -279,9 +281,18 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();
 
+
+
                                 if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+                                    BinInfo tmpBin = db.binInfoDAO().getByRFId(binEPC);
+                                    long initedAt = 0;
+                                    if (tmpBin!=null) {
+                                        initedAt = tmpBin.initedAt;
+                                    } else {
+                                        //TODO:: What to do if inited at not exists
+                                    }
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC,true, true, true);
+                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, initedAt,true, true, true);
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {
@@ -299,6 +310,16 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
                     break;
             }
 
+        }
+    }
+
+    private BinWeightCageAdapter.BinDetails loadBinInfo(String epc){
+        //Add code to retrieve bin info from local DB
+        BinInfo tmpBin = db.binInfoDAO().getByRFId(epc);
+        if (tmpBin!=null) {
+            return new BinWeightCageAdapter.BinDetails(epc, tmpBin.totalWeight, tmpBin.cage);
+        } else {
+            return new BinWeightCageAdapter.BinDetails(epc);
         }
     }
 }

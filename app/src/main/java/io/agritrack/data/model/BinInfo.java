@@ -27,4 +27,7 @@ public class BinInfo {
 
     @ColumnInfo(name = "last_update")
     public Long lastUpdate;
+
+    @ColumnInfo(name = "inited_at")
+    public Long initedAt;
 }

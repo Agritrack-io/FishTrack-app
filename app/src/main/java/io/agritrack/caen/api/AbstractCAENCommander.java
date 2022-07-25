@@ -377,6 +377,11 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     }
 
     @Override
+    public List<String[]> ReadSamplesWithInitTime(int samplesCnt, long initedAt) throws Exception {
+        return ReadSamples(samplesCnt, DefaultInterval, initedAt);
+    }
+
+    @Override
     public List<String[]> ReadSamples(int samplesCnt) throws Exception {
         return ReadSamples(samplesCnt, DefaultInterval);
     }
