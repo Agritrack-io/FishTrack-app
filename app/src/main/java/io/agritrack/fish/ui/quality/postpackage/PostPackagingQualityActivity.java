@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Set;
 
 import io.agritrack.R;
 import io.agritrack.barcode.BarcodeScanService;
@@ -54,11 +55,18 @@ public class PostPackagingQualityActivity extends AppCompatActivity {
             byte[] data = intent.getByteArrayExtra("data");
             if (data != null) {
                 String barcode = new String(data);
-                if (barcode.length()>=24) {
+                if (barcode.length() >= 24) {
                     String currentLot = barcode.substring(18, 24);
                     String currentBox = barcode.substring(barcode.length() - 8);
-                    tvCurrentLot.setText(currentLot);
-                    tvCurrentBox.setText(currentBox);
+                    Set<String> boxSn = LocalPreferences.getBoxSn();
+                    if (!boxSn.contains(currentBox)) {
+                        tvCurrentLot.setText(currentLot);
+                        tvCurrentBox.setText(currentBox);
+                    } else {
+                        tvCurrentLot.setText(currentLot);
+                        tvCurrentBox.setText("");
+                        CToast(getApplicationContext(), render(R.string.scan_another_box), Toast.LENGTH_LONG);
+                    }
                     scanning = false;
                 }
             }
@@ -139,30 +147,30 @@ public class PostPackagingQualityActivity extends AppCompatActivity {
         });
 
         etT1.setOnClickListener(v -> {
-            if (!Strings.isEmptyOrWhitespace(etT1.getText().toString()) && Double.parseDouble(etT1.getText().toString()) > 7){
+            if (!Strings.isEmptyOrWhitespace(etT1.getText().toString()) && Double.parseDouble(etT1.getText().toString()) > 7) {
                 etT1.setBackgroundColor(Color.RED);
-            } else if (!Strings.isEmptyOrWhitespace(etT1.getText().toString()) && Double.parseDouble(etT1.getText().toString()) <= 7){
+            } else if (!Strings.isEmptyOrWhitespace(etT1.getText().toString()) && Double.parseDouble(etT1.getText().toString()) <= 7) {
                 etT1.setBackgroundColor(Color.WHITE);
             }
             etT2.requestFocus();
         });
 
         etT2.setOnClickListener(v -> {
-            if (!Strings.isEmptyOrWhitespace(etT2.getText().toString()) && Double.parseDouble(etT2.getText().toString()) > 7){
+            if (!Strings.isEmptyOrWhitespace(etT2.getText().toString()) && Double.parseDouble(etT2.getText().toString()) > 7) {
                 etT2.setBackgroundColor(Color.RED);
-            } else if (!Strings.isEmptyOrWhitespace(etT2.getText().toString()) && Double.parseDouble(etT2.getText().toString()) <= 7){
+            } else if (!Strings.isEmptyOrWhitespace(etT2.getText().toString()) && Double.parseDouble(etT2.getText().toString()) <= 7) {
                 etT2.setBackgroundColor(Color.WHITE);
             }
             etT3.requestFocus();
         });
 
         etT3.setOnEditorActionListener((v, actionId, event) -> {
-            if (!Strings.isEmptyOrWhitespace(etT3.getText().toString()) && Double.parseDouble(etT3.getText().toString()) > 7){
+            if (!Strings.isEmptyOrWhitespace(etT3.getText().toString()) && Double.parseDouble(etT3.getText().toString()) > 7) {
                 etT3.setBackgroundColor(Color.RED);
-            } else if (!Strings.isEmptyOrWhitespace(etT3.getText().toString()) && Double.parseDouble(etT3.getText().toString()) <= 7){
+            } else if (!Strings.isEmptyOrWhitespace(etT3.getText().toString()) && Double.parseDouble(etT3.getText().toString()) <= 7) {
                 etT3.setBackgroundColor(Color.WHITE);
             }
-            if(actionId==EditorInfo.IME_ACTION_DONE){
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 //Clear focus here from edittext
                 etT3.clearFocus();
             }
@@ -238,13 +246,13 @@ public class PostPackagingQualityActivity extends AppCompatActivity {
         if (!Strings.isEmptyOrWhitespace(recQuality.boxSn)) {
             tvCurrentBox.setText(recQuality.boxSn);
         }
-        if (recQuality.etT1 != null){
+        if (recQuality.etT1 != null) {
             etT1.setText(String.valueOf(recQuality.etT1));
         }
-        if (recQuality.etT2 != null){
+        if (recQuality.etT2 != null) {
             etT2.setText(String.valueOf(recQuality.etT2));
         }
-        if (recQuality.etT3 != null){
+        if (recQuality.etT3 != null) {
             etT3.setText(String.valueOf(recQuality.etT3));
         }
     }
@@ -268,6 +276,7 @@ public class PostPackagingQualityActivity extends AppCompatActivity {
         }
         if (tvCurrentBox.getText() != null && !Strings.isEmptyOrWhitespace(tvCurrentBox.getText().toString())) {
             recQuality.boxSn = tvCurrentBox.getText().toString();
+            LocalPreferences.addBoxSn(recQuality.boxSn);
         }
     }
 

@@ -34,6 +34,8 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.fishing.FishingBinsActivity;
+import io.agritrack.fish.ui.fishing.FishingFillBinsActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
@@ -49,6 +51,8 @@ public class TestBinTempActivity extends AppCompatActivity {
     private TextView tvCurrentTemp, tvCurrentBin;
     private Button btnScanBin;
     private ICAEN_API cmd;
+    private boolean intentForBinActivity = false;
+    private boolean intentForFillBinActivity = false;
     final Runnable readLastSampleThread = new Runnable() {
         @Override
         public void run() {
@@ -90,6 +94,15 @@ public class TestBinTempActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_bin_temp);
+
+        if (getIntent() != null) {
+            Bundle bundle = getIntent().getExtras();
+            if (bundle.getBoolean("BinActivity")) {
+                intentForBinActivity = bundle.getBoolean("BinActivity");
+            } else if (bundle.getBoolean("FillBinActivity")){
+                intentForFillBinActivity = bundle.getBoolean("FillBinActivity");
+            }
+        }
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
@@ -154,7 +167,16 @@ public class TestBinTempActivity extends AppCompatActivity {
         ImageView ivBack = findViewById(R.id.ivBackToMainMenu);
         ivBack.setOnClickListener(view -> {
             this.stopScanner();
-            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            Intent i = new Intent();
+            if (intentForBinActivity){
+                i = new Intent(getApplicationContext(), FishingBinsActivity.class);
+                i.putExtra("BinActivity",true);
+            } else if (intentForFillBinActivity) {
+                i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
+                i.putExtra("FillBinActivity", true);
+            } else {
+                i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            }
             startActivity(i);
         });
     }

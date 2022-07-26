@@ -224,6 +224,7 @@ public class FishHomeActivity extends AppCompatActivity {
                         break;
                     case Test_Temp_Idx:
                         i = new Intent(appCtx, TestBinTempActivity.class);
+                        i.putExtra("BinActivity", false);
                         break;
                     case Transport_Idx:
                         GlobalState.initTransportationRecord();

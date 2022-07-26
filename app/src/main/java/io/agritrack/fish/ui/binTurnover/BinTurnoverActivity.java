@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -105,9 +106,24 @@ public class BinTurnoverActivity extends AppCompatActivity {
         String[] lines = new String[]{"1", "2", "3", "4", "5", "6"};
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
 
-        ArrayAdapter<String> linesAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, lines);
+        ArrayAdapter<String> linesAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item, lines) {
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (position % 2 == 0) { // we're on an even row
+                    view.setBackgroundColor(getColor(R.color.white));
+                } else {
+                    view.setBackgroundColor(getColor(R.color.light_grey));
+                }
+                return view;
+            }
+        };
         linesAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
         spProductionLine.setAdapter(linesAdapter);
+
+        /*ArrayAdapter<String> linesAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, lines);
+        linesAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
+        spProductionLine.setAdapter(linesAdapter);*/
 
         tempProfileAdapter = new TemperatureProfileAdapter(this);
         lvTempProfiles.setAdapter(tempProfileAdapter);

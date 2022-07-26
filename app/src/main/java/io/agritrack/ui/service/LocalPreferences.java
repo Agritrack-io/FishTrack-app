@@ -39,6 +39,8 @@ public class LocalPreferences {
     public static final String Driver_Phones_Key = "DriverPhones";
     public static final String License_Plates_Key = "LicensePlates";
 
+    public static final String Box_Sn_Key = "BoxSns";
+
     public static final String Device_Key = "DeviceModel";
 
     private static SharedPreferences pref;
@@ -149,6 +151,16 @@ public class LocalPreferences {
         Set<String> platesSet = getLicensePlates();
         platesSet.add(plate);
         writeValue(License_Plates_Key, platesSet);
+    }
+
+    public static void addBoxSn(String name) {
+        Set<String> boxSnSet = getBoxSn();
+        boxSnSet.add(name);
+        writeValue(Box_Sn_Key, boxSnSet);
+    }
+
+    public static Set<String> getBoxSn() {
+        return pref.getStringSet(Box_Sn_Key, new HashSet<>());
     }
 
     public static String HeaderMsg() {

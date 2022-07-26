@@ -96,27 +96,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
-
-        <Button
-            android:id="@+id/btnScanCurrentBin"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/button_press_effect"
-            android:text="@string/scan_bin"
-            android:textColor="@color/yellow"
-            android:textSize="@dimen/text_view_font_size_small"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvBinName"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:id="@+id/tvBinName"
-            android:layout_width="250dp"
+            android:layout_width="200dp"
             android:layout_height="50dp"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/bg_rounded_dialog_non_input"
@@ -127,6 +111,33 @@
             app:layout_constraintEnd_toStartOf="@+id/btnScanCurrentBin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnScanCurrentBin"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_press_effect"
+            android:text="@string/scan_bin"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/text_view_font_size_small"
+            app:layout_constraintEnd_toStartOf="@+id/ivCheckLastTemp"
+            app:layout_constraintStart_toEndOf="@+id/tvBinName"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivCheckLastTemp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_press_effect"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/test_bin_temp"
+            app:tint="@color/yellow" />
 
         <RelativeLayout
             android:id="@+id/fishBatchLayout"
@@ -287,7 +298,7 @@
         <RelativeLayout
             android:id="@+id/fishSummaryLayout"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="160dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"

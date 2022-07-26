@@ -105,7 +105,7 @@
     <string name="ice_adequacy">Ice adequacy</string>
     <string name="choose_ice_supplier">Ice supplier</string>
 
-    <string name="fasting_days_notification">"Average sea temperature of three last days is \%1$s\! \n Minimum fasting days are \%2$s\! \n Please confirm that these \%2$s\ have passed before last feeding!"</string>
+    <string name="fasting_days_notification">"Average sea temperature is \<b>%1$s°C</b>\! \n Minimum fasting days must be \<b>%2$s</b>\!"</string>
 
     <string name="no">NO</string>
     <string name="yes">YES</string>
@@ -249,6 +249,8 @@
     <string name="smell_truck">Smells:</string>
     <string name="fish_condition">Fish condition</string>
     <string name="receipt_remarks">Type your remarks</string>
+
+    <string name="scan_another_box">This box has been scanned again!!!</string>
 
     <string name="choose_fish_farm">Choose fish farm</string>
     <string name="received_bins">Received bins</string>

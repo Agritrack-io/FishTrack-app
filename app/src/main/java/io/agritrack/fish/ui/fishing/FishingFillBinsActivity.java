@@ -40,6 +40,7 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -51,6 +52,7 @@ import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.bo.BinLoadsMap;
 import io.agritrack.fish.ui.bo.BinWeightRecord;
+import io.agritrack.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
@@ -61,6 +63,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+    private SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
 
     private Button btnCurrentBinScan, btnAddCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
@@ -69,12 +72,13 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private RecyclerView rvWeightBatchesBin;
     private TemplateRecyclerAdapter adapterCatches;
     private boolean isClickable;
+    private boolean intentForFillBinActivity = false;
     private String mCatchWeight = "";
     private String currentBin;
     private Integer weightOfBin;
     private BinLoadsMap loadsMap;
     private long epochFrom;
-    private ImageView ivSupport, ivInfo;
+    private ImageView ivSupport, ivInfo, ivCheckLastTemp;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
     private boolean isClicked = false;
@@ -98,6 +102,14 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_fill_bins);
 
+        if (getIntent() != null) {
+            Bundle bundle = getIntent().getExtras();
+            intentForFillBinActivity = bundle != null ? bundle.getBoolean("FillBinActivity") : intentForFillBinActivity;
+            if (intentForFillBinActivity){
+                isClicked = true;
+            }
+        }
+
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
 
@@ -108,7 +120,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // get  references of the controls
         assignCtrlVars();
 
-        // initialize the map for each bin's loads.
         loadsMap = new BinLoadsMap();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -212,6 +223,14 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        ivCheckLastTemp.setOnClickListener(view -> {
+            this.stopScanner();
+            updateState();
+            Intent i = new Intent(getApplicationContext(), TestBinTempActivity.class);
+            i.putExtra("FillBinActivity", true);
+            startActivity(i);
+        });
+
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(FishingFillBinsActivity.this);
             supportDialog.showDialog();
@@ -253,7 +272,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     protected void onClick(View view) {
         isClicked = false;
-        SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_BIN);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
@@ -271,6 +289,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         tvUsedBinsCount = findViewById(R.id.tvUsedBinsCount);
         tvAvailableBinsCount = findViewById(R.id.tvAvailableBinsCount);
         rvWeightBatchesBin = findViewById(R.id.rvWeightBatchesBin);
+        ivCheckLastTemp = findViewById(R.id.ivCheckLastTemp);
         ivSupport = findViewById(R.id.ivSupport);
         ivInfo = findViewById(R.id.ivInfo);
         ivBT = findViewById(R.id.ivBT);
@@ -298,6 +317,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBins()){
                 loadsMap.addLoad(bin.binEPC,bin.weight+"");
             }
+            tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
+            isClicked = true;
         }
         //txFishing.harvestBinsData = brecFishing.binWeightRecord.getBins();
     }
@@ -384,12 +405,20 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
             tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
             weightOfBin = loadsMap.weightOf(currentBin);
+            tvUsedBinsCount.setText(loadsMap.loadsCnt());
             tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
         builder.show();
     }
 
+    // ###################################################
+    private void stopScanner() {
+        if (this.scanner_runnable != null) {
+            this.scanner_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.scanner_runnable);
+        }
+    }
 
     // ###################################################
     private class ScanHandler extends Handler {

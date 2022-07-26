@@ -106,7 +106,7 @@
     <string name="ice_adequacy">Επάρκεια πάγου</string>
     <string name="choose_ice_supplier">Επιλέξτε προμηθευτή πάγου</string>
 
-    <string name="fasting_days_notification">"Η μέση θερμοκρασία της θάλασσας των τελευταίων τριών ημερών είναι \%1$s\! \n Οι ελάχιστες ημέρες νηστείας είναι \%2$s\! \n Παρακαλώ επιβεβαιώστε ότι \%2$s\ ημέρες έχουν περάσει από την τελευταία χορήγηση τροφής!"</string>
+    <string name="fasting_days_notification">"Η μέση θερμοκρασία της θάλασσας είναι <b>\%1$s\°C</b>! \n Οι ελάχιστες ημέρες νηστείας πρέπει να είναι <b>\%2$s\</b>!"</string>
 
     <string name="no">ΟΧΙ</string>
     <string name="yes">ΝΑΙ</string>
@@ -253,6 +253,8 @@
     <string name="smell_truck">Δυσάρεστες οσμές:</string>
     <string name="fish_condition">Κατάσταση ψαριών</string>
     <string name="receipt_remarks">Εισάγετε παρατηρήσεις/σχόλια</string>
+
+    <string name="scan_another_box">Αυτό το κιβώτιο έχει σκαναριστεί ξανά!!!</string>
 
     <string name="received_bins">Ληφθείσες βούτες</string>
     <string name="choose_fish_farm">Επιλέξτε μονάδα εκτροφής</string>

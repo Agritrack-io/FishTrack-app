@@ -3,6 +3,7 @@ package io.agritrack.fish.ui.fishing;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
@@ -33,8 +34,10 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import io.agritrack.R;
@@ -48,6 +51,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.bo.LoggerReading;
+import io.agritrack.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
@@ -69,10 +73,11 @@ public class FishingBinsActivity extends AppCompatActivity {
     private Button btnScanBin;
     private LoggerReading loggerReading;
     private GetTempDataDialog tempLoggerDialog;
+    private boolean intentForBinActivity = false;
     private ImageButton ivAddBin, ivDeleteBin;
     private Set<String> scannedBinEPCs;
     private String binBarcode = "", binEPC, loggerEPC;
-    private ImageView ivSupport;
+    private ImageView ivSupport, ivCheckLastTemp;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
     private ImageView ivInfo;
@@ -81,6 +86,11 @@ public class FishingBinsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_bins);
+
+        if (getIntent() != null) {
+            Bundle bundle = getIntent().getExtras();
+            intentForBinActivity = bundle != null ? bundle.getBoolean("BinActivity") : intentForBinActivity;
+        }
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
@@ -106,8 +116,12 @@ public class FishingBinsActivity extends AppCompatActivity {
         rvBins.setAdapter(adapterBins);
         rvBins.setNestedScrollingEnabled(false);
 
-        // instantiate a set to hold scanned EPCS.it will be passed to adapter which feeds the ListView.
-        scannedBinEPCs = new LinkedHashSet<>();
+        if (!intentForBinActivity && recFishing.availBins == null) {
+            // instantiate a set to hold scanned EPCS.it will be passed to adapter which feeds the ListView.
+            scannedBinEPCs = new LinkedHashSet<>();
+        } else {
+            scannedBinEPCs = new LinkedHashSet<>(recFishing.availBins);
+        }
 
         // =================================
         // RFID scanning functionality
@@ -146,6 +160,14 @@ public class FishingBinsActivity extends AppCompatActivity {
             showAddDialog();
         });
 
+        ivCheckLastTemp.setOnClickListener(view -> {
+            this.stopScanner();
+            updateState();
+            Intent i = new Intent(getApplicationContext(), TestBinTempActivity.class);
+            i.putExtra("BinActivity", true);
+            startActivity(i);
+        });
+
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(FishingBinsActivity.this);
             supportDialog.showDialog();
@@ -161,7 +183,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             Double temp = (Double) reading.get("LastValue");
             Long ts = (Long) reading.get("timestamp");
 
-            GlobalState.recFishing.binTemperatureRecord.addRecord(binEPC, ts, temp);
+            recFishing.binTemperatureRecord.addRecord(binEPC, ts, temp);
 
             tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);
             tempLoggerDialog.showDialog();
@@ -204,13 +226,14 @@ public class FishingBinsActivity extends AppCompatActivity {
         rvBins = findViewById(R.id.rvBins);
         tvBinsCount = findViewById(R.id.tvBinsCount);
         ivDeleteBin = findViewById(R.id.ivDeleteBin1);
+        ivCheckLastTemp = findViewById(R.id.ivCheckLastTemp);
         ivAddBin = findViewById(R.id.ivAddBin);
         ivSupport = findViewById(R.id.ivSupport);
         ivInfo = findViewById(R.id.ivInfo);
     }
 
     private void initControlsFromState() {
-        FishingRecord hvst = GlobalState.recFishing;
+        FishingRecord hvst = recFishing;
 
         if (hvst.availBins != null) {
             adapterBins.setValues(new LinkedList<>(hvst.availBins));
@@ -251,14 +274,14 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     private void updateState() {
-        GlobalState.recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+        recFishing.availBins = new LinkedList<>(adapterBins.getValues());
         GlobalState.commitFishing(db, Boolean.FALSE);
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (GlobalState.recFishing.availBins == null || GlobalState.recFishing.availBins.isEmpty()) {
+            if (recFishing.availBins == null || recFishing.availBins.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Bins for usage'"));
             }
         }
@@ -301,7 +324,7 @@ public class FishingBinsActivity extends AppCompatActivity {
                             if (bin != null) {
                                 binEPC = bin.rfid;
                                 scannedBinEPCs.add(bin.rfid);
-                                GlobalState.recFishing.binWeightRecord.addRecord(binEPC, 0, System.currentTimeMillis() / 1000l, null,null);
+                                recFishing.binWeightRecord.addRecord(binEPC, 0, System.currentTimeMillis() / 1000l, null,null);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();

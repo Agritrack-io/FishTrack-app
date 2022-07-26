@@ -2,6 +2,7 @@ package io.agritrack.fish.ui.bo;
 
 import android.widget.Toast;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
@@ -50,7 +52,19 @@ public class BinLoadsMap {
     }
 
     public String loadsCnt() {
-        return String.valueOf(loads.size());
+        int cnt = 0;
+        if (loads != null) {
+            for (String key : loads.keySet()) {
+                List<String> loadsPerEPC = loads.get(key);
+                if (!CollectionUtils.isEmpty(loadsPerEPC)) {
+                    List<String> ll = loadsPerEPC.stream().filter(l -> !"0".equals(l)).collect(Collectors.toList());
+                    if (ll.size() > 0) {
+                        cnt++;
+                    }
+                }
+            }
+        }
+        return String.valueOf(cnt);
     }
 
     public Integer weightOf(String bin) {

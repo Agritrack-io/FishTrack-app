@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -114,8 +115,13 @@ public class FishingDetailsActivity extends AppCompatActivity {
     private void initControlsFromState() {
         FishingRecord hvst = GlobalState.recFishing;
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate lastFeedDate = hvst.lastFed;
         tvSpecies.setText(hvst.speciesName);
         tvPathologist.setText(hvst.pathologist);
+        if (lastFeedDate != null) {
+            tvLastFed.setText(lastFeedDate.format(formatter));
+        }
         etIceSupplier.setText(hvst.iceSupplier);
         bIceAdequacy.setChecked(hvst.adequateIce);
 
@@ -123,35 +129,13 @@ public class FishingDetailsActivity extends AppCompatActivity {
         long millis = fromDate.atTime(LocalTime.NOON).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         Double avg = db.seaTemperatureTransactionDAO().getAv(millis);
 
-        double minFastDays = 40 / avg;
-        int minFastingDays = (int) minFastDays;
-        for (int i=0; i < 4; i++) {
-            CToast(getApplicationContext(), render(getString(R.string.fasting_days_notification, avg, minFastingDays)), Toast.LENGTH_LONG);
+        if (avg!=null) {
+            double minFastDays = 40 / avg;
+            int minFastingDays = (int) minFastDays;
+            for (int i = 0; i < 3; i++) {
+                CToast(getApplicationContext(), render(getString(R.string.fasting_days_notification, avg, minFastingDays)), Toast.LENGTH_LONG);
+            }
         }
-        /*Double totalTemp = 0.0;
-        Map<String,Double> data = new HashMap<>();
-        for (SeaTemperatureTransaction temp : lastThree){
-            java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getAppContext());
-            Date date = new Date(temp.timestamp);
-            String date2 = dateFormat.format(date);
-            if(!data.containsKey(date2))
-            data.put(date2,temp.refTemp);
-        }
-
-        HashMap<String,Double> data2 = data.entrySet().stream()
-                .limit(3)
-                .collect(HashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), Map::putAll);
-
-        for (String key: data2.keySet()) {
-            totalTemp =+ data2.get(key);
-        }
-
-        double avgTemp = totalTemp / 3;
-        double minFastDays = 40 / avgTemp;
-        int minFastingDays = (int) minFastDays;
-        for (int i=0; i < 4; i++) {
-            CToast(getApplicationContext(), render(getString(R.string.fasting_days_notification, avgTemp,minFastingDays)), Toast.LENGTH_LONG);
-        }*/
 
         /*DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate lastFeedDate = hvst.lastFed;
