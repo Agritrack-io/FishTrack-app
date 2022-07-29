@@ -40,7 +40,7 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
@@ -63,12 +63,22 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
+    //
+    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Log.e("Activity result", "OK");
+                    // There are no request codes
+                    Intent data = result.getData();
+                }
+            });
     private SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
-
     private Button btnCurrentBinScan, btnAddCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
     private ImageView ivBT;
-
     private RecyclerView rvWeightBatchesBin;
     private TemplateRecyclerAdapter adapterCatches;
     private boolean isClickable;
@@ -83,20 +93,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private InfoDialog infoDialog;
     private boolean isClicked = false;
 
-
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
-    //
-    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Log.e("Activity result", "OK");
-                    // There are no request codes
-                    Intent data = result.getData();
-                }
-            });
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +101,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         if (getIntent() != null) {
             Bundle bundle = getIntent().getExtras();
             intentForFillBinActivity = bundle != null ? bundle.getBoolean("FillBinActivity") : intentForFillBinActivity;
-            if (intentForFillBinActivity){
+            if (intentForFillBinActivity) {
                 isClicked = true;
             }
         }
@@ -162,13 +158,20 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // Adding bin load completion functionality
         btnFillBin.setOnClickListener(view -> {
             isClicked = true;
-            if(weightOfBin != null) {
+            if (weightOfBin != null) {
                 BinWeightRecord.BinRecord currRec = recFishing.binWeightRecord.getRecordForEPC(currentBin);
-                if (currRec != null && currRec.from != null){
-                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.init,  currRec.from, System.currentTimeMillis() / 1000l);
-                } else if(currRec.from == null) {
-                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.init, epochFrom, System.currentTimeMillis() / 1000l);
+
+                if (currRec == null || currRec.init == null) {
+                    CToast(getApplicationContext(), render("This logger is not initialized!! Please go to previous screen!"), Toast.LENGTH_LONG);
+                    return;
+                } else {
+                    if (currRec.from != null) {
+                        GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.init, currRec.from, System.currentTimeMillis() / 1000l);
+                    } else {
+                        GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.init, epochFrom, System.currentTimeMillis() / 1000l);
+                    }
                 }
+
                 weightOfBin = null;
             }
             isClickable = false;
@@ -257,6 +260,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        this.stopScanner();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
@@ -265,6 +269,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        this.stopScanner();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
@@ -313,9 +318,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         tvAvailableBinsCount.setText(String.valueOf(hvst.availBins.size()));
 
-        if (!recFishing.binWeightRecord.isEmpty()){
-            for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBins()){
-                loadsMap.addLoad(bin.binEPC,bin.weight+"");
+        if (!recFishing.binWeightRecord.isEmpty()) {
+            for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBins()) {
+                loadsMap.addLoad(bin.binEPC, bin.weight + "");
             }
             tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
             isClicked = true;
@@ -396,7 +401,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // Set up the buttons
         builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             mCatchWeight = input.getText().toString();
-            if (Strings.isEmptyOrWhitespace(mCatchWeight) || mCatchWeight == null) {
+            if (Strings.isEmptyOrWhitespace(mCatchWeight)) {
                 CToast(getApplicationContext(), render(R.string.type_weight), Toast.LENGTH_LONG);
                 return;
             }
@@ -441,10 +446,15 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             String epc = epcStr.substring(14);
                             tvCurrentBin.setText(epc);
                             currentBin = epcStr;
-                            adapterCatches.setValues(loadsMap.getLoads(currentBin));
-                            //if (recFishing.binWeightRecord.getRecordForEPC(currentBin).weight != null) {
-                                tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-                            //}
+                            List<String> loadForBin = loadsMap.getLoads(currentBin);
+                            if (loadForBin == null){
+                                loadForBin = new ArrayList<>();
+                            }
+                            adapterCatches.setValues(loadForBin);
+                            if (loadsMap.getLoads(currentBin)!=null){
+                                isClicked = true;
+                            }
+                            tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
                             adapterCatches.notifyDataSetChanged();
                             tvUsedBinsCount.setText(loadsMap.loadsCnt());
                             epochFrom = System.currentTimeMillis() / 1000l;

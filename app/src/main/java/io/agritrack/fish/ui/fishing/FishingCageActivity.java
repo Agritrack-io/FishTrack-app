@@ -49,6 +49,7 @@ public class FishingCageActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
     // listens to trigger button clicks.
+    private MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button scanPlatformButton, scanCageButton;
@@ -123,6 +124,7 @@ public class FishingCageActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        this.stopScanner();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
@@ -138,8 +140,6 @@ public class FishingCageActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
-
-        MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
         scanner_runnable.LowEnergy();
         if(view!=null){
             if(view.getId() == scanCageButton.getId()){
@@ -316,10 +316,10 @@ public class FishingCageActivity extends AppCompatActivity {
 
     // ###################################################
     private void stopScanner() {
-//        if(singleShot_runnable !=null) {
-//            mScanHandler.removeCallbacks(singleShot_runnable);
-//            singleShot_runnable.stopReading();
-//        }
+        if(scanner_runnable !=null) {
+            mScanHandler.removeCallbacks(scanner_runnable);
+            scanner_runnable.stopReading();
+        }
     }
 
     private class ScanHandler extends Handler {

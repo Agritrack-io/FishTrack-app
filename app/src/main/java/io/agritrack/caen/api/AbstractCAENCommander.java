@@ -458,11 +458,10 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
 
     private List<String[]> parseDataWithoutTimestamp(long beginTSmSec, int intervalSeconds, byte[] data) {
         List<String[]> measurements = new LinkedList<>();
-        long midTime = (long)(0.5 * intervalSeconds * 1000L);
         for (int sampleIdx = 0; sampleIdx < data.length/2; sampleIdx++) {
             int byteIdx = sampleIdx * 2;
             short t = ToShort(new byte[]{data[byteIdx], data[byteIdx+1]});
-            measurements.add(new String[]{createTimestamp(beginTSmSec + (sampleIdx * intervalSeconds * 1000L) + midTime), String.format("%.2f", parseTemperatureNumeric(t))});
+            measurements.add(new String[]{createTimestamp(beginTSmSec + (sampleIdx * intervalSeconds * 1000L)), String.format("%.2f", parseTemperatureNumeric(t))});
         }
         return measurements;
     }

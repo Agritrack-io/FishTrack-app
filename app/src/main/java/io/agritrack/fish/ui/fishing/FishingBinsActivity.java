@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -194,9 +195,30 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         this.stopScanner();
+        //unregister the receiver
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
+    }
+
+    @Override
+    protected void onStop() {
         super.onStop();
+        this.stopScanner();
+        //unregister the receiver
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
     }
 
     protected void configFooter() {
@@ -333,10 +355,10 @@ public class FishingBinsActivity extends AppCompatActivity {
                                 LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, false, true, true);
                                 loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                             } else if (!IsDemo) {
-                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!! Please correlate bin!"), Toast.LENGTH_LONG);
+                                CToast(getApplicationContext(), render(R.string.no_logger_found_linked_to_bin), Toast.LENGTH_SHORT);
                             }
                         } else {
-                            CToast(getApplicationContext(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_LONG);
+                            CToast(getApplicationContext(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

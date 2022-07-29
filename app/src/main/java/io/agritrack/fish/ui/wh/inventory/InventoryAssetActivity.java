@@ -428,7 +428,7 @@ public class InventoryAssetActivity extends LocationAwareActivity {
         public void onResponse(Call<RFIDInventoryDTO> call, Response<RFIDInventoryDTO> response) {
             RFIDInventoryDTO rs = response.body();
             if (rs != null || IsDemo) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Inventory update failure!!!"), Toast.LENGTH_LONG));

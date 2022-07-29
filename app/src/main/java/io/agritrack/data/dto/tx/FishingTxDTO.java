@@ -28,7 +28,6 @@ public class FishingTxDTO {
     public String user;
     public String farm;
     public String packaging_plant;
-    public Long timestamp;
     public Double longitude;
     public Double latitude;
 
@@ -54,7 +53,6 @@ public class FishingTxDTO {
         fishingTxDTO.user = fishingTx.user;
         fishingTxDTO.farm = fishingTx.site;
         fishingTxDTO.packaging_plant = fishingTx.packagingPlant;
-        fishingTxDTO.timestamp = fishingTx.timestamp;
         fishingTxDTO.longitude = fishingTx.longitude;
         fishingTxDTO.latitude = fishingTx.latitude;
 

@@ -20,7 +20,9 @@ public class BinInfoDTO {
         binInfo.totalWeight = binInfoDTO.total_weight;
         binInfo.farm = binInfoDTO.farm;
         binInfo.lastUpdate = binInfoDTO.last_update;
-        binInfo.initedAt = binInfoDTO.inited_at;
+        if (binInfoDTO.inited_at != null && String.valueOf(binInfoDTO.inited_at).length() == 10) {
+            binInfo.initedAt = binInfoDTO.inited_at * 1000L;
+        }
 
         return binInfo;
     }

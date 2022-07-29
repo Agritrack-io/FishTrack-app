@@ -20,7 +20,6 @@ public class TransportTxDTO {
     public List<String> bins_loaded = new LinkedList<String>();
     public String site;
     public String user;
-    public Long occurredAt;
     public Double longitude;
     public Double latitude;
     public List<TotesTxDTO> items;
@@ -40,7 +39,6 @@ public class TransportTxDTO {
         transportTxDto.bins_loaded = transport.loadedBins;
         transportTxDto.user = transport.user;
         transportTxDto.site = transport.siteCode;
-        transportTxDto.occurredAt = transport.timestamp;
         transportTxDto.longitude = transport.longitude;
         transportTxDto.latitude = transport.latitude;
 

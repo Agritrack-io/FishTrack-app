@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,9 +41,13 @@ import java.util.Map;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.sync.SyncApi;
+import io.agritrack.api.sync.SyncBinInfo;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
+import io.agritrack.data.model.BinInfo;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
@@ -65,6 +70,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
@@ -85,6 +91,12 @@ public class BinTurnoverActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bin_turnover);
+
+        SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
+        String token = LocalPreferences.getToken();
+        // sync Bin Info (complete BinLedger)
+        Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getCompleteBinLedger("Bearer " + token);
+        syncBinsByPlantAsyncCall.enqueue(new SyncBinInfo(this.syncResult));
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
@@ -250,7 +262,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (binEPC == null) {
-                sb.append(String.format("\n%s is missing", "'Bin to overturn'"));
+                sb.append(String.format("\n%s is missing", "'Bin to turnover'"));
             }
         }
         return sb.toString();
@@ -326,16 +338,22 @@ public class BinTurnoverActivity extends AppCompatActivity {
                                 tvCurrentBin.setText(binEPC.substring(binEPC.length() - 10));
 
                                 if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+                                    BinInfo tmpBin = db.binInfoDAO().getByRFId(binEPC);
                                     FragmentManager fm = getSupportFragmentManager();
                                     String productionLane = spProductionLine.getSelectedItem().toString();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, productionLane, true, true, false);
+                                    LoggerInitDialogFragment loggerDlg;
+                                    if (tmpBin.initedAt != null) {
+                                        loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt, true, true, false);
+                                    } else {
+                                        loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, productionLane, true, true, false);
+                                    }
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {
-                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
+                                CToast(getApplicationContext(), render(R.string.no_logger_found_linked_to_bin), Toast.LENGTH_SHORT);
                             }
                         } else {
-                            CToast(getApplicationContext(), render("No bin was found!! Please scan again!"), Toast.LENGTH_SHORT);
+                            CToast(getApplicationContext(), render(R.string.scan_bin_again), Toast.LENGTH_SHORT);
                         }
                         this.removeCallbacks(scanner_runnable);
                     } catch (Exception e) {
@@ -361,7 +379,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
                 recLoggerData.clearData();
                 db.temperatureDataDAO().deleteAll();
                 db.measurementsDAO().deleteAll();
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_temperatures_tx_update_failure), Toast.LENGTH_LONG));

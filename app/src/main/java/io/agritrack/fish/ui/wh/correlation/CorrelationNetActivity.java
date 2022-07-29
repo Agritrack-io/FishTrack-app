@@ -315,7 +315,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
 
             if (rs != null) {
                 deleteCorrelationTx();
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
                 tvCorrNetBarcode.setText("");
             } else {
                 // could not update Fishing TX on backend!!!

@@ -11,6 +11,7 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteInterval;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBINZero;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -182,6 +183,10 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             // enable logger
             Reader.READER_ERR response = cmd.EnableLogging();
 
+            if (response == Reader.READER_ERR.MT_OK_ERR){
+                recLoggerData.addInitData(assetEPC, System.currentTimeMillis()/1000L);
+            }
+
             // validate result
             mScanHandler.post(validateThread);
 
@@ -338,7 +343,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
             try {
                 List<String[]> measurements;
                 // read the measurements from logger based on samples count.
-                if (initedAt!=null) {
+                if (initedAt!=0) {
                     measurements = cmd.ReadSamplesWithInitTime(cntSamples, initedAt);
                 } else {
                     measurements = cmd.ReadSamples(cntSamples);
@@ -437,6 +442,21 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         args.putString(LOGGER_EPC, loggerEPC);
         args.putString(ASSET_EPC, assetEPC);
         args.putString(PROD_LANE, productionLane);
+        args.putBoolean(SHOW_READ_BUTTON, showReadButton);
+        args.putBoolean(SHOW_INIT_BUTTON, showInitButton);
+        args.putBoolean(SHOW_RESET_BUTTON, showResetButton);
+        frag.setArguments(args);
+
+        return frag;
+    }
+
+    public static LoggerInitDialogFragment newInstance(String loggerEPC, String assetEPC, String productionLane, Long initedAt, boolean showReadButton, boolean showResetButton, boolean showInitButton) {
+        LoggerInitDialogFragment frag = new LoggerInitDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(LOGGER_EPC, loggerEPC);
+        args.putString(ASSET_EPC, assetEPC);
+        args.putString(PROD_LANE, productionLane);
+        args.putLong(INITED_AT, initedAt);
         args.putBoolean(SHOW_READ_BUTTON, showReadButton);
         args.putBoolean(SHOW_INIT_BUTTON, showInitButton);
         args.putBoolean(SHOW_RESET_BUTTON, showResetButton);

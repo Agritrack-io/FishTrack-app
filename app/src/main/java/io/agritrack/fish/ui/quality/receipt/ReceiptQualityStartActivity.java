@@ -281,23 +281,22 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();
 
-
-
                                 if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
                                     BinInfo tmpBin = db.binInfoDAO().getByRFId(binEPC);
-                                    long initedAt = 0;
-                                    if (tmpBin!=null) {
-                                        initedAt = tmpBin.initedAt;
-                                    } else {
-                                        //TODO:: What to do if inited at not exists
-                                    }
                                     FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, initedAt,true, true, true);
+                                    LoggerInitDialogFragment loggerDlg;
+                                    if (tmpBin.initedAt != null) {
+                                        loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, tmpBin.initedAt, true, true, true);
+                                    } else {
+                                        loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, true, true, true);
+                                    }
                                     loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
                                 }
                             } else if (!IsDemo) {
-                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
+                                CToast(getApplicationContext(), render(R.string.no_logger_found_linked_to_bin), Toast.LENGTH_SHORT);
                             }
+                        } else {
+                            CToast(getApplicationContext(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
                         }
                         this.removeCallbacks(scanner_runnable);
                     } catch (Exception e) {

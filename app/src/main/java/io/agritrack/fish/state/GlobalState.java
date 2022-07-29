@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.BinInfo;
 import io.agritrack.data.model.FishingRequest;
 import io.agritrack.data.model.common.IotLogger;
 import io.agritrack.data.model.common.Measurement;
@@ -654,6 +655,23 @@ public class GlobalState {
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
+        }
+    }
+
+    public static void commitBinInitTimes(MobileDB db) {
+        try {
+            for(String epc : recLoggerData.loggerInitData.keySet()){
+                Long initTs = recLoggerData.loggerInitData.get(epc);
+                BinInfo bin = db.binInfoDAO().getByRFId(epc);
+                if (bin == null){
+                    bin = new BinInfo();
+                    bin.rfid = epc;
+                }
+                bin.initedAt = initTs;
+                db.binInfoDAO().update(bin);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

@@ -27,12 +27,14 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.upload.UploadingApi;
 import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
@@ -255,6 +257,14 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
                 Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = updService.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
                 syncMsAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncMsCallBack());
             }
+
+            // update logger initialization timestamps
+            GlobalState.commitBinInitTimes(db);
+
+            //sync
+            Call<Map<String,Long>> syncTsAsyncCall = updService.syncLoggerInitTs(recLoggerData.loggerInitData, "Bearer " + token);
+            syncTsAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncTsCallBack());
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -285,7 +295,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
 
             if (rs != null || IsDemo) {
                 deleteQualityTx();
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_processing_tx_update_failure), Toast.LENGTH_LONG));
@@ -320,7 +330,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
                 recLoggerData.clearData();
                 db.temperatureDataDAO().deleteAll();
                 db.measurementsDAO().deleteAll();
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_temperatures_tx_update_failure), Toast.LENGTH_LONG));
@@ -329,6 +339,34 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
 
         @Override
         public void onFailure(Call<List<TemperatureTimeSeriesDTO>> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
+            }
+        }
+    }
+
+    public class SyncTsCallBack implements Callback<Map<String,Long>> {
+        @Override
+        public void onResponse(Call<Map<String,Long>> call, Response<Map<String,Long>> response) {
+            Map<String,Long> rs = response.body();
+
+            if (rs != null || IsDemo) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Map<String,Long>> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

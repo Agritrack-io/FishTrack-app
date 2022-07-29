@@ -7,6 +7,7 @@ import java.util.Map;
 public class LoggerDataRecord {
 
     public Map<String, TemperatureModel> data = new HashMap<>();
+    public Map<String, Long> loggerInitData = new HashMap<>();
     public Double highT, lowT, avgT;
 
     public void addDataSet(String loggerEPC, String assetEPC, Long retrievedAt, List<String[]> values) {
@@ -15,6 +16,10 @@ public class LoggerDataRecord {
 
     public void addDataSet(String loggerEPC, String assetEPC, String productionLane, Long retrievedAt, List<String[]> values) {
         this.data.put(assetEPC, new TemperatureModel(loggerEPC, assetEPC, productionLane, retrievedAt, values));
+    }
+
+    public void addInitData(String assetEPC, Long initedAt) {
+        this.loggerInitData.put(assetEPC, initedAt);
     }
 
     public List<String[]> getValues(String epc) {

@@ -100,10 +100,6 @@ public interface SyncApi {
     Call<List<BinInfoDTO>> getCompleteBinLedger(@Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/transport/bin-info/site/{siteId}")
-    Call<List<BinInfoDTO>> getBinsByTargetSite(@Path("siteId") UUID siteId, @Header("Authorization") String token);
-
-    @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/logger/{siteId}")
     Call<List<IotLoggerDTO>> getIOTLoggersBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 

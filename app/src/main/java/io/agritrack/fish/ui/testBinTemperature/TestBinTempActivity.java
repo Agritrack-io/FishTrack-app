@@ -58,7 +58,7 @@ public class TestBinTempActivity extends AppCompatActivity {
         public void run() {
             if (cmd.ReadSamplesCount()<1){
                 progressBar.setVisibility(ProgressBar.INVISIBLE);
-                CToast(getApplicationContext(), render("Data logger hasn't been initialized!!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.data_logger_not_initialized), Toast.LENGTH_LONG);
                 return;
             }
             //cmd.LowPowerLevel();
@@ -81,7 +81,7 @@ public class TestBinTempActivity extends AppCompatActivity {
                 msg.setData(b);
                 mScanHandler.sendMessage(msg);
             } else {
-                CToast(getApplicationContext(), render("Please retry to get last temp!!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.retry_last_temp), Toast.LENGTH_LONG);
             }
         }
     };
@@ -158,6 +158,7 @@ public class TestBinTempActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        this.stopScanner();
         //unregister the receiver
         if(keyReceiver != null)
             unregisterReceiver(keyReceiver);
@@ -234,11 +235,11 @@ public class TestBinTempActivity extends AppCompatActivity {
                                 mScanHandler.post(readLastSampleThread);
                             } else if (!IsDemo) {
                                 progressBar.setVisibility(ProgressBar.INVISIBLE);
-                                CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
+                                CToast(getApplicationContext(), render(R.string.no_logger_found_linked_to_bin), Toast.LENGTH_SHORT);
                             }
                         } else {
                             progressBar.setVisibility(ProgressBar.INVISIBLE);
-                            CToast(getApplicationContext(), render("Please scan bin again!!"), Toast.LENGTH_SHORT);
+                            CToast(getApplicationContext(), render(R.string.scan_bin_again), Toast.LENGTH_SHORT);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

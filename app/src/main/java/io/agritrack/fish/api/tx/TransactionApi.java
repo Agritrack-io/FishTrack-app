@@ -1,7 +1,9 @@
 package io.agritrack.fish.api.tx;
 
 import java.util.List;
+import java.util.Map;
 
+import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.data.dto.tx.AssetTxDTO;
@@ -28,6 +30,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 public interface TransactionApi {
 
@@ -122,4 +125,8 @@ public interface TransactionApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/loggers/import")
     Call<List<IotLoggerDTO>> syncIotLoggers(@Body List<IotLoggerDTO> iotLoggers, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @PUT("/bin-ledger/update-init-ts")
+    Call<Map<String,Long>> syncLoggerInitTs(@Body Map<String, Long> initTs, @Header("Authorization") String token);
 }

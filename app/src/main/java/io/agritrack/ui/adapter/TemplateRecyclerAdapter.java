@@ -97,7 +97,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        return mList != null ? mList.size() : 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

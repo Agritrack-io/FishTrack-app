@@ -19,13 +19,13 @@ public interface BinInfoDAO {
     LiveData<List<BinInfo>> getAll();
 
     @Query("SELECT * from bin_info where bin_rfid=:rfId LIMIT 1")
-    BinInfo getById(String rfId);
-
-    @Query("SELECT * from bin_info where bin_rfid=:rfId LIMIT 1")
     BinInfo getByRFId(String rfId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(BinInfo... bins);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(BinInfo bin);
 
     @Delete
     void delete(BinInfo bin);
@@ -33,6 +33,6 @@ public interface BinInfoDAO {
     @Query("DELETE from bin_info")
     void deleteAll();
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(BinInfo bin);
 }

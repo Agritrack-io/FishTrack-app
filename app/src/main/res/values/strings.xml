@@ -625,5 +625,13 @@
     <string name="pending_asset_tx_upload_failure_alert">Failed to upload pending asset tx!</string>
     <string name="pending_asset_tx_upload_completed">Pending asset tx successfully uploaded!</string>
     <string name="bt_not_supported">Bluetooth not supported!</string>
+    <string name="no_logger_found_linked_to_bin">No IOT Logger was found linked to this BIN!! Please correlate bin!</string>
+    <string name="no_tag_detected">No Tag detected!!\nPlease change your position!</string>
+    <string name="data_logger_not_initialized">Data logger hasn\'t been initialized!!</string>
+    <string name="retry_last_temp">Please retry to get last temp!!</string>
+    <string name="scan_bin_again">Please scan bin again!!</string>
+    <string name="tx_successfully_updated">Tx successfully updated!!!</string>
+    <string name="correlate_cage">Please correlate cage with RFID, go to Correlation Menu, and tap Cage</string>
+    <string name="correlate_net">Please correlate net with RFID, go to Correlation Menu, and tap Net</string>
 
 </resources>

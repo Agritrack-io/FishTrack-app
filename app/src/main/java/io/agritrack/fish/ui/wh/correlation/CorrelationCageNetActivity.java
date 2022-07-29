@@ -282,7 +282,7 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
 
             if (rs != null) {
                 deleteCorrelationTx();
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
                 tvCorrCageBarcode.setText("");
                 tvCorrNetBarcode.setText("");
             } else {
@@ -332,7 +332,7 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
                                     tvCorrCageBarcode.setText(label);
                                     Asset cage = db.assetDAO().getAssetByEpc(epc);
                                     if (cage == null){
-                                        CToast(getApplicationContext(), "Please correlate cage with RFID, go to Correlation Menu, and tap Cage", Toast.LENGTH_LONG);
+                                        CToast(getApplicationContext(), render(R.string.correlate_cage) , Toast.LENGTH_LONG);
                                     }
                                     tvCageCode.setText(cage.code);
                                     recWHCorrelation.assetCode = cage.code;
@@ -341,7 +341,7 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
                                     tvCorrNetBarcode.setText(label);
                                     Asset net = db.assetDAO().getAssetByEpc(epc);
                                     if (net == null){
-                                        CToast(getApplicationContext(), "Please correlate net with RFID, go to Correlation Menu, and tap Net", Toast.LENGTH_LONG);
+                                        CToast(getApplicationContext(), render(R.string.correlate_net), Toast.LENGTH_LONG);
                                     }
                                     tvNetCode.setText(net.code);
                                     recWHCorrelation.code = net.code;
