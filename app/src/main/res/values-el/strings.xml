@@ -609,4 +609,13 @@
     <string name="lot_restriction_message">Περισσότερα του ενός LOT βρέθηκαν για τα τελάρα που σκανάρατε. Παρακαλώ πηγαίντε πίσω και σκανάρετε τελάρα από ένα LOT.</string>
     <string name="invalid_inputs">Μη έγκυρα δεδομένα :</string>
 
+    <string name="no_logger_found_linked_to_bin">Δε βρέθηκε συσχετισμένο καταγραφικό θερμοκρασίας με αυτή τη βούτα! Παρακαλώ συσχετίστε!</string>
+    <string name="no_tag_detected">Δεν διαβάστηκε ετικέτα!!\nΠαρακαλώ αλλάξτε θέση!</string>
+    <string name="data_logger_not_initialized">Το καταγραφικό δεν έχει αρχικοποιηθεί!!</string>
+    <string name="retry_last_temp">Παρακαλώ προσπαθήστε ξανά!!</string>
+    <string name="scan_bin_again">Παρακαλώ σκανάρετε τη βούτα ξανά!!</string>
+    <string name="tx_successfully_updated">Ο συγχρονισμός πέτυχε!!!</string>
+    <string name="correlate_cage">Παρακαλώ συσχετίστε τον κλωβό!</string>
+    <string name="correlate_net">Παρακαλώ συσχετίστε το δίχτυ!</string>
+
 </resources>

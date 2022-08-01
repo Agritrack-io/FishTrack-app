@@ -2,6 +2,7 @@ package io.agritrack.fish.ui.testBinTemperature;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.util.Strings;
+import com.uhf.api.cls.Reader;
 
 import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
@@ -56,7 +58,7 @@ public class TestBinTempActivity extends AppCompatActivity {
     final Runnable readLastSampleThread = new Runnable() {
         @Override
         public void run() {
-            if (cmd.ReadSamplesCount()<1){
+           if (cmd.ReadSamplesCount()<1){
                 progressBar.setVisibility(ProgressBar.INVISIBLE);
                 CToast(getApplicationContext(), render(R.string.data_logger_not_initialized), Toast.LENGTH_LONG);
                 return;
@@ -72,7 +74,7 @@ public class TestBinTempActivity extends AppCompatActivity {
 
             progressBar.setVisibility(ProgressBar.INVISIBLE);
 
-            if (lastTemp != null) {
+            if (lastTemp != null && lastTemp>=-10 && lastTemp<40 && lastTemp != 0.03 && lastTemp != -0.03) {
                 Message msg = new Message();
                 msg.what = 200;
                 Bundle b = new Bundle();

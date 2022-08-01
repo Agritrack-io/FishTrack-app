@@ -160,18 +160,11 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             isClicked = true;
             if (weightOfBin != null) {
                 BinWeightRecord.BinRecord currRec = recFishing.binWeightRecord.getRecordForEPC(currentBin);
-
-                if (currRec == null || currRec.init == null) {
-                    CToast(getApplicationContext(), render("This logger is not initialized!! Please go to previous screen!"), Toast.LENGTH_LONG);
-                    return;
+                if (currRec.from != null) {
+                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.init, currRec.from, System.currentTimeMillis() / 1000l);
                 } else {
-                    if (currRec.from != null) {
-                        GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.init, currRec.from, System.currentTimeMillis() / 1000l);
-                    } else {
-                        GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.init, epochFrom, System.currentTimeMillis() / 1000l);
-                    }
+                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.init, epochFrom, System.currentTimeMillis() / 1000l);
                 }
-
                 weightOfBin = null;
             }
             isClickable = false;
@@ -446,12 +439,19 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                             String epc = epcStr.substring(14);
                             tvCurrentBin.setText(epc);
                             currentBin = epcStr;
+
+                            BinWeightRecord.BinRecord currRec = recFishing.binWeightRecord.getRecordForEPC(currentBin);
+                            if (currRec == null || currRec.init == null) {
+                                CToast(getApplicationContext(), render(R.string.data_logger_not_initialized), Toast.LENGTH_LONG);
+                                GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, null, epochFrom, null);
+                                loadsMap.addLoad(currentBin, "0");
+                            }
                             List<String> loadForBin = loadsMap.getLoads(currentBin);
-                            if (loadForBin == null){
+                            if (loadForBin == null) {
                                 loadForBin = new ArrayList<>();
                             }
                             adapterCatches.setValues(loadForBin);
-                            if (loadsMap.getLoads(currentBin)!=null){
+                            if (loadsMap.getLoads(currentBin) != null) {
                                 isClicked = true;
                             }
                             tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
