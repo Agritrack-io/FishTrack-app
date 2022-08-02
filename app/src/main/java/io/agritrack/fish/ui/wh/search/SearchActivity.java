@@ -37,6 +37,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -73,7 +74,7 @@ public class SearchActivity extends AppCompatActivity {
     private SupportDialog supportDialog;
     private RecyclerView rvAssets;
     private Button btnSearchAsset;
-    private String selectedAssetType;
+    private String selectedAssetType, code;
     private String selectedBarcode = "";
     private ProgressBar searchProgressBar;
     private String epcPrefix = "BE0019A0000";
@@ -116,6 +117,7 @@ public class SearchActivity extends AppCompatActivity {
         spAssetType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
+                code = schemeSvc.codeOf(selectedAssetType);
                 loadAssetsByTypeFromLocalDB(selectedAssetType);
                 if (adapterAssets == null) {
                     svSearchAsset.setVisibility(View.GONE);
@@ -148,10 +150,11 @@ public class SearchActivity extends AppCompatActivity {
 
     private void loadAssetsByTypeFromLocalDB(String assetType) {
         // load assets for current Site and filter by asset type (if selected).
+        this.rvAssets.setAdapter(null);
         this.rvAssets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfid)).collect(Collectors.toList());
+            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfid.substring(x.rfid.length()-10))).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
@@ -241,33 +244,43 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        super.onStart();
         // Listen for Fn key press/release;
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.rfid.FUN_KEY");
         this.registerReceiver(keyReceiver, filter);
         this.uhfReader.HighPowerLevel();
-        super.onStart();
     }
 
     @Override
     protected void onStop() {
-        this.uhfReader.LowPowerLevel();
+        super.onStop();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
-        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
-        super.onDestroy();
     }
 
     protected void onClick(View view) {
-        selectedBarcode = etAssetBarcode.getText().toString();
+        if (adapterAssets != null) {
+            if (adapterAssets.getSelectedValue() != null) {
+                selectedBarcode = adapterAssets.getSelectedValue();
+                etAssetBarcode.setText(selectedBarcode);
+            }
+        }
+        if (!Strings.isEmptyOrWhitespace(etAssetBarcode.getText().toString())) {
+            if (adapterAssets != null && adapterAssets.getSelectedValue() != null) {
+                adapterAssets.clearSelectedValue();
+            }
+            selectedBarcode = etAssetBarcode.getText().toString();
+        }
         if (Strings.isEmptyOrWhitespace(selectedBarcode)) {
             runOnUiThread(() -> CToast(getAppContext(), render(R.string.no_epc_filter_selected), Toast.LENGTH_LONG));
             return;
@@ -277,13 +290,13 @@ public class SearchActivity extends AppCompatActivity {
             isScanning = true;
             btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             btnSearchAsset.setText(R.string.stop_search);
-            uhfReader.setFilterEPC(epcPrefix + selectedBarcode);
+            uhfReader.setFilterEPC(epcPrefix + code.substring(0,3) + selectedBarcode);
             uhfReader.startSearching();
             mScanHandler.postDelayed(search_runnable, 0);
         } else {
             isScanning = false;
             btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-            btnSearchAsset.setText(R.string.scan_bin);
+            btnSearchAsset.setText(R.string.title_search);
             pbProximity.setProgress(0);
             tvProximity.setText(R.string.proximity);
             uhfReader.stopSearching();

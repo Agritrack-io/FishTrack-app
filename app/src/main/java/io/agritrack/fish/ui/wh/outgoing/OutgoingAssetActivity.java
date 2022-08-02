@@ -29,6 +29,7 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
@@ -489,10 +490,11 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 100:
+                    String[] acceptedCodes = schemeSvc.distinctNamesOnly();
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
-                    //clearSelectedItem();
+                    clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        Map<String, List<String>> values = epcList.stream().map(x -> x.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
+                        Map<String, List<String>> values = epcList.stream().filter(f -> ArrayUtils.contains(acceptedCodes, schemeSvc.nameOf(schemeSvc.nativeSchemeCode(f)))).map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
 
                         if (adapterOutgoingItems == null) {
                             adapterOutgoingItems = new TreelikeAdapter(mActivity.get(), values);

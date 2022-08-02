@@ -29,14 +29,17 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -464,9 +467,11 @@ public class InventoryAssetActivity extends LocationAwareActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 100:
+                    String[] acceptedCodes = schemeSvc.distinctNamesOnly();
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     clearSelectedItem();
-                    Map<String, List<String>> values = epcList.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
+                    Map<String, List<String>> values = epcList.stream().filter(f -> ArrayUtils.contains(acceptedCodes, schemeSvc.nameOf(schemeSvc.nativeSchemeCode(f)))).map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
+
                     if (adapterInventoryItems == null) {
                         adapterInventoryItems = new TreelikeAdapter(InventoryAssetActivity.this, values);
                         xvInventoryItems.setAdapter(adapterInventoryItems);
