@@ -21,7 +21,7 @@ public class BinTemperatureRecord {
                 SEPARATOR = ",";
             }
         }
-        return String.format("[%s]", sb.toString());
+        return String.format("[%s]", sb);
     }
 
     private class BinRecord {

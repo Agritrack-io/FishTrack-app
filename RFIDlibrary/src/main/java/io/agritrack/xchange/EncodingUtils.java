@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class EncodingUtils {
-    private static ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+    private static final ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
 
 
     /**

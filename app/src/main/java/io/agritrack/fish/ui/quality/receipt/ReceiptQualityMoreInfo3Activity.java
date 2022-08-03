@@ -240,7 +240,7 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
         });
     }
 
-    private InputFilter filter = new InputFilter() {
+    private final InputFilter filter = new InputFilter() {
         final int maxDigitsBeforeDecimalPoint=3;
         final int maxDigitsAfterDecimalPoint=2;
 
@@ -290,7 +290,7 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
                 break;
             case R.id.simpleRadioButton5:
                 if (checked)
-                    evaluation = String.valueOf(idx +1);;
+                    evaluation = String.valueOf(idx +1);
         }
     }
 

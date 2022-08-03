@@ -41,6 +41,9 @@ public class FishTrackApplication extends Application {
         super.onCreate();
         mContext = this;
 
+        // Override Global crash handler
+        CrashHandler.getInstance().init(this);
+
         if (PRODUCT!=null) {
             setProduct(PRODUCT);
         }

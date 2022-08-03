@@ -82,7 +82,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
     private ExpandableListView xvInventoryItems;
 
     private TreelikeAdapter adapterInventoryItems;
-    private String activeFilter = null;
+    private final String activeFilter = null;
     private ImageButton ivAddItem, ivDeleteItem;
     private Button scanButton;
     private Integer selectedParent, selectedChild, totalItems;

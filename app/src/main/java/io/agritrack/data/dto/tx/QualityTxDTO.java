@@ -11,7 +11,7 @@ import io.agritrack.data.model.tx.QualityTransaction;
 
 public class QualityTxDTO {
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
     public UUID id;
     public String sample_date;

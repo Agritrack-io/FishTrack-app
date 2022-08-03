@@ -56,7 +56,7 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
-    private InputFilter filter = new InputFilter() {
+    private final InputFilter filter = new InputFilter() {
         final int maxDigitsBeforeDecimalPoint = 2;
         final int maxDigitsAfterDecimalPoint = 2;
 

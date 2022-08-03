@@ -60,7 +60,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
     private final ScanHandler mScanHandler = new ScanHandler(this);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
-    private boolean intentForProcessing = true;
+    private final boolean intentForProcessing = true;
     private SingleShotScanner scanner_runnable;
     private MobileDB db;
     private RecyclerView rvBinsForTransport;

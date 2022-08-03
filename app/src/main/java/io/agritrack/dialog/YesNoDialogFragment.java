@@ -13,7 +13,7 @@ import java.util.function.Function;
 import io.agritrack.R;
 
 public class YesNoDialogFragment extends DialogFragment {
-    private Bundle args = new Bundle();
+    private final Bundle args = new Bundle();
     private CharSequence msg;
     private ConfirmationDialogCommand confirmationCmd;
     private ConfirmationDialogCommand rejectionCmd;

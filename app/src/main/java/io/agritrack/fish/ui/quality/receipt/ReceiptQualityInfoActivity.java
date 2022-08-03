@@ -50,11 +50,11 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
     private PhotoDialog photoDialog;
     private ImageView ivTakenPhoto;
     private String binEpc;
-    private NumberFormat format = new DecimalFormat("0.#");
+    private final NumberFormat format = new DecimalFormat("0.#");
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
-    private InputFilter filter = new InputFilter() {
+    private final InputFilter filter = new InputFilter() {
         final int maxDigitsBeforeDecimalPoint = 2;
         final int maxDigitsAfterDecimalPoint = 2;
 

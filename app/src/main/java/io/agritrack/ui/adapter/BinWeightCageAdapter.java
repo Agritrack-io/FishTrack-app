@@ -77,7 +77,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
         if (currBin.weight != null)
             holder.tvWeight.setText(currBin.weight.toString());
 
-        holder.tvItemSNo.setText(String.valueOf(position + 1) + ".");
+        holder.tvItemSNo.setText(position + 1 + ".");
     }
 
     @Override
@@ -102,7 +102,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
         }
 
         public BinDetails(String epc, Double binWeight, String cageCode) {
-            this.epc = epc.toString();
+            this.epc = epc;
             this.weight = binWeight;
             this.cage = cageCode;
         }

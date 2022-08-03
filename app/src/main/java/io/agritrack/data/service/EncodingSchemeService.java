@@ -19,9 +19,9 @@ public class EncodingSchemeService {
     private static EncodingSchemeService mInstance;
 
     // get an instance of local DB
-    private static MobileDB db = MobileDB.getInstance(getAppContext());
-    private static Map<String, EncodingSchemeEntity> assetTypesMap;
-    private static Set<String> codesSet;
+    private static final MobileDB db = MobileDB.getInstance(getAppContext());
+    private static final Map<String, EncodingSchemeEntity> assetTypesMap;
+    private static final Set<String> codesSet;
     private static int startIdx = -1;
     private static int codeWidth = 0;
 

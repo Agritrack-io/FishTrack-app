@@ -32,7 +32,7 @@ public class CorrelationTxDTO {
         correlationTxDTO.timestamp = corrTx.timestamp;
         correlationTxDTO.longitude = corrTx.longitude;
         correlationTxDTO.latitude = corrTx.latitude;
-        correlationTxDTO.create_if_empty = corrTx.type.equalsIgnoreCase(Constants.ftBin) || corrTx.type.equalsIgnoreCase(Constants.ftPlatform) ? true : false;
+        correlationTxDTO.create_if_empty = corrTx.type.equalsIgnoreCase(Constants.ftBin) || corrTx.type.equalsIgnoreCase(Constants.ftPlatform);
 
         return correlationTxDTO;
     }

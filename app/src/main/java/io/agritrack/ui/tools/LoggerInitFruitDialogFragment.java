@@ -44,7 +44,8 @@ import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 
 public class LoggerInitFruitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
-    public enum State {STOP_LOGGER, COUNT_SAMPLES, READ_VALUES, RESET, INIT};
+    public enum State {STOP_LOGGER, COUNT_SAMPLES, READ_VALUES, RESET, INIT}
+
     private static final int RST_BIT = 4, RFU_BIT = 3, LE_BIT = 2, DE_BIT = 1, RFSL_BIT = 0;
     private static final int LEVEL_INCREMENT = 1000;
     private static final int MAX_LEVEL = 10000;

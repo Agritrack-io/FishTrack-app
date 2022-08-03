@@ -13,8 +13,8 @@ public class AssetType {
 
     public static String ALL = "ALL";
     // get an instance of local DB
-    private static MobileDB db = MobileDB.getInstance(getAppContext());
-    private String name;
+    private static final MobileDB db = MobileDB.getInstance(getAppContext());
+    private final String name;
     private static final List<String> assetTypes;
 
     AssetType (String name) {

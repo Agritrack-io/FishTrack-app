@@ -26,7 +26,7 @@ public class BinWeightRecord {
                 SEPARATOR = ",";
             }
         }
-        return String.format("[%s]", sb.toString());
+        return String.format("[%s]", sb);
     }
 
     public List<BinRecord> getBins(){

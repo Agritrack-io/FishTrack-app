@@ -17,7 +17,7 @@ import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class BinLoadsMap {
-    private Map<String, List<String>> loads = new HashMap<>();
+    private final Map<String, List<String>> loads = new HashMap<>();
 
     public BinLoadsMap() {}
 

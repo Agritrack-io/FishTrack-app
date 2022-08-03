@@ -38,9 +38,12 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
+            android:name=".ui.tools.DiniArgeoScaleActivity"
+            android:exported="false" />
+        <activity
             android:name=".fish.ui.wh.InternalAssetActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.binTurnover.BinTurnoverActivity"
             android:exported="false"

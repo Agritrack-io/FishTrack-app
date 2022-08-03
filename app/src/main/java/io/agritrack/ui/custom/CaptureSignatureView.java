@@ -15,13 +15,13 @@ import java.io.ByteArrayOutputStream;
 public class CaptureSignatureView extends View {
     private Bitmap _Bitmap;
     private Canvas _Canvas;
-    private Path _Path;
-    private Paint _BitmapPaint;
-    private Paint _paint;
+    private final Path _Path;
+    private final Paint _BitmapPaint;
+    private final Paint _paint;
     private float _mX;
     private float _mY;
-    private float TouchTolerance = 4;
-    private float LineThickness = 4;
+    private final float TouchTolerance = 4;
+    private final float LineThickness = 4;
     private boolean signed = false;
 
 

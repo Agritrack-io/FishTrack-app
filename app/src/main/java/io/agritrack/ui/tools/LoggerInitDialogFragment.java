@@ -50,7 +50,7 @@ import io.agritrack.fish.state.GlobalState;
 
 public class LoggerInitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
 
-    public enum State {STOP_LOGGER, COUNT_SAMPLES, READ_VALUES, RESET, INIT};
+    public enum State {STOP_LOGGER, COUNT_SAMPLES, READ_VALUES, RESET, INIT}
 
     private static final String SHOW_READ_BUTTON = "ShowReadButton", SHOW_INIT_BUTTON = "ShowInitButton", SHOW_RESET_BUTTON = "ShowResetButton";
     private boolean showReadButton = false, showInitButton = false, showResetButton = false;

@@ -79,9 +79,9 @@ public class CorrelationActivity extends LocationAwareActivity {
     private YesNoDialogFragment confirmGPSSelectionDlg;
     private FilterableAdapter adapterAssets;
     private String selectedAssetType;
-    private String selectedBarcode = "";
-    private String activeFilter = null;
-    private String epcPrefix = "BE0019A0000";
+    private final String selectedBarcode = "";
+    private final String activeFilter = null;
+    private final String epcPrefix = "BE0019A0000";
     private ProgressDialog progressDialog;
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;

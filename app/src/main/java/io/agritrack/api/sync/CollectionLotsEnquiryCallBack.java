@@ -18,13 +18,8 @@ public class CollectionLotsEnquiryCallBack extends BaseEnquiryCallBack<List<LotD
     public void onResponse(Call<List<LotDTO>> call, Response<List<LotDTO>> response) {
         List<LotDTO> collectionLots = response.body();
 
-        if (collectionLots != null) {
-
-            // Harvest Requests sync succeeded.
-            syncResult.setValue(collectionLots);
-        } else {
-            // no Harvest Requests found
-            syncResult.setValue(null);
-        }
+        // Harvest Requests sync succeeded.
+        // no Harvest Requests found
+        syncResult.setValue(collectionLots);
     }
 }

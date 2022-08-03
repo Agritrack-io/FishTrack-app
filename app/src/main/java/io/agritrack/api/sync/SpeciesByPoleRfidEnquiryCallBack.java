@@ -16,13 +16,8 @@ public class SpeciesByPoleRfidEnquiryCallBack extends BaseEnquiryCallBack<Specie
     public void onResponse(Call<SpeciesDTO> call, Response<SpeciesDTO> response) {
         SpeciesDTO speciesDTO = response.body();
 
-        if (speciesDTO != null) {
-
-            // Species name got successfully.
-            syncResult.setValue(speciesDTO);
-        } else {
-            // no species found for this pole
-            syncResult.setValue(null);
-        }
+        // Species name got successfully.
+        // no species found for this pole
+        syncResult.setValue(speciesDTO);
     }
 }

@@ -27,7 +27,7 @@ public class SyncSuppliersCallBack extends BaseSyncCallBack<List<SupplierDTO>> {
             db = MobileDB.getInstance(getAppContext());
 
             for (SupplierDTO SupplierDTO : rs) {
-                db.supplierDAO().insert(SupplierDTO.convert(SupplierDTO));
+                db.supplierDAO().insert(io.agritrack.data.dto.common.SupplierDTO.convert(SupplierDTO));
             }
             // Employees sync succeeded.
             syncResult.setValue(getAppContext().getString(R.string.employees_sync_completed));

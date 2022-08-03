@@ -75,7 +75,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                     Intent data = result.getData();
                 }
             });
-    private SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     private Button btnCurrentBinScan, btnAddCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
     private ImageView ivBT;

@@ -25,8 +25,8 @@ public class ExpandableListDialog {
     private TextView tvTitle;
     private ExpandableListView xvClusters;
     private final ClusterListViewAdapter clustersAdapter;
-    private List<String> clusterIDs;
-    private MutableLiveData<SiteInfoRS> selectedSite;
+    private final List<String> clusterIDs;
+    private final MutableLiveData<SiteInfoRS> selectedSite;
 
     private final Activity activity;
     private Dialog dialog;

@@ -42,8 +42,8 @@ public class ScanAssetDialog {
     private TextView tvTitle, tvCageBarcode;
     private Button btnScanAssetTag, btnOk;
     private final ScanHandler mScanHandler = new ScanHandler(this);
-    private MutableLiveData<String> selectedCage;
-    private MobileDB db;
+    private final MutableLiveData<String> selectedCage;
+    private final MobileDB db;
 
     private final Activity activity;
     private Dialog dialog;

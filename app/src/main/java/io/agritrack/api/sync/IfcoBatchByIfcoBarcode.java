@@ -18,13 +18,8 @@ public class IfcoBatchByIfcoBarcode extends BaseEnquiryCallBack<List<String>>{
     public void onResponse(Call<List<String>> call, Response<List<String>> response) {
         List<String> ifcoBatch = response.body();
 
-        if (ifcoBatch != null) {
-
-            // Species name got successfully.
-            syncResult.setValue(ifcoBatch);
-        } else {
-            // no species found for this pole
-            syncResult.setValue(null);
-        }
+        // Species name got successfully.
+        // no species found for this pole
+        syncResult.setValue(ifcoBatch);
     }
 }

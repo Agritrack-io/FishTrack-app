@@ -28,7 +28,7 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
 
     private final Context mCtx;
     // child data in format of: <Type, List of children<Type>>
-    private TreeMap<String, List<String>> mValues = new TreeMap<>();;
+    private TreeMap<String, List<String>> mValues = new TreeMap<>();
     private List<String> keys;
 
     public TreelikeAdapter(Context context, Map<String, List<String>> listData) {

@@ -61,7 +61,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
     private EditText etInterval;
     private Button btnRead, btnReset, btnInit, btnSamplesCnt, btnControlReg, btnScanEPC, btnDisableLogging;
     private ProgressBar progressBar;
-    private SimpleDateFormat dtParser = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+    private final SimpleDateFormat dtParser = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
 
     private ICAEN_API cmd;
 
