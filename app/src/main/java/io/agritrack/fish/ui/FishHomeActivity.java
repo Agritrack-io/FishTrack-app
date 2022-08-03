@@ -2,23 +2,29 @@ package io.agritrack.fish.ui;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -30,6 +36,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import io.agritrack.CrashHandler;
 import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -53,6 +60,8 @@ import io.agritrack.api.sync.SyncSeaTempCallBack;
 import io.agritrack.api.sync.SyncSpeciesCallBack;
 import io.agritrack.api.sync.SyncSuppliersCallBack;
 import io.agritrack.api.sync.SyncUsersCallBack;
+import io.agritrack.api.upload.UploadingApi;
+import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.AppUserDTO;
 import io.agritrack.data.dto.BinInfoDTO;
@@ -102,8 +111,13 @@ import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
 import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FishHomeActivity extends AppCompatActivity {
     private static final int Fishing_Idx = 0, Test_Temp_Idx = 1, Transport_Idx = 2, Receiving_Idx = 3, Packaging_Quality_Idx = 4, Bin_Overturn_Idx = 5, Warehouse_Idx = 6, /*Maintenance_Idx = 5,*/
@@ -383,6 +397,7 @@ public class FishHomeActivity extends AppCompatActivity {
     private void invokeSyncAll() {
         try {
             SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
+            UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
             String token = LocalPreferences.getToken();
             UUID siteId = LocalPreferences.getCurrentSiteId();
             String clusterId = LocalPreferences.getCurrentClusterId();
@@ -439,6 +454,27 @@ public class FishHomeActivity extends AppCompatActivity {
             Call<List<SeaTemperatureTxDTO>> syncSeaTempAsyncCall = syncService.getSeaTemp(siteId, "Bearer " + token);
             syncSeaTempAsyncCall.enqueue(new SyncSeaTempCallBack(this.syncResult));
 
+            //Traverse the crash folder in the sd card to get each file
+            File file = new File(FishHomeActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "agriLogs");
+            File[] files = file.listFiles();
+
+            for (File f : files) {
+                String strFileName = f.getName();
+                //Upload file using okhttp post
+                //File jsonFile = new File(FishHomeActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), strFileName);
+
+                // create RequestBody instance from file
+                RequestBody requestFile = RequestBody.create(f, MediaType.parse("text/plain"));
+
+                // MultipartBody.Part is used to send also the actual file name
+                MultipartBody.Part filePart = MultipartBody.Part.createFormData("crashLog", strFileName, requestFile);
+
+                Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadCrashLog(filePart, "Bearer " + token);
+                uploadJsonFileAsyncCall.enqueue(new FishHomeActivity.CrashFileUploadCallBack());
+
+                //Delete the uploaded file crash folder
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -481,5 +517,36 @@ public class FishHomeActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    public class CrashFileUploadCallBack implements Callback<ResponseBody> {
+        @Override
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            try {
+                if (response.body() != null) {
+                    String fileName = response.body().string();
+                    FileUtils.deleteCrashFile(FishHomeActivity.this, fileName);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ResponseBody> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.file_failed_to_sync), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
+            }
+        }
     }
 }

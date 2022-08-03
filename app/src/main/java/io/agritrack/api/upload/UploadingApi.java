@@ -26,4 +26,8 @@ public interface UploadingApi {
     @POST("hotel/inventory/upload")
     @Multipart
     Call<ResponseBody> uploadDataLoggers(@Part MultipartBody.Part file, @Header("Authorization") String token);
+
+    @POST("log/crash/upload")
+    @Multipart
+    Call<ResponseBody> uploadCrashLog(@Part MultipartBody.Part file, @Header("Authorization") String token);
 }

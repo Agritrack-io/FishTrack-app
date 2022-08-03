@@ -1,16 +1,35 @@
 package io.agritrack;
 
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.SocketTimeoutException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.upload.UploadingApi;
+import io.agritrack.common.FileUtils;
+import io.agritrack.hotel.ui.inventory.HotelInventoryLinenActivity;
+import io.agritrack.ui.service.LocalPreferences;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private static final String TAG = CrashHandler.class.getSimpleName();
@@ -53,15 +72,12 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
      */
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-        System.out.println("thread =" + ex.getMessage());
-        System.out.println("ex =" + ex);
-
+        saveCrashInfo2File(ex);
         // in case log file was not created, redirect to system default handler
-        if (saveCrashInfo2File(ex) == null && mDefaultHandler != null) {
+        if (mDefaultHandler != null) {
             //Let the default exception handler of the system handle if the user does not handle it
             mDefaultHandler.uncaughtException(thread, ex);
         }
-        mDefaultHandler.uncaughtException(thread, ex);
     }
 
     /**
@@ -107,20 +123,5 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             Log.e(TAG, "an error occurred while writing file...", e);
         }
         return null;
-    }
-
-    /**
-     * Upload log to server
-     */
-    public void uploadLogToServer() {
-        //Traverse the crash folder in the sd card to get each file
-        File file = new File(this.mContext.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "agriLogs");
-        File[] files = file.listFiles();
-
-        for (File f : files) {
-            //Upload file using okhttp post
-
-            //Delete the uploaded file crash folder
-        }
     }
 }
