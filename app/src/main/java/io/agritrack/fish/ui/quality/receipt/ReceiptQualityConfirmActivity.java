@@ -261,10 +261,6 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             // update logger initialization timestamps
             GlobalState.commitBinInitTimes(db);
 
-            //sync
-            Call<Map<String,Long>> syncTsAsyncCall = updService.syncLoggerInitTs(recLoggerData.loggerInitData, "Bearer " + token);
-            syncTsAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncTsCallBack());
-
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -330,6 +326,12 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
                 recLoggerData.clearData();
                 db.temperatureDataDAO().deleteAll();
                 db.measurementsDAO().deleteAll();
+
+                String token = LocalPreferences.getToken();
+
+                //sync
+                Call<Map<String,Long>> syncTsAsyncCall = updService.syncLoggerInitTs(recLoggerData.loggerInitData, "Bearer " + token);
+                syncTsAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncTsCallBack());
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!

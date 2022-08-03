@@ -75,12 +75,16 @@ public class EncodingSchemeService {
     }
 
     public String[] allNames() {
-        return assetTypesMap.values().stream().map(x->x.description).collect(Collectors.toList()).toArray(new String[assetTypesMap.size()]);
+        List<String> values = assetTypesMap.values().stream().map(x -> x.description).collect(Collectors.toList());
+        values.remove("DATA_LOGGER");
+        return values.toArray(new String[values.size()]);
+        //return assetTypesMap.values().stream().map(x->x.description).collect(Collectors.toList()).toArray(new String[assetTypesMap.size()]);
     }
 
     public String[] distinctNamesOnly() {
         List<String> values = assetTypesMap.values().stream().map(x -> x.description).collect(Collectors.toList());
         values.remove("ALL");
+        values.remove("DATA_LOGGER");
         return values.toArray(new String[values.size()]);
     }
 
@@ -111,6 +115,10 @@ public class EncodingSchemeService {
 
     public String schemeCode(String epc){
         return schemeCode(epc,true);
+    }
+
+    public String nativeSchemeCode(CharSequence epc){
+        return schemeCode(String.valueOf(epc),false);
     }
 
     public String nativeSchemeCode(String epc){

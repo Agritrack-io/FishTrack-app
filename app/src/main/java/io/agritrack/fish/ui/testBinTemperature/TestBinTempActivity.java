@@ -2,6 +2,7 @@ package io.agritrack.fish.ui.testBinTemperature;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -22,9 +23,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.util.Strings;
+import com.uhf.api.cls.Reader;
 
 import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 import io.agritrack.R;
 import io.agritrack.caen.api.ICAEN_API;
@@ -51,16 +54,25 @@ public class TestBinTempActivity extends AppCompatActivity {
     private TextView tvCurrentTemp, tvCurrentBin;
     private Button btnScanBin;
     private ICAEN_API cmd;
+    private int readSamplesCountCnt = 0;
     private boolean intentForBinActivity = false;
     private boolean intentForFillBinActivity = false;
     final Runnable readLastSampleThread = new Runnable() {
         @Override
         public void run() {
-            if (cmd.ReadSamplesCount()<1){
-                progressBar.setVisibility(ProgressBar.INVISIBLE);
-                CToast(getApplicationContext(), render(R.string.data_logger_not_initialized), Toast.LENGTH_LONG);
-                return;
+            while (readSamplesCountCnt<3) {
+                readSamplesCountCnt++;
+                if (cmd.ReadSamplesCount() < 1) {
+                    progressBar.setVisibility(ProgressBar.INVISIBLE);
+                    if (!(readSamplesCountCnt<3)) {
+                        CToast(getApplicationContext(), render(R.string.data_logger_not_initialized), Toast.LENGTH_LONG);
+                        return;
+                    }
+                    CToast(getApplicationContext(), render(R.string.retry_last_temp), Toast.LENGTH_SHORT);
+                    return;
+                }
             }
+
             //cmd.LowPowerLevel();
             // read CONTROL register state
             Double lastTemp = cmd.ReadLastSample();
@@ -72,7 +84,8 @@ public class TestBinTempActivity extends AppCompatActivity {
 
             progressBar.setVisibility(ProgressBar.INVISIBLE);
 
-            if (lastTemp != null) {
+            if (lastTemp != null && lastTemp>=-10 && lastTemp<40 && lastTemp != 0.03 && lastTemp != -0.03) {
+                readSamplesCountCnt = 0;
                 Message msg = new Message();
                 msg.what = 200;
                 Bundle b = new Bundle();
