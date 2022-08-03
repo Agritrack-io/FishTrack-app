@@ -507,6 +507,7 @@ public class GlobalState {
             txWHRFIDInventory.site = recWHInventory.subSite;
             txWHRFIDInventory.performedAt = System.currentTimeMillis();
             txWHRFIDInventory.longitude = recWHInventory.longitude;
+            txWHRFIDInventory.rfidInvType = "BLIND";
             txWHRFIDInventory.latitude = recWHInventory.latitude;
             long _id = db.rFIDInventoryDAO().insert(txWHRFIDInventory);
             txWHRFIDInventory.id = _id;
