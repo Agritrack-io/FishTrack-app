@@ -41,8 +41,8 @@ public class InventoryMenuAdapter extends ArrayAdapter<MenuItem> {
     }
 
     private static class MenuItemViewHolder {
-        private TextView tvMenuCaptionUp;
-        private TextView tvMenuCaptionDown;
+        private final TextView tvMenuCaptionUp;
+        private final TextView tvMenuCaptionDown;
 
         public MenuItemViewHolder(View v) {
             tvMenuCaptionUp = (TextView) v.findViewById(R.id.tvMenuCaptionUp);

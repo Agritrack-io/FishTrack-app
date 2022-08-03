@@ -154,7 +154,7 @@ public class SemiReadyStorageConfirmActivity extends LocationAwareActivity {
         StorageRecord recStorage = FruitGlobalState.recStorage;
 
         tvWarehouse.setText(recStorage.warehouse != null ? recStorage.warehouse : "N/A");
-        tvWeight.setText(recStorage.totalWeight != null ? recStorage.totalWeight.toString() : "N/A");
+        tvWeight.setText(recStorage.totalWeight != null ? recStorage.totalWeight : "N/A");
         tvNumberTotes.setText(recStorage.totalTotesReceived != null ? recStorage.totalTotesReceived.toString() : "N/A");
 
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());

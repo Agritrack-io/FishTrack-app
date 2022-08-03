@@ -199,7 +199,7 @@ public class BX6100Commander extends AbstractCAENCommander {
     public byte CheckReply() {
         try {
             byte[] reply = readTagDataByFilter(USERBANK, ADDR_REPLY, SHORT_ONE);
-            return reply != null && REPLY_ACK == reply[1] ? reply[0] : reply != null && REPLY_NACK == reply[1] ? REPLY_NACK : REPLY_NACK;
+            return reply != null && REPLY_ACK == reply[1] ? reply[0] : REPLY_NACK;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -218,7 +218,7 @@ public class BX6100Commander extends AbstractCAENCommander {
     @Override
     public Double Init(short interval) throws Exception {
         Reader.READER_ERR rs = WriteTimeBinONE();
-        rs = WriteInterval(interval);;
+        rs = WriteInterval(interval);
         rs = WriteCurrentDatetime();
         rs = EnableLogging();
         return ReadLastSample();

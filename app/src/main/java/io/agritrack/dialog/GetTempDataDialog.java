@@ -18,7 +18,7 @@ public class GetTempDataDialog {
     private Button btnOk;
     private Dialog dialog;
     private final String binEPC;
-    private Double temperature;
+    private final Double temperature;
 
     public GetTempDataDialog(Activity activity, Double temperature, String binEPC) {
         this.activity = activity;

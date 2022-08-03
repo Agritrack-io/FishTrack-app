@@ -21,7 +21,7 @@ public class SingleShotScanner implements Runnable {
     private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
 
     private ICAEN_API uhfReader;
-    private Handler mScanHandler;
+    private final Handler mScanHandler;
     private String RFID_FILTER = null;
     private Boolean trimEPCFlag = Boolean.TRUE;
     private Integer maxLength = null;

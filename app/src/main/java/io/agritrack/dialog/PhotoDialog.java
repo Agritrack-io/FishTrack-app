@@ -43,10 +43,10 @@ public class PhotoDialog {
     private TextView tvTitle;
     private ImageView ivPhoto;
     private Button btnOk, btnCancel;
-    private MutableLiveData<Bitmap> liveItem;
+    private final MutableLiveData<Bitmap> liveItem;
     private final Activity activity;
     private Dialog dialog;
-    private String binEpc;
+    private final String binEpc;
 
     public PhotoDialog (Activity activity, MutableLiveData<Bitmap> selection, String binEpc, @StringRes int title) {
         this.activity = activity;

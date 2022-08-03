@@ -103,7 +103,7 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
                 } else {
 
                 }
-                tvInventoryItemsCount.setText("# " + String.valueOf(adapterInventoryItems.getItemCount()));
+                tvInventoryItemsCount.setText("# " + adapterInventoryItems.getItemCount());
                 scanning = false;
             }
         }

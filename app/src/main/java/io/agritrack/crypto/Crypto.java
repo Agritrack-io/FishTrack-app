@@ -15,7 +15,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Crypto {
-    private static String IV = "IV_VALUE_16_BYTE";
+    private static final String IV = "IV_VALUE_16_BYTE";
     private static final String PASSWORD = "AgriF!$h-pwd";
     private static final String SALT = "AgriF!$h-s@lt";
 

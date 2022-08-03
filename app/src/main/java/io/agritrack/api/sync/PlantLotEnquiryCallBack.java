@@ -16,13 +16,8 @@ public class PlantLotEnquiryCallBack extends BaseEnquiryCallBack<LotDTO>{
     public void onResponse(Call<LotDTO> call, Response<LotDTO> response) {
         LotDTO plantLot = response.body();
 
-        if (plantLot != null) {
-
-            // Harvest Requests sync succeeded.
-            syncResult.setValue(plantLot);
-        } else {
-            // no Harvest Requests found
-            syncResult.setValue(null);
-        }
+        // Harvest Requests sync succeeded.
+        // no Harvest Requests found
+        syncResult.setValue(plantLot);
     }
 }

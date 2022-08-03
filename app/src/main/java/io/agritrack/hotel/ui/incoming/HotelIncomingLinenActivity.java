@@ -90,7 +90,7 @@ public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity
 
     private YesNoDialogFragment confirmGPSSelectionDlg;
     private boolean proceedWithoutLocation = false;
-    private boolean storeLocation = true;
+    private final boolean storeLocation = true;
     private ImageView ivSupport, ivNext, ivBack;
     private TextView tvGroupsCnt, tvItemsCnt;
     private SupportDialog supportDialog;

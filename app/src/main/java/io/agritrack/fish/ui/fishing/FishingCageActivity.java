@@ -49,7 +49,7 @@ public class FishingCageActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
     // listens to trigger button clicks.
-    private MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
+    private final MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button scanPlatformButton, scanCageButton;

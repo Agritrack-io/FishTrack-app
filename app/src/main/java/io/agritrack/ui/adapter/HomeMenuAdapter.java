@@ -47,8 +47,8 @@ public class HomeMenuAdapter extends ArrayAdapter<MenuItem> {
     }
 
     private static class MenuItemViewHolder {
-        private ImageView ivMenuThumb;
-        private TextView tvMenuCaption;
+        private final ImageView ivMenuThumb;
+        private final TextView tvMenuCaption;
 
         public MenuItemViewHolder(View v) {
             ivMenuThumb = (ImageView) v.findViewById(R.id.ivMenuThumb);

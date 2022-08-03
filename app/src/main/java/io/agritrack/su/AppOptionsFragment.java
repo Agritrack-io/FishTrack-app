@@ -38,15 +38,15 @@ public class AppOptionsFragment extends DialogFragment {
     private ToggleButton tbEnvironment;
     private String selectedProduct;
 
-    private View.OnClickListener btSiteSelectionClickListener = v -> gotoSiteSelection(v);
+    private final View.OnClickListener btSiteSelectionClickListener = v -> gotoSiteSelection(v);
 
-    private View.OnClickListener btRT0012ClickListener = v -> gotoRT0012(v);
+    private final View.OnClickListener btRT0012ClickListener = v -> gotoRT0012(v);
 
-    private View.OnClickListener btImportRT0012ClickListener = v -> gotoImportRT0012(v);
+    private final View.OnClickListener btImportRT0012ClickListener = v -> gotoImportRT0012(v);
 
-    private View.OnClickListener btDelCfgClickListener = v -> delCfg(v);
+    private final View.OnClickListener btDelCfgClickListener = v -> delCfg(v);
 
-    private View.OnClickListener btTruncDBClickListener = v -> trunLocalDB(v);
+    private final View.OnClickListener btTruncDBClickListener = v -> trunLocalDB(v);
 
 
     public AppOptionsFragment() {

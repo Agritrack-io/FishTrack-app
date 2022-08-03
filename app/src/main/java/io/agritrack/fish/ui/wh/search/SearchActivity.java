@@ -76,7 +76,7 @@ public class SearchActivity extends AppCompatActivity {
     private String selectedAssetType;
     private String selectedBarcode = "";
     private ProgressBar searchProgressBar;
-    private String epcPrefix = "BE0019A0000";
+    private final String epcPrefix = "BE0019A0000";
     private boolean isScanning = false;
 
     @Override

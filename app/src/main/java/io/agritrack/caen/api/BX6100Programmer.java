@@ -14,7 +14,7 @@ public class BX6100Programmer  extends AbstractX9Programmer {
     private final short timeout = 500;
     private final String accessPwd = "00000000";
     private final int filterStartAddress = 2;
-    private UHFRManager mUhfRManager;
+    private final UHFRManager mUhfRManager;
     private byte[] epcBytes;
     private String tagToSearch;
 

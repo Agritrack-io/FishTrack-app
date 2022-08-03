@@ -17,13 +17,8 @@ public class RfidBatchByRfidBarcode extends BaseEnquiryCallBack<List<String>>{
     public void onResponse(Call<List<String>> call, Response<List<String>> response) {
         List<String> rfidBatch = response.body();
 
-        if (rfidBatch != null) {
-
-            // Species name got successfully.
-            syncResult.setValue(rfidBatch);
-        } else {
-            // no species found for this pole
-            syncResult.setValue(null);
-        }
+        // Species name got successfully.
+        // no species found for this pole
+        syncResult.setValue(rfidBatch);
     }
 }

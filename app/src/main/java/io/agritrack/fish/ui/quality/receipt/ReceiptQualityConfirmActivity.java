@@ -68,7 +68,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
     private ImageView ivSupport, ivNext, ivBack;
     private boolean proceedWithoutLocation = false;
     private SupportDialog supportDialog;
-    private long filesLength = 0;
+    private final long filesLength = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

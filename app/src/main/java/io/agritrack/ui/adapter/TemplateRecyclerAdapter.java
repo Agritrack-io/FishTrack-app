@@ -91,7 +91,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
                 holder.tvItemName.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
             }
             holder.tvItemName.setText(tag);
-            holder.tvItemSNo.setText(String.valueOf(position + 1) + ".");
+            holder.tvItemSNo.setText(position + 1 + ".");
         }
     }
 

@@ -17,13 +17,8 @@ public class PackagingLotEnquiryCallBack extends BaseEnquiryCallBack<LotDTO> {
     public void onResponse(Call<LotDTO> call, Response<LotDTO> response) {
         LotDTO packagingLot = response.body();
 
-        if (packagingLot != null) {
-
-            // Harvest Requests sync succeeded.
-            syncResult.setValue(packagingLot);
-        } else {
-            // no Harvest Requests found
-            syncResult.setValue(null);
-        }
+        // Harvest Requests sync succeeded.
+        // no Harvest Requests found
+        syncResult.setValue(packagingLot);
     }
 }

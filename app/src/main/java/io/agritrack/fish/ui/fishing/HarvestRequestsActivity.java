@@ -39,7 +39,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
     private ListView lvFishingRequests;
     private GenericListModel[] fishingRQs;
     private ToggleGroup tgChooseDate;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;

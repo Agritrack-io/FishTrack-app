@@ -7,11 +7,12 @@ public class TemperatureDataDTO {
     public String timestamp;
     public Double value;
 
-    public TemperatureDataDTO(){};
+    public TemperatureDataDTO(){}
+
     public TemperatureDataDTO(String ts, Double val){
         this.timestamp = ts;
         this.value = val;
-    };
+    }
 
     public static TemperatureDataDTO convert(TemperatureData value) {
         TemperatureDataDTO measurementsDTO = new TemperatureDataDTO();
