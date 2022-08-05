@@ -2,6 +2,7 @@ package io.agritrack.fish.ui.fishing;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.FileUtils.saveCrashInfo2File;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -11,6 +12,7 @@ import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,6 +33,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
@@ -117,7 +120,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         rvBins.setAdapter(adapterBins);
         rvBins.setNestedScrollingEnabled(false);
 
-        if (!intentForBinActivity && recFishing.availBins == null) {
+        if (!intentForBinActivity && CollectionUtils.isEmpty(recFishing.availBins)) {
             // instantiate a set to hold scanned EPCS.it will be passed to adapter which feeds the ListView.
             scannedBinEPCs = new LinkedHashSet<>();
         } else {
@@ -143,10 +146,18 @@ public class FishingBinsActivity extends AppCompatActivity {
                     String barcode = bundle.getString("selectedBarcode");
                     if (barcode != null) {
                         adapterBins.removeItem(barcode);
+                        scannedBinEPCs.remove(barcode);
+                        recFishing.binWeightRecord.getBins().remove(barcode);
                         adapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         adapterBins.clearSelectedValue();
                     }
+
+                });
+
+                confirmSiteSelectionDlg.onReject(bundle -> {
+                    adapterBins.clearSelectedValue();
+                    adapterBins.notifyDataSetChanged();
                 });
 
                 FragmentManager fm = getSupportFragmentManager();
@@ -162,8 +173,8 @@ public class FishingBinsActivity extends AppCompatActivity {
         });
 
         ivCheckLastTemp.setOnClickListener(view -> {
-            this.stopScanner();
             updateState();
+            this.stopScanner();
             Intent i = new Intent(getApplicationContext(), TestBinTempActivity.class);
             i.putExtra("BinActivity", true);
             startActivity(i);
@@ -208,8 +219,8 @@ public class FishingBinsActivity extends AppCompatActivity {
         super.onDestroy();
         this.stopScanner();
         //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
+        /*if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);*/
     }
 
     @Override
@@ -362,6 +373,7 @@ public class FishingBinsActivity extends AppCompatActivity {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        saveCrashInfo2File(e);
                     }
                     break;
                 case 1980:

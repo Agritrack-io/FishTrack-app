@@ -2,6 +2,7 @@ package io.agritrack.fish.ui.fishing;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.FileUtils.saveCrashInfo2File;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -63,6 +64,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     //
@@ -75,7 +77,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                     Intent data = result.getData();
                 }
             });
-    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     private Button btnCurrentBinScan, btnAddCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
     private ImageView ivBT;
@@ -264,8 +265,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         super.onDestroy();
         this.stopScanner();
         //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
+       /* if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);*/
     }
 
     protected void onClick(View view) {
@@ -305,14 +306,14 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         }
 
         if (!loadsMap.hasLoads()) {
-            recFishing.binWeightRecord.getBins();
+            recFishing.binWeightRecord.getBinsData();
             tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
         }
 
         tvAvailableBinsCount.setText(String.valueOf(hvst.availBins.size()));
 
         if (!recFishing.binWeightRecord.isEmpty()) {
-            for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBins()) {
+            for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBinsData()) {
                 loadsMap.addLoad(bin.binEPC, bin.weight + "");
             }
             tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
@@ -433,41 +434,45 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 //            }
             switch (msg.what) {
                 case 1:
-                    String epcStr = msg.getData().getString("epc");
-                    if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            String epc = epcStr.substring(14);
-                            tvCurrentBin.setText(epc);
-                            currentBin = epcStr;
+                    try {
+                        String epcStr = msg.getData().getString("epc");
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                String epc = epcStr.substring(14);
+                                tvCurrentBin.setText(epc);
+                                currentBin = epcStr;
 
-                            BinWeightRecord.BinRecord currRec = recFishing.binWeightRecord.getRecordForEPC(currentBin);
-                            if (currRec == null || currRec.init == null) {
-                                CToast(getApplicationContext(), render(R.string.data_logger_not_initialized), Toast.LENGTH_LONG);
-                                GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, null, epochFrom, null);
-                                loadsMap.addLoad(currentBin, "0");
-                            }
-                            List<String> loadForBin = loadsMap.getLoads(currentBin);
-                            if (loadForBin == null) {
-                                loadForBin = new ArrayList<>();
-                            }
-                            adapterCatches.setValues(loadForBin);
-                            if (loadsMap.getLoads(currentBin) != null) {
-                                isClicked = true;
-                            }
-                            tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-                            adapterCatches.notifyDataSetChanged();
-                            tvUsedBinsCount.setText(loadsMap.loadsCnt());
-                            epochFrom = System.currentTimeMillis() / 1000l;
-                        });
+                                BinWeightRecord.BinRecord currRec = recFishing.binWeightRecord.getRecordForEPC(currentBin);
+                                if (currRec == null || currRec.init == null) {
+                                    CToast(getApplicationContext(), render(R.string.data_logger_not_initialized), Toast.LENGTH_LONG);
+                                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, null, epochFrom, null);
+                                    loadsMap.addLoad(currentBin, "0");
+                                }
+                                List<String> loadForBin = loadsMap.getLoads(currentBin);
+                                if (loadForBin == null) {
+                                    loadForBin = new ArrayList<>();
+                                }
+                                adapterCatches.setValues(loadForBin);
+                                if (loadsMap.getLoads(currentBin) != null) {
+                                    isClicked = true;
+                                }
+                                tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
+                                adapterCatches.notifyDataSetChanged();
+                                tvUsedBinsCount.setText(loadsMap.loadsCnt());
+                                epochFrom = System.currentTimeMillis() / 1000l;
+                            });
 
-                        btnAddCatch.setEnabled(true);
-                        btnAddCatch.setTextColor(getColor(R.color.aqua));
-                        if (adapterCatches.getItemCount() != 0) {
-                            btnFillBin.setEnabled(true);
-                            btnFillBin.setTextColor(getColor(R.color.aqua));
+                            btnAddCatch.setEnabled(true);
+                            btnAddCatch.setTextColor(getColor(R.color.aqua));
+                            if (adapterCatches.getItemCount() != 0) {
+                                btnFillBin.setEnabled(true);
+                                btnFillBin.setTextColor(getColor(R.color.aqua));
+                            }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        saveCrashInfo2File(e);
                     }
-
                     break;
                 case 1980:
                     if (!IsDemo) {

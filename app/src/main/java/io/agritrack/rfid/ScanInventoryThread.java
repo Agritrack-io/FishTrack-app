@@ -35,10 +35,12 @@ public class ScanInventoryThread implements Runnable {
     }
 
     public void LowEnergy() {
+        if (uhfReader!=null)
         uhfReader.LowPowerLevel();
     }
 
     public void HighEnergy() {
+        if (uhfReader!=null)
         uhfReader.HighPowerLevel();
     }
 

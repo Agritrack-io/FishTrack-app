@@ -29,8 +29,12 @@ public class BinWeightRecord {
         return String.format("[%s]", sb);
     }
 
-    public List<BinRecord> getBins(){
+    public List<BinRecord> getBinsData(){
         return new ArrayList<>(data.values());
+    }
+
+    public Map<String, BinRecord> getBins(){
+        return this.data;
     }
 
     public boolean isEmpty(){
