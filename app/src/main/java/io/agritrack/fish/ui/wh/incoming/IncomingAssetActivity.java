@@ -209,7 +209,6 @@ public class IncomingAssetActivity extends LocationAwareActivity {
 
         // onClick button event handling...
         ivDeleteItem.setOnClickListener(view -> {
-            clearSelectedItem();
 
             if (selectedParent != null && selectedChild != null) {
                 // instantiate Site selection confirm dialog
@@ -220,6 +219,7 @@ public class IncomingAssetActivity extends LocationAwareActivity {
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
                     if (barcode != null) {
+                        clearSelectedItem();
                         adapterIncomingItems.removeItem(selectedParent, selectedChild);
                         adapterIncomingItems.notifyDataSetChanged();
                         tvGroupsCnt.setText(String.valueOf(adapterIncomingItems.getGroupCount()));

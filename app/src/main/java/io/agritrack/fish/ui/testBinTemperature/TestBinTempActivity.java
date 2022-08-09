@@ -3,6 +3,7 @@ package io.agritrack.fish.ui.testBinTemperature;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
+import static io.agritrack.common.FileUtils.saveCrashInfo2File;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -173,8 +174,8 @@ public class TestBinTempActivity extends AppCompatActivity {
         super.onDestroy();
         this.stopScanner();
         //unregister the receiver
-        if(keyReceiver != null)
-            unregisterReceiver(keyReceiver);
+        /*if(keyReceiver != null)
+            unregisterReceiver(keyReceiver);*/
     }
 
     protected void configFooter() {
@@ -256,6 +257,7 @@ public class TestBinTempActivity extends AppCompatActivity {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        saveCrashInfo2File(e);
                     }
                     break;
                 case 200:

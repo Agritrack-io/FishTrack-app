@@ -2,6 +2,7 @@ package io.agritrack.fish.ui.fishing;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.FileUtils.saveCrashInfo2File;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -214,6 +215,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         } catch (Exception e) {
             e.printStackTrace();
             CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+            saveCrashInfo2File(e);
             return false;
         }
     }

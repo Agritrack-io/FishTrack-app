@@ -176,7 +176,7 @@ public class GlobalState {
             txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight).intValue() : null;
             txFishing.totalQty = recFishing.totalFishWeight;
             txFishing.timestamp = System.currentTimeMillis();
-            txFishing.harvestBinsData = recFishing.binWeightRecord.getBins();//.toJSONText();
+            txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData();//.toJSONText();
             txFishing.team = recFishing.fishingTeam;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
             txFishing.user = LocalPreferences.getLoggedInUser("N/A");

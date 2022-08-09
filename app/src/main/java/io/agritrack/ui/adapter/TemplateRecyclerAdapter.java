@@ -44,6 +44,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     }
 
     public void clearSelectedValue(){
+        selectedPos = RecyclerView.NO_POSITION;
         this.selectedValue = null;
     }
 

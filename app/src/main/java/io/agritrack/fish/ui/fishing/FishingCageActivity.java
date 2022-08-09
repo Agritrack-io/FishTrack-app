@@ -126,8 +126,8 @@ public class FishingCageActivity extends AppCompatActivity {
         super.onDestroy();
         this.stopScanner();
         //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
+        /*if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);*/
     }
 
     @Override
