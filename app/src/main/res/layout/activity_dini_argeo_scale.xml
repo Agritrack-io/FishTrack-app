@@ -45,7 +45,7 @@
             android:layout_marginEnd="8dp"
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
-            android:text="@string/program_tags"
+            android:text="@string/diniargeo_scale"
             android:textColor="@color/yellow"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toTopOf="@+id/tvHeaderProgramLinen"
@@ -73,35 +73,135 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/formLayout"
+    <RelativeLayout
+        android:id="@+id/scaleMainLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/footerLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
 
-        <ScrollView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="1.0"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/formLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_rounded_corner_with_shadow"
+            android:orientation="vertical"
+            android:padding="1dp">
 
-            <LinearLayout
-                android:id="@+id/lstDevices_act_devices_bluetooth"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:orientation="vertical" />
-        </ScrollView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBlueTooth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/opposite_round_corners"
+                android:fontFamily="sans-serif-medium"
+                android:text="Bluetooth status"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                app:backgroundTint="@color/agri_blue"
+                app:icon="@drawable/ic_action_bluetooth"
+                app:iconGravity="start"
+                app:iconTint="@color/blue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!--Button will perform a task to fetch the
+                list of paired Bluetooth Devices-->
+            <Button
+                android:id="@+id/btnGetReading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Get Scale reading"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnBlueTooth" />
+
+
+            <!--Paired devices name-->
+            <TextView
+                android:id="@+id/nameTv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toTopOf="@id/macAddressTv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnGetReading" />
+
+            <!--Paired devices mac ID-->
+            <TextView
+                android:id="@+id/macAddressTv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@id/tvReading"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/nameTv" />
+
+            <TextView
+                android:id="@+id/tvReading"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/log_background"
+                android:gravity="bottom"
+                android:padding="@dimen/margin5"
+                android:scrollbars="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/macAddressTv" />
+
+            <ProgressBar
+                android:id="@+id/pbBluetooth"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:elevation="@dimen/margin10"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/btnBlueTooth"
+                app:layout_constraintEnd_toEndOf="@+id/btnBlueTooth"
+                app:layout_constraintTop_toTopOf="@+id/btnBlueTooth" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:background="@color/agri_semi_green"
+            android:paddingHorizontal="8dp"
+            android:text="Scale details"
+            android:textColor="@color/label_blue"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footerLayout"
@@ -114,7 +214,7 @@
         app:layout_constraintTop_toBottomOf="@+id/formLayout">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/ivPoweredByLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -122,39 +222,21 @@
             android:scaleX="0.7"
             android:scaleY="0.7"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
-            app:layout_constraintStart_toEndOf="@+id/ivBackToLogin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivBack"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
-        <ImageView
-            android:id="@+id/ivBackToLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+        <ImageButton
+            android:id="@+id/ivBack"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
             android:background="@drawable/button_rounded_shape_corners"
-            android:padding="1dp"
-            android:scaleX="1.5"
-            android:scaleY="1.2"
-            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_shortcut_arrow_back" />
-
-        <ImageView
-            android:id="@+id/ivToCongs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/button_rounded_shape_corners"
-            android:padding="1dp"
-            android:scaleX="1.5"
-            android:scaleY="1.2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/home_new" />
-
+            app:srcCompat="@drawable/logout_icon" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

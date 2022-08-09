@@ -147,10 +147,11 @@ public class FishingCageActivity extends AppCompatActivity {
             } else if (view.getId() == scanPlatformButton.getId()) {
                 scanner_runnable.setFilter(new String[]{Filters.RFID_PLATFORM});
             }
+            // NOTE: if the following lines are moved outside the If{view!=null} statement,
+            // a NullPointerException will be thrown when trigger is pressed. The App crashes!!!
+            scanner_runnable.startReading();
+            mScanHandler.postDelayed(scanner_runnable, 0);
         }
-        //scanner_runnable.setFilter(new String[]{Filters.RFID_PLATFORM, Filters.RFID_CAGE});
-        scanner_runnable.startReading();
-        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     protected void configFooter() {

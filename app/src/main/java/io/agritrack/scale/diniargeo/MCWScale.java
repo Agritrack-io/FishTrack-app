@@ -37,8 +37,6 @@ public class MCWScale {
     private boolean _connected;
     private int _decimals;
     private String _description;
-    private String _filepath;
-    private final String _ipAddress;
     private String _lastCommand;
     private final List<ScaleCommunicationListener> _listeners;
     private final int _portTCP;
@@ -71,14 +69,6 @@ public class MCWScale {
         }
     }
 
-    public String getFilePath() {
-        return this._filepath;
-    }
-
-    public void setFilepath(String str) {
-        this._filepath = str;
-    }
-
     public String getDescription() {
         return this._description;
     }
@@ -93,13 +83,6 @@ public class MCWScale {
 
     public int getDecimals() {
         return this._decimals;
-    }
-
-    public void setDecimals(int i) {
-        this._decimals = i;
-        if (this._filepath.trim().length() > 0) {
-            //SaveScale(new File(this._filepath));
-        }
     }
 
     public Enums.eWeightUM getUM() {
@@ -129,10 +112,6 @@ public class MCWScale {
 
     public eCommunicationType getCommunicationType() {
         return this._communicationType;
-    }
-
-    public String getIPAddress() {
-        return this._ipAddress;
     }
 
     public int getPortTCP() {
@@ -179,14 +158,12 @@ public class MCWScale {
         this._blueInput = null;
         this._sock = null;
         this._lastCommand = "";
-        this._filepath = "";
         this._description = "";
         this._version = "";
         this._decimals = 0;
         this._um = Enums.eWeightUM.kg;
         this._alibi = false;
         this._communicationType = eCommunicationType.TCP_IP;
-        this._ipAddress = "0.0.0.0";
         this._portTCP = 2001;
         this._bluetoothAddress = "00:00:00:00:00:00";
         this._connected = false;
@@ -258,34 +235,17 @@ public class MCWScale {
     public boolean Connect(int i) {
         onConnectionStart();
         if (!this._connected) {
-            switch (this._communicationType) {
-                case Bluetooth:
-                    if (this._blueDevice == null) {
-                        this._blueDevice = BluetoothUtils.getBluetoothAdapter().getRemoteDevice(this._bluetoothAddress);
-                    }
-                    this._blueSocket = BluetoothUtils.CreateSocket(this._blueDevice);
-                    try {
-                        this._blueSocket.connect();
-                        this._blueOutput = this._blueSocket.getOutputStream();
-                        this._blueInput = this._blueSocket.getInputStream();
-                        this._connected = this._blueSocket.isConnected();
-                        break;
-                    } catch (Exception unused) {
-                        this._connected = false;
-                        break;
-                    }
-                case TCP_IP:
-                    try {
-                        this._sock = TimedSocket.getSocket(this._ipAddress, this._portTCP, i);
-                        this._blueOutput = this._sock.getOutputStream();
-                        this._blueInput = this._sock.getInputStream();
-                        this._connected = this._sock.isConnected();
-                        break;
-                    } catch (Exception unused2) {
-                        this._sock = null;
-                        this._connected = false;
-                        break;
-                    }
+            if (this._blueDevice == null) {
+                this._blueDevice = BluetoothUtils.getBluetoothAdapter().getRemoteDevice(this._bluetoothAddress);
+            }
+            this._blueSocket = BluetoothUtils.CreateSocket(this._blueDevice);
+            try {
+                this._blueSocket.connect();
+                this._blueOutput = this._blueSocket.getOutputStream();
+                this._blueInput = this._blueSocket.getInputStream();
+                this._connected = this._blueSocket.isConnected();
+            } catch (Exception unused) {
+                this._connected = false;
             }
         }
         onConnectionEnd(this._connected);
@@ -295,25 +255,11 @@ public class MCWScale {
     public boolean Disconnect() {
         onDisconnectionStart();
         if (this._connected) {
-            switch (this._communicationType) {
-                case Bluetooth:
-                    try {
-                        this._blueSocket.close();
-                        this._connected = this._blueSocket.isConnected();
-                        break;
-                    } catch (Exception unused) {
-                        this._connected = false;
-                        break;
-                    }
-                case TCP_IP:
-                    try {
-                        this._sock.close();
-                        this._connected = this._sock.isConnected();
-                        break;
-                    } catch (Exception unused2) {
-                        this._connected = false;
-                        break;
-                    }
+            try {
+                this._blueSocket.close();
+                this._connected = this._blueSocket.isConnected();
+            } catch (Exception unused) {
+                this._connected = false;
             }
         }
         if (!this._connected) {
@@ -388,40 +334,6 @@ public class MCWScale {
             onReceivedError();
         }
         return bArr;
-    }
-
-    private String SearchValueXML(Element element, String str) {
-        String str2 = "";
-        try {
-            NodeList childNodes = element.getChildNodes();
-            int i = 0;
-            while (true) {
-                if (i >= childNodes.getLength()) {
-                    break;
-                }
-                Node item = childNodes.item(i);
-                if (item.getNodeType() == 1) {
-                    if (item.getNodeName().equals(str)) {
-                        str2 = item.getTextContent().trim();
-                        break;
-                    }
-                    if (item.getChildNodes().getLength() > 0) {
-                        String SearchValueXML = SearchValueXML((Element) item, str);
-                        if (SearchValueXML.trim().length() > 0) {
-                            str2 = SearchValueXML;
-                            break;
-                        }
-                    }
-                    if (str2.trim().length() > 0) {
-                        break;
-                    }
-                }
-                i++;
-            }
-            return str2.trim().length() == 0 ? "" : str2;
-        } catch (Exception unused) {
-            return "";
-        }
     }
 
     public synchronized void addListener(ScaleCommunicationListener scaleCommunicationListener) {

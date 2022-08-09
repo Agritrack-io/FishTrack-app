@@ -650,15 +650,19 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                 case CmdReadSamplesCnt:
                     cntSamples = msg.getData().getShort("body");
                     if (cntSamples == null || cntSamples < 0) {
-                        mActivity.get().getActivity().runOnUiThread(() -> {
-                            btnRead.setText(String.format("Invalid measurements count."));
-                            stopAnimation();
-                        });
+                        if(mActivity.get().getActivity() != null) {
+                            mActivity.get().getActivity().runOnUiThread(() -> {
+                                btnRead.setText(String.format("Invalid measurements count."));
+                                stopAnimation();
+                            });
+                        }
                     } else if(cntSamples == 0) {
-                        mActivity.get().getActivity().runOnUiThread(() -> {
-                            btnRead.setText(String.format("No measurements found."));
-                            stopAnimation();
-                        });
+                        if(mActivity.get().getActivity() != null) {
+                            mActivity.get().getActivity().runOnUiThread(() -> {
+                                btnRead.setText(String.format("No measurements found."));
+                                stopAnimation();
+                            });
+                        }
                     }
 
                     if(cntSamples == 0) {

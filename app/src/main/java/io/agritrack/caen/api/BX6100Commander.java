@@ -106,6 +106,9 @@ public class BX6100Commander extends AbstractCAENCommander {
 
     @Override
     public boolean clearEPCFilter() {
+        if(this.mUhfRManager == null) {
+            return false;
+        }
         return this.mUhfRManager.setCancleInventoryFilter();
     }
 

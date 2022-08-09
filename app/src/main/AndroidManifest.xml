@@ -15,6 +15,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <permission
         android:name="io.agritrack.content.providers.AqmIdByCageEPCProvider.READ_WRITE"
@@ -39,7 +41,8 @@
         tools:replace="android:label">
         <activity
             android:name=".ui.tools.DiniArgeoScaleActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.wh.InternalAssetActivity"
             android:exported="false"

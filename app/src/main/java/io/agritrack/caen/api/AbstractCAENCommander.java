@@ -373,7 +373,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return null;
+        return -1;
     }
 
     @Override

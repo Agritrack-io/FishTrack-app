@@ -129,7 +129,6 @@ public class MultipleFilterSingleShotScanner implements Runnable {
     private List<Optional<RFIDTag>> filterTags(List<RFIDTag> tagList) {
         Set<Optional<RFIDTag>> filteredTags = new HashSet<>();
         for (String filter : this.RFID_FILTERS) {
-            //Optional<RFIDTag> aTag = tagList.stream().sorted((y, x) -> Integer.compare(x.getRssi(), y.getRssi())).filter(i -> i.getEpc().indexOf(filter) == 11).findFirst();
             Optional<RFIDTag> aTag = tagList.stream().filter(i -> i.getEpc().indexOf(filter) == encodingIdx && encodingIdx > -1).min(Comparator.comparing(RFIDTag::getRssi));
             filteredTags.add(aTag);
         }

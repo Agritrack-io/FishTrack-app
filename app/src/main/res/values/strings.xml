@@ -633,5 +633,6 @@
     <string name="tx_successfully_updated">Tx successfully updated!!!</string>
     <string name="correlate_cage">Please correlate cage with RFID, go to Correlation Menu, and tap Cage</string>
     <string name="correlate_net">Please correlate net with RFID, go to Correlation Menu, and tap Net</string>
+    <string name="diniargeo_scale">DiniArgeo MCW Scale</string>
 
 </resources>

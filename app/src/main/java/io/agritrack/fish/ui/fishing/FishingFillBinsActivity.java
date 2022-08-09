@@ -1,35 +1,43 @@
 package io.agritrack.fish.ui.fishing;
 
+import static android.view.View.VISIBLE;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.InputType;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -55,8 +63,12 @@ import io.agritrack.fish.ui.bo.BinWeightRecord;
 import io.agritrack.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
+import io.agritrack.scale.diniargeo.BluetoothUtils;
+import io.agritrack.scale.diniargeo.ClassREAD;
+import io.agritrack.scale.diniargeo.MCWScale;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
+import io.agritrack.ui.tools.DiniArgeoScaleActivity;
 
 
 public class FishingFillBinsActivity extends AppCompatActivity {
@@ -76,7 +88,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                 }
             });
     private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
-    private Button btnCurrentBinScan, btnAddCatch, btnDeleteCatch, btnFillBin;
+    private Button btnCurrentBinScan, btnAddCatch, btnDeleteCatch, btnFillBin, btnReadScale;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
     private ImageView ivBT;
     private RecyclerView rvWeightBatchesBin;
@@ -92,6 +104,13 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
     private boolean isClicked = false;
+
+    // Bluetooth variables
+    private BluetoothAdapter bluetoothAdapter = null;
+    private BluetoothDevice bluetoothDevice = null;
+    private MCWScale scale = null;
+    private ProgressBar pbBluetooth;
+    private String currState = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,6 +256,43 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             infoDialog.showDialog();
         });
 
+
+        //############ Bluetooth initialization ###############################################
+        // get instance of BT Adapter. Will be used to search dor BT devices.
+/*        this.bluetoothAdapter = BluetoothUtils.getBluetoothAdapter();
+        // register handlers for BT events.
+        bluetooth_RegisterHandlers();
+
+        // enable bluetooth
+        BluetoothUtils.Switch(true);
+        // start discovering
+        if (this.bluetoothAdapter != null && !this.bluetoothAdapter.isDiscovering()) {
+            ((Runnable) () -> this.bluetoothAdapter.startDiscovery()).run();
+        }
+
+        btnReadScale.setOnClickListener(view -> {
+            // Checks if Bluetooth Adapter is present
+            if (bluetoothAdapter == null) {
+                Toast.makeText(getApplicationContext(), "Bluetooth Not Supported", Toast.LENGTH_SHORT).show();
+            } else if(scale==null) {
+                Toast.makeText(getApplicationContext(), "No Scale was found!", Toast.LENGTH_SHORT).show();
+            } else {
+                boolean connected = scale.Connect();
+                if(connected) {
+                    boolean sentReadCmd = scale.Send("READ");
+                    String read = scale.ReadString();
+                    if(!Strings.isEmptyOrWhitespace(read)) {
+                        ClassREAD reading = new ClassREAD(read);
+                        if(reading != null) {
+                            btnReadScale.setText(String.format("%.0f %s %s\n", reading.getNet(), reading.getWeigthUM(), reading.getWeigthState()));
+                        }
+                    }
+                }
+            }
+        });*/
+        //#####################################################################################
+
+
         // ============
         configFooter();
     }
@@ -248,6 +304,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.rfid.FUN_KEY");
         this.registerReceiver(keyReceiver, filter);
+
+
     }
 
     @Override
@@ -255,8 +313,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         super.onStop();
         this.stopScanner();
         //unregister the receiver
-        if (keyReceiver != null)
+        if (keyReceiver != null) {
             unregisterReceiver(keyReceiver);
+        }
     }
 
     @Override
@@ -264,8 +323,11 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         super.onDestroy();
         this.stopScanner();
         //unregister the receiver
-        if (keyReceiver != null)
+        if (keyReceiver != null) {
             unregisterReceiver(keyReceiver);
+        }
+        // dispose bluetooth handlers
+        Bluetooth_DisposeHandlers();
     }
 
     protected void onClick(View view) {
@@ -281,6 +343,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         btnAddCatch = findViewById(R.id.btnAddCatch);
         btnDeleteCatch = findViewById(R.id.btnDeleteCatch);
         btnFillBin = findViewById(R.id.btnEndBin);
+        btnReadScale = findViewById(R.id.btnReadScale);
         tvCurrentBin = findViewById(R.id.tvBinName);
         tvBinWeight = findViewById(R.id.tvBinWeight);
         tvTotalWeightCount = findViewById(R.id.tvTotalWeightCount);
@@ -291,6 +354,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         ivSupport = findViewById(R.id.ivSupport);
         ivInfo = findViewById(R.id.ivInfo);
         ivBT = findViewById(R.id.ivBT);
+        // bluetooth progress bar
+        pbBluetooth =  findViewById(R.id.pbBluetooth);
     }
 
     private void initControlsFromState() {
@@ -477,4 +542,62 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    //#######################################
+    //####   Private BLUETOOTH methods   ####
+    //#######################################
+    private void bluetooth_RegisterHandlers() {
+        registerReceiver(this.bluetoothReceiver, new IntentFilter("android.bluetooth.adapter.action.DISCOVERY_STARTED"));
+        registerReceiver(this.bluetoothReceiver, new IntentFilter("android.bluetooth.adapter.action.DISCOVERY_FINISHED"));
+        registerReceiver(this.bluetoothReceiver, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED"));
+        registerReceiver(this.bluetoothReceiver, new IntentFilter("android.bluetooth.device.action.FOUND"));
+        registerReceiver(this.bluetoothReceiver, new IntentFilter("android.bluetooth.device.action.BOND_STATE_CHANGED"));
+    }
+
+    private void Bluetooth_DisposeHandlers() {
+        unregisterReceiver(this.bluetoothReceiver);
+    }
+
+    private void addDevice(BluetoothDevice bluetoothDevice) {
+        this.scale = new MCWScale(bluetoothDevice);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Log.wtf("DEVICE FOUND", String.format("%s [%s]", bluetoothDevice.getName(), bluetoothDevice.getAddress()));
+        // append in the two separate views
+        btnReadScale.setText(bluetoothDevice.getName());
+    }
+
+    // Broadcast receiver that handles BlueTooth events.
+    private final BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if ("android.bluetooth.adapter.action.DISCOVERY_STARTED".equals(action)) {
+                pbBluetooth.setVisibility(VISIBLE);
+            } else if ("android.bluetooth.adapter.action.DISCOVERY_FINISHED".equals(action)) {
+                pbBluetooth.setVisibility(View.INVISIBLE);
+                //btnGetReading.setVisibility(VISIBLE);
+            } else if ("android.bluetooth.adapter.action.STATE_CHANGED".equals(action)) {
+                if (bluetoothAdapter.isEnabled()) {
+                    currState = null;
+                }
+            } else if ("android.bluetooth.device.action.BOND_STATE_CHANGED".equals(action)) {
+                //changeState("BOND_STATE_CHANGED");
+            } else if ("android.bluetooth.device.action.FOUND".equals(action)) {
+                BluetoothDevice bluetoothDevice = intent.getParcelableExtra("android.bluetooth.device.extra.DEVICE");
+                String trim = ((bluetoothDevice == null || bluetoothDevice.getName() == null) ? "" : bluetoothDevice.getName()).trim();
+                if (trim.length() > 0 && trim.startsWith("BTDA")) {
+                    addDevice(bluetoothDevice);
+                }
+            }
+        }
+    };
 }
