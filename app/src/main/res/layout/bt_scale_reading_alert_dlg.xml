@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:id="@+id/alertDialogLoginForm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:stretchColumns="1"
+        android:layout_margin="@dimen/margin10">
+
+        <!-- Weight type-in row. -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fish_catch_weight" />
+
+            <EditText
+                android:id="@+id/etFishCatchWeight"
+                android:gravity="center|end"
+                android:inputType="number"
+                android:lines="1"
+                android:maxLength="25"
+                android:maxLines="1" />
+
+            <Button
+                android:id="@+id/ivRefreshScale"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/ic_bluetooth_on" />
+        </TableRow>
+
+        <!-- Scale status row. -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bt_scale_status" />
+
+            <EditText
+                android:id="@+id/etBTScaleStatus"
+                android:enabled="false"
+                android:gravity="center|end"
+                android:lines="1"
+                android:maxLength="18"
+                android:maxLines="1" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

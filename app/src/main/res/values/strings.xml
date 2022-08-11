@@ -117,6 +117,8 @@
     <string name="weight_bin">Weight of Bin:</string>
     <string name="type_weight">Please type weight</string>
     <string name="fish_catch_weight">Fish Catch Weight</string>
+    <string name="bt_scale_reading">Scale reading</string>
+    <string name="bt_scale_status">BT scale status</string>
     <string name="fishing_catches">Fishing Catches</string>
     <string name="fishing_summary">Fishing Summary</string>
     <string name="fill_bin">Please press BIN FILLED</string>

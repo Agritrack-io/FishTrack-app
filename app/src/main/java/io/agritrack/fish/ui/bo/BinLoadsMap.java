@@ -22,6 +22,11 @@ public class BinLoadsMap {
     public BinLoadsMap() {}
 
     public void addLoad(String bin, String load) {
+        // Bug fix, due to load = "null"!!
+        if(Strings.isEmptyOrWhitespace(load) || "".equalsIgnoreCase(load)) {
+            return;
+        }
+
         List<String> loadsforBin = loads.get(bin);
 
         if(loadsforBin==null) {
@@ -68,13 +73,16 @@ public class BinLoadsMap {
     }
 
     public Integer weightOf(String bin) {
-        if(Strings.isEmptyOrWhitespace(bin) || !loads.containsKey(bin)) {  //|| recFishing.binWeightRecord.getRecordForEPC(bin).weight == null
+        if(Strings.isEmptyOrWhitespace(bin) || !loads.containsKey(bin)) {
             return 0;
         }
 
         Integer total = 0;
         for(String w : loads.get(bin)) {
-            total += !Strings.isEmptyOrWhitespace(w) ? Integer.valueOf(w) : 0; //TextUtils.isDigitsOnly(
+            if("null".equalsIgnoreCase(w)) {
+                continue;
+            }
+            total += !Strings.isEmptyOrWhitespace(w) ? Integer.valueOf(w) : 0;
         }
         return total;
     }

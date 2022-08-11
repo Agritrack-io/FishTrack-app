@@ -24,7 +24,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.InputType;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -69,7 +68,6 @@ import io.agritrack.scale.diniargeo.ClassREAD;
 import io.agritrack.scale.diniargeo.MCWScale;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.DiniArgeoScaleActivity;
 
 
 public class FishingFillBinsActivity extends AppCompatActivity {
@@ -89,12 +87,10 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                     Intent data = result.getData();
                 }
             });
-    private Button btnCurrentBinScan, btnAddCatch, btnDeleteCatch, btnFillBin, btnReadScale;
+    private Button btnCurrentBinScan, btnAddCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
-    private ImageView ivBT;
     private RecyclerView rvWeightBatchesBin;
     private TemplateRecyclerAdapter adapterCatches;
-    private boolean isClickable;
     private boolean intentForFillBinActivity = false;
     private String mCatchWeight = "";
     private String currentBin;
@@ -143,7 +139,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         rvWeightBatchesBin.setItemAnimator(new DefaultItemAnimator());
         rvWeightBatchesBin.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         adapterCatches = new TemplateRecyclerAdapter(this, new ArrayList<>(), false);
-        isClickable = adapterCatches.isClickable;
         rvWeightBatchesBin.setAdapter(adapterCatches);
         rvWeightBatchesBin.setNestedScrollingEnabled(false);
 
@@ -171,7 +166,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             btnDeleteCatch.setTextColor(getColor(R.color.aqua));
 
             //show Message box
-            showCatchDialog();
+            showBTScaleCatchDialog();
+            //showCatchDialog();
         });
 
         // =================================
@@ -187,7 +183,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                 }
                 weightOfBin = null;
             }
-            isClickable = false;
             btnCurrentBinScan.setEnabled(true);
             btnCurrentBinScan.setTextColor(getColor(R.color.aqua));
             btnAddCatch.setEnabled(false);
@@ -200,7 +195,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         });
 
         btnDeleteCatch.setOnClickListener(view -> {
-
             if (!Strings.isEmptyOrWhitespace(adapterCatches.getSelectedValue())) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
@@ -260,7 +254,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         //############ Bluetooth initialization ###############################################
         // get instance of BT Adapter. Will be used to search dor BT devices.
-/*        this.bluetoothAdapter = BluetoothUtils.getBluetoothAdapter();
+        this.bluetoothAdapter = BluetoothUtils.getBluetoothAdapter();
         // register handlers for BT events.
         bluetooth_RegisterHandlers();
 
@@ -270,27 +264,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         if (this.bluetoothAdapter != null && !this.bluetoothAdapter.isDiscovering()) {
             ((Runnable) () -> this.bluetoothAdapter.startDiscovery()).run();
         }
-
-        btnReadScale.setOnClickListener(view -> {
-            // Checks if Bluetooth Adapter is present
-            if (bluetoothAdapter == null) {
-                Toast.makeText(getApplicationContext(), "Bluetooth Not Supported", Toast.LENGTH_SHORT).show();
-            } else if(scale==null) {
-                Toast.makeText(getApplicationContext(), "No Scale was found!", Toast.LENGTH_SHORT).show();
-            } else {
-                boolean connected = scale.Connect();
-                if(connected) {
-                    boolean sentReadCmd = scale.Send("READ");
-                    String read = scale.ReadString();
-                    if(!Strings.isEmptyOrWhitespace(read)) {
-                        ClassREAD reading = new ClassREAD(read);
-                        if(reading != null) {
-                            btnReadScale.setText(String.format("%.0f %s %s\n", reading.getNet(), reading.getWeigthUM(), reading.getWeigthState()));
-                        }
-                    }
-                }
-            }
-        });*/
         //#####################################################################################
 
 
@@ -305,8 +278,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.rfid.FUN_KEY");
         this.registerReceiver(keyReceiver, filter);
-
-
     }
 
     @Override
@@ -336,7 +307,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         scanner_runnable.setFilter(Filters.RFID_BIN);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
-        isClickable = true;
     }
 
     private void assignCtrlVars() {
@@ -344,7 +314,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         btnAddCatch = findViewById(R.id.btnAddCatch);
         btnDeleteCatch = findViewById(R.id.btnDeleteCatch);
         btnFillBin = findViewById(R.id.btnEndBin);
-        btnReadScale = findViewById(R.id.btnReadScale);
         tvCurrentBin = findViewById(R.id.tvBinName);
         tvBinWeight = findViewById(R.id.tvBinWeight);
         tvTotalWeightCount = findViewById(R.id.tvTotalWeightCount);
@@ -354,9 +323,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         ivCheckLastTemp = findViewById(R.id.ivCheckLastTemp);
         ivSupport = findViewById(R.id.ivSupport);
         ivInfo = findViewById(R.id.ivInfo);
-        ivBT = findViewById(R.id.ivBT);
         // bluetooth progress bar
-        pbBluetooth =  findViewById(R.id.pbBluetooth);
+        pbBluetooth = findViewById(R.id.pbBluetooth);
     }
 
     private void initControlsFromState() {
@@ -375,7 +343,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
         }
 
-        tvAvailableBinsCount.setText(String.valueOf(hvst.availBins.size()));
+        // sometimes 'hvst.availBins' is null!!!
+        int availBinsCnt = hvst.availBins != null ? hvst.availBins.size() : 0;
+        tvAvailableBinsCount.setText(String.valueOf(availBinsCnt));
 
         if (!recFishing.binWeightRecord.isEmpty()) {
             for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBinsData()) {
@@ -384,7 +354,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
             isClicked = true;
         }
-        //txFishing.harvestBinsData = brecFishing.binWeightRecord.getBins();
     }
 
     protected void configFooter() {
@@ -440,6 +409,97 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             }
         }
         return sb.toString();
+    }
+
+    private void showBTScaleCatchDialog() {
+        // Store the created AlertDialog instance.
+        // Because only AlertDialog has cancel method.
+        AlertDialog alertDialog = null;
+
+        // Create a alert dialog builder.
+        final AlertDialog.Builder builder = new AlertDialog.Builder(FishingFillBinsActivity.this);
+        // Set icon value.
+        builder.setIcon(R.mipmap.ic_launcher);
+        // Set title value.
+        builder.setTitle(R.string.type_weight);
+
+        // Get custom login form view.
+        final View btScaleWeightFormView = getLayoutInflater().inflate(R.layout.bt_scale_reading_alert_dlg, null);
+
+        // assign variables to ui controls.
+        final EditText etWeight = btScaleWeightFormView.findViewById(R.id.etFishCatchWeight);
+        final TextView tvStatus = btScaleWeightFormView.findViewById(R.id.etBTScaleStatus);
+        final Button ivRefreshScale = btScaleWeightFormView.findViewById(R.id.ivRefreshScale);
+        ivRefreshScale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClassREAD reading = getScaleReading();
+                if (reading != null) {
+                    tvStatus.setText(reading.getWeigthState().name());
+                    if (reading.getNet() > 0) {
+                        etWeight.setText(String.format("%.0f", reading.getNet()));
+                    }
+                } else {
+                    tvStatus.setText("N/A");
+                }
+            }
+        });
+
+//        ClassREAD reading = getScaleReading();
+//        if (reading != null) {
+//            tvStatus.setText(reading.getWeigthState().name());
+//            etWeight.setText(String.format("%.0f", reading.getNet()));
+//        } else {
+//            tvStatus.setText("N/A");
+//        }
+
+        // Set above view in alert dialog.
+        builder.setView(btScaleWeightFormView);
+
+        // Register button click listener.
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            mCatchWeight = etWeight.getText().toString();
+            if (Strings.isEmptyOrWhitespace(mCatchWeight)) {
+                CToast(getApplicationContext(), render(R.string.type_weight), Toast.LENGTH_LONG);
+                return;
+            }
+            adapterCatches.addItem(mCatchWeight);
+            adapterCatches.notifyDataSetChanged();
+
+            tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
+            weightOfBin = loadsMap.weightOf(currentBin);
+            tvUsedBinsCount.setText(loadsMap.loadsCnt());
+            tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
+        });
+
+        // Reset button click listener.
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            // Close Alert Dialog.
+            dialog.cancel();
+        });
+
+        builder.setCancelable(true);
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private ClassREAD getScaleReading() {
+        // Checks if Bluetooth Adapter is present
+        if (bluetoothAdapter == null) {
+            Toast.makeText(getApplicationContext(), "Bluetooth Not Supported", Toast.LENGTH_SHORT).show();
+        } else if (scale == null) {
+            Toast.makeText(getApplicationContext(), "No Scale was found!", Toast.LENGTH_SHORT).show();
+        } else {
+            boolean connected = scale.Connect();
+            if (connected) {
+                boolean sentReadCmd = scale.Send("READ");
+                String read = scale.ReadString();
+                if (!Strings.isEmptyOrWhitespace(read)) {
+                    return new ClassREAD(read);
+                }
+            }
+        }
+        return null;
     }
 
     private void showCatchDialog() {
@@ -577,8 +637,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             return;
         }
         Log.wtf("DEVICE FOUND", String.format("%s [%s]", bluetoothDevice.getName(), bluetoothDevice.getAddress()));
-        // append in the two separate views
-        btnReadScale.setText(bluetoothDevice.getName());
     }
 
     // Broadcast receiver that handles BlueTooth events.

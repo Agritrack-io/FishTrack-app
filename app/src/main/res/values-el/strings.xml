@@ -119,6 +119,8 @@
     <string name="type_weight">Παρακαλώ πληκτρολογήστε βάρος</string>
     <string name="fishing_catches">Ψαριές</string>
     <string name="fish_catch_weight">Βάρος ψαριάς</string>
+    <string name="bt_scale_reading">Ένδειξη ζυγαριάς</string>
+    <string name="bt_scale_status">Κατάσταση ζυγαριάς</string>
     <string name="fishing_summary">Σύνολα αλίευσης</string>
     <string name="fill_bin">Παρακαλώ πατήστε ΤΕΛΟΣ ΒΟΥΤΑΣ</string>
     <string name="total_weight">ΣΥΝΟΛΙΚΟ ΒΑΡΟΣ:</string>
