@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.fishing;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.FileUtils.saveCrashInfo2File;
 import static io.agritrack.common.LargeString.render;
@@ -207,9 +208,15 @@ public class FishingConfirmActivity extends LocationAwareActivity {
                 db.fishingRequestsDAO().delete(hDelObj);
             }
 
-            // sync fish species
-            Call<FishingTxDTO> syncTxAsyncCall = updService.syncFishingTx(FishingTxDTO.convert(tx), "Bearer " + token);
-            syncTxAsyncCall.enqueue(new SyncTxCallBack());
+            if (IsOnline) {
+                // sync fish tx
+                Call<FishingTxDTO> syncTxAsyncCall = updService.syncFishingTx(FishingTxDTO.convert(tx), "Bearer " + token);
+                syncTxAsyncCall.enqueue(new SyncTxCallBack());
+            } else {
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
+            }
 
             return true;
         } catch (Exception e) {

@@ -32,6 +32,9 @@ public interface FishingRequestDAO {
     @Query("SELECT * from fishing_request where request_id=:fishingRequestId LIMIT 1")
     FishingRequest getById(String fishingRequestId);
 
+    @Query("SELECT * from fishing_request where request_id LIKE '%' || :harvReq || '%'")
+    List<FishingRequest> getAllFishReqWithSameHarvReq(String harvReq);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(FishingRequest... fishingRequests);
 

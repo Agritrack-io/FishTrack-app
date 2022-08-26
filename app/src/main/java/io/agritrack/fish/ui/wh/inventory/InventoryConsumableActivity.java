@@ -302,7 +302,6 @@ public class InventoryConsumableActivity extends LocationAwareActivity implement
         rvInventoryItems = findViewById(R.id.rvInventoryItems);
         tvInventoryItemsCount = findViewById(R.id.tvInventoryItemsCount);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
-        ivAddItem = findViewById(R.id.ivAddItem);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToWhMenu);
         btnScanConsumable = findViewById(R.id.btnScanConsumable);

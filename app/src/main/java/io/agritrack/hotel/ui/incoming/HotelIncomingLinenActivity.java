@@ -352,7 +352,6 @@ public class HotelIncomingLinenActivity<uploadSvc> extends LocationAwareActivity
         tvIncomingProcessFrom = findViewById(R.id.tvIncomingProcessFrom);
         tvIncomingProcessTo = findViewById(R.id.tvIncomingProcessTo);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
-        ivAddItem = findViewById(R.id.ivAddItem);
         ivSupport = findViewById(R.id.ivSupport);
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);

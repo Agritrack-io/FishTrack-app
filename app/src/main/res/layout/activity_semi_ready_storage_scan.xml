@@ -198,10 +198,13 @@ tools:context=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity">
 
             <ImageButton
                 android:id="@+id/ivAddTote"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginBottom="6dp"
+                android:adjustViewBounds="true"
                 android:background="@color/transparent"
+                android:scaleType="fitCenter"
                 app:layout_constraintBottom_toTopOf="@+id/rvUsedTotesHarvest"
                 app:layout_constraintEnd_toStartOf="@+id/tvSelectTotes"
                 app:layout_constraintStart_toStartOf="parent"

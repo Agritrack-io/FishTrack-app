@@ -370,17 +370,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems"
                     app:srcCompat="@drawable/ic_delete" />
 
-                <ImageButton
-                    android:id="@+id/ivAddItem"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="8dp"
-                    android:background="@color/transparent"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/xvIncomingItems"
-                    app:srcCompat="@drawable/ic_add_stock_opname" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </RelativeLayout>

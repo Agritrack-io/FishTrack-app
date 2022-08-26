@@ -274,7 +274,6 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
         tgChooseAssetType = findViewById(R.id.tgChooseAssetType);
         xvInventoryItems = findViewById(R.id.xvInventoryItems);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
-        ivAddItem = findViewById(R.id.ivAddItem);
         ivSupport = findViewById(R.id.ivSupport);
         tgChooseAssetType.setOnCheckedChangeListener(this);
         scanButton = findViewById(R.id.btnScanAsset);

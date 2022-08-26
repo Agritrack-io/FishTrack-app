@@ -351,7 +351,11 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBinsData()) {
                 loadsMap.addLoad(bin.binEPC, bin.weight + "");
             }
-            tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
+            if (recFishing.reqWeight!=null) {
+                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
+            } else {
+                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), "N/A"));
+            }
             isClicked = true;
         }
     }
@@ -469,7 +473,11 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
             weightOfBin = loadsMap.weightOf(currentBin);
             tvUsedBinsCount.setText(loadsMap.loadsCnt());
-            tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
+            if (recFishing.reqWeight!=null) {
+                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
+            } else {
+                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), "N/A"));
+            }
         });
 
         // Reset button click listener.

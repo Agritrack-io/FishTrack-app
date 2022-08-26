@@ -38,6 +38,8 @@ public class FishingRecord {
     public BinTemperatureRecord binTemperatureRecord = new BinTemperatureRecord();
     public BinWeightRecord binWeightRecord = new BinWeightRecord();
     public String typedCageCode;
+    public boolean outOfSystemFishing = false;
+    public String reasonOutOfSystemFishing;
 
     public FishingRecord() {
     }
@@ -46,6 +48,7 @@ public class FishingRecord {
         FishingRecord fishingRecord = new FishingRecord();
 
         fishingRecord.txKey = tx.id;
+        fishingRecord.outOfSystemFishing = tx.outOfSystemFishing;
         fishingRecord.fishingRq = tx.fishingRq;
         fishingRecord.requesterName = tx.requester;
         fishingRecord.reqWeight = tx.orderedQuantity != null ? Double.valueOf(tx.orderedQuantity.toString()) : null;

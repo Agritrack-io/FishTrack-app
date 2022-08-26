@@ -1,7 +1,9 @@
 package io.agritrack.ui.login;
 
+import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 import static io.agritrack.ui.service.LocalPreferences.Logged_In_User_Key;
 import static io.agritrack.ui.service.LocalPreferences.Token_Key;
@@ -25,8 +27,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -62,6 +68,8 @@ import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.data.dto.wh.FoodSkuDTO;
+import io.agritrack.data.model.AppUser;
+import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.hotel.ui.HotelHomeActivity;
@@ -85,6 +93,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private MobileDB db;
+    private YesNoDialogFragment confirmOfflineProcess;
     private ImageButton ibLocale;
     private ProgressDialog progressDialog;
     private int syncCounter = 1;
@@ -109,6 +118,17 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        confirmOfflineProcess = YesNoDialogFragment.instance();
+        confirmOfflineProcess.onConfirm(bundle -> {
+            IsOnline = false;
+            AppUser user = db.userDAO().getByUsername(etUserName.getText().toString().trim());
+            runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(user.username, null, user.roles))));
+        });
+        confirmOfflineProcess.onReject(bundle -> {
+            runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.change_position_to_find_network_coverage)));
+        });
+        confirmOfflineProcess.setCancelable(false);
 
         // show previous loggeding user name
         String previousLoggedInUser = LocalPreferences.getLoggedInUser(null);
@@ -238,6 +258,10 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
+        /*DecodedJWT jwt = JWT.decode(model.getToken());
+        if( jwt.getExpiresAt().before(new Date())) {
+            System.out.println("token is expired");
+        }*/
         LocalPreferences.writeValue(Token_Key, model.getToken());
         LocalPreferences.writeValue(Logged_In_User_Key, model.getUsername());
         LocalPreferences.setUserRoles(model.getRoles());
@@ -299,8 +323,8 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             UUID siteId = LocalPreferences.getCurrentSiteId();
             String clusterId = LocalPreferences.getCurrentClusterId();
 
-            //Clean encoding scheme table before update
-            this.db.encodingSchemeDAO().deleteAll();
+            /*//Clean encoding scheme table before update
+            this.db.encodingSchemeDAO().deleteAll();*/
 
             // sync sites for current cluster
             Call<List<SiteDTO>> syncSitesAsyncCall = syncService.getSitesByCluster(clusterId, "Bearer " + token);
@@ -488,6 +512,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             AuthInfoRS rs = response.body();
 
             if (rs != null) {
+                IsOnline = true;
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(this.userName, rs.getToken(), rs.getRoles()))));
                 LocalPreferences.updateLoginTime();
             } else {
@@ -502,7 +527,9 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.error_connection_timeout)));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.error_timeout)));
+                FragmentManager fm = getSupportFragmentManager();
+                confirmOfflineProcess.setMessage(getString(R.string.proceed_without_network));
+                confirmOfflineProcess.showNow(fm, getString(R.string.confirm_selection));
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user

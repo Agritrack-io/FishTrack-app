@@ -313,7 +313,6 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
         xvInventoryItems = findViewById(R.id.xvInventoryItems);
         spLinenType = findViewById(R.id.spLinenType);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
-        ivAddItem = findViewById(R.id.ivAddItem);
         ivSupport = findViewById(R.id.ivSupport);
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);

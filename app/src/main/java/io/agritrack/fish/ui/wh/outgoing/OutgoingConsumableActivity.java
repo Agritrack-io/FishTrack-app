@@ -303,7 +303,6 @@ public class OutgoingConsumableActivity extends LocationAwareActivity implements
         tvOutgoingProcessFrom = findViewById(R.id.tvOutgoingProcessFrom);
         tvOutgoingProcessTo = findViewById(R.id.tvOutgoingProcessTo);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
-        ivAddItem = findViewById(R.id.ivAddItem);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToStartOutgoing);
         btnScanConsumable = findViewById(R.id.btnScanConsumable);

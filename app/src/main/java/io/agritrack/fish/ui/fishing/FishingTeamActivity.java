@@ -3,6 +3,7 @@ package io.agritrack.fish.ui.fishing;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -35,9 +37,12 @@ import java.util.stream.IntStream;
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.common.Employee;
+import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -51,14 +56,23 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
     private ImageButton ivAddEmployee;
     private String memberName;
 
+    private YesNoDialogFragment confirmDeleteFishingDlg;
+    private boolean proceed = false;
     private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
+
+    private String reasonOutOfSystemFishing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_team);
+
+        if (getIntent() != null && reasonOutOfSystemFishing==null) {
+            Bundle bundle = getIntent().getExtras();
+            reasonOutOfSystemFishing = bundle != null ? bundle.getString("reason") : reasonOutOfSystemFishing;
+        }
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
@@ -100,6 +114,19 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        confirmDeleteFishingDlg = YesNoDialogFragment.instance();
+        confirmDeleteFishingDlg.setMessage(getText(R.string.delete_fishing_tx));
+        confirmDeleteFishingDlg.onConfirm(bundle -> {
+            FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
+            db.fishingTransactionDAO().delete(openTx);
+            proceed = true;
+            moveToNextScreen();
+        });
+        confirmDeleteFishingDlg.onReject(bundle -> {
+            proceed = true;
+            moveToNextScreen();
+        });
+
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(FishingTeamActivity.this);
             supportDialog.showDialog();
@@ -112,6 +139,13 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
         // create Footer
         configFooter();
+    }
+
+    private void moveToNextScreen() {
+        if (proceed) {
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            startActivity(i);
+        }
     }
 
     protected void configFooter() {
@@ -129,8 +163,13 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
         ImageView ivBack = findViewById(R.id.ivBackToBins);
         ivBack.setOnClickListener(view -> {
+            if (recFishing.outOfSystemFishing){
+                FragmentManager fm = getSupportFragmentManager();
+                confirmDeleteFishingDlg.showNow(fm, getString(R.string.confirm_selection));
+            } else {
             Intent i = new Intent(getApplicationContext(), FishingStartActivity.class);
             startActivity(i);
+            }
         });
     }
 
@@ -142,12 +181,12 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
     private void initControlsFromState() {
 
-        if (GlobalState.recFishing.fishingTeam != null && !GlobalState.recFishing.fishingTeam.isEmpty()) {
+        if (recFishing.fishingTeam != null && !recFishing.fishingTeam.isEmpty()) {
             int[] matchingIndices = IntStream.range(0, this.candidates.size())
-                    .filter(i -> GlobalState.recFishing.fishingTeam.contains(this.candidates.get(i).toString()))
+                    .filter(i -> recFishing.fishingTeam.contains(this.candidates.get(i).toString()))
                     .toArray();
 
-            int sz = GlobalState.recFishing.fishingTeam.size();
+            int sz = recFishing.fishingTeam.size();
             // Since coming from <back> button, retain the previously checked items.
             for (int i : matchingIndices) {
                 this.lvFishingTeam.setItemChecked(i, Boolean.TRUE);
@@ -157,24 +196,31 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
             TextView tvEmployeesCount = findViewById(R.id.tvEmployeesCount);
             tvEmployeesCount.setText(String.valueOf(sz));
         }
+
+        if (!Strings.isEmptyOrWhitespace(recFishing.reasonOutOfSystemFishing)) {
+            reasonOutOfSystemFishing = recFishing.reasonOutOfSystemFishing;
+        }
     }
 
     private void updateState() {
         // reset the list of selected Indexes.
-        GlobalState.recFishing.fishingTeam = new ArrayList<>();
+        recFishing.fishingTeam = new ArrayList<>();
         SparseBooleanArray sp = this.lvFishingTeam.getCheckedItemPositions();
         for (int idx = 0; idx < sp.size(); idx++) {
             if (sp.valueAt(idx)) {
-                GlobalState.recFishing.fishingTeam.add(((GenericListModel) this.lvFishingTeam.getAdapter().getItem(sp.keyAt(idx))).toString());
+                recFishing.fishingTeam.add(((GenericListModel) this.lvFishingTeam.getAdapter().getItem(sp.keyAt(idx))).toString());
             }
         }
+
+        recFishing.reasonOutOfSystemFishing = reasonOutOfSystemFishing;
+
         GlobalState.commitFishing(db, Boolean.FALSE);
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if(!IsDemo) {
-            if (GlobalState.recFishing.fishingTeam == null || GlobalState.recFishing.fishingTeam.isEmpty()) {
+            if (recFishing.fishingTeam == null || recFishing.fishingTeam.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Team members'"));
             }
         }

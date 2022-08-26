@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:id="@+id/alertDialogConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:stretchColumns="1"
+        android:layout_margin="@dimen/margin10">
+
+        <!-- Supervisor row. -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/supervisor" />
+
+            <EditText
+                android:id="@+id/etSupervisorName"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center|end"
+                android:inputType="number"
+                android:lines="1"
+                android:maxLength="25"
+                android:maxLines="1" />
+
+        </TableRow>
+
+        <!-- Packaging plant row. -->
+        <TableRow
+            android:id="@+id/packagingPlant"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/packaging_plant" />
+
+            <Spinner
+                android:id="@+id/spPackagingPlant"
+                style="@style/spinner_style"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:dropDownWidth="match_parent"
+                android:focusableInTouchMode="true"
+                android:requiresFadingEdge="horizontal"
+                android:spinnerMode="dropdown"
+                android:textAlignment="textStart"
+                android:enabled="false" />
+        </TableRow>
+
+        <!-- Pin row. -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pin" />
+
+            <EditText
+                android:id="@+id/etPin"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:enabled="false"
+                android:gravity="center|end"
+                android:lines="1"
+                android:maxLength="4"
+                android:maxLines="1" />
+        </TableRow>
+
+        <Button
+            android:id="@+id/btnOk"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/button_press_effect"
+            android:text="OK"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/text_view_font_size" />
+    </TableLayout>
+</LinearLayout>

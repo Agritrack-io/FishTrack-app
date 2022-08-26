@@ -83,6 +83,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/refresh" />
 
+        <TextView
+            android:id="@+id/tvOfflineWork"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/offline_work"
+            android:textColor="@color/agri_red"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toStartOf="@+id/ivRefresh"
+            app:layout_constraintTop_toTopOf="@+id/tvHeaderHome" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

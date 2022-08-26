@@ -55,6 +55,14 @@
 
     <string name="title_user_date">USER NAME / DATE</string>
     <string name="title_fishing">FISHING</string>
+    <string name="confirm_pin_for_split_request">Please insert your PIN to confirm split of fishing request!</string>
+    <string name="select_reason">Select reason for out of system fishing</string>
+    <string name="inability_to_fish">Inability to fish</string>
+    <string name="fed_fish">Fed fish</string>
+    <string name="lack_of_sufficient_biomass">Lack of sufficient biomass</string>
+    <string name="bad_weather">Bad weather</string>
+    <string name="out_of_network">Out of network</string>
+    <string name="you_are_online">You have logged in with network coverage. Please select harvest request!</string>
     <string name="start_fishing">Start Fishing</string>
     <string name="choose_harvest">Harvest initiator</string>
     <string name="harvest_initiator">Harvest initiator</string>
@@ -165,6 +173,8 @@
     <string name="forgot_your_pin_success">Your PIN was successfully sent to your phone number. Please use the button below to login to the application.</string>
     <string name="forgot_your_pin_failure">There was an issue with sending the SMS or with the information you provided. Please use the button below to try again.</string>
     <string name="login_failed">Login failed</string>
+    <string name="change_position_to_find_network_coverage">Please find network coverage</string>
+    <string name="proceed_without_network">You are out of network coverage. Do you want to proceed?</string>
     <string name="logo">Logo</string>
 
     <string name="title_receipt">RECEIPT</string>
@@ -611,6 +621,7 @@
     <string name="laundry">LAUNDRY</string>
     <string name="EncodeScheme_sync_completed">Encoding scheme synchronised successfuly!</string>
     <string name="no_EncodeScheme_found_alert">No Encoding Scheme entry was found!</string>
+    <string name="tx_saved_local_find_network_and_sync">Tx was saved locally. Please login with network coverage and sync.</string>
     <string name="error_postquality_update_failure">Post-Package quality data update failure!!!</string>
     <string name="pending_correlation_tx_upload_completed">Pending correlations successfully uploaded!</string>
     <string name="pending_correlation_tx_upload_failure_alert">Failed to upload pending correlations!</string>
@@ -636,5 +647,9 @@
     <string name="correlate_cage">Please correlate cage with RFID, go to Correlation Menu, and tap Cage</string>
     <string name="correlate_net">Please correlate net with RFID, go to Correlation Menu, and tap Net</string>
     <string name="diniargeo_scale">DiniArgeo MCW Scale</string>
-
+    <string name="offline_work">Offline work</string>
+    <string name="supervisor">Supervisor</string>
+    <string name="pin">PIN</string>
+    <string name="add_supervisor_and_confirm">Please fill all fields</string>
+    <string name="fill_all_fields">Please fill all fields!</string>
 </resources>
