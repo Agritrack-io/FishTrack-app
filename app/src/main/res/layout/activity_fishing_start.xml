@@ -133,7 +133,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <EditText
                     android:id="@+id/tvHarvest"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
@@ -143,8 +143,11 @@
                     android:gravity="center_vertical"
                     android:padding="5dp"
                     android:paddingStart="10dp"
+                    android:inputType="textAutoComplete"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_view_font_size"
+                    android:completionThreshold="1"
+                    android:imeOptions="actionNext"
                     app:layout_constraintBottom_toTopOf="@+id/tvCage"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.496"
@@ -166,7 +169,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvHarvest" />
 
-                <TextView
+                <EditText
                     android:id="@+id/tvCageName"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
@@ -176,8 +179,11 @@
                     android:gravity="center_vertical"
                     android:padding="5dp"
                     android:paddingStart="10dp"
+                    android:inputType="textAutoComplete"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_view_font_size"
+                    android:completionThreshold="1"
+                    android:imeOptions="actionNext"
                     app:layout_constraintBottom_toTopOf="@+id/tvFishTypeLabel"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -198,7 +204,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvCageName" />
 
-                <TextView
+                <EditText
                     android:id="@+id/tvFishType"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
@@ -208,6 +214,7 @@
                     android:gravity="center_vertical"
                     android:padding="5dp"
                     android:paddingStart="10dp"
+                    android:inputType="textAutoComplete"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_view_font_size"
                     app:layout_constraintBottom_toTopOf="@+id/tvAverageWeightLabel"
@@ -230,7 +237,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvFishType" />
 
-                <TextView
+                <EditText
                     android:id="@+id/tvAverageWeight"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
@@ -240,8 +247,11 @@
                     android:padding="5dp"
                     android:textAlignment="viewEnd"
                     android:paddingStart="10dp"
+                    android:inputType="numberDecimal"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_view_font_size"
+                    android:completionThreshold="1"
+                    android:imeOptions="actionNext"
                     app:layout_constraintBottom_toTopOf="@+id/tvRequestedQuantityLabel"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -276,7 +286,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvAverageWeight" />
 
-                <TextView
+                <EditText
                     android:id="@+id/tvRequestedQuantity"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
@@ -286,8 +296,11 @@
                     android:padding="5dp"
                     android:textAlignment="viewEnd"
                     android:paddingStart="10dp"
+                    android:inputType="numberDecimal"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_view_font_size"
+                    android:completionThreshold="1"
+                    android:imeOptions="actionNext"
                     app:layout_constraintBottom_toTopOf="@+id/tvNotesLabel"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -322,7 +335,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvRequestedQuantity" />
 
-                <TextView
+                <EditText
                     android:id="@+id/tvNotes"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
@@ -332,9 +345,12 @@
                     android:background="@drawable/bg_rounded_dialog_non_input"
                     android:padding="5dp"
                     android:paddingStart="10dp"
+                    android:inputType="textAutoComplete"
                     android:textAlignment="viewStart"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_view_font_size"
+                    android:completionThreshold="1"
+                    android:imeOptions="actionDone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

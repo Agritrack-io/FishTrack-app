@@ -357,7 +357,6 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity {
         tvOutgoingProcessFrom = findViewById(R.id.tvOutgoingProcessFrom);
         tvOutgoingProcessTo = findViewById(R.id.tvOutgoingProcessTo);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
-        ivAddItem = findViewById(R.id.ivAddItem);
         ivSupport = findViewById(R.id.ivSupport);
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);

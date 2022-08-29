@@ -139,21 +139,6 @@ public class FishingCageActivity extends AppCompatActivity {
             unregisterReceiver(keyReceiver);
     }
 
-    protected void onClick(View view) {
-        scanner_runnable.LowEnergy();
-        if(view!=null){
-            if(view.getId() == scanCageButton.getId()){
-                scanner_runnable.setFilter(new String[]{Filters.RFID_CAGE});
-            } else if (view.getId() == scanPlatformButton.getId()) {
-                scanner_runnable.setFilter(new String[]{Filters.RFID_PLATFORM});
-            }
-            // NOTE: if the following lines are moved outside the If{view!=null} statement,
-            // a NullPointerException will be thrown when trigger is pressed. The App crashes!!!
-            scanner_runnable.startReading();
-            mScanHandler.postDelayed(scanner_runnable, 0);
-        }
-    }
-
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToDetails);
         ivNext.setOnClickListener(view -> {
@@ -320,6 +305,21 @@ public class FishingCageActivity extends AppCompatActivity {
         if(scanner_runnable !=null) {
             mScanHandler.removeCallbacks(scanner_runnable);
             scanner_runnable.stopReading();
+        }
+    }
+
+    protected void onClick(View view) {
+        scanner_runnable.LowEnergy();
+        if(view!=null){
+            if(view.getId() == scanCageButton.getId()){
+                scanner_runnable.setFilter(new String[]{Filters.RFID_CAGE});
+            } else if (view.getId() == scanPlatformButton.getId()) {
+                scanner_runnable.setFilter(new String[]{Filters.RFID_PLATFORM});
+            }
+            // NOTE: if the following lines are moved outside the If{view!=null} statement,
+            // a NullPointerException will be thrown when trigger is pressed. The App crashes!!!
+            scanner_runnable.startReading();
+            mScanHandler.postDelayed(scanner_runnable, 0);
         }
     }
 

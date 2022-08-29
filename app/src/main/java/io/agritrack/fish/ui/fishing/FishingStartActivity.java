@@ -7,6 +7,7 @@ import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,20 +35,20 @@ public class FishingStartActivity extends AppCompatActivity {
 
     private MobileDB db;
     private Spinner tvHarvestSpinner, speciesSpinner;
-    private EditText etQty;
-    private TextView tvCageName, tvAverageWeight, tvNotes, tvHarvest, tvFishType, tvRequestedQuantity;
+    private EditText tvCageName, etQty, tvHarvest, tvAverageWeight, tvNotes, tvFishType, tvRequestedQuantity;
     private YesNoDialogFragment confirmDeleteFishingDlg;
 
     private ImageView ivSupport, ivInfo;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
     private boolean proceed = false;
+    private String reasonOutOfSystemFishing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_start);
-
+        
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
@@ -135,35 +136,73 @@ public class FishingStartActivity extends AppCompatActivity {
 
         FishingRecord hvst = recFishing;
 
-        if (!Strings.isEmptyOrWhitespace(hvst.requesterName)) {
-            tvHarvest.setText(hvst.requesterName);
-        }
+        if (Strings.isEmptyOrWhitespace(reasonOutOfSystemFishing)) {
+            if (!Strings.isEmptyOrWhitespace(hvst.requesterName)) {
+                tvHarvest.setText(hvst.requesterName);
+                tvHarvest.setEnabled(false);
+            }
 
-        if (!Strings.isEmptyOrWhitespace(hvst.speciesName)) {
-            tvFishType.setText(hvst.speciesName);
-        }
+            if (!Strings.isEmptyOrWhitespace(hvst.speciesName)) {
+                tvFishType.setText(hvst.speciesName);
+                tvFishType.setEnabled(false);
+            }
 
-        if (hvst.reqWeight!=null) {
-            tvRequestedQuantity.setText(hvst.reqWeight.toString());
-        }
+            if (hvst.reqWeight != null) {
+                tvRequestedQuantity.setText(hvst.reqWeight.toString());
+                tvRequestedQuantity.setEnabled(false);
+            }
 
-        if (!Strings.isEmptyOrWhitespace(hvst.cageCode)) {
-            tvCageName.setText(hvst.cageCode);
-        }
+            if (!Strings.isEmptyOrWhitespace(hvst.cageCode)) {
+                tvCageName.setText(hvst.cageCode);
+                tvCageName.setEnabled(false);
+            }
 
-        if (hvst.averageWeight!=null) {
-            tvAverageWeight.setText(hvst.averageWeight.toString());
-        }
+            if (hvst.averageWeight != null) {
+                tvAverageWeight.setText(hvst.averageWeight.toString());
+                tvAverageWeight.setEnabled(false);
+            }
 
-        if (!Strings.isEmptyOrWhitespace(hvst.notes)) {
-            tvNotes.setText(hvst.notes);
-        }
+            if (!Strings.isEmptyOrWhitespace(hvst.notes)) {
+                tvNotes.setText(hvst.notes);
+                tvNotes.setEnabled(false);
+            }
+
+            /*if (!Strings.isEmptyOrWhitespace(hvst.reasonOutOfSystemFishing)) {
+                tvHarvest.setText(hvst.requesterName);
+                tvHarvest.setEnabled(true);
+                tvFishType.setText(hvst.speciesName);
+                tvFishType.setEnabled(true);
+                tvRequestedQuantity.setText(hvst.reqWeight.toString());
+                tvRequestedQuantity.setEnabled(true);
+                tvCageName.setText(hvst.cageCode);
+                tvCageName.setEnabled(true);
+                tvAverageWeight.setText(hvst.averageWeight.toString());
+                tvAverageWeight.setEnabled(true);
+                tvNotes.setText(hvst.notes);
+                tvNotes.setEnabled(true);
+            }*/
+
+        } /*else {
+            tvHarvest.setBackgroundColor(Color.WHITE);
+            tvFishType.setBackgroundColor(Color.WHITE);
+            tvRequestedQuantity.setBackgroundColor(Color.WHITE);
+            tvCageName.setBackgroundColor(Color.WHITE);
+            tvAverageWeight.setBackgroundColor(Color.WHITE);
+            tvNotes.setBackgroundColor(Color.WHITE);
+        }*/
         //harvestSpinner.setSelection(arrayAdapter.getPosition("Category 2"));
     }
 
     private FishingRecord updateState() {
         FishingRecord fishingRecord = recFishing;
 
+        if (tvHarvest.getText() != null) {
+            fishingRecord.requesterName = tvHarvest.getText().toString();
+        }
+
+        if (tvFishType.getText() != null && !Strings.isEmptyOrWhitespace(tvFishType.getText().toString())) {
+            fishingRecord.speciesName = tvFishType.getText().toString();
+        }
 
         if (tvCageName.getText() != null) {
             fishingRecord.cageCode = tvCageName.getText().toString();
@@ -172,6 +211,15 @@ public class FishingStartActivity extends AppCompatActivity {
         if (tvAverageWeight.getText() != null && !Strings.isEmptyOrWhitespace(tvAverageWeight.getText().toString())) {
             fishingRecord.averageWeight = Double.valueOf(tvAverageWeight.getText().toString());
         }
+
+        if (tvNotes.getText() != null) {
+            fishingRecord.notes = tvNotes.getText().toString();
+        }
+
+        if (tvRequestedQuantity.getText() != null && !Strings.isEmptyOrWhitespace(tvRequestedQuantity.getText().toString())) {
+            fishingRecord.reqWeight = Double.valueOf(tvRequestedQuantity.getText().toString());
+        }
+
         //fishingRecord.reqWeight = etQty.getText() != null ? Double.valueOf(etQty.getText().toString()).intValue() + "" : "0";
 
         GlobalState.commitFishing(db, Boolean.FALSE);

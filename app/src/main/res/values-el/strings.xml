@@ -56,6 +56,14 @@
 
     <string name="title_user_date">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ</string>
     <string name="title_fishing">ΑΛΙΕΥΣΗ</string>
+    <string name="confirm_pin_for_split_request">Για δημιουργία νέας αλίευσης, εισάγετε PIN!</string>
+    <string name="select_reason">Επιλέξτε λόγο εξωσυστημικής αλίευσης</string>
+    <string name="inability_to_fish">Αδυναμία αλίευσης</string>
+    <string name="fed_fish">Ταϊσμένα ψάρια</string>
+    <string name="lack_of_sufficient_biomass">Έλλειψη επαρκούς βιομάζας</string>
+    <string name="bad_weather">Κακοκαιρία</string>
+    <string name="out_of_network">Αδυναμία σύνδεσης δικτύου</string>
+    <string name="you_are_online">Έχετε εισέλθει με κάλυψη δικτύου. Παρακαλώ επιλέξτε εντολή συγκομιδής!</string>
     <string name="start_fishing">Έναρξη αλίευσης</string>
     <string name="choose_harvest">Εντολέας συγκομιδής</string>
     <string name="harvest_initiator">Εντολέας συγκομιδής</string>
@@ -83,7 +91,7 @@
     <string name="add_employee">Προσθέστε μέλος</string>
     <string name="delete_employee">Διαγράψτε μέλος</string>
     <string name="pick_fishing_team">Επιλέξτε ομάδα αλίευσης</string>
-    <string name="number_of_employees"># μελών:</string>
+    <string name="number_of_employees"># ατόμων:</string>
 
     <string name="title_platform_quantity_no_bins">ΠΛΑΤΦΟΡΜΑ / ΖΗΤΟΥΜΕΝΗ ΠΟΣΟΤΗΤΑ / # ΒΟΥΤΩΝ</string>
     <string name="scan_cage_nets">Σκανάρετε κλωβό και δίχτυ</string>
@@ -165,6 +173,8 @@
     <string name="forgot_your_pin_success">Ο κωδικός σας έχει σταλεί στο κινητό σας τηλέφωνο. Παρακαλώ πατήστε το κουμπί για να εισέλθετε στην εφαρμογή.</string>
     <string name="forgot_your_pin_failure">Υπήρξε ένα πρόβλημα με την αποστολή του SMS ή με τα στοιχεία που εισάγατε. Παρακαλώ πατήστε το κουμπί για να προσπαθήσετε ξανά.</string>
     <string name="login_failed">Η είσοδος απέτυχε</string>
+    <string name="change_position_to_find_network_coverage">Παρακαλώ αναζητήστε κάλυψη δικτύου!</string>
+    <string name="proceed_without_network">Είστε εκτός δικτύου. Θέλετε να προχωρήσετε?</string>
 
     <string name="welcome">Καλωσήλθατε</string>
     <string name="authenticating">Παρακαλώ περιμένετε, γίνεται επαλήθευση των στοιχείων χρήστη</string>
@@ -418,7 +428,7 @@
     <string name="missing_pin">Παρακαλώ πληκτρολογήστε το PIN σας!!</string>
     <string name="invalid_password">Λάθος PIN!!!</string>
     <string name="error_connection_timeout">Λήξη σύνδεσης!!!</string>
-    <string name="error_timeout">Αποτυχία σύνδεσης!!!</string>
+    <string name="error_timeout">Αποτυχία σύνδεσης!!! Παρακαλώ ελέγξτε το δίκτυο!</string>
     <string name="error_cancelled_call">Αναγκαστική ακύρωση κλήσης!!!</string>
     <string name="error_fishing_tx_update_failure">Η αλίευση απέτυχε να συγχρονιστεί!!!</string>
     <string name="error_transport_tx_update_failure">Η μεταφορά απέτυχε να συγχρονιστεί!!!</string>
@@ -610,6 +620,7 @@
     <string name="lot_restriction">Λανθασμένο LOT</string>
     <string name="lot_restriction_message">Περισσότερα του ενός LOT βρέθηκαν για τα τελάρα που σκανάρατε. Παρακαλώ πηγαίντε πίσω και σκανάρετε τελάρα από ένα LOT.</string>
     <string name="invalid_inputs">Μη έγκυρα δεδομένα :</string>
+    <string name="tx_saved_local_find_network_and_sync">Η διαδικασία αποθηκεύτηκε. Παρακαλώ μην την επαναλάβετε. Εισέλθετε στην εφαρμογή με κάλυψη δικτύου και συγχρονίστε.</string>
 
     <string name="no_logger_found_linked_to_bin">Δε βρέθηκε συσχετισμένο καταγραφικό θερμοκρασίας με αυτή τη βούτα! Παρακαλώ συσχετίστε!</string>
     <string name="no_tag_detected">Δεν διαβάστηκε ετικέτα!!\nΠαρακαλώ αλλάξτε θέση!</string>

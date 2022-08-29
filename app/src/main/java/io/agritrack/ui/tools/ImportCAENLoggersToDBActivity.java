@@ -225,7 +225,6 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
         rvInventoryItems = findViewById(R.id.rvInventoryItems);
         tvItemsCnt = findViewById(R.id.tvItemsCnt);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
-        ivAddItem = findViewById(R.id.ivAddItem);
         etModel = findViewById(R.id.etModel);
         etVendor = findViewById(R.id.etVendor);
         etType = findViewById(R.id.etType);

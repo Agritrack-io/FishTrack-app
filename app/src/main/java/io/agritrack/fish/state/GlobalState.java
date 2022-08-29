@@ -158,12 +158,14 @@ public class GlobalState {
             FishingTransaction txFishing = new FishingTransaction();
 
             txFishing.id = recFishing.txKey;
+            txFishing.outOfSystemFishing = recFishing.outOfSystemFishing;
             txFishing.fishingRq = recFishing.fishingRq;
             txFishing.requester = recFishing.requesterName;
             txFishing.platformRFID = recFishing.platformRFID;
             txFishing.cageRFID = recFishing.cageRFID;
             txFishing.cageCode = recFishing.cageCode;
             txFishing.fishType = recFishing.speciesName;
+            txFishing.notes = recFishing.notes;
             txFishing.hlot = recFishing.hlot;
             txFishing.lastFeed = recFishing.lastFed;
             txFishing.averageWeight = String.valueOf(recFishing.averageWeight);

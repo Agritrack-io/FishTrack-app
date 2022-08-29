@@ -3,17 +3,27 @@ package io.agritrack.fish.ui.fishing;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckedTextView;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,17 +31,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.FishingRequest;
+import io.agritrack.data.model.Site;
+import io.agritrack.dialog.SelectReasonOutOfSystemFishingDialog;
 import io.agritrack.dialog.SupportDialog;
+import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.bo.GenericListModel;
 import io.agritrack.ui.custom.ToggleGroup;
+import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class HarvestRequestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, ToggleGroup.OnCheckedChangeListener {
@@ -40,8 +57,10 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
     private GenericListModel[] fishingRQs;
     private ToggleGroup tgChooseDate;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
+    private ImageButton ibSelectReason, ibSplitRequest;
+    private SelectReasonOutOfSystemFishingDialog selectReasonDialog;
     private ImageView ivSupport;
+    private FishingRequest harvestRq;
     private SupportDialog supportDialog;
 
     private long harvestRQcnt = 0;
@@ -69,10 +88,18 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         tgChooseDate.check(R.id.tbToday);
         getTodayHarvestReq();
 
+        ibSplitRequest = findViewById(R.id.ibSplitRequest);
+
         ivSupport = findViewById(R.id.ivSupport);
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(HarvestRequestsActivity.this);
             supportDialog.showDialog();
+        });
+
+        ibSelectReason = findViewById(R.id.ibSelectReason);
+        ibSelectReason.setOnClickListener(view -> {
+            selectReasonDialog = new SelectReasonOutOfSystemFishingDialog(HarvestRequestsActivity.this);
+            selectReasonDialog.showDialog();
         });
 
         // create Footer
@@ -104,12 +131,22 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ibSplitRequest.setVisibility(View.VISIBLE);
         CheckedTextView v = (CheckedTextView) view;
         boolean currentCheck = v.isChecked();
         GenericListModel member = (GenericListModel) this.lvFishingRequests.getItemAtPosition(position);
         member.setChecked(!currentCheck);
 
-        FishingRequest harvestRq = db.fishingRequestsDAO().getById(member.getRequestId());
+        harvestRq = db.fishingRequestsDAO().getById(member.getRequestId());
+
+        ibSplitRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmSplitRequestDlg();
+                ibSplitRequest.setVisibility(View.INVISIBLE);
+            }
+        });
+
         if (harvestRq != null) {
 
             GlobalState.recFishing.fishingRq = harvestRq.requestId;
@@ -125,14 +162,145 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         }
     }
 
+    private void duplicate(FishingRequest fishingRequest){
+        FishingRequest duplicatedFishReq = new FishingRequest();
+
+        String harvReq = fishingRequest.requestId.substring(0,64);
+        List<FishingRequest> fishReqs = db.fishingRequestsDAO().getAllFishReqWithSameHarvReq(harvReq);
+        if (!fishReqs.isEmpty()) {
+            Integer newItinerary = fishReqs.size() + 1;
+            duplicatedFishReq.requestId = harvReq + newItinerary;
+            duplicatedFishReq.itinSNo = newItinerary.shortValue();
+        }
+        duplicatedFishReq.requester = fishingRequest.requester;
+        duplicatedFishReq.species = fishingRequest.species;
+        duplicatedFishReq.cageCode = fishingRequest.cageCode;
+        duplicatedFishReq.harvestDate = fishingRequest.harvestDate;
+        duplicatedFishReq.farmArrival = fishingRequest.farmArrival;
+        duplicatedFishReq.reqQty = (double) 0;
+        duplicatedFishReq.driver = fishingRequest.driver;
+        duplicatedFishReq.site = fishingRequest.site;
+        duplicatedFishReq.cageRFID = fishingRequest.cageRFID;
+        duplicatedFishReq.averageWeight = fishingRequest.averageWeight;
+        duplicatedFishReq.quantity = (double) 0;
+        duplicatedFishReq.notes = "Split Request";
+        duplicatedFishReq.packagingPlant = fishingRequest.packagingPlant;
+
+        db.fishingRequestsDAO().insert(duplicatedFishReq);
+    }
+
+    private void confirmSplitRequestDlg() {
+        // Store the created AlertDialog instance.
+        // Because only AlertDialog has cancel method.
+        AlertDialog alertDialog = null;
+
+        // Create a alert dialog builder.
+        final AlertDialog.Builder builder = new AlertDialog.Builder(HarvestRequestsActivity.this);
+
+        // Set title value.
+        builder.setTitle(R.string.add_supervisor_and_confirm);
+
+        // Get custom login form view.
+        final View confirmFormView = getLayoutInflater().inflate(R.layout.confirm_split_req_or_out_of_system_fishing_dlg, null);
+
+        // assign variables to ui controls.
+        final EditText supervisor = confirmFormView.findViewById(R.id.etSupervisorName);
+        final EditText pin = confirmFormView.findViewById(R.id.etPin);
+        final Button ok = confirmFormView.findViewById(R.id.btnOk);
+        final TableRow plant = confirmFormView.findViewById(R.id.packagingPlant);
+
+        plant.setVisibility(View.GONE);
+
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        pin.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String insertedPin = pin.getText().toString().trim();
+                String login = LocalPreferences.getLoggedInUser("").trim();
+
+                if (Strings.isEmptyOrWhitespace(supervisor.getText().toString()) || Strings.isEmptyOrWhitespace(pin.getText().toString())) {
+                    CToast(getAppContext(), render(R.string.fill_all_fields), Toast.LENGTH_LONG);
+                    return;
+                }
+
+                if (Strings.isEmptyOrWhitespace(insertedPin)) {
+                    CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG);
+                    return;
+                }
+
+                // use typed-in PIN to compare credentials with those stored in the Local DB.
+                AuthenticationService authSvc = new AuthenticationService();
+                boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
+                if (authentication){
+                    recFishing.requesterName = supervisor.getText().toString();
+                    duplicate(harvestRq);
+                    getTodayHarvestReq();
+                } else {
+                    CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
+                    return;
+                }
+
+            }
+        });
+
+        // Set above view in alert dialog.
+        builder.setView(confirmFormView);
+
+        // Register button click listener.
+        builder.setPositiveButton("OK", (dialog, which) -> {
+
+        });
+
+        // Reset button click listener.
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            // Close Alert Dialog.
+            dialog.cancel();
+        });
+
+        builder.setCancelable(true);
+        alertDialog = builder.create();
+        alertDialog.show();
+
+        /*// Set up the input
+        final EditText pin = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        pin.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        String login = LocalPreferences.getLoggedInUser("").trim();
+
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.confirm_pin_for_split_request))
+                .setView(pin)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String insertedPin = pin.getText().toString().trim();
+
+                        // use typed-in PIN to compare credentials with those stored in the Local DB.
+                        AuthenticationService authSvc = new AuthenticationService();
+                        boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
+                        if (authentication){
+                            duplicate(harvestRq);
+                            getTodayHarvestReq();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();*/
+    }
+
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        /*LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.now();
         String nowDate = now.format(formatter);
         LocalDate yesterday = now.minusDays(1);
         String yesterdayDate = yesterday.format(formatter);
         LocalDate date = now.minusDays(2);
-        String previousDate = date.format(formatter);*/
+        String previousDate = date.format(formatter);
 
         if (checkedId == R.id.tbToday) {
             getTodayHarvestReq();
@@ -147,7 +315,8 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         this.lvFishingRequests.setAdapter(null);
         List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getTodayRecord();
         if (fishingRequests != null && !fishingRequests.isEmpty()) {
-            this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species))).toArray(GenericListModel[]::new);
+            this.fishingRQs = fishingRequests.stream().sorted(Comparator.comparing(lc -> String.format("%s:%s:%s", lc.cageCode, lc.farmArrival, lc.itinSNo)))
+                    .map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species))).toArray(GenericListModel[]::new);
 
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {
                 @Override
@@ -169,7 +338,8 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getYesterdayRecord();
         if (fishingRequests != null && !fishingRequests.isEmpty()) {
             //this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
-            this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species))).toArray(GenericListModel[]::new);
+            this.fishingRQs = fishingRequests.stream().sorted(Comparator.comparing(lc -> String.format("%s:%s:%s", lc.cageCode, lc.farmArrival, lc.itinSNo)))
+                    .map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species))).toArray(GenericListModel[]::new);
 
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {
                 @Override
@@ -191,7 +361,8 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getPreviousRecord();
         if (fishingRequests != null && !fishingRequests.isEmpty()) {
             //
-            this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species))).toArray(GenericListModel[]::new);
+            this.fishingRQs = fishingRequests.stream().sorted(Comparator.comparing(lc -> String.format("%s:%s:%s", lc.cageCode, lc.farmArrival, lc.itinSNo)))
+                    .map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species))).toArray(GenericListModel[]::new);
 
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {
                 @Override

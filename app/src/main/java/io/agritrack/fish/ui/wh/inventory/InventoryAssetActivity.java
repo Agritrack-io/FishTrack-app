@@ -305,7 +305,6 @@ public class InventoryAssetActivity extends LocationAwareActivity {
         spAssetType = findViewById(R.id.spAssetType);
         xvInventoryItems = findViewById(R.id.xvInventoryItems);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
-        ivAddItem = findViewById(R.id.ivAddItem);
         ivSupport = findViewById(R.id.ivSupport);
         scanButton = findViewById(R.id.btnScanAsset);
         tvGroupsCnt = findViewById(R.id.tvGroupsCnt);

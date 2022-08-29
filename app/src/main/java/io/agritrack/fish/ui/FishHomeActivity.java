@@ -1,7 +1,9 @@
 package io.agritrack.fish.ui;
 
+import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
@@ -99,6 +101,7 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.LoggerDataRecord;
 import io.agritrack.fish.ui.binTurnover.BinTurnoverActivity;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
+import io.agritrack.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
@@ -126,6 +129,7 @@ public class FishHomeActivity extends AppCompatActivity {
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
     private ImageView ivSupport, ivRefresh;
+    private TextView tvOfflineWork;
     private ProgressDialog progressDialog;
     private SupportDialog supportDialog;
     private MobileDB db;
@@ -219,6 +223,12 @@ public class FishHomeActivity extends AppCompatActivity {
                             // there is a FishingTx in progress
                             fishingRecord = FishingRecord.convert(openTx);
                             GlobalState.recFishing = fishingRecord;
+                        } else if (openTx != null && openTx.outOfSystemFishing) {
+                            // there is a out of system FishingTx in progress
+                            i = new Intent(appCtx, FishingTeamActivity.class);
+
+                            fishingRecord = FishingRecord.convert(openTx);
+                            GlobalState.recFishing = fishingRecord;
                         } else {
                             // instantiate a new Fishing Record.
                             fishingRecord = GlobalState.initFishingRecord();
@@ -277,8 +287,17 @@ public class FishHomeActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
-
         ivRefresh = findViewById(R.id.ivRefresh);
+        tvOfflineWork = findViewById(R.id.tvOfflineWork);
+        if(!IsOnline) {
+            ((ImageView) ivRefresh).setImageResource(R.drawable.out_of_network);
+            ivRefresh.setEnabled(false);
+            tvOfflineWork.setVisibility(View.VISIBLE);
+        } else {
+            ((ImageView) ivRefresh).setImageResource(R.drawable.refresh);
+            ivRefresh.setEnabled(true);
+            tvOfflineWork.setVisibility(View.INVISIBLE);
+        }
         ivRefresh.setOnClickListener(view -> {
             syncCounter = 1;
             showProgressDialog(getString(R.string.syncing));

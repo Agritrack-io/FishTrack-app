@@ -108,6 +108,9 @@ public class FishingTransaction {
     @ColumnInfo(name = "latitude")
     public Double latitude;
 
+    @ColumnInfo(name = "out_of_system")
+    public boolean outOfSystemFishing;
+
     @ColumnInfo(name = "hash_code")
     public Integer hashCode;
 
@@ -123,5 +126,4 @@ public class FishingTransaction {
             e.printStackTrace();
         }
     }
-
 }

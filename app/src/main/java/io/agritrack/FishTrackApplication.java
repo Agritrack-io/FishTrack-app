@@ -21,6 +21,8 @@ public class FishTrackApplication extends Application {
     public static final String COUNTRY = "gr";//[gr, es]
     //When true, no validation is performed in selected activities. This feature is enabled for Presentations and Demos.
     public static final boolean IsDemo = false;
+    //When true, no signal is required in selected activities.
+    public static boolean IsOnline = true;
 
     private static Context mContext;
 
