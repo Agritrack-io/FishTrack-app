@@ -40,6 +40,7 @@ public class FishingRecord {
     public String typedCageCode;
     public boolean outOfSystemFishing = false;
     public String reasonOutOfSystemFishing;
+    public Short itinSno;
 
     public FishingRecord() {
     }
@@ -53,6 +54,7 @@ public class FishingRecord {
         fishingRecord.requesterName = tx.requester;
         fishingRecord.reqWeight = tx.orderedQuantity != null ? Double.valueOf(tx.orderedQuantity.toString()) : null;
         fishingRecord.speciesName = tx.fishType;
+        fishingRecord.itinSno = tx.itinSno;
         fishingRecord.availBins = tx.availBins;
         fishingRecord.averageWeight = FishTrackUtils.isNumeric(tx.averageWeight) ? Double.valueOf(tx.averageWeight) : null;
         fishingRecord.platformRFID = tx.platformRFID;

@@ -35,7 +35,7 @@ public interface SyncApi {
     Call<SiteDTO> getSiteById(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/fishing-requests/{siteId}")
+    @GET("/fishing-requests/farm/{siteId}")
     Call<List<FishingRequestDTO>> getFishingRequestsBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")

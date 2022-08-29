@@ -106,4 +106,7 @@ public class FishingTransaction {
 
     @ColumnInfo(name = "out_of_system")
     public boolean outOfSystemFishing;
+
+    @ColumnInfo(name = "itin_no")
+    public Short itinSno;
 }

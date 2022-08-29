@@ -167,6 +167,7 @@ public class GlobalState {
             txFishing.fishType = recFishing.speciesName;
             txFishing.notes = recFishing.notes;
             txFishing.hlot = recFishing.hlot;
+            txFishing.itinSno = recFishing.notes.equalsIgnoreCase("Split Request") ? recFishing.itinSno : null;
             txFishing.lastFeed = recFishing.lastFed;
             txFishing.averageWeight = String.valueOf(recFishing.averageWeight);
             txFishing.ichthyopathologist = recFishing.pathologist;

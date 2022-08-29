@@ -56,6 +56,10 @@
     <string name="title_user_date">USER NAME / DATE</string>
     <string name="title_fishing">FISHING</string>
     <string name="confirm_pin_for_split_request">Please insert your PIN to confirm split of fishing request!</string>
+    <string name="responsible">Responsible</string>
+    <string name="pin">PIN</string>
+    <string name="add_supervisor_and_confirm">Please fill all fields</string>
+    <string name="fill_all_fields">Please fill all fields!</string>
     <string name="select_reason">Select reason for out of system fishing</string>
     <string name="inability_to_fish">Inability to fish</string>
     <string name="fed_fish">Fed fish</string>
@@ -648,8 +652,4 @@
     <string name="correlate_net">Please correlate net with RFID, go to Correlation Menu, and tap Net</string>
     <string name="diniargeo_scale">DiniArgeo MCW Scale</string>
     <string name="offline_work">Offline work</string>
-    <string name="supervisor">Supervisor</string>
-    <string name="pin">PIN</string>
-    <string name="add_supervisor_and_confirm">Please fill all fields</string>
-    <string name="fill_all_fields">Please fill all fields!</string>
 </resources>

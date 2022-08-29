@@ -9,6 +9,7 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -85,40 +86,16 @@ public class SelectReasonOutOfSystemFishingDialog implements AdapterView.OnItemC
 
         btnOk.setOnClickListener(view -> {
             checked = lvReasons.getCheckedItemPosition();
-            if (checked == 0) {
-                if (!IsOnline) {
-                    recFishing.outOfSystemFishing = true;
-                    GlobalState.commitFishing(db, Boolean.FALSE);
-                   /* Intent i = new Intent(this.activity, FishingTeamActivity.class);
-                    i.putExtra("reason", (String) (lvReasons.getItemAtPosition(checked)));
-                    this.activity.startActivity(i);*/
-                    addDetailsAndConfirmDialog();
-                } else {
-                    CToast(activity.getApplicationContext(), render(R.string.you_are_online), Toast.LENGTH_SHORT);
+            if (checked == 0 && IsOnline) {
+                    CToast(activity.getApplicationContext(), render(R.string.you_are_online), Toast.LENGTH_LONG);
+                    return;
                 }
-            } else {
-                recFishing.outOfSystemFishing = true;
-                GlobalState.commitFishing(db, Boolean.FALSE);
-                /*Intent i = new Intent(this.activity, FishingTeamActivity.class);
-                i.putExtra("reason", (String) (lvReasons.getItemAtPosition(checked)));
-                this.activity.startActivity(i);*/
-                addDetailsAndConfirmDialog();
-            }
-            dismiss();
+            addDetailsAndConfirmDialog();
+            //dismiss();
         });
     }
 
     private void addDetailsAndConfirmDialog() {
-        // Store the created AlertDialog instance.
-        // Because only AlertDialog has cancel method.
-        AlertDialog alertDialog = null;
-
-        // Create a alert dialog builder.
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
-
-        // Set title value.
-        builder.setTitle(R.string.add_supervisor_and_confirm);
-
         // Get custom login form view.
         final View confirmFormView = this.activity.getLayoutInflater().inflate(R.layout.confirm_split_req_or_out_of_system_fishing_dlg, null);
 
@@ -126,10 +103,9 @@ public class SelectReasonOutOfSystemFishingDialog implements AdapterView.OnItemC
         final EditText supervisor = confirmFormView.findViewById(R.id.etSupervisorName);
         final Spinner plants = confirmFormView.findViewById(R.id.spPackagingPlant);
         final EditText pin = confirmFormView.findViewById(R.id.etPin);
-        final Button ok = confirmFormView.findViewById(R.id.btnOk);
 
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        pin.setInputType(InputType.TYPE_CLASS_NUMBER);
+        // Specify the type of input expected; this, for example, sets the input as a text, and will mask the text
+        supervisor.setInputType(InputType.TYPE_CLASS_TEXT);
 
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
         List<Site> packagingSites = db.siteDAO().getAllProcessingPlants();
@@ -141,56 +117,58 @@ public class SelectReasonOutOfSystemFishingDialog implements AdapterView.OnItemC
             plants.setSelection(hrAdapter.getPosition("VONITSA PP"));
         }
 
-        ok.setOnClickListener(new View.OnClickListener() {
+        final AlertDialog dialog = new AlertDialog.Builder(this.activity)
+                .setView(confirmFormView)
+                .setTitle(R.string.add_supervisor_and_confirm)
+                .setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
+                .setNegativeButton(android.R.string.cancel, null)
+                .setCancelable(true)
+                .create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
             @Override
-            public void onClick(View v) {
-                String insertedPin = pin.getText().toString().trim();
-                String login = LocalPreferences.getLoggedInUser("").trim();
+            public void onShow(DialogInterface dialogInterface) {
 
-                if (Strings.isEmptyOrWhitespace(supervisor.getText().toString()) || Strings.isEmptyOrWhitespace(pin.getText().toString())) {
-                    CToast(getAppContext(), render(R.string.fill_all_fields), Toast.LENGTH_LONG);
-                    return;
-                }
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
 
-                if (Strings.isEmptyOrWhitespace(insertedPin)) {
-                    CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG);
-                    return;
-                }
+                    @Override
+                    public void onClick(View view) {
+                        String insertedPin = pin.getText().toString().trim();
+                        String login = LocalPreferences.getLoggedInUser("").trim();
 
-                // use typed-in PIN to compare credentials with those stored in the Local DB.
-                AuthenticationService authSvc = new AuthenticationService();
-                boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
-                if (authentication){
-                    recFishing.requesterName = supervisor.getText().toString();
-                    recFishing.packagingPlant = plants.getSelectedItem().toString();
-                    Intent i = new Intent(activity, FishingTeamActivity.class);
-                    i.putExtra("reason", (String) (lvReasons.getItemAtPosition(checked)));
-                    activity.startActivity(i);
-                } else {
-                    CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
-                    return;
-                }
+                        if (Strings.isEmptyOrWhitespace(supervisor.getText().toString())) {
+                            CToast(getAppContext(), render(R.string.fill_all_fields), Toast.LENGTH_LONG);
+                            return;
+                        }
 
+                        if (Strings.isEmptyOrWhitespace(insertedPin)) {
+                            CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG);
+                            return;
+                        }
+
+                        // use typed-in PIN to compare credentials with those stored in the Local DB.
+                        AuthenticationService authSvc = new AuthenticationService();
+                        boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
+                        if (authentication){
+                            dialog.dismiss();
+                            recFishing.outOfSystemFishing = true;
+                            recFishing.requesterName = supervisor.getText().toString();
+                            recFishing.packagingPlant = plants.getSelectedItem().toString();
+                            GlobalState.commitFishing(db, Boolean.FALSE);
+                            Intent i = new Intent(activity, FishingTeamActivity.class);
+                            i.putExtra("reason", (String) (lvReasons.getItemAtPosition(checked)));
+                            activity.startActivity(i);
+                        } else {
+                            CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
+                            return;
+                        }
+                    }
+                });
             }
         });
-
-        // Set above view in alert dialog.
-        builder.setView(confirmFormView);
-
-        // Register button click listener.
-        builder.setPositiveButton("OK", (dialog, which) -> {
-
-        });
-
-        // Reset button click listener.
-        builder.setNegativeButton("Cancel", (dialog, which) -> {
-            // Close Alert Dialog.
-            dialog.cancel();
-        });
-
-        builder.setCancelable(true);
-        alertDialog = builder.create();
-        alertDialog.show();
+        dialog.show();
     }
 
     public void showDialog() {

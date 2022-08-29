@@ -57,6 +57,10 @@
     <string name="title_user_date">ΟΝΟΜΑ ΧΡΗΣΤΗ / ΗΜΕΡΟΜΗΝΙΑ</string>
     <string name="title_fishing">ΑΛΙΕΥΣΗ</string>
     <string name="confirm_pin_for_split_request">Για δημιουργία νέας αλίευσης, εισάγετε PIN!</string>
+    <string name="responsible">Εγκρίνων</string>
+    <string name="pin">PIN</string>
+    <string name="add_supervisor_and_confirm">Παρακαλώ συμπληρώστε όλα τα πεδία</string>
+    <string name="fill_all_fields">Παρακαλώ συμπληρώστε όλα τα πεδία!</string>
     <string name="select_reason">Επιλέξτε λόγο εξωσυστημικής αλίευσης</string>
     <string name="inability_to_fish">Αδυναμία αλίευσης</string>
     <string name="fed_fish">Ταϊσμένα ψάρια</string>
