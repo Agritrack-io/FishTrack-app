@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -139,8 +140,16 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         // check last login timestamp, to determine whether synch is required.
         long diffHours = LocalPreferences.getLoginDiffInHours();
 
+        // validate Security Token
+        // -------------------------------
+        boolean jwtIsValid = validateJwtToken(LocalPreferences.getToken());
+
+
+        // -------------------------------
+
         // if last login occurred < 2 hours ?? ago, no further login is required.
-        if (diffHours < 2) {
+        if (diffHours < 2 && jwtIsValid) {
+//            LocalPreferences.writeValue(Token_Key, model.getToken());
             goToProductMenu();
         } else {
             final TextView tvForgotYourPassword = findViewById(R.id.tvForgotPasswordText);
@@ -485,6 +494,20 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             finish();
             return false;
         });
+    }
+
+    public boolean validateJwtToken(String authToken) {
+        try {
+            DecodedJWT jwt = JWT.decode(authToken);
+            if( jwt.getExpiresAt().before(new Date())) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            Log.e("Invalid JWT: {}", e.getMessage());
+        }
+
+        return false;
     }
 
     @Override

@@ -5,8 +5,12 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.agritrack.data.converter.BinRecordConverter;
 import io.agritrack.data.converter.LocalDateConverter;
@@ -109,4 +113,20 @@ public class FishingTransaction {
 
     @ColumnInfo(name = "itin_no")
     public Short itinSno;
+
+    @ColumnInfo(name = "hash_code")
+    public Integer hashCode;
+
+
+    public void calcHash() {
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            String today = dateFormat.format(new Date());
+            String bins = harvestBinsData.stream().sorted((l, r) -> r.binEPC.compareTo(r.binEPC)).map(e -> e.binEPC).collect(Collectors.joining("."));
+
+            this.hashCode = String.format("%s:%s", today, bins).hashCode();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

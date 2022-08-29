@@ -211,7 +211,6 @@ public class FishHomeActivity extends AppCompatActivity {
                 final Context appCtx = getApplicationContext();
                 Intent i = new Intent(appCtx, LoginActivity.class);
                 MenuItem mi = (MenuItem) gvMainMenu.getItemAtPosition(position);
-                //String clickedText = yourGridView.getItemAtPosition(position).toString());
 
                 switch (mi.getLoc()) {
                     case Fishing_Idx:

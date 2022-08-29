@@ -23,6 +23,9 @@ public interface FishingTransactionDAO {
     @Query("SELECT * from fishing_transaction where id=:fishingTransactionId LIMIT 1")
     FishingTransaction getById(Long fishingTransactionId);
 
+    @Query("SELECT * from fishing_transaction where hash_code=:hashCode LIMIT 1")
+    FishingTransaction getByHash(Integer hashCode);
+
     @Query("SELECT * from fishing_transaction where user_name=:userName and status='NONE' or status='PENDING' order by timestamp desc LIMIT 1")
     FishingTransaction getMostRecentOpenTx(String userName);
 
@@ -43,4 +46,7 @@ public interface FishingTransactionDAO {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(FishingTransaction fishingTransaction);
+
+    @Query("SELECT count(*) FROM fishing_transaction WHERE hash_code=:hashCode")
+    int countByHash(Integer hashCode);
 }
