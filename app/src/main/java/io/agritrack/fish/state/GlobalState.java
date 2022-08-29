@@ -176,15 +176,24 @@ public class GlobalState {
             txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight).intValue() : null;
             txFishing.totalQty = recFishing.totalFishWeight;
             txFishing.timestamp = System.currentTimeMillis();
-            txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData();//.toJSONText();
+            txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData();
             txFishing.team = recFishing.fishingTeam;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
             txFishing.user = LocalPreferences.getLoggedInUser("N/A");
             txFishing.site = LocalPreferences.getCurrentSiteName();
             txFishing.longitude = recFishing.longitude;
             txFishing.latitude = recFishing.latitude;
+            txFishing.calcHash();
 
-            db.fishingTransactionDAO().update(txFishing);
+            // search DB for records having the same hashCode
+            int cnt = db.fishingTransactionDAO().countByHash(txFishing.hashCode);
+
+            // Persist record if no duplicates exist
+            if (cnt == 0) {
+                db.fishingTransactionDAO().update(txFishing);
+            } else {
+                return db.fishingTransactionDAO().getByHash(txFishing.hashCode);
+            }
 
             return txFishing;
         } catch (Exception ex) {

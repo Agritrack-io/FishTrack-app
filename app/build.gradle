@@ -51,6 +51,7 @@ dependencies {
     def versions_lombok = "1.18.12"
     def versions_room = "2.3.0"
     def versions_work = "2.5.0"
+    def versions_jwt = "3.4.1"
 
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -59,6 +60,10 @@ dependencies {
     // Lombok
     compileOnly "org.projectlombok:lombok:$versions_lombok"
     annotationProcessor "org.projectlombok:lombok:$versions_lombok"
+
+    // JWT support
+    //implementation group: 'com.auth0', name: 'java-jwt', version: '3.4.1'
+    implementation "com.auth0:java-jwt:$versions_jwt"
 
     // work-runtime
     implementation "androidx.work:work-runtime:$versions_work"

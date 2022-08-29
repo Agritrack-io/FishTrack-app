@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,8 +26,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -119,8 +124,16 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         // check last login timestamp, to determine whether synch is required.
         long diffHours = LocalPreferences.getLoginDiffInHours();
 
+        // validate Security Token
+        // -------------------------------
+        boolean jwtIsValid = validateJwtToken(LocalPreferences.getToken());
+
+
+        // -------------------------------
+
         // if last login occurred < 2 hours ?? ago, no further login is required.
-        if (diffHours < 2) {
+        if (diffHours < 2 && jwtIsValid) {
+//            LocalPreferences.writeValue(Token_Key, model.getToken());
             goToProductMenu();
         } else {
             final TextView tvForgotYourPassword = findViewById(R.id.tvForgotPasswordText);
@@ -461,6 +474,20 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             finish();
             return false;
         });
+    }
+
+    public boolean validateJwtToken(String authToken) {
+        try {
+            DecodedJWT jwt = JWT.decode(authToken);
+            if( jwt.getExpiresAt().before(new Date())) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            Log.e("Invalid JWT: {}", e.getMessage());
+        }
+
+        return false;
     }
 
     @Override
