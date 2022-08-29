@@ -13,8 +13,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -27,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.text.HtmlCompat;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
@@ -86,11 +89,16 @@ public class SelectReasonOutOfSystemFishingDialog implements AdapterView.OnItemC
 
         btnOk.setOnClickListener(view -> {
             checked = lvReasons.getCheckedItemPosition();
-            if (checked == 0 && IsOnline) {
+            if (checked<0){
+                CToast(activity.getApplicationContext(), render(R.string.select_reason), Toast.LENGTH_LONG);
+                return;
+            } else {
+                if (checked == 0 && IsOnline) {
                     CToast(activity.getApplicationContext(), render(R.string.you_are_online), Toast.LENGTH_LONG);
                     return;
                 }
-            addDetailsAndConfirmDialog();
+                addDetailsAndConfirmDialog();
+            }
             //dismiss();
         });
     }
@@ -103,6 +111,15 @@ public class SelectReasonOutOfSystemFishingDialog implements AdapterView.OnItemC
         final EditText supervisor = confirmFormView.findViewById(R.id.etSupervisorName);
         final Spinner plants = confirmFormView.findViewById(R.id.spPackagingPlant);
         final EditText pin = confirmFormView.findViewById(R.id.etPin);
+
+        TextView title = new TextView(this.activity);
+// You Can Customise your Title here
+        title.setText(Html.fromHtml("<b>"+ getAppContext().getResources().getString(R.string.out_of_system_fishing_add_supervisor_and_confirm) +"</b>" + "<br>" + getAppContext().getResources().getString(R.string.fill_all_fields), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        title.setBackgroundColor(Color.WHITE);
+        title.setPadding(10, 10, 10, 10);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.BLACK);
+        title.setTextSize(20);
 
         // Specify the type of input expected; this, for example, sets the input as a text, and will mask the text
         supervisor.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -119,7 +136,7 @@ public class SelectReasonOutOfSystemFishingDialog implements AdapterView.OnItemC
 
         final AlertDialog dialog = new AlertDialog.Builder(this.activity)
                 .setView(confirmFormView)
-                .setTitle(R.string.add_supervisor_and_confirm)
+                .setCustomTitle(title)
                 .setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
                 .setNegativeButton(android.R.string.cancel, null)
                 .setCancelable(true)

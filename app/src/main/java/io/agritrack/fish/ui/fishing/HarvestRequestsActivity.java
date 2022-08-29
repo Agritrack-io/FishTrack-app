@@ -9,9 +9,11 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -201,6 +203,15 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         final EditText pin = confirmFormView.findViewById(R.id.etPin);
         final TableRow plant = confirmFormView.findViewById(R.id.packagingPlant);
 
+        TextView title = new TextView(this);
+// You Can Customise your Title here
+        title.setText(Html.fromHtml("<b>"+ getString(R.string.split_add_supervisor_and_confirm) +"</b>" + "<br>" + getString(R.string.fill_all_fields), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        title.setBackgroundColor(Color.WHITE);
+        title.setPadding(10, 10, 10, 10);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.BLACK);
+        title.setTextSize(20);
+
         plant.setVisibility(View.GONE);
 
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
@@ -208,7 +219,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
 
         final AlertDialog dialog = new AlertDialog.Builder(HarvestRequestsActivity.this)
                 .setView(confirmFormView)
-                .setTitle(R.string.add_supervisor_and_confirm)
+                .setCustomTitle(title)
                 .setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
                 .setNegativeButton(android.R.string.cancel, null)
                 .setCancelable(true)

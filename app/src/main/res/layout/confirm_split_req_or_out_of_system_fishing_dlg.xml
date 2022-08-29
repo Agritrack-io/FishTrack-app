@@ -85,15 +85,5 @@
                 android:maxLength="4"
                 android:maxLines="1" />
         </TableRow>
-
-       <!-- <Button
-            android:id="@+id/btnOk"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/button_press_effect"
-            android:text="OK"
-            android:textColor="@color/yellow"
-            android:textSize="@dimen/text_view_font_size" />-->
     </TableLayout>
 </LinearLayout>

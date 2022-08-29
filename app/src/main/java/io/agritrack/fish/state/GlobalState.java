@@ -186,18 +186,8 @@ public class GlobalState {
             txFishing.site = LocalPreferences.getCurrentSiteName();
             txFishing.longitude = recFishing.longitude;
             txFishing.latitude = recFishing.latitude;
-            txFishing.calcHash();
 
-            // search DB for records having the same hashCode
-            int cnt = db.fishingTransactionDAO().countByHash(txFishing.hashCode);
-
-            // Persist record if no duplicates exist
-            if (cnt == 0) {
-                db.fishingTransactionDAO().update(txFishing);
-            } else {
-                return db.fishingTransactionDAO().getByHash(txFishing.hashCode);
-            }
-
+            db.fishingTransactionDAO().update(txFishing);
             return txFishing;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -225,8 +215,19 @@ public class GlobalState {
             txTransport.siteCode = LocalPreferences.getCurrentSiteName();
             txTransport.longitude = recTransport.longitude;
             txTransport.latitude = recTransport.latitude;
+            txTransport.calcHash();
 
-            recTransport.txKey = db.transportTransactionDAO().insert(txTransport);
+            // search DB for records having the same hashCode
+            int cnt = db.transportTransactionDAO().countByHash(txTransport.hashCode);
+
+            // Persist record if no duplicates exist
+            if (cnt < 1) {
+                recTransport.txKey = db.transportTransactionDAO().insert(txTransport);
+            } else {
+                return db.transportTransactionDAO().getByHash(txTransport.hashCode);
+            }
+
+            //recTransport.txKey = db.transportTransactionDAO().insert(txTransport);
 
             return txTransport;
         } catch (Exception ex) {

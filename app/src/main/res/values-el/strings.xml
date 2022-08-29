@@ -59,7 +59,8 @@
     <string name="confirm_pin_for_split_request">Για δημιουργία νέας αλίευσης, εισάγετε PIN!</string>
     <string name="responsible">Εγκρίνων</string>
     <string name="pin">PIN</string>
-    <string name="add_supervisor_and_confirm">Παρακαλώ συμπληρώστε όλα τα πεδία</string>
+    <string name="split_add_supervisor_and_confirm">Είστε σίγουρος για το σπάσιμο της αλίευσης?</string>
+    <string name="out_of_system_fishing_add_supervisor_and_confirm">Είστε σίγουρος για την εξωσυστημική αλίευση?</string>
     <string name="fill_all_fields">Παρακαλώ συμπληρώστε όλα τα πεδία!</string>
     <string name="select_reason">Επιλέξτε λόγο εξωσυστημικής αλίευσης</string>
     <string name="inability_to_fish">Αδυναμία αλίευσης</string>

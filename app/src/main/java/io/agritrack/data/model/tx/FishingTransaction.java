@@ -114,20 +114,4 @@ public class FishingTransaction {
 
     @ColumnInfo(name = "itin_no")
     public Short parentItinSno;
-
-    @ColumnInfo(name = "hash_code")
-    public Integer hashCode;
-
-
-    public void calcHash() {
-        try {
-            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-            String today = dateFormat.format(new Date());
-            String bins = harvestBinsData.stream().sorted(Comparator.comparing(l -> l.binEPC)).map(e -> e.binEPC).collect(Collectors.joining("."));
-
-            this.hashCode = String.format("%s:%s", today, bins).hashCode();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

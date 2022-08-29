@@ -58,7 +58,8 @@
     <string name="confirm_pin_for_split_request">Please insert your PIN to confirm split of fishing request!</string>
     <string name="responsible">Responsible</string>
     <string name="pin">PIN</string>
-    <string name="add_supervisor_and_confirm">Please fill all fields</string>
+    <string name="split_add_supervisor_and_confirm">Are you sure to proceed with split?</string>
+    <string name="out_of_system_fishing_add_supervisor_and_confirm">Are you sure to proceed with out of system fishing?</string>
     <string name="fill_all_fields">Please fill all fields!</string>
     <string name="select_reason">Select reason for out of system fishing</string>
     <string name="inability_to_fish">Inability to fish</string>
