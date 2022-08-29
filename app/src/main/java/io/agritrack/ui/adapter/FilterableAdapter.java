@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import io.agritrack.R;
-import io.agritrack.ui.bo.GenericListModel;
+import io.agritrack.fish.ui.bo.GenericListModel;
 
 public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.viewHolder> implements Filterable {
 
@@ -31,11 +31,11 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
         this.arrayListFiltered = arrayList;
     }
 
-    public String getSelectedValue(){
+    public String getSelectedValue() {
         return this.selectedValue;
     }
 
-    public void clearSelectedValue(){
+    public void clearSelectedValue() {
         this.selectedValue = null;
     }
 

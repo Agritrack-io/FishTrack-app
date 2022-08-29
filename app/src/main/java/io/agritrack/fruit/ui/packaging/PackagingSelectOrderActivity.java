@@ -24,6 +24,7 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.FishingRequest;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.bo.GenericListModel;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -31,11 +32,11 @@ public class PackagingSelectOrderActivity extends AppCompatActivity implements A
 
     private MobileDB db;
     private ListView lvOpenOrders;
-    private io.agritrack.ui.bo.GenericListModel[] orders;
+    private GenericListModel[] orders;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +97,7 @@ public class PackagingSelectOrderActivity extends AppCompatActivity implements A
                 GlobalState.recFishing.txKey = db.fishingTransactionDAO().insert(openTx);*/
 
                 // transfer existing Record Data to Entity and persist to db.
-               /* GlobalState.commitFishing(this.db, false);*/
+                /* GlobalState.commitFishing(this.db, false);*/
 
                 Intent i = new Intent(getApplicationContext(), PackagingStartActivity.class);
                 startActivity(i);
@@ -114,7 +115,7 @@ public class PackagingSelectOrderActivity extends AppCompatActivity implements A
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         CheckedTextView v = (CheckedTextView) view;
         boolean currentCheck = v.isChecked();
-        io.agritrack.ui.bo.GenericListModel member = (io.agritrack.ui.bo.GenericListModel) this.lvOpenOrders.getItemAtPosition(position);
+        GenericListModel member = (GenericListModel) this.lvOpenOrders.getItemAtPosition(position);
         member.setChecked(!currentCheck);
 
         FishingRequest harvestRq = db.fishingRequestsDAO().getById(member.getId().toString());
@@ -133,7 +134,7 @@ public class PackagingSelectOrderActivity extends AppCompatActivity implements A
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if(!IsDemo) {
+        if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.speciesName)) {
                 sb.append(String.format("Please Select a Harvest Request to proceed", ""));
             }

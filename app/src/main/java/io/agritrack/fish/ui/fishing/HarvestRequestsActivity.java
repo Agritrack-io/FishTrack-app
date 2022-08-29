@@ -6,11 +6,11 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +22,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.text.HtmlCompat;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -35,28 +35,25 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.FishingRequest;
-import io.agritrack.data.model.Site;
 import io.agritrack.dialog.SelectReasonOutOfSystemFishingDialog;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.ui.bo.GenericListModel;
+import io.agritrack.fish.ui.bo.GenericListModel;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class HarvestRequestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, ToggleGroup.OnCheckedChangeListener {
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private MobileDB db;
     private ListView lvFishingRequests;
     private GenericListModel[] fishingRQs;
     private ToggleGroup tgChooseDate;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private ImageButton ibSelectReason, ibSplitRequest;
     private SelectReasonOutOfSystemFishingDialog selectReasonDialog;
     private ImageView ivSupport;
@@ -167,16 +164,16 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         }
     }
 
-    private void duplicate(FishingRequest fishingRequest){
+    private void duplicate(FishingRequest fishingRequest) {
         FishingRequest duplicatedFishReq = new FishingRequest();
 
-        String harvReq = fishingRequest.requestId.substring(0,64);
+        String harvReq = fishingRequest.requestId.substring(0, fishingRequest.requestId.length() - 2);
+        recFishing.parentItinSno = Short.valueOf(fishingRequest.requestId.substring(fishingRequest.requestId.length() - 2));
         List<FishingRequest> fishReqs = db.fishingRequestsDAO().getAllFishReqWithSameHarvReq(harvReq);
         if (!fishReqs.isEmpty()) {
             int newItinerary = fishReqs.size() + 1;
             duplicatedFishReq.requestId = harvReq + newItinerary;
             duplicatedFishReq.itinSNo = (short) newItinerary;
-            recFishing.itinSno = (short) newItinerary;
         }
         duplicatedFishReq.requester = requesterName;
         duplicatedFishReq.species = fishingRequest.species;
@@ -243,7 +240,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
                         // use typed-in PIN to compare credentials with those stored in the Local DB.
                         AuthenticationService authSvc = new AuthenticationService();
                         boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
-                        if (authentication){
+                        if (authentication) {
                             dialog.dismiss();
                             requesterName = supervisor.getText().toString();
                             duplicate(harvestRq);
@@ -277,19 +274,25 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         }
     }
 
-    private void getTodayHarvestReq(){
+    private void getTodayHarvestReq() {
         this.lvFishingRequests.setAdapter(null);
         List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getTodayRecord();
         if (fishingRequests != null && !fishingRequests.isEmpty()) {
             this.fishingRQs = fishingRequests.stream().sorted(Comparator.comparing(lc -> String.format("%s:%s:%s", lc.cageCode, lc.farmArrival, lc.itinSNo)))
-                    .map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species, x.notes.equalsIgnoreCase("Split Request") ? x.notes.toUpperCase() : x.notes))).toArray(GenericListModel[]::new);
+                    .map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species), "Split Request".equalsIgnoreCase(x.notes) ? GenericListModel.origin.Split : GenericListModel.origin.Normal)).toArray(GenericListModel[]::new);
 
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);
-                    TextView text = view.findViewById(android.R.id.text1);
-                    text.setTextSize(22);
+                    TextView tvItemContent = view.findViewById(android.R.id.text1);
+                    tvItemContent.setTextSize(22);
+
+                    GenericListModel currObj = this.getItem(position);
+                    if (currObj.getType() == GenericListModel.origin.Split) {
+                        String tmp = tvItemContent.getText().toString();
+                        tvItemContent.setText(Html.fromHtml(tmp + "<b><font color='red'> NEO</font></b>", HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    }
                     return view;
                 }
             };
@@ -297,11 +300,11 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
             this.lvFishingRequests.setOnItemClickListener(this);
             this.harvestRQcnt = fishingRequests.size();
         }
-        if (lastPosition>-1)
-        this.lvFishingRequests.setItemChecked(lastPosition,true);
+        if (lastPosition > -1)
+            this.lvFishingRequests.setItemChecked(lastPosition, true);
     }
 
-    private void getYesterdayHarvestReq(){
+    private void getYesterdayHarvestReq() {
         this.lvFishingRequests.setAdapter(null);
         List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getYesterdayRecord();
         if (fishingRequests != null && !fishingRequests.isEmpty()) {
@@ -324,7 +327,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         }
     }
 
-    private void getPreviousHarvestReq(){
+    private void getPreviousHarvestReq() {
         this.lvFishingRequests.setAdapter(null);
         List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getPreviousRecord();
         if (fishingRequests != null && !fishingRequests.isEmpty()) {

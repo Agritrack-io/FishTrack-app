@@ -49,6 +49,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.bo.GenericListModel;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.LocationAwareActivity;
@@ -142,8 +143,8 @@ public class CorrelationNetActivity extends LocationAwareActivity {
         this.rvNets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.code)).collect(Collectors.toList());
-            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets);
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.code)).collect(Collectors.toList());
+            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
             this.rvNets.setAdapter(adapterAssets);

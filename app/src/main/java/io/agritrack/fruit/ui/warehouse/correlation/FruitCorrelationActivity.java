@@ -47,6 +47,7 @@ import io.agritrack.data.model.Site;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fish.ui.bo.GenericListModel;
 import io.agritrack.fruit.state.FruitGlobalState;
 import io.agritrack.fruit.ui.FruitWhMenuActivity;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
@@ -65,8 +66,8 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
     private final ScanHandler mScanHandler = new ScanHandler(this);
     private MobileDB db;
     private ListView lvGreenhouse;
-    private List<io.agritrack.ui.bo.GenericListModel> greenhouse;
-    private ArrayAdapter<io.agritrack.ui.bo.GenericListModel> greenhouseAdapter;
+    private List<GenericListModel> greenhouse;
+    private ArrayAdapter<GenericListModel> greenhouseAdapter;
     private Button btnScanAssetTag;
     private TextView tvCorrPoleBarcode, tvCorrTempLoggerBarcode;
     private ProgressDialog progressDialog;
@@ -108,8 +109,8 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
         // load employees belonging to current Site and fill in the spFishingTeam Spinner.
         List<Site> ghouses = db.siteDAO().getCurrentSiteSubSites(LocalPreferences.getCurrentSiteLevel3());
         if (ghouses != null && !ghouses.isEmpty()) {
-            this.greenhouse = ghouses.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.name)).collect(Collectors.toList());
-            greenhouseAdapter = new ArrayAdapter<io.agritrack.ui.bo.GenericListModel>(this, android.R.layout.simple_list_item_checked, greenhouse) {
+            this.greenhouse = ghouses.stream().map(x -> new GenericListModel(x.id, x.name)).collect(Collectors.toList());
+            greenhouseAdapter = new ArrayAdapter<GenericListModel>(this, android.R.layout.simple_list_item_checked, greenhouse) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);
@@ -262,7 +263,7 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         CheckedTextView v = (CheckedTextView) view;
         boolean currentCheck = v.isChecked();
-        io.agritrack.ui.bo.GenericListModel member = (io.agritrack.ui.bo.GenericListModel) this.lvGreenhouse.getItemAtPosition(position);
+        GenericListModel member = (GenericListModel) this.lvGreenhouse.getItemAtPosition(position);
         member.setChecked(!currentCheck);
 
         int sp = this.lvGreenhouse.getCheckedItemPosition();

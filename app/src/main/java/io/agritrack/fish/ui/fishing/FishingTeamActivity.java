@@ -43,7 +43,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.ui.bo.GenericListModel;
+import io.agritrack.fish.ui.bo.GenericListModel;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class FishingTeamActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -69,7 +69,7 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_team);
 
-        if (getIntent() != null && reasonOutOfSystemFishing==null) {
+        if (getIntent() != null && reasonOutOfSystemFishing == null) {
             Bundle bundle = getIntent().getExtras();
             reasonOutOfSystemFishing = bundle != null ? bundle.getString("reason") : reasonOutOfSystemFishing;
         }
@@ -163,12 +163,12 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
         ImageView ivBack = findViewById(R.id.ivBackToBins);
         ivBack.setOnClickListener(view -> {
-            if (recFishing.outOfSystemFishing){
+            if (recFishing.outOfSystemFishing) {
                 FragmentManager fm = getSupportFragmentManager();
                 confirmDeleteFishingDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
-            Intent i = new Intent(getApplicationContext(), FishingStartActivity.class);
-            startActivity(i);
+                Intent i = new Intent(getApplicationContext(), FishingStartActivity.class);
+                startActivity(i);
             }
         });
     }
@@ -219,7 +219,7 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-        if(!IsDemo) {
+        if (!IsDemo) {
             if (recFishing.fishingTeam == null || recFishing.fishingTeam.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Team members'"));
             }

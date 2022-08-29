@@ -1,4 +1,4 @@
-package io.agritrack.ui.bo;
+package io.agritrack.fish.ui.bo;
 
 import java.util.UUID;
 
@@ -8,11 +8,13 @@ import java.util.UUID;
  *  and (if required) a check box to allow for multiple items selection.
  */
 public class GenericListModel {
+    public enum origin {Normal, Split, Offline};
 
     private UUID id;
     private String label, requestId;
     private String[] labels;
     private Boolean checked;
+    private origin type = origin.Normal;
 
     public GenericListModel(UUID id, String label) {
         this.id = id;
@@ -30,6 +32,11 @@ public class GenericListModel {
         this.id = id;
         this.labels = labels;
         this.checked = isChecked;
+    }
+
+    public GenericListModel(String requestId, String label, origin type) {
+        this(requestId,label);
+        this.type = type;
     }
 
     public GenericListModel(String requestId, String format) {
@@ -62,6 +69,10 @@ public class GenericListModel {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public origin getType() {
+        return type;
     }
 
     public Boolean isChecked() {

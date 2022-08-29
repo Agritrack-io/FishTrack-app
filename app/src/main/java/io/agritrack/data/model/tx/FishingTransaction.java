@@ -8,6 +8,7 @@ import androidx.room.TypeConverters;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -112,7 +113,7 @@ public class FishingTransaction {
     public boolean outOfSystemFishing;
 
     @ColumnInfo(name = "itin_no")
-    public Short itinSno;
+    public Short parentItinSno;
 
     @ColumnInfo(name = "hash_code")
     public Integer hashCode;
@@ -122,7 +123,7 @@ public class FishingTransaction {
         try {
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             String today = dateFormat.format(new Date());
-            String bins = harvestBinsData.stream().sorted((l, r) -> r.binEPC.compareTo(r.binEPC)).map(e -> e.binEPC).collect(Collectors.joining("."));
+            String bins = harvestBinsData.stream().sorted(Comparator.comparing(l -> l.binEPC)).map(e -> e.binEPC).collect(Collectors.joining("."));
 
             this.hashCode = String.format("%s:%s", today, bins).hashCode();
         } catch(Exception e) {

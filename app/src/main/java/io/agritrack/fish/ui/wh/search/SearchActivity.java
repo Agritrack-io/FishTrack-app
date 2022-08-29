@@ -49,6 +49,7 @@ import io.agritrack.data.model.wh.Asset;
 import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.ui.WhMenuActivity;
+import io.agritrack.fish.ui.bo.GenericListModel;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.FilterableAdapter;
@@ -154,8 +155,8 @@ public class SearchActivity extends AppCompatActivity {
         this.rvAssets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<io.agritrack.ui.bo.GenericListModel> selectedAssets = assetsList.stream().map(x -> new io.agritrack.ui.bo.GenericListModel(x.id, x.rfid.substring(x.rfid.length()-10))).collect(Collectors.toList());
-            adapterAssets = new FilterableAdapter(this, (ArrayList<io.agritrack.ui.bo.GenericListModel>) selectedAssets);
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid.substring(x.rfid.length()-10))).collect(Collectors.toList());
+            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
             this.rvAssets.setAdapter(adapterAssets);
