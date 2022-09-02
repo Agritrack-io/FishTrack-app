@@ -5,7 +5,11 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.agritrack.data.converter.StringListConverter;
 
@@ -57,4 +61,19 @@ public class ProcessingTransaction {
 
     @ColumnInfo(name = "latitude")
     public Double latitude;
+
+    @ColumnInfo(name = "hash_code")
+    public Integer hashCode;
+
+    public void calcHash() {
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            String today = dateFormat.format(new Date());
+            String bins = receivedBins.stream().sorted().collect(Collectors.joining("."));
+
+            this.hashCode = String.format("%s:%s", today, bins).hashCode();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

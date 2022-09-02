@@ -1,16 +1,17 @@
 package io.agritrack.fish.ui.process;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,11 +38,13 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import io.agritrack.R;
+import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.query.EnquiryApi;
+import io.agritrack.api.sync.RfidBatchByRfidBarcode;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.BinInfo;
@@ -49,21 +54,24 @@ import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.ui.service.LocalPreferences;
+import retrofit2.Call;
 
-public class  ProcessBinsActivity extends AppCompatActivity {
+public class ProcessBinsActivity extends AppCompatActivity {
 
+    private final MutableLiveData<List<String>> enquiryResult = new MutableLiveData<>();
+    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
-
     // Local handler that receives the RFID scanner results.
-    private ScanHandler mScanHandler;
-
-    private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
-    private ScanInventoryThread scanner_runnable;
+    private ScanHandler mScanHandler = new ScanHandler(this);
+    private SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+    private ScanInventoryThread scanner_inv = new ScanInventoryThread(mScanHandler);
+    //private ScanInventoryThread scanner_runnable;
 
     private MobileDB db;
     private BinWeightCageAdapter adapterBins;
@@ -74,7 +82,7 @@ public class  ProcessBinsActivity extends AppCompatActivity {
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
     private ConstraintLayout selectedItem;
-    // Instantiate a clickListener to be passed to adapterBins.
+    /*// Instantiate a clickListener to be passed to adapterBins.
     // It will be used to set the selectedBarcode var to the selected item barcode.
     private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
         @Override
@@ -91,10 +99,12 @@ public class  ProcessBinsActivity extends AppCompatActivity {
             view.setBackgroundColor(Color.GRAY);
             selectedItem = view;
         }
-    };
+    };*/
     private String binBarcode;
     private ImageView ivSupport;
     private Button scanButton;
+    private int attemptsToGetEpcList = 0;
+    private boolean scanAllBins = false;
     private SupportDialog supportDialog;
 
     @Override
@@ -124,9 +134,13 @@ public class  ProcessBinsActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBinsForTransport.setLayoutManager(layoutManager);
         rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
-        adapterBins = new BinWeightCageAdapter(this, new ArrayList<>(), itemsClickListener);
+        rvBinsForTransport.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        adapterBins = new BinWeightCageAdapter(this, new ArrayList<BinWeightCageAdapter.BinDetails>()); //, itemsClickListener
         rvBinsForTransport.setAdapter(adapterBins);
         rvBinsForTransport.setNestedScrollingEnabled(false);
+
+        // set (any?) previously selected values to activity Controls.
+        initControlsFromState();
 
         scanResult.observe(this, response -> {
             if (response == null) {
@@ -140,22 +154,19 @@ public class  ProcessBinsActivity extends AppCompatActivity {
         // link trigger/scan button to ClickListener
         scanButton.setOnClickListener(this::onClick);
 
-        // set (any?) previously selected values to activity Controls.
-        initControlsFromState();
-
         ivDeleteBin.setOnClickListener(view -> {
             clearSelectedItem();
 
-            if (!Strings.isEmptyOrWhitespace(selectedBarcode)) {
+            if (!Strings.isEmptyOrWhitespace(adapterBins.getSelectedValue())) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
-                confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
-                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + selectedBarcode);
+                confirmSiteSelectionDlg.args().putString("selectedBarcode", adapterBins.getSelectedValue());
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + adapterBins.getSelectedLabel());
 
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
-                    if (barcode != null) {
-                        adapterBins.removeItem(new BinWeightCageAdapter.BinDetails(barcode));
+                    if (!Strings.isEmptyOrWhitespace(barcode)) {
+                        adapterBins.removeItem(barcode);
                         adapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         selectedBarcode = null;
@@ -179,6 +190,37 @@ public class  ProcessBinsActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
+        enquiryResult.observe(this, response -> {
+            if (response == null || response.isEmpty()) {
+                while (attemptsToGetEpcList<3) {
+                    attemptsToGetEpcList++;
+                    CToast(getApplicationContext(), render(getString(R.string.no_epc_list_returned)), Toast.LENGTH_LONG);
+                    return;
+                }
+                attemptsToGetEpcList = 0;
+                CToast(getApplicationContext(), render(getString(R.string.scan_all_bins)), Toast.LENGTH_LONG);
+                scanButton.setText(R.string.scan_all_bins);
+                scanAllBins = true;
+                return;
+            }
+            if (response.get(0).equalsIgnoreCase(getString(R.string.change_position_to_find_network_coverage_and_scan_again))) {
+                while (attemptsToGetEpcList<3) {
+                    attemptsToGetEpcList++;
+                    CToast(getApplicationContext(), render(response.get(0)), Toast.LENGTH_LONG);
+                    return;
+                }
+                attemptsToGetEpcList = 0;
+                CToast(getApplicationContext(), render(getString(R.string.scan_all_bins)), Toast.LENGTH_LONG);
+                scanButton.setText(R.string.scan_all_bins);
+                scanAllBins = true;
+                return;
+            }
+            response.stream().forEach(x -> adapterBins.addExpectedItem(loadBinInfo(x)));
+            adapterBins.notifyDataSetChanged();
+            tvBinsCount.setText(String.valueOf(adapterBins.getValues().size()));
+            scanButton.setText(R.string.scan_all_bins);
+        });
+
         configFooter();
     }
 
@@ -195,7 +237,7 @@ public class  ProcessBinsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
     }
 
@@ -218,8 +260,8 @@ public class  ProcessBinsActivity extends AppCompatActivity {
         ImageView ivNext = findViewById(R.id.ivToSupervisorConfirm);
         ivNext.setOnClickListener(view -> {
             //Stop scanning since we navigate to next activity
-            if (scanner_runnable!=null) {
-                scanner_runnable.stopReading();
+            if (scanner_inv != null) {
+                scanner_inv.stopReading();
             }
 
             updateState();
@@ -235,8 +277,8 @@ public class  ProcessBinsActivity extends AppCompatActivity {
         ImageView ivBack = findViewById(R.id.ivBackToStartProcess);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
-            if (scanner_runnable!=null) {
-                scanner_runnable.stopReading();
+            if (scanner_inv != null) {
+                scanner_inv.stopReading();
             }
 
             Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
@@ -248,31 +290,60 @@ public class  ProcessBinsActivity extends AppCompatActivity {
         ProcessingRecord prcRecord = GlobalState.recProcessing;
 
         if (prcRecord.availBins != null) {
-            adapterBins.setValues(convertEPCsToBinDetails(new HashSet<>(prcRecord.availBins)));
+            adapterBins.setValues(prcRecord.availBins);
             adapterBins.notifyDataSetChanged();
             tvBinsCount.setText(String.valueOf(prcRecord.availBins.size()));
+            scanButton.setText(R.string.scan_all_bins);
+        } else if (IsOnline) {
+            scanButton.setText(R.string.scan_one_bin);
+        } else {
+            scanButton.setText(R.string.scan_all_bins);
         }
     }
 
     protected void onClick(View view) {
-        if (scanner_runnable == null) {
-            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable = new ScanInventoryThread(mScanHandler);
-            scanner_runnable.setFilter(Filters.RFID_BIN);
-            scanner_runnable.LowEnergy();
-            scanner_runnable.startReading();
-            scanButton.setText(R.string.stop_scan);
-        } else if (!scanner_runnable.isReading()) {
-            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+        if (adapterBins.getItemCount() < 1 && IsOnline && !scanAllBins) {
+            scanner_runnable = new SingleShotScanner(mScanHandler);
             scanner_runnable.setFilter(Filters.RFID_BIN);
             scanner_runnable.startReading();
-            scanButton.setText(R.string.stop_scan);
+            mScanHandler.postDelayed(scanner_runnable, 0);
         } else {
-            scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-            scanner_runnable.stopReading();
-            scanButton.setText(R.string.scan_bin);
+            if (scanner_inv == null) {
+                scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                scanner_inv = new ScanInventoryThread(mScanHandler);
+                scanner_inv.setFilter(Filters.RFID_BIN);
+                scanner_inv.LowEnergy();
+                scanner_inv.startReading();
+                scanButton.setText(R.string.stop_scan);
+            } else if (!scanner_inv.isReading()) {
+                scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                scanner_inv.setFilter(Filters.RFID_BIN);
+                scanner_inv.startReading();
+                scanButton.setText(R.string.stop_scan);
+            } else {
+                scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+                scanner_inv.stopReading();
+                scanButton.setText(R.string.scan_all_bins);
+            }
+            mScanHandler.postDelayed(scanner_inv, 0);
         }
-        mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    private void invokeEnquiryRfidBatch(String epc) {
+        try {
+            EnquiryApi enquiryService = APIServiceGenerator.createAPI(EnquiryApi.class);
+            String token = LocalPreferences.getToken();
+
+            // sync RFID batch for this rfidBarcode
+            Call<List<String>> enquiryEpcsByEpcAsyncCall = enquiryService.getTransportEpcsBatch(epc, "Bearer " + token);
+            enquiryEpcsByEpcAsyncCall.enqueue(new RfidBatchByRfidBarcode(this.enquiryResult));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
     }
 
     private void showAddDialog() {
@@ -308,7 +379,7 @@ public class  ProcessBinsActivity extends AppCompatActivity {
     private void updateState() {
         GlobalState.initProcessingRecord();
 
-        GlobalState.recProcessing.availBins = adapterBins.getEpcsList();
+        GlobalState.recProcessing.availBins = adapterBins.getValues();
     }
 
     private String validate() {
@@ -321,6 +392,24 @@ public class  ProcessBinsActivity extends AppCompatActivity {
         return sb.toString();
     }
 
+    private BinWeightCageAdapter.BinDetails loadBinInfo(String epc) {
+        //Add code to retrieve bin info from local DB
+        BinInfo tmpBin = db.binInfoDAO().getByRFId(epc);
+        if (tmpBin != null) {
+            return new BinWeightCageAdapter.BinDetails(epc, tmpBin.totalWeight, tmpBin.cage);
+        } else {
+            return new BinWeightCageAdapter.BinDetails(epc);
+        }
+    }
+
+    private List<BinWeightCageAdapter.BinDetails> convertEPCsToBinDetails(Set<String> epcs) {
+        List<BinWeightCageAdapter.BinDetails> result = new ArrayList<>();
+        for (String epc : epcs) {
+            result.add(new BinWeightCageAdapter.BinDetails(epc));
+        }
+        return result;
+    }
+
     // ###################################################
     private class ScanHandler extends Handler {
         private final WeakReference<ProcessBinsActivity> mActivity;
@@ -329,42 +418,37 @@ public class  ProcessBinsActivity extends AppCompatActivity {
             mActivity = new WeakReference<>(activity);
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    String rssi = msg.getData().getString("rssi");
+                    try {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            invokeEnquiryRfidBatch(epcStr);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 case 100:
                     ArrayList<String> epcList = msg.getData().getStringArrayList("epc");
-                    //clearSelectedItem();
-                    if (epcList != null && !epcList.isEmpty()) {
+                    if (epcList != null && !epcList.isEmpty() && IsOnline && !scanAllBins) {
+                        adapterBins.markReceived(epcList);
+                        adapterBins.notifyDataSetChanged();
+                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+                    } else {
                         epcList.stream().forEach(x -> adapterBins.addUniqueItem(loadBinInfo(x)));
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         adapterBins.notifyDataSetChanged();
                     }
                     break;
                 case 1980:
-                    if (!IsDemo) {
-                        //CToast(getApplicationContext(), render("Scanning is over!!"), Toast.LENGTH_SHORT);
-                    }
+
                     break;
             }
         }
-    }
-
-    private BinWeightCageAdapter.BinDetails loadBinInfo(String epc){
-        //Add code to retrieve bin info from local DB
-            BinInfo tmpBin = db.binInfoDAO().getByRFId(epc);
-            if (tmpBin!=null) {
-                return new BinWeightCageAdapter.BinDetails(epc, tmpBin.totalWeight, tmpBin.cage);
-            } else {
-                return new BinWeightCageAdapter.BinDetails(epc);
-            }
-    }
-
-    private List<BinWeightCageAdapter.BinDetails> convertEPCsToBinDetails(Set<String> epcs){
-        List<BinWeightCageAdapter.BinDetails> result = new ArrayList<>();
-        for (String epc: epcs){
-            result.add(new BinWeightCageAdapter.BinDetails(epc));
-        }
-        return result;
     }
 }

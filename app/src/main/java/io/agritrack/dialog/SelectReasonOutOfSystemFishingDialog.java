@@ -95,6 +95,7 @@ public class SelectReasonOutOfSystemFishingDialog implements AdapterView.OnItemC
             } else {
                 if (checked == 0 && IsOnline) {
                     CToast(activity.getApplicationContext(), render(R.string.you_are_online), Toast.LENGTH_LONG);
+                    dismiss();
                     return;
                 }
                 addDetailsAndConfirmDialog();

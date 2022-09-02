@@ -162,6 +162,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
             GlobalState.recFishing.averageWeight = harvestRq.averageWeight;
             GlobalState.recFishing.reqWeight = harvestRq.quantity;
             GlobalState.recFishing.notes = harvestRq.notes;
+            recFishing.parentItinSno = harvestRq.parentItinSno!=null ? harvestRq.parentItinSno : null;
             GlobalState.recFishing.packagingPlant = harvestRq.packagingPlant;
         }
     }
@@ -173,11 +174,13 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         recFishing.parentItinSno = Short.valueOf(fishingRequest.requestId.substring(fishingRequest.requestId.length() - 2));
         List<FishingRequest> fishReqs = db.fishingRequestsDAO().getAllFishReqWithSameHarvReq(harvReq);
         if (!fishReqs.isEmpty()) {
-            int newItinerary = fishReqs.size() + 1;
-            duplicatedFishReq.requestId = harvReq + newItinerary;
+            Short maxItin = fishReqs.stream().map(x -> x.itinSNo).max(Short::compare).get();
+            int newItinerary = maxItin!=null ? maxItin + 1 : fishReqs.size() + 1;
+            duplicatedFishReq.requestId = String.format("%s%02d", harvReq, newItinerary);
             duplicatedFishReq.itinSNo = (short) newItinerary;
         }
         duplicatedFishReq.requester = requesterName;
+        duplicatedFishReq.parentItinSno = recFishing.parentItinSno;
         duplicatedFishReq.species = fishingRequest.species;
         duplicatedFishReq.cageCode = fishingRequest.cageCode;
         duplicatedFishReq.harvestDate = fishingRequest.harvestDate;

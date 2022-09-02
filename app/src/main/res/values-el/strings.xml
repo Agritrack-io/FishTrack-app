@@ -154,6 +154,8 @@
     <string name="choose_packaging_site">Επιλέξτε συσκευαστήριο</string>
     <string name="packaging_details">Πληροφορίες μεταφοράς</string>
 
+    <string name="scan_one_bin">Σκανάρετε μία βούτα</string>
+    <string name="scan_all_bins">Σκανάρετε όλες τις βούτες</string>
     <string name="driver_name">Εισάγετε όνομα οδηγού</string>
     <string name="driver_phone">Εισάγετε τηλέφωνο οδηγού</string>
     <string name="license_plate">Εισάγετε αριθμό κυκλοφορίας</string>
@@ -188,6 +190,8 @@
 
     <string name="title_receipt">ΠΑΡΑΛΑΒΗ</string>
     <string name="processing_details">Πληροφορίες παραλαβής</string>
+    <string name="no_epc_list_returned">Δεν βρέθηκε λίστα βουτών για αυτή τη βούτα</string>
+    <string name="change_position_to_find_network_coverage_and_scan_again">Παρακαλώ αναζητήστε κάλυψη δικτύου και σκανάρετε τη βούτα ξανά!</string>
     <string name="title_date_lot_dispatch_note">ΗΜΕΡΟΜΗΝΙΑ / LOT / ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ</string>
     <string name="receipt_header">#\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Βούτα \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Κλωβός \u00A0\u00A0\u00A0\u00A0 Kg</string>
 

@@ -267,10 +267,6 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
-        /*DecodedJWT jwt = JWT.decode(model.getToken());
-        if( jwt.getExpiresAt().before(new Date())) {
-            System.out.println("token is expired");
-        }*/
         LocalPreferences.writeValue(Token_Key, model.getToken());
         LocalPreferences.writeValue(Logged_In_User_Key, model.getUsername());
         LocalPreferences.setUserRoles(model.getRoles());
@@ -310,7 +306,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             AuthenticationService userService = new AuthenticationService();
             boolean authenticatedUser = userService.authenticateUser(db, username, pin);
 
-            if (hoursSinceLastLogin <= 10 && authenticatedUser) {
+            if (hoursSinceLastLogin <= 2 && authenticatedUser) {
                 LocalPreferences.updateLoginTime();
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(username, LocalPreferences.getToken(), LocalPreferences.getUserRoles()))));
             } else {
@@ -332,8 +328,8 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             UUID siteId = LocalPreferences.getCurrentSiteId();
             String clusterId = LocalPreferences.getCurrentClusterId();
 
-            /*//Clean encoding scheme table before update
-            this.db.encodingSchemeDAO().deleteAll();*/
+            //Clean bin info table before update
+            this.db.binInfoDAO().deleteAll();
 
             // sync sites for current cluster
             Call<List<SiteDTO>> syncSitesAsyncCall = syncService.getSitesByCluster(clusterId, "Bearer " + token);
