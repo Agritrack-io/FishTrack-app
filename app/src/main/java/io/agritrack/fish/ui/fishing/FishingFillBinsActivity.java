@@ -284,7 +284,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         this.stopScanner();
-        //unregister the receiver
+        //unregister the receiver, pairs with registration in onStart()!!!
         if (keyReceiver != null) {
             unregisterReceiver(keyReceiver);
         }
@@ -294,10 +294,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         this.stopScanner();
-        //unregister the receiver
-        if (keyReceiver != null) {
-            unregisterReceiver(keyReceiver);
-        }
         // dispose bluetooth handlers
         Bluetooth_DisposeHandlers();
     }
