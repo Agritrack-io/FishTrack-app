@@ -127,7 +127,6 @@ tools:context=".fish.ui.process.ProcessBinsActivity">
                 android:layout_marginEnd="50dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/button_press_effect"
-                android:text="@string/scan_bin"
                 android:textColor="@color/yellow"
                 android:textSize="@dimen/button_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -11,6 +11,7 @@ import androidx.room.Update;
 import java.util.List;
 
 import io.agritrack.data.model.tx.ProcessingTransaction;
+import io.agritrack.data.model.tx.TransportTransaction;
 
 @Dao
 public interface ProcessingTransactionDAO {
@@ -20,6 +21,9 @@ public interface ProcessingTransactionDAO {
 
     @Query("SELECT * from process_transaction where id=:processingTxId LIMIT 1")
     ProcessingTransaction getById(Long processingTxId);
+
+    @Query("SELECT * from process_transaction where hash_code=:hashCode LIMIT 1")
+    ProcessingTransaction getByHash(Integer hashCode);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(ProcessingTransaction... processingTxs);
@@ -35,4 +39,7 @@ public interface ProcessingTransactionDAO {
 
     @Update
     void update(ProcessingTransaction processingTx);
+
+    @Query("SELECT count(*) FROM process_transaction WHERE hash_code=:hashCode")
+    int countByHash(Integer hashCode);
 }

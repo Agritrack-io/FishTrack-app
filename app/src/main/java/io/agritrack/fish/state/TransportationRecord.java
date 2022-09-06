@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 
 import java.util.List;
 
+import io.agritrack.data.model.tx.TransportTransaction;
+
 public class TransportationRecord {
     public String packagingSite;
     public String driverName;
@@ -21,6 +23,7 @@ public class TransportationRecord {
     public Double longitude;
     public Double latitude;
     public long txKey;
+    public int hashCode;
 
     public TransportationRecord() {
     }

@@ -25,6 +25,9 @@ public interface TransportTransactionDAO {
     @Query("SELECT * from transport_transaction where hash_code=:hashCode LIMIT 1")
     TransportTransaction getByHash(Integer hashCode);
 
+    @Query("DELETE from transport_transaction where hash_code=:hashCode")
+    int deleteAllByHash(Integer hashCode);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(TransportTransaction... transports);
 

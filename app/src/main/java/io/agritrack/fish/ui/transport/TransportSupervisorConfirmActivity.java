@@ -220,10 +220,8 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
 
     private boolean deleteTransportTx(){
         try {
-            System.out.println("About to delete transport tx");
-            TransportTransaction delObj = new TransportTransaction();
-            delObj.id = recTransport.txKey;
-            db.transportTransactionDAO().delete(delObj);
+            int count = db.transportTransactionDAO().deleteAllByHash(recTransport.hashCode);
+            System.out.println("About to delete transport tx" + count);
             return true;
         } catch (Exception x){
             x.printStackTrace();

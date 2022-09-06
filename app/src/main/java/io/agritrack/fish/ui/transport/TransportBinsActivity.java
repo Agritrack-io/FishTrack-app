@@ -26,6 +26,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,19 +37,26 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import io.agritrack.R;
+import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.query.EnquiryApi;
+import io.agritrack.api.sync.RfidBatchByRfidBarcode;
 import io.agritrack.common.Filters;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity;
 import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
+import retrofit2.Call;
 
 public class TransportBinsActivity extends AppCompatActivity {
     // listens to trigger button clicks.

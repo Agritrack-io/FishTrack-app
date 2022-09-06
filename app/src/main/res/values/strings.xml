@@ -153,6 +153,8 @@
     <string name="choose_packaging_site">Choose packaging site</string>
     <string name="packaging_details">Packaging details</string>
 
+    <string name="scan_one_bin">Scan one bin</string>
+    <string name="scan_all_bins">Scan all bins</string>
     <string name="driver_name">Type driver name</string>
     <string name="driver_phone">Type driver phone</string>
     <string name="license_plate">Type license plate</string>
@@ -185,6 +187,8 @@
     <string name="title_receipt">RECEIPT</string>
     <string name="title_date_lot_dispatch_note">DATE / LOT / DISPATCH NOTE</string>
     <string name="processing_details">Receipt details</string>
+    <string name="no_epc_list_returned">No list of bins returned for this bin</string>
+    <string name="change_position_to_find_network_coverage_and_scan_again">Please find network coverage and scan bin again</string>
     <string name="receipt_header">#\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Bin \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Cage \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Kg</string>
 
     <string name="title_quality_receipt">QUALITY/PP-DOC-01</string>

@@ -224,6 +224,7 @@ public class GlobalState {
             if (cnt < 1) {
                 recTransport.txKey = db.transportTransactionDAO().insert(txTransport);
             } else {
+                recTransport.hashCode = txTransport.hashCode;
                 return db.transportTransactionDAO().getByHash(txTransport.hashCode);
             }
 
@@ -247,14 +248,25 @@ public class GlobalState {
             txProcess.site = recProcessing.packagingSite;
             txProcess.timestamp = System.currentTimeMillis();
             //txProcess.remarks = recProcessing.remarks;
-            txProcess.receivedBins = recProcessing.availBins;
+            txProcess.receivedBins = recProcessing.availBins.stream().map(x -> x.epc).collect(Collectors.toList());
             txProcess.securityClipNumber = recProcessing.securityClip;
             txProcess.user = LocalPreferences.getLoggedInUser("N/A");
             txProcess.site = LocalPreferences.getCurrentSiteName();
             txProcess.longitude = recProcessing.longitude;
             txProcess.latitude = recProcessing.latitude;
+            txProcess.calcHash();
 
-            recProcessing.txKey = db.processingTransactionDAO().insert(txProcess);
+            // search DB for records having the same hashCode
+            int cnt = db.processingTransactionDAO().countByHash(txProcess.hashCode);
+
+            // Persist record if no duplicates exist
+            if (cnt < 1) {
+                recProcessing.txKey = db.processingTransactionDAO().insert(txProcess);
+            } else {
+                return db.processingTransactionDAO().getByHash(txProcess.hashCode);
+            }
+
+            //recProcessing.txKey = db.processingTransactionDAO().insert(txProcess);
 
             return txProcess;
         } catch (Exception ex) {

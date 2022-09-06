@@ -246,7 +246,9 @@ public class FishingConfirmActivity extends LocationAwareActivity {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user

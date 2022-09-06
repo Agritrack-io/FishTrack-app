@@ -53,4 +53,7 @@ public class FishingRequest {
 
     @ColumnInfo(name = "itin_no")
     public Short itinSNo;
+
+    @ColumnInfo(name = "parent_itin_no")
+    public Short parentItinSno;
 }
