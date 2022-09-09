@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.quality.postpackage;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recQuality;
@@ -28,6 +29,7 @@ import java.text.DecimalFormat;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.dto.tx.PostPackageQualityTxDTO;
 import io.agritrack.data.model.tx.PostPackageQualityTransaction;
 import io.agritrack.data.model.tx.QualityTransaction;
@@ -37,6 +39,7 @@ import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
@@ -194,9 +197,15 @@ public class PostPackagingQualityConfirmActivity extends LocationAwareActivity {
             // persist Processing Record data to local DB.
             PostPackageQualityTransaction tx = GlobalState.commitPostPackageQuality(db);
 
-            // sync Processing records
-            Call<PostPackageQualityTxDTO> syncTxAsyncCall = updService.syncPostPackageQualityTx(PostPackageQualityTxDTO.convert(tx), "Bearer " + token);
-            syncTxAsyncCall.enqueue(new PostPackagingQualityConfirmActivity.SyncTxCallBack());
+            if (IsOnline) {
+                // sync Processing records
+                Call<PostPackageQualityTxDTO> syncTxAsyncCall = updService.syncPostPackageQualityTx(PostPackageQualityTxDTO.convert(tx), "Bearer " + token);
+                syncTxAsyncCall.enqueue(new PostPackagingQualityConfirmActivity.SyncTxCallBack());
+            } else {
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
+            }
 
             return true;
         } catch (Exception e) {
@@ -241,14 +250,16 @@ public class PostPackagingQualityConfirmActivity extends LocationAwareActivity {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
         }

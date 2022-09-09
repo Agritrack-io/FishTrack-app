@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.transport;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
@@ -28,6 +29,7 @@ import java.net.SocketTimeoutException;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
@@ -37,6 +39,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
@@ -205,9 +208,16 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
             // persist Transportation Record data to local DB.
             TransportTransaction tx = GlobalState.commitTransport(db);
 
-            // sync fish species
-            Call<TransportTxDTO> syncTxAsyncCall = updService.syncTransportTx(TransportTxDTO.convert(tx), "Bearer " + token);
-            syncTxAsyncCall.enqueue(new SyncTxCallBack());
+            if (IsOnline) {
+                // sync fish species
+                Call<TransportTxDTO> syncTxAsyncCall = updService.syncTransportTx(TransportTxDTO.convert(tx), "Bearer " + token);
+                syncTxAsyncCall.enqueue(new SyncTxCallBack());
+            } else {
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
+            }
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -248,14 +258,16 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
         }

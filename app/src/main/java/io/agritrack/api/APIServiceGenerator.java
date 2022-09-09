@@ -3,6 +3,8 @@ package io.agritrack.api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -15,7 +17,8 @@ public class APIServiceGenerator {
 
     //private static final String BASE_URL = "http://fishtrack-be.eu-central-1.elasticbeanstalk.com";
     //private static final String BASE_URL = "http://fishtrack-be-dev.eu-central-1.elasticbeanstalk.com/";
-    //private static final String BASE_URL = "http://192.168.2.52:5000";
+    //private static final String BASE_URL = "http://192.168.2.2:5000";
+    //private static final String BASE_URL = "http://192.168.122.198:5000";
     private static final String BASE_URL = "http://192.168.150.163:5000";
     //private static final String BASE_URL = "http://192.168.1.15:5000";
     //private static final String BASE_URL = "http://3.123.142.122:5000";

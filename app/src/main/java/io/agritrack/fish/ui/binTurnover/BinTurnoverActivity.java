@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.binTurnover;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
@@ -47,6 +48,7 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
+import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.model.BinInfo;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.wh.Asset;
@@ -55,6 +57,7 @@ import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.LoggerDataRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
@@ -243,11 +246,18 @@ public class BinTurnoverActivity extends AppCompatActivity {
                 sortingTimeSeriesDTOs.add(TemperatureTimeSeriesDTO.convert(ts));
             }
 
-            // sync Measurements records
-            if (!sortingTimeSeriesDTOs.isEmpty()) {
-                Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = updService.syncMeasurements(sortingTimeSeriesDTOs, "Bearer " + token);
-                syncMsAsyncCall.enqueue(new BinTurnoverActivity.SyncMsCallBack());
+            if (IsOnline) {
+                // sync Measurements records
+                if (!sortingTimeSeriesDTOs.isEmpty()) {
+                    Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = updService.syncMeasurements(sortingTimeSeriesDTOs, "Bearer " + token);
+                    syncMsAsyncCall.enqueue(new BinTurnoverActivity.SyncMsCallBack());
+                }
+            } else {
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             }
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -391,14 +401,16 @@ public class BinTurnoverActivity extends AppCompatActivity {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
         }

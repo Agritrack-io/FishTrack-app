@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.agritrack.data.model.FishingRequest;
+import io.agritrack.data.model.tx.AssetTransaction;
 import io.agritrack.data.model.tx.SeaTemperatureTransaction;
 
 @Dao
@@ -29,6 +30,9 @@ public interface SeaTemperatureTransactionDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(SeaTemperatureTransaction... seaTemperatureTransactions);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insert(SeaTemperatureTransaction seaTemperatureTransaction);
 
     @Delete
     void delete(SeaTemperatureTransaction seaTemperatureTransaction);

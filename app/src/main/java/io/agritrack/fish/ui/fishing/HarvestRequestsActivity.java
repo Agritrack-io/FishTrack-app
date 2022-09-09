@@ -186,6 +186,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         duplicatedFishReq.harvestDate = fishingRequest.harvestDate;
         duplicatedFishReq.farmArrival = fishingRequest.farmArrival;
         duplicatedFishReq.reqQty = (double) 0;
+        duplicatedFishReq.
         duplicatedFishReq.driver = fishingRequest.driver;
         duplicatedFishReq.site = fishingRequest.site;
         duplicatedFishReq.cageRFID = fishingRequest.cageRFID;

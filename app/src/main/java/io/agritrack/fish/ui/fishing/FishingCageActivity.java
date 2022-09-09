@@ -300,14 +300,6 @@ public class FishingCageActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    // ###################################################
-    private void stopScanner() {
-        if(scanner_runnable !=null) {
-            mScanHandler.removeCallbacks(scanner_runnable);
-            scanner_runnable.stopReading();
-        }
-    }
-
     protected void onClick(View view) {
         scanner_runnable.LowEnergy();
         if(view!=null){
@@ -320,6 +312,14 @@ public class FishingCageActivity extends AppCompatActivity {
             // a NullPointerException will be thrown when trigger is pressed. The App crashes!!!
             scanner_runnable.startReading();
             mScanHandler.postDelayed(scanner_runnable, 0);
+        }
+    }
+
+    // ###################################################
+    private void stopScanner() {
+        if(scanner_runnable !=null) {
+            mScanHandler.removeCallbacks(scanner_runnable);
+            scanner_runnable.stopReading();
         }
     }
 
@@ -371,5 +371,4 @@ public class FishingCageActivity extends AppCompatActivity {
             }
         }
     }
-
 }

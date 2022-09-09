@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.process;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recProcessing;
@@ -27,6 +28,7 @@ import java.net.SocketTimeoutException;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
@@ -35,6 +37,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
@@ -195,9 +198,16 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
             // persist Transportation Record data to local DB.
             ProcessingTransaction tx = GlobalState.commitProcessing(db);
 
-            // sync Processing records
-            Call<ProcessingTxDTO> syncTxAsyncCall = updService.syncProcessingTx(ProcessingTxDTO.convert(tx), "Bearer " + token);
-            syncTxAsyncCall.enqueue(new SyncTxCallBack());
+            if (IsOnline) {
+                // sync Processing records
+                Call<ProcessingTxDTO> syncTxAsyncCall = updService.syncProcessingTx(ProcessingTxDTO.convert(tx), "Bearer " + token);
+                syncTxAsyncCall.enqueue(new SyncTxCallBack());
+            } else {
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
+            }
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -240,14 +250,16 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_SHORT));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_SHORT));
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_SHORT));
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_SHORT));
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_SHORT));
                 }
             }
         }

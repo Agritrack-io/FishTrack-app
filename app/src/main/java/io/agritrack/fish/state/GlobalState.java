@@ -675,7 +675,7 @@ public class GlobalState {
             seaTemperatureTransaction.longitude = recTools.longitude;
             seaTemperatureTransaction.latitude = recTools.latitude;
 
-            db.seaTemperatureTransactionDAO().insert(seaTemperatureTransaction);
+            recTools.txKey = db.seaTemperatureTransactionDAO().insert(seaTemperatureTransaction);
 
             return seaTemperatureTransaction;
         } catch (Exception ex) {

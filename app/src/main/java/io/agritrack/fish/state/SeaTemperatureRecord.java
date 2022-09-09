@@ -8,4 +8,5 @@ public class SeaTemperatureRecord {
 
     public Double longitude;
     public Double latitude;
+    public long txKey;
 }

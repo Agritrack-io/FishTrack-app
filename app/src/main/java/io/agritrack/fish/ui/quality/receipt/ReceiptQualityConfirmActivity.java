@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.quality.receipt;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
@@ -36,6 +37,7 @@ import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
+import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.QualityTransaction;
@@ -45,6 +47,7 @@ import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
@@ -248,14 +251,20 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
                 temperatureTimeSeriesDTOs.add(measurementDTO);
             }
 
-            // sync Processing records
-            Call<QualityTxDTO> syncTxAsyncCall = updService.syncQualityTx(QualityTxDTO.convert(tx), "Bearer " + token);
-            syncTxAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncTxCallBack());
+            if (IsOnline) {
+                // sync Processing records
+                Call<QualityTxDTO> syncTxAsyncCall = updService.syncQualityTx(QualityTxDTO.convert(tx), "Bearer " + token);
+                syncTxAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncTxCallBack());
 
-            // sync Measurements records
-            if (!temperatureTimeSeriesDTOs.isEmpty()) {
-                Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = updService.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
-                syncMsAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncMsCallBack());
+                // sync Measurements records
+                if (!temperatureTimeSeriesDTOs.isEmpty()) {
+                    Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = updService.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
+                    syncMsAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncMsCallBack());
+                }
+            } else {
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             }
 
             // update logger initialization timestamps
@@ -294,7 +303,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_processing_tx_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_postquality_update_failure), Toast.LENGTH_LONG));
             }
         }
 
@@ -303,14 +312,16 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
         }
@@ -344,14 +355,16 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
         }
@@ -372,14 +385,16 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
         }
@@ -400,7 +415,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Error:" + e.getMessage()), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error +  e.getMessage()), Toast.LENGTH_LONG));
             }
         }
 
@@ -409,14 +424,16 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.files_failed_to_sync), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error +  error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
         }

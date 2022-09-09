@@ -439,12 +439,15 @@
     <string name="error_connection_timeout">Λήξη σύνδεσης!!!</string>
     <string name="error_timeout">Αποτυχία σύνδεσης!!! Παρακαλώ ελέγξτε το δίκτυο!</string>
     <string name="error_cancelled_call">Αναγκαστική ακύρωση κλήσης!!!</string>
-    <string name="error_fishing_tx_update_failure">Η αλίευση απέτυχε να συγχρονιστεί!!!</string>
-    <string name="error_transport_tx_update_failure">Η μεταφορά απέτυχε να συγχρονιστεί!!!</string>
-    <string name="error_shipping_tx_update_failure">Η μεταφορά απέτυχε να συγχρονιστεί!!!</string>
-    <string name="error_processing_tx_update_failure">Η παραλαβή απέτυχε να συγχρονιστεί!!!</string>
-    <string name="error_temperatures_tx_update_failure">Οι θερμοκρασίες απέτυχαν να συγχρονιστούν!!!</string>
-    <string name="error_import_daqta_loggers">Η εισαγωγή των καταγραφικών απέτυχε να συγχρονιστεί!!!</string>
+    <string name="error_fishing_tx_update_failure">Η αλίευση απέτυχε να συγχρονιστεί!!! Επικοινωνήστε με την υποστήριξη! </string>
+    <string name="error_transport_tx_update_failure">Η μεταφορά απέτυχε να συγχρονιστεί!!! Επικοινωνήστε με την υποστήριξη!</string>
+    <string name="error_shipping_tx_update_failure">Η μεταφορά απέτυχε να συγχρονιστεί!!! Επικοινωνήστε με την υποστήριξη!</string>
+    <string name="error_processing_tx_update_failure">Η παραλαβή απέτυχε να συγχρονιστεί!!! Επικοινωνήστε με την υποστήριξη!</string>
+    <string name="error_temperatures_tx_update_failure">Οι θερμοκρασίες απέτυχαν να συγχρονιστούν!!! Επικοινωνήστε με την υποστήριξη!</string>
+    <string name="error_postquality_update_failure">Ο ποιοτικός έλεγχος απέτυχε να συγχρονιστεί!!! Επικοινωνήστε με την υποστήριξη!</string>
+    <string name="error_sea_temp_update_failure">Η θερμοκρασία θάλασσας απέτυχε να συγχρονιστεί!!! Επικοινωνήστε με την υποστήριξη!</string>
+    <string name="error_import_daqta_loggers">Η εισαγωγή των καταγραφικών απέτυχε να συγχρονιστεί!!! Επικοινωνήστε με την υποστήριξη!</string>
+    <string name="general_error">Γενικό σφάλμα. Επικοινωνήστε με την υποστήριξη! ::</string>
     <string name="no_epc_filter_selected">Παρακαλώ είσαγετε την ετικέτα την οποία αναζητάτε...</string>
     <string name="scan_asset_tag">Διάβασε πάγιο</string>
     <string name="button_correlate">Συσχέτισε</string>
@@ -629,7 +632,7 @@
     <string name="lot_restriction">Λανθασμένο LOT</string>
     <string name="lot_restriction_message">Περισσότερα του ενός LOT βρέθηκαν για τα τελάρα που σκανάρατε. Παρακαλώ πηγαίντε πίσω και σκανάρετε τελάρα από ένα LOT.</string>
     <string name="invalid_inputs">Μη έγκυρα δεδομένα :</string>
-    <string name="tx_saved_local_find_network_and_sync">Η διαδικασία αποθηκεύτηκε. Παρακαλώ μην την επαναλάβετε. Εισέλθετε στην εφαρμογή με κάλυψη δικτύου και συγχρονίστε.</string>
+    <string name="tx_saved_local_find_network_and_sync">Δεν βρέθηκε δίκτυο. Μην επαναλάβετε τη διαδικασία. Μπείτε στην εφαρμογή με κάλυψη δικτύου και συγχρονίστε.</string>
 
     <string name="no_logger_found_linked_to_bin">Δε βρέθηκε συσχετισμένο καταγραφικό θερμοκρασίας με αυτή τη βούτα! Παρακαλώ συσχετίστε!</string>
     <string name="no_tag_detected">Δεν διαβάστηκε ετικέτα!!\nΠαρακαλώ αλλάξτε θέση!</string>
@@ -639,5 +642,4 @@
     <string name="tx_successfully_updated">Ο συγχρονισμός πέτυχε!!!</string>
     <string name="correlate_cage">Παρακαλώ συσχετίστε τον κλωβό!</string>
     <string name="correlate_net">Παρακαλώ συσχετίστε το δίχτυ!</string>
-
 </resources>

@@ -170,7 +170,13 @@ public class ProcessBinsActivity extends AppCompatActivity {
                         adapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         selectedBarcode = null;
+                        adapterBins.clearSelectedValue();
                     }
+                });
+
+                confirmSiteSelectionDlg.onReject(bundle -> {
+                    adapterBins.clearSelectedValue();
+                    adapterBins.notifyDataSetChanged();
                 });
 
                 FragmentManager fm = getSupportFragmentManager();

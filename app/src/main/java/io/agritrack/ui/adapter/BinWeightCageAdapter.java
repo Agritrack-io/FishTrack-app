@@ -25,6 +25,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
     private final LayoutInflater mLayoutInflater;
     private List<BinDetails> mList;
     private int selectedPos = RecyclerView.NO_POSITION;
+    private int previousSelectedPos = -1;
     private String selectedValue = null;
     private String selectedLabel = null;
 
@@ -74,6 +75,11 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
 
     public String getSelectedLabel(){
         return this.selectedLabel;
+    }
+
+    public void clearSelectedValue(){
+        selectedPos = RecyclerView.NO_POSITION;
+        this.selectedValue = null;
     }
 
     public void addItem(BinDetails val) {
@@ -177,9 +183,14 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
             // Updating old as well as new positions
             notifyItemChanged(selectedPos);
             selectedPos = getAdapterPosition();
+            if (selectedPos == previousSelectedPos){
+                itemView.setBackgroundColor(Color.WHITE);
+            }
             selectedValue = mList.get(selectedPos).epc;
             selectedLabel = selectedValue.length()>10? selectedValue.substring(selectedValue.length()-10) : selectedValue;
             notifyItemChanged(selectedPos);
+
+            previousSelectedPos = selectedPos;
 
             // Do your another stuff for your onClick
         }

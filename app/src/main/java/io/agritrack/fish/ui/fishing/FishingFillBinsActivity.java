@@ -302,11 +302,33 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         Bluetooth_DisposeHandlers();
     }
 
-    protected void onClick(View view) {
-        isClicked = false;
-        scanner_runnable.setFilter(Filters.RFID_BIN);
-        scanner_runnable.startReading();
-        mScanHandler.postDelayed(scanner_runnable, 0);
+    protected void configFooter() {
+        ImageView ivNext = findViewById(R.id.ivToConfirm);
+        ivNext.setOnClickListener(view -> {
+            if (!isClicked) {
+                CToast(getApplicationContext(), render(R.string.fill_bin), Toast.LENGTH_LONG);
+                return;
+            }
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+            } else {
+                Intent i = new Intent(getApplicationContext(), FishingConfirmActivity.class);
+                startActivity(i);
+            }
+        });
+
+        ImageView ivBack = findViewById(R.id.ivBackToDetails);
+        ivBack.setOnClickListener(view -> {
+            if (!isClicked && loadsMap.hasLoads()) {
+                CToast(getApplicationContext(), render(R.string.fill_bin), Toast.LENGTH_LONG);
+                return;
+            }
+            updateState();
+            Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
+            startActivity(i);
+        });
     }
 
     private void assignCtrlVars() {
@@ -358,35 +380,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             }
             isClicked = true;
         }
-    }
-
-    protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToConfirm);
-        ivNext.setOnClickListener(view -> {
-            if (!isClicked) {
-                CToast(getApplicationContext(), render(R.string.fill_bin), Toast.LENGTH_LONG);
-                return;
-            }
-            updateState();
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            } else {
-                Intent i = new Intent(getApplicationContext(), FishingConfirmActivity.class);
-                startActivity(i);
-            }
-        });
-
-        ImageView ivBack = findViewById(R.id.ivBackToDetails);
-        ivBack.setOnClickListener(view -> {
-            if (!isClicked && loadsMap.hasLoads()) {
-                CToast(getApplicationContext(), render(R.string.fill_bin), Toast.LENGTH_LONG);
-                return;
-            }
-            updateState();
-            Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
-            startActivity(i);
-        });
     }
 
     private FishingRecord updateState() {
@@ -510,38 +503,11 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         return null;
     }
 
-    private void showCatchDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.fish_catch_weight);
-
-        // Set up the input
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        input.setOnFocusChangeListener((v, hasFocus) -> input.post(() -> {
-            InputMethodManager inputMethodManager = (InputMethodManager) FishingFillBinsActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
-        }));
-        input.requestFocus();
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
-            mCatchWeight = input.getText().toString();
-            if (Strings.isEmptyOrWhitespace(mCatchWeight)) {
-                CToast(getApplicationContext(), render(R.string.type_weight), Toast.LENGTH_LONG);
-                return;
-            }
-            adapterCatches.addItem(mCatchWeight);
-            adapterCatches.notifyDataSetChanged();
-
-            tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-            weightOfBin = loadsMap.weightOf(currentBin);
-            tvUsedBinsCount.setText(loadsMap.loadsCnt());
-            tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
-        });
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-        builder.show();
+    protected void onClick(View view) {
+        isClicked = false;
+        scanner_runnable.setFilter(Filters.RFID_BIN);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     // ###################################################
