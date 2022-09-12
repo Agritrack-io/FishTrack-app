@@ -90,7 +90,7 @@ public class BluetoothUtils {
             public void run() {
                 try {
                     byte[] bArr = new byte[2048];
-                    byte[] unused = BluetoothUtils.Read_Buffer = Arrays.copyOf(bArr, inputStream.read(bArr) + 1);
+                    BluetoothUtils.Read_Buffer = Arrays.copyOf(bArr, inputStream.read(bArr) + 1);
                 } catch (Exception unused2) {
                 }
             }

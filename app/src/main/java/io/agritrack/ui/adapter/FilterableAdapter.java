@@ -110,6 +110,13 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
             // in that case, getAdapterPosition() will return RecyclerView.NO_POSITION
             if (getAdapterPosition() == RecyclerView.NO_POSITION) return;
 
+            if (selectedPos == getAdapterPosition()) {
+                selectedPos = RecyclerView.NO_POSITION;
+                selectedValue = null;
+                notifyDataSetChanged();
+                return;
+            }
+
             // Updating old as well as new positions
             notifyItemChanged(selectedPos);
             selectedPos = getAdapterPosition();

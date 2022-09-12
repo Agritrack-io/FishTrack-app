@@ -1,5 +1,6 @@
 package io.agritrack.ui.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -180,17 +181,20 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
             // in that case, getAdapterPosition() will return RecyclerView.NO_POSITION
             if (getAdapterPosition() == RecyclerView.NO_POSITION) return;
 
+            if (selectedPos == getAdapterPosition()) {
+                selectedPos = RecyclerView.NO_POSITION;
+                selectedValue = null;
+                selectedLabel = null;
+                notifyDataSetChanged();
+                return;
+            }
+
             // Updating old as well as new positions
             notifyItemChanged(selectedPos);
             selectedPos = getAdapterPosition();
-            if (selectedPos == previousSelectedPos){
-                itemView.setBackgroundColor(Color.WHITE);
-            }
             selectedValue = mList.get(selectedPos).epc;
             selectedLabel = selectedValue.length()>10? selectedValue.substring(selectedValue.length()-10) : selectedValue;
             notifyItemChanged(selectedPos);
-
-            previousSelectedPos = selectedPos;
 
             // Do your another stuff for your onClick
         }

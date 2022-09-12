@@ -19,6 +19,7 @@ public class BarcodeRecyclerAdapter extends RecyclerView.Adapter<BarcodeRecycler
     private final LayoutInflater mLayoutInflater;
     private Map<String, Integer> mData;
     private List<String> mList;
+    private int selectedPos = RecyclerView.NO_POSITION;
     private View.OnClickListener itemsClickListener;
 
     public BarcodeRecyclerAdapter(Context context, List<String> values) {
@@ -91,7 +92,7 @@ public class BarcodeRecyclerAdapter extends RecyclerView.Adapter<BarcodeRecycler
         return mList.size();
     }
 
-    public class BCViewHolder extends RecyclerView.ViewHolder {
+    public class BCViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView tvItemSNo, tvItemDescription, tvItemCount;
 
         public BCViewHolder(@NonNull View itemView, View.OnClickListener itemsClickListener) {
@@ -103,6 +104,17 @@ public class BarcodeRecyclerAdapter extends RecyclerView.Adapter<BarcodeRecycler
             if (itemsClickListener != null) {
                 itemView.setOnClickListener(itemsClickListener);
             }
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (selectedPos == getAdapterPosition()) {
+                selectedPos = RecyclerView.NO_POSITION;
+                notifyDataSetChanged();
+                return;
+            }
+            selectedPos = getAdapterPosition();
+            notifyDataSetChanged();
         }
     }
 }

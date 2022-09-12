@@ -290,9 +290,6 @@ public class InventoryAssetActivity extends LocationAwareActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopScanner();
-        //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
     }
 
     private void clearSelectedItem() {

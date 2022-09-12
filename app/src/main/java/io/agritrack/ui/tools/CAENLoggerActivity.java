@@ -41,8 +41,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.common.util.Strings;
 import com.uhf.api.cls.Reader;
 
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -51,6 +53,7 @@ import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.common.Filters;
 import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.scale.diniargeo.BluetoothUtils;
 import io.agritrack.ui.login.LoginActivity;
 
 public class CAENLoggerActivity extends AppCompatActivity {
@@ -536,6 +539,62 @@ public class CAENLoggerActivity extends AppCompatActivity {
 
         return msg;
     }
+
+
+/*    final Runnable disableLoggingThread = new Runnable() {
+        @Override
+        public void run() {
+            Reader.READER_ERR response = cmd.DisableLogging();
+            mScanHandler.sendMessage(createMessage(CmdDisableLogging, response));
+            delay(500l);
+
+            String resCTRL = cmd.ReadControlRegister();
+            mScanHandler.sendMessage(createMessage(ReadCTRLReg, resCTRL));
+
+            mScanHandler.removeCallbacks(this);
+        }
+    };*/
+
+    public byte[] executeCommand() {
+        byte[] Read_Buffer = new byte[0];
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    cmd.DisableLogging();
+                    cmd.EnableLogging();
+                    cmd.CheckReply();
+                    cmd.HighPowerLevel();
+                    cmd.HighSensitivity();
+                    cmd.Init();
+                    cmd.LowPowerLevel();
+
+
+                    cmd.ReadFWRevision();
+                    cmd.ReadHWRevision();
+                    cmd.ReadTimeBIN();
+                    cmd.ReadInitDatetime();
+                    cmd.ReadControlRegister();
+                    cmd.ReadInterval();
+                    cmd.ReadSamplesCount();
+                    cmd.ReadLastSample();
+
+                    cmd.EnableLogging();
+                    cmd.DisableLogging();
+
+
+                } catch (Exception ex) {
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join(5000l);
+        } catch (InterruptedException ex2) {
+        }
+        return Read_Buffer;
+    }
+
+
 
     // ###################################################
     private class CAENCommandsHandler extends Handler {
