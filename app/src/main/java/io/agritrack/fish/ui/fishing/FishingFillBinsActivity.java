@@ -492,6 +492,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                 this.scale = new MCWScale(bluetoothDevice);
             } else {
                 Toast.makeText(getApplicationContext(), "No Scale was found!", Toast.LENGTH_SHORT).show();
+                return null;
             }
         }
 
