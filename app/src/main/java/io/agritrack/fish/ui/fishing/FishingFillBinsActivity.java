@@ -484,18 +484,26 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // Checks if Bluetooth Adapter is present
         if (bluetoothAdapter == null) {
             Toast.makeText(getApplicationContext(), "Bluetooth Not Supported", Toast.LENGTH_SHORT).show();
-        } else if (scale == null) {
-            Toast.makeText(getApplicationContext(), "No Scale was found!", Toast.LENGTH_SHORT).show();
-        } else {
-            boolean connected = scale.Connect();
-            if (connected) {
-                boolean sentReadCmd = scale.Send("READ");
-                String read = scale.ReadString();
-                if (!Strings.isEmptyOrWhitespace(read)) {
-                    return new ClassREAD(read);
-                }
+            return null;
+        }
+
+        if (scale == null) {
+            if(bluetoothDevice!=null) {
+                this.scale = new MCWScale(bluetoothDevice);
+            } else {
+                Toast.makeText(getApplicationContext(), "No Scale was found!", Toast.LENGTH_SHORT).show();
             }
         }
+
+        boolean connected = scale.Connect();
+        if (connected) {
+            boolean sentReadCmd = scale.Send("READ");
+            String read = scale.ReadString();
+            if (!Strings.isEmptyOrWhitespace(read)) {
+                return new ClassREAD(read);
+            }
+        }
+
         return null;
     }
 

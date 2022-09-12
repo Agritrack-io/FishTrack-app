@@ -30,8 +30,11 @@ public class ScanInventoryThread implements Runnable {
 
 
     public ScanInventoryThread(Handler handler) {
-        //super();
+        super();
         uhfReader = RFIDModuleFactory.getInstance();
+        if (uhfReader!=null) {
+            uhfReader.clearEPCFilter();
+        }
         mScanHandler = handler;
         // use by default high energy. Explicitly set to Low Energy (after initialization) where required.
         this.HighEnergy();
