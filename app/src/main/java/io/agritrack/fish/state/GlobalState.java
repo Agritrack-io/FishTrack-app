@@ -179,11 +179,16 @@ public class GlobalState {
             txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight).intValue() : null;
             txFishing.totalQty = recFishing.totalFishWeight;
             txFishing.timestamp = System.currentTimeMillis();
-            if(recFishing.binWeightRecord.getBinsData() != null){
-                txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData()
-                        .stream()
-                        .filter(x -> x.weight != null && x.weight > 0)
-                        .collect(Collectors.toList());
+            if(finalCommit){    //filter empty bins on final commit
+                if(recFishing.binWeightRecord.getBinsData() != null){
+                    txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData()
+                            .stream()
+                            .filter(x -> x.weight != null && x.weight > 0)
+                            .collect(Collectors.toList());
+                }
+            }
+            else{
+                txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData();
             }
             txFishing.team = recFishing.fishingTeam;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
