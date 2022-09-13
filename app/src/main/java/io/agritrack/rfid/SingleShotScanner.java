@@ -40,11 +40,15 @@ public class SingleShotScanner implements Runnable {
     }
 
     public void LowEnergy() {
-        uhfReader.LowPowerLevel();
+        if (uhfReader!=null) {
+            uhfReader.LowPowerLevel();
+        }
     }
 
     public void HighEnergy() {
-        uhfReader.HighPowerLevel();
+        if (uhfReader!=null) {
+            uhfReader.HighPowerLevel();
+        }
     }
 
     public boolean startReading() {
@@ -55,7 +59,9 @@ public class SingleShotScanner implements Runnable {
     }
 
     public void stopReading() {
-        uhfReader.StopReading();
+        if (uhfReader!=null) {
+            uhfReader.StopReading();
+        }
     }
 
     public void setFilter(String rfidFilter) {

@@ -251,6 +251,17 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             infoDialog.showDialog();
         });
 
+        // ============
+        configFooter();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
 
         //############ Bluetooth initialization ###############################################
         // get instance of BT Adapter. Will be used to search dor BT devices.
@@ -265,19 +276,6 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             ((Runnable) () -> this.bluetoothAdapter.startDiscovery()).run();
         }
         //#####################################################################################
-
-
-        // ============
-        configFooter();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Listen for Fn key press/release;
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.rfid.FUN_KEY");
-        this.registerReceiver(keyReceiver, filter);
     }
 
     @Override
@@ -288,14 +286,15 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         if (keyReceiver != null) {
             unregisterReceiver(keyReceiver);
         }
+
+        // dispose bluetooth handlers
+        //Bluetooth_DisposeHandlers();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         this.stopScanner();
-        // dispose bluetooth handlers
-        Bluetooth_DisposeHandlers();
     }
 
     protected void configFooter() {
