@@ -659,4 +659,6 @@
     <string name="correlate_net">Please correlate net with RFID, go to Correlation Menu, and tap Net</string>
     <string name="diniargeo_scale">DiniArgeo MCW Scale</string>
     <string name="offline_work">Offline work</string>
+    <string name="expected_bins">Expected bins</string>
+    <string name="received_bins_uppercase">Received bins</string>
 </resources>

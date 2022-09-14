@@ -78,6 +78,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
     private RecyclerView rvBinsForTransport;
     private TextView tvBinsCount;
+    private TextView tvSelectBins;
 
     private ImageButton ivAddBin, ivDeleteBin;
     private String selectedBarcode;
@@ -223,6 +224,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
             }
             response.stream().forEach(x -> adapterBins.addExpectedItem(loadBinInfo(x)));
             adapterBins.notifyDataSetChanged();
+            tvSelectBins.setText(R.string.expected_bins);
             tvBinsCount.setText(String.valueOf(adapterBins.getValues().size()));
             scanButton.setText(R.string.scan_all_bins);
         });
@@ -254,6 +256,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
+        tvSelectBins = findViewById(R.id.tvSelectBins);
         tvBinsCount = findViewById(R.id.tvBinsCount);
         rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
         ivDeleteBin = findViewById(R.id.ivDeleteBin);
@@ -299,8 +302,10 @@ public class ProcessBinsActivity extends AppCompatActivity {
             adapterBins.setValues(prcRecord.availBins);
             adapterBins.notifyDataSetChanged();
             tvBinsCount.setText(String.valueOf(prcRecord.availBins.size()));
+            tvSelectBins.setText(R.string.expected_bins);
             scanButton.setText(R.string.scan_all_bins);
         } else if (IsOnline) {
+            tvSelectBins.setText(null);
             scanButton.setText(R.string.scan_one_bin);
         } else {
             scanButton.setText(R.string.scan_all_bins);
@@ -368,6 +373,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 binBarcode = input.getText().toString();
                 adapterBins.addUniqueItem(new BinWeightCageAdapter.BinDetails(binBarcode));
+                tvSelectBins.setText(R.string.received_bins_uppercase);
                 tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                 adapterBins.notifyDataSetChanged();
             }
@@ -450,6 +456,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         adapterBins.notifyDataSetChanged();
                     }
+                    tvSelectBins.setText(R.string.received_bins_uppercase);
                     break;
                 case 1980:
 

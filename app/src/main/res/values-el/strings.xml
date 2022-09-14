@@ -642,4 +642,6 @@
     <string name="tx_successfully_updated">Ο συγχρονισμός πέτυχε!!!</string>
     <string name="correlate_cage">Παρακαλώ συσχετίστε τον κλωβό!</string>
     <string name="correlate_net">Παρακαλώ συσχετίστε το δίχτυ!</string>
+    <string name="expected_bins">Αναμενόμενες βούτες</string>
+    <string name="received_bins_uppercase">Ληφθείσες βούτες</string>
 </resources>
