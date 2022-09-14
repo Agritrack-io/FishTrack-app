@@ -155,9 +155,9 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
             }
         });
 
-        ivAddItem.setOnClickListener(view -> {
-            showAddDialog();
-        });
+//        ivAddItem.setOnClickListener(view -> {
+//            showAddDialog();
+//        });
 
         // create Footer
         configFooter();

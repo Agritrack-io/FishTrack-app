@@ -366,7 +366,7 @@
             app:layout_constraintTop_toBottomOf="@+id/lbLastSampleValue" />
 
         <Button
-            android:id="@+id/btnDisableLogging"
+            android:id="@+id/btnStopLogging"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
@@ -391,7 +391,7 @@
             app:layout_constraintBottom_toTopOf="@+id/btnReset"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btnInit"
-            app:layout_constraintTop_toBottomOf="@+id/btnDisableLogging" />
+            app:layout_constraintTop_toBottomOf="@+id/btnStopLogging" />
 
         <Button
             android:id="@+id/btnInit"
@@ -406,7 +406,7 @@
             app:layout_constraintBottom_toTopOf="@+id/btnReset"
             app:layout_constraintEnd_toStartOf="@id/btnRead"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnDisableLogging" />
+            app:layout_constraintTop_toBottomOf="@+id/btnStopLogging" />
 
         <Button
             android:id="@+id/btnReset"
