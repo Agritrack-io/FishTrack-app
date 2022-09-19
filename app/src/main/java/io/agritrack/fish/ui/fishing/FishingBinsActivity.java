@@ -12,7 +12,6 @@ import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -38,12 +37,11 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
+import io.agritrack.DefaultExceptionHandler;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
@@ -173,6 +171,8 @@ public class FishingBinsActivity extends AppCompatActivity {
         });
 
         ivCheckLastTemp.setOnClickListener(view -> {
+            String timek = null;
+            timek.substring(10);
             updateState();
             this.stopScanner();
             Intent i = new Intent(getApplicationContext(), TestBinTempActivity.class);
@@ -200,6 +200,8 @@ public class FishingBinsActivity extends AppCompatActivity {
             tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);
             tempLoggerDialog.showDialog();
         });
+
+        Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
 
         // create Footer
         configFooter();
@@ -361,6 +363,8 @@ public class FishingBinsActivity extends AppCompatActivity {
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();
+                                recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+                                GlobalState.commitFishing(db, Boolean.FALSE);
 
                                 FragmentManager fm = getSupportFragmentManager();
                                 LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, false, true, true);
