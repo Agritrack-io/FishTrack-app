@@ -678,7 +678,7 @@ public class GlobalState {
     public static SeaTemperatureTransaction commitSeaTemp(MobileDB db) {
         try {
             SeaTemperatureTransaction seaTemperatureTransaction = new SeaTemperatureTransaction();
-            seaTemperatureTransaction.timestamp = System.currentTimeMillis() / 1000L;
+            seaTemperatureTransaction.timestamp = System.currentTimeMillis();
             seaTemperatureTransaction.siteId = LocalPreferences.getCurrentSiteName();
             seaTemperatureTransaction.refTemp = recTools.referencePointTemp;
             seaTemperatureTransaction.cageTemp = recTools.cageTemp;
