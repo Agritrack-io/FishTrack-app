@@ -7,10 +7,14 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "fishing_request")
 public class FishingRequest {
+
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "request_id")
     public String requestId;
+
+    @ColumnInfo(name = "lot")
+    public String lot;
 
     @ColumnInfo(name = "harvest_date")
     public String harvestDate;

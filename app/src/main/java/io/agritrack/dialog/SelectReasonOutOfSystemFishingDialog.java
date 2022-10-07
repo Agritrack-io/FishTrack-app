@@ -70,7 +70,7 @@ public class SelectReasonOutOfSystemFishingDialog implements AdapterView.OnItemC
         setDialog();
         findViews();
 
-        String[] reasonList = {this.activity.getString(R.string.out_of_network), this.activity.getString(R.string.bad_weather), this.activity.getString(R.string.lack_of_sufficient_biomass), this.activity.getString(R.string.fed_fish), this.activity.getString(R.string.inability_to_fish)};
+        String[] reasonList = {this.activity.getString(R.string.out_of_network), this.activity.getString(R.string.bad_weather), this.activity.getString(R.string.lack_of_sufficient_biomass), this.activity.getString(R.string.fed_fish), this.activity.getString(R.string.inability_to_fish), this.activity.getString(R.string.empty_cage)};
 
         ArrayAdapter<String> hrAdapter = new ArrayAdapter<String>(activity, R.layout.simple_list_checked_item_1, reasonList) {
             @Override

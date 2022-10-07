@@ -26,8 +26,8 @@ public class FishingTransaction {
     @PrimaryKey
     public Long id;
 
-    @ColumnInfo(name = "timestamp")
-    public Long timestamp;
+    @ColumnInfo(name = "created_at")
+    public Long createdAt;
 
     @ColumnInfo(name = "fishing_request")
     public String fishingRq;
@@ -114,4 +114,7 @@ public class FishingTransaction {
 
     @ColumnInfo(name = "itin_no")
     public Short parentItinSno;
+
+    @ColumnInfo(name = "reason_deviation")
+    public String reasonOfDeviation;
 }

@@ -244,9 +244,9 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
     private void initControlsFromState() {
         QualityRecord qltTx = GlobalState.recQuality;
 
-        if (qltTx.qualityBins != null && !qltTx.qualityBins.isEmpty()) {
+        /*if (qltTx.qualityBins != null && !qltTx.qualityBins.isEmpty()) {
             binEpc = qltTx.qualityBins.get(0);
-        }
+        }*/
 
         if (recLoggerData.lowT != null) {
             tvMinTempBin.setText(String.format("%.1f", recLoggerData.lowT));

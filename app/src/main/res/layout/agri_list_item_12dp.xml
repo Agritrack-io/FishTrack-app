@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@color/color_gray_border_dialog"
     android:minHeight="12dp"
+    android:paddingStart="5dp"
     android:paddingEnd="25dp"
     android:textAlignment="textStart"
     android:textAppearance="?android:attr/textAppearanceListItemSmall"

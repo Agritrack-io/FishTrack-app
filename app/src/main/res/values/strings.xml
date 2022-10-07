@@ -61,8 +61,10 @@
     <string name="split_add_supervisor_and_confirm">Are you sure to proceed with split?</string>
     <string name="out_of_system_fishing_add_supervisor_and_confirm">Are you sure to proceed with out of system fishing?</string>
     <string name="fill_all_fields">Please fill all fields!</string>
-    <string name="select_reason">Select reason for out of system fishing</string>
+    <string name="select_reason_out_of_system">Select reason for out of system fishing</string>
+    <string name="select_reason_of_weight_deviation">Fished weight differs from requested weight by \%1$s\ kg. Please select reason for this deviation!</string>
     <string name="inability_to_fish">Inability to fish</string>
+    <string name="empty_cage">Cage was emptied</string>
     <string name="fed_fish">Fed fish</string>
     <string name="lack_of_sufficient_biomass">Lack of sufficient biomass</string>
     <string name="bad_weather">Bad weather</string>
@@ -89,6 +91,8 @@
     <string name="scan_bin">Scan Bin</string>
     <string name="delete_bin">Delete Bin</string>
     <string name="number_of_bins"># of bins:</string>
+    <string name="number_of_expected_bins"># of expected bins:</string>
+    <string name="number_of_checked_bins"># of checked bins:</string>
 
     <string name="select_fishing_team">Select fishing team</string>
     <string name="fishing_team">Fishing team</string>
@@ -661,4 +665,13 @@
     <string name="offline_work">Offline work</string>
     <string name="expected_bins">Expected bins</string>
     <string name="received_bins_uppercase">Received bins</string>
+    <string name="qualified_bins">Quality checked bins</string>
+    <string name="already_scannned_bin">You have already retrieved temperatures from this bin!</string>
+    <string name="scan_one_to_one_bins">Scan one by one all bins</string>
+    <string name="press_card_to_see_temps">Click on each card to display temperature data of bin!</string>
+    <string name="scanned_bin_out_of_lot">"Bin you just scanned is not included in existing LOT!!! "</string>
+    <string name="confirm_scanned_bin_out_of_lot">Bin you just scanned is not included in existing LOT!!! Are you sure to get data??</string>
+    <string name="confirm_with_pin">"Please type your PIN to confirm!"</string>
+    <string name="already_scannned_bin_first_sync_temps">You have already retrieved temperatures from bin \%1$s\! Please first click on check button!</string>
+    <string name="select_reason">Please select a reason!</string>
 </resources>

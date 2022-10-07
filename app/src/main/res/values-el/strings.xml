@@ -62,8 +62,10 @@
     <string name="split_add_supervisor_and_confirm">Είστε σίγουρος για το σπάσιμο της αλίευσης?</string>
     <string name="out_of_system_fishing_add_supervisor_and_confirm">Είστε σίγουρος για την εξωσυστημική αλίευση?</string>
     <string name="fill_all_fields">Παρακαλώ συμπληρώστε όλα τα πεδία!</string>
-    <string name="select_reason">Επιλέξτε λόγο εξωσυστημικής αλίευσης</string>
+    <string name="select_reason_out_of_system">Επιλέξτε λόγο εξωσυστημικής αλίευσης</string>
+    <string name="select_reason_of_weight_deviation">Το βάρος αλίευσης διαφέρει από τη ζητούμενη ποσότητα κατά \%1$s\ kg. Παρακαλώ επιλέξτε λόγο για αυτή την απόκλιση!</string>
     <string name="inability_to_fish">Αδυναμία αλίευσης</string>
+    <string name="empty_cage">Ο κλωβός άδειασε</string>
     <string name="fed_fish">Ταϊσμένα ψάρια</string>
     <string name="lack_of_sufficient_biomass">Έλλειψη επαρκούς βιομάζας</string>
     <string name="bad_weather">Κακοκαιρία</string>
@@ -90,6 +92,8 @@
     <string name="scan_bin">Σκανάρετε βούτα</string>
     <string name="delete_bin">Διαγράψτε βούτα</string>
     <string name="number_of_bins"># βουτών:</string>
+    <string name="number_of_expected_bins"># αναμενόμενων βουτών:</string>
+    <string name="number_of_checked_bins"># ελεγμένων βουτών:</string>
 
     <string name="select_fishing_team">Επιλέξτε ομάδα αλίευσης</string>
     <string name="fishing_team">Ομάδα αλίευσης</string>
@@ -644,4 +648,13 @@
     <string name="correlate_net">Παρακαλώ συσχετίστε το δίχτυ!</string>
     <string name="expected_bins">Αναμενόμενες βούτες</string>
     <string name="received_bins_uppercase">Ληφθείσες βούτες</string>
+    <string name="qualified_bins">Ελεγμένες βούτες</string>
+    <string name="already_scannned_bin">Έχετε ήδη ανακτήσει τις θερμοκρασίες από αυτή τη βούτα!</string>
+    <string name="scan_one_to_one_bins">Σκανάρετε μία προς μία όλες τις βούτες</string>
+    <string name="press_card_to_see_temps">Πατήστε πάνω σε κάθε κάρτα να δείτε τις θερμοκρασίες κάθε βούτας!</string>
+    <string name="scanned_bin_out_of_lot">"Η βούτα που μόλις σκανάρατε δεν περιλαμβάνεται στο υπάρχον LOT!!! "</string>
+    <string name="confirm_scanned_bin_out_of_lot">Η βούτα που μόλις σκανάρατε δεν περιλαμβάνεται στο υπάρχον LOT!!! Είστε σίγουρος να κατεβάσετε τις θερμοκρασίες??</string>
+    <string name="confirm_with_pin">"Πληκτρολογήστε το PIN σας για επιβεβαίωση!"</string>
+    <string name="already_scannned_bin_first_sync_temps">Έχετε ήδη ανακτήσει τις θερμοκρασίες από τη βούτα \%1$s\! Παρακαλώ πρώτα πατήστε το κουμπί συγχρονισμού!</string>
+    <string name="select_reason">Παρακαλώ επιλέξτε ένα λόγο!</string>
 </resources>

@@ -30,6 +30,8 @@ import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.model.FishingRequest;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.InfoDialog;
+import io.agritrack.dialog.SelectReasonOfFishingWeightDeviationDialog;
+import io.agritrack.dialog.SelectReasonOutOfSystemFishingDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
@@ -47,6 +49,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
     private YesNoDialogFragment confirmGPSSelectionDlg;
+    private SelectReasonOfFishingWeightDeviationDialog selectReasonDialog;
 
     private ProgressDialog progressDialog;
     private TextView tvTotalQuantityCount, tvReqQuantityCount, tvNumberOfBinsCount, tvNameCage, tvTypeOfFishConfirm, tvUsername;
@@ -89,6 +92,11 @@ public class FishingConfirmActivity extends LocationAwareActivity {
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
+
+        if (recFishing.reqWeight-recFishing.totalFishWeight>=250){
+            selectReasonDialog = new SelectReasonOfFishingWeightDeviationDialog(FishingConfirmActivity.this);
+            selectReasonDialog.showDialog();
+        }
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(FishingConfirmActivity.this);

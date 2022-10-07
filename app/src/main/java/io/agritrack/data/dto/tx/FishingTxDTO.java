@@ -29,6 +29,8 @@ public class FishingTxDTO {
     public String farm;
     public String packaging_plant;
     public Short parent_itinerary;
+    public String reason_deviation;
+    public Long created_at;
     public Double longitude;
     public Double latitude;
 
@@ -55,6 +57,8 @@ public class FishingTxDTO {
         fishingTxDTO.farm = fishingTx.site;
         fishingTxDTO.packaging_plant = fishingTx.packagingPlant;
         fishingTxDTO.parent_itinerary = fishingTx.parentItinSno;
+        fishingTxDTO.reason_deviation = fishingTx.reasonOfDeviation;
+        fishingTxDTO.created_at = fishingTx.createdAt;
         fishingTxDTO.longitude = fishingTx.longitude;
         fishingTxDTO.latitude = fishingTx.latitude;
 

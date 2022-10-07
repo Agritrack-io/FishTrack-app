@@ -232,7 +232,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         QualityRecord qltTx = GlobalState.recQuality;
 
         if (qltTx.qualityBins != null && !qltTx.qualityBins.isEmpty()) {
-            binEpc = qltTx.qualityBins.get(0);
+            binEpc = qltTx.qualityBins.get(0).epc;
         }
 
         if (recLoggerData.lowT != null) {

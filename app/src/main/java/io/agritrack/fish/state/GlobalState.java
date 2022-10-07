@@ -178,7 +178,6 @@ public class GlobalState {
             txFishing.harvestBinsCnt = recFishing.totalBinsUsed;
             txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight).intValue() : null;
             txFishing.totalQty = recFishing.totalFishWeight;
-            txFishing.timestamp = System.currentTimeMillis();
             if(finalCommit){    //filter empty bins on final commit
                 if(recFishing.binWeightRecord.getBinsData() != null){
                     txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData()
@@ -186,10 +185,12 @@ public class GlobalState {
                             .filter(x -> x.weight != null && x.weight > 0)
                             .collect(Collectors.toList());
                 }
+                txFishing.createdAt = System.currentTimeMillis();
             }
             else{
                 txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData();
             }
+            txFishing.reasonOfDeviation = recFishing.reasonOfDeviation;
             txFishing.team = recFishing.fishingTeam;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
             txFishing.user = LocalPreferences.getLoggedInUser("N/A");
@@ -219,7 +220,7 @@ public class GlobalState {
             txTransport.isTruckRefrigerated = recTransport.refrigeratedTruck;
             txTransport.isParallelTransport = recTransport.parallelTransport;
             txTransport.transportHead = "N/A";
-            txTransport.timestamp = System.currentTimeMillis();
+            txTransport.createdAt = System.currentTimeMillis();
             txTransport.loadedBins = recTransport.availBins;
             txTransport.user = LocalPreferences.getLoggedInUser("N/A");
             txTransport.siteCode = LocalPreferences.getCurrentSiteName();
@@ -256,7 +257,7 @@ public class GlobalState {
             txProcess.cleanTruck = Boolean.toString(recProcessing.cleanTruck);
             txProcess.smells = Boolean.toString(recProcessing.smellyTruck);
             txProcess.site = recProcessing.packagingSite;
-            txProcess.timestamp = System.currentTimeMillis();
+            txProcess.createdAt = System.currentTimeMillis();
             //txProcess.remarks = recProcessing.remarks;
             txProcess.receivedBins = recProcessing.availBins.stream().map(x -> x.epc).collect(Collectors.toList());
             txProcess.securityClipNumber = recProcessing.securityClip;
@@ -325,13 +326,17 @@ public class GlobalState {
             txQuality.overallEvaluation = recQuality.evaluation;
             txQuality.selectedRgId = recQuality.selectedRgId;
             txQuality.remarks = recQuality.remarks;
-            txQuality.qualityBins = recQuality.qualityBins;
+            txQuality.qualityBins = recQuality.qualityBins.stream().map(x -> x.epc).collect(Collectors.toList());
+            txQuality.expectedBins = recQuality.expectedBins;
+            txQuality.scannedBins = recQuality.scannedBins;
             txQuality.qualityBinsCnt = recQuality.qualityBinsCnt;
             txQuality.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
             txQuality.user = LocalPreferences.getLoggedInUser("N/A");
             txQuality.site = LocalPreferences.getCurrentSiteName();
             txQuality.sampleDate = new Date(System.currentTimeMillis());
-            txQuality.timestamp = System.currentTimeMillis();
+            if (finalCommit) {
+                txQuality.createdAt = System.currentTimeMillis();
+            }
             txQuality.longitude = recQuality.longitude;
             txQuality.latitude = recQuality.latitude;
 

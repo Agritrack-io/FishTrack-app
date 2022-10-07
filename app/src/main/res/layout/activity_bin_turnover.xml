@@ -83,7 +83,7 @@ tools:context=".fish.ui.binTurnover.BinTurnoverActivity">
     <RelativeLayout
         android:id="@+id/overturnALayout"
         android:layout_width="0dp"
-        android:layout_height="110dp"
+        android:layout_height="90dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -172,24 +172,38 @@ tools:context=".fish.ui.binTurnover.BinTurnoverActivity">
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>-->
 
+            <TextView
+                android:id="@+id/tvHeaders"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center_vertical"
+                android:paddingStart="22dp"
+                android:text="@string/receipt_header"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/lvTempProfiles"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/lvTempProfiles"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_margin="16dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/bg_rounded_input_spinner"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/tvCurrentBin"
+                app:layout_constraintBottom_toTopOf="@+id/btnScanBin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/tvHeaders">
 
             </androidx.recyclerview.widget.RecyclerView>
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/tvCurrentBin"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -206,7 +220,7 @@ tools:context=".fish.ui.binTurnover.BinTurnoverActivity">
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lvTempProfiles" />
+                app:layout_constraintTop_toBottomOf="@+id/lvTempProfiles" />-->
 
 
             <Button
@@ -215,21 +229,21 @@ tools:context=".fish.ui.binTurnover.BinTurnoverActivity">
                 android:layout_height="94dp"
                 android:layout_marginStart="50dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="50dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/button_press_effect"
                 android:text="@string/scan_bin"
                 android:textColor="@color/yellow"
                 android:textSize="@dimen/button_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ibShowValues"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvCurrentBin"
+                app:layout_constraintTop_toBottomOf="@+id/lvTempProfiles"
                 tools:layout_conversion_absoluteHeight="120dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
 
-            <ImageButton
+            <!--<ImageButton
                 android:id="@+id/ibShowValues"
                 android:layout_width="54dp"
                 android:layout_height="74dp"
@@ -241,7 +255,7 @@ tools:context=".fish.ui.binTurnover.BinTurnoverActivity">
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btnScanBin"
                 app:layout_constraintTop_toBottomOf="@+id/tvCurrentBin"
-                app:srcCompat="@drawable/quality" />
+                app:srcCompat="@drawable/quality" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

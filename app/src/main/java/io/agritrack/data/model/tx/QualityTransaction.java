@@ -20,8 +20,8 @@ public class QualityTransaction {
     @PrimaryKey
     public Long id;
 
-    @ColumnInfo(name = "timestamp")
-    public Long timestamp;
+    @ColumnInfo(name = "created_at")
+    public Long createdAt;
 
     @TypeConverters(TxStatusEnumConverter.class)
     @ColumnInfo(name = "status")
@@ -39,6 +39,14 @@ public class QualityTransaction {
     @TypeConverters(StringListConverter.class)
     @ColumnInfo(name = "quality_bins")
     public List<String> qualityBins;
+
+    @TypeConverters(StringListConverter.class)
+    @ColumnInfo(name = "expected_bins")
+    public List<String> expectedBins;
+
+    @TypeConverters(StringListConverter.class)
+    @ColumnInfo(name = "scanned_bins")
+    public List<String> scannedBins;
 
     @ColumnInfo(name = "no_quality_bins")
     public Integer qualityBinsCnt;

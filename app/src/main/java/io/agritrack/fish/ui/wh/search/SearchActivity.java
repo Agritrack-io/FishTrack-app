@@ -132,6 +132,12 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        etAssetBarcode.setOnClickListener(v -> {
+            if (adapterAssets != null && adapterAssets.getSelectedValue() != null) {
+                adapterAssets.clearSelectedValue();
+            }
+        });
+
         hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
         spAssetType.setAdapter(hrAdapter);
 
@@ -153,7 +159,7 @@ public class SearchActivity extends AppCompatActivity {
         // load assets for current Site and filter by asset type (if selected).
         this.rvAssets.setAdapter(null);
         this.rvAssets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
+        List<Asset> assetsList = db.assetDAO().getAssetsByTypeForSearch(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
             List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid.substring(x.rfid.length()-10))).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);

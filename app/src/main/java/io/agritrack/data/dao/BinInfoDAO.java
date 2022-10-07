@@ -21,6 +21,13 @@ public interface BinInfoDAO {
     @Query("SELECT * from bin_info where bin_rfid=:rfId LIMIT 1")
     BinInfo getByRFId(String rfId);
 
+    @Query("UPDATE bin_info set sorted = 1 where bin_rfid=:rfId")
+    void updateBinInfoSetSorted(String rfId);
+
+    // TODO:: Check if we can use Join here
+    @Query("SELECT * from bin_info where fishing_request=(SELECT fishing_request from bin_info where bin_rfid=:rfId LIMIT 1)")
+    List<BinInfo> getEPCListByRFId(String rfId);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(BinInfo... bins);
 

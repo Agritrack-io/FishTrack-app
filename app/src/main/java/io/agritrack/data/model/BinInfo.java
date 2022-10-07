@@ -13,6 +13,9 @@ public class BinInfo {
     @NonNull
     public String rfid;
 
+    @ColumnInfo(name = "fishing_request")
+    public String fishingRequest;
+
     @ColumnInfo(name = "cage")
     public String cage;
 
@@ -30,4 +33,7 @@ public class BinInfo {
 
     @ColumnInfo(name = "inited_at")
     public Long initedAt;
+
+    @ColumnInfo(name = "sorted")
+    public boolean sorted;
 }

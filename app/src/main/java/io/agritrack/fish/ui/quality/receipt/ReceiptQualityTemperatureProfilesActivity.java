@@ -56,6 +56,10 @@ public class ReceiptQualityTemperatureProfilesActivity extends AppCompatActivity
 
         tempProfileAdapter.notifyDataSetChanged();
 
+        for(int i=0; i<=1; i++){
+            CToast(getApplicationContext(), render(R.string.press_card_to_see_temps), Toast.LENGTH_LONG);
+        }
+
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 

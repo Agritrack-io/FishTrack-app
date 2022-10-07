@@ -263,7 +263,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         filter.addAction("android.rfid.FUN_KEY");
         this.registerReceiver(keyReceiver, filter);
 
-        //############ Bluetooth initialization ###############################################
+        /*//############ Bluetooth initialization ###############################################
         // get instance of BT Adapter. Will be used to search dor BT devices.
         this.bluetoothAdapter = BluetoothUtils.getBluetoothAdapter();
         // register handlers for BT events.
@@ -275,7 +275,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         if (this.bluetoothAdapter != null && !this.bluetoothAdapter.isDiscovering()) {
             ((Runnable) () -> this.bluetoothAdapter.startDiscovery()).run();
         }
-        //#####################################################################################
+        //#####################################################################################*/
     }
 
     @Override
@@ -421,8 +421,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         // assign variables to ui controls.
         final EditText etWeight = btScaleWeightFormView.findViewById(R.id.etFishCatchWeight);
         final TextView tvStatus = btScaleWeightFormView.findViewById(R.id.etBTScaleStatus);
-        final Button ivRefreshScale = btScaleWeightFormView.findViewById(R.id.ivRefreshScale);
-        ivRefreshScale.setOnClickListener(new View.OnClickListener() {
+        //final Button ivRefreshScale = btScaleWeightFormView.findViewById(R.id.ivRefreshScale);
+        /*ivRefreshScale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClassREAD reading = getScaleReading();
@@ -435,7 +435,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                     tvStatus.setText("N/A");
                 }
             }
-        });
+        });*/
 
 //        ClassREAD reading = getScaleReading();
 //        if (reading != null) {

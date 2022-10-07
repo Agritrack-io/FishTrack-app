@@ -13,12 +13,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.collection.ArraySet;
 
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
@@ -37,6 +39,7 @@ import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.quality.postpackage.PostPackagingQualityActivity;
 import io.agritrack.fish.ui.quality.receipt.ReceiptQualityStartActivity;
+import io.agritrack.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.ui.adapter.InventoryMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.service.LocalPreferences;
@@ -46,6 +49,7 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
     private MobileDB db;
     private static final int First_Step_Idx = 0, Second_Step_Idx = 1, Third_Step_Idx = 1;
     private GridView gvQualityMenu;
+    private List<String> binList;
 
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -64,6 +68,8 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        binList = new ArrayList<String>();
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.quality_first_step_text), "PP-DOC-01", ReceiptQualityStartActivity.class));
@@ -84,6 +90,8 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
                         QualityTransaction openTx = db.qualityTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
                         QualityRecord qualityRecord;
 
+                        binList = new ArrayList<String>();
+
                         // default Next Activity is FishingStart...
                         i = new Intent(appCtx, ReceiptQualityStartActivity.class);
                         if (openTx != null) {
@@ -102,8 +110,10 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
                                         _dat.add(_temperatureD.rawData());
                                     }
                                     recLoggerData.addDataSet(m.loggerRFID, m.assetRFID, m.productionLane, m.retrievedAt, _dat);
-                                    qualityRecord.qualityBins.add(m.assetRFID);
+                                    binList.add(m.assetRFID);
+                                    //qualityRecord.qualityBins.add(m.assetRFID);
                                 }
+                                qualityRecord.qualityBins = convertEPCsToBinDetails(binList);
                             }
 
 
@@ -181,5 +191,13 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
     private void assignCtrlVars() {
         gvQualityMenu = findViewById(R.id.gvQualityMenu);
         ivSupport = findViewById(R.id.ivSupport);
+    }
+
+    private static List<BinWeightCageAdapter.BinDetails> convertEPCsToBinDetails(List<String> epcs) {
+        List<BinWeightCageAdapter.BinDetails> result = new ArrayList<>();
+        for (String epc : epcs) {
+            result.add(new BinWeightCageAdapter.BinDetails(epc));
+        }
+        return result;
     }
 }

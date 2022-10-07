@@ -297,24 +297,34 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
     private void assignCtrlVars() {
         etNoHematoma = findViewById(R.id.etNoHematoma);
         etNoHematoma.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etNoHematoma.setText("0");
         etLightHematoma = findViewById(R.id.etLightHematoma);
         etLightHematoma.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etLightHematoma.setText("0");
         etHeavyHematoma = findViewById(R.id.etHeavyHematoma);
         etHeavyHematoma.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etHeavyHematoma.setText("0");
         etPink = findViewById(R.id.etPink);
         etPink.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etPink.setText("0");
         etDark = findViewById(R.id.etDark);
         etDark.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etDark.setText("0");
         etWhite = findViewById(R.id.etWhite);
         etWhite.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etWhite.setText("0");
         etUncolored = findViewById(R.id.etUncolored);
         etUncolored.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etUncolored.setText("0");
         etHematomas = findViewById(R.id.etHematomas);
         etHematomas.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etHematomas.setText("0");
         etMucus = findViewById(R.id.etMucus);
         etMucus.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etMucus.setText("0");
         etProblematicFish = findViewById(R.id.etProblematicFish);
         etProblematicFish.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etProblematicFish.setText("0");
         rgTotalEvaluation = findViewById(R.id.rgTotalEvaluation);
         ivSupport = findViewById(R.id.ivSupport);
     }

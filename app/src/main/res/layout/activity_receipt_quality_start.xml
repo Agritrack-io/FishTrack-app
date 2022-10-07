@@ -110,10 +110,9 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityStartActivity">
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="center_horizontal"
-                android:text="@string/received_bins"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
+                app:layout_constraintBottom_toTopOf="@+id/tvHeaders"
                 app:layout_constraintEnd_toStartOf="@+id/ivDeleteBin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -127,16 +126,30 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityStartActivity">
                 android:layout_marginEnd="50dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/button_press_effect"
-                android:text="@string/scan_bin"
                 android:textColor="@color/yellow"
                 android:textSize="@dimen/button_font_size"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvNumberBins"
+                app:layout_constraintTop_toBottomOf="@+id/tvNumberCheckedBins"
                 tools:layout_conversion_absoluteHeight="120dp"
                 tools:layout_conversion_absoluteWidth="0dp" />
+
+            <TextView
+                android:id="@+id/tvHeaders"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center_vertical"
+                android:paddingStart="22dp"
+                android:text="@string/receipt_header"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvSelectBins" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvBinsForTransport"
@@ -147,31 +160,31 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityStartActivity">
                 android:background="@drawable/bg_rounded_input_spinner"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/tvNumberBins"
+                app:layout_constraintBottom_toTopOf="@+id/tvNumberExpectedBins"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSelectBins">
+                app:layout_constraintTop_toBottomOf="@+id/tvHeaders">
 
             </androidx.recyclerview.widget.RecyclerView>
 
             <TextView
-                android:id="@+id/tvNumberBins"
+                android:id="@+id/tvNumberExpectedBins"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
                 android:gravity="center_horizontal"
-                android:text="@string/number_of_bins"
+                android:text="@string/number_of_expected_bins"
                 android:textColor="@color/label_blue"
                 android:textSize="24sp"
-                app:layout_constraintBottom_toTopOf="@+id/btnScanBin"
-                app:layout_constraintEnd_toStartOf="@+id/tvBinsCount"
+                app:layout_constraintBottom_toTopOf="@+id/tvNumberCheckedBins"
+                app:layout_constraintEnd_toStartOf="@+id/tvExpectedBinsCount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rvBinsForTransport" />
 
             <TextView
-                android:id="@+id/tvBinsCount"
+                android:id="@+id/tvExpectedBinsCount"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginTop="8dp"
@@ -183,8 +196,42 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityStartActivity">
                 android:textIsSelectable="false"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/tvNumberBins"
+                app:layout_constraintStart_toEndOf="@+id/tvNumberExpectedBins"
                 app:layout_constraintTop_toBottomOf="@+id/rvBinsForTransport" />
+
+            <TextView
+                android:id="@+id/tvNumberCheckedBins"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_horizontal"
+                android:text="@string/number_of_checked_bins"
+                android:textColor="@color/label_blue"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/btnScanBin"
+                app:layout_constraintEnd_toStartOf="@+id/tvCheckedBinsCount"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvNumberExpectedBins" />
+
+            <TextView
+                android:id="@+id/tvCheckedBinsCount"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/border_bottom"
+                android:gravity="center"
+                android:inputType="number"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/btnScanBin"
+                app:layout_constraintStart_toEndOf="@+id/tvNumberCheckedBins"
+                app:layout_constraintTop_toBottomOf="@+id/tvExpectedBinsCount" />
 
             <ImageButton
                 android:id="@+id/ivDeleteBin"
@@ -192,11 +239,11 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityStartActivity">
                 android:layout_height="48dp"
                 android:layout_marginEnd="16dp"
                 android:background="@color/transparent"
-                app:layout_constraintBottom_toTopOf="@+id/rvBinsForTransport"
+                app:layout_constraintBottom_toTopOf="@+id/tvHeaders"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/ic_delete" />
 
-            <RelativeLayout
+<!--            <RelativeLayout
                 android:id="@+id/loadingPanel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -210,7 +257,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityStartActivity">
                     android:layout_height="wrap_content"
                     android:indeterminate="true"
                     android:visibility="invisible" />
-            </RelativeLayout>
+            </RelativeLayout>-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

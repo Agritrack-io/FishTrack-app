@@ -1,25 +1,39 @@
 package io.agritrack.fish.ui.quality.receipt;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
+import static io.agritrack.fish.state.GlobalState.recQuality;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Html;
+import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,42 +43,45 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.BinInfo;
+import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
+import io.agritrack.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.BinWeightCageAdapter;
-import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.LoggerInitDialogFragment;
 
 public class ReceiptQualityStartActivity extends AppCompatActivity {
-    // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
-
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-
+    // listens to trigger button clicks.
+    protected BroadcastReceiver keyReceiver;
+    private boolean scanAllBins = false;
+    private int attemptsToGetEpcList = 0;
+    private int attemptsToScanBinOutOfLot = 0;
+    private List<String> binList;
     private SingleShotScanner scanner_runnable;
     private MobileDB db;
     private RecyclerView rvBinsForTransport;
-    private TextView tvBinsCount;
-    private TemplateRecyclerAdapter adapterBins;
+    private TextView tvExpectedBinsCount, tvCheckedBinsCount, tvNumberExpectedBins, tvNumberCheckedBins, tvSelectBins;
+    private BinWeightCageAdapter adapterBins;
     private ImageButton ivDeleteBin;
-    private Set<String> scannedBinEPCs;
+    private List<String> scannedBinEPCs;
     private String loggerEPC, binEPC;
     private ImageView ivSupport;
     private Button btnScanBin;
@@ -91,16 +108,22 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         // initiate raw sound
         SoundUtil.initSoundPool(this);
 
+        tvNumberExpectedBins.setVisibility(View.INVISIBLE);
+        tvNumberCheckedBins.setVisibility(View.INVISIBLE);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBinsForTransport.setLayoutManager(layoutManager);
         rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
         rvBinsForTransport.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(),true);
+        adapterBins = new BinWeightCageAdapter(this, new ArrayList<BinWeightCageAdapter.BinDetails>());
         rvBinsForTransport.setAdapter(adapterBins);
         rvBinsForTransport.setNestedScrollingEnabled(false);
 
         // instantiate a set to hold scanned EPCS.it will be passed to adapter shich feeds the ListView.
-        scannedBinEPCs = new LinkedHashSet<>();
+        scannedBinEPCs = new ArrayList<String>();
+
+        // instantiate a set to hold expected EPCS.it will be passed to adapter shich feeds the ListView.
+        binList = new ArrayList<String>();
 
         // =================================
         // RFID scanning functionality
@@ -120,8 +143,10 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
                     String barcode = bundle.getString("selectedBarcode");
                     if (barcode != null) {
                         adapterBins.removeItem(barcode);
+                        // User can retrieve data from the deleted bin
+                        scannedBinEPCs.remove(barcode);
                         adapterBins.notifyDataSetChanged();
-                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+                        tvCheckedBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                         adapterBins.clearSelectedValue();
                     }
                 });
@@ -143,8 +168,12 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
+        tvSelectBins = findViewById(R.id.tvSelectBins);
         btnScanBin = findViewById(R.id.btnScanBin);
-        tvBinsCount = findViewById(R.id.tvBinsCount);
+        tvExpectedBinsCount = findViewById(R.id.tvExpectedBinsCount);
+        tvCheckedBinsCount = findViewById(R.id.tvCheckedBinsCount);
+        tvNumberExpectedBins = findViewById(R.id.tvNumberExpectedBins);
+        tvNumberCheckedBins = findViewById(R.id.tvNumberCheckedBins);
         rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
         ivDeleteBin = findViewById(R.id.ivDeleteBin);
         ivSupport = findViewById(R.id.ivSupport);
@@ -173,24 +202,36 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        QualityRecord qualityRecord = GlobalState.recQuality;
+        QualityRecord qualityRecord = recQuality;
 
-        if (qualityRecord.qualityBins != null) {
-            adapterBins.setValues(new LinkedList<String>(qualityRecord.qualityBins));
-            scannedBinEPCs.addAll(qualityRecord.qualityBins);
+        if (qualityRecord.expectedBins != null && !(qualityRecord.expectedBins.size() == 0) && qualityRecord.qualityBins != null && !(qualityRecord.qualityBins.size() == 0)) {
+            recQuality.expectedBins.stream().forEach(x -> adapterBins.addExpectedItem(loadBinInfo(x)));
             adapterBins.notifyDataSetChanged();
+            scannedBinEPCs = qualityRecord.scannedBins;
+            adapterBins.markReceived(convertBinDetailsToEPCs(qualityRecord.qualityBins));
+            tvSelectBins.setText(R.string.qualified_bins);
+            tvNumberExpectedBins.setVisibility(View.VISIBLE);
+            tvNumberCheckedBins.setVisibility(View.VISIBLE);
+            tvExpectedBinsCount.setText(String.valueOf(qualityRecord.expectedBins.size()));
+            btnScanBin.setText(R.string.scan_one_to_one_bins);
+            binList = qualityRecord.expectedBins;
+            scanAllBins = true;
+
             //Get reference of binsCount textView
-            TextView tvBinsCount = findViewById(R.id.tvBinsCount);
-            tvBinsCount.setText(String.valueOf(qualityRecord.qualityBins.size()));
+            tvCheckedBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
+        } else if (IsOnline) {
+            tvSelectBins.setText(null);
+            btnScanBin.setText(R.string.scan_one_bin);
+        } else {
+            scanAllBins = true;
+            btnScanBin.setText(R.string.scan_one_to_one_bins);
         }
     }
 
     private void updateState() {
-
-        GlobalState.recQuality.qualityBins = new LinkedList<>(adapterBins.getValues());
-        GlobalState.recQuality.qualityBinsCnt = adapterBins.getItemCount();
-        GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
-        GlobalState.recQuality.logger_rfid = loggerEPC;
+        recQuality.qualityBinsCnt = adapterBins.getItemCount();
+        recQuality.retrievedAt = System.currentTimeMillis();
+        recQuality.logger_rfid = loggerEPC;
 
         GlobalState.commitQuality(db, Boolean.FALSE);
     }
@@ -198,7 +239,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (GlobalState.recQuality.qualityBins == null || GlobalState.recQuality.qualityBins.isEmpty()) {
+            if (recQuality.qualityBins == null || recQuality.qualityBins.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Received bins'"));
             }
         }
@@ -224,7 +265,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         super.onStop();
         this.stopScanner();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
     }
 
@@ -232,18 +273,22 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
     }
 
     protected void onClick(View view) {
-        // reset existing Temperature values in stateRecord.
-        //recLoggerData.clearData();
-
-        scanner_runnable = new SingleShotScanner(mScanHandler);
-        scanner_runnable.setFilter(Filters.RFID_LOGGER);
-        scanner_runnable.startReading();
-        mScanHandler.postDelayed(scanner_runnable, 0);
+        if (adapterBins.getItemCount() < 1 && IsOnline && !scanAllBins) {
+            scanner_runnable = new SingleShotScanner(mScanHandler);
+            scanner_runnable.setFilter(Filters.RFID_BIN);
+            scanner_runnable.startReading();
+            mScanHandler.postDelayed(scanner_runnable, 0);
+        } else {
+            scanner_runnable = new SingleShotScanner(mScanHandler);
+            scanner_runnable.setFilter(Filters.RFID_LOGGER);
+            scanner_runnable.startReading();
+            mScanHandler.postDelayed(scanner_runnable, 0);
+        }
     }
 
     // ###################################################
@@ -252,6 +297,32 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             this.scanner_runnable.stopReading();
             mScanHandler.removeCallbacks(this.scanner_runnable);
         }
+    }
+
+    private BinWeightCageAdapter.BinDetails loadBinInfo(String epc) {
+        //Add code to retrieve bin info from local DB
+        BinInfo tmpBin = db.binInfoDAO().getByRFId(epc);
+        if (tmpBin != null) {
+            return new BinWeightCageAdapter.BinDetails(epc, tmpBin.totalWeight, tmpBin.cage);
+        } else {
+            return new BinWeightCageAdapter.BinDetails(epc);
+        }
+    }
+
+    private List<BinWeightCageAdapter.BinDetails> convertEPCsToBinDetails(List<String> epcs) {
+        List<BinWeightCageAdapter.BinDetails> result = new ArrayList<>();
+        for (String epc : epcs) {
+            result.add(new BinWeightCageAdapter.BinDetails(epc));
+        }
+        return result;
+    }
+
+    private List<String> convertBinDetailsToEPCs(List<BinWeightCageAdapter.BinDetails> epcs) {
+        List<String> result = new ArrayList<>();
+        for (BinWeightCageAdapter.BinDetails epc : epcs) {
+            result.add(epc.epc);
+        }
+        return result;
     }
 
     private class ScanHandler extends Handler {
@@ -267,40 +338,74 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
                 case 1:
                     String epcStr = msg.getData().getString("epc");
                     String rssi = msg.getData().getString("rssi");
-                    try {
-                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            loggerEPC = epcStr;
+                    if (scanAllBins) {
+                        tvSelectBins.setText(R.string.qualified_bins);
+                        try {
+                            if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                                loggerEPC = epcStr;
 
-                            // after bin is identified, initialize the temperatures logger.
-                            //IotLogger logger = db.iotLoggerDAO().getByAssetRFID(binEPC);
-                            Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
-                            if (bin != null) {
-                                binEPC = bin.rfid;
-                                scannedBinEPCs.add(bin.rfid);
-                                tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
-                                adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
-                                adapterBins.notifyDataSetChanged();
-
-                                if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-                                    BinInfo tmpBin = db.binInfoDAO().getByRFId(binEPC);
-                                    FragmentManager fm = getSupportFragmentManager();
-                                    LoggerInitDialogFragment loggerDlg;
-                                    if (tmpBin.initedAt != null) {
-                                        loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, tmpBin.initedAt, true, true, true);
-                                    } else {
-                                        loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, true, true, true);
+                                // after bin is identified, initialize the temperatures logger.
+                                Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
+                                if (bin != null) {
+                                    binEPC = bin.rfid;
+                                    if (scannedBinEPCs.contains(binEPC)) {
+                                        CToast(getApplicationContext(), render(R.string.already_scannned_bin), Toast.LENGTH_LONG);
+                                        return;
                                     }
-                                    loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
+                                    if (!binList.contains(binEPC)) {
+                                        while (attemptsToScanBinOutOfLot < 1) {
+                                            attemptsToScanBinOutOfLot++;
+                                            CToast(getApplicationContext(), render(R.string.scanned_bin_out_of_lot), Toast.LENGTH_LONG);
+                                            return;
+                                        }
+                                        confirmScanBinOutOfLotDialog();
+                                        adapterBins.markReceived(Collections.singletonList(binEPC));
+                                        attemptsToScanBinOutOfLot = 0;
+                                        return;
+                                    }
+                                    triggerDataLoggerDialog();
+                                } else if (!IsDemo) {
+                                    CToast(getApplicationContext(), render(R.string.no_logger_found_linked_to_bin), Toast.LENGTH_SHORT);
                                 }
-                            } else if (!IsDemo) {
-                                CToast(getApplicationContext(), render(R.string.no_logger_found_linked_to_bin), Toast.LENGTH_SHORT);
+                            } else {
+                                CToast(getApplicationContext(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
                             }
-                        } else {
-                            CToast(getApplicationContext(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
+                            this.removeCallbacks(scanner_runnable);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        this.removeCallbacks(scanner_runnable);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+                        try {
+                            if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                                List<BinInfo> binInfoList = db.binInfoDAO().getEPCListByRFId(epcStr);
+                                for (BinInfo bin : binInfoList) {
+                                    binList.add(bin.rfid);
+                                }
+                                if (binList == null || binList.isEmpty()) {
+                                    while (attemptsToGetEpcList < 3) {
+                                        attemptsToGetEpcList++;
+                                        CToast(getApplicationContext(), render(getString(R.string.no_epc_list_returned)), Toast.LENGTH_LONG);
+                                        return;
+                                    }
+                                    attemptsToGetEpcList = 0;
+                                    CToast(getApplicationContext(), render(getString(R.string.scan_all_bins)), Toast.LENGTH_LONG);
+                                    btnScanBin.setText(R.string.scan_one_to_one_bins);
+                                    scanAllBins = true;
+                                    return;
+                                }
+                                binList.stream().forEach(x -> adapterBins.addExpectedItem(loadBinInfo(x)));
+                                adapterBins.notifyDataSetChanged();
+                                recQuality.expectedBins = binList;
+                                GlobalState.commitQuality(db, Boolean.FALSE);
+                                tvSelectBins.setText(R.string.expected_bins);
+                                tvNumberExpectedBins.setVisibility(View.VISIBLE);
+                                tvExpectedBinsCount.setText(String.valueOf(binList.size()));
+                                btnScanBin.setText(R.string.scan_one_to_one_bins);
+                                scanAllBins = true;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                     break;
 
@@ -312,13 +417,87 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         }
     }
 
-    private BinWeightCageAdapter.BinDetails loadBinInfo(String epc){
-        //Add code to retrieve bin info from local DB
-        BinInfo tmpBin = db.binInfoDAO().getByRFId(epc);
-        if (tmpBin!=null) {
-            return new BinWeightCageAdapter.BinDetails(epc, tmpBin.totalWeight, tmpBin.cage);
-        } else {
-            return new BinWeightCageAdapter.BinDetails(epc);
+    private void triggerDataLoggerDialog(){
+        if (!scannedBinEPCs.contains(binEPC)) {
+            scannedBinEPCs.add(binEPC);
         }
+        recQuality.scannedBins = scannedBinEPCs;
+        tvNumberCheckedBins.setVisibility(View.VISIBLE);
+        tvCheckedBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
+        adapterBins.addUniqueItem(loadBinInfo(binEPC));
+        adapterBins.markReceived(scannedBinEPCs);
+        recQuality.qualityBins = convertEPCsToBinDetails(scannedBinEPCs);
+        GlobalState.commitQuality(db, Boolean.FALSE);
+        adapterBins.notifyDataSetChanged();
+
+        if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+            BinInfo tmpBin = db.binInfoDAO().getByRFId(binEPC);
+            FragmentManager fm = getSupportFragmentManager();
+            LoggerInitDialogFragment loggerDlg;
+            if (tmpBin != null && tmpBin.initedAt != null) {
+                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, tmpBin.initedAt, true, true, true);
+            } else {
+                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, true, true, true);
+            }
+            loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
+        }
+    }
+
+    private void confirmScanBinOutOfLotDialog() {
+        // Get custom login form view.
+        final View confirmFormView = this.getLayoutInflater().inflate(R.layout.confirm_scan_bin_out_of_lot_dlg, null);
+
+        final EditText pin = confirmFormView.findViewById(R.id.etPin);
+
+        TextView title = new TextView(this);
+        // You Can Customise your Title here
+        title.setText(Html.fromHtml("<b>"+ getAppContext().getResources().getString(R.string.confirm_scanned_bin_out_of_lot) +"</b>" + "<br>" + getAppContext().getResources().getString(R.string.confirm_with_pin), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        title.setBackgroundColor(Color.WHITE);
+        title.setPadding(10, 10, 10, 10);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.BLACK);
+        title.setTextSize(20);
+
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(confirmFormView)
+                .setCustomTitle(title)
+                .setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
+                .setNegativeButton(android.R.string.cancel, null)
+                .setCancelable(true)
+                .create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        String insertedPin = pin.getText().toString().trim();
+                        String login = LocalPreferences.getLoggedInUser("").trim();
+
+                        if (Strings.isEmptyOrWhitespace(insertedPin)) {
+                            CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG);
+                            return;
+                        }
+
+                        // use typed-in PIN to compare credentials with those stored in the Local DB.
+                        AuthenticationService authSvc = new AuthenticationService();
+                        boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
+                        if (authentication){
+                            triggerDataLoggerDialog();
+                            dialog.dismiss();
+                        } else {
+                            CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
+                            return;
+                        }
+                    }
+                });
+            }
+        });
+        dialog.show();
     }
 }
