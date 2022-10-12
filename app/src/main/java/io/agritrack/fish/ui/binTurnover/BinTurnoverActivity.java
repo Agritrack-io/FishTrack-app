@@ -62,6 +62,9 @@ import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.model.BinInfo;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.wh.Asset;
+import io.agritrack.data.repo.IFishTrackRepository;
+import io.agritrack.data.repo.MeasurementRepository;
+import io.agritrack.data.repo.TemperatureDataRepository;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
@@ -90,6 +93,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IInformedA
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
+    private IFishTrackRepository tempDataRepo, measRepo;
     private ProgressDialog progressDialog;
     private RecyclerView lvTempProfiles;
     private TemperatureProfileAdapter tempProfileAdapter;
@@ -97,6 +101,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IInformedA
     private ConcatAdapter concatAdapter;
     private SingleShotScanner scanner_runnable;
     private BinInfo tmpBin;
+    private TextView tvLotLabel, tvLot;
     private boolean scanAllBins = false;
     private List<String> scannedBinEPCs;
     private List<String> binList;
@@ -149,8 +154,14 @@ public class BinTurnoverActivity extends AppCompatActivity implements IInformedA
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
+        this.tempDataRepo = new TemperatureDataRepository();
+        this.measRepo = new MeasurementRepository();
+
         // get  references of the controls
         assignCtrlVars();
+
+        tvLotLabel.setVisibility(View.INVISIBLE);
+        tvLot.setVisibility(View.INVISIBLE);
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(BinTurnoverActivity.this);
@@ -230,6 +241,8 @@ public class BinTurnoverActivity extends AppCompatActivity implements IInformedA
     private void assignCtrlVars() {
         btnScanBin = findViewById(R.id.btnScanBin);
         lvTempProfiles = findViewById(R.id.lvTempProfiles);
+        tvLotLabel = findViewById(R.id.tvLotLabel);
+        tvLot = findViewById(R.id.tvLot);
         ibShowValues = findViewById(R.id.ibShowValues);
         spProductionLine = findViewById(R.id.spProductionLine);
         ivSupport = findViewById(R.id.ivSupport);
@@ -450,8 +463,10 @@ public class BinTurnoverActivity extends AppCompatActivity implements IInformedA
                         try {
                             if (!Strings.isEmptyOrWhitespace(epcStr)) {
                                 List<BinInfo> binInfoList = db.binInfoDAO().getEPCListByRFId(epcStr);
+                                String lot = null;
                                 for (BinInfo bin : binInfoList) {
                                     binList.add(bin.rfid);
+                                    lot = bin.lot;
                                 }
                                 if (binList == null || binList.isEmpty()) {
                                     while (attemptsToGetEpcList < 3) {
@@ -469,6 +484,11 @@ public class BinTurnoverActivity extends AppCompatActivity implements IInformedA
                                 adapterBins.notifyDataSetChanged();
                                 btnScanBin.setText(R.string.scan_one_to_one_bins);
                                 scanAllBins = true;
+                                if (!Strings.isEmptyOrWhitespace(lot)) {
+                                    tvLotLabel.setVisibility(View.VISIBLE);
+                                    tvLot.setVisibility(View.VISIBLE);
+                                    tvLot.setText(lot);
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -575,8 +595,10 @@ public class BinTurnoverActivity extends AppCompatActivity implements IInformedA
             if (rs != null || IsDemo) {
                 // reset existing Temperature values in stateRecord.
                 recLoggerData.clearData();
-                db.temperatureDataDAO().deleteAll();
-                db.measurementsDAO().deleteAll();
+                tempDataRepo.removeAll(db);
+                measRepo.removeAll(db);
+                //db.temperatureDataDAO().deleteAll();
+                //db.measurementsDAO().deleteAll();
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!

@@ -82,7 +82,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     private BinWeightCageAdapter adapterBins;
     private ImageButton ivDeleteBin;
     private List<String> scannedBinEPCs;
-    private String loggerEPC, binEPC;
+    private String loggerEPC, binEPC, productLot;
     private ImageView ivSupport;
     private Button btnScanBin;
     private SupportDialog supportDialog;
@@ -380,6 +380,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
                                 List<BinInfo> binInfoList = db.binInfoDAO().getEPCListByRFId(epcStr);
                                 for (BinInfo bin : binInfoList) {
                                     binList.add(bin.rfid);
+                                    recQuality.pLot = bin.lot;
                                 }
                                 if (binList == null || binList.isEmpty()) {
                                     while (attemptsToGetEpcList < 3) {

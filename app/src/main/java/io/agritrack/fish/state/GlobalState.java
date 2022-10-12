@@ -1,11 +1,13 @@
 package io.agritrack.fish.state;
 
+import static io.agritrack.data.converter.DateConverter.toDate;
 import static io.agritrack.enums.AssetType.ALL;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -227,6 +229,7 @@ public class GlobalState {
             txTransport.longitude = recTransport.longitude;
             txTransport.latitude = recTransport.latitude;
             txTransport.calcHash();
+            recTransport.hashCode = txTransport.hashCode;
 
             // search DB for records having the same hashCode
             int cnt = db.transportTransactionDAO().countByHash(txTransport.hashCode);
@@ -235,7 +238,6 @@ public class GlobalState {
             if (cnt < 1) {
                 recTransport.txKey = db.transportTransactionDAO().insert(txTransport);
             } else {
-                recTransport.hashCode = txTransport.hashCode;
                 return db.transportTransactionDAO().getByHash(txTransport.hashCode);
             }
 
@@ -326,7 +328,9 @@ public class GlobalState {
             txQuality.overallEvaluation = recQuality.evaluation;
             txQuality.selectedRgId = recQuality.selectedRgId;
             txQuality.remarks = recQuality.remarks;
-            txQuality.qualityBins = recQuality.qualityBins.stream().map(x -> x.epc).collect(Collectors.toList());
+            if (recQuality.qualityBins!=null) {
+                txQuality.qualityBins = recQuality.qualityBins.stream().map(x -> x.epc).collect(Collectors.toList());
+            }
             txQuality.expectedBins = recQuality.expectedBins;
             txQuality.scannedBins = recQuality.scannedBins;
             txQuality.qualityBinsCnt = recQuality.qualityBinsCnt;

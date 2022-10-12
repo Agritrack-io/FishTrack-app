@@ -8,6 +8,7 @@ public class BinInfoDTO {
     public String cage;
     public String species;
     public String fishing_request;
+    public String lot;
     public Double total_weight;
     public String farm;
     public Long last_update;
@@ -16,6 +17,7 @@ public class BinInfoDTO {
     public static BinInfo convert(BinInfoDTO binInfoDTO) {
         BinInfo binInfo = new BinInfo();
         binInfo.rfid = binInfoDTO.rfid;
+        binInfo.lot = binInfoDTO.lot;
         binInfo.fishingRequest = binInfoDTO.fishing_request;
         binInfo.cage = binInfoDTO.cage;
         binInfo.species = binInfoDTO.species;

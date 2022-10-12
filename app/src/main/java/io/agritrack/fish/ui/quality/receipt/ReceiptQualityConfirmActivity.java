@@ -41,6 +41,10 @@ import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.QualityTransaction;
+import io.agritrack.data.repo.FishingRequestRepository;
+import io.agritrack.data.repo.IFishTrackRepository;
+import io.agritrack.data.repo.MeasurementRepository;
+import io.agritrack.data.repo.TemperatureDataRepository;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
@@ -63,6 +67,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
     private final UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
+    private IFishTrackRepository tempDataRepo, measRepo;
     private YesNoDialogFragment confirmGPSSelectionDlg;
 
     private ProgressDialog progressDialog;
@@ -84,6 +89,9 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
 
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
+
+        this.tempDataRepo = new TemperatureDataRepository();
+        this.measRepo = new MeasurementRepository();
 
         // get  references of the controls
         assignCtrlVars();
@@ -335,8 +343,10 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             if (rs != null || IsDemo) {
                 // reset existing Temperature values in stateRecord.
                 recLoggerData.clearData();
-                db.temperatureDataDAO().deleteAll();
-                db.measurementsDAO().deleteAll();
+                tempDataRepo.removeAll(db);
+                measRepo.removeAll(db);
+                //db.temperatureDataDAO().deleteAll();
+                //db.measurementsDAO().deleteAll();
 
                 String token = LocalPreferences.getToken();
 

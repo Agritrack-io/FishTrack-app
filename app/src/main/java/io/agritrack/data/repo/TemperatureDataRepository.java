@@ -5,12 +5,11 @@ import java.util.concurrent.Executors;
 
 import io.agritrack.data.db.MobileDB;
 
-public class FishingRequestRepository implements IFishTrackRepository {
-
+public class TemperatureDataRepository implements IFishTrackRepository{
     private ExecutorService service = Executors.newSingleThreadExecutor();
 
     @Override
     public void removeAll(MobileDB db) {
-        this.service.execute(() -> db.fishingRequestsDAO().deleteAll());
+        this.service.execute(() -> db.temperatureDataDAO().deleteAll());
     }
 }

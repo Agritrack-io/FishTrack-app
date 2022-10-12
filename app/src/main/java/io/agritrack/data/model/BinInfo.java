@@ -16,6 +16,9 @@ public class BinInfo {
     @ColumnInfo(name = "fishing_request")
     public String fishingRequest;
 
+    @ColumnInfo(name = "lot")
+    public String lot;
+
     @ColumnInfo(name = "cage")
     public String cage;
 

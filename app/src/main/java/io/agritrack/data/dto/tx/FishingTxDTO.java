@@ -1,5 +1,6 @@
 package io.agritrack.data.dto.tx;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class FishingTxDTO {
     public String packaging_plant;
     public Short parent_itinerary;
     public String reason_deviation;
-    public Long created_at;
+    public Long occurred_at;
     public Double longitude;
     public Double latitude;
 
@@ -58,7 +59,7 @@ public class FishingTxDTO {
         fishingTxDTO.packaging_plant = fishingTx.packagingPlant;
         fishingTxDTO.parent_itinerary = fishingTx.parentItinSno;
         fishingTxDTO.reason_deviation = fishingTx.reasonOfDeviation;
-        fishingTxDTO.created_at = fishingTx.createdAt;
+        fishingTxDTO.occurred_at = fishingTx.createdAt;
         fishingTxDTO.longitude = fishingTx.longitude;
         fishingTxDTO.latitude = fishingTx.latitude;
 

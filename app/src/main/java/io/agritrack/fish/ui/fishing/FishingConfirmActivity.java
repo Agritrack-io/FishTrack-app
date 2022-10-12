@@ -93,9 +93,11 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-        if (recFishing.reqWeight-recFishing.totalFishWeight>=250){
-            selectReasonDialog = new SelectReasonOfFishingWeightDeviationDialog(FishingConfirmActivity.this);
-            selectReasonDialog.showDialog();
+        if (recFishing.reqWeight!=null) {
+            if (recFishing.reqWeight - recFishing.totalFishWeight >= 250) {
+                selectReasonDialog = new SelectReasonOfFishingWeightDeviationDialog(FishingConfirmActivity.this);
+                selectReasonDialog.showDialog();
+            }
         }
 
         ivSupport.setOnClickListener(view -> {

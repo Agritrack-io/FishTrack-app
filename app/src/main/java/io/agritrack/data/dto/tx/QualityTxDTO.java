@@ -53,7 +53,7 @@ public class QualityTxDTO {
     public String remarks;
     public String plant;
     public String user;
-    public Long created_at;
+    public Long occurred_at;
     public Double longitude;
     public Double latitude;
 
@@ -99,7 +99,7 @@ public class QualityTxDTO {
         qualityTxDto.plant = quality.site;
         qualityTxDto.user = quality.user;
         qualityTxDto.sample_date = dateFormat.format(quality.sampleDate);
-        qualityTxDto.created_at = quality.createdAt;
+        qualityTxDto.occurred_at = quality.createdAt;
         qualityTxDto.longitude = quality.longitude;
         qualityTxDto.latitude = quality.latitude;
 

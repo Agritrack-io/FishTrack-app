@@ -10,18 +10,18 @@ import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.FishingRequestDTO;
 import io.agritrack.data.model.FishingRequest;
+import io.agritrack.data.repo.IFishTrackRepository;
 import io.agritrack.data.repo.FishingRequestRepository;
-import io.agritrack.data.repo.FishingRequestRepositoryImpl;
 import retrofit2.Call;
 import retrofit2.Response;
 
 public class SyncFishingRequestCallBack extends BaseSyncCallBack<List<FishingRequestDTO>> {
 
-    private FishingRequestRepository fishingRqRepo;
+    private IFishTrackRepository fishingRqRepo;
 
     public SyncFishingRequestCallBack(MutableLiveData<String> syncResult) {
         super(syncResult);
-        this.fishingRqRepo = new FishingRequestRepositoryImpl(getAppContext());
+        this.fishingRqRepo = new FishingRequestRepository();
     }
 
     @Override
