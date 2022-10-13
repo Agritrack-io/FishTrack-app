@@ -466,7 +466,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IInformedA
                                 String lot = null;
                                 for (BinInfo bin : binInfoList) {
                                     binList.add(bin.rfid);
-                                    lot = bin.lot;
+                                    lot = !Strings.isEmptyOrWhitespace(bin.lot) ? bin.lot : lot;
                                 }
                                 if (binList == null || binList.isEmpty()) {
                                     while (attemptsToGetEpcList < 3) {

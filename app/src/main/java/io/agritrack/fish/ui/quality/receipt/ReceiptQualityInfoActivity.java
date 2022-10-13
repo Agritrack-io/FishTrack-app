@@ -31,6 +31,7 @@ import com.google.android.gms.common.util.Strings;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
@@ -235,16 +236,26 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
             binEpc = qltTx.qualityBins.get(0).epc;
         }
 
-        if (recLoggerData.lowT != null) {
-            tvMinTempBin.setText(String.format("%.1f", recLoggerData.lowT));
-        }
+        long measurementsCount = recLoggerData.data.values().stream()
+                .flatMap(x -> x.values.stream())
+                .filter(y -> !"N/A".equalsIgnoreCase(y[1])).count();
 
-        if (recLoggerData.avgT != null) {
-            tvMeanTempBin.setText(String.format("%.1f", recLoggerData.avgT));
-        }
+        if (measurementsCount>0) {
+            if (recLoggerData.lowT != null) {
+                tvMinTempBin.setText(String.format("%.1f", recLoggerData.lowT));
+            }
 
-        if (recLoggerData.highT != null) {
-            tvMaxTempBin.setText(String.format("%.1f", recLoggerData.highT));
+            if (recLoggerData.avgT != null) {
+                tvMeanTempBin.setText(String.format("%.1f", recLoggerData.avgT));
+            }
+
+            if (recLoggerData.highT != null) {
+                tvMaxTempBin.setText(String.format("%.1f", recLoggerData.highT));
+            }
+        } else {
+            tvMinTempBin.setText("N/A");
+            tvMeanTempBin.setText("N/A");
+            tvMaxTempBin.setText("N/A");
         }
 
         if (!Strings.isEmptyOrWhitespace(qltTx.remarks)) {
@@ -290,15 +301,15 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         if (etMaxFishTemp.getText() != null && !Strings.isEmptyOrWhitespace(etMaxFishTemp.getText().toString())) {
             qualityRecord.maxFishTemp = Double.valueOf(etMaxFishTemp.getText().toString());
         }
-        if (tvMinTempBin.getText() != null && !Strings.isEmptyOrWhitespace(tvMinTempBin.getText().toString())) {
+        if (tvMinTempBin.getText() != null && !Strings.isEmptyOrWhitespace(tvMinTempBin.getText().toString()) && !"N/A".equalsIgnoreCase(tvMinTempBin.getText().toString())) {
             qualityRecord.minBinTemp = Double.valueOf(tvMinTempBin.getText().toString().replace(',', '.'));
         }
 
-        if (tvMeanTempBin.getText() != null && !Strings.isEmptyOrWhitespace(tvMeanTempBin.getText().toString())) {
+        if (tvMeanTempBin.getText() != null && !Strings.isEmptyOrWhitespace(tvMeanTempBin.getText().toString()) && !"N/A".equalsIgnoreCase(tvMeanTempBin.getText().toString())) {
             qualityRecord.meanBinTemp = Double.valueOf(tvMeanTempBin.getText().toString().replace(',', '.'));
         }
 
-        if (tvMaxTempBin.getText() != null && !Strings.isEmptyOrWhitespace(tvMaxTempBin.getText().toString())) {
+        if (tvMaxTempBin.getText() != null && !Strings.isEmptyOrWhitespace(tvMaxTempBin.getText().toString()) && !"N/A".equalsIgnoreCase(tvMaxTempBin.getText().toString())) {
             qualityRecord.maxBinTemp = Double.valueOf(tvMaxTempBin.getText().toString().replace(',', '.'));
         }
 

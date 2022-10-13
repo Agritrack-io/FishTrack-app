@@ -67,7 +67,7 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         if (_sites.get(childPosition).length()>=24) {
             return _sites.get(childPosition).substring(14);
         } else {
-            return null;
+            return _sites.get(childPosition);
         }
     }
 

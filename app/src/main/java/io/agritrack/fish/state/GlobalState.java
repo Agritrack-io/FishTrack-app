@@ -433,7 +433,7 @@ public class GlobalState {
 
             long measurementId = db.measurementsDAO().insert(measurement);
             if (measurementId > 0 && model.values != null && !model.values.isEmpty()) {
-                List<TemperatureData> data = model.values.stream().map(x -> new TemperatureData(measurementId, x[0], Double.valueOf(x[1].replace(',', '.')))).collect(Collectors.toList());
+                List<TemperatureData> data = model.values.stream().map(x -> new TemperatureData(measurementId, x[0], x[1])).collect(Collectors.toList());
                 db.temperatureDataDAO().insert(data.toArray(new TemperatureData[data.size()]));
             }
 

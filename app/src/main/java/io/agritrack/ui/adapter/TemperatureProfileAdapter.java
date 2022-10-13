@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 import io.agritrack.R;
 import io.agritrack.data.model.BinInfo;
@@ -77,21 +78,29 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
         LoggerDataRecord.TemperatureModel model = mapOfData.get(key);
 
         if (model != null) {
-            DoubleSummaryStatistics stats = model.values.stream().mapToDouble(x -> Double.valueOf(x[1].replace(',', '.'))).summaryStatistics();
+            long measurementsCount = model.values.stream().filter(y -> !"N/A".equalsIgnoreCase(y[1])).count();
 
-            _highT = stats.getMax();
-            _lowT = stats.getMin();
-            _avgT = stats.getAverage();
+            if (measurementsCount>0) {
+                DoubleSummaryStatistics stats = model.values.stream().filter(y -> !"N/A".equalsIgnoreCase(y[1])).mapToDouble(x -> Double.valueOf(x[1].replace(',', '.'))).summaryStatistics();
 
-            holder.setMeasurements(key, model.values);
-            holder.tvBinEPC.setText(key.substring(key.length() - 10));
-            if (mLayoutInflater.getContext() instanceof BinTurnoverActivity) {
-                holder.tvCageCode.setText(cageCode);
-                holder.tvWeight.setText(String.valueOf(weight));
+                _highT = stats.getMax();
+                _lowT = stats.getMin();
+                _avgT = stats.getAverage();
+
+                holder.setMeasurements(key, model.values);
+                holder.tvBinEPC.setText(key.substring(key.length() - 10));
+                if (mLayoutInflater.getContext() instanceof BinTurnoverActivity) {
+                    holder.tvCageCode.setText(cageCode);
+                    holder.tvWeight.setText(String.valueOf(weight));
+                }
+                holder.tvHigh.setText(String.format("%.2f\u2103", _highT));
+                holder.tvAvg.setText(String.format("%.2f\u2103", _avgT));
+                holder.tvLow.setText(String.format("%.2f\u2103", _lowT));
+            } else {
+                holder.tvHigh.setText("N/A");
+                holder.tvAvg.setText("N/A");
+                holder.tvLow.setText("N/A");
             }
-            holder.tvHigh.setText(String.format("%.2f\u2103", _highT));
-            holder.tvAvg.setText(String.format("%.2f\u2103", _avgT));
-            holder.tvLow.setText(String.format("%.2f\u2103", _lowT));
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -205,7 +214,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
 
         public void setMeasurements(String key, List<String[]> measurements) {
             AtomicInteger idx = new AtomicInteger();
-            ArrayList<Entry> values = (ArrayList<Entry>) measurements.stream().map(x -> new Entry(idx.incrementAndGet(), Float.valueOf(x[1].replace(',', '.')))).collect(Collectors.toList());
+            ArrayList<Entry> values = (ArrayList<Entry>) measurements.stream().map(x -> new Entry(idx.incrementAndGet(), !x[1].equalsIgnoreCase("N/A") ? Float.valueOf(x[1].replace(',', '.')) : Float.NaN)).collect(Collectors.toList());
 
             set1 = new LineDataSet(values, key);
             set1.setDrawCircles(false);

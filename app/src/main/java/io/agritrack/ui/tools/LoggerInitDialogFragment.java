@@ -35,10 +35,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 import com.uhf.api.cls.Reader;
 
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -352,7 +354,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                     measurements = cmd.ReadSamples(cntSamples);
                 }
 
-                if (measurements != null) {
+                if (!CollectionUtils.isEmpty(measurements)) {
                     long now = System.currentTimeMillis();
                     recLoggerData.addDataSet(loggerEPC, assetEPC, productionLane, now, measurements);
 
