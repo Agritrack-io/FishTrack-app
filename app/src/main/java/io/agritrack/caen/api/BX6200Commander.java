@@ -25,7 +25,7 @@ import cn.pda.serialport.Tools;
 import io.agritrack.caen.common.INTERFACEMEM;
 import io.agritrack.caen.pojo.RFIDTag;
 
-public class BX6200Commander extends AbstractCAENCommander  {
+public class BX6200Commander extends AbstractCAENCommander {
     private final UhfReader uhfReader;
     private byte[] epcBytes;
 
@@ -48,7 +48,7 @@ public class BX6200Commander extends AbstractCAENCommander  {
 
     @Override
     public boolean clearEPCFilter() {
-        return (this.uhfReader.unSelectEPC()>0);
+        return (this.uhfReader.unSelectEPC() > 0);
     }
 
     // #########################
@@ -110,7 +110,7 @@ public class BX6200Commander extends AbstractCAENCommander  {
         command = (short) (msgID << 8 | CMD_WRITE);
 
         // Fill the 5 Registers with the required command parameters.
-        String cmdValue = INTERFACEMEM.SetWriteCommand(this.uhfReader, command, address, (short)size, msgID, data, accessPassword);
+        String cmdValue = INTERFACEMEM.SetWriteCommand(this.uhfReader, command, address, (short) size, msgID, data, accessPassword);
 
         //wait for tag to write command
         Thread.sleep(TIME_WAITTAG_CMDWRITE);
@@ -140,7 +140,7 @@ public class BX6200Commander extends AbstractCAENCommander  {
         byte[] replyVal = INTERFACEMEM.ReadReply(uhfReader, accessPassword);
 
         try {
-            while ((replyVal.length==1 ||  REPLY_NACK == replyVal[1]) && retries < 10) {
+            while ((replyVal.length == 1 || REPLY_NACK == replyVal[1]) && retries < 10) {
                 replyVal = INTERFACEMEM.ReadReply(uhfReader, accessPassword);
                 // wait for tag to parse command, execute it, and reply
                 Thread.sleep(TIME_WAITTAG_CMDREADBASE + TIME_WAITTAG_WRITEPAGE);
@@ -156,21 +156,6 @@ public class BX6200Commander extends AbstractCAENCommander  {
     // ########################
     // ###  public methods  ###
     // ########################
-    @Override
-    public Double Init() throws Exception {
-        return Init(DefaultInterval);
-    }
-
-    @Override
-    public Double Init(short interval) throws Exception {
-        WriteTimeBinONE();
-        WriteInterval(interval);
-        WriteCurrentDatetime();
-        EnableLogging();
-        Double rs = ReadLastSample();
-        return rs;
-    }
-
     @Override
     public Reader.READER_ERR Reset() {
         try {
@@ -204,7 +189,7 @@ public class BX6200Commander extends AbstractCAENCommander  {
     @Override
     public List<RFIDTag> inventoryRealTime() {
         List<TagModel> inventory = this.uhfReader.inventoryRealTime();
-        return inventory.stream().map(x->new RFIDTag(TagToString.apply(x), x.getmRssi())).collect(Collectors.toList());
+        return inventory.stream().map(x -> new RFIDTag(TagToString.apply(x), x.getmRssi())).collect(Collectors.toList());
     }
 
     @Override
@@ -218,16 +203,10 @@ public class BX6200Commander extends AbstractCAENCommander  {
     }
 
     @Override
-    public List<RFIDTag> inventoryWithFilter() {
-        return inventoryRealTime();
-    }
-
-    @Override
     public boolean startReading() {
         //Reader.READER_ERR res = this.uhfReader.asyncStartReading();
         return false; //Reader.READER_ERR.MT_OK_ERR.equals(res);
     }
-
 
     @Override
     public boolean startSearching() {
@@ -246,13 +225,13 @@ public class BX6200Commander extends AbstractCAENCommander  {
 
 
     @Override
-    public void HighPowerLevel() {
-
+    public Reader.READER_ERR HighPowerLevel() {
+        return Reader.READER_ERR.MT_OK_ERR;
     }
 
     @Override
-    public void LowPowerLevel() {
-
+    public Reader.READER_ERR LowPowerLevel() {
+        return Reader.READER_ERR.MT_OK_ERR;
     }
 
     @Override

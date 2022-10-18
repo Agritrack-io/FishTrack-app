@@ -8,12 +8,16 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_INTERVAL;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_LAST_SAMPLE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_LOGS;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_SAMPLES_CNT;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_SHIPPING_DATE_L;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_STATUS;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_STOP_DATE_L;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIMESTAMP;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ADDR_TIME_BIN;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.REPLY_NACK;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_FOUR;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ONE;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_SIX;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_THREE;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_TWO;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.SHORT_ZERO;
 import static io.agritrack.caen.api.EncodingUtils.ToShort;
@@ -25,6 +29,7 @@ import static io.agritrack.rfid.RFIDUtils.WaitFor;
 import com.android.hdhe.uhf.readerInterface.TagModel;
 import com.uhf.api.cls.Reader;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -69,9 +74,9 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
 
     abstract public boolean stopSearching();
 
-    abstract public void HighPowerLevel();
+    abstract public Reader.READER_ERR HighPowerLevel();
 
-    abstract public void LowPowerLevel();
+    abstract public Reader.READER_ERR LowPowerLevel();
 
     //########################################################
     //###  Protected Methods called by several subclasses ####
@@ -215,7 +220,19 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     @Override
     public Reader.READER_ERR HighSensitivity() {
         try {
-            Short bits = 16; //Short.valueOf("0010", 16); // High sensitivity and STOP LOGGING!!!!
+            Short bits = 0x14; //Short.valueOf("0010", 16); // High sensitivity and KEEP LOGGING!!!!
+            Reader.READER_ERR rs = WriteRegisters(ADDR_CONTROL, bits);
+            return rs;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Reader.READER_ERR LowSensitivity() {
+        try {
+            Short bits = 0x04; //Short.valueOf("0000", 16); // Low sensitivity and KEEP LOGGING!!!!
             Reader.READER_ERR rs = WriteRegisters(ADDR_CONTROL, bits);
             return rs;
         } catch (Exception ex) {
@@ -291,7 +308,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return null;
+        return "N/A";
     }
 
     /* This function returns the READ_HW_REVISION value */
@@ -305,7 +322,23 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return null;
+        return "N/A";
+    }
+
+    /* This function returns the READ_FW_REVISION together with READ_HW_REVISION value */
+    @Override
+    public String[] ReadCTRLRevisions() {
+        try {
+            byte[] revRS = ReadRegisters(ADDR_FW_REVISION, SHORT_THREE);
+            if (revRS.length == 6) {
+                String binaryText = Integer.toBinaryString(ToShort(Arrays.copyOfRange(revRS, 4, 5)));
+                binaryText = binaryText.length() > 5 ? binaryText.substring(0, 5) : binaryText;
+                return new String[]{String.format("%s.%s", revRS[0], revRS[1]), String.format("%s.%s", revRS[2], revRS[3]), String.format("%5s", binaryText).replace(' ', '0')};
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new String[]{"N/A", "N/A", "N/A"};
     }
 
     /* This function returns the READ_INIT_DATETIME value */
@@ -374,6 +407,53 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
             ex.printStackTrace();
         }
         return -1;
+    }
+
+    /* This function returns the ADDR_SHIPPING_DATE value */
+    @Override
+    public String ReadShippingDatetime() {
+        try {
+            byte[] rs = ReadRegisters(ADDR_SHIPPING_DATE_L, SHORT_TWO);
+            if (rs.length == 4) {
+                return parseTimestamp(new byte[]{rs[2], rs[3], rs[0], rs[1]});
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    /* This function returns the ADDR_STOP_DATE value */
+    @Override
+    public String ReadStopDatetime() {
+        try {
+            byte[] rs = ReadRegisters(ADDR_STOP_DATE_L, SHORT_TWO);
+            if (rs.length == 4) {
+                return parseTimestamp(new byte[]{rs[2], rs[3], rs[0], rs[1]});
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    /* This function returns: LAST_SAMPLE_VALUE, SAMPLES_NUM, SHIPPING_DATE, STOP_DATE */
+    public String[] ReadSamplesInfo() {
+        try {
+            byte[] rs = ReadRegisters(ADDR_LAST_SAMPLE, SHORT_SIX);
+            if (rs.length == 12) {
+
+                Double lastSampleVal = parseTemperatureNumeric(ToShort(Arrays.copyOfRange(rs, 0, 1)));
+                Short samplesCnt = ToShort(Arrays.copyOfRange(rs, 2, 3));
+                String shippingDate = parseTimestamp(Arrays.copyOfRange(rs, 4, 7));
+                String stopDate = parseTimestamp(Arrays.copyOfRange(rs, 8, 11));
+
+                return new String[]{lastSampleVal.toString(), samplesCnt.toString(), shippingDate, stopDate};
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new String[]{"N/A", "N/A", "N/A", "N/A"};
     }
 
     @Override

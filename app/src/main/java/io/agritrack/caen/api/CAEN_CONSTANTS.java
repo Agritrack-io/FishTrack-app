@@ -20,6 +20,10 @@ public class CAEN_CONSTANTS {
     public final static short ADDR_LOGS = (short) 0x008A;
     public final static short ADDR_LAST_SAMPLE = (short) 0x0066;
     public final static short ADDR_SAMPLES_CNT = (short) 0x0067;
+    public final static short ADDR_SHIPPING_DATE_L = (short) 0x006A;
+    public final static short ADDR_SHIPPING_DATE_H = (short) 0x006B;
+    public final static short ADDR_STOP_DATE_L = (short) 0x006C;
+    public final static short ADDR_STOP_DATE_H = (short) 0x006D;
 
     public final static short ADDR_FW_REVISION = (short) 0x0008;
     public final static short ADDR_HW_REVISION = (short) 0x0009;
@@ -57,15 +61,21 @@ public class CAEN_CONSTANTS {
     public final static int ReadCurrentEPC = 1009;
     public final static int ReadMemoryStatus = 1010;
     public final static int ReadBatteryLevel = 1011;
+    public final static int ReadSamples = 1012;
+    public final static int ReadShippingDate = 1103;
+    public final static int ReadStopDate = 1104;
+
     public final static int WriteTimeBINZero = 1100;
     public final static int WriteTimeBINOne = 1101;
     public final static int WriteTimeStamp = 1102;
     public final static int WriteInterval = 1103;
+
     public final static int CmdSTOP = 10012;
     public final static int CmdRESET = 10013;
     public final static int CmdINIT = 10014;
     public final static int CmdReadData = 10015;
     public final static int CmdSETUP = 10016;
     public final static int CmdDisableLogging = 10017;
-    public final static int CmdReadSamplesCnt = 10018;
+    public final static int CmdEnableLogging = 10018;
+    public final static int CmdReadSamplesCnt = 10019;
 }

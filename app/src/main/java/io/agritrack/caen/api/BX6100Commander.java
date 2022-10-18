@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import cn.pda.serialport.Tools;
-import io.agritrack.R;
 import io.agritrack.caen.pojo.RFIDTag;
 
 public class BX6100Commander extends AbstractCAENCommander {
@@ -41,6 +40,7 @@ public class BX6100Commander extends AbstractCAENCommander {
     private UHFRManager mUhfRManager;
     private byte[] epcBytes;
     private String tagToSearch;
+
 
     public BX6100Commander() {
         mUhfRManager = UHFRManager.getInstance();// Init Uhf module
@@ -64,32 +64,38 @@ public class BX6100Commander extends AbstractCAENCommander {
         }
     }
 
-    public void HighPowerLevel() {
+    public Reader.READER_ERR HighPowerLevel() {
         if (mUhfRManager != null) {
             Reader.READER_ERR err = mUhfRManager.setPower(33, 33);//set uhf module power
             if (err != Reader.READER_ERR.MT_OK_ERR) {
                 Reader.READER_ERR err1 = mUhfRManager.setPower(30, 30);//set uhf module power
                 if (err1 != Reader.READER_ERR.MT_OK_ERR) {
                     Toast.makeText(getAppContext(), "Failed to switch to HIGH Energy mode!!", Toast.LENGTH_LONG);
+                    return Reader.READER_ERR.MT_CMD_FAILED_ERR;
                 }
             }
         } else {
             Toast.makeText(getAppContext(), "No UHFR manager found!!", Toast.LENGTH_LONG);
+            return Reader.READER_ERR.MT_CMD_FAILED_ERR;
         }
+        return Reader.READER_ERR.MT_OK_ERR;
     }
 
-    public void LowPowerLevel() {
+    public Reader.READER_ERR LowPowerLevel() {
         if (mUhfRManager != null) {
             Reader.READER_ERR err = mUhfRManager.setPower(16, 16);//set uhf module power
             if (err != Reader.READER_ERR.MT_OK_ERR) {
                 Reader.READER_ERR err1 = mUhfRManager.setPower(15, 15);//set uhf module power
                 if (err1 != Reader.READER_ERR.MT_OK_ERR) {
-                    Toast.makeText(getAppContext(), "Failed to switch to HIGH Energy mode!!", Toast.LENGTH_LONG);
+                    Toast.makeText(getAppContext(), "Failed to switch to LOW Energy mode!!", Toast.LENGTH_LONG);
+                    return Reader.READER_ERR.MT_CMD_FAILED_ERR;
                 }
             }
         } else {
             Toast.makeText(getAppContext(), "No UHFR manager found!!", Toast.LENGTH_LONG);
+            return Reader.READER_ERR.MT_CMD_FAILED_ERR;
         }
+        return Reader.READER_ERR.MT_OK_ERR;
     }
 
     @Override
@@ -106,7 +112,7 @@ public class BX6100Commander extends AbstractCAENCommander {
 
     @Override
     public boolean clearEPCFilter() {
-        if(this.mUhfRManager == null) {
+        if (this.mUhfRManager == null) {
             return false;
         }
         return this.mUhfRManager.setCancleInventoryFilter();
@@ -187,7 +193,7 @@ public class BX6100Commander extends AbstractCAENCommander {
         Thread.sleep(TIME_WAITTAG_CMDWRITE);
 
         //check if tag replied
-        reply = (byte) adjustReplyId(msgID);
+        reply = adjustReplyId(msgID);
 
         //check reply
         if (reply != msgID + 1) {
@@ -213,20 +219,6 @@ public class BX6100Commander extends AbstractCAENCommander {
     // ########################
     // ###  public methods  ###
     // ########################
-    @Override
-    public Double Init() throws Exception {
-        return Init(DefaultInterval);
-    }
-
-    @Override
-    public Double Init(short interval) throws Exception {
-        Reader.READER_ERR rs = WriteTimeBinONE();
-        rs = WriteInterval(interval);
-        rs = WriteCurrentDatetime();
-        rs = EnableLogging();
-        return ReadLastSample();
-    }
-
     /* This function RESETS the logger */
     @Override
     public Reader.READER_ERR Reset() {
@@ -272,29 +264,19 @@ public class BX6100Commander extends AbstractCAENCommander {
     }
 
     @Override
-    public List<RFIDTag> inventoryWithFilter() {
-        if (this.mUhfRManager == null) {
-            this.mUhfRManager = UHFRManager.getInstance();
-        }
-        List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryRealTime();
-        this.mUhfRManager.setCancleInventoryFilter();
-        return inventory.stream().map(x->new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
-    }
-
-    @Override
     public List<RFIDTag> searchInventory() {
         mUhfRManager.setGen2session(false);
         mUhfRManager.setInventoryFilter(this.epcBytes, 1, 2, true);
         List<Reader.TAGINFO> inventory = mUhfRManager.tagEpcTidInventoryByTimer((short) 100);
         Stream<Reader.TAGINFO> filteredStream = inventory.stream().filter(k -> Tools.Bytes2HexString(k.EpcId, k.Epclen).indexOf(tagToSearch.substring(tagToSearch.length() - 6)) > -1);
-        return filteredStream.map(x->new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
+        return filteredStream.map(x -> new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
     }
 
     @Override
     public boolean startReading() {
         if (this.mUhfRManager == null) {
             this.mUhfRManager = UHFRManager.getInstance();
-            if (this.mUhfRManager == null){
+            if (this.mUhfRManager == null) {
                 CToast(null, render("Couldn't find RFID module, please retry!!"), Toast.LENGTH_SHORT);
                 return false;
             }
@@ -323,7 +305,7 @@ public class BX6100Commander extends AbstractCAENCommander {
     @Override
     public boolean startSearching() {
         mUhfRManager.setGen2session(false);
-        if(this.epcBytes!=null) {
+        if (this.epcBytes != null) {
             return mUhfRManager.setInventoryFilter(this.epcBytes, 1, 2, true);
         } else {
             return false;
@@ -334,7 +316,7 @@ public class BX6100Commander extends AbstractCAENCommander {
     public List<RFIDTag> search() {
         List<Reader.TAGINFO> inventory = mUhfRManager.tagEpcTidInventoryByTimer((short) 100);
         Stream<Reader.TAGINFO> filteredStream = inventory.stream().filter(k -> Tools.Bytes2HexString(k.EpcId, k.Epclen).indexOf(tagToSearch.substring(tagToSearch.length() - 6)) > -1);
-        return filteredStream.map(x->new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
+        return filteredStream.map(x -> new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
     }
 
     @Override
