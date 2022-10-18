@@ -47,6 +47,6 @@ public interface FishingRequestDAO {
     @Query("DELETE from fishing_request")
     void deleteAll();
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(FishingRequest fishingRequest);
 }

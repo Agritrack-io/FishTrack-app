@@ -4,9 +4,7 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fish.state.GlobalState.recTransport;
-import static io.agritrack.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
@@ -25,21 +23,19 @@ import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.tx.FishingTxDTO;
+import io.agritrack.data.dto.common.MediaDTO;
 import io.agritrack.data.dto.tx.TransportTxDTO;
-import io.agritrack.data.model.tx.CorrelationTransaction;
-import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
@@ -209,6 +205,19 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
             TransportTransaction tx = GlobalState.commitTransport(db);
 
             if (IsOnline) {
+                // send signature
+                Call<MediaDTO> syncDriverSigAsyncCall = updService.syncTransportTxDriverSignature(MediaDTO.convert(tx), "Bearer " + token);
+                syncDriverSigAsyncCall.enqueue(new Callback<MediaDTO>() {
+                    @Override
+                    public void onResponse(Call<MediaDTO> call, Response<MediaDTO> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<MediaDTO> call, Throwable t) {
+
+                    }
+                });
                 // sync fish species
                 Call<TransportTxDTO> syncTxAsyncCall = updService.syncTransportTx(TransportTxDTO.convert(tx), "Bearer " + token);
                 syncTxAsyncCall.enqueue(new SyncTxCallBack());
@@ -228,14 +237,16 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
         }
     }
 
-    private boolean deleteTransportTx(){
+    private void deleteTransportTx(){
         try {
-            int count = db.transportTransactionDAO().deleteAllByHash(recTransport.hashCode);
-            System.out.println("About to delete transport tx" + count);
-            return true;
+            List<TransportTransaction> transportTxs = db.transportTransactionDAO().getAllByHash(recTransport.hashCode);
+            for (TransportTransaction tx : transportTxs){
+                db.transportTransactionDAO().delete(tx);
+            }
+            /*int count = db.transportTransactionDAO().deleteAllByHash(recTransport.hashCode);
+            System.out.println("About to delete transport tx" + count);*/
         } catch (Exception x){
             x.printStackTrace();
-            return false;
         }
     }
 

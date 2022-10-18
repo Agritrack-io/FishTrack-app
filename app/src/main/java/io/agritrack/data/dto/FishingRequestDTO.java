@@ -5,6 +5,7 @@ import io.agritrack.data.model.FishingRequest;
 
 public class FishingRequestDTO {
     public String request_id;
+    public String lot;
     public String harvest_date;
     public String farm_arrival;
     public String plant;
@@ -25,6 +26,7 @@ public class FishingRequestDTO {
         FishingRequest fishingRequest = new FishingRequest();
 
         fishingRequest.requestId = fishingRequestDTO.request_id;
+        fishingRequest.lot = fishingRequestDTO.lot;
         fishingRequest.harvestDate = fishingRequestDTO.harvest_date;
         if (fishingRequestDTO.farm_arrival!=null) {
             fishingRequest.farmArrival = fishingRequestDTO.farm_arrival.replace("T"," ");

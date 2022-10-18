@@ -11,7 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.util.Strings;
+
 import java.util.List;
+import java.util.Optional;
 
 import io.agritrack.R;
 
@@ -91,10 +94,12 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
             if (!isEPC) {
                 holder.tvItemName.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
             }
+
             holder.tvItemName.setText(tag);
             holder.tvItemSNo.setText(position + 1 + ".");
         }
     }
+
 
     @Override
     public int getItemCount() {

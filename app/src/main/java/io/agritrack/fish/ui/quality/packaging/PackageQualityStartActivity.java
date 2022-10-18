@@ -194,18 +194,18 @@ public class PackageQualityStartActivity extends AppCompatActivity {
     private void initControlsFromState() {
         QualityRecord qualityRecord = GlobalState.recQuality;
 
-        if (qualityRecord.qualityBins != null) {
+        /*if (qualityRecord.qualityBins != null) {
             adapterBins.setValues(new LinkedList<String>(qualityRecord.qualityBins));
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             TextView tvBinsCount = findViewById(R.id.tvBinsCount);
             tvBinsCount.setText(String.valueOf(qualityRecord.qualityBins.size()));
-        }
+        }*/
     }
 
     private void updateState() {
 
-        GlobalState.recQuality.qualityBins = new LinkedList<>(adapterBins.getValues());
+        //GlobalState.recQuality.qualityBins = new LinkedList<>(adapterBins.getValues());
         GlobalState.recQuality.retrievedAt = System.currentTimeMillis();
         GlobalState.recQuality.logger_rfid = loggerEPC;
     }

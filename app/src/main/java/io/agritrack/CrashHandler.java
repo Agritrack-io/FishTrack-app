@@ -1,8 +1,13 @@
 package io.agritrack;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
+import android.os.Process;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,6 +16,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+import io.agritrack.fish.ui.FishHomeActivity;
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private static final String TAG = CrashHandler.class.getSimpleName();
@@ -61,8 +68,34 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         // in case log file was not created, redirect to system default handler
         if (mDefaultHandler != null) {
             //Let the default exception handler of the system handle if the user does not handle it
-            mDefaultHandler.uncaughtException(thread, ex);
+            //mDefaultHandler.uncaughtException(thread, ex);
+            restartApplication();
         }
+    }
+
+    private void restartApplication(){
+        Intent intent = new Intent(this.mContext, FishHomeActivity.class);
+
+        intent.putExtra("crash",true);
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        @SuppressLint("WrongConstant") PendingIntent pendingIntent = PendingIntent.getActivity(
+                this.mContext, 0, intent, intent.getFlags());
+
+        //Following code will restart your application after 0.5 seconds
+        AlarmManager mgr = (AlarmManager) this.mContext.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 500, pendingIntent);
+
+        /*//This will finish your activity manually
+        activity.finish();*/
+
+        Process.killProcess(Process.myPid());
+
+        //This will stop your application and take out from it.
+        System.exit(2);
     }
 
     /**

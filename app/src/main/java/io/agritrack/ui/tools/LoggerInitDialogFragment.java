@@ -35,10 +35,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 import com.uhf.api.cls.Reader;
 
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,6 +49,7 @@ import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.ui.IInformedActivity;
 
 public class LoggerInitDialogFragment extends DialogFragment implements TimeAnimator.TimeListener {
 
@@ -54,6 +57,8 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
 
     private static final String SHOW_READ_BUTTON = "ShowReadButton", SHOW_INIT_BUTTON = "ShowInitButton", SHOW_RESET_BUTTON = "ShowResetButton";
     private boolean showReadButton = false, showInitButton = false, showResetButton = false;
+
+    private IInformedActivity informedActivity = null;
 
     private static final int RST_BIT = 4, RFU_BIT = 3, LE_BIT = 2, DE_BIT = 1, RFSL_BIT = 0;
     private static final int LEVEL_INCREMENT = 1000, MAX_LEVEL = 10000;
@@ -349,7 +354,7 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                     measurements = cmd.ReadSamples(cntSamples);
                 }
 
-                if (measurements != null) {
+                if (!CollectionUtils.isEmpty(measurements)) {
                     long now = System.currentTimeMillis();
                     recLoggerData.addDataSet(loggerEPC, assetEPC, productionLane, now, measurements);
 
@@ -463,6 +468,10 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
         frag.setArguments(args);
 
         return frag;
+    }
+
+    public void setInformedActivity(IInformedActivity informedActivity){
+        this.informedActivity = informedActivity;
     }
 
     @Override
@@ -691,6 +700,9 @@ public class LoggerInitDialogFragment extends DialogFragment implements TimeAnim
                                 btnInit.setOnClickListener(initBtnListener);
                                 btnInit.callOnClick();
                             } else {
+                                if (informedActivity!=null){
+                                    informedActivity.inform();
+                                }
                                 // close popup
                                 getDialog().dismiss();
                             }

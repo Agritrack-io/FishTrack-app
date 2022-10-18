@@ -12,7 +12,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/select_reason_out_of_system"
         android:textAllCaps="true"
         android:textColor="@color/agri_blue"
         android:textSize="22sp"
@@ -25,7 +24,7 @@
     <ListView
         android:id="@+id/lvReasons"
         android:layout_width="0dp"
-        android:layout_height="400dp"
+        android:layout_height="300dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"

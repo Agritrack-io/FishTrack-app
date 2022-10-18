@@ -17,6 +17,7 @@ public class ProcessingTxDTO {
     public String harvest_load;
     public String site;
     public String user;
+    public Long occurred_at;
     public Double longitude;
     public Double latitude;
 
@@ -32,6 +33,7 @@ public class ProcessingTxDTO {
         processingTxDto.harvest_load = processing.harvestLoad;
         processingTxDto.bins_received = processing.receivedBins;
         processingTxDto.user = processing.user;
+        processingTxDto.occurred_at = processing.createdAt;
         processingTxDto.longitude = processing.longitude;
         processingTxDto.latitude = processing.latitude;
 

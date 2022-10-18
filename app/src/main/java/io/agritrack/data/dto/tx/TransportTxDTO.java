@@ -20,6 +20,7 @@ public class TransportTxDTO {
     public List<String> bins_loaded = new LinkedList<String>();
     public String site;
     public String user;
+    public Long occurred_at;
     public Double longitude;
     public Double latitude;
     public List<TotesTxDTO> items;
@@ -35,10 +36,11 @@ public class TransportTxDTO {
         transportTxDto.security_clip_number = transport.securityClipNo;
         transportTxDto.driver_name = transport.driverName;
         transportTxDto.driver_phone = transport.driverPhone;
-        transportTxDto.driver_signature = transport.driverSignature;
+        //transportTxDto.driver_signature = transport.driverSignature;
         transportTxDto.bins_loaded = transport.loadedBins;
         transportTxDto.user = transport.user;
         transportTxDto.site = transport.siteCode;
+        transportTxDto.occurred_at = transport.createdAt;
         transportTxDto.longitude = transport.longitude;
         transportTxDto.latitude = transport.latitude;
 

@@ -108,7 +108,9 @@ public class ProgramEveryLinenTagsActivity extends AppCompatActivity {
 
         confirmWriteEpcDlg = YesNoDialogFragment.instance();
         confirmWriteEpcDlg.onConfirm(bundle -> {
-            confirmWriteEpc();
+            btnWriteEPC.setEnabled(true);
+            btnWriteEPC.setTextColor(Color.GREEN);
+            //confirmWriteEpc();
         });
         confirmWriteEpcDlg.onReject(bundle -> {
 

@@ -56,6 +56,10 @@ public class ReceiptQualityTemperatureProfilesActivity extends AppCompatActivity
 
         tempProfileAdapter.notifyDataSetChanged();
 
+        for(int i=0; i<=1; i++){
+            CToast(getApplicationContext(), render(R.string.press_card_to_see_temps), Toast.LENGTH_LONG);
+        }
+
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
@@ -112,6 +116,7 @@ public class ReceiptQualityTemperatureProfilesActivity extends AppCompatActivity
         if (recLoggerData.data != null && recLoggerData.data.size() > 0) {
             DoubleSummaryStatistics stats = recLoggerData.data.values().stream()
                                                 .flatMap(x -> x.values.stream())
+                                                .filter(y -> !"N/A".equalsIgnoreCase(y[1]))
                                                 .mapToDouble(x -> Double.valueOf(x[1].replace(',', '.')))
                                                 .summaryStatistics();
 

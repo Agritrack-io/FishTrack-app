@@ -90,14 +90,19 @@ public class ReceiptQualityMoreInfoActivity extends AppCompatActivity implements
         tgIceCondition.setOnCheckedChangeListener(this);
         etRigorMortis = findViewById(R.id.etRigorMortis);
         etRigorMortis.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etRigorMortis.setText("0");
         etEliminationFood = findViewById(R.id.etEliminationFood);
         etEliminationFood.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etEliminationFood.setText("0");
         etEliminationSperm = findViewById(R.id.etEliminationSperm);
         etEliminationSperm.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etEliminationSperm.setText("0");
         etParasites = findViewById(R.id.etParasites);
         etParasites.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etParasites.setText("0");
         etPeeling = findViewById(R.id.etPeeling);
         etPeeling.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etPeeling.setText("0");
         ivSupport = findViewById(R.id.ivSupport);
     }
 

@@ -41,7 +41,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-import io.agritrack.DefaultExceptionHandler;
 import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
@@ -149,6 +148,8 @@ public class FishingBinsActivity extends AppCompatActivity {
                         adapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         adapterBins.clearSelectedValue();
+                        recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+                        GlobalState.commitFishing(db, Boolean.FALSE);
                     }
 
                 });
@@ -171,8 +172,6 @@ public class FishingBinsActivity extends AppCompatActivity {
         });
 
         ivCheckLastTemp.setOnClickListener(view -> {
-            String timek = null;
-            timek.substring(10);
             updateState();
             this.stopScanner();
             Intent i = new Intent(getApplicationContext(), TestBinTempActivity.class);
@@ -200,8 +199,6 @@ public class FishingBinsActivity extends AppCompatActivity {
             tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);
             tempLoggerDialog.showDialog();
         });
-
-        Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
 
         // create Footer
         configFooter();

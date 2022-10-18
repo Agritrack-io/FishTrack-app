@@ -6,6 +6,7 @@ import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import io.agritrack.common.FishTrackUtils;
 import io.agritrack.data.db.MobileDB;
@@ -15,6 +16,7 @@ import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.fish.ui.bo.BinWeightRecord;
+import io.agritrack.ui.adapter.BinWeightCageAdapter;
 
 public class QualityRecord {
 
@@ -22,7 +24,9 @@ public class QualityRecord {
     public long txKey;
     public String pLot;
     public String remarks;
-    public List<String> qualityBins;
+    public List<BinWeightCageAdapter.BinDetails> qualityBins;
+    public List<String> expectedBins;
+    public List<String> scannedBins;
     public Integer qualityBinsCnt;
     public String binCondition;
     public String iceCondition;
@@ -78,7 +82,9 @@ public class QualityRecord {
         qualityRecord.txKey = tx.id;
         qualityRecord.pLot = tx.plot;
         qualityRecord.remarks = tx.remarks;
-        qualityRecord.qualityBins = tx.qualityBins;
+        qualityRecord.qualityBins = convertEPCsToBinDetails(tx.qualityBins);
+        qualityRecord.expectedBins = tx.expectedBins;
+        qualityRecord.scannedBins = tx.scannedBins;
         qualityRecord.qualityBinsCnt = tx.qualityBinsCnt;
         qualityRecord.binCondition = tx.binCondition;
         qualityRecord.iceCondition = tx.iceCondition;
@@ -115,5 +121,13 @@ public class QualityRecord {
         qualityRecord.maxBinTemp = tx.maxBinTemp;
 
         return qualityRecord;
+    }
+
+    private static List<BinWeightCageAdapter.BinDetails> convertEPCsToBinDetails(List<String> epcs) {
+        List<BinWeightCageAdapter.BinDetails> result = new ArrayList<>();
+        for (String epc : epcs) {
+            result.add(new BinWeightCageAdapter.BinDetails(epc));
+        }
+        return result;
     }
 }

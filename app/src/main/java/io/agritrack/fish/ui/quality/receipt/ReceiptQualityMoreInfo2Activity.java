@@ -92,18 +92,25 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
         tgSmellCondition.setOnCheckedChangeListener(this);
         etShiny = findViewById(R.id.etShiny);
         etShiny.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etShiny.setText("0");
         etBlurred = findViewById(R.id.etBlurred);
         etBlurred.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etBlurred.setText("0");
         etHealed = findViewById(R.id.etHealed);
         etHealed.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etHealed.setText("0");
         etBlind = findViewById(R.id.etBlind);
         etBlind.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etBlind.setText("0");
         etCoherent = findViewById(R.id.etCoherent);
         etCoherent.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etCoherent.setText("0");
         etSoft = findViewById(R.id.etSoft);
         etSoft.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etSoft.setText("0");
         etSwollen = findViewById(R.id.etSwollen);
         etSwollen.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+        etSwollen.setText("0");
         ivSupport = findViewById(R.id.ivSupport);
     }
 

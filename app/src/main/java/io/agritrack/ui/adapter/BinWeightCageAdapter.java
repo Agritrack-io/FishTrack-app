@@ -50,7 +50,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
     }
 
     public void addExpectedItem(BinDetails val) {
-        val.flag = 1;
+        val.flag = val.isSorted ? 0 : 1;
         if (this.mList.stream().noneMatch(x -> x.epc.equals(val.epc))) {
             this.mList.add(val);
         }
@@ -103,6 +103,9 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        if (mList.size()<=position){
+            return;
+        }
         BinDetails currBin = mList.get(position);
         String tag = currBin.epc.length() > 10 ? currBin.epc.substring(currBin.epc.length() - 10) : currBin.epc;
         holder.tvItemName.setText(tag);
@@ -143,6 +146,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
         public Double weight;
         public String cage;
         public int flag = 0; //0: Received, 1: Expected, 2: Not exists
+        public boolean isSorted = false;
 
         public BinDetails() {
         }
@@ -159,6 +163,13 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
             this.epc = epc;
             this.weight = binWeight;
             this.cage = cageCode;
+        }
+
+        public BinDetails(String epc, Double binWeight, String cageCode, boolean sorted) {
+            this.epc = epc;
+            this.weight = binWeight;
+            this.cage = cageCode;
+            this.isSorted = sorted;
         }
     }
 

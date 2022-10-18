@@ -19,8 +19,8 @@ public class ProcessingTransaction {
     @PrimaryKey
     public Long id;
 
-    @ColumnInfo(name = "timestamp")
-    public Long timestamp;
+    @ColumnInfo(name = "created_at")
+    public Long createdAt;
 
     @ColumnInfo(name = "clean_truck")
     public String cleanTruck;

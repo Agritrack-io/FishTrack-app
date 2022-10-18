@@ -41,6 +41,7 @@ public class FishingRecord {
     public boolean outOfSystemFishing = false;
     public String reasonOutOfSystemFishing;
     public Short parentItinSno;
+    public String reasonOfDeviation;
 
     public FishingRecord() {
     }
@@ -50,6 +51,7 @@ public class FishingRecord {
 
         fishingRecord.txKey = tx.id;
         fishingRecord.outOfSystemFishing = tx.outOfSystemFishing;
+        fishingRecord.reasonOfDeviation = tx.reasonOfDeviation;
         fishingRecord.fishingRq = tx.fishingRq;
         fishingRecord.requesterName = tx.requester;
         fishingRecord.reqWeight = tx.orderedQuantity != null ? Double.valueOf(tx.orderedQuantity.toString()) : null;

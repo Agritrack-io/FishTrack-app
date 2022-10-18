@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.android.gms.common.util.Strings;
+
 @Entity(tableName = "temperature_data")
 public class TemperatureData {
 
@@ -26,6 +28,12 @@ public class TemperatureData {
         this.measurementId = mId;
         this.timestamp = ts;
         this.value = val;
+    }
+
+    public TemperatureData(Long mId, String ts, String val) {
+        this.measurementId = mId;
+        this.timestamp = ts;
+        this.value = !Strings.isEmptyOrWhitespace(val) && !"N/A".equalsIgnoreCase(val) ? Double.valueOf(val.replace(',', '.')) : Double.NaN;
     }
 
     public String[] rawData(){

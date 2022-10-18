@@ -1,11 +1,15 @@
 package io.agritrack.fish.state;
 
+import static io.agritrack.data.converter.DateConverter.toDate;
 import static io.agritrack.enums.AssetType.ALL;
+
+import android.util.Base64;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -178,7 +182,6 @@ public class GlobalState {
             txFishing.harvestBinsCnt = recFishing.totalBinsUsed;
             txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight).intValue() : null;
             txFishing.totalQty = recFishing.totalFishWeight;
-            txFishing.timestamp = System.currentTimeMillis();
             if(finalCommit){    //filter empty bins on final commit
                 if(recFishing.binWeightRecord.getBinsData() != null){
                     txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData()
@@ -186,10 +189,12 @@ public class GlobalState {
                             .filter(x -> x.weight != null && x.weight > 0)
                             .collect(Collectors.toList());
                 }
+                txFishing.createdAt = System.currentTimeMillis();
             }
             else{
                 txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData();
             }
+            txFishing.reasonOfDeviation = recFishing.reasonOfDeviation;
             txFishing.team = recFishing.fishingTeam;
             txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
             txFishing.user = LocalPreferences.getLoggedInUser("N/A");
@@ -215,17 +220,18 @@ public class GlobalState {
             txTransport.driverPhone = recTransport.driverPhone;
             txTransport.truckLicensePlate = recTransport.licensePlate;
             txTransport.securityClipNo = recTransport.clipNumber;
-            txTransport.driverSignature = new String(recTransport.signatureBytes, StandardCharsets.UTF_8);
+            txTransport.driverSignature = Base64.encodeToString(recTransport.signatureBytes, Base64.NO_WRAP);
             txTransport.isTruckRefrigerated = recTransport.refrigeratedTruck;
             txTransport.isParallelTransport = recTransport.parallelTransport;
             txTransport.transportHead = "N/A";
-            txTransport.timestamp = System.currentTimeMillis();
+            txTransport.createdAt = System.currentTimeMillis();
             txTransport.loadedBins = recTransport.availBins;
             txTransport.user = LocalPreferences.getLoggedInUser("N/A");
             txTransport.siteCode = LocalPreferences.getCurrentSiteName();
             txTransport.longitude = recTransport.longitude;
             txTransport.latitude = recTransport.latitude;
             txTransport.calcHash();
+            recTransport.hashCode = txTransport.hashCode;
 
             // search DB for records having the same hashCode
             int cnt = db.transportTransactionDAO().countByHash(txTransport.hashCode);
@@ -234,7 +240,6 @@ public class GlobalState {
             if (cnt < 1) {
                 recTransport.txKey = db.transportTransactionDAO().insert(txTransport);
             } else {
-                recTransport.hashCode = txTransport.hashCode;
                 return db.transportTransactionDAO().getByHash(txTransport.hashCode);
             }
 
@@ -256,7 +261,7 @@ public class GlobalState {
             txProcess.cleanTruck = Boolean.toString(recProcessing.cleanTruck);
             txProcess.smells = Boolean.toString(recProcessing.smellyTruck);
             txProcess.site = recProcessing.packagingSite;
-            txProcess.timestamp = System.currentTimeMillis();
+            txProcess.createdAt = System.currentTimeMillis();
             //txProcess.remarks = recProcessing.remarks;
             txProcess.receivedBins = recProcessing.availBins.stream().map(x -> x.epc).collect(Collectors.toList());
             txProcess.securityClipNumber = recProcessing.securityClip;
@@ -325,13 +330,19 @@ public class GlobalState {
             txQuality.overallEvaluation = recQuality.evaluation;
             txQuality.selectedRgId = recQuality.selectedRgId;
             txQuality.remarks = recQuality.remarks;
-            txQuality.qualityBins = recQuality.qualityBins;
+            if (recQuality.qualityBins!=null) {
+                txQuality.qualityBins = recQuality.qualityBins.stream().map(x -> x.epc).collect(Collectors.toList());
+            }
+            txQuality.expectedBins = recQuality.expectedBins;
+            txQuality.scannedBins = recQuality.scannedBins;
             txQuality.qualityBinsCnt = recQuality.qualityBinsCnt;
             txQuality.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
             txQuality.user = LocalPreferences.getLoggedInUser("N/A");
             txQuality.site = LocalPreferences.getCurrentSiteName();
             txQuality.sampleDate = new Date(System.currentTimeMillis());
-            txQuality.timestamp = System.currentTimeMillis();
+            if (finalCommit) {
+                txQuality.createdAt = System.currentTimeMillis();
+            }
             txQuality.longitude = recQuality.longitude;
             txQuality.latitude = recQuality.latitude;
 
@@ -424,7 +435,7 @@ public class GlobalState {
 
             long measurementId = db.measurementsDAO().insert(measurement);
             if (measurementId > 0 && model.values != null && !model.values.isEmpty()) {
-                List<TemperatureData> data = model.values.stream().map(x -> new TemperatureData(measurementId, x[0], Double.valueOf(x[1].replace(',', '.')))).collect(Collectors.toList());
+                List<TemperatureData> data = model.values.stream().map(x -> new TemperatureData(measurementId, x[0], x[1])).collect(Collectors.toList());
                 db.temperatureDataDAO().insert(data.toArray(new TemperatureData[data.size()]));
             }
 

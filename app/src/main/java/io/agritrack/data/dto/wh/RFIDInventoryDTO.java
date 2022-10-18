@@ -6,7 +6,6 @@ import java.util.Map;
 import io.agritrack.data.model.wh.RFIDInventory;
 
 public class RFIDInventoryDTO {
-    public Long id;
     public String inventory_type;
     public String site;
     public String user;
@@ -19,7 +18,6 @@ public class RFIDInventoryDTO {
 
     public static RFIDInventoryDTO convert(RFIDInventory inventory) {
         RFIDInventoryDTO inventoryDTO = new RFIDInventoryDTO();
-        inventoryDTO.id = inventory.id;
         inventoryDTO.inventory_type = inventory.rfidInvType;
         inventoryDTO.site = inventory.site;
         inventoryDTO.user = inventory.user;
