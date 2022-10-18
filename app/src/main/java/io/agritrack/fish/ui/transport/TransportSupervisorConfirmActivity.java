@@ -28,6 +28,7 @@ import java.util.List;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.common.MediaDTO;
 import io.agritrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.dialog.SupportDialog;
@@ -204,6 +205,19 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
             TransportTransaction tx = GlobalState.commitTransport(db);
 
             if (IsOnline) {
+                // send signature
+                Call<MediaDTO> syncDriverSigAsyncCall = updService.syncTransportTxDriverSignature(MediaDTO.convert(tx), "Bearer " + token);
+                syncDriverSigAsyncCall.enqueue(new Callback<MediaDTO>() {
+                    @Override
+                    public void onResponse(Call<MediaDTO> call, Response<MediaDTO> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<MediaDTO> call, Throwable t) {
+
+                    }
+                });
                 // sync fish species
                 Call<TransportTxDTO> syncTxAsyncCall = updService.syncTransportTx(TransportTxDTO.convert(tx), "Bearer " + token);
                 syncTxAsyncCall.enqueue(new SyncTxCallBack());

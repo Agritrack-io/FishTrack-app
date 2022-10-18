@@ -73,6 +73,7 @@ import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.CustomerDTO;
 import io.agritrack.data.dto.common.EmployeeDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
+import io.agritrack.data.dto.common.MediaDTO;
 import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.common.SupplierDTO;
 import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
@@ -110,6 +111,7 @@ import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
 import io.agritrack.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.fish.ui.transport.TransportBinsActivity;
 import io.agritrack.fish.ui.transport.TransportInfoActivity;
+import io.agritrack.fish.ui.transport.TransportSupervisorConfirmActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
@@ -339,6 +341,20 @@ public class FishHomeActivity extends AppCompatActivity {
             List<TransportTransaction> transportTXs = db.transportTransactionDAO().getAll();
             if (!transportTXs.isEmpty()) {
                 for (TransportTransaction transportTX : transportTXs) {
+                    // driver signature
+                    Call<MediaDTO> syncDriverSigAsyncCall = pendingTxSvc.syncTransportTxDriverSignature(MediaDTO.convert(transportTX), "Bearer " + token);
+                    syncDriverSigAsyncCall.enqueue(new Callback<MediaDTO>() {
+                        @Override
+                        public void onResponse(Call<MediaDTO> call, Response<MediaDTO> response) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<MediaDTO> call, Throwable t) {
+
+                        }
+                    });
+                    // transport
                     Call<TransportTxDTO> transportTxAsyncCall = pendingTxSvc.syncTransportTx(TransportTxDTO.convert(transportTX), "Bearer " + token);
                     transportTxAsyncCall.enqueue(new PendingTransportTxCallBack(this.syncResult));
                 }

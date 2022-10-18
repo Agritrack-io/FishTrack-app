@@ -3,6 +3,8 @@ package io.agritrack.fish.state;
 import static io.agritrack.data.converter.DateConverter.toDate;
 import static io.agritrack.enums.AssetType.ALL;
 
+import android.util.Base64;
+
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -218,7 +220,7 @@ public class GlobalState {
             txTransport.driverPhone = recTransport.driverPhone;
             txTransport.truckLicensePlate = recTransport.licensePlate;
             txTransport.securityClipNo = recTransport.clipNumber;
-            txTransport.driverSignature = new String(recTransport.signatureBytes, StandardCharsets.UTF_8);
+            txTransport.driverSignature = Base64.encodeToString(recTransport.signatureBytes, Base64.NO_WRAP);
             txTransport.isTruckRefrigerated = recTransport.refrigeratedTruck;
             txTransport.isParallelTransport = recTransport.parallelTransport;
             txTransport.transportHead = "N/A";
