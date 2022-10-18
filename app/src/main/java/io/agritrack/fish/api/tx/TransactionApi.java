@@ -5,6 +5,7 @@ import java.util.Map;
 
 import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
+import io.agritrack.data.dto.common.MediaDTO;
 import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.dto.tx.CollectTxDTO;
@@ -41,6 +42,10 @@ public interface TransactionApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/transport")
     Call<TransportTxDTO> syncTransportTx(@Body TransportTxDTO transportTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/transport/signature")
+    Call<MediaDTO> syncTransportTxDriverSignature(@Body MediaDTO transportTxDriverSig, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/shipping")

@@ -19,7 +19,7 @@ public interface UploadingApi {
     @Multipart
     Call<ResponseBody> uploadHotelInventory(@Part MultipartBody.Part file, @Header("Authorization") String token);
 
-    @POST("quality/photos")
+    @POST("quality/pp1/photo")
     @Multipart
     Call<ResponseBody> uploadPhoto(@Part MultipartBody.Part file, @Header("Authorization") String token);
 

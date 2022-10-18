@@ -36,7 +36,7 @@ public class TransportTxDTO {
         transportTxDto.security_clip_number = transport.securityClipNo;
         transportTxDto.driver_name = transport.driverName;
         transportTxDto.driver_phone = transport.driverPhone;
-        transportTxDto.driver_signature = transport.driverSignature;
+        //transportTxDto.driver_signature = transport.driverSignature;
         transportTxDto.bins_loaded = transport.loadedBins;
         transportTxDto.user = transport.user;
         transportTxDto.site = transport.siteCode;
