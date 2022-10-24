@@ -404,7 +404,6 @@ public class ShippingStartActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(barcodeReceiver);
         super.onStop();
     }
 

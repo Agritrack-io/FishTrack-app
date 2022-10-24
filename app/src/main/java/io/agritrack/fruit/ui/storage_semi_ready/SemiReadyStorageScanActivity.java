@@ -208,7 +208,6 @@ public class SemiReadyStorageScanActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onDestroy();
     }
 

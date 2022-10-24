@@ -173,9 +173,6 @@ public class TestBinTempActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         this.stopScanner();
-        //unregister the receiver
-        /*if(keyReceiver != null)
-            unregisterReceiver(keyReceiver);*/
     }
 
     protected void configFooter() {
