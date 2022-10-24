@@ -263,7 +263,9 @@ public class HotelSearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapterAssets.getFilter().filter(newText);
+                if(adapterAssets != null && adapterAssets.getFilter() != null) {
+                    adapterAssets.getFilter().filter(newText);
+                }
                 return false;
             }
         });

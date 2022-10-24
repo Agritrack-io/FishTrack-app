@@ -47,8 +47,8 @@ public class Asset {
     @ColumnInfo(name = "cage_rfid")
     public String cageRFId;
 
-    @ColumnInfo(name = "type")
-    public String type;
+    // @ColumnInfo(name = "type")
+    // public String type;
 
     @ColumnInfo(name = "shape")
     public String shape;
