@@ -102,7 +102,6 @@ public class SemiReadyStorageWeightActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onDestroy();
     }
 

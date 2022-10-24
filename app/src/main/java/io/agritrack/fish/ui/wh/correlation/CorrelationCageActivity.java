@@ -184,8 +184,6 @@ public class CorrelationCageActivity extends LocationAwareActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopScanner();
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
     }
 
     protected void configFooter() {

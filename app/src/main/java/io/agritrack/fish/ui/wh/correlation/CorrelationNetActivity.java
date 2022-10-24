@@ -179,8 +179,6 @@ public class CorrelationNetActivity extends LocationAwareActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopScanner();
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
     }
 
     protected void configFooter() {

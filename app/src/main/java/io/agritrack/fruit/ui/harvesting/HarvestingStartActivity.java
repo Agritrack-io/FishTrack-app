@@ -170,7 +170,6 @@ public class HarvestingStartActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onDestroy();
     }
 
