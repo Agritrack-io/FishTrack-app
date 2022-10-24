@@ -224,7 +224,7 @@ public class HotelHomeActivity extends AppCompatActivity {
             List<AssetTransaction> assetTXs = db.assetTransactionDAO().getAll();
             if(!assetTXs.isEmpty()) {
                 for (AssetTransaction assetTX : assetTXs) {
-                    Call<AssetTxDTO> assetTxAsyncCall = pendingTxSvc.syncRFIDIOTx(AssetTxDTO.convert(assetTX), "Bearer " + token);
+                    Call<AssetTxDTO> assetTxAsyncCall = pendingTxSvc.syncHotelRFIDIOTx(AssetTxDTO.convert(assetTX), "Bearer " + token);
                     assetTxAsyncCall.enqueue(new PendingAssetTxCallBack(this.syncResult));
                 }
             }

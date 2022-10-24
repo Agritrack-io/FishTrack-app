@@ -69,6 +69,9 @@ public class TransportTransaction {
     @ColumnInfo(name = "latitude")
     public Double latitude;
 
+    @ColumnInfo(name = "capacity")
+    public Integer capacity;
+
     @ColumnInfo(name = "hash_code")
     public Integer hashCode;
 

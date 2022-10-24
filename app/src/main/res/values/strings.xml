@@ -603,7 +603,7 @@
     <string name="proceed_change_status">Are you sure to change status to \'%1$s\' for these %2$d items?</string>
     <string name="proceed_insert_new_rfid">You are about to insert %1$d new items to live inventory. Are you sure?</string>
     <string name="scan_search">Scan and search</string>
-    <string name="program_tags">Program tags</string>
+    <string name="unprogrammed_tags">Unprogrammed tags</string>
     <string name="scan_non_programmed_assets">Not programmed</string>
     <string name="search_linen">Detect</string>
     <string name="select_code">Product info</string>
@@ -674,4 +674,11 @@
     <string name="confirm_with_pin">"Please type your PIN to confirm!"</string>
     <string name="already_scannned_bin_first_sync_temps">You have already retrieved temperatures from bin \%1$s\! Please first click on check button!</string>
     <string name="select_reason">Please select a reason!</string>
+    <string name="not_same_cnt"># different codes</string>
+    <string name="title_program_menu">PROGRAM LINEN</string>
+    <string name="false_tags">False tags</string>
+    <string name="scan_false_assets">Scan false</string>
+    <string name="not_encoded_tags">" not encoded items have been detected"</string>
+    <string name="capacity">Bins capacity:</string>
+    <string name="truck_capacity">Bin capacity</string>
 </resources>

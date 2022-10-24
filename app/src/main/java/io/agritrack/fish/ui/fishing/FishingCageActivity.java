@@ -36,6 +36,7 @@ import io.agritrack.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.CageDetails;
+import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -53,7 +54,7 @@ public class FishingCageActivity extends AppCompatActivity {
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button scanPlatformButton, scanCageButton;
-    private TextView tvPlatformRFID, tvCageRFID;
+    private TextView tvPlatformRFID, tvCageRFID, tvCapacityCount;
     private YesNoDialogFragment confirmCageSelectionDlg;
     private String cageCode = "", scannedCage;
 
@@ -164,6 +165,7 @@ public class FishingCageActivity extends AppCompatActivity {
         scanCageButton = findViewById(R.id.btnScanCage);
         tvCageRFID = findViewById(R.id.tvCageName);
         tvPlatformRFID = findViewById(R.id.tvPlatformName);
+        tvCapacityCount = findViewById(R.id.tvCapacityCount);
         ivSupport = findViewById(R.id.ivSupport);
         ivInfo = findViewById(R.id.ivInfo);
     }
@@ -342,6 +344,8 @@ public class FishingCageActivity extends AppCompatActivity {
                                 String tag = epc.substring(11);
                                 String label = tag.substring(3);
                                 if (tag.startsWith(Filters.RFID_PLATFORM)) {
+                                    Asset platform = db.assetDAO().getAssetByEpc(epc);
+                                    tvCapacityCount.setText(platform.capacity);
                                     tvPlatformRFID.setText(label);
                                     recFishing.platformRFID = epc;
                                 } else if (tag.startsWith(Filters.RFID_CAGE)) {

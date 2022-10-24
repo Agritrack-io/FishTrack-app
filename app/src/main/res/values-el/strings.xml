@@ -605,7 +605,7 @@
     <string name="proceed_change_status">Είστε σίγουρος για να αλλάξετε την κατάσταση σε \'%1$s\' για αυτά τα %2$d τεμάχια?</string>
     <string name="scan_search">Διάβασε και εντόπισε</string>
     <string name="proceed_insert_new_rfid">Πρόκειται να εισάγετε %1$d νέα τεμάχια στο απόθεμά σας. Είστε σίγουρος?</string>
-    <string name="program_tags">Προγραμματισμός ετικετών</string>
+    <string name="unprogrammed_tags">Απρογραμμάτιστες ετικέτες</string>
     <string name="scan_non_programmed_assets">Απρογραμμάτιστα</string>
     <string name="search_linen">Εντοπισμός</string>
     <string name="select_code">Στοιχεία προϊόντος</string>
@@ -657,4 +657,11 @@
     <string name="confirm_with_pin">"Πληκτρολογήστε το PIN σας για επιβεβαίωση!"</string>
     <string name="already_scannned_bin_first_sync_temps">Έχετε ήδη ανακτήσει τις θερμοκρασίες από τη βούτα \%1$s\! Παρακαλώ πρώτα πατήστε το κουμπί συγχρονισμού!</string>
     <string name="select_reason">Παρακαλώ επιλέξτε ένα λόγο!</string>
+    <string name="not_same_cnt"># διαφ. κωδικών</string>
+    <string name="title_program_menu">ΠΡΟΓΡΑΜΜΑΤΙΣΜΟΣ ΛΙΝΩΝ</string>
+    <string name="false_tags">Λάθος ετικέτες</string>
+    <string name="scan_false_assets">Βρες τις λάθος</string>
+    <string name="not_encoded_tags">" απρογραμμάτιστες ετικέτες βρέθηκαν"</string>
+    <string name="capacity">Χωρητικότητα βουτών:</string>
+    <string name="truck_capacity">Χωρητικότητα βουτών</string>
 </resources>

@@ -2,6 +2,7 @@ package io.agritrack.fish.ui.transport;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 public class TransportDriverConfirmActivity extends AppCompatActivity {
 
     private TextView tvSitePackaging, tvNumberOfBinsCount, tvDriverName, tvLicensePlate, tvSecurityClipNumber;
+    private EditText etTruckCapacity;
     private CaptureSignatureView signatureView;
 
     private ImageView ivSupport;
@@ -79,6 +81,7 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
         tvDriverName = findViewById(R.id.tvDriverName);
         tvLicensePlate = findViewById(R.id.tvLicensePlate);
         tvSecurityClipNumber = findViewById(R.id.tvSecurityClipNumber);
+        etTruckCapacity = findViewById(R.id.etTruckCapacity);
         signatureView = findViewById(R.id.signatureView);
         ivSupport = findViewById(R.id.ivSupport);
     }
@@ -106,6 +109,10 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
             tvSecurityClipNumber.setText(trns.clipNumber);
         }
 
+        if (Strings.isEmptyOrWhitespace(String.valueOf(trns.capacity))) {
+            etTruckCapacity.setText(trns.capacity);
+        }
+
         /*if (trns.signature!=null) {
             signatureView.ClearCanvas();
         }*/
@@ -117,6 +124,7 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
     private void updateState() {
         GlobalState.recTransport.signature = signatureView.getBitmap();
         GlobalState.recTransport.signatureBytes = signatureView.getBytes();
+        GlobalState.recTransport.capacity = !Strings.isEmptyOrWhitespace(etTruckCapacity.getText().toString()) ? Integer.parseInt(etTruckCapacity.getText().toString()) : 0;
     }
 
     private String validate(){
@@ -125,6 +133,12 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
             if (!signatureView.isSigned()) {
                 sb.append(String.format("\n%s is missing", "'Signature'"));
             }
+
+            if (Strings.isEmptyOrWhitespace(etTruckCapacity.getText().toString())) {
+                etTruckCapacity.setSelected(true);
+                sb.append(String.format("\n%s is missing", "'Bin capacity'"));
+            }
+
         }
 
         return sb.toString();

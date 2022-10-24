@@ -116,6 +116,9 @@ public class Asset {
     @ColumnInfo(name = "logger_epc")
     public String loggerEPC;
 
+    @ColumnInfo(name = "capacity")
+    public Integer capacity;
+
     /*@Embedded
     public SpatialEntity location;*/
 }

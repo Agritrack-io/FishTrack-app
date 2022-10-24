@@ -52,6 +52,7 @@ import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SimpleListDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.hotel.ui.HotelMenuProgramActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
@@ -327,8 +328,8 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setOnClickListener(view -> {
+        ImageView ivBack = findViewById(R.id.ivBackToMenu);
+        ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to next activity
             if (mScanHandler != null) {
                 stopScanner();
@@ -338,7 +339,7 @@ public class ProgramLinenTagsActivity extends AppCompatActivity {
             if (scanner != null) {
                 scanner.stopReading();
             }
-            Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+            Intent i = new Intent(getApplicationContext(), HotelMenuProgramActivity.class);
             startActivity(i);
         });
     }

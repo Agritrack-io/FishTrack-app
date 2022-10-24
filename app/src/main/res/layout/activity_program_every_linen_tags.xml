@@ -45,7 +45,7 @@
             android:layout_marginEnd="8dp"
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
-            android:text="@string/program_tags"
+            android:text="@string/false_tags"
             android:textColor="@color/yellow"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toTopOf="@+id/tvHeaderProgramLinen"
@@ -83,12 +83,12 @@
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
         <RelativeLayout
-            android:id="@+id/editDataALayout"
+            android:id="@+id/scanAndSearchLayout"
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toTopOf="@id/editDataBLayout"
+            app:layout_constraintBottom_toTopOf="@id/editDataALayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -101,14 +101,140 @@
                 android:orientation="vertical"
                 android:padding="15dp">
 
+                <Button
+                    android:id="@+id/btnScan"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_press_effect"
+                    android:text="@string/scan_false_assets"
+                    android:textAlignment="center"
+                    android:textColor="@color/agri_green"
+                    android:textSize="@dimen/text_view_font_size_small"
+                    app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+                    app:layout_constraintEnd_toStartOf="@+id/btnSearch"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnSearch"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_press_effect"
+                    android:text="@string/search_linen"
+                    android:textAlignment="center"
+                    android:textColor="@color/agri_green"
+                    android:textSize="@dimen/text_view_font_size_small"
+                    app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+                    app:layout_constraintEnd_toStartOf="@+id/tvNotSameCnt"
+                    app:layout_constraintStart_toEndOf="@+id/btnScan"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvNotSameCnt"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/btnSearch"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <FrameLayout
+                    android:id="@+id/frameLayout"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnSearch">
+
+                    <ProgressBar
+                        android:id="@+id/pbProximity"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:indeterminateOnly="false"
+                        android:max="100"
+                        android:progressDrawable="@drawable/progress_bar_states" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/tvProximity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginEnd="30dp"
+                            android:gravity="center_horizontal"
+                            android:text="@string/proximity"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_view_font_size" />
+                    </RelativeLayout>
+                </FrameLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_semi_green"
+                android:paddingHorizontal="8dp"
+                android:text="@string/scan_search"
+                android:textColor="@color/label_blue"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/editDataALayout"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toTopOf="@id/editDataBLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scanAndSearchLayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="15dp">
+
                 <TextView
                     android:id="@+id/tvLinenTypeLabel"
-                    android:layout_width="130dp"
-                    android:layout_height="50dp"
+                    android:layout_width="70dp"
+                    android:layout_height="40dp"
                     android:gravity="center|left"
                     android:text="@string/type_linen"
                     android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size"
+                    android:textSize="@dimen/text_view_font_size_medium"
                     app:layout_constraintBottom_toTopOf="@+id/tvProductCodeLabel"
                     app:layout_constraintEnd_toStartOf="@+id/btnLinenType"
                     app:layout_constraintStart_toStartOf="parent"
@@ -117,7 +243,7 @@
                 <Button
                     android:id="@+id/btnLinenType"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/button_press_effect"
@@ -137,7 +263,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/product_code"
                     android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size"
+                    android:textSize="@dimen/text_view_font_size_medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/tvProductCode"
                     app:layout_constraintStart_toStartOf="parent"
@@ -146,7 +272,7 @@
                 <EditText
                     android:id="@+id/tvProductCode"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="28dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/border_bottom"
@@ -158,6 +284,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvProductCodeLabel"
                     app:layout_constraintTop_toBottomOf="@+id/btnLinenType" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -176,7 +303,7 @@
         <RelativeLayout
             android:id="@+id/editDataBLayout"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="130dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toTopOf="@id/inventoryLoggersLayout"
@@ -198,7 +325,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/filter_epc"
                     android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size"
+                    android:textSize="@dimen/text_view_font_size_medium"
                     app:layout_constraintBottom_toTopOf="@+id/etNextEPCLabel"
                     app:layout_constraintEnd_toStartOf="@+id/tvFilterEPC"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -208,13 +335,13 @@
                 <TextView
                     android:id="@+id/tvFilterEPC"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="28dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/border_bottom"
                     android:textAlignment="viewEnd"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_view_font_size"
+                    android:textSize="@dimen/text_view_font_size_small"
                     app:layout_constraintBottom_toTopOf="@+id/etNextEPC"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvFilterEPCLabel"
@@ -226,7 +353,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/next_epc"
                     android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size"
+                    android:textSize="@dimen/text_view_font_size_medium"
                     app:layout_constraintBottom_toTopOf="@+id/tvProgOutcomeLabel"
                     app:layout_constraintEnd_toStartOf="@+id/etNextEPC"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -236,7 +363,7 @@
                 <EditText
                     android:id="@+id/etNextEPC"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="28dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/border_bottom"
@@ -246,7 +373,7 @@
                     android:maxLength="4"
                     android:textAlignment="viewEnd"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_view_font_size"
+                    android:textSize="@dimen/text_view_font_size_small"
                     app:layout_constraintBottom_toTopOf="@+id/ivProgOutcome"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/etNextEPCLabel"
@@ -258,7 +385,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/prog_outcome"
                     android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size"
+                    android:textSize="@dimen/text_view_font_size_medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/tvProgOutcome"
                     app:layout_constraintStart_toStartOf="parent"
@@ -267,11 +394,11 @@
                 <TextView
                     android:id="@+id/tvProgOutcome"
                     android:layout_width="160dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="28dp"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/border_bottom"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_view_font_size"
+                    android:textSize="@dimen/text_view_font_size_small"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/ivProgOutcome"
                     app:layout_constraintStart_toEndOf="@+id/tvProgOutcomeLabel"
@@ -279,8 +406,8 @@
 
                 <ImageView
                     android:id="@+id/ivProgOutcome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:layout_marginEnd="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -297,7 +424,7 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_semi_green"
                 android:paddingHorizontal="8dp"
-                android:text="@string/program_tags"
+                android:text="@string/false_tags"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 
@@ -306,7 +433,7 @@
         <RelativeLayout
             android:id="@+id/inventoryLoggersLayout"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="170dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
@@ -326,10 +453,10 @@
                 <Button
                     android:id="@+id/btnWriteEPC"
                     android:layout_width="150dp"
-                    android:layout_height="60dp"
+                    android:layout_height="40dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="4dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="4dp"
                     android:background="@drawable/button_press_effect"
                     android:text="@string/write_epc"
                     android:textColor="@color/yellow"
@@ -349,7 +476,6 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
                     android:background="@drawable/bg_rounded_input_spinner"
                     android:padding="5dp"
                     android:paddingStart="10dp"
@@ -359,41 +485,6 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                 </androidx.recyclerview.widget.RecyclerView>
-
-                <TextView
-                    android:id="@+id/tvItemsCntLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/inventory_items"
-                    android:textColor="@color/black"
-                    android:textIsSelectable="false"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/tvItemsCnt"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rvEPCsPerType" />
-
-                <TextView
-                    android:id="@+id/tvItemsCnt"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textIsSelectable="false"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/btnWriteEPC"
-                    app:layout_constraintStart_toEndOf="@+id/tvItemsCntLabel"
-                    app:layout_constraintTop_toBottomOf="@+id/rvEPCsPerType" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -421,12 +512,12 @@
             android:scaleY="0.7"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
-            app:layout_constraintStart_toEndOf="@+id/ivBackToLogin"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToMenu"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
         <ImageView
-            android:id="@+id/ivBackToLogin"
+            android:id="@+id/ivBackToMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -434,7 +525,6 @@
             android:padding="1dp"
             android:scaleX="1.5"
             android:scaleY="1.2"
-            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -449,6 +539,7 @@
             android:padding="1dp"
             android:scaleX="1.5"
             android:scaleY="1.2"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

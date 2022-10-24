@@ -24,6 +24,7 @@ public class TransportTxDTO {
     public Double longitude;
     public Double latitude;
     public List<TotesTxDTO> items;
+    public Integer capacity;
 
     public static TransportTxDTO convert(TransportTransaction transport) {
         TransportTxDTO transportTxDto = new TransportTxDTO();
@@ -43,6 +44,7 @@ public class TransportTxDTO {
         transportTxDto.occurred_at = transport.createdAt;
         transportTxDto.longitude = transport.longitude;
         transportTxDto.latitude = transport.latitude;
+        transportTxDto.capacity = transport.capacity;
 
         return transportTxDto;
     }

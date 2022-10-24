@@ -293,9 +293,6 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
     }
 
     private void clearSelectedItem() {
@@ -459,8 +456,10 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
                     }
                     break;
                 case 1980:
-                    if (!IsDemo) {
-                        //CToast(getApplicationContext(), render("Inventory scanning is over!!"), Toast.LENGTH_SHORT);
+                    if (adapterInventoryItems.getValues().containsKey("XXXX")){
+                        for(int i=0; i<2; i++) {
+                            CToast(getApplicationContext(), render(adapterInventoryItems.getValues().get("XXXX").size() + getResources().getString(R.string.not_encoded_tags)), Toast.LENGTH_LONG);
+                        }
                     }
                     break;
             }

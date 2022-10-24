@@ -230,6 +230,7 @@ public class GlobalState {
             txTransport.siteCode = LocalPreferences.getCurrentSiteName();
             txTransport.longitude = recTransport.longitude;
             txTransport.latitude = recTransport.latitude;
+            txTransport.capacity = recTransport.capacity;
             txTransport.calcHash();
             recTransport.hashCode = txTransport.hashCode;
 

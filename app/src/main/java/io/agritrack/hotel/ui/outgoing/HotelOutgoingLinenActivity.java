@@ -299,9 +299,6 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
     }
 
     private void clearSelectedItem() {
@@ -377,7 +374,7 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity {
             AssetTransaction tx = GlobalState.commitWHRFIDOutgoing(db);
 
             // sync WH Incoming Tx
-            Call<AssetTxDTO> syncTxAsyncCall = updService.syncRFIDIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
+            Call<AssetTxDTO> syncTxAsyncCall = updService.syncHotelRFIDIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
             syncTxAsyncCall.enqueue(new HotelOutgoingLinenActivity.SyncTxCallBack());
 
             return true;
@@ -550,8 +547,10 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity {
                     }
                     break;
                 case 1980:
-                    if (!IsDemo) {
-                        //CToast(getApplicationContext(), render("No Assets detected!!"), Toast.LENGTH_SHORT);
+                    if (adapterOutgoingItems.getValues().containsKey("XXXX")){
+                        for(int i=0; i<2; i++) {
+                            CToast(getApplicationContext(), render(adapterOutgoingItems.getValues().get("XXXX").size() + getResources().getString(R.string.not_encoded_tags)), Toast.LENGTH_LONG);
+                        }
                     }
                     break;
             }
