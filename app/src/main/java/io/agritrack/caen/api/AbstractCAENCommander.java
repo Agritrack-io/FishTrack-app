@@ -543,9 +543,6 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
             int byteIdx = sampleIdx * 2;
             short t = ToShort(new byte[]{data[byteIdx], data[byteIdx+1]});
             Double temp = parseTemperatureNumeric(t);
-            if (sampleIdx == 0){
-                temp = -173d;
-            }
             if (temp != null && temp>=-10 && temp<40 && temp != 0.03 && temp != -0.03) {
                 measurements.add(new String[]{createTimestamp(beginTSmSec + (sampleIdx * intervalSeconds * 1000L)), String.format("%.2f", parseTemperatureNumeric(t))});
             } else {

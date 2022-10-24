@@ -365,21 +365,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lbLastSampleValue" />
 
-        <Button
+        <com.kusu.loadingbutton.LoadingButton
             android:id="@+id/btnStopLogging"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="10dp"
             android:enabled="false"
             android:text="Stop Logging"
+            android:textColor="@color/white"
+            app:lb_buttonColor="@color/agri_red"
+            app:lb_isCircular="false"
             app:layout_constraintBottom_toTopOf="@+id/btnRead"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLastSampleValue" />
 
-        <Button
+        <com.kusu.loadingbutton.LoadingButton
             android:id="@+id/btnRead"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -388,12 +391,15 @@
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="8dp"
             android:text="Read"
+            android:textColor="@color/Black"
+            app:lb_buttonColor="@color/agri_green"
+            app:lb_isCircular="false"
             app:layout_constraintBottom_toTopOf="@+id/btnReset"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btnInit"
             app:layout_constraintTop_toBottomOf="@+id/btnStopLogging" />
 
-        <Button
+        <com.kusu.loadingbutton.LoadingButton
             android:id="@+id/btnInit"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -403,20 +409,26 @@
             android:layout_marginBottom="8dp"
             android:enabled="false"
             android:text="INIT"
+            android:textColor="@color/Black"
+            app:lb_buttonColor="@color/agri_green"
+            app:lb_isCircular="false"
             app:layout_constraintBottom_toTopOf="@+id/btnReset"
             app:layout_constraintEnd_toStartOf="@id/btnRead"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnStopLogging" />
 
-        <Button
+        <com.kusu.loadingbutton.LoadingButton
             android:id="@+id/btnReset"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginBottom="16dp"
             android:enabled="false"
             android:text="RESET"
+            android:textColor="@color/white"
+            app:lb_buttonColor="@color/agri_blue"
+            app:lb_isCircular="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -437,7 +449,6 @@
             app:layout_constraintLeft_toLeftOf="@id/formLayout"
             app:layout_constraintRight_toRightOf="@id/formLayout"
             app:layout_constraintTop_toTopOf="@id/formLayout" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

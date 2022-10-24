@@ -44,10 +44,6 @@ android {
 }
 
 dependencies {
-
-}
-
-dependencies {
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
@@ -143,6 +139,9 @@ dependencies {
     implementation files('libs/uhfr_v1.9.jar')
     implementation files('libs/ModuleAPI_J.jar')
     implementation files('libs/CAENRFIDLibrary-release.aar')
+
+    // LoadingButton  library
+    implementation 'com.github.koushikcse:LoadingButton:1.7'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
