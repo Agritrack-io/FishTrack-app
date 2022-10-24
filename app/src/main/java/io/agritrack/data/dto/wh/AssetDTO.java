@@ -17,7 +17,7 @@ public class AssetDTO {
     public String site_name;
     public String site_code;
     public String cage_RFID;
-    public String type;
+//    public String type;
     public String shape;
     public String supplier;
     public Double depth;
@@ -54,7 +54,7 @@ public class AssetDTO {
         asset.siteId = assetDTO.site;
         asset.siteCode = assetDTO.site_code;
         asset.cageRFId = assetDTO.cage_RFID;
-        asset.type = assetDTO.type;
+//        asset.type = assetDTO.type;
         asset.shape = assetDTO.shape;
         asset.supplierId = assetDTO.supplier;
         asset.depth = assetDTO.depth;
