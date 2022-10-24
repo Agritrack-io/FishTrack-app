@@ -281,7 +281,6 @@ public class PackagingIfcoActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         if (scanService != null) {
             scanService.setScanMode(1);
             scanService.close();
@@ -292,7 +291,6 @@ public class PackagingIfcoActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onDestroy();
     }
 

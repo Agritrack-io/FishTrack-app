@@ -298,9 +298,6 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
     }
 
     private void clearSelectedItem() {

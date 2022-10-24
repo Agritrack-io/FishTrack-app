@@ -219,10 +219,6 @@ public class TotesInventoryActivity extends LocationAwareActivity {
 
     @Override
     protected void onDestroy() {
-        //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
-
         super.onDestroy();
     }
 
