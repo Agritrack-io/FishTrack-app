@@ -177,8 +177,6 @@ public class TransportBinsActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if(keyReceiver != null)
-            unregisterReceiver(keyReceiver);
         super.onDestroy();
     }
 

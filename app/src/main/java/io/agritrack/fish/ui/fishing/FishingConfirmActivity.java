@@ -94,7 +94,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         initControlsFromState();
 
         if (recFishing.reqWeight!=null) {
-            if (recFishing.reqWeight - recFishing.totalFishWeight >= 250) {
+            if (Math.abs(recFishing.reqWeight - recFishing.totalFishWeight) >= 250) {
                 selectReasonDialog = new SelectReasonOfFishingWeightDeviationDialog(FishingConfirmActivity.this);
                 selectReasonDialog.showDialog();
             }
