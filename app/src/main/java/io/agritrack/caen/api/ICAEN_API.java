@@ -20,10 +20,6 @@ public interface ICAEN_API {
     // ########################
     // ###  public methods  ###
     // ########################
-    Double Init() throws Exception;
-
-    Double Init(short interval) throws Exception;
-
     /* This function RESETS the logger */
     Reader.READER_ERR Reset();
 
@@ -60,11 +56,14 @@ public interface ICAEN_API {
     /* This function sets Logger to HIGH sensitivity mode. */
     Reader.READER_ERR HighSensitivity();
 
+    /* This function sets Logger to LOW sensitivity mode. */
+    Reader.READER_ERR LowSensitivity();
+
     /* This function sets Logger to HIGH Read Power mode. */
-    void HighPowerLevel();
+    Reader.READER_ERR HighPowerLevel();
 
     /* This function sets Logger to LOW Read Power mode. */
-    void LowPowerLevel();
+    Reader.READER_ERR LowPowerLevel();
 
     int[] getPowerLevel();
 
@@ -88,6 +87,9 @@ public interface ICAEN_API {
     /* This function returns the READ_HW_REVISION value */
     String ReadHWRevision();
 
+    /* This function returns the READ_FW_REVISION together with READ_HW_REVISION */
+    String[] ReadCTRLRevisions();
+
     /* This function returns the READ_INIT_DATETIME value */
     String ReadInitDatetime();
 
@@ -102,6 +104,15 @@ public interface ICAEN_API {
 
     /* This function returns the READ_SAMPLES_COUNT value */
     Short ReadSamplesCount();
+
+    /* This function returns the SHIPPING_DATE register value */
+    String ReadShippingDatetime();
+
+    /* This function returns the STOP_DATE register value */
+    String ReadStopDatetime();
+
+    /* This function returns: LAST_SAMPLE_VALUE, SAMPLES_NUM, SHIPPING_DATE, STOP_DATE */
+    String[] ReadSamplesInfo();
 
     /* This function returns first 'samplesCnt' temperature measurements having an interval of 'DefaultInterval' seconds, starting at 'initedAt' epoch time */
     List<String[]> ReadSamplesWithInitTime(int samplesCnt, long initedAt) throws Exception;
@@ -127,8 +138,6 @@ public interface ICAEN_API {
     List<RFIDTag> inventoryRealTime();
 
     List<RFIDTag> inventoryByTimer();
-
-    List<RFIDTag> inventoryWithFilter();
 
     List<RFIDTag> searchInventory();
 

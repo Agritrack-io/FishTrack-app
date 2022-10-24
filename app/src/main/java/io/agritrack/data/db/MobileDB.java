@@ -101,6 +101,7 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
         Measurement.class, TemperatureData.class, SeaTemperatureTransaction.class, RepairTransaction.class},
         version = 15, exportSchema = false)
 
+
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class, UUIDConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
