@@ -1,12 +1,15 @@
 package io.agritrack.caen.common;
 
-import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 import com.uhf.api.cls.Reader;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class CAENState {
+    private final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
     public boolean canProceed = true;
 
     private boolean highPower = false;
@@ -109,7 +112,7 @@ public class CAENState {
 
     public CAENState forCTRL(Object val) {
         String rs = (String) val;
-        this.canProceed = !Strings.isEmptyOrWhitespace(rs);
+        this.canProceed = !Strings.isEmptyOrWhitespace(rs) && !"N/A".equalsIgnoreCase(rs);
         this.ctrlReg = rs;
         return this;
     }
@@ -211,6 +214,23 @@ public class CAENState {
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
         this.writeInterval = !Reader.READER_ERR.MT_OK_ERR.equals(rs);
         return this;
+    }
+
+    public int getInterval() {
+        return this.interval != null ? this.interval.intValue() : 30 * 60;
+    }
+
+    public Long getInitTS() {
+        long epoch = System.currentTimeMillis();
+        try {
+            if (!Strings.isEmptyOrWhitespace(this.initDateTime) && this.initDateTime.indexOf("1970") < 0) {
+                epoch = df.parse(this.initDateTime).getTime();
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return epoch;
     }
 
     @Override

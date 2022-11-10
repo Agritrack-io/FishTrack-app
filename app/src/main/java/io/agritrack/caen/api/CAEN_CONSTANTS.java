@@ -47,8 +47,6 @@ public class CAEN_CONSTANTS {
     public final static short SHORT_SIX = (short) 0x0006;
 
 
-    public final static int ShowProgressBar = 11;
-    public final static int HideProgressBar = 99;
     public final static int ReadFWRevision = 1000;
     public final static int ReadHWRevision = 1001;
     public final static int ReadCTRLReg = 1002;
@@ -58,9 +56,6 @@ public class CAEN_CONSTANTS {
     public final static int ReadSamplesCnt = 1006;
     public final static int ReadInterval = 1007;
     public final static int ReadLastSample = 1008;
-    public final static int ReadCurrentEPC = 1009;
-    public final static int ReadMemoryStatus = 1010;
-    public final static int ReadBatteryLevel = 1011;
     public final static int ReadSamples = 1012;
     public final static int ReadShippingDate = 1103;
     public final static int ReadStopDate = 1104;

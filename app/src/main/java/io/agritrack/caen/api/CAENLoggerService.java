@@ -26,11 +26,12 @@ import com.uhf.api.cls.Reader;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 import io.agritrack.caen.common.CAENState;
 
@@ -62,12 +63,15 @@ public class CAENLoggerService {
             // reset logger to clear memory.
             future.thenCompose(x -> execReset(x, actnPool));
 
+            // wait for reset to complete
+            future.thenCompose(x -> park3Second(x, actnPool));
+
             // reads the current state of CTRL register.
             future.thenCompose(x -> execReadControlRegister(x, actnPool));
 
             // temporary...
             CAENState result = future.join();
-            System.out.println(result);
+            System.out.println("doResetLogger()-->" + result);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,15 +94,20 @@ public class CAENLoggerService {
             // enable logger
             future.thenCompose(x -> execEnableLogging(x, actnPool));
 
-            // read CTRL register to config RESET is completed.
-            future.thenCompose(x -> execReadControlRegister(x, actnPool));
-
-            // read Last Sample value
-            future.thenCompose(x -> execReadLastSample(x, actnPool));
-
             // temporary...
             CAENState result = future.join();
-            System.out.println(result);
+            System.out.println("doEnableLogger()-->" + result);
+
+            //--------------------------------------------------
+            CompletableFuture<CAENState> futureTemp = this.park3Second(new CAENState(), actnPool);
+
+            // read CTRL register to config RESET is completed.
+            futureTemp.thenCompose(x->execReadControlRegister(x, actnPool));
+
+            // read Last Sample value
+            futureTemp.thenCompose(x->execReadLastSample(x, actnPool));
+            futureTemp.join();
+            //--------------------------------------------------
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -138,7 +147,7 @@ public class CAENLoggerService {
 
             // temporary...
             CAENState result = future.join();
-            System.out.println(result);
+            System.out.println("doReadFullLoggerState()-->" + result);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,12 +161,12 @@ public class CAENLoggerService {
             // read the FWRevision flag,
             CompletableFuture<CAENState> future = this.execDisableLogging(new CAENState(), actnPool);
 
-            // read the: FWRevision flag, HWRevision flag, the current state of CTRL register.
+            // read the current state of CTRL register.
             future.thenCompose(x -> execReadControlRegister(x, actnPool));
 
             // temporary...
             CAENState result = future.join();
-            System.out.println(result);
+            System.out.println("doStopLogging()-->" + result);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -168,19 +177,79 @@ public class CAENLoggerService {
             // instantiate the thread pool required by CompletableFuture instances following...
             final ExecutorService actnPool = Executors.newFixedThreadPool(1);
 
-            // read the active Time BIN,
-            //CompletableFuture<CAENState> future = this.execReadTimeBIN(new CAENState(), actnPool);
-
+            // read current Interval between measurements,
+            CompletableFuture<CAENState> futureInterval = this.execReadInterval(new CAENState(), actnPool);
+            CAENState stateInterval = futureInterval.get();
 
             // read current Initialization DateTime,
-            //future.thenCompose(x -> this.execReadInitDatetime(x, actnPool));
+            CompletableFuture<CAENState> futureInitTS = this.execReadInitDatetime(new CAENState(), actnPool);
+            CAENState stateTS = futureInitTS.get();
 
             // read the stored Temperature measurements,
-            CompletableFuture<CAENState> future = this.execReadSamples(samplesCount, new CAENState(), actnPool);
+            CompletableFuture<CAENState> future = null;
+            if (stateInterval != null && stateTS != null) {
+                future = this.execReadSamples(samplesCount, stateInterval.getInterval(), stateTS.getInitTS(), new CAENState(), actnPool);
+            } else if (stateInterval != null && stateTS == null) {
+                future = this.execReadSamples(samplesCount, stateInterval.getInterval(), new CAENState(), actnPool);
+            } else if (stateInterval == null && stateTS == null) {
+                future = this.execReadSamples(samplesCount, new CAENState(), actnPool);
+            }
 
-            // temporary...
-            CAENState result = future.join();
-            System.out.println(result);
+            if (future != null) {
+                // temporary...
+                CAENState result = future.join();
+                System.out.println("doReadSamples()-->" + result);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void doReadMeasurements() {
+        try {
+            // instantiate the thread pool required by CompletableFuture instances following...
+            final ExecutorService actnPool = Executors.newFixedThreadPool(1);
+
+            // read current Interval between measurements,
+            //CompletableFuture<CAENState> futureInterval = this.execReadInterval(new CAENState(), actnPool);
+            //CAENState stateInterval = futureInterval.get();
+
+            // read current Initialization DateTime,
+            //CompletableFuture<CAENState> futureInitTS = this.execReadInitDatetime(stateInterval, actnPool);
+            //CAENState stateTS = futureInitTS.get();
+
+            // read number of Samples measured,
+            //CompletableFuture<CAENState> futureSamplesCnt = this.execReadSamplesCount(stateTS, actnPool);
+            //CAENState stateSamplesCnt = futureSamplesCnt.get();
+            //int samplesCount = stateSamplesCnt.samplesCnt;
+
+
+            // read current Interval between measurements,
+            CompletableFuture<CAENState> _future = this.execReadInterval(new CAENState(), actnPool);
+            //CAENState stateInterval = futureInterval.get();
+            _future.thenCompose(x -> execReadInitDatetime(x, actnPool));
+            _future.thenCompose(x -> execReadSamplesCount(x, actnPool));
+            CAENState _state = _future.join();
+
+            Integer stateInterval = _state.interval != null ? Integer.valueOf(_state.interval.intValue()) : null;
+            Integer samplesCount = _state.samplesCnt != null ? Integer.valueOf(_state.samplesCnt.intValue()) : null;
+            Long initTS = _state.getInitTS();
+
+            // read the stored Temperature measurements,
+            CompletableFuture<CAENState> future = null;
+            if (stateInterval != null && initTS != null) {
+                future = this.execReadSamples(samplesCount, stateInterval, initTS, _state, actnPool);
+            } else if (stateInterval != null && initTS == null) {
+                future = this.execReadSamples(samplesCount, stateInterval, _state, actnPool);
+            } else if (stateInterval == null && initTS == null) {
+                future = this.execReadSamples(samplesCount, _state, actnPool);
+            }
+
+            if (future != null) {
+                // temporary...
+                CAENState result = future.join();
+                System.out.println("doReadMeasurements()-->" + result);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -513,17 +582,50 @@ public class CAENLoggerService {
     }
 
     // the following args may also be used:: int samplesCnt, int intervalSeconds, long startTSmSec
-    private CompletableFuture<CAENState> execReadSamples(int samplesCnt, CAENState previousState, ExecutorService threadPool) {
+    private CompletableFuture<CAENState> execReadSamples(Integer samplesCnt, CAENState previousState, ExecutorService threadPool) {
+        return execReadSamples(samplesCnt, null, null, previousState, threadPool);
+    }
+
+    private CompletableFuture<CAENState> execReadSamples(Integer samplesCnt, Integer intervalSeconds, CAENState previousState, ExecutorService threadPool) {
+        return execReadSamples(samplesCnt, intervalSeconds, null, previousState, threadPool);
+    }
+
+    private CompletableFuture<CAENState> execReadSamples(Integer samplesCnt, Integer intervalSeconds, Long startTSmSec, CAENState previousState, ExecutorService threadPool) {
         CompletableFuture<CAENState> _future = CompletableFuture.completedFuture(previousState);
         try {
             if (!canProceed(previousState)) {
                 return _future;
             }
 
-            _future = CompletableFuture.supplyAsync(() -> {
-                try { previousState.forSamples(cmd.ReadSamples(samplesCnt));} catch (Exception e) { e.printStackTrace();}
-                return previousState;
-            }, threadPool);
+            if(intervalSeconds == null && startTSmSec == null) {
+                _future = CompletableFuture.supplyAsync(() -> {
+                    try {
+                        previousState.forSamples(cmd.ReadSamples(samplesCnt));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return previousState;
+                }, threadPool);
+            } else if(startTSmSec == null) {
+                _future = CompletableFuture.supplyAsync(() -> {
+                    try {
+                        previousState.forSamples(cmd.ReadSamples(samplesCnt, intervalSeconds));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return previousState;
+                }, threadPool);
+            } else {
+                _future = CompletableFuture.supplyAsync(() -> {
+                    try {
+                        previousState.forSamples(cmd.ReadSamples(samplesCnt, intervalSeconds, startTSmSec));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return previousState;
+                }, threadPool);
+            }
+
             CAENState _state = _future.exceptionally(x -> null).get();
             mHandler.sendMessage(createMessage(ReadSamples, _state.samples));
         } catch (ExecutionException | InterruptedException e) {
@@ -532,6 +634,22 @@ public class CAENLoggerService {
         return _future;
     }
 
+
+    // sleep for 1.0 second before resume flow.
+    private CompletableFuture<CAENState> park3Second(CAENState previousState, ExecutorService threadPool) {
+        try {
+            CompletableFuture.supplyAsync(() -> {
+                LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(3L));
+                return null;
+            }, threadPool).get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return CompletableFuture.completedFuture(previousState);
+    }
+
+    //
     private Message createMessage(int what, Object value) {
         Message msg = new Message();
         msg.what = what;

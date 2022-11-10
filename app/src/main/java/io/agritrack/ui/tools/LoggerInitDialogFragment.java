@@ -11,7 +11,6 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteInterval;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBINZero;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -40,7 +39,6 @@ import com.google.android.gms.common.util.Strings;
 import com.uhf.api.cls.Reader;
 
 import java.lang.ref.WeakReference;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 

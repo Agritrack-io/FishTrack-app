@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
 import com.kusu.loadingbutton.LoadingButton;
@@ -48,6 +49,10 @@ import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.common.Filters;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.ui.login.LoginActivity;
+import io.agritrack.ui.tools.caen.ILoggerDialog;
+import io.agritrack.ui.tools.caen.InitLoggerDialogDecorator;
+import io.agritrack.ui.tools.caen.LoggerDialogFragment;
+import io.agritrack.ui.tools.caen.ReadLoggerDialogDecorator;
 
 public class CAENLoggerActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
@@ -57,7 +62,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
     private EditText etInterval;
     private ProgressBar progressBar;
     private Button btnSamplesCnt, btnControlReg, btnScanEPC;
-    private LoadingButton btnStopLogging, btnReset, btnInit, btnRead;
+    private LoadingButton btnStopLogging, btnReset, btnInit, btnRead, btnDialog;
     private final SimpleDateFormat dtParser = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
 
     private ICAEN_API cmd;
@@ -165,6 +170,30 @@ public class CAENLoggerActivity extends AppCompatActivity {
         }).start();
     };
 
+    protected final View.OnClickListener btnDialogListener = v -> {
+        new Thread(() -> {
+            // -------------------------------------
+            // Show ProgressButton
+            runOnUiThread(() -> btnDialog.showLoading());
+
+            // -------------------------------------
+            if (!Strings.isEmptyOrWhitespace(loggerEpc)) {
+                FragmentManager fm = getSupportFragmentManager();
+                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEpc, null);
+                ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
+                readLoggerDecorator.show(fm);
+
+                //InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
+                //initLoggerDecorator.show(fm);
+
+            }
+
+            // Hide ProgressButton
+            runOnUiThread(() -> btnDialog.hideLoading());
+        }).start();
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -184,6 +213,8 @@ public class CAENLoggerActivity extends AppCompatActivity {
         btnInit.setOnClickListener(btnInitListener);
 
         btnStopLogging.setOnClickListener(btnStopLoggingListener);
+
+        btnDialog.setOnClickListener(btnDialogListener);
 
         btnControlReg.setOnClickListener(view -> {
             if (this.cmd != null) {
@@ -216,6 +247,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         btnRead = (LoadingButton) findViewById(R.id.btnRead);
         btnReset = (LoadingButton) findViewById(R.id.btnReset);
         btnInit = (LoadingButton) findViewById(R.id.btnInit);
+        btnDialog = (LoadingButton) findViewById(R.id.btnDialog);
         btnScanEPC = findViewById(R.id.btnScanEPC);
         btnStopLogging = (LoadingButton) findViewById(R.id.btnStopLogging);
         tvFWRevision = findViewById(R.id.tvFWRevision);
@@ -244,6 +276,11 @@ public class CAENLoggerActivity extends AppCompatActivity {
     }
 
     private void displayMeasurementsDialog(List<String[]> values) {
+
+        if(values==null || !(values instanceof List)) {
+            CToast(getApplicationContext(), "Invalid data read!!!", Toast.LENGTH_LONG);
+            return;
+        }
 
         AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(CAENLoggerActivity.this);
         dlgBuilder.setTitle("Logger Data");
@@ -294,6 +331,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             String value = null;
+            Object obj = null;
             switch (msg.what) {
                 case 1:
                     // Hide ProgressBar
@@ -308,6 +346,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
                                 btnReset.setEnabled(true);
                                 btnInit.setEnabled(true);
                                 btnStopLogging.setEnabled(true);
+                                btnDialog.setEnabled(true);
                                 // -------------------------------------
                                 tvCurrentEPC.setText(loggerEpc);
                             });
@@ -405,12 +444,20 @@ public class CAENLoggerActivity extends AppCompatActivity {
                 case ReadSamples:
                     // Hide ProgressBar
                     runOnUiThread(() -> progressBar.setVisibility(View.INVISIBLE));
-                    List samples = (List) msg.getData().get("body");
-                    displayMeasurementsDialog(samples);
+                    Object samplesObj = msg.getData().get("body");
+                    if(samplesObj instanceof List) {
+                        List samples = (List) msg.getData().get("body");
+                        displayMeasurementsDialog(samples);
+                    }
                     break;
                 case ReadInterval:
-                    short interval = msg.getData().getShort("body");
-                    etInterval.setText(String.valueOf(interval));
+                    obj = extractData(Short.class, msg.getData());
+                    if(obj != null) {
+                        short interval = (short) obj;
+                        etInterval.setText(String.valueOf(interval));
+                    } else {
+                        etInterval.setText("ERR");
+                    }
                     break;
                 case ReadLastSample:
                     value = msg.getData().getString("body");
@@ -425,29 +472,50 @@ public class CAENLoggerActivity extends AppCompatActivity {
                     tvDateTime.setText(value);
                     break;
                 case CmdRESET:
-                    boolean resReset = msg.getData().getBoolean("body");
-                    if (!resReset) {
-                        CToast(getApplicationContext(), "Reset Failed!\n", Toast.LENGTH_SHORT);
+                    obj = extractData(Boolean.class, msg.getData());
+                    if(obj != null) {
+                        boolean resReset = (boolean) obj;
+                        if (!resReset) {
+                            CToast(getApplicationContext(), "Reset Failed!\n", Toast.LENGTH_SHORT);
+                        }
                     }
                     break;
                 case CmdDisableLogging:
-                    int resDisableLogging = msg.getData().getInt("body");
-                    if (resDisableLogging == 1) {
-                        CToast(getApplicationContext(), "Failed to stop Logging!\n", Toast.LENGTH_SHORT);
+                    obj = extractData(Integer.class, msg.getData());
+                    if(obj != null) {
+                        int resDisableLogging = (int) obj;
+                        if (resDisableLogging == 1) {
+                            CToast(getApplicationContext(), "Failed to stop Logging!\n", Toast.LENGTH_SHORT);
+                        }
                     }
                     break;
                 case CmdEnableLogging:
-                    int resEnableLogging = msg.getData().getInt("body");
-                    if (resEnableLogging == 0) {
-                        CToast(getApplicationContext(), "Failed to start Logging!\n", Toast.LENGTH_SHORT);
-                    }
-                    break;
-                case 1980:
-                    if (!IsDemo) {
-                        //CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
+                    obj = extractData(Integer.class, msg.getData());
+                    if(obj != null) {
+                        int resEnableLogging = (int) obj;
+                        if (resEnableLogging == 0) {
+                            CToast(getApplicationContext(), "Failed to start Logging!\n", Toast.LENGTH_SHORT);
+                        }
                     }
                     break;
             }
+        }
+    }
+
+    private Object extractData(Class clazz, Bundle data) {
+        Class dataClazz = data.get("body").getClass();
+
+        switch (clazz.getSimpleName()) {
+            case "String":
+                return data.getString("body");
+            case "Short":
+                return data.getShort("body");
+            case "Integer":
+                return data.getInt("body");
+            case "Boolean":
+                return data.getBoolean("body");
+            default:
+                return data.get("body");
         }
     }
 
