@@ -74,6 +74,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.hotel.ui.HotelHomeActivity;
+import io.agritrack.hotel.ui.HotelMenuProgramActivity;
 import io.agritrack.su.AppOptionsFragment;
 import io.agritrack.ui.config.ConfigActivity;
 import io.agritrack.ui.login.api.AuthInfoRS;
@@ -216,12 +217,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                     startActivity(i);
                     finish();
                 } else if ("linen".equals(username) && "8888".equals(pin)) {
-                    Intent i = new Intent(getApplicationContext(), ProgramLinenTagsActivity.class);
-                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-                    startActivity(i);
-                    finish();
-                } else if ("false linen".equals(username) && "8888".equals(pin)) {
-                    Intent i = new Intent(getApplicationContext(), ProgramEveryLinenTagsActivity.class);
+                    Intent i = new Intent(getApplicationContext(), HotelMenuProgramActivity.class);
                     i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
                     startActivity(i);
                     finish();
@@ -362,6 +358,10 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             // sync only Harvest_Bins assets
             Call<List<AssetDTO>> syncHarvestBinsAsyncCall = syncService.getAssetsByHarvestBinType("Bearer " + token);
             syncHarvestBinsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
+
+            // sync only Platform assets for this site
+            Call<List<AssetDTO>> syncPlatformsAsyncCall = syncService.getAssetsBySiteAndType(siteId,"Platform","Bearer " + token);
+            syncPlatformsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
 
             // sync Cage Details
             Call<List<CageDetailsDTO>> syncCageDetailsAsyncCall = syncService.getCageDetailsBySiteId(siteId, "Bearer " + token);

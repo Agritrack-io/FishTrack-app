@@ -144,13 +144,49 @@
                     android:text="@string/scan_platform"
                     android:textColor="@color/yellow"
                     android:textSize="@dimen/button_font_size"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/tvCapacity"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.75"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvPlatformName"
                     tools:layout_conversion_absoluteHeight="120dp"
                     tools:layout_conversion_absoluteWidth="0dp" />
+
+                <TextView
+                    android:id="@+id/tvCapacity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center|center_vertical"
+                    android:textColor="@color/label_blue"
+                    android:text="@string/capacity"
+                    android:textSize="@dimen/text_view_font_size"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tvCapacityCount"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnScanPlatform" />
+
+                <TextView
+                    android:id="@+id/tvCapacityCount"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/border_bottom"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textIsSelectable="false"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvCapacity"
+                    app:layout_constraintTop_toBottomOf="@+id/btnScanPlatform" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

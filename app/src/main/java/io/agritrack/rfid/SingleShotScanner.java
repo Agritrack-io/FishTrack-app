@@ -23,6 +23,7 @@ public class SingleShotScanner implements Runnable {
     private ICAEN_API uhfReader;
     private final Handler mScanHandler;
     private String RFID_FILTER = null;
+    private String EXCL_RFID_FILTER = null;
     private Boolean trimEPCFlag = Boolean.TRUE;
     private Integer maxLength = null;
     private int encodingIdx = schemeSvc.encodingIndex();
@@ -74,6 +75,15 @@ public class SingleShotScanner implements Runnable {
         }
     }
 
+    public void setExcludedFilter(String exclFilter) {
+        this.EXCL_RFID_FILTER = exclFilter;
+        EncodingSchemeEntity schemeEntry = schemeSvc.schemeForFilter(exclFilter);
+        if (schemeEntry!=null && schemeEntry.encoding_index!=null){
+            this.encodingIdx = schemeEntry.encoding_index;
+            this.encodingWth = schemeEntry.code.length();
+        }
+    }
+
     public void setMaxLength(Integer maxLength){
         this.maxLength = maxLength;
     }
@@ -93,6 +103,7 @@ public class SingleShotScanner implements Runnable {
                     List<RFIDTag> filteredList = null;
                     if (this.maxLength != null){
                         filteredList = tagList.stream().filter(f -> f.getEpc().length() > maxLength).collect(Collectors.toList());
+                        filteredList = this.EXCL_RFID_FILTER!=null ? tagList.stream().filter(x->x.getEpc().length() == maxLength && !x.getEpc().startsWith(this.EXCL_RFID_FILTER)).collect(Collectors.toList()) : filteredList;
                         b.putLong("cnt", filteredList.size());
                     } else {
                         filteredList = tagList.stream().filter(f -> this.RFID_FILTER == null || (f.getEpc().indexOf(this.RFID_FILTER) == encodingIdx && encodingIdx > -1) || (f.getEpc().indexOf(this.RFID_FILTER) > -1)).collect(Collectors.toList());

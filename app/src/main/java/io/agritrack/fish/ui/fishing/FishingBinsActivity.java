@@ -217,9 +217,6 @@ public class FishingBinsActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         this.stopScanner();
-        //unregister the receiver
-        /*if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);*/
     }
 
     @Override

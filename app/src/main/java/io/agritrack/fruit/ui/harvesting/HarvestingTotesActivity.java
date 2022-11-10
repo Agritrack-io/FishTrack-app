@@ -182,10 +182,6 @@ public class HarvestingTotesActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
-
         super.onDestroy();
     }
 

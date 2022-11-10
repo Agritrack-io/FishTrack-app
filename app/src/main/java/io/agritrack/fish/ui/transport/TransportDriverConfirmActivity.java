@@ -2,6 +2,8 @@ package io.agritrack.fish.ui.transport;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,9 +23,12 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import java.util.Set;
+
 public class TransportDriverConfirmActivity extends AppCompatActivity {
 
     private TextView tvSitePackaging, tvNumberOfBinsCount, tvDriverName, tvLicensePlate, tvSecurityClipNumber;
+    private EditText etTruckCapacity;
     private CaptureSignatureView signatureView;
 
     private ImageView ivSupport;
@@ -79,6 +84,7 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
         tvDriverName = findViewById(R.id.tvDriverName);
         tvLicensePlate = findViewById(R.id.tvLicensePlate);
         tvSecurityClipNumber = findViewById(R.id.tvSecurityClipNumber);
+        etTruckCapacity = findViewById(R.id.etTruckCapacity);
         signatureView = findViewById(R.id.signatureView);
         ivSupport = findViewById(R.id.ivSupport);
     }
@@ -100,10 +106,18 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
 
         if (!Strings.isEmptyOrWhitespace(trns.licensePlate)) {
             tvLicensePlate.setText(trns.licensePlate);
+            int truckCapacity = LocalPreferences.getTruckCapacity(trns.licensePlate);
+            if (truckCapacity>0){
+                etTruckCapacity.setText(String.valueOf(truckCapacity));
+            }
         }
 
         if (!Strings.isEmptyOrWhitespace(trns.clipNumber)) {
             tvSecurityClipNumber.setText(trns.clipNumber);
+        }
+
+        if (Strings.isEmptyOrWhitespace(String.valueOf(trns.capacity))) {
+            etTruckCapacity.setText(trns.capacity);
         }
 
         /*if (trns.signature!=null) {
@@ -117,6 +131,11 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
     private void updateState() {
         GlobalState.recTransport.signature = signatureView.getBitmap();
         GlobalState.recTransport.signatureBytes = signatureView.getBytes();
+        GlobalState.recTransport.capacity = !Strings.isEmptyOrWhitespace(etTruckCapacity.getText().toString()) ? Integer.parseInt(etTruckCapacity.getText().toString()) : 0;
+        Integer truckCapacity = LocalPreferences.getTruckCapacity(GlobalState.recTransport.licensePlate);
+        if (truckCapacity==0 || !GlobalState.recTransport.capacity.equals(truckCapacity)){
+            LocalPreferences.addTruckCapacity(GlobalState.recTransport.licensePlate, GlobalState.recTransport.capacity);
+        }
     }
 
     private String validate(){
@@ -125,6 +144,12 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
             if (!signatureView.isSigned()) {
                 sb.append(String.format("\n%s is missing", "'Signature'"));
             }
+
+            if (Strings.isEmptyOrWhitespace(etTruckCapacity.getText().toString())) {
+                etTruckCapacity.setSelected(true);
+                sb.append(String.format("\n%s is missing", "'Bin capacity'"));
+            }
+
         }
 
         return sb.toString();

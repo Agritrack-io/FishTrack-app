@@ -263,7 +263,9 @@ public class HotelSearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapterAssets.getFilter().filter(newText);
+                if(adapterAssets != null && adapterAssets.getFilter() != null) {
+                    adapterAssets.getFilter().filter(newText);
+                }
                 return false;
             }
         });
@@ -294,9 +296,6 @@ public class HotelSearchActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
     }
 
     protected void onClick(View view) {

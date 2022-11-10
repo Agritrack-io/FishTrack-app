@@ -220,7 +220,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     @Override
     public Reader.READER_ERR HighSensitivity() {
         try {
-            Short bits = 0x14; //Short.valueOf("0010", 16); // High sensitivity and KEEP LOGGING!!!!
+            Short bits = 0x10; //Short bits = 0x14; //Short.valueOf("0010", 16); // High sensitivity and KEEP LOGGING!!!!
             Reader.READER_ERR rs = WriteRegisters(ADDR_CONTROL, bits);
             return rs;
         } catch (Exception ex) {

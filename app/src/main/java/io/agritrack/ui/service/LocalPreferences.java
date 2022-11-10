@@ -10,9 +10,11 @@ import com.google.gson.Gson;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -38,6 +40,7 @@ public class LocalPreferences {
     public static final String Driver_Names_Key = "DriverNames";
     public static final String Driver_Phones_Key = "DriverPhones";
     public static final String License_Plates_Key = "LicensePlates";
+    public static final String Truck_Capacity_Key = "TruckCapacity";
 
     public static final String Box_Sn_Key = "BoxSns";
 
@@ -144,13 +147,23 @@ public class LocalPreferences {
     }
 
     public static Set<String> getLicensePlates() {
-        return pref.getStringSet(License_Plates_Key, new HashSet<>());
+        return pref. getStringSet(License_Plates_Key, new HashSet<>());
     }
 
     public static void addLicensePlate(String plate) {
         Set<String> platesSet = getLicensePlates();
         platesSet.add(plate);
         writeValue(License_Plates_Key, platesSet);
+    }
+
+    public static Integer getTruckCapacity(String plate) {
+        plate = plate.replaceAll("\\D+","");
+        return pref. getInt(Truck_Capacity_Key + "." + plate, 0);
+    }
+
+    public static void addTruckCapacity(String plate, Integer capacity) {
+        plate = plate.replaceAll("\\D+","");
+        writeValue(Truck_Capacity_Key + "." + plate, capacity);
     }
 
     public static void addBoxSn(String name) {
@@ -194,6 +207,8 @@ public class LocalPreferences {
                 editor.putString(key, (String) value);
             } else if (value instanceof Long) {
                 editor.putLong(key, (Long) value);
+            } else if (value instanceof Integer) {
+                editor.putInt(key, (Integer) value);
             } else if (value instanceof UUID) {
                 editor.putString(key, value.toString());
             } else if (value instanceof Boolean) {

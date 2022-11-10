@@ -92,6 +92,10 @@ public interface TransactionApi {
     Call<AssetTxDTO> syncRFIDIOTx(@Body AssetTxDTO assetTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/hotel/asset/tx")
+    Call<AssetTxDTO> syncHotelRFIDIOTx(@Body AssetTxDTO assetTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/consumable-transaction")
     Call<List<ConsumableTxDTO>> syncBarcodeIOTx(@Body List<ConsumableTxDTO> consumableTxs, @Header("Authorization") String token);
 

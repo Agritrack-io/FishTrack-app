@@ -166,7 +166,6 @@ public class FruitCorrelationActivity extends LocationAwareActivity implements A
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(keyReceiver);
         super.onDestroy();
     }
 

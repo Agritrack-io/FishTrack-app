@@ -24,6 +24,7 @@ public class TransportationRecord {
     public Double latitude;
     public long txKey;
     public int hashCode;
+    public Integer capacity;
 
     public TransportationRecord() {
     }

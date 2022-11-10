@@ -3,8 +3,6 @@ package io.agritrack.api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -15,22 +13,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIServiceGenerator {
 
-//    private static final String BASE_URL = "http://fishtrack-be.eu-central-1.elasticbeanstalk.com";
-    //private static final String BASE_URL = "http://fishtrack-be-dev.eu-central-1.elasticbeanstalk.com/";
+    //private static final String BASE_URL = "http://fishtrack-be.eu-central-1.elasticbeanstalk.com";
+    private static final String BASE_URL = "http://fishtrack-be-dev.eu-central-1.elasticbeanstalk.com/";
     //private static final String BASE_URL = "http://192.168.2.2:5000";
     //private static final String BASE_URL = "http://192.168.145.198:5000";
-    private static final String BASE_URL = "http://192.168.150.183:5000";
+    //private static final String BASE_URL = "http://192.168.150.163:5002";
     //private static final String BASE_URL = "http://192.168.1.15:5000";
     //private static final String BASE_URL = "http://3.123.142.122:5000";
     //private static final String BASE_URL = "http://3.123.142.122:5001";
-//    private static final String BASE_URL = "http://3.123.142.122:5002";
+    //private static final String BASE_URL = "http://3.123.142.122:5002";
 
     private static final Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
     private static Retrofit retrofit = retrofitBuilder.build();
     private static final OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
-                                                                    .connectTimeout(20, TimeUnit.SECONDS)
-                                                                    .readTimeout(30, TimeUnit.SECONDS)
-                                                                    .writeTimeout(30, TimeUnit.SECONDS);
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS);
     private static final HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC);
     private static final Gson gson = new GsonBuilder().setLenient().create();
 

@@ -199,9 +199,6 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
     protected void onDestroy() {
         super.onDestroy();
         stopScanner();
-        //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
     }
 
     protected void configFooter() {

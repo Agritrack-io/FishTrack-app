@@ -47,8 +47,8 @@ public class Asset {
     @ColumnInfo(name = "cage_rfid")
     public String cageRFId;
 
-    @ColumnInfo(name = "type")
-    public String type;
+    // @ColumnInfo(name = "type")
+    // public String type;
 
     @ColumnInfo(name = "shape")
     public String shape;
@@ -115,6 +115,9 @@ public class Asset {
 
     @ColumnInfo(name = "logger_epc")
     public String loggerEPC;
+
+    @ColumnInfo(name = "capacity")
+    public Integer capacity;
 
     /*@Embedded
     public SpatialEntity location;*/

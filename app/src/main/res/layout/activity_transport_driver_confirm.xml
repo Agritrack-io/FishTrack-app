@@ -98,35 +98,9 @@ tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
             android:layout_marginTop="12dp"
             android:background="@drawable/shape_rounded_corner_with_shadow"
             android:orientation="vertical"
-            android:padding="15dp">
-
-            <TextView
-                android:id="@+id/tvSecurityClipNumber"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/border_bottom"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvSecurityClipNumberLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvLicensePlate" />
-
-            <TextView
-                android:id="@+id/tvSecurityClipNumberLabel"
-                android:layout_width="220dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/security_clip_label_confirm"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvSecurityClipNumber"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLicensePlateLabel" />
+            android:padding="15dp"
+            app:layout_constraintEnd_toEndOf="@+id/tvSitePackagingLabel"
+            app:layout_constraintStart_toEndOf="@+id/tvSitePackagingLabel">
 
             <TextView
                 android:id="@+id/tvSitePackagingLabel"
@@ -142,6 +116,21 @@ tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/tvSitePackaging"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/border_bottom"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/tvNumberOfBinsCount"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvSitePackagingLabel"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvNumberOfBinsLabel"
@@ -186,22 +175,6 @@ tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
                 app:layout_constraintTop_toBottomOf="@+id/tvNumberOfBinsLabel" />
 
             <TextView
-                android:id="@+id/tvSitePackaging"
-                android:layout_width="180dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/border_bottom"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvNumberOfBinsCount"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvSitePackagingLabel"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
                 android:id="@+id/tvDriverName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -224,7 +197,7 @@ tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
                 android:text="@string/license_plate_label"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvSecurityClipNumberLabel"
+                app:layout_constraintBottom_toTopOf="@+id/tvTruckCapacityLabel"
                 app:layout_constraintEnd_toStartOf="@+id/tvLicensePlate"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDriverNameLabel" />
@@ -239,10 +212,67 @@ tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvSecurityClipNumber"
+                app:layout_constraintBottom_toTopOf="@+id/etTruckCapacity"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvLicensePlateLabel"
                 app:layout_constraintTop_toBottomOf="@+id/tvDriverName" />
+
+            <TextView
+                android:id="@+id/tvTruckCapacityLabel"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/truck_capacity"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/tvSecurityClipNumberLabel"
+                app:layout_constraintEnd_toStartOf="@+id/etTruckCapacity"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvLicensePlateLabel" />
+
+            <EditText
+                android:id="@+id/etTruckCapacity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/bg_rounded_dialog_input"
+                android:ems="10"
+                android:inputType="number"
+                android:textAlignment="viewEnd"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toTopOf="@+id/tvSecurityClipNumber"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvTruckCapacityLabel"
+                app:layout_constraintTop_toBottomOf="@+id/tvLicensePlate" />
+
+            <TextView
+                android:id="@+id/tvSecurityClipNumberLabel"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/security_clip_label_confirm"
+                android:textColor="@color/label_blue"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvSecurityClipNumber"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTruckCapacityLabel" />
+
+            <TextView
+                android:id="@+id/tvSecurityClipNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/border_bottom"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_view_font_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvSecurityClipNumberLabel"
+                app:layout_constraintTop_toBottomOf="@+id/etTruckCapacity" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
