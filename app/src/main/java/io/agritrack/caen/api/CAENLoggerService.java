@@ -235,22 +235,7 @@ public class CAENLoggerService {
             final ExecutorService actnPool = Executors.newFixedThreadPool(1);
 
             // read current Interval between measurements,
-            //CompletableFuture<CAENState> futureInterval = this.execReadInterval(new CAENState(), actnPool);
-            //CAENState stateInterval = futureInterval.get();
-
-            // read current Initialization DateTime,
-            //CompletableFuture<CAENState> futureInitTS = this.execReadInitDatetime(stateInterval, actnPool);
-            //CAENState stateTS = futureInitTS.get();
-
-            // read number of Samples measured,
-            //CompletableFuture<CAENState> futureSamplesCnt = this.execReadSamplesCount(stateTS, actnPool);
-            //CAENState stateSamplesCnt = futureSamplesCnt.get();
-            //int samplesCount = stateSamplesCnt.samplesCnt;
-
-
-            // read current Interval between measurements,
             CompletableFuture<CAENState> _future = this.execReadInterval(new CAENState(), actnPool);
-            //CAENState stateInterval = futureInterval.get();
             _future.thenCompose(x -> execReadInitDatetime(x, actnPool));
             _future.thenCompose(x -> execReadSamplesCount(x, actnPool));
             CAENState _state = _future.join();
