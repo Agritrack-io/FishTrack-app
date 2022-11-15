@@ -11,8 +11,6 @@ public interface ILoggerDialog {
     String INITED_AT = "InitializedAt";
     String PROD_LANE = "ProductionLane";
 
-    int LEVEL_INCREMENT = 1000, MAX_LEVEL = 10000;
-
     // show the decorated Dialog.
     void show(FragmentManager fm);
 

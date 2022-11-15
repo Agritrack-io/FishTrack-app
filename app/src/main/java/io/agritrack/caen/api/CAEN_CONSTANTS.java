@@ -59,6 +59,9 @@ public class CAEN_CONSTANTS {
     public final static int ReadSamples = 1012;
     public final static int ReadShippingDate = 1103;
     public final static int ReadStopDate = 1104;
+    public final static int ReadSΤΑΤΕ = 1105;
+    public final static int ResetSΤΑΤΕ = 1106;
+    public final static int InitSΤΑΤΕ = 1107;
 
     public final static int WriteTimeBINZero = 1100;
     public final static int WriteTimeBINOne = 1101;

@@ -301,7 +301,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
         super.onStart();
         // instantiate Reader Module
         this.cmd = RFIDModuleFactory.getInstance();
-        this.loggerSvc = new CAENLoggerService(this.cmd, this.mScanHandler);
+        this.loggerSvc = new CAENLoggerService(this.cmd, this.mScanHandler, Boolean.TRUE);
     }
 
     @Override
@@ -460,9 +460,10 @@ public class CAENLoggerActivity extends AppCompatActivity {
                     }
                     break;
                 case ReadLastSample:
-                    value = msg.getData().getString("body");
-                    if (!Strings.isEmptyOrWhitespace(value)) {
-                        tvLastSampleValue.setText(value);
+                    obj = extractData(String.class, msg.getData());
+                    if(obj != null) {
+                        String lastSample = (String) obj;
+                        tvLastSampleValue.setText(lastSample);
                     } else {
                         tvLastSampleValue.setText("ERR");
                     }

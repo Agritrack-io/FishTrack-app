@@ -1,20 +1,14 @@
 package io.agritrack.ui.tools.caen;
 
-import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdDisableLogging;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdEnableLogging;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadCTRLReg;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadInitTimeStamp;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadInterval;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadLastSample;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadSamples;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadSamplesCnt;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteInterval;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBINZero;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.InitSΤΑΤΕ;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadSΤΑΤΕ;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ResetSΤΑΤΕ;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 import static io.agritrack.ui.tools.caen.LoggerDialogDecorator.InitOp;
+import static io.agritrack.ui.tools.caen.LoggerDialogDecorator.LEVEL_INCREMENT;
+import static io.agritrack.ui.tools.caen.LoggerDialogDecorator.MAX_LEVEL;
 import static io.agritrack.ui.tools.caen.LoggerDialogDecorator.ReadOp;
 import static io.agritrack.ui.tools.caen.LoggerDialogDecorator.ResetOp;
 import static io.agritrack.ui.tools.caen.LoggerDialogDecorator.ValidOp;
@@ -45,13 +39,13 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.caen.api.CAENLoggerService;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
+import io.agritrack.caen.common.CAENState;
 
 /**
  * Component implementation of ILoggerDialog.
@@ -86,21 +80,22 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 
 
     protected final View.OnClickListener initBtnListener = v -> {
-        //...setup Init Button............
-        getActivity().runOnUiThread(() -> {
-            btnInit.setBackgroundResource(R.drawable.button_background);
-            btnInit.setText("Start Logger...");
-            startAnimation(getView(), btnInit);
-        });
-        // -------------------------------------
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+            FragmentActivity mActivity = getActivity();
+            //...setup Init Button............
+            mActivity.runOnUiThread(() -> {
+                btnInit.setBackgroundResource(R.drawable.button_background);
+                btnInit.setText("Start Logger...");
+                startAnimation(getView(), btnInit);
+            });
+
+            // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke reset() method of CAENLoggerService.
             loggerSvc.doEnableLogger(samplingInterval);
         } else {
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
         }
-        //mScanHandler.post(initLoggingThread);
     };
     //##############################################################
 
@@ -114,14 +109,11 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                 startAnimation(getView(), btnReset);
             });
 
-            // -------------------------------------
-            if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-                cmd.setFilterEPC(loggerEPC);
-                //invoke reset() method of CAENLoggerService.
-                loggerSvc.doResetLogger();
-            } else {
-                CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
-            }
+            // pass selected EPC as RFID filter
+            cmd.setFilterEPC(loggerEPC);
+            //invoke reset() method of CAENLoggerService.
+            loggerSvc.doResetLogger();
+
         } else {
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
         }
@@ -129,27 +121,23 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     //##############################################################
 
     private final View.OnClickListener readBtnListener = v -> {
-        FragmentActivity mActivity = getActivity();
-
-        //...setup Read Button............
-        mActivity.runOnUiThread(() -> {
-            btnRead.setBackgroundResource(R.drawable.button_background);
-            btnRead.setText("Reading Logger...");
-            startAnimation(getView(), btnRead);
-        });
-
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+            FragmentActivity mActivity = getActivity();
+            //...setup Read Button............
+            mActivity.runOnUiThread(() -> {
+                btnRead.setBackgroundResource(R.drawable.button_background);
+                btnRead.setText("Reading Logger...");
+                startAnimation(getView(), btnRead);
+            });
+
+            // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke read() method of CAENLoggerService.
             loggerSvc.doReadMeasurements();
+
         } else {
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
         }
-
-        //TODO:: since service will be used, Stop should be called befored READ, and reset afterwards...
-        //WARNING: once stopped the logger required RESET to be re-enabled...
-        //mScanHandler.post(stopLoggerThread);
-        // -------------------------------------
     };
     //##############################################################
 
@@ -361,71 +349,84 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             Object obj;
             Activity mActivity = (Activity) mContext;
             switch (msg.what) {
-                case ReadCTRLReg:
-                    break;
-                case ReadInitTimeStamp:
-                    obj = extractData(String.class, msg.getData());
+                case ReadSΤΑΤΕ:
+                    // stop btnRead animation
+                    stopAnimation();
+
+                    obj = extractData(CAENState.class, msg.getData());
                     if (obj != null) {
-                        String initTimeStamp = (String) obj;
-                    } else {
-                    }
-                    break;
-                case ReadInterval:
-                    obj = extractData(Short.class, msg.getData());
-                    if (obj != null) {
-                        samplingInterval = (Short) obj;
-                    } else {
-                        samplingInterval = DefaultInterval;
-                    }
-                    break;
-                case ReadSamplesCnt:
-                    obj = extractData(Short.class, msg.getData());
-                    if (obj != null) {
-                        Short valuesCnt = (Short) obj;
-                    } else {
-                    }
-                    break;
-                case ReadLastSample:
-                    obj = extractData(String.class, msg.getData());
-                    if (obj != null) {
-                        String lastSampleValue = (String) obj;
-                    } else {
-                    }
-                    mActivity.runOnUiThread(() -> {
-                        btnReset.setText("Cleared logger.");
-                        btnReset.setOnClickListener(null);
-                        stopAnimation();
-                    });
-                    break;
-                case ReadSamples:
-                    obj = extractData(ArrayList.class, msg.getData());
-                    if (obj != null) {
-                        List samples = (List) obj;
-                        short valuesRead = !CollectionUtils.isEmpty(samples) ? (short) samples.size() : 0;
-                        if (valuesRead > 0) {
+                        CAENState state = (CAENState) obj;
+                        Short valuesRead = state.getSamplesCnt(); // !CollectionUtils.isEmpty(state.getSamples()) ? (short) samples.size() : 0;
+
+                        // set the appropriate text, based on the operation outcome.
+                        if (state.canProceed &&  valuesRead != null && valuesRead > 0 && !CollectionUtils.isEmpty(state.getSamples())) {
                             mActivity.runOnUiThread(() -> {
                                 btnRead.setText(String.format("READ %s measurements.", valuesRead));
                                 btnRead.setOnClickListener(null);
-                                stopAnimation();
                             });
-                            displayMeasurementsDialog(samples);
+                            //displayMeasurementsDialog(samples);
                             btnReset.callOnClick();
                         } else {
                             mActivity.runOnUiThread(() -> {
-                                btnRead.setText("Failed. Press the button again.");
-                                stopAnimation();
+                                btnRead.setText("Error on reading. Press the button again.");
                             });
                         }
+                    } else {
+                        mActivity.runOnUiThread(() -> {
+                            btnRead.setText("Failed. Press the button again.");
+                        });
                     }
                     break;
-                case WriteTimeBINZero:
-                case WriteInterval:
+                case ResetSΤΑΤΕ:
+                    // stop btnReset animation
+                    stopAnimation();
+
+                    obj = extractData(CAENState.class, msg.getData());
+                    if (obj != null) {
+                        CAENState state = (CAENState) obj;
+                        boolean successfulReset = state.getOpReset() == 1 && state.canProceed;
+                        if (successfulReset) {
+                            mActivity.runOnUiThread(() -> {
+                                btnReset.setText("Cleared (reset) logger.");
+                                btnReset.setOnClickListener(null);
+                            });
+                            // after Reset, initialize the logger and start logging...
+                            btnInit.callOnClick();
+                        } else {
+                            mActivity.runOnUiThread(() -> {
+                                btnReset.setText("Error on resetting logger...\nPress button again!");
+                            });
+                        }
+                    } else {
+                        mActivity.runOnUiThread(() -> {
+                            btnRead.setText("Failed. Press the button again.");
+                        });
+                    }
                     break;
-                case CmdRESET:
-                    btnInit.callOnClick();
-                    break;
-                case CmdDisableLogging:
-                case CmdEnableLogging:
+                case InitSΤΑΤΕ:
+                    // stop btnInit animation
+                    stopAnimation();
+
+                    obj = extractData(CAENState.class, msg.getData());
+                    if (obj != null) {
+                        CAENState state = (CAENState) obj;
+                        boolean successfulInit = state.getOpLogging() == 1 && state.canProceed;
+                        if (successfulInit) {
+                            mActivity.runOnUiThread(() -> {
+                                btnInit.setText("Started logging...");
+                                btnInit.setOnClickListener(null);
+                                dismiss();
+                            });
+                        } else {
+                            mActivity.runOnUiThread(() -> {
+                                btnReset.setText("Error on initializing logger...\nPress button again!");
+                            });
+                        }
+                    } else {
+                        mActivity.runOnUiThread(() -> {
+                            btnRead.setText("Failed. Press the button again.");
+                        });
+                    }
                     break;
                 default:
                     break;
@@ -436,10 +437,19 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 
     private Object extractData(Class clazz, Bundle data) {
         Class dataClazz = data.get("body").getClass();
+
+        // Failed to read value from Logger.
+        if(dataClazz.getSimpleName().equalsIgnoreCase(String.class.getSimpleName()) && "N/A".equalsIgnoreCase(data.getString("body"))) {
+            return null;
+        }
+
+        // Incompatible data types.
         if (!dataClazz.getSimpleName().equalsIgnoreCase(clazz.getSimpleName()))
-            throw new RuntimeException("Incompatible Types for extraction!!");
+            throw new RuntimeException(String.format("Incompatible Types [extracted %s vs expected: %s] for extraction!!", dataClazz.getSimpleName(), clazz.getSimpleName()));
 
         switch (clazz.getSimpleName()) {
+            case "CAENState":
+                return data.getSerializable("body");
             case "String":
                 return data.getString("body");
             case "Short":

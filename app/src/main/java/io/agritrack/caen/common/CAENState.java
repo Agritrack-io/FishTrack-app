@@ -1,21 +1,41 @@
 package io.agritrack.caen.common;
 
+import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.RequiresApi;
+
 import com.google.android.gms.common.util.Strings;
 import com.uhf.api.cls.Reader;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class CAENState {
+public class CAENState implements Serializable {
+
+    private static final String TAG = "CAENState";
     private final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-    public boolean canProceed = true;
+    // keeps the OP result, to decide whether to proceed to next step or not.
+    public String path = "";
+    public Boolean canProceed = true;
 
-    private boolean highPower = false;
-    private boolean highSensitivity = false;
-    public boolean reset = false;
-    public Integer logging = null;
+    //--------------------------------------
+    //-- 1: True, 0: False, null: Failure --
+    //--------------------------------------
+    private Integer opReset = null;
+    private Integer opLogging = null;
+    private Integer opHighPower = null;
+    private Integer opHighSensitivity = null;
+    private Integer opWriteCurrentTS = null;
+    private Integer opWriteBinZero = null;
+    private Integer opWriteBinOne = null;
+    private Integer opWriteInterval = null;
+
+    //------------------------------
     public String fwRev = null;
     public String hwRev = null;
     public String statusReg = null;
@@ -23,49 +43,53 @@ public class CAENState {
     public String initDateTime = null;
     public String shippingDate = null;
     public String stopDate = null;
+
+    //------------------------------
     public Short timeBin = null;
     public Short interval = null;
     public Short samplesCnt = null;
-    public Double lastSample = null;
-    public List<String[]> samples = null;
-    private boolean writeCurrentTS = false;
-    private boolean writeBinZero = false;
-    private boolean writeBinOne = false;
-    private boolean writeInterval = false;
 
+    //------------------------------
+    public Double lastSample = null;
+
+    //------------------------------
+    public List<String[]> samples = null;
+
+    public CAENState() {}
 
     public CAENState forHighPower(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.highPower = Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opHighPower = Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 1 : 0;
         return this;
     }
 
     public CAENState forLowPower(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.highPower = Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opHighPower = Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 1 : 0;
         return this;
     }
 
     public CAENState forHighSensitivity(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.highSensitivity = Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opHighSensitivity = Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 1 : 0;
         return this;
     }
 
     public CAENState forLowSensitivity(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.highSensitivity = Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opHighSensitivity = Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 1 : 0;
         return this;
     }
 
     public CAENState forReset(Object val) {
+        this.path += ":Reset";
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.reset = Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opReset = Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 1 : 0;
         return this;
     }
 
@@ -80,26 +104,6 @@ public class CAENState {
         String rs = (String) val;
         this.canProceed = !Strings.isEmptyOrWhitespace(rs);
         this.hwRev = rs;
-        return this;
-    }
-
-    public CAENState forCTRLRevisions(Object val) {
-        String[] rs = (String[]) val;
-        this.canProceed = rs != null && rs.length == 3 && !"N/A".equalsIgnoreCase(rs[0]) && !"N/A".equalsIgnoreCase(rs[1]) && !"N/A".equalsIgnoreCase(rs[2]);
-        this.fwRev = rs[0];
-        this.hwRev = rs[1];
-        this.ctrlReg = rs[2];
-        return this;
-    }
-
-    public CAENState forSamplesInfo(Object val) {
-        String[] rs = (String[]) val;
-        this.canProceed = rs != null && rs.length == 3 && !"N/A".equalsIgnoreCase(rs[0]) && !"N/A".equalsIgnoreCase(rs[1]) && !"N/A".equalsIgnoreCase(rs[2]) && !"N/A".equalsIgnoreCase(rs[3]);
-        this.lastSample = "N/A".equalsIgnoreCase(rs[0]) ? Double.NaN : Double.valueOf(rs[0]);
-        this.samplesCnt = "N/A".equalsIgnoreCase(rs[0]) ? -1 : Short.valueOf(rs[1]);
-        this.shippingDate = rs[2];
-        this.initDateTime = rs[2];
-        this.stopDate = rs[3];
         return this;
     }
 
@@ -121,20 +125,6 @@ public class CAENState {
         String rs = (String) val;
         this.canProceed = !Strings.isEmptyOrWhitespace(rs);
         this.initDateTime = rs;
-        return this;
-    }
-
-    public CAENState forShippingDate(Object val) {
-        String rs = (String) val;
-        this.canProceed = !Strings.isEmptyOrWhitespace(rs);
-        this.shippingDate = rs;
-        return this;
-    }
-
-    public CAENState forStopDate(Object val) {
-        String rs = (String) val;
-        this.canProceed = !Strings.isEmptyOrWhitespace(rs);
-        this.stopDate = rs;
         return this;
     }
 
@@ -176,43 +166,43 @@ public class CAENState {
     public CAENState forEnableLogging(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.logging = this.canProceed ? 1 : null;
+        this.opLogging = this.canProceed ? 1 : null;
         return this;
     }
 
     public CAENState forDisableLogging(Object val) {
+        this.path += ":DisableLogging";
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.logging = this.canProceed ? 0 : null;
+        this.opLogging = this.canProceed ? 0 : null;
         return this;
     }
 
     public CAENState writeCurrentDatetime(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.writeCurrentTS = !Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opWriteCurrentTS = !Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 0 : 1;
         return this;
-
     }
 
     public CAENState writeTimeBinZERO(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.writeBinZero = !Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opWriteBinZero = !Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 0 : 1;
         return this;
     }
 
     public CAENState writeTimeBinONE(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.writeBinOne = !Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opWriteBinOne = !Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 0 : 1;
         return this;
     }
 
     public CAENState writeInterval(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.writeInterval = !Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opWriteInterval = !Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 0 : 1;
         return this;
     }
 
@@ -233,11 +223,27 @@ public class CAENState {
         return epoch;
     }
 
+    public Integer getOpReset() {
+        return opReset;
+    }
+
+    public Integer getOpLogging() {
+        return opLogging;
+    }
+
+    public Short getSamplesCnt() {
+        return samplesCnt;
+    }
+
+    public List<String[]> getSamples() {
+        return samples;
+    }
+
     @Override
     public String toString() {
         return "CAENState{" +
                 "canProceed=" + canProceed +
-                ", logging=" + logging +
+                ", logging=" + opLogging +
                 ", fwRev='" + fwRev + '\'' +
                 ", hwRev='" + hwRev + '\'' +
                 ", statusReg='" + statusReg + '\'' +

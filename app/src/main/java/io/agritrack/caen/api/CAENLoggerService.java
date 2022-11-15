@@ -3,6 +3,7 @@ package io.agritrack.caen.api;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdDisableLogging;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdEnableLogging;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.InitSΤΑΤΕ;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadCTRLReg;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadFWRevision;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadHWRevision;
@@ -12,9 +13,9 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadLastSample;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadSTATUSReg;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadSamples;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadSamplesCnt;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadShippingDate;
-import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadStopDate;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadSΤΑΤΕ;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadTimeBIN;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ResetSΤΑΤΕ;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteInterval;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBINZero;
 
@@ -39,6 +40,12 @@ public class CAENLoggerService {
     private final ExecutorService cmdPool;
     private final Handler mHandler;
     private final ICAEN_API cmd;
+    private Boolean sendMessagesToHandler = Boolean.FALSE;
+
+    public CAENLoggerService(ICAEN_API logger, Handler mScanHandler, Boolean sendMessages) {
+        this(logger, mScanHandler);
+        this.sendMessagesToHandler = sendMessages;
+    }
 
     public CAENLoggerService(ICAEN_API logger, Handler mScanHandler) {
         cmdPool = Executors.newCachedThreadPool();
@@ -57,21 +64,31 @@ public class CAENLoggerService {
             // instantiate the thread pool required by CompletableFuture instances following...
             final ExecutorService actnPool = Executors.newSingleThreadExecutor();
 
-            // begin by stop Logging.
-            CompletableFuture<CAENState> future = execDisableLogging(new CAENState(), actnPool);
-
-            // reset logger to clear memory.
-            future.thenCompose(x -> execReset(x, actnPool));
+            // begin by Resetting logger (it simultaneously stops Logging too).
+            CompletableFuture<CAENState> future = execReset(new CAENState(), actnPool);
+            CAENState _state = future.get();
 
             // wait for reset to complete
-            future.thenCompose(x -> park3Second(x, actnPool));
+            future = this.park4Second(_state, actnPool);
+            _state = future.get();
+            //future.thenCompose(x -> park3Second(x, actnPool));
 
             // reads the current state of CTRL register.
-            future.thenCompose(x -> execReadControlRegister(x, actnPool));
+            future = this.execReadControlRegister(_state, actnPool);
+            _state = future.get();
+
+            if(_state.ctrlReg.endsWith("1")) {
+                future = this.park4Second(_state, actnPool);
+                _state = future.get();
+                future = this.execReadControlRegister(_state, actnPool);
+                _state = future.get();
+            }
 
             // temporary...
-            CAENState result = future.join();
-            System.out.println("doResetLogger()-->" + result);
+            //CAENState _state = future.join();
+            System.out.println("doResetLogger()-->" + _state);
+
+            mHandler.sendMessage(createMessage(ResetSΤΑΤΕ, _state));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,19 +112,26 @@ public class CAENLoggerService {
             future.thenCompose(x -> execEnableLogging(x, actnPool));
 
             // temporary...
-            CAENState result = future.join();
-            System.out.println("doEnableLogger()-->" + result);
+            CAENState _state = future.join();
+            System.out.println("doEnableLogger()-->" + _state);
 
             //--------------------------------------------------
-            CompletableFuture<CAENState> futureTemp = this.park3Second(new CAENState(), actnPool);
+            CompletableFuture<CAENState> futureTemp = this.park4Second(_state, actnPool);
 
             // read CTRL register to config RESET is completed.
-            futureTemp.thenCompose(x->execReadControlRegister(x, actnPool));
+            futureTemp.thenCompose(x -> execReadControlRegister(x, actnPool));
 
             // read Last Sample value
-            futureTemp.thenCompose(x->execReadLastSample(x, actnPool));
-            futureTemp.join();
+            futureTemp.thenCompose(x -> execReadLastSample(x, actnPool));
+            _state = futureTemp.join();
             //--------------------------------------------------
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(ReadLastSample, _state.lastSample));
+            } else {
+                mHandler.sendMessage(createMessage(InitSΤΑΤΕ, _state));
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -249,6 +273,7 @@ public class CAENLoggerService {
                 // temporary...
                 CAENState result = future.join();
                 System.out.println("doReadMeasurements()-->" + result);
+                mHandler.sendMessage(createMessage(ReadSΤΑΤΕ, _state));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -301,7 +326,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.forDisableLogging(cmd.DisableLogging()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(CmdDisableLogging, _state.logging));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(CmdDisableLogging, _state.getOpLogging()));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -317,7 +345,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.forEnableLogging(cmd.EnableLogging()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(CmdEnableLogging, _state.logging));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(CmdEnableLogging, _state.getOpLogging()));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -333,7 +364,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.forReset(cmd.Reset()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(CmdRESET, _state.reset));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(CmdRESET, _state.getOpReset()));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -364,7 +398,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.writeTimeBinZERO(cmd.WriteTimeBinZERO()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(WriteTimeBINZero, _state.timeBin));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(WriteTimeBINZero, _state.timeBin));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -395,7 +432,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.writeInterval(cmd.WriteInterval(samplingInterval)), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(WriteInterval, _state.interval));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(WriteInterval, _state.interval));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -414,7 +454,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.forSTATUS(cmd.ReadStatusRegister()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(ReadSTATUSReg, _state.statusReg));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(ReadSTATUSReg, _state.statusReg));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -430,7 +473,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.forCTRL(cmd.ReadControlRegister()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(ReadCTRLReg, _state.ctrlReg));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(ReadCTRLReg, _state.ctrlReg));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -446,7 +492,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.forFWRevision(cmd.ReadFWRevision()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(ReadFWRevision, _state.fwRev));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(ReadFWRevision, _state.fwRev));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -462,7 +511,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.forHWRevision(cmd.ReadHWRevision()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(ReadHWRevision, _state.hwRev));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(ReadHWRevision, _state.hwRev));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -478,7 +530,9 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.forLastSample(cmd.ReadLastSample()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(ReadLastSample, _state.lastSample));
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(ReadLastSample, _state.lastSample));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -494,7 +548,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.forTimeBin(cmd.ReadTimeBIN()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(ReadTimeBIN, _state.timeBin));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(ReadTimeBIN, _state.timeBin));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -510,39 +567,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.forInitDateTime(cmd.ReadInitDatetime()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(ReadInitTimeStamp, _state.initDateTime));
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return _future;
-    }
 
-    private CompletableFuture<CAENState> execReadShippingDate(CAENState previousState, ExecutorService threadPool) {
-        CompletableFuture<CAENState> _future = CompletableFuture.completedFuture(previousState);
-        try {
-            if (!canProceed(previousState)) {
-                return _future;
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(ReadInitTimeStamp, _state.initDateTime));
             }
-
-            _future = CompletableFuture.supplyAsync(() -> previousState.forShippingDate(cmd.ReadShippingDatetime()), threadPool);
-            CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(ReadShippingDate, _state.shippingDate));
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return _future;
-    }
-
-    private CompletableFuture<CAENState> execReadStopDate(CAENState previousState, ExecutorService threadPool) {
-        CompletableFuture<CAENState> _future = CompletableFuture.completedFuture(previousState);
-        try {
-            if (!canProceed(previousState)) {
-                return _future;
-            }
-
-            _future = CompletableFuture.supplyAsync(() -> previousState.forStopDate(cmd.ReadStopDatetime()), threadPool);
-            CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(ReadStopDate, _state.stopDate));
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -558,7 +586,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.forInterval(cmd.ReadInterval()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(ReadInterval, _state.interval));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(ReadInterval, _state.interval));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -574,7 +605,10 @@ public class CAENLoggerService {
 
             _future = CompletableFuture.supplyAsync(() -> previousState.forSamplesCount(cmd.ReadSamplesCount()), threadPool);
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(ReadSamplesCnt, _state.samplesCnt));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(ReadSamplesCnt, _state.samplesCnt));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -627,7 +661,10 @@ public class CAENLoggerService {
             }
 
             CAENState _state = _future.exceptionally(x -> null).get();
-            mHandler.sendMessage(createMessage(ReadSamples, _state.samples));
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(ReadSamples, _state.samples));
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -636,10 +673,10 @@ public class CAENLoggerService {
 
 
     // sleep for 1.0 second before resume flow.
-    private CompletableFuture<CAENState> park3Second(CAENState previousState, ExecutorService threadPool) {
+    private CompletableFuture<CAENState> park4Second(CAENState previousState, ExecutorService threadPool) {
         try {
             CompletableFuture.supplyAsync(() -> {
-                LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(3L));
+                LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(4L));
                 return null;
             }, threadPool).get();
         } catch (ExecutionException | InterruptedException e) {
@@ -656,7 +693,9 @@ public class CAENLoggerService {
         Bundle b = new Bundle();
 
         if (value != null) {
-            if (value instanceof String)
+            if (value instanceof CAENState)
+                b.putSerializable("body", (CAENState)value);
+            else if (value instanceof String)
                 b.putString("body", (String) value);
             else if (value instanceof Short)
                 b.putShort("body", (short) value);
