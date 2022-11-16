@@ -77,16 +77,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
-    //
-    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Log.e("Activity result", "OK");
-                    // There are no request codes
-                    Intent data = result.getData();
-                }
-            });
+
     private Button btnCurrentBinScan, btnAddCatch, btnDeleteCatch, btnFillBin;
     private TextView tvCurrentBin, tvBinWeight, tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
     private RecyclerView rvWeightBatchesBin;

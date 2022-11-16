@@ -3,7 +3,7 @@ package io.agritrack.ui.tools.caen;
 import androidx.fragment.app.FragmentManager;
 
 public interface ILoggerDialog {
-    enum State {STOP_LOGGER, COUNT_SAMPLES, READ_VALUES, RESET, INIT};
+    enum StatesEnum {STOP_LOGGER, COUNT_SAMPLES, READ_VALUES, RESET, INIT};
 
     String TAG = "CAENLoggerDialogFragment";
     String LOGGER_EPC = "LoggerEPC";

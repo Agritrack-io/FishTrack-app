@@ -182,11 +182,8 @@ public class CAENLoggerActivity extends AppCompatActivity {
                 ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEpc, null);
                 ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
                 readLoggerDecorator.show(fm);
-
-                //InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
-                //initLoggerDecorator.show(fm);
-
             }
+            // -------------------------------------
 
             // Hide ProgressButton
             runOnUiThread(() -> btnDialog.hideLoading());

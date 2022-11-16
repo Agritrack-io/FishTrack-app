@@ -274,20 +274,6 @@ public class CAENLoggerService {
     }
 
     //--- private methods ----------------------------------------
-    private CompletableFuture<CAENState> enableHighPower(CAENState previousState, ExecutorService threadPool) {
-        if (!canProceed(previousState)) {
-            return CompletableFuture.completedFuture(previousState);
-        }
-        return CompletableFuture.supplyAsync(() -> previousState.forHighPower(cmd.HighPowerLevel()), threadPool);
-    }
-
-    private CompletableFuture<CAENState> enableLowPower(CAENState previousState, ExecutorService threadPool) {
-        if (!canProceed(previousState)) {
-            return CompletableFuture.completedFuture(previousState);
-        }
-        return CompletableFuture.supplyAsync(() -> previousState.forLowPower(cmd.HighPowerLevel()), threadPool);
-    }
-
     private CompletableFuture<CAENState> enableHighSensitivity(CAENState previousState, ExecutorService threadPool) {
         if (!canProceed(previousState)) {
             return CompletableFuture.completedFuture(previousState);
@@ -657,7 +643,7 @@ public class CAENLoggerService {
     }
 
 
-    // sleep for 1.0 second before resume flow.
+    // sleep for 4.0 second before resume flow.
     private CompletableFuture<CAENState> park4Second(CAENState previousState, ExecutorService threadPool) {
         try {
             CompletableFuture.supplyAsync(() -> {

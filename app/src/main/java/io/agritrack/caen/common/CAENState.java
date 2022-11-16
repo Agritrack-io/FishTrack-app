@@ -14,14 +14,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import io.agritrack.ui.tools.caen.ILoggerDialog;
+import io.agritrack.ui.tools.caen.ILoggerDialog.StatesEnum;
+
 public class CAENState implements Serializable {
 
     private static final String TAG = "CAENState";
     private final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
+    private String loggerEPC = null;
+    private String assetEPC = null;
+    private String productionLane = null;
+
     // keeps the OP result, to decide whether to proceed to next step or not.
     public String path = "";
     public Boolean canProceed = true;
+    public StatesEnum state = null;
 
     //--------------------------------------
     //-- 1: True, 0: False, null: Failure --
@@ -56,6 +64,12 @@ public class CAENState implements Serializable {
     public List<String[]> samples = null;
 
     public CAENState() {}
+
+    public CAENState(String loggerTag, String assetTag, String productionLane) {
+        this.loggerEPC = loggerTag;
+        this.assetEPC = assetTag;
+        this.productionLane = productionLane;
+    }
 
     public CAENState forHighPower(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
@@ -237,6 +251,30 @@ public class CAENState implements Serializable {
 
     public List<String[]> getSamples() {
         return samples;
+    }
+
+    public String getLoggerEPC() {
+        return loggerEPC;
+    }
+
+    public void setLoggerEPC(String loggerEPC) {
+        this.loggerEPC = loggerEPC;
+    }
+
+    public String getAssetEPC() {
+        return assetEPC;
+    }
+
+    public void setAssetEPC(String assetEPC) {
+        this.assetEPC = assetEPC;
+    }
+
+    public String getProductionLane() {
+        return productionLane;
+    }
+
+    public void setProductionLane(String productionLane) {
+        this.productionLane = productionLane;
     }
 
     @Override

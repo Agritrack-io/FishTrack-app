@@ -35,6 +35,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
@@ -57,7 +58,7 @@ import io.agritrack.caen.common.CAENState;
  */
 public class LoggerDialogFragment extends DialogFragment implements TimeAnimator.TimeListener, ILoggerDialog {
     // Local handler that receives the RFID scanner results.
-    private CAENCommandsHandler mScanHandler;
+    private Handler mScanHandler;
     private Context mContext;
 
     private Button btnRead, btnInit, btnReset, btnValidate;
@@ -76,6 +77,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     private ICAEN_API cmd;
 
     //-------
+    private MutableLiveData<CAENState> stateResult;
     private short samplingInterval = DefaultInterval;
 
 
@@ -192,6 +194,9 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         return frag;
     }
 
+    public void setStateResult(MutableLiveData<CAENState> stateResult) {
+        this.stateResult = stateResult;
+    }
 
     @Override
     public void show(FragmentManager fm) {
@@ -356,13 +361,23 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                     obj = extractData(CAENState.class, msg.getData());
                     if (obj != null) {
                         CAENState state = (CAENState) obj;
-                        Short valuesRead = state.getSamplesCnt(); // !CollectionUtils.isEmpty(state.getSamples()) ? (short) samples.size() : 0;
+                        state.state = StatesEnum.READ_VALUES;
 
+                        Short valuesRead = state.getSamplesCnt();
                         // set the appropriate text, based on the operation outcome.
                         if (state.canProceed &&  valuesRead != null && valuesRead > 0 && !CollectionUtils.isEmpty(state.getSamples())) {
+                            // pass business-related params
+                            state.setLoggerEPC(loggerEPC);
+                            state.setAssetEPC(assetEPC);
+                            state.setProductionLane(productionLane);
+
                             mActivity.runOnUiThread(() -> {
                                 btnRead.setText(String.format("READ %s measurements.", valuesRead));
                                 btnRead.setOnClickListener(null);
+
+                                if(stateResult != null) {
+                                    stateResult.setValue(state);
+                                }
                             });
                             //displayMeasurementsDialog(samples);
                             btnReset.callOnClick();
@@ -384,6 +399,8 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                     obj = extractData(CAENState.class, msg.getData());
                     if (obj != null) {
                         CAENState state = (CAENState) obj;
+                        state.state = StatesEnum.RESET;
+
                         boolean successfulReset = state.getOpReset() == 1 && state.canProceed;
                         if (successfulReset) {
                             mActivity.runOnUiThread(() -> {
@@ -410,8 +427,15 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                     obj = extractData(CAENState.class, msg.getData());
                     if (obj != null) {
                         CAENState state = (CAENState) obj;
+                        state.state = StatesEnum.INIT;
+
                         boolean successfulInit = state.getOpLogging() == 1 && state.canProceed;
                         if (successfulInit) {
+                            // pass business-related params
+                            state.setLoggerEPC(loggerEPC);
+                            state.setAssetEPC(assetEPC);
+                            state.setProductionLane(productionLane);
+
                             mActivity.runOnUiThread(() -> {
                                 btnInit.setText("Started logging...");
                                 btnInit.setOnClickListener(null);
@@ -433,7 +457,6 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             }
         }
     }
-
 
     private Object extractData(Class clazz, Bundle data) {
         Class dataClazz = data.get("body").getClass();
