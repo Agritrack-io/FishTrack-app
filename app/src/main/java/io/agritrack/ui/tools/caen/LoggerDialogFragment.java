@@ -194,10 +194,6 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         return frag;
     }
 
-    public void setStateResult(MutableLiveData<CAENState> stateResult) {
-        this.stateResult = stateResult;
-    }
-
     @Override
     public void show(FragmentManager fm) {
         this.show(fm, ILoggerDialog.TAG);
@@ -206,6 +202,11 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     @Override
     public void setButtonsVisibility(int buttonBits) {
         this.buttonVisibilityBits = buttonBits;
+    }
+
+    @Override
+    public void setStateObserver(MutableLiveData<CAENState> stateResult) {
+        this.stateResult = stateResult;
     }
 
     @Override
@@ -271,7 +272,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         // Press First Button
         if ((ReadOp & this.buttonVisibilityBits) == ReadOp) {
             btnRead.callOnClick();
-        } else if ((ResetOp & this.buttonVisibilityBits) == ResetOp) {
+        } else if ((InitOp & this.buttonVisibilityBits) == InitOp) {
             btnReset.callOnClick();
         }
     }

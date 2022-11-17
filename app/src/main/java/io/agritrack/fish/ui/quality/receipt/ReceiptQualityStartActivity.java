@@ -470,10 +470,12 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             BinInfo tmpBin = db.binInfoDAO().getByRFId(binEPC);
             if (tmpBin != null && tmpBin.initedAt != null) {
                 ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, tmpBin.initedAt);
+                loggerDlg.setStateObserver(stateResult);
                 ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
                 readLoggerDecorator.show(fm);
             } else {
                 ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
+                loggerDlg.setStateObserver(stateResult);
                 ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
                 readLoggerDecorator.show(fm);
             }

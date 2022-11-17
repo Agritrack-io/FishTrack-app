@@ -180,8 +180,10 @@ public class CAENLoggerActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(loggerEpc)) {
                 FragmentManager fm = getSupportFragmentManager();
                 ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEpc, null);
-                ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
-                readLoggerDecorator.show(fm);
+                //ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
+                //readLoggerDecorator.show(fm);
+                InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
+                initLoggerDecorator.show(fm);
             }
             // -------------------------------------
 

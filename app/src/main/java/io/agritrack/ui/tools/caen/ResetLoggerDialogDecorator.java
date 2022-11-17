@@ -6,7 +6,7 @@ public class ResetLoggerDialogDecorator extends LoggerDialogDecorator {
 
     public ResetLoggerDialogDecorator(ILoggerDialog dlg) {
         super(dlg);
-        super.setButtonsVisibility(ResetOp);
+        super.setButtonsVisibility(InitOp);
     }
 
     @Override

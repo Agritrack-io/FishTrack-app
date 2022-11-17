@@ -1,6 +1,9 @@
 package io.agritrack.ui.tools.caen;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
+
+import io.agritrack.caen.common.CAENState;
 
 public interface ILoggerDialog {
     enum StatesEnum {STOP_LOGGER, COUNT_SAMPLES, READ_VALUES, RESET, INIT};
@@ -15,4 +18,6 @@ public interface ILoggerDialog {
     void show(FragmentManager fm);
 
     void setButtonsVisibility(int buttonBits);
+
+    void setStateObserver(MutableLiveData<CAENState> stateResult);
 }

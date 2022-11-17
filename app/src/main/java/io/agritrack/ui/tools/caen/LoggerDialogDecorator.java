@@ -1,6 +1,9 @@
 package io.agritrack.ui.tools.caen;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
+
+import io.agritrack.caen.common.CAENState;
 
 public class LoggerDialogDecorator implements ILoggerDialog {
     public static final int ReadOp  = 0x0001;
@@ -24,6 +27,11 @@ public class LoggerDialogDecorator implements ILoggerDialog {
     @Override
     public void setButtonsVisibility(int buttonBits) {
         loggerDlg.setButtonsVisibility(buttonBits);
+    }
+
+    @Override
+    public void setStateObserver(MutableLiveData<CAENState> stateResult) {
+        loggerDlg.setStateObserver(stateResult);
     }
 }
 
