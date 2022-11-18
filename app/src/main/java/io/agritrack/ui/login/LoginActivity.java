@@ -360,7 +360,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             syncHarvestBinsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
 
             // sync only Platform assets for this site
-            Call<List<AssetDTO>> syncPlatformsAsyncCall = syncService.getAssetsBySiteAndType(siteId,"Platform","Bearer " + token);
+            Call<List<AssetDTO>> syncPlatformsAsyncCall = syncService.getAssetsByPlatformType("Bearer " + token);
             syncPlatformsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
 
             // sync Cage Details

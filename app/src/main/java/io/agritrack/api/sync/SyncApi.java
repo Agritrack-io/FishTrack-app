@@ -67,6 +67,10 @@ public interface SyncApi {
     Call<List<AssetDTO>> getAssetsByNetType(@Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
+    @GET("/asset/type/PLATFORM")
+    Call<List<AssetDTO>> getAssetsByPlatformType(@Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/user/site/{siteId}")
     Call<List<AppUserDTO>> getUsersBySiteId(@Path("siteId") UUID siteId, @Header("Authorization") String token);
 

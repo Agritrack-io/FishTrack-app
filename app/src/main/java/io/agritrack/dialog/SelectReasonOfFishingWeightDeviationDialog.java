@@ -114,7 +114,7 @@ public class SelectReasonOfFishingWeightDeviationDialog implements AdapterView.O
     @SuppressLint("StringFormatMatches")
     private void findViews() {
         tvTitle = dialog.findViewById(R.id.tv_title);
-        tvTitle.setText(getAppContext().getString(R.string.select_reason_of_weight_deviation, String.valueOf(recFishing.reqWeight-recFishing.totalFishWeight)));
+        tvTitle.setText(getAppContext().getString(R.string.select_reason_of_weight_deviation, String.valueOf(Math.abs(recFishing.reqWeight-recFishing.totalFishWeight))));
         lvReasons = dialog.findViewById(R.id.lvReasons);
         btnOk = (Button) dialog.findViewById(R.id.btnOk);
     }

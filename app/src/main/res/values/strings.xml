@@ -679,6 +679,6 @@
     <string name="false_tags">False tags</string>
     <string name="scan_false_assets">Scan false</string>
     <string name="not_encoded_tags">" not encoded items have been detected"</string>
-    <string name="capacity">Bins capacity:</string>
-    <string name="truck_capacity">Truck capacity (bins):</string>
+    <string name="capacity">Capacity (bins):</string>
+    <string name="truck_capacity">Capacity (bins):</string>
 </resources>

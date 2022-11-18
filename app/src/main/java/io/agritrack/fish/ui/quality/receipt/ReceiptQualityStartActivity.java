@@ -82,7 +82,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     private BinWeightCageAdapter adapterBins;
     private ImageButton ivDeleteBin;
     private List<String> scannedBinEPCs;
-    private String loggerEPC, binEPC, productLot;
+    private String loggerEPC, binEPC;
     private ImageView ivSupport;
     private Button btnScanBin;
     private SupportDialog supportDialog;

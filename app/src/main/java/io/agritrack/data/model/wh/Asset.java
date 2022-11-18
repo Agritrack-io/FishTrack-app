@@ -10,8 +10,6 @@ import java.util.UUID;
 @Entity(tableName = "asset")
 public class Asset {
 
-
-
     public Asset() {
         this.id = UUID.randomUUID();
     }

@@ -662,6 +662,6 @@
     <string name="false_tags">Λάθος ετικέτες</string>
     <string name="scan_false_assets">Βρες τις λάθος</string>
     <string name="not_encoded_tags">" απρογραμμάτιστες ετικέτες βρέθηκαν"</string>
-    <string name="capacity">Χωρητικότητα βουτών:</string>
+    <string name="capacity">Χωρητικότητα σε βούτες:</string>
     <string name="truck_capacity">Χωρητικότητα σε βούτες:</string>
 </resources>

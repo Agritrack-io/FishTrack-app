@@ -18,6 +18,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fruit.ui.FruitHomeActivity;
+import io.agritrack.hotel.ui.HotelHomeActivity;
+import io.agritrack.ui.service.LocalPreferences;
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private static final String TAG = CrashHandler.class.getSimpleName();
@@ -74,7 +77,16 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     }
 
     private void restartApplication(){
-        Intent intent = new Intent(this.mContext, FishHomeActivity.class);
+        String product = LocalPreferences.getActivePRODUCT();
+        Intent intent = new Intent();
+        //[FISH, TOMATO, HOTEL, MILK]
+        if (product.equalsIgnoreCase("FISH")){
+            intent = new Intent(this.mContext, FishHomeActivity.class);
+        } else if (product.equalsIgnoreCase("TOMATO")){
+            intent = new Intent(this.mContext, FruitHomeActivity.class);
+        } else if (product.equalsIgnoreCase("HOTEL")){
+            intent = new Intent(this.mContext, HotelHomeActivity.class);
+        }
 
         intent.putExtra("crash",true);
 

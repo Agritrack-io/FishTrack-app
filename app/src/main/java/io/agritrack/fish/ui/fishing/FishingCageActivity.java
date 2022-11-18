@@ -261,6 +261,12 @@ public class FishingCageActivity extends AppCompatActivity {
         FishingRecord hvst = recFishing;
 
         tvPlatformRFID.setText(hvst.platformRFID != null ? hvst.platformRFID.substring(14) : null);
+        Asset platform = db.assetDAO().getAssetByEpc(hvst.platformRFID);
+        if (platform!=null) {
+            if (platform.capacity != null) {
+                tvCapacityCount.setText(String.valueOf(platform.capacity));
+            }
+        }
         tvCageRFID.setText(hvst.cageRFID != null ? hvst.cageRFID.substring(14) : null);
     }
 
@@ -342,7 +348,9 @@ public class FishingCageActivity extends AppCompatActivity {
                                 String label = tag.substring(3);
                                 if (tag.startsWith(Filters.RFID_PLATFORM)) {
                                     Asset platform = db.assetDAO().getAssetByEpc(epc);
-                                    tvCapacityCount.setText(platform.capacity);
+                                    if (platform.capacity!=null) {
+                                        tvCapacityCount.setText(String.valueOf(platform.capacity));
+                                    }
                                     tvPlatformRFID.setText(label);
                                     recFishing.platformRFID = epc;
                                 } else if (tag.startsWith(Filters.RFID_CAGE)) {
