@@ -4,9 +4,11 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.fish.state.GlobalState.recQuality;
 import static io.agritrack.ui.custom.CustomToast.CToast;
+import static io.agritrack.ui.tools.caen.ILoggerDialog.StatesEnum.INIT;
+import static io.agritrack.ui.tools.caen.ILoggerDialog.StatesEnum.READ_VALUES;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -18,15 +20,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
-import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +38,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
+import com.uhf.api.cls.Reader;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -47,16 +48,15 @@ import java.util.Collections;
 import java.util.List;
 
 import io.agritrack.R;
+import io.agritrack.caen.common.CAENState;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.BinInfo;
-import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.QualityRecord;
-import io.agritrack.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
@@ -64,13 +64,19 @@ import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.LoggerInitDialogFragment;
+import io.agritrack.ui.tools.caen.ILoggerDialog;
+import io.agritrack.ui.tools.caen.LoggerDialogFragment;
+import io.agritrack.ui.tools.caen.ReadLoggerDialogDecorator;
 
 public class ReceiptQualityStartActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
+
+    private final MutableLiveData<CAENState> stateResult = new MutableLiveData<>();
+
     private boolean scanAllBins = false;
     private int attemptsToGetEpcList = 0;
     private int attemptsToScanBinOutOfLot = 0;
@@ -163,6 +169,34 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             supportDialog = new SupportDialog(ReceiptQualityStartActivity.this);
             supportDialog.showDialog();
         });
+
+        //-----------------------------------------------------
+        // observe for state object obtained by LoggerDialog...
+        //-----------------------------------------------------
+        stateResult.observe(this, rs -> {
+            // handle Successful operation from Logger.
+            if (rs == null || !rs.canProceed) {
+                CToast(getApplicationContext(), render("Operation Failed!"), Toast.LENGTH_LONG);
+                return;
+            }
+            // handle READ and INIT events...
+            if (rs.canProceed) {
+                if (INIT.equals(rs.state)) {
+                    if (rs.getInitTS() != null) {
+                        recLoggerData.addInitData(rs.getAssetEPC(), rs.getInitTS());
+                    } else {
+                        recLoggerData.addInitData(rs.getAssetEPC(), System.currentTimeMillis() / 1000L);
+                    }
+                } else if (READ_VALUES.equals(rs.state)) {
+                    if (!CollectionUtils.isEmpty(rs.samples)) {
+                        long now = System.currentTimeMillis();
+                        recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), now, rs.samples);
+                        GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
+                    }
+                }
+            }
+        });
+        // ------ Logger Observer -----------------------------
 
         configFooter();
     }
@@ -415,7 +449,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         }
     }
 
-    private void triggerDataLoggerDialog(){
+    private void triggerDataLoggerDialog() {
         if (!scannedBinEPCs.contains(binEPC)) {
             scannedBinEPCs.add(binEPC);
         }
@@ -428,17 +462,37 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         GlobalState.commitQuality(db, Boolean.FALSE);
         adapterBins.notifyDataSetChanged();
 
+        // ------------------------------------------
+        //--- New implementation of Logger Dialog ---
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-            BinInfo tmpBin = db.binInfoDAO().getByRFId(binEPC);
             FragmentManager fm = getSupportFragmentManager();
-            LoggerInitDialogFragment loggerDlg;
+
+            BinInfo tmpBin = db.binInfoDAO().getByRFId(binEPC);
             if (tmpBin != null && tmpBin.initedAt != null) {
-                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, tmpBin.initedAt, true, true, true);
+                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, tmpBin.initedAt);
+                loggerDlg.setStateObserver(stateResult);
+                ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
+                readLoggerDecorator.show(fm);
             } else {
-                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, true, true, true);
+                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
+                loggerDlg.setStateObserver(stateResult);
+                ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
+                readLoggerDecorator.show(fm);
             }
-            loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
         }
+        // -------------------------------------
+
+//        if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+//            BinInfo tmpBin = db.binInfoDAO().getByRFId(binEPC);
+//            FragmentManager fm = getSupportFragmentManager();
+//            LoggerInitDialogFragment loggerDlg;
+//            if (tmpBin != null && tmpBin.initedAt != null) {
+//                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, tmpBin.initedAt, true, true, true);
+//            } else {
+//                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, true, true, true);
+//            }
+//            loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
+//        }
     }
 
     private void confirmScanBinOutOfLotDialog() {
@@ -449,7 +503,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
 
         TextView title = new TextView(this);
         // You Can Customise your Title here
-        title.setText(Html.fromHtml("<b>"+ getAppContext().getResources().getString(R.string.confirm_scanned_bin_out_of_lot) +"</b>" + "<br>" + getAppContext().getResources().getString(R.string.confirm_with_pin), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        title.setText(Html.fromHtml("<b>" + getAppContext().getResources().getString(R.string.confirm_scanned_bin_out_of_lot) + "</b>" + "<br>" + getAppContext().getResources().getString(R.string.confirm_with_pin), HtmlCompat.FROM_HTML_MODE_LEGACY));
         title.setBackgroundColor(Color.WHITE);
         title.setPadding(10, 10, 10, 10);
         title.setGravity(Gravity.CENTER);
@@ -469,7 +523,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             @Override
             public void onShow(DialogInterface dialogInterface) {
 
-                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 button.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -485,7 +539,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
                         // use typed-in PIN to compare credentials with those stored in the Local DB.
                         AuthenticationService authSvc = new AuthenticationService();
                         boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
-                        if (authentication){
+                        if (authentication) {
                             triggerDataLoggerDialog();
                             dialog.dismiss();
                         } else {

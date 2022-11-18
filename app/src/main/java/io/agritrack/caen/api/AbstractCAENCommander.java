@@ -515,7 +515,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     //###  Private methods for Read / Write commands  ###
     //###################################################
     private List<String[]> ReadSamplesBatch(long beginTSmSec, int intervalSeconds, short start, int samplesCnt) throws Exception {
-
+        //TODO: surround with try..catch to return null when ReadRegisters(..) fails....
         byte[] reply = ReadRegisters((short) (ADDR_LOGS + start), (short) (samplesCnt * WORDS_PER_MEASUREMENT));
         if (reply != null && reply.length > 0 && reply[0] == REPLY_NACK)
             throw new Exception("Failed to read sample data.");

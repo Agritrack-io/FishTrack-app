@@ -3,8 +3,6 @@ package io.agritrack.api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -28,9 +26,9 @@ public class APIServiceGenerator {
     private static final Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
     private static Retrofit retrofit = retrofitBuilder.build();
     private static final OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
-                                                                    .connectTimeout(20, TimeUnit.SECONDS)
-                                                                    .readTimeout(30, TimeUnit.SECONDS)
-                                                                    .writeTimeout(30, TimeUnit.SECONDS);
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS);
     private static final HttpLoggingInterceptor logging = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC);
     private static final Gson gson = new GsonBuilder().setLenient().create();
 
