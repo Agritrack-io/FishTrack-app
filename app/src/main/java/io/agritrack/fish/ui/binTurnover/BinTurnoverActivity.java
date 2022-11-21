@@ -75,20 +75,18 @@ import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
-import io.agritrack.ui.IInformedActivity;
 import io.agritrack.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.ui.adapter.TemperatureProfileAdapter;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.caen.ILoggerDialog;
 import io.agritrack.ui.tools.caen.LoggerDialogFragment;
-import io.agritrack.ui.tools.caen.ReadLoggerDialogDecorator;
 import io.agritrack.ui.tools.caen.SortLoggerDialogDecorator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BinTurnoverActivity extends AppCompatActivity implements IInformedActivity {
+public class BinTurnoverActivity extends AppCompatActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
@@ -248,6 +246,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IInformedA
                         long now = System.currentTimeMillis();
                         recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), now, rs.samples);
                         GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
+                        fillTemperatureProfileAdapter();
                     }
                 }
             }
@@ -425,8 +424,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IInformedA
         return result;
     }
 
-    @Override
-    public void inform() {
+    public void fillTemperatureProfileAdapter() {
         List<String[]> values = recLoggerData.getValues(binEPC);
 
         if (values != null) {
@@ -436,51 +434,6 @@ public class BinTurnoverActivity extends AppCompatActivity implements IInformedA
 
         adapterBins.removeItem(tmpBin.rfid);
         adapterBins.notifyDataSetChanged();
-    }
-
-    private void triggerDataLoggerDialog() {
-        if (!scannedBinEPCs.contains(binEPC)) {
-            scannedBinEPCs.add(binEPC);
-        }
-        adapterBins.addUniqueItem(loadBinInfo(binEPC));
-        adapterBins.markReceived(scannedBinEPCs);
-
-        if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-            tmpBin = db.binInfoDAO().getByRFId(binEPC);
-            if (tmpBin.sorted) {
-                CToast(getApplicationContext(), render(R.string.already_scannned_bin), Toast.LENGTH_LONG);
-                return;
-            }
-
-            // ------------------------------------------
-            //--- New implementation of Logger Dialog ---
-            FragmentManager fm = getSupportFragmentManager();
-
-            String productionLane = spProductionLine.getSelectedItem().toString();
-            if (tmpBin != null && tmpBin.initedAt != null) {
-                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt);
-                loggerDlg.setStateObserver(stateResult);
-                SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(loggerDlg);
-                sortLoggerDialogDecorator.show(fm);
-            } else {
-                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane);
-                loggerDlg.setStateObserver(stateResult);
-                SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(loggerDlg);
-                sortLoggerDialogDecorator.show(fm);
-            }
-            // -------------------------------------
-
-            /*FragmentManager fm = getSupportFragmentManager();
-            String productionLane = spProductionLine.getSelectedItem().toString();
-            LoggerInitDialogFragment loggerDlg;
-            if (tmpBin != null && tmpBin.initedAt != null) {
-                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt, true, true, false);
-            } else {
-                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, productionLane, true, true, false);
-            }
-            loggerDlg.setInformedActivity(BinTurnoverActivity.this);
-            loggerDlg.show(fm, LoggerInitDialogFragment.TAG);*/
-        }
     }
 
     private void confirmScanBinOutOfLotDialog() {
@@ -635,6 +588,50 @@ public class BinTurnoverActivity extends AppCompatActivity implements IInformedA
                     break;
             }
 
+        }
+    }
+
+    private void triggerDataLoggerDialog() {
+        if (!scannedBinEPCs.contains(binEPC)) {
+            scannedBinEPCs.add(binEPC);
+        }
+        adapterBins.addUniqueItem(loadBinInfo(binEPC));
+        adapterBins.markReceived(scannedBinEPCs);
+
+        if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+            tmpBin = db.binInfoDAO().getByRFId(binEPC);
+            if (tmpBin.sorted) {
+                CToast(getApplicationContext(), render(R.string.already_scannned_bin), Toast.LENGTH_LONG);
+                return;
+            }
+
+            // ------------------------------------------
+            //--- New implementation of Logger Dialog ---
+            FragmentManager fm = getSupportFragmentManager();
+
+            String productionLane = spProductionLine.getSelectedItem().toString();
+            if (tmpBin != null && tmpBin.initedAt != null) {
+                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt);
+                loggerDlg.setStateObserver(stateResult);
+                SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(loggerDlg);
+                sortLoggerDialogDecorator.show(fm);
+            } else {
+                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane);
+                loggerDlg.setStateObserver(stateResult);
+                SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(loggerDlg);
+                sortLoggerDialogDecorator.show(fm);
+            }
+            // -------------------------------------
+            /*FragmentManager fm = getSupportFragmentManager();
+            String productionLane = spProductionLine.getSelectedItem().toString();
+            LoggerInitDialogFragment loggerDlg;
+            if (tmpBin != null && tmpBin.initedAt != null) {
+                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt, true, true, false);
+            } else {
+                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, productionLane, true, true, false);
+            }
+            loggerDlg.setInformedActivity(BinTurnoverActivity.this);
+            loggerDlg.show(fm, LoggerInitDialogFragment.TAG);*/
         }
     }
 

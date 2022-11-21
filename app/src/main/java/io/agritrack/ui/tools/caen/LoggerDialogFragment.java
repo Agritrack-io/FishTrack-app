@@ -311,6 +311,10 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         }
     }
 
+    private boolean isButtonVisible(Integer buttonOp) {
+        return (this.buttonVisibilityBits & buttonOp) == buttonOp;
+    }
+
     private void assignCtrlVars(View rootView) {
         btnRead = rootView.findViewById(R.id.btnRead);
         btnReset = rootView.findViewById(R.id.btnReset);
@@ -400,7 +404,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                             // assign listener to reset button
                             btnReset.setOnClickListener(resetBtnListener);
                             btnReset.callOnClick();
-                        } else if ("0000".equalsIgnoreCase(state.ctrlReg)) {
+                        } else if ("00000".equalsIgnoreCase(state.ctrlReg)) {
                             btnRead.setText("Logger is idle");
                             btnRead.setOnClickListener(null);
                             // after Reset, initialize the logger and start logging...
@@ -433,10 +437,15 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                             mActivity.runOnUiThread(() -> {
                                 btnReset.setText("Cleared (reset) logger.");
                                 btnReset.setOnClickListener(null);
+                                if (!isButtonVisible(InitOp)) {
+                                    dismiss();
+                                }
                             });
                             // after Reset, initialize the logger and start logging...
-                            btnInit.setOnClickListener(initBtnListener);
-                            btnInit.callOnClick();
+                            if (isButtonVisible(InitOp)) {
+                                btnInit.setOnClickListener(initBtnListener);
+                                btnInit.callOnClick();
+                            }
                         } else {
                             mActivity.runOnUiThread(() -> {
                                 btnReset.setText("Error on resetting logger...\nPress button again!");
