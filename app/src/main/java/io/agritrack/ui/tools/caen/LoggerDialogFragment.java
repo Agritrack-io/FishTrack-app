@@ -17,6 +17,7 @@ import android.animation.TimeAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -94,11 +95,17 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke reset() method of CAENLoggerService.
-            executorService.execute(()->loggerSvc.doEnableLogger(samplingInterval));
             setCancelable(false);
-            executorService.execute(() -> getActivity().runOnUiThread(() -> setCancelable(true)));
             v.setEnabled(false);
-            executorService.execute(() -> getActivity().runOnUiThread(() -> v.setEnabled(true)));
+            if(!executorService.isShutdown()){
+                executorService.execute(()-> {
+                    this.loggerSvc.doEnableLogger(samplingInterval);
+                    if(this != null &&  this.getActivity() != null){
+                        this.getActivity().runOnUiThread(() -> setCancelable(true));
+                        this.getActivity().runOnUiThread(() -> v.setEnabled(true));
+                    }
+                });
+            }
         } else {
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
         }
@@ -114,11 +121,17 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke reset() method of CAENLoggerService.
-            executorService.execute(()-> loggerSvc.doResetLogger());
             setCancelable(false);
-            executorService.execute(() -> getActivity().runOnUiThread(() -> setCancelable(true)));
             v.setEnabled(false);
-            executorService.execute(() -> getActivity().runOnUiThread(() -> v.setEnabled(true)));
+            if(!executorService.isShutdown()) {
+                executorService.execute(() -> {
+                    this.loggerSvc.doResetLogger();
+                    if (this != null && this.getActivity() != null) {
+                        this.getActivity().runOnUiThread(() -> setCancelable(true));
+                        this.getActivity().runOnUiThread(() -> v.setEnabled(true));
+                    }
+                });
+            }
 
         } else {
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
@@ -135,11 +148,17 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke read() method of CAENLoggerService.
-            executorService.execute(()->loggerSvc.doReadMeasurements());
             setCancelable(false);
-            executorService.execute(() -> getActivity().runOnUiThread(() -> setCancelable(true)));
             v.setEnabled(false);
-            executorService.execute(() -> getActivity().runOnUiThread(() -> v.setEnabled(true)));
+            if(!executorService.isShutdown()) {
+                executorService.execute(() -> {
+                    this.loggerSvc.doReadMeasurements();
+                    if (this != null && this.getActivity() != null) {
+                        this.getActivity().runOnUiThread(() -> setCancelable(true));
+                        this.getActivity().runOnUiThread(() -> v.setEnabled(true));
+                    }
+                });
+            }
 
         } else {
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
@@ -288,6 +307,17 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     @Override
     public void onSaveInstanceState(Bundle outState) {
         //No call for super(). Bug on API Level > 11.
+    }
+
+    @Override
+    public void onDestroy() {
+        loggerSvc.shutdownExecutorService();
+
+        executorService.shutdown();
+        if (!executorService.isShutdown()) {
+            executorService.shutdownNow();
+        }
+        super.onDestroy();
     }
 
     // ------------------------
