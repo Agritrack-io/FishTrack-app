@@ -245,14 +245,9 @@ public class CAENLoggerService {
             // instantiate the thread pool required by CompletableFuture instances following...
             final ExecutorService actnPool = Executors.newFixedThreadPool(1);
 
-            CompletableFuture<CAENState> stopLoggingFuture = execDisableLogging(new CAENState(), actnPool);
-            stopLoggingFuture.thenCompose(x -> park4Second(x, actnPool));
-            stopLoggingFuture.thenCompose(x -> execReadControlRegister(x, actnPool));
-            CAENState status = stopLoggingFuture.join();
-//            CAENState status = execReadControlRegister(new CAENState(), actnPool).get();
+            CAENState status = execReadControlRegister(new CAENState(), actnPool).get();
 
             if (status.ctrlReg == null || status.ctrlReg.equalsIgnoreCase("N/A") || status.ctrlReg.endsWith("000")){
-//                status.ctrlReg = "0000";
                 System.out.println("doReadMeasurements()-->" + status);
                 mHandler.sendMessage(createMessage(ReadSΤΑΤΕ, status));
                 return;
