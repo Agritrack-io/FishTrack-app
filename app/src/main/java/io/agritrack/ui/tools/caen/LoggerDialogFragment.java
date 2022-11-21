@@ -249,16 +249,16 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             // show/hide buttons according to Visibility Bit values.
             applyButtonsVisibility();
 
-            // Enable Read button
-            btnRead.setText("Reading Measurements...");
-            btnRead.setBackgroundResource(R.drawable.button_background);
-            btnRead.setOnClickListener(readBtnListener);
-
-            // assign listener to init button
-            btnInit.setOnClickListener(initBtnListener);
-
-            // assign listener to reset button
-            btnReset.setOnClickListener(resetBtnListener);
+//            // Enable Read button
+//            btnRead.setText("Reading Measurements...");
+//            btnRead.setBackgroundResource(R.drawable.button_background);
+//            btnRead.setOnClickListener(readBtnListener);
+//
+//            // assign listener to init button
+//            btnInit.setOnClickListener(initBtnListener);
+//
+//            // assign listener to reset button
+//            btnReset.setOnClickListener(resetBtnListener);
         }
     }
 
@@ -272,8 +272,12 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 
         // Press First Button
         if ((ReadOp & this.buttonVisibilityBits) == ReadOp) {
+            btnRead.setText("Reading Measurements...");
+            btnRead.setBackgroundResource(R.drawable.button_background);
+            btnRead.setOnClickListener(readBtnListener);
             btnRead.callOnClick();
         } else if ((InitOp & this.buttonVisibilityBits) == InitOp) {
+            btnReset.setOnClickListener(resetBtnListener);
             btnReset.callOnClick();
         }
     }
@@ -389,7 +393,18 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                                 }
                             });
                             //displayMeasurementsDialog(samples);
+
+                            // assign listener to reset button
+                            btnReset.setOnClickListener(resetBtnListener);
                             btnReset.callOnClick();
+                        } else if ("0000".equalsIgnoreCase(state.ctrlReg)) {
+                            btnRead.setText("Logger is idle");
+                            btnRead.setOnClickListener(null);
+                            // after Reset, initialize the logger and start logging...
+                            btnInit.setOnClickListener(initBtnListener);
+                            btnInit.setText("Start Logger...");
+                        } else if (state.ctrlReg==null || "N/A".equalsIgnoreCase(state.ctrlReg) || "null".equalsIgnoreCase(state.ctrlReg)) {
+                            btnRead.setText("Invalid status");
                         } else {
                             mActivity.runOnUiThread(() -> {
                                 btnRead.setText("Error on reading. Press the button again.");
@@ -417,6 +432,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                                 btnReset.setOnClickListener(null);
                             });
                             // after Reset, initialize the logger and start logging...
+                            btnInit.setOnClickListener(initBtnListener);
                             btnInit.callOnClick();
                         } else {
                             mActivity.runOnUiThread(() -> {
@@ -425,7 +441,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                         }
                     } else {
                         mActivity.runOnUiThread(() -> {
-                            btnRead.setText("Failed. Press the button again.");
+                            btnReset.setText("Failed. Press the button again.");
                         });
                     }
                     break;
@@ -438,12 +454,16 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                         CAENState state = (CAENState) obj;
                         state.state = StatesEnum.INIT;
 
-                        boolean successfulInit = Integer.valueOf(1).equals(state.getOpLogging()) && state.canProceed;
+                        boolean successfulInit = state.ctrlReg!=null && state.ctrlReg.endsWith("100"); //Integer.valueOf(1).equals(state.getOpLogging()) && state.canProceed;
                         if (successfulInit) {
                             // pass business-related params
                             state.setLoggerEPC(loggerEPC);
                             state.setAssetEPC(assetEPC);
                             state.setProductionLane(productionLane);
+
+                            if(stateResult != null) {
+                                stateResult.setValue(state);
+                            }
 
 //                            mActivity.runOnUiThread(() -> {
                                 btnInit.setText("Started logging...");
@@ -452,13 +472,13 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 
 //                            });
                         } else {
-                            mActivity.runOnUiThread(() -> {
-                                btnReset.setText("Error on initializing logger...\nPress button again!");
-                            });
+//                            mActivity.runOnUiThread(() -> {
+                                btnInit.setText("Error on initializing logger...\nPress button again!");
+//                            });
                         }
                     } else {
                         mActivity.runOnUiThread(() -> {
-                            btnRead.setText("Failed. Press the button again.");
+                            btnInit.setText("Failed. Press the button again.");
                         });
                     }
                     break;

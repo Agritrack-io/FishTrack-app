@@ -101,6 +101,7 @@ import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.LoggerDataRecord;
 import io.agritrack.fish.ui.binTurnover.BinTurnoverActivity;
+import io.agritrack.fish.ui.fishing.FishingBinsActivity;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
@@ -216,7 +217,12 @@ public class FishHomeActivity extends AppCompatActivity {
 
                 switch (mi.getLoc()) {
                     case Fishing_Idx:
-                        FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
+
+                        i = new Intent(appCtx, FishingBinsActivity.class);
+                        break;
+
+
+                        /*FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
                         FishingRecord fishingRecord;
 
                         // default Next Activity is FishingStart...
@@ -246,7 +252,7 @@ public class FishHomeActivity extends AppCompatActivity {
 
                             i = new Intent(appCtx, HarvestRequestsActivity.class);
                         }
-                        break;
+                        break;*/
                     case Test_Temp_Idx:
                         i = new Intent(appCtx, TestBinTempActivity.class);
                         i.putExtra("BinActivity", false);

@@ -31,6 +31,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
@@ -120,14 +121,19 @@ public class CAENLoggerService {
             CAENState _state = future.join();
             System.out.println("doEnableLogger()-->" + _state);
 
-            //--------------------------------------------------
-            CompletableFuture<CAENState> futureTemp = this.park4Second(_state, actnPool);
+            // reads the current state of CTRL register.
+            future = this.execReadControlRegister(_state, actnPool);
+            _state = future.get();
 
-            // read CTRL register to config RESET is completed.
-            futureTemp.thenCompose(x -> execReadControlRegister(x, actnPool));
+            if(_state.ctrlReg != null && !_state.ctrlReg.endsWith("100")) {
+                future = this.park4Second(_state, actnPool);
+                _state = future.get();
+                future = this.execReadControlRegister(_state, actnPool);
+                _state = future.get();
+            }
 
             // read Last Sample value
-            futureTemp.thenCompose(x -> execReadLastSample(x, actnPool));
+            CompletableFuture<CAENState> futureTemp = this.execReadLastSample(_state, actnPool);
             _state = futureTemp.join();
             //--------------------------------------------------
 
@@ -239,8 +245,22 @@ public class CAENLoggerService {
             // instantiate the thread pool required by CompletableFuture instances following...
             final ExecutorService actnPool = Executors.newFixedThreadPool(1);
 
+            CompletableFuture<CAENState> stopLoggingFuture = execDisableLogging(new CAENState(), actnPool);
+            stopLoggingFuture.thenCompose(x -> park4Second(x, actnPool));
+            stopLoggingFuture.thenCompose(x -> execReadControlRegister(x, actnPool));
+            CAENState status = stopLoggingFuture.join();
+//            CAENState status = execReadControlRegister(new CAENState(), actnPool).get();
+
+            if (status.ctrlReg == null || status.ctrlReg.equalsIgnoreCase("N/A") || status.ctrlReg.endsWith("000")){
+//                status.ctrlReg = "0000";
+                System.out.println("doReadMeasurements()-->" + status);
+                mHandler.sendMessage(createMessage(ReadSΤΑΤΕ, status));
+                return;
+            }
+
             // read current Interval between measurements,
             CompletableFuture<CAENState> _future = this.execReadInterval(new CAENState(), actnPool);
+            _future.thenCompose(x -> execDisableLogging(x, actnPool));
             _future.thenCompose(x -> execReadInitDatetime(x, actnPool));
             _future.thenCompose(x -> execReadSamplesCount(x, actnPool));
             CAENState _state = _future.join();

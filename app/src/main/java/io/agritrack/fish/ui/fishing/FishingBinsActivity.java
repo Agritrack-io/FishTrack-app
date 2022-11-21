@@ -5,7 +5,10 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.FileUtils.saveCrashInfo2File;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
+import static io.agritrack.ui.tools.caen.ILoggerDialog.StatesEnum.INIT;
+import static io.agritrack.ui.tools.caen.ILoggerDialog.StatesEnum.READ_VALUES;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -42,8 +46,10 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import io.agritrack.R;
+import io.agritrack.caen.common.CAENState;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.BinInfo;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.InfoDialog;
@@ -58,12 +64,18 @@ import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.LoggerInitDialogFragment;
+import io.agritrack.ui.tools.caen.ILoggerDialog;
+import io.agritrack.ui.tools.caen.InitLoggerDialogDecorator;
+import io.agritrack.ui.tools.caen.LoggerDialogFragment;
 
 public class FishingBinsActivity extends AppCompatActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
+
+    private final MutableLiveData<CAENState> stateResult = new MutableLiveData<>();
+
+
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     private SingleShotScanner singleShot_runnable;
@@ -199,6 +211,34 @@ public class FishingBinsActivity extends AppCompatActivity {
             tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);
             tempLoggerDialog.showDialog();
         });
+
+        //-----------------------------------------------------
+        // observe for state object obtained by LoggerDialog...
+        //-----------------------------------------------------
+        stateResult.observe(this, rs -> {
+            // handle Successful operation from Logger.
+            if (rs == null || !rs.canProceed) {
+                CToast(getApplicationContext(), render("Operation Failed!"), Toast.LENGTH_LONG);
+                return;
+            }
+            // handle READ and INIT events...
+            if (rs.canProceed) {
+                if (INIT.equals(rs.state)) {
+                    if (rs.getInitTS() != null) {
+                        recLoggerData.addInitData(rs.getAssetEPC(), rs.getInitTS());
+                    } else {
+                        recLoggerData.addInitData(rs.getAssetEPC(), System.currentTimeMillis() / 1000L);
+                    }
+                } else if (READ_VALUES.equals(rs.state)) {
+                    if (!CollectionUtils.isEmpty(rs.samples)) {
+                        long now = System.currentTimeMillis();
+                        recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), now, rs.samples);
+                        GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
+                    }
+                }
+            }
+        });
+        // ------ Logger Observer -----------------------------
 
         // create Footer
         configFooter();
@@ -353,16 +393,28 @@ public class FishingBinsActivity extends AppCompatActivity {
                             if (bin != null) {
                                 binEPC = bin.rfid;
                                 scannedBinEPCs.add(bin.rfid);
-                                recFishing.binWeightRecord.addRecord(binEPC, 0, System.currentTimeMillis() / 1000l, null,null);
+                                recFishing.binWeightRecord.addRecord(binEPC, 0, System.currentTimeMillis() / 1000l, null, null);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();
                                 recFishing.availBins = new LinkedList<>(adapterBins.getValues());
                                 GlobalState.commitFishing(db, Boolean.FALSE);
 
-                                FragmentManager fm = getSupportFragmentManager();
+// ------------------------------------------
+                                //--- New implementation of Logger Dialog ---
+                                if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+                                    FragmentManager fm = getSupportFragmentManager();
+
+                                    ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
+                                    loggerDlg.setStateObserver(stateResult);
+                                    InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
+                                    initLoggerDecorator.show(fm);
+
+                                }
+
+                                /*FragmentManager fm = getSupportFragmentManager();
                                 LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, false, true, true);
-                                loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
+                                loggerDlg.show(fm, LoggerInitDialogFragment.TAG);*/
                             } else if (!IsDemo) {
                                 CToast(getApplicationContext(), render(R.string.no_logger_found_linked_to_bin), Toast.LENGTH_SHORT);
                             }

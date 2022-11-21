@@ -230,6 +230,10 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
             stopScanner();
+            
+            // TODO:: Delete below code
+            db.qualityTransactionDAO().deleteAll();
+
             Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
             startActivity(i);
         });
