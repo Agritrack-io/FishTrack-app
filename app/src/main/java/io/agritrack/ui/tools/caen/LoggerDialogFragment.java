@@ -41,6 +41,7 @@ import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import io.agritrack.R;
 import io.agritrack.caen.api.CAENLoggerService;
@@ -85,16 +86,16 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
             FragmentActivity mActivity = getActivity();
             //...setup Init Button............
-            mActivity.runOnUiThread(() -> {
+//            mActivity.runOnUiThread(() -> {
                 btnInit.setBackgroundResource(R.drawable.button_background);
                 btnInit.setText("Start Logger...");
                 startAnimation(getView(), btnInit);
-            });
+//            });
 
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke reset() method of CAENLoggerService.
-            loggerSvc.doEnableLogger(samplingInterval);
+            Executors.newSingleThreadExecutor().execute(()->loggerSvc.doEnableLogger(samplingInterval));
         } else {
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
         }
@@ -105,16 +106,16 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
             FragmentActivity mActivity = getActivity();
             //...setup Reset Button............
-            mActivity.runOnUiThread(() -> {
+//            mActivity.runOnUiThread(() -> {
                 btnReset.setBackgroundResource(R.drawable.button_background);
                 btnReset.setText("Resetting...");
                 startAnimation(getView(), btnReset);
-            });
+//            });
 
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke reset() method of CAENLoggerService.
-            loggerSvc.doResetLogger();
+            Executors.newSingleThreadExecutor().execute(()->loggerSvc.doResetLogger());
 
         } else {
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
@@ -126,16 +127,16 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
             FragmentActivity mActivity = getActivity();
             //...setup Read Button............
-            mActivity.runOnUiThread(() -> {
+//            mActivity.runOnUiThread(() -> {
                 btnRead.setBackgroundResource(R.drawable.button_background);
                 btnRead.setText("Reading Logger...");
                 startAnimation(getView(), btnRead);
-            });
+//            });
 
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke read() method of CAENLoggerService.
-            loggerSvc.doReadMeasurements();
+            Executors.newSingleThreadExecutor().execute(()->loggerSvc.doReadMeasurements());
 
         } else {
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
@@ -277,6 +278,11 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11.
+    }
+
     // ------------------------
     // ---  Private Methods ---
     // ------------------------
@@ -316,7 +322,8 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         mAnimator = new TimeAnimator();
         mAnimator.setTimeListener(this);
 
-        getActivity().runOnUiThread(() -> animateButton(view));
+        animateButton(view);
+//        getActivity().runOnUiThread(() -> animateButton(view));
     }
 
     private void stopAnimation() {
@@ -342,6 +349,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                     mAnimator.cancel();
                 } else {
                     mCurrentLevel = Math.min(MAX_LEVEL, mCurrentLevel + LEVEL_INCREMENT);
+                    mActivity.invalidateOptionsMenu();
                 }
             });
         }
@@ -430,18 +438,19 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                         CAENState state = (CAENState) obj;
                         state.state = StatesEnum.INIT;
 
-                        boolean successfulInit = state.getOpLogging() == 1 && state.canProceed;
+                        boolean successfulInit = Integer.valueOf(1).equals(state.getOpLogging()) && state.canProceed;
                         if (successfulInit) {
                             // pass business-related params
                             state.setLoggerEPC(loggerEPC);
                             state.setAssetEPC(assetEPC);
                             state.setProductionLane(productionLane);
 
-                            mActivity.runOnUiThread(() -> {
+//                            mActivity.runOnUiThread(() -> {
                                 btnInit.setText("Started logging...");
                                 btnInit.setOnClickListener(null);
                                 dismiss();
-                            });
+
+//                            });
                         } else {
                             mActivity.runOnUiThread(() -> {
                                 btnReset.setText("Error on initializing logger...\nPress button again!");

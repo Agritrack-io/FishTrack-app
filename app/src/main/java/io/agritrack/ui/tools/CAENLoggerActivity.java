@@ -180,10 +180,10 @@ public class CAENLoggerActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(loggerEpc)) {
                 FragmentManager fm = getSupportFragmentManager();
                 ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEpc, null);
-                //ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
-                //readLoggerDecorator.show(fm);
-                InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
-                initLoggerDecorator.show(fm);
+                ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
+                readLoggerDecorator.show(fm);
+//                InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
+//                initLoggerDecorator.show(fm);
             }
             // -------------------------------------
 
@@ -472,10 +472,10 @@ public class CAENLoggerActivity extends AppCompatActivity {
                     tvDateTime.setText(value);
                     break;
                 case CmdRESET:
-                    obj = extractData(Boolean.class, msg.getData());
+                    obj = extractData(Integer.class, msg.getData());
                     if(obj != null) {
-                        boolean resReset = (boolean) obj;
-                        if (!resReset) {
+                        Integer resReset = (Integer) obj;
+                        if (resReset != 1) {
                             CToast(getApplicationContext(), "Reset Failed!\n", Toast.LENGTH_SHORT);
                         }
                     }
