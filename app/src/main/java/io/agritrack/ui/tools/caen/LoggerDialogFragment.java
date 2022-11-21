@@ -41,6 +41,7 @@ import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.agritrack.R;
@@ -81,21 +82,23 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     private MutableLiveData<CAENState> stateResult;
     private short samplingInterval = DefaultInterval;
 
+    // Single Thread
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     protected final View.OnClickListener initBtnListener = v -> {
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-            FragmentActivity mActivity = getActivity();
-            //...setup Init Button............
-//            mActivity.runOnUiThread(() -> {
-                btnInit.setBackgroundResource(R.drawable.button_background);
-                btnInit.setText("Start Logger...");
-                startAnimation(getView(), btnInit);
-//            });
+            btnInit.setBackgroundResource(R.drawable.button_background);
+            btnInit.setText("Start Logger...");
+            startAnimation(getView(), btnInit);
 
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke reset() method of CAENLoggerService.
-            Executors.newSingleThreadExecutor().execute(()->loggerSvc.doEnableLogger(samplingInterval));
+            executorService.execute(()->loggerSvc.doEnableLogger(samplingInterval));
+            setCancelable(false);
+            executorService.execute(() -> getActivity().runOnUiThread(() -> setCancelable(true)));
+            v.setEnabled(false);
+            executorService.execute(() -> getActivity().runOnUiThread(() -> v.setEnabled(true)));
         } else {
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
         }
@@ -104,18 +107,18 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 
     protected final View.OnClickListener resetBtnListener = v -> {
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-            FragmentActivity mActivity = getActivity();
-            //...setup Reset Button............
-//            mActivity.runOnUiThread(() -> {
-                btnReset.setBackgroundResource(R.drawable.button_background);
-                btnReset.setText("Resetting...");
-                startAnimation(getView(), btnReset);
-//            });
+            btnReset.setBackgroundResource(R.drawable.button_background);
+            btnReset.setText("Resetting...");
+            startAnimation(getView(), btnReset);
 
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke reset() method of CAENLoggerService.
-            Executors.newSingleThreadExecutor().execute(()->loggerSvc.doResetLogger());
+            executorService.execute(()-> loggerSvc.doResetLogger());
+            setCancelable(false);
+            executorService.execute(() -> getActivity().runOnUiThread(() -> setCancelable(true)));
+            v.setEnabled(false);
+            executorService.execute(() -> getActivity().runOnUiThread(() -> v.setEnabled(true)));
 
         } else {
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
@@ -125,18 +128,18 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 
     private final View.OnClickListener readBtnListener = v -> {
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-            FragmentActivity mActivity = getActivity();
-            //...setup Read Button............
-//            mActivity.runOnUiThread(() -> {
-                btnRead.setBackgroundResource(R.drawable.button_background);
-                btnRead.setText("Reading Logger...");
-                startAnimation(getView(), btnRead);
-//            });
+            btnRead.setBackgroundResource(R.drawable.button_background);
+            btnRead.setText("Reading Logger...");
+            startAnimation(getView(), btnRead);
 
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke read() method of CAENLoggerService.
-            Executors.newSingleThreadExecutor().execute(()->loggerSvc.doReadMeasurements());
+            executorService.execute(()->loggerSvc.doReadMeasurements());
+            setCancelable(false);
+            executorService.execute(() -> getActivity().runOnUiThread(() -> setCancelable(true)));
+            v.setEnabled(false);
+            executorService.execute(() -> getActivity().runOnUiThread(() -> v.setEnabled(true)));
 
         } else {
             CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
