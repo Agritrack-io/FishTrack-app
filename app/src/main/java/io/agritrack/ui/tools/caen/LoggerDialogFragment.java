@@ -445,7 +445,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                             }
                         } else {
                             mActivity.runOnUiThread(() -> {
-                                btnReset.setText("Error on resetting logger...\nPress button again!");
+                                btnReset.setText("Error on resetting ...\nPress button again!");
                             });
                         }
                     } else {
