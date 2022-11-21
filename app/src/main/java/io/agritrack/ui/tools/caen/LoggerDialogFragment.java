@@ -99,8 +99,10 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             v.setEnabled(false);
             if(!executorService.isShutdown()){
                 executorService.execute(()-> {
-                    this.loggerSvc.doEnableLogger(samplingInterval);
-                    if(this != null &&  this.getActivity() != null){
+                    if (this != null && this.getActivity() != null) {
+                        this.getActivity().runOnUiThread(() -> setCancelable(false));
+                        this.getActivity().runOnUiThread(() -> v.setEnabled(false));
+                        this.loggerSvc.doEnableLogger(samplingInterval);
                         this.getActivity().runOnUiThread(() -> setCancelable(true));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(true));
                     }
@@ -121,12 +123,13 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke reset() method of CAENLoggerService.
-            setCancelable(false);
-            v.setEnabled(false);
+
             if(!executorService.isShutdown()) {
                 executorService.execute(() -> {
-                    this.loggerSvc.doResetLogger();
                     if (this != null && this.getActivity() != null) {
+                        this.getActivity().runOnUiThread(() -> setCancelable(false));
+                        this.getActivity().runOnUiThread(() -> v.setEnabled(false));
+                        this.loggerSvc.doResetLogger();
                         this.getActivity().runOnUiThread(() -> setCancelable(true));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(true));
                     }
@@ -152,8 +155,10 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             v.setEnabled(false);
             if(!executorService.isShutdown()) {
                 executorService.execute(() -> {
-                    this.loggerSvc.doReadMeasurements();
                     if (this != null && this.getActivity() != null) {
+                        this.getActivity().runOnUiThread(() -> setCancelable(false));
+                        this.getActivity().runOnUiThread(() -> v.setEnabled(false));
+                        this.loggerSvc.doReadMeasurements();
                         this.getActivity().runOnUiThread(() -> setCancelable(true));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(true));
                     }
