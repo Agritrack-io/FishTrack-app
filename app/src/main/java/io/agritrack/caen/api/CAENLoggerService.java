@@ -88,7 +88,12 @@ public class CAENLoggerService {
             //CAENState _state = future.join();
             System.out.println("doResetLogger()-->" + _state);
 
-            mHandler.sendMessage(createMessage(ResetSΤΑΤΕ, _state));
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(ResetSΤΑΤΕ, _state.getOpReset()));
+            } else {
+                mHandler.sendMessage(createMessage(ResetSΤΑΤΕ, _state));
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
