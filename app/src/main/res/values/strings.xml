@@ -681,6 +681,7 @@
     <string name="not_encoded_tags">" not encoded items have been detected"</string>
     <string name="capacity">Capacity (bins):</string>
     <string name="truck_capacity">Capacity (bins):</string>
+
     <string name="validate">Validate…</string>
     <string name="reset">Resetting…</string>
     <string name="resetting">Resetting…</string>
@@ -700,4 +701,13 @@
     <string name="not_validated">Not Validated…</string>
     <string name="started_logging">Started logging…</string>
     <string name="reseted_logger">Cleared (reset) logger.</string>
+
+    <string name="request_sent">Your request was sent. We will call you as soon as possible.</string>
+    <string name="request_not_send">Your request was not send. Please try again.</string>
+
+    <string name="fill_name">Fill your name</string>
+    <string name="name">Name</string>
+    <string name="fill_telephone">Fill your telephone</string>
+    <string name="telephone">Telephone</string>
+    <string name="invalid_telephone">Please enter a valid phone number</string>
 </resources>
