@@ -19,37 +19,55 @@ import androidx.annotation.StringRes;
 import androidx.lifecycle.MutableLiveData;
 
 import io.agritrack.R;
+import io.agritrack.common.EmailService;
 
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
+
+import com.google.android.gms.common.util.Strings;
+
+import java.util.concurrent.Executors;
 
 public class SupportDialog {
 
     private final Activity activity;
     private Dialog dialog;
-    private Button btnSubmit, btnUrgentRequest;
+    private Button btnSubmit;
     private ImageView ivCancel;
-    private EditText mtvRemarks;
+    private EditText mtvRemarks, etName, etPhone;
+    private final int minTelephoneDigits = 10;
 
-    public SupportDialog (Activity activity) {
+    public SupportDialog(Activity activity) {
         this.activity = activity;
 
         setDialog();
         findViews();
 
-        btnUrgentRequest.setOnClickListener(view -> {
-            dismiss();
-            CToast(activity.getApplicationContext(), render("Your request was sent. Please wait for remote control."), Toast.LENGTH_SHORT);
-        });
-
         btnSubmit.setOnClickListener(view -> {
-            dismiss();
-                CToast(activity.getApplicationContext(), render("Your request was sent. We will call you as soon as possible."), Toast.LENGTH_SHORT);
+
+            // check if telephone is empty or invalid
+            if(Strings.isEmptyOrWhitespace(etPhone.getText().toString()) || etPhone.getText().toString().length() < minTelephoneDigits){
+                CToast(activity.getApplicationContext(), render(activity.getString(R.string.invalid_telephone)), Toast.LENGTH_LONG);
+                return;
+            }
+
+            // prevent spam of send button
+            btnSubmit.setOnClickListener(null);
+
+            Executors.newSingleThreadExecutor().execute(()->{
+                try{
+                    // try send email
+                    EmailService.sendEmail(etName.getText().toString(), etPhone.getText().toString(), mtvRemarks.getText().toString());
+                    this.activity.runOnUiThread(() -> CToast(activity.getApplicationContext(), render(activity.getString(R.string.request_sent)), Toast.LENGTH_LONG));
+                } catch (Exception e){
+                    this.activity.runOnUiThread(() -> CToast(activity.getApplicationContext(), render(activity.getString(R.string.request_not_send)), Toast.LENGTH_LONG));
+                }
+
+                this.dismiss();
+            });
         });
 
-        ivCancel.setOnClickListener(view -> {
-            dismiss();
-        });
+        ivCancel.setOnClickListener(view -> dismiss());
     }
 
     public void showDialog() {
@@ -68,8 +86,9 @@ public class SupportDialog {
     }
 
     private void findViews() {
-        btnSubmit = (Button) dialog.findViewById(R.id.btnSubmit);
-        btnUrgentRequest = (Button) dialog.findViewById(R.id.btnUrgentRequest);
+        btnSubmit = dialog.findViewById(R.id.btnSubmit);
+        etName = dialog.findViewById(R.id.etName);
+        etPhone = dialog.findViewById(R.id.etPhone);
         ivCancel = dialog.findViewById(R.id.ivCancel);
         mtvRemarks = dialog.findViewById(R.id.mtvRemarks);
         mtvRemarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
