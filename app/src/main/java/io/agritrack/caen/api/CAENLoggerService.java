@@ -1,5 +1,6 @@
 package io.agritrack.caen.api;
 
+import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdDisableLogging;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdEnableLogging;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.CmdRESET;
@@ -16,6 +17,7 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadSamplesCnt;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadSΤΑΤΕ;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadTimeBIN;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ResetSΤΑΤΕ;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ValidSΤΑΤΕ;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteInterval;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.WriteTimeBINZero;
 
@@ -23,15 +25,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import com.google.type.DateTime;
 import com.uhf.api.cls.Reader;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
@@ -100,6 +106,42 @@ public class CAENLoggerService {
         }
     }
 
+    public void doValidation() {
+        try {
+            // instantiate the thread pool required by CompletableFuture instances following...
+            final ExecutorService actnPool = Executors.newSingleThreadExecutor();
+
+            // read time Bin
+            CompletableFuture<CAENState> future = this.execReadTimeBIN(new CAENState(), actnPool);
+
+            // read Init time stamp
+            future.thenCompose(x -> execReadInitDatetime(x, actnPool));
+
+            // enable logger
+            future.thenCompose(x -> execReadControlRegister(x, actnPool));
+
+            // temporary...
+            CAENState _state = future.join();
+            System.out.println("doValidation()-->" + _state);
+
+           /* Calendar c = new GregorianCalendar();
+            c.set(Calendar.HOUR_OF_DAY, 0); //anything 0 - 23
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
+            Date d1 = c.getTime();
+            long newDate = d1.getTime();
+
+            if(_state.ctrlReg != null && !_state.ctrlReg.endsWith("100") || _state.getInitTS().compareTo(newDate)<0  || _state.timeBin!=0) {
+
+            }*/
+
+            mHandler.sendMessage(createMessage(ValidSΤΑΤΕ, _state));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void doEnableLogger(Short samplingInterval) {
         try {
             // instantiate the thread pool required by CompletableFuture instances following...
@@ -134,6 +176,10 @@ public class CAENLoggerService {
 
             // read Last Sample value
             CompletableFuture<CAENState> futureTemp = this.execReadLastSample(_state, actnPool);
+
+            // read Init time stamp
+            futureTemp.thenCompose(x -> execReadInitDatetime(x, actnPool));
+
             _state = futureTemp.join();
             //--------------------------------------------------
 
@@ -240,15 +286,16 @@ public class CAENLoggerService {
         }
     }
 
-    public void doReadMeasurements() {
+    public void doReadMeasurements(Boolean forceRead) {
         try {
             // instantiate the thread pool required by CompletableFuture instances following...
             final ExecutorService actnPool = Executors.newFixedThreadPool(1);
 
             CAENState status = execReadControlRegister(new CAENState(), actnPool).get();
 
-            if (status.ctrlReg == null || status.ctrlReg.equalsIgnoreCase("N/A") || status.ctrlReg.endsWith("000")){
+            if (Boolean.FALSE.equals(forceRead) && (status.ctrlReg == null || status.ctrlReg.equalsIgnoreCase("N/A") || status.ctrlReg.endsWith("000"))){
                 System.out.println("doReadMeasurements()-->" + status);
+                status = execReadSamplesCount(status, actnPool).get();
                 mHandler.sendMessage(createMessage(ReadSΤΑΤΕ, status));
                 return;
             }

@@ -1,0 +1,20 @@
+
+f
+java:S1104	"PMake data a static final constant or non-public and provide accessors if needed.(óÅ¦ı
+p
+java:S1104
+"ZMake loggerInitData a static final constant or non-public and provide accessors if needed.(›ë‡ƒ
+l
+java:S1104"QMake highT a static final constant or non-public and provide accessors if needed.(ª¦ü·şÿÿÿÿ
+k
+java:S1104"PMake lowT a static final constant or non-public and provide accessors if needed.(ª¦ü·şÿÿÿÿ
+k
+java:S1104"PMake avgT a static final constant or non-public and provide accessors if needed.(ª¦ü·şÿÿÿÿ
+o
+java:S1104*"TMake assetEPC a static final constant or non-public and provide accessors if needed.(ïÌ¯´ûÿÿÿÿ
+u
+java:S1104+"ZMake productionLane a static final constant or non-public and provide accessors if needed.(éïş¨øÿÿÿÿ
+\
+java:S1659"ADeclare "lowT" and all following declarations on a separate line.(ª¦ü·şÿÿÿÿ
++
+java:S2275@"Not enough arguments.(¨—Š

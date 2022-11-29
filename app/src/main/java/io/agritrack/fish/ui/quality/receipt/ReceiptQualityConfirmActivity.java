@@ -76,7 +76,6 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
     private ImageView ivSupport, ivNext, ivBack;
     private boolean proceedWithoutLocation = false;
     private SupportDialog supportDialog;
-    private final long filesLength = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,26 +135,23 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
     }
 
     protected void configFooter() {
-        ivNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(etPIN.getText().toString())) {
-                    CToast(ReceiptQualityConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
-                    return;
-                }
-                boolean userIsValid = isAuthenticated();
-                if (!userIsValid) {
-                    CToast(ReceiptQualityConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
-                    return;
-                } else if (mLastLocation != null) {
-                    recQuality.longitude = mLastLocation.getLongitude();
-                    recQuality.latitude = mLastLocation.getLatitude();
-                    proceedWithoutLocation = true;
-                    moveToNextScreen();
-                } else if (!proceedWithoutLocation) {
-                    FragmentManager fm = getSupportFragmentManager();
-                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-                }
+        ivNext.setOnClickListener(v -> {
+            if (TextUtils.isEmpty(etPIN.getText().toString())) {
+                CToast(ReceiptQualityConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
+                return;
+            }
+            boolean userIsValid = isAuthenticated();
+            if (!userIsValid) {
+                CToast(ReceiptQualityConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
+                return;
+            } else if (mLastLocation != null) {
+                recQuality.longitude = mLastLocation.getLongitude();
+                recQuality.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else if (!proceedWithoutLocation) {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             }
         });
 
@@ -191,8 +187,6 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             tvEvaluation.setText(qltRecord.evaluation);
         }
 
-        //tvNumberOfBinsCount.setText(prcRecord.totalBinsUsed != null ? prcRecord.totalBinsUsed.toString() : "N/A");
-
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }
 
@@ -220,8 +214,6 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             e.printStackTrace();
             CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
             return false;
-        } finally {
-
         }
     }
 
@@ -231,9 +223,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
 
         // use typed-in PIN to compare credentials with those stored in the Local DB.
         AuthenticationService authSvc = new AuthenticationService();
-        boolean authentication = authSvc.authenticateUser(this.db, login, pin);
-
-        return authentication;
+        return authSvc.authenticateUser(this.db, login, pin);
     }
 
     private boolean updateState() {
@@ -243,7 +233,6 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             progressDialog.show();
 
             String token = LocalPreferences.getToken();
-            //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
             syncAllPhotos();
 
@@ -345,8 +334,6 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
                 recLoggerData.clearData();
                 tempDataRepo.removeAll(db);
                 measRepo.removeAll(db);
-                //db.temperatureDataDAO().deleteAll();
-                //db.measurementsDAO().deleteAll();
 
                 String token = LocalPreferences.getToken();
 
@@ -416,12 +403,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             try {
                 if (response.body() != null) {
                     String fileName = response.body().string();
-                    boolean res = FileUtils.deletePhotoFile(ReceiptQualityConfirmActivity.this, fileName);
-                    if (res) {
-                        //runOnUiThread(() -> CToast(getApplicationContext(), render("File " + fileName + " was uploaded successfully!!!"), Toast.LENGTH_LONG));
-                    } else {
-                        //runOnUiThread(() -> CToast(getApplicationContext(), render("Failed to remove file" +fileName+ " from local folder!!!"), Toast.LENGTH_LONG));
-                    }
+                    FileUtils.deletePhotoFile(ReceiptQualityConfirmActivity.this, fileName);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

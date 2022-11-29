@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import io.agritrack.caen.common.CAENState;
 
 public interface ILoggerDialog {
-    enum StatesEnum {STOP_LOGGER, COUNT_SAMPLES, READ_VALUES, RESET, INIT};
+    enum StatesEnum {STOP_LOGGER, COUNT_SAMPLES, READ_VALUES, RESET, INIT, VALID};
 
     String TAG = "CAENLoggerDialogFragment";
     String LOGGER_EPC = "LoggerEPC";

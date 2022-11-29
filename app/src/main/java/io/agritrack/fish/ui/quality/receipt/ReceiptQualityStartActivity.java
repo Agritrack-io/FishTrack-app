@@ -230,10 +230,6 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
             stopScanner();
-            
-            // TODO:: Delete below code
-            db.qualityTransactionDAO().deleteAll();
-
             Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
             startActivity(i);
         });
@@ -485,18 +481,6 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             }
         }
         // -------------------------------------
-
-//        if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-//            BinInfo tmpBin = db.binInfoDAO().getByRFId(binEPC);
-//            FragmentManager fm = getSupportFragmentManager();
-//            LoggerInitDialogFragment loggerDlg;
-//            if (tmpBin != null && tmpBin.initedAt != null) {
-//                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, tmpBin.initedAt, true, true, true);
-//            } else {
-//                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, true, true, true);
-//            }
-//            loggerDlg.show(fm, LoggerInitDialogFragment.TAG);
-//        }
     }
 
     private void confirmScanBinOutOfLotDialog() {

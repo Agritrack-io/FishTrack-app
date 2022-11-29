@@ -166,31 +166,7 @@ public class FishingStartActivity extends AppCompatActivity {
                 tvNotes.setText(hvst.notes);
                 tvNotes.setEnabled(false);
             }
-
-            /*if (!Strings.isEmptyOrWhitespace(hvst.reasonOutOfSystemFishing)) {
-                tvHarvest.setText(hvst.requesterName);
-                tvHarvest.setEnabled(true);
-                tvFishType.setText(hvst.speciesName);
-                tvFishType.setEnabled(true);
-                tvRequestedQuantity.setText(hvst.reqWeight.toString());
-                tvRequestedQuantity.setEnabled(true);
-                tvCageName.setText(hvst.cageCode);
-                tvCageName.setEnabled(true);
-                tvAverageWeight.setText(hvst.averageWeight.toString());
-                tvAverageWeight.setEnabled(true);
-                tvNotes.setText(hvst.notes);
-                tvNotes.setEnabled(true);
-            }*/
-
-        } /*else {
-            tvHarvest.setBackgroundColor(Color.WHITE);
-            tvFishType.setBackgroundColor(Color.WHITE);
-            tvRequestedQuantity.setBackgroundColor(Color.WHITE);
-            tvCageName.setBackgroundColor(Color.WHITE);
-            tvAverageWeight.setBackgroundColor(Color.WHITE);
-            tvNotes.setBackgroundColor(Color.WHITE);
-        }*/
-        //harvestSpinner.setSelection(arrayAdapter.getPosition("Category 2"));
+        }
     }
 
     private FishingRecord updateState() {
@@ -220,8 +196,6 @@ public class FishingStartActivity extends AppCompatActivity {
             fishingRecord.reqWeight = Double.valueOf(tvRequestedQuantity.getText().toString());
         }
 
-        //fishingRecord.reqWeight = etQty.getText() != null ? Double.valueOf(etQty.getText().toString()).intValue() + "" : "0";
-
         GlobalState.commitFishing(db, Boolean.FALSE);
 
         return fishingRecord;
@@ -230,23 +204,6 @@ public class FishingStartActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
 
-        /*if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.requesterName)) {
-                sb.append(String.format("\n%s is missing", "'Harvest initiator'"));
-            }
-
-            if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.speciesName)) {
-                sb.append(String.format("\n%s is missing", "'Fish type'"));
-            }
-
-            if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.reqWeight)) {
-                sb.append(String.format("\n%s is missing", "'Requested quantity'"));
-            }
-
-            if (Strings.isEmptyOrWhitespace(GlobalState.recFishing.cageCode)) {
-                sb.append(String.format("\n%s is missing", "'Cage code'"));
-            }
-        }*/
         return sb.toString();
     }
 

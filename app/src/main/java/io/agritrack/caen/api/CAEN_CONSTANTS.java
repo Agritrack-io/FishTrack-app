@@ -62,6 +62,7 @@ public class CAEN_CONSTANTS {
     public final static int ReadSΤΑΤΕ = 1105;
     public final static int ResetSΤΑΤΕ = 1106;
     public final static int InitSΤΑΤΕ = 1107;
+    public final static int ValidSΤΑΤΕ = 1108;
 
     public final static int WriteTimeBINZero = 1100;
     public final static int WriteTimeBINOne = 1101;

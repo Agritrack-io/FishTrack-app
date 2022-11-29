@@ -217,12 +217,7 @@ public class FishHomeActivity extends AppCompatActivity {
 
                 switch (mi.getLoc()) {
                     case Fishing_Idx:
-
-                        i = new Intent(appCtx, FishingBinsActivity.class);
-                        break;
-
-
-                        /*FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
+                        FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
                         FishingRecord fishingRecord;
 
                         // default Next Activity is FishingStart...
@@ -252,7 +247,7 @@ public class FishHomeActivity extends AppCompatActivity {
 
                             i = new Intent(appCtx, HarvestRequestsActivity.class);
                         }
-                        break;*/
+                        break;
                     case Test_Temp_Idx:
                         i = new Intent(appCtx, TestBinTempActivity.class);
                         i.putExtra("BinActivity", false);

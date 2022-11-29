@@ -26,6 +26,8 @@ public class BinInfoDTO {
         binInfo.lastUpdate = binInfoDTO.last_update;
         if (binInfoDTO.inited_at != null && String.valueOf(binInfoDTO.inited_at).length() == 10) {
             binInfo.initedAt = binInfoDTO.inited_at * 1000L;
+        } else {
+            binInfo.initedAt = binInfoDTO.inited_at;
         }
 
         return binInfo;

@@ -64,6 +64,7 @@ import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.data.model.BinInfo;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.wh.Asset;
+import io.agritrack.data.repo.BinInfoRepository;
 import io.agritrack.data.repo.IFishTrackRepository;
 import io.agritrack.data.repo.MeasurementRepository;
 import io.agritrack.data.repo.TemperatureDataRepository;
@@ -99,6 +100,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private IFishTrackRepository tempDataRepo, measRepo;
+    private BinInfoRepository binInfoRepo;
     private ProgressDialog progressDialog;
     private RecyclerView lvTempProfiles;
     private TemperatureProfileAdapter tempProfileAdapter;
@@ -117,7 +119,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
     private Spinner spProductionLine;
     private ImageButton ibShowValues;
     private String loggerEPC, binEPC;
-    private ImageView ivSupport;
+    private ImageView ivSupport,ivBack;
     private Button btnScanBin;
     private SupportDialog supportDialog;
 
@@ -161,6 +163,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
 
         this.tempDataRepo = new TemperatureDataRepository();
         this.measRepo = new MeasurementRepository();
+        this.binInfoRepo = new BinInfoRepository();
 
         // get  references of the controls
         assignCtrlVars();
@@ -247,6 +250,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
                         recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), now, rs.samples);
                         GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
                         fillTemperatureProfileAdapter();
+                        ivBack.setVisibility(View.INVISIBLE);
                     }
                 }
             }
@@ -280,6 +284,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
         ibShowValues = findViewById(R.id.ibShowValues);
         spProductionLine = findViewById(R.id.spProductionLine);
         ivSupport = findViewById(R.id.ivSupport);
+        ivBack = findViewById(R.id.ivBackToMenu);
     }
 
     protected void configFooter() {
@@ -294,7 +299,6 @@ public class BinTurnoverActivity extends AppCompatActivity {
             }
         });
 
-        ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
             stopScanner();
             Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
@@ -309,7 +313,6 @@ public class BinTurnoverActivity extends AppCompatActivity {
             progressDialog.show();
 
             String token = LocalPreferences.getToken();
-            //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
             db.binInfoDAO().updateBinInfoSetSorted(binEPC);
 
@@ -621,17 +624,6 @@ public class BinTurnoverActivity extends AppCompatActivity {
                 SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(loggerDlg);
                 sortLoggerDialogDecorator.show(fm);
             }
-            // -------------------------------------
-            /*FragmentManager fm = getSupportFragmentManager();
-            String productionLane = spProductionLine.getSelectedItem().toString();
-            LoggerInitDialogFragment loggerDlg;
-            if (tmpBin != null && tmpBin.initedAt != null) {
-                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt, true, true, false);
-            } else {
-                loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, productionLane, true, true, false);
-            }
-            loggerDlg.setInformedActivity(BinTurnoverActivity.this);
-            loggerDlg.show(fm, LoggerInitDialogFragment.TAG);*/
         }
     }
 
@@ -639,14 +631,15 @@ public class BinTurnoverActivity extends AppCompatActivity {
         @Override
         public void onResponse(Call<List<TemperatureTimeSeriesDTO>> call, Response<List<TemperatureTimeSeriesDTO>> response) {
             List<TemperatureTimeSeriesDTO> rs = response.body();
+            ivBack.setVisibility(View.VISIBLE);
 
             if (rs != null || IsDemo) {
                 // reset existing Temperature values in stateRecord.
+
                 recLoggerData.clearData();
                 tempDataRepo.removeAll(db);
                 measRepo.removeAll(db);
-                //db.temperatureDataDAO().deleteAll();
-                //db.measurementsDAO().deleteAll();
+                binInfoRepo.removeOneBin(db,tmpBin);
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!
@@ -656,6 +649,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Call<List<TemperatureTimeSeriesDTO>> call, Throwable error) {
+            ivBack.setVisibility(View.VISIBLE);
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

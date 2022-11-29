@@ -3,6 +3,7 @@ package io.agritrack.ui.tools.caen;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.InitSΤΑΤΕ;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ReadSΤΑΤΕ;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ResetSΤΑΤΕ;
+import static io.agritrack.caen.api.CAEN_CONSTANTS.ValidSΤΑΤΕ;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
@@ -14,10 +15,10 @@ import static io.agritrack.ui.tools.caen.LoggerDialogDecorator.ResetOp;
 import static io.agritrack.ui.tools.caen.LoggerDialogDecorator.ValidOp;
 
 import android.animation.TimeAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,6 +43,9 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -55,76 +60,68 @@ import io.agritrack.caen.common.CAENState;
  * Component implementation of ILoggerDialog.
  * Use the {@link LoggerDialogFragment#newInstance} factory method to
  * create an instance of this fragment.
- *
+ * <p>
  * Part of a Decorator Design Pattern implementation to allow for
  * different Logger Dialogs creation at runtime.
  */
 public class LoggerDialogFragment extends DialogFragment implements TimeAnimator.TimeListener, ILoggerDialog {
+    // Single Thread
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
     // Local handler that receives the RFID scanner results.
     private Handler mScanHandler;
     private Context mContext;
-
     private Button btnRead, btnInit, btnReset, btnValidate;
+    private TextView tvCurrentLoggerEPC;
     private int buttonVisibilityBits = 0x00000;
-
     private String loggerEPC;
     private String assetEPC;
+    private String currentLoggerEPC = null;
     private String productionLane;
+    private static Long initTS;
     private Long initedAt;
-
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0;
     private ClipDrawable mClipDrawable;
-
     private CAENLoggerService loggerSvc;
     private ICAEN_API cmd;
 
-    //-------
-    private MutableLiveData<CAENState> stateResult;
-    private short samplingInterval = DefaultInterval;
-
-    // Single Thread
-    ExecutorService executorService = Executors.newSingleThreadExecutor();
-
-    protected final View.OnClickListener initBtnListener = v -> {
+    protected final View.OnClickListener validBtnListener = v -> {
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-            btnInit.setBackgroundResource(R.drawable.button_background);
-            btnInit.setText("Start Logger...");
-            startAnimation(getView(), btnInit);
+            btnValidate.setBackgroundResource(R.drawable.button_background);
+            btnValidate.setText(R.string.validate);
+            startAnimation(getView(), btnValidate);
 
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke reset() method of CAENLoggerService.
             setCancelable(false);
             v.setEnabled(false);
-            if(!executorService.isShutdown()){
-                executorService.execute(()-> {
+            if (!executorService.isShutdown()) {
+                executorService.execute(() -> {
                     if (this != null && this.getActivity() != null) {
                         this.getActivity().runOnUiThread(() -> setCancelable(false));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(false));
-                        this.loggerSvc.doEnableLogger(samplingInterval);
+                        this.loggerSvc.doValidation();
                         this.getActivity().runOnUiThread(() -> setCancelable(true));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(true));
                     }
                 });
             }
         } else {
-            CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
+            CToast(getActivity(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
         }
     };
-    //##############################################################
-
     protected final View.OnClickListener resetBtnListener = v -> {
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
             btnReset.setBackgroundResource(R.drawable.button_background);
-            btnReset.setText("Resetting...");
+            btnReset.setText(R.string.reset);
             startAnimation(getView(), btnReset);
 
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
             //invoke reset() method of CAENLoggerService.
 
-            if(!executorService.isShutdown()) {
+            if (!executorService.isShutdown()) {
                 executorService.execute(() -> {
                     if (this != null && this.getActivity() != null) {
                         this.getActivity().runOnUiThread(() -> setCancelable(false));
@@ -137,15 +134,13 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             }
 
         } else {
-            CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
+            CToast(getActivity(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
         }
     };
-    //##############################################################
-
     private final View.OnClickListener readBtnListener = v -> {
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
             btnRead.setBackgroundResource(R.drawable.button_background);
-            btnRead.setText("Reading Logger...");
+            btnRead.setText(R.string.reading);
             startAnimation(getView(), btnRead);
 
             // pass selected EPC as RFID filter
@@ -153,12 +148,12 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             //invoke read() method of CAENLoggerService.
             setCancelable(false);
             v.setEnabled(false);
-            if(!executorService.isShutdown()) {
+            if (!executorService.isShutdown()) {
                 executorService.execute(() -> {
                     if (this != null && this.getActivity() != null) {
                         this.getActivity().runOnUiThread(() -> setCancelable(false));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(false));
-                        this.loggerSvc.doReadMeasurements();
+                        this.loggerSvc.doReadMeasurements(currentLoggerEPC!=null);
                         this.getActivity().runOnUiThread(() -> setCancelable(true));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(true));
                     }
@@ -166,7 +161,39 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             }
 
         } else {
-            CToast(getActivity(), render("No Tag detected!!\nPlease change your position!"), Toast.LENGTH_SHORT);
+            CToast(getActivity(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
+        }
+    };
+    //##############################################################
+    //-------
+    private MutableLiveData<CAENState> stateResult;
+    //##############################################################
+    private short samplingInterval = DefaultInterval;
+    //##############################################################
+    protected final View.OnClickListener initBtnListener = v -> {
+        if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+            btnInit.setBackgroundResource(R.drawable.button_background);
+            btnInit.setText(R.string.starting_logger);
+            startAnimation(getView(), btnInit);
+
+            // pass selected EPC as RFID filter
+            cmd.setFilterEPC(loggerEPC);
+            //invoke reset() method of CAENLoggerService.
+            setCancelable(false);
+            v.setEnabled(false);
+            if (!executorService.isShutdown()) {
+                executorService.execute(() -> {
+                    if (this != null && this.getActivity() != null) {
+                        this.getActivity().runOnUiThread(() -> setCancelable(false));
+                        this.getActivity().runOnUiThread(() -> v.setEnabled(false));
+                        this.loggerSvc.doEnableLogger(samplingInterval);
+                        this.getActivity().runOnUiThread(() -> setCancelable(true));
+                        this.getActivity().runOnUiThread(() -> v.setEnabled(true));
+                    }
+                });
+            }
+        } else {
+            CToast(getActivity(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
         }
     };
     //##############################################################
@@ -276,16 +303,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             // show/hide buttons according to Visibility Bit values.
             applyButtonsVisibility();
 
-//            // Enable Read button
-//            btnRead.setText("Reading Measurements...");
-//            btnRead.setBackgroundResource(R.drawable.button_background);
-//            btnRead.setOnClickListener(readBtnListener);
-//
-//            // assign listener to init button
-//            btnInit.setOnClickListener(initBtnListener);
-//
-//            // assign listener to reset button
-//            btnReset.setOnClickListener(resetBtnListener);
+            tvCurrentLoggerEPC.setText(assetEPC.substring(assetEPC.length()-10));
         }
     }
 
@@ -299,7 +317,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 
         // Press First Button
         if ((ReadOp & this.buttonVisibilityBits) == ReadOp) {
-            btnRead.setText("Reading Measurements...");
+            btnRead.setText(R.string.reading_measurements);
             btnRead.setBackgroundResource(R.drawable.button_background);
             btnRead.setOnClickListener(readBtnListener);
             btnRead.callOnClick();
@@ -355,6 +373,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         btnReset = rootView.findViewById(R.id.btnReset);
         btnInit = rootView.findViewById(R.id.btnInit);
         btnValidate = rootView.findViewById(R.id.btnValidate);
+        tvCurrentLoggerEPC = rootView.findViewById(R.id.tvCurrentLoggerEPC);
     }
 
     private void startAnimation(View view, Button buttonID) {
@@ -369,7 +388,6 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         mAnimator.setTimeListener(this);
 
         animateButton(view);
-//        getActivity().runOnUiThread(() -> animateButton(view));
     }
 
     private void stopAnimation() {
@@ -401,145 +419,11 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         }
     }
 
-    // ###################################################
-    private class CAENCommandsHandler extends Handler {
-
-        @Override
-        public void handleMessage(Message msg) {
-            Object obj;
-            Activity mActivity = (Activity) mContext;
-            switch (msg.what) {
-                case ReadSΤΑΤΕ:
-                    // stop btnRead animation
-                    stopAnimation();
-
-                    obj = extractData(CAENState.class, msg.getData());
-                    if (obj != null) {
-                        CAENState state = (CAENState) obj;
-                        state.state = StatesEnum.READ_VALUES;
-
-                        Short valuesRead = state.getSamplesCnt();
-                        // set the appropriate text, based on the operation outcome.
-                        if (state.canProceed &&  valuesRead != null && valuesRead > 0 && !CollectionUtils.isEmpty(state.getSamples())) {
-                            // pass business-related params
-                            state.setLoggerEPC(loggerEPC);
-                            state.setAssetEPC(assetEPC);
-                            state.setProductionLane(productionLane);
-
-                            mActivity.runOnUiThread(() -> {
-                                btnRead.setText(String.format("READ %s measurements.", valuesRead));
-                                btnRead.setOnClickListener(null);
-
-                                if(stateResult != null) {
-                                    stateResult.setValue(state);
-                                }
-                            });
-                            //displayMeasurementsDialog(samples);
-
-                            // assign listener to reset button
-                            btnReset.setOnClickListener(resetBtnListener);
-                            btnReset.callOnClick();
-                        } else if ("00000".equalsIgnoreCase(state.ctrlReg)) {
-                            btnRead.setText("Logger is idle");
-                            btnRead.setOnClickListener(null);
-                            // after Reset, initialize the logger and start logging...
-                            btnInit.setOnClickListener(initBtnListener);
-                            btnInit.setText("Start Logger...");
-                        } else if (state.ctrlReg==null || "N/A".equalsIgnoreCase(state.ctrlReg) || "null".equalsIgnoreCase(state.ctrlReg)) {
-                            btnRead.setText("Invalid status");
-                        } else {
-                            mActivity.runOnUiThread(() -> {
-                                btnRead.setText("Error on reading. Press the button again.");
-                            });
-                        }
-                    } else {
-                        mActivity.runOnUiThread(() -> {
-                            btnRead.setText("Failed. Press the button again.");
-                        });
-                    }
-                    break;
-                case ResetSΤΑΤΕ:
-                    // stop btnReset animation
-                    stopAnimation();
-
-                    obj = extractData(CAENState.class, msg.getData());
-                    if (obj != null) {
-                        CAENState state = (CAENState) obj;
-                        state.state = StatesEnum.RESET;
-
-                        boolean successfulReset = state.getOpReset() == 1 && state.canProceed;
-                        if (successfulReset) {
-                            mActivity.runOnUiThread(() -> {
-                                btnReset.setText("Cleared (reset) logger.");
-                                btnReset.setOnClickListener(null);
-                                if (!isButtonVisible(InitOp)) {
-                                    dismiss();
-                                }
-                            });
-                            // after Reset, initialize the logger and start logging...
-                            if (isButtonVisible(InitOp)) {
-                                btnInit.setOnClickListener(initBtnListener);
-                                btnInit.callOnClick();
-                            }
-                        } else {
-                            mActivity.runOnUiThread(() -> {
-                                btnReset.setText("Error on resetting ...\nPress button again!");
-                            });
-                        }
-                    } else {
-                        mActivity.runOnUiThread(() -> {
-                            btnReset.setText("Failed. Press the button again.");
-                        });
-                    }
-                    break;
-                case InitSΤΑΤΕ:
-                    // stop btnInit animation
-                    stopAnimation();
-
-                    obj = extractData(CAENState.class, msg.getData());
-                    if (obj != null) {
-                        CAENState state = (CAENState) obj;
-                        state.state = StatesEnum.INIT;
-
-                        boolean successfulInit = state.ctrlReg!=null && state.ctrlReg.endsWith("100"); //Integer.valueOf(1).equals(state.getOpLogging()) && state.canProceed;
-                        if (successfulInit) {
-                            // pass business-related params
-                            state.setLoggerEPC(loggerEPC);
-                            state.setAssetEPC(assetEPC);
-                            state.setProductionLane(productionLane);
-
-                            if(stateResult != null) {
-                                stateResult.setValue(state);
-                            }
-
-//                            mActivity.runOnUiThread(() -> {
-                                btnInit.setText("Started logging...");
-                                btnInit.setOnClickListener(null);
-                                dismiss();
-
-//                            });
-                        } else {
-//                            mActivity.runOnUiThread(() -> {
-                                btnInit.setText("Error on initializing logger...\nPress button again!");
-//                            });
-                        }
-                    } else {
-                        mActivity.runOnUiThread(() -> {
-                            btnInit.setText("Failed. Press the button again.");
-                        });
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
     private Object extractData(Class clazz, Bundle data) {
         Class dataClazz = data.get("body").getClass();
 
         // Failed to read value from Logger.
-        if(dataClazz.getSimpleName().equalsIgnoreCase(String.class.getSimpleName()) && "N/A".equalsIgnoreCase(data.getString("body"))) {
+        if (dataClazz.getSimpleName().equalsIgnoreCase(String.class.getSimpleName()) && "N/A".equalsIgnoreCase(data.getString("body"))) {
             return null;
         }
 
@@ -563,24 +447,177 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         }
     }
 
-    private void displayMeasurementsDialog(List<String[]> values) {
+    // ###################################################
+    private class CAENCommandsHandler extends Handler {
 
-        if (values == null) {
-            CToast(mContext, "Invalid data read!!!", Toast.LENGTH_LONG);
-            return;
+        @SuppressLint("StringFormatMatches")
+        @Override
+        public void handleMessage(Message msg) {
+            Object obj;
+            Activity mActivity = (Activity) mContext;
+            switch (msg.what) {
+                case ReadSΤΑΤΕ:
+                    // stop btnRead animation
+                    stopAnimation();
+
+                    obj = extractData(CAENState.class, msg.getData());
+                    if (obj != null) {
+                        CAENState state = (CAENState) obj;
+                        state.state = StatesEnum.READ_VALUES;
+
+                        Short valuesRead = state.getSamplesCnt();
+                        // set the appropriate text, based on the operation outcome.
+                        if (state.canProceed && valuesRead != null && valuesRead > 0 && !CollectionUtils.isEmpty(state.getSamples())) {
+                            // pass business-related params
+                            state.setLoggerEPC(loggerEPC);
+                            state.setAssetEPC(assetEPC);
+                            state.setProductionLane(productionLane);
+
+                            mActivity.runOnUiThread(() -> {
+                                btnRead.setText(getString(R.string.read_number_measurements, valuesRead));
+                                btnRead.setOnClickListener(null);
+
+                                if (stateResult != null) {
+                                    stateResult.setValue(state);
+                                }
+                            });
+
+                            // assign listener to reset button
+                            btnReset.setOnClickListener(resetBtnListener);
+                            btnReset.callOnClick();
+                        } else if ("00000".equalsIgnoreCase(state.ctrlReg) && state.samplesCnt>0 && currentLoggerEPC==null) {
+                            btnRead.setText(getString(R.string.idle_logger_with_data) + " [" +state.samplesCnt +"]");
+                            currentLoggerEPC = loggerEPC;
+                        } else if ("00000".equalsIgnoreCase(state.ctrlReg)) {
+                            currentLoggerEPC = null;
+                            btnRead.setText(R.string.idle_logger);
+                            btnRead.setOnClickListener(null);
+                            // after Reset, initialize the logger and start logging...
+                            btnReset.setOnClickListener(resetBtnListener);
+                            btnReset.setText(R.string.starting_logger);
+                            btnReset.callOnClick();
+                        } else if (state.ctrlReg == null || "N/A".equalsIgnoreCase(state.ctrlReg) || "null".equalsIgnoreCase(state.ctrlReg)) {
+                            btnRead.setText(R.string.invalid_status);
+                        } else {
+                            mActivity.runOnUiThread(() -> {
+                                btnRead.setText(R.string.error_reading_logger);
+                            });
+                        }
+                    } else {
+                        mActivity.runOnUiThread(() -> {
+                            btnRead.setText(R.string.failed_logger_press_again);
+                        });
+                    }
+                    break;
+                case ResetSΤΑΤΕ:
+                    // stop btnReset animation
+                    stopAnimation();
+
+                    obj = extractData(CAENState.class, msg.getData());
+                    if (obj != null) {
+                        CAENState state = (CAENState) obj;
+                        state.state = StatesEnum.RESET;
+
+                        boolean successfulReset = state.getOpReset() == 1 && state.canProceed;
+                        if (successfulReset) {
+                            mActivity.runOnUiThread(() -> {
+                                btnReset.setText(R.string.reseted_logger);
+                                btnReset.setOnClickListener(null);
+                                if (!isButtonVisible(InitOp)) {
+                                    dismiss();
+                                }
+                            });
+                            // after Reset, initialize the logger and start logging...
+                            if (isButtonVisible(InitOp)) {
+                                btnInit.setOnClickListener(initBtnListener);
+                                btnInit.callOnClick();
+                            }
+                        } else {
+                            mActivity.runOnUiThread(() -> {
+                                btnReset.setText(R.string.error_resetting_logger);
+                            });
+                        }
+                    } else {
+                        mActivity.runOnUiThread(() -> {
+                            btnReset.setText(R.string.failed_logger_press_again);
+                        });
+                    }
+                    break;
+                case InitSΤΑΤΕ:
+                    // stop btnInit animation
+                    stopAnimation();
+
+                    obj = extractData(CAENState.class, msg.getData());
+                    if (obj != null) {
+                        CAENState state = (CAENState) obj;
+                        state.state = StatesEnum.INIT;
+
+                        boolean successfulInit = state.ctrlReg != null && state.ctrlReg.endsWith("100");
+                        if (successfulInit) {
+                            // pass business-related params
+                            state.setLoggerEPC(loggerEPC);
+                            state.setAssetEPC(assetEPC);
+                            state.setProductionLane(productionLane);
+                            // initTS will hold initialisation timestamps stored in the logger
+                            initTS = state.getInitTS();
+
+                            if (stateResult != null) {
+                                stateResult.setValue(state);
+                            }
+
+                            btnInit.setText(R.string.started_logging);
+                            btnInit.setOnClickListener(null);
+                            btnValidate.setOnClickListener(validBtnListener);
+                            btnValidate.callOnClick();
+                        } else {
+                            btnInit.setText(R.string.error_initializing_logger);
+                        }
+                    } else {
+                        mActivity.runOnUiThread(() -> {
+                            btnInit.setText(R.string.failed_logger_press_again);
+                        });
+                    }
+                    break;
+                case ValidSΤΑΤΕ:
+                    // stop btnInit animation
+                    stopAnimation();
+
+                    obj = extractData(CAENState.class, msg.getData());
+                    if (obj != null) {
+                        CAENState state = (CAENState) obj;
+                        state.state = StatesEnum.VALID;
+
+                        boolean validInitTS = initTS != null && initTS.equals(state.getInitTS());
+                        boolean successfulValidation = state.ctrlReg != null && state.ctrlReg.endsWith("100") && validInitTS && state.timeBin == 0; //Integer.valueOf(1).equals(state.getOpLogging()) && state.canProceed;
+
+                        if (successfulValidation) {
+                            // pass business-related params
+                            state.setLoggerEPC(loggerEPC);
+                            state.setAssetEPC(assetEPC);
+                            state.setProductionLane(productionLane);
+
+                            if (stateResult != null) {
+                                stateResult.setValue(state);
+                            }
+
+                            btnValidate.setText(R.string.validated);
+                            btnValidate.setOnClickListener(null);
+                            dismiss();
+                        } else {
+                            btnReset.setText(R.string.error_validating_logger);
+                            btnReset.setOnClickListener(resetBtnListener);
+                            btnValidate.setOnClickListener(null);
+                            btnValidate.setText(R.string.not_validated);
+                        }
+                    } else {
+                        mActivity.runOnUiThread(() -> {
+                            btnValidate.setText(R.string.failed_logger_press_again);
+                        });
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
-
-        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(mContext);
-        dlgBuilder.setTitle("Logger Data");
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, R.layout.agri_list_item_12dp);
-
-        int idx = 1;
-        for (String[] value : values) {
-            arrayAdapter.add(String.format("%04d. [%s] -->%3$10s \u00B0C", idx++, value[0], value[1]));
-        }
-        dlgBuilder.setAdapter(arrayAdapter, null);
-        dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
-        dlgBuilder.create().show();
     }
 }

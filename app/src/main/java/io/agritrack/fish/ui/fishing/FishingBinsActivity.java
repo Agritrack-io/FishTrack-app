@@ -73,7 +73,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
 
-    private final MutableLiveData<CAENState> stateResult = new MutableLiveData<>();
+    private final MutableLiveData<CAENState> loggerStateObserver = new MutableLiveData<>();
 
 
     // listens to trigger button clicks.
@@ -215,7 +215,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         //-----------------------------------------------------
         // observe for state object obtained by LoggerDialog...
         //-----------------------------------------------------
-        stateResult.observe(this, rs -> {
+        loggerStateObserver.observe(this, rs -> {
             // handle Successful operation from Logger.
             if (rs == null || !rs.canProceed) {
                 CToast(getApplicationContext(), render("Operation Failed!"), Toast.LENGTH_LONG);
@@ -225,16 +225,11 @@ public class FishingBinsActivity extends AppCompatActivity {
             if (rs.canProceed) {
                 if (INIT.equals(rs.state)) {
                     if (rs.getInitTS() != null) {
-                        recLoggerData.addInitData(rs.getAssetEPC(), rs.getInitTS());
+                        recFishing.binWeightRecord.addRecord(binEPC, 0, rs.getInitTS() / 1000L, null, null);
                     } else {
-                        recLoggerData.addInitData(rs.getAssetEPC(), System.currentTimeMillis() / 1000L);
+                        recFishing.binWeightRecord.addRecord(binEPC, 0, System.currentTimeMillis() / 1000L, null, null);
                     }
-                } else if (READ_VALUES.equals(rs.state)) {
-                    if (!CollectionUtils.isEmpty(rs.samples)) {
-                        long now = System.currentTimeMillis();
-                        recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), now, rs.samples);
-                        GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
-                    }
+                    GlobalState.commitFishing(db, Boolean.FALSE);
                 }
             }
         });
@@ -393,7 +388,6 @@ public class FishingBinsActivity extends AppCompatActivity {
                             if (bin != null) {
                                 binEPC = bin.rfid;
                                 scannedBinEPCs.add(bin.rfid);
-                                recFishing.binWeightRecord.addRecord(binEPC, 0, System.currentTimeMillis() / 1000l, null, null);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();
@@ -406,7 +400,7 @@ public class FishingBinsActivity extends AppCompatActivity {
                                     FragmentManager fm = getSupportFragmentManager();
 
                                     ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
-                                    loggerDlg.setStateObserver(stateResult);
+                                    loggerDlg.setStateObserver(loggerStateObserver);
                                     InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
                                     initLoggerDecorator.show(fm);
 

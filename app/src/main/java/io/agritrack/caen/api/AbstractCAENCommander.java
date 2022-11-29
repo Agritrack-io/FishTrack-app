@@ -29,6 +29,8 @@ import static io.agritrack.rfid.RFIDUtils.WaitFor;
 import com.android.hdhe.uhf.readerInterface.TagModel;
 import com.uhf.api.cls.Reader;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -536,6 +538,14 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
         return measurements;
     }
 
+    private static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
     private List<String[]> parseDataWithoutTimestamp(long beginTSmSec, int intervalSeconds, byte[] data) {
         List<String[]> measurements = new LinkedList<>();
         for (int sampleIdx = 0; sampleIdx < data.length/2; sampleIdx++) {
@@ -543,7 +553,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
             int byteIdx = sampleIdx * 2;
             short t = ToShort(new byte[]{data[byteIdx], data[byteIdx+1]});
             Double temp = parseTemperatureNumeric(t);
-            if (temp != null && temp>=-10 && temp<40 && temp != 0.03 && temp != -0.03) {
+            if (temp != null && temp>=-10 && temp<40 && round(temp,2) != 0.03 && round(temp,2) != -0.03) {
                 measurements.add(new String[]{createTimestamp(beginTSmSec + (sampleIdx * intervalSeconds * 1000L)), String.format("%.2f", parseTemperatureNumeric(t))});
             } else {
                 measurements.add(new String[]{createTimestamp(beginTSmSec + (sampleIdx * intervalSeconds * 1000L)), "N/A"});

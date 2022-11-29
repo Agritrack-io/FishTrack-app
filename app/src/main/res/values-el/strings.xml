@@ -664,4 +664,23 @@
     <string name="not_encoded_tags">" απρογραμμάτιστες ετικέτες βρέθηκαν"</string>
     <string name="capacity">Χωρητικότητα σε βούτες:</string>
     <string name="truck_capacity">Χωρητικότητα σε βούτες:</string>
+    <string name="validate">Επικύρωση…</string>
+    <string name="reset">Διαγραφή…</string>
+    <string name="resetting">Διαγράφει…</string>
+    <string name="reading">Διαβάζει…</string>
+    <string name="starting_logger">Αρχικοποίηση…</string>
+    <string name="reading_measurements">Διάβασμα μετρήσεων…</string>
+    <string name="read_number_measurements">Διάβασε \%1$s\ μετρήσεις.</string>
+    <string name="idle_logger">Αδρανής</string>
+    <string name="idle_logger_with_data">Αδρανής. \nΠατήστε ξανά!</string>
+    <string name="invalid_status">Μη έγκυρη κατάσταση</string>
+    <string name="error_reading_logger">Σφάλμα στο διάβασμα…\nΠατήστε ξανά!</string>
+    <string name="failed_logger_press_again">Σφάλμα. Πατήστε ξανά.</string>
+    <string name="error_resetting_logger">Σφάλμα στη διαγραφή…\nΠατήστε ξανά!</string>
+    <string name="error_initializing_logger">Σφάλμα στην αρχικοποίηση…\nΠατήστε ξανά!</string>
+    <string name="error_validating_logger">Σφάλμα στην επικύρωση…\Πατήστε ξανά!</string>
+    <string name="validated">Επικυρωμένο…</string>
+    <string name="not_validated">Μη επικυρωμένο…</string>
+    <string name="started_logging">Αρχικοποιήθηκε…</string>
+    <string name="reseted_logger">Διαγράφηκε…</string>
 </resources>
