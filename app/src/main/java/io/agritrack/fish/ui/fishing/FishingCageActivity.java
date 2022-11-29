@@ -348,7 +348,7 @@ public class FishingCageActivity extends AppCompatActivity {
                                 String label = tag.substring(3);
                                 if (tag.startsWith(Filters.RFID_PLATFORM)) {
                                     Asset platform = db.assetDAO().getAssetByEpc(epc);
-                                    if (platform.capacity!=null) {
+                                    if (platform != null && platform.capacity != null) {
                                         tvCapacityCount.setText(String.valueOf(platform.capacity));
                                     }
                                     tvPlatformRFID.setText(label);

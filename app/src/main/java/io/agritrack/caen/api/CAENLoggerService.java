@@ -332,6 +332,22 @@ public class CAENLoggerService {
         }
     }
 
+    public CAENState doReadLastTemperature() {
+        try {
+            // instantiate the thread pool required by CompletableFuture instances following...
+            final ExecutorService actnPool = Executors.newScheduledThreadPool(1);
+
+            // read the FWRevision flag,
+            CompletableFuture<CAENState> future = this.execReadLastSample(new CAENState(), actnPool);
+
+            // temporary...
+            return future.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     //########################################################
     public void shutdownExecutorService() {
         cmdPool.shutdown();
