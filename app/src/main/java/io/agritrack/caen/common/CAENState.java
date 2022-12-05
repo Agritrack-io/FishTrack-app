@@ -277,6 +277,10 @@ public class CAENState implements Serializable {
         this.productionLane = productionLane;
     }
 
+    public Double getLastSample() {
+        return lastSample;
+    }
+
     @Override
     public String toString() {
         return "CAENState{" +
