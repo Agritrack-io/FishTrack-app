@@ -1,0 +1,33 @@
+
+t
+java:S2293H"YReplace the type specification in this constructor call with the diamond operator ("<>").(æğ÷²ıÿÿÿÿ
+t
+java:S2293J"YReplace the type specification in this constructor call with the diamond operator ("<>").(öù‹­üÿÿÿÿ
+t
+java:S2293]"YReplace the type specification in this constructor call with the diamond operator ("<>").(æğ÷²ıÿÿÿÿ
+f	java:S117k"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ìƒéç
+k	java:S117l"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¢³¨œûÿÿÿÿ
+f
+java:S1301W"KReplace this "switch" statement by "if" statements to increase readability.(¼œóÛüÿÿÿÿ
+^
+java:S2583~"CChange this condition so that it does not always evaluate to "true"(Ü°µëøÿÿÿÿ
+n	java:S1152"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Ğíëk
+n	java:S1152"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Ğíëk
+n	java:S1152"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Ğíëk
+a
+java:S16592"LDeclare "Second_Step_Idx" and all following declarations on a separate line.(Ğíëk
+m
+java:S3776:"RRefactor this method to reduce its Cognitive Complexity from 26 to the 15 allowed.(¨Œşÿÿÿÿ
+Q	java:S125L"<This block of commented-out lines of code should be removed.(¤ÕÅ
+P
+java:S1854`"5Remove this useless assignment to local variable "i".(²İ÷úÿÿÿÿ
+K
+java:S1854U"5Remove this useless assignment to local variable "i".(Œ—¤Ì
+<	java:S131W""Add a default case to this switch.(¼œóÛüÿÿÿÿ
+Q	java:S125r"<This block of commented-out lines of code should be removed.(Óè
+R	java:S125†"<This block of commented-out lines of code should be removed.(‹Şòµ
+R	java:S125‰"<This block of commented-out lines of code should be removed.(àï¢†
+W	java:S125"<This block of commented-out lines of code should be removed.(÷£Ö”øÿÿÿÿ
+W	java:S125 "<This block of commented-out lines of code should be removed.(¿÷Õ’ÿÿÿÿÿ
+H
+java:S10682"3Remove this unused "Second_Step_Idx" private field.(Ğíëk

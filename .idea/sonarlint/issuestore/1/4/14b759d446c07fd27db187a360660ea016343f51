@@ -1,0 +1,42 @@
+
+r
+java:S1192¨"VDefine a constant instead of duplicating this literal "%s, %s, %s, %s kg, %s" 3 times.(Ù«ó«ıÿÿÿÿ
+e
+java:S1192§"IDefine a constant instead of duplicating this literal "%s:%s:%s" 3 times.(ÑÈá•üÿÿÿÿ
+K
+java:S1066õ"/Merge this if statement with the enclosing one.(±®ú“üÿÿÿÿ
+B
+java:S1659;",Declare "ibSplitRequest" on a separate line.(­íïÑ
+s
+java:S1450;"]Remove the "ibSelectReason" field and declare it as a local variable in the relevant methods.(­íïÑ
+n
+java:S1450="XRemove the "ivSupport" field and declare it as a local variable in the relevant methods.(ÄÖ¬
+p
+java:S1450A"URemove the "member" field and declare it as a local variable in the relevant methods.(ïËì«ûÿÿÿÿ
+v
+java:S1450:"[Remove the "tgChooseDate" field and declare it as a local variable in the relevant methods.(õÅôÙûÿÿÿÿ
+f
+java:S1450@"PRemove the "v" field and declare it as a local variable in the relevant methods.(íÜäñ
+W
+java:S1117t"5Rename "v" which hides the field declared at line 64.(òùéÿÿÿÿÿ8§ı  Ì0
+@
+java:S1905¼")Remove this unnecessary cast to "double".(€ìº
+E
+java:S1905Á")Remove this unnecessary cast to "double".(¥ıæŠúÿÿÿÿ
+2
+java:S3626ˆ"Remove this redundant jump.(ûÁİ…
+\
+java:S1854˜"@Remove this useless assignment to local variable "previousDate".(ÕáÑİùÿÿÿÿ
+X
+java:S1854–"ARemove this useless assignment to local variable "yesterdayDate".(Àøœ‡
+Q
+java:S1854”";Remove this useless assignment to local variable "nowDate".(é‹“(
+B
+java:S1481”",Remove this unused "nowDate" local variable.(é‹“(
+I
+java:S1481–"2Remove this unused "yesterdayDate" local variable.(Àøœ‡
+M
+java:S1481˜"1Remove this unused "previousDate" local variable.(ÕáÑİùÿÿÿÿ
+R	java:S125Å"<This block of commented-out lines of code should be removed.(‡µâğ
+A
+java:S3457ö"%String contains no format specifiers.(şàı·şÿÿÿÿ

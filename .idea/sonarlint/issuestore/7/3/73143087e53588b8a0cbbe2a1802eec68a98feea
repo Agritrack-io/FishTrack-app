@@ -1,0 +1,81 @@
+
+u
+java:S2293Ÿ"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ÿˆèùÿÿÿÿ
+i
+java:S1192–"MDefine a constant instead of duplicating this literal "ROLE_FISHING" 5 times.(Ñ¼ûÿÿÿÿ
+k
+java:S1192—"ODefine a constant instead of duplicating this literal "ROLE_PACKAGING" 5 times.(é“èÿÿÿÿÿ
+g
+java:S1192–"KDefine a constant instead of duplicating this literal "ROLE_ADMIN" 8 times.(Ñ¼ûÿÿÿÿ
+l
+java:S1192–"PDefine a constant instead of duplicating this literal "ROLE_SUPER_USER" 8 times.(Ñ¼ûÿÿÿÿ
+e
+java:S1192Ğ"IDefine a constant instead of duplicating this literal "Bearer " 22 times.(ï«õ©şÿÿÿÿ
+D
+java:S1604Ô"(Make this anonymous inner class a lambda(Ìáìÿÿÿÿÿ
+p	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(çŸıá
+p	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(çŸıá
+p	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(çŸıá
+p	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(çŸıá
+p	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(çŸıá
+p	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(çŸıá
+p	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(çŸıá
+p	java:S115‚"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ıæ……
+a
+java:S1659"JDeclare "Test_Temp_Idx" and all following declarations on a separate line.(çŸıá
+C
+java:S1659†"'Declare "ivRefresh" on a separate line.(®Ññ¬úÿÿÿÿ
+t
+java:S1450†"XRemove the "ivRefresh" field and declare it as a local variable in the relevant methods.(®Ññ¬úÿÿÿÿ
+t
+java:S1450†"XRemove the "ivSupport" field and declare it as a local variable in the relevant methods.(®Ññ¬úÿÿÿÿ
+s
+java:S1450‡"\Remove the "tvOfflineWork" field and declare it as a local variable in the relevant methods.(ÇË¬·
+R
+java:S1874ˆ"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+n
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 31 to the 15 allowed.(¨Œşÿÿÿÿ
+W	java:S125µ"<This block of commented-out lines of code should be removed.(’ëîşÿÿÿÿ
+M
+java:S1874¾"6Remove this use of "ProgressDialog"; it is deprecated.(ë±……
+O
+java:S1874¿"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+M
+java:S1874¿"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+L
+java:S1874¿"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+I
+java:S1874È"2Remove this use of "setMessage"; it is deprecated.(ßôÁ®
+”
+java:S5803á"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ç¾øÿÿÿÿ
+W	java:S125‘"<This block of commented-out lines of code should be removed.(Ğ‹Ÿ½üÿÿÿÿ
+H
+java:S1905¨",Remove this unnecessary cast to "ImageView".(ÈÊœ¢ÿÿÿÿÿ
+H
+java:S1905¬",Remove this unnecessary cast to "ImageView".(ø§‘¿ùÿÿÿÿ
+n
+java:S3776Ã"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(ŸÀ…÷ıÿÿÿÿ
+[
+java:S1854Å"?Remove this useless assignment to local variable "syncService".(©›­Œúÿÿÿÿ
+V
+java:S1854È":Remove this useless assignment to local variable "siteId".(ï‘±Šúÿÿÿÿ
+Y
+java:S1854É"=Remove this useless assignment to local variable "clusterId".(ì©—şÿÿÿÿ
+L
+java:S1481Å"0Remove this unused "syncService" local variable.(©›­Œúÿÿÿÿ
+G
+java:S1481È"+Remove this unused "siteId" local variable.(ï‘±Šúÿÿÿÿ
+J
+java:S1481É".Remove this unused "clusterId" local variable.(ì©—şÿÿÿÿ
+—
+java:S1186İ"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Ìò9
+
+java:S1186â"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ëîÅ®ûÿÿÿÿ
+?	java:S108©")Either remove or fill this block of code.(”ı¾
+?	java:S108«")Either remove or fill this block of code.(Úîø›
+W	java:S125Ñ"<This block of commented-out lines of code should be removed.(ª¸·™øÿÿÿÿ
+W	java:S125ó"<This block of commented-out lines of code should be removed.(õÀ®éüÿÿÿÿ
+?	java:S108ƒ")Either remove or fill this block of code.(Úîø›
+I
+java:S1874Œ"2Remove this use of "setMessage"; it is deprecated.(´¯
+W	java:S125"<This block of commented-out lines of code should be removed.(îÎĞ‚üÿÿÿÿ

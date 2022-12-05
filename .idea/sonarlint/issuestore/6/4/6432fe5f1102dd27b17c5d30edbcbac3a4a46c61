@@ -1,0 +1,14 @@
+
+—
+java:S1186Ú"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ôŒùb
+l
+java:S1450:"VRemove the "tvTitle" field and declare it as a local variable in the relevant methods.(Æ¶‡
+Q	java:S125g"<This block of commented-out lines of code should be removed.(„ïµû
+Q
+java:S1117Š":Rename "dialog" which hides the field declared at line 61.(ç¶ĞŸ
+2
+java:S3626·"Remove this redundant jump.(ûÁİ…
+I
+java:S10687".Remove this unused "syncResult" private field.(Œ·ôµÿÿÿÿÿ
+A
+java:S1068:"+Remove this unused "tvTitle" private field.(Æ¶‡
