@@ -451,9 +451,8 @@ public class IncomingAssetActivity extends LocationAwareActivity {
     public class SyncTxCallBack implements Callback<AssetTxDTO> {
         @Override
         public void onResponse(Call<AssetTxDTO> call, Response<AssetTxDTO> response) {
-            AssetTxDTO rs = response.body();
 
-            if (rs != null) {
+            if (response.isSuccessful()) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
