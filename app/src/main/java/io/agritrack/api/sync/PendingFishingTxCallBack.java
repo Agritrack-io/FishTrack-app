@@ -21,9 +21,8 @@ public class PendingFishingTxCallBack extends BaseSyncCallBack<FishingTxDTO> {
 
     @Override
     public void onResponse(Call<FishingTxDTO> call, Response<FishingTxDTO> response) {
-        FishingTxDTO dto = response.body();
 
-        if (dto != null) {
+        if (response.isSuccessful()) {
             // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 

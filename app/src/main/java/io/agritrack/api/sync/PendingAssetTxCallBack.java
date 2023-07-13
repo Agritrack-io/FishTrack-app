@@ -21,9 +21,7 @@ public class PendingAssetTxCallBack extends BaseSyncCallBack<AssetTxDTO> {
 
     @Override
     public void onResponse(Call<AssetTxDTO> call, Response<AssetTxDTO> response) {
-        AssetTxDTO dto = response.body();
-
-        if (dto != null) {
+        if (response.isSuccessful()) {
             // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 

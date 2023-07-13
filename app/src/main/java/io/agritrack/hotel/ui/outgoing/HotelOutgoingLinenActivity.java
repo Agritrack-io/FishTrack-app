@@ -489,9 +489,7 @@ public class HotelOutgoingLinenActivity extends LocationAwareActivity {
     public class SyncTxCallBack implements Callback<AssetTxDTO> {
         @Override
         public void onResponse(Call<AssetTxDTO> call, Response<AssetTxDTO> response) {
-            AssetTxDTO rs = response.body();
-
-            if (rs != null || IsDemo) {
+            if (response.isSuccessful() || IsDemo) {
                 deleteTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {

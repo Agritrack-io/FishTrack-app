@@ -240,9 +240,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
     public class SyncTxCallBack implements Callback<FishingTxDTO> {
         @Override
         public void onResponse(Call<FishingTxDTO> call, Response<FishingTxDTO> response) {
-            FishingTxDTO rs = response.body();
-
-            if (rs != null || IsDemo) {
+            if (response.isSuccessful() || IsDemo) {
                 deleteTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {

@@ -17,11 +17,9 @@ public class APIServiceGenerator {
     private static final String BASE_URL = "http://fishtrack-be-dev.eu-central-1.elasticbeanstalk.com/";
     //private static final String BASE_URL = "http://192.168.2.2:5000";
     //private static final String BASE_URL = "http://192.168.145.198:5000";
-<<<<<<< HEAD
+
     //private static final String BASE_URL = "http://192.168.150.163:5000";
-=======
-//    private static final String BASE_URL = "http://192.168.150.163:5000";
->>>>>>> c1d45e4fb7b023fe40dc21a94f2df5378baf7d12
+
     //private static final String BASE_URL = "http://192.168.1.15:5000";
     //private static final String BASE_URL = "http://3.123.142.122:5000";
     //private static final String BASE_URL = "http://3.123.142.122:5001";

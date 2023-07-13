@@ -342,10 +342,8 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
 
     public class SyncTxCallBack implements Callback<AssetTxDTO> {
         @Override
-        public void onResponse(Call<AssetTxDTO> call, Response<AssetTxDTO> response) {
-            AssetTxDTO rs = response.body();
-
-            if (rs != null) {
+        public void onResponse(Call<AssetTxDTO> call,  Response<AssetTxDTO> response) {
+            if (response.isSuccessful()) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
