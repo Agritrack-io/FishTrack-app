@@ -21,9 +21,7 @@ public class PendingQualityTxCallBack extends BaseSyncCallBack<QualityTxDTO> {
 
     @Override
     public void onResponse(Call<QualityTxDTO> call, Response<QualityTxDTO> response) {
-        QualityTxDTO dto = response.body();
-
-        if (dto != null) {
+        if (response.isSuccessful()) {
             // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 

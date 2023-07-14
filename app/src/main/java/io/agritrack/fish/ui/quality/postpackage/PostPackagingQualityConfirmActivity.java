@@ -233,9 +233,8 @@ public class PostPackagingQualityConfirmActivity extends LocationAwareActivity {
     public class SyncTxCallBack implements Callback<PostPackageQualityTxDTO> {
         @Override
         public void onResponse(Call<PostPackageQualityTxDTO> call, Response<PostPackageQualityTxDTO> response) {
-            PostPackageQualityTxDTO rs = response.body();
 
-            if (rs != null || IsDemo) {
+            if (response.isSuccessful() || IsDemo) {
                 deletePostQualityTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {

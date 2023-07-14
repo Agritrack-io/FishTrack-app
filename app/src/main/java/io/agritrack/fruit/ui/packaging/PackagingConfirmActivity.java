@@ -189,9 +189,8 @@ public class PackagingConfirmActivity extends LocationAwareActivity {
     public class SyncTxCallBack implements Callback<PackageTxDTO> {
         @Override
         public void onResponse(Call<PackageTxDTO> call, Response<PackageTxDTO> response) {
-            PackageTxDTO rs = response.body();
 
-            if (rs != null || IsDemo) {
+            if (response.isSuccessful() || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!

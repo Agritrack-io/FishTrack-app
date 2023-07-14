@@ -293,9 +293,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
     public class SyncTxCallBack implements Callback<QualityTxDTO> {
         @Override
         public void onResponse(Call<QualityTxDTO> call, Response<QualityTxDTO> response) {
-            QualityTxDTO rs = response.body();
-
-            if (rs != null || IsDemo) {
+            if (response.isSuccessful() || IsDemo) {
                 deleteQualityTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {

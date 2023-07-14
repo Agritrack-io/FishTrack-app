@@ -265,9 +265,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
     public class SyncTxCallBack implements Callback<QualityTxDTO> {
         @Override
         public void onResponse(Call<QualityTxDTO> call, Response<QualityTxDTO> response) {
-            QualityTxDTO rs = response.body();
-
-            if (rs != null || IsDemo) {
+            if (response.isSuccessful() || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!
