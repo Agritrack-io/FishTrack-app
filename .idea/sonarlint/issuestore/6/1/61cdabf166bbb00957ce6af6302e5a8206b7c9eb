@@ -1,0 +1,62 @@
+
+F
+java:S3740€"/Provide the parametrized type for this generic.(»ª
+E
+java:S1066¢"/Merge this if statement with the enclosing one.(¼¦½*
+D
+java:S1604½"(Make this anonymous inner class a lambda(‡îŒııÿÿÿÿ
+g
+java:S1301€"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
+F
+java:S5411"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
+N
+java:S2589Œ"7Remove this expression which always evaluates to "true"(”­©
+u	java:S116S"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Äõàæùÿÿÿÿ
+?
+java:S1659["*Declare "ivDeleteItem" on a separate line.(éÇïe
+A
+java:S1659]"+Declare "selectedChild" on a separate line.(íÔõæ
+^
+java:S1659f"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
+C
+java:S1659g"(Declare "tvItemsCnt" on a separate line.(Ùñˆèıÿÿÿÿ
+g
+java:S1450T"QRemove the "db" field and declare it as a local variable in the relevant methods.(û¸ÛÃ
+Q
+java:S1874a"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+
+java:S1186•"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(øõù¦øÿÿÿÿ
+L
+java:S1874­"6Remove this use of "ProgressDialog"; it is deprecated.(÷†ó*
+O
+java:S1874®"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+M
+java:S1874®"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+L
+java:S1874®"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+R	java:S125í"<This block of commented-out lines of code should be removed.(€‚ûÎ
+C
+java:S1602÷",Remove useless curly braces around statement(ñıœü
+W	java:S125›"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+
+java:S5803Ë"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç
+N
+java:S1874ê"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ
+m
+java:S3457£"Q%n should be used in place of \n to produce the platform-specific line separator.(†ÒÎÅúÿÿÿÿ
+i
+java:S3776±"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(œÀô­
+R	java:S125Ã"<This block of commented-out lines of code should be removed.(”÷ç‰
+R	java:S125Ğ"<This block of commented-out lines of code should be removed.(”÷ç‰
+R	java:S125Ü"<This block of commented-out lines of code should be removed.(”÷ç‰
+Q	java:S125ß"<This block of commented-out lines of code should be removed.(¯ùÛQ
+Q	java:S125ä"<This block of commented-out lines of code should be removed.(¯ùÛQ
+=	java:S131€""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+_
+java:S1612„"CReplace this lambda with method reference 'CharSequence::toString'.(«êŒşÿÿÿÿ
+^
+java:S1612„"BReplace this lambda with method reference 'schemeSvc::schemeCode'.(«êŒşÿÿÿÿ
+B
+java:S1068["-Remove this unused "ivAddItem" private field.(éÇïe
+D
+java:S1068ø"-Remove this unused "mActivity" private field.(ËÜÔ¾

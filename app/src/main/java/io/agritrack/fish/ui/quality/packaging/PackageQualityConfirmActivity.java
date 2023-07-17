@@ -326,7 +326,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
-                if (response.body()!=null) {
+                if (response.isSuccessful()) {
                     String fileName = response.body().string();
                     boolean res = FileUtils.deletePhotoFile(PackageQualityConfirmActivity.this, fileName);
                     if (res) {

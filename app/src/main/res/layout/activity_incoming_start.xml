@@ -208,8 +208,8 @@
                         android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="AVRAMAR"
-                        android:textOn="AVRAMAR"
+                        android:textOff="SITE"
+                        android:textOn="SITE"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton

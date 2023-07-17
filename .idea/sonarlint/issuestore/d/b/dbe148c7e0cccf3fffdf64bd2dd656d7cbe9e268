@@ -1,0 +1,30 @@
+
+K
+java:S1066¡"/Merge this if statement with the enclosing one.(›¸¼Üüÿÿÿÿ
+?
+java:S1604‚"(Make this anonymous inner class a lambda(ŽÕä
+D
+java:S1604‹"(Make this anonymous inner class a lambda(çÄÝöøÿÿÿÿ
+g
+java:S1301º"KReplace this "switch" statement by "if" statements to increase readability.(ýÞ³‹ùÿÿÿÿ
+c
+java:S2637¬"GParameter 1 to this call is marked "@NonNull" but null could be passed.(¼„ç‰üÿÿÿÿ
+u	java:S116B"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Äõàæùÿÿÿÿ
+>
+java:S1659I")Declare "ivDeleteBin" on a separate line.(‡á§
+Ž
+java:S5803s"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ˆüˆ­
+B
+java:S1602‹",Remove useless curly braces around statement(…¼½p
+W	java:S125£"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+?
+java:S1185³"(Remove this method to simply inherit it.(ÍÙ÷¢
+V
+java:S1117ò"?Rename "tvBinsCount" which hides the field declared at line 71.(¹®Ì
+g
+java:S3457¢"Q%n should be used in place of \n to produce the platform-specific line separator.(èÍ‘e
+R	java:S125­"<This block of commented-out lines of code should be removed.(ÍÏüý
+=	java:S131º""Add a default case to this switch.(ýÞ³‹ùÿÿÿÿ
+W	java:S125Å"<This block of commented-out lines of code should be removed.(¬ÀŠ„ÿÿÿÿÿ
+C
+java:S1068²"-Remove this unused "mActivity" private field.(œò‘f

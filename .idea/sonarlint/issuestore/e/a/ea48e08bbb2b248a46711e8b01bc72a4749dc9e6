@@ -1,0 +1,26 @@
+
+>
+java:S1604o"(Make this anonymous inner class a lambda(æ¶ßù
+|
+java:S1488¬"fImmediately return this expression instead of assigning it to the temporary variable "authentication".(îÿ‰
+E
+java:S5411f"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
+^
+java:S16590"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ýÿÿÿÿ
+^
+java:S16593"CDeclare "tvPole" and all following declarations on a separate line.(Í£±„øÿÿÿÿ
+x
+java:S14502"]Remove the "progressDialog" field and declare it as a local variable in the relevant methods.(·á…Çùÿÿÿÿ
+Q
+java:S18742"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+L
+java:S1874S"6Remove this use of "ProgressDialog"; it is deprecated.(±ìŒ 
+N
+java:S1874T"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+L
+java:S1874T"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+K
+java:S1874T"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+1
+java:S3626z"Remove this redundant jump.(ûÁÝ…
+W	java:S125„"<This block of commented-out lines of code should be removed.(‡‡þÌùÿÿÿÿ

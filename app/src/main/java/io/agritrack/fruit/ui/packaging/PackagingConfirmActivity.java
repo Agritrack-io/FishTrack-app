@@ -190,7 +190,11 @@ public class PackagingConfirmActivity extends LocationAwareActivity {
         @Override
         public void onResponse(Call<PackageTxDTO> call, Response<PackageTxDTO> response) {
 
+<<<<<<< Updated upstream
             if (response.isSuccessful() || IsDemo) {
+=======
+            if (z || IsDemo) {
+>>>>>>> Stashed changes
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!

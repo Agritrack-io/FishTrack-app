@@ -188,7 +188,7 @@ public class HotelSynchronizeActivity extends AppCompatActivity { //implements A
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
-                if (response.body()!=null) {
+                if (response.isSuccessful()) {
                     String fileName = response.body().string();
                     boolean res = FileUtils.deleteInventoryFile(HotelSynchronizeActivity.this, fileName);
                     if (res) {
@@ -225,7 +225,7 @@ public class HotelSynchronizeActivity extends AppCompatActivity { //implements A
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
-                if (response.body()!=null) {
+                if (response.isSuccessful()) {
                     String fileName = response.body().string();
                     boolean res = FileUtils.deleteInventoryFile(HotelSynchronizeActivity.this, fileName);
                     if (res) {

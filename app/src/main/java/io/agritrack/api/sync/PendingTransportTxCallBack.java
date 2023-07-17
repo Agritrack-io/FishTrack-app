@@ -21,9 +21,8 @@ public class PendingTransportTxCallBack extends BaseSyncCallBack<TransportTxDTO>
 
     @Override
     public void onResponse(Call<TransportTxDTO> call, Response<TransportTxDTO> response) {
-        TransportTxDTO dto = response.body();
 
-        if (dto != null) {
+        if (response.isSuccessful()) {
             // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 

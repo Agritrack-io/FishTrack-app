@@ -199,8 +199,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                         adapterCatches.notifyDataSetChanged();
 
                         tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-                        tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
-
+//                        tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));//TODO:: Remove
+                        tvTotalWeightCount.setText(String.format("%s", loadsMap.totalWeight().toString()));
                         adapterCatches.clearSelectedValue();
                         btnDeleteCatch.setEnabled(false);
                         btnDeleteCatch.setTextColor(Color.DKGRAY);
@@ -339,7 +339,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         FishingRecord hvst = GlobalState.recFishing;
 
         if (recFishing.totalFishWeight != null) {
-            tvTotalWeightCount.setText(recFishing.totalFishWeight.toString());
+            //tvTotalWeightCount.setText(recFishing.totalFishWeight.toString());
         }
 
         if (recFishing.totalBinsUsed != null) {
@@ -360,9 +360,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
                 loadsMap.addLoad(bin.binEPC, bin.weight + "");
             }
             if (recFishing.reqWeight!=null) {
-                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
+//                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
             } else {
-                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), "N/A"));
+//                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), "N/A"));
             }
             isClicked = true;
         }
@@ -373,7 +373,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         MobileDB db = MobileDB.getInstance(getAppContext());
 
         if (tvTotalWeightCount.getText() != null) {
-            recFishing.totalFishWeight = loadsMap.totalWeight();
+            //recFishing.totalFishWeight = loadsMap.totalWeight();
         }
 
         if (tvUsedBinsCount.getText() != null && !Strings.isEmptyOrWhitespace(tvUsedBinsCount.getText().toString())) {
@@ -453,9 +453,11 @@ public class FishingFillBinsActivity extends AppCompatActivity {
             weightOfBin = loadsMap.weightOf(currentBin);
             tvUsedBinsCount.setText(loadsMap.loadsCnt());
             if (recFishing.reqWeight!=null) {
-                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
+                tvTotalWeightCount.setText(String.format("%s", loadsMap.totalWeight().toString()));
+                //tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
             } else {
-                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), "N/A"));
+                tvTotalWeightCount.setText(String.format("%s", loadsMap.totalWeight().toString()));
+                //tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), "N/A"));
             }
         });
 

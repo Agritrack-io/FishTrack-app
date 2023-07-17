@@ -40,6 +40,9 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
+            android:name=".TransportQrCodeActivity"
+            android:exported="false" />
+        <activity
             android:name=".hotel.ui.HotelMenuProgramActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

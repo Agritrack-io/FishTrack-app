@@ -253,9 +253,12 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
                 tvMaxTempBin.setText(String.format("%.1f", recLoggerData.highT));
             }
         } else {
-            tvMinTempBin.setText("N/A");
-            tvMeanTempBin.setText("N/A");
-            tvMaxTempBin.setText("N/A");
+//            tvMinTempBin.setText("N/A");
+//            tvMeanTempBin.setText("N/A");
+//            tvMaxTempBin.setText("N/A");
+            tvMinTempBin.setText("3");
+            tvMeanTempBin.setText("4");
+            tvMaxTempBin.setText("5");
         }
 
         if (!Strings.isEmptyOrWhitespace(qltTx.remarks)) {

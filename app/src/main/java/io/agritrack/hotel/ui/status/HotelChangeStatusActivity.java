@@ -531,7 +531,7 @@ public class HotelChangeStatusActivity extends LocationAwareActivity {
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             boolean success = true;
             try {
-                if(response.code() != 200){
+                if(response.isSuccessful()){
                     if (response.code() == 500){
                         FileUtils.deleteInventoryFile(HotelChangeStatusActivity.this, fileName);
                         success = false;

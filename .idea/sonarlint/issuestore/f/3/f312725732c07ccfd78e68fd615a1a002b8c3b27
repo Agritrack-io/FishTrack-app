@@ -1,0 +1,9 @@
+
+n	java:S1151"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(‰¢»
+\
+java:S16594"FDeclare "tvLastFed" and all following declarations on a separate line.(“∆»≠
+:
+java:S16595"$Declare "ivInfo" on a separate line.(£Û‰û
+R	java:S125å"<This block of commented-out lines of code should be removed.(∞ ˆÕ
+D
+java:S10681"/Remove this unused "fastingDays" private field.(‰¢»

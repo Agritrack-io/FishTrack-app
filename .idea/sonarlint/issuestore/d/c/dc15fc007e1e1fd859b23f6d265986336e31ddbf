@@ -1,0 +1,42 @@
+
+K
+java:S1066"/Merge this if statement with the enclosing one.(¯Ğ­Éüÿÿÿÿ
+?
+java:S1604ó"(Make this anonymous inner class a lambda(Õä
+D
+java:S1604ı"(Make this anonymous inner class a lambda(çÄİöøÿÿÿÿ
+\
+java:S2259Ç"EA "NullPointerException" could be thrown; "epcList" is nullable here.(Ãû·½
+o	java:S116H"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(øÂõ%
+k	java:S116I"VRename this field "scanner_inv" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ıŒ¹ï
+>
+java:S1659S")Declare "ivDeleteBin" on a separate line.(‡á§
+t
+java:S1450H"_Remove the "scanner_runnable" field and declare it as a local variable in the relevant methods.(øÂõ%
+V	java:S125J"<This block of commented-out lines of code should be removed.(†Ÿíøÿÿÿÿ
+Q	java:S125X"<This block of commented-out lines of code should be removed.(Ì¥½Ç
+m
+java:S3776p"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(¨Œşÿÿÿÿ
+
+java:S5803¡"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ˆüˆ­
+B
+java:S1602¿",Remove useless curly braces around statement(…¼½p
+M
+java:S1751Í"6Remove this "return" statement or make it conditional.(ûÁİ…
+M
+java:S1751Ù"6Remove this "return" statement or make it conditional.(ûÁİ…
+W	java:S125î"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+?	java:S108ã")Either remove or fill this block of code.(Úîø›
+m
+java:S3457‘"Q%n should be used in place of \n to produce the platform-specific line separator.(Â¥ôğùÿÿÿÿ
+T
+java:S1854·"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿÿ
+=	java:S131´""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+E
+java:S1481·")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ
+B
+java:S3398—"$Move this method into "ScanHandler".(¿è²8Ô§’÷Ò0
+@
+java:S3398×"$Move this method into "ScanHandler".(»ş‡Àÿÿÿÿÿ
+I
+java:S1068«"-Remove this unused "mActivity" private field.(æÄÖ™úÿÿÿÿ

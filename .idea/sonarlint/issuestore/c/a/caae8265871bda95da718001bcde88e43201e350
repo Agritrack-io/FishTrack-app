@@ -1,0 +1,45 @@
+
+F
+java:S1066ø"/Merge this if statement with the enclosing one.(§öğÅ
+>
+java:S1604s"(Make this anonymous inner class a lambda(ù¼€ø
+F
+java:S5411ê"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
+_
+java:S1659†"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
+@
+java:S1659ˆ"*Declare "ivDeleteItem" on a separate line.(éÇïe
+q
+java:S1450C"[Remove the "activeFilter" field and declare it as a local variable in the relevant methods.(£©Ú‰
+{
+java:S1450A"eRemove the "tgChooseConsumableType" field and declare it as a local variable in the relevant methods.(ãÊÜå
+>	java:S108]")Either remove or fill this block of code.(å¥‡
+>	java:S108g")Either remove or fill this block of code.(å¥‡
+R
+java:S1874ƒ"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+M
+java:S1874£"6Remove this use of "ProgressDialog"; it is deprecated.(»ÿ¯›
+O
+java:S1874¤"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+M
+java:S1874¤"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+L
+java:S1874¤"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+
+java:S5803·"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(Ç«¤î
+R	java:S125Ğ"<This block of commented-out lines of code should be removed.(Ú’€ù
+Z
+java:S1854ã">Remove this useless assignment to local variable "invItemtxs".(¼ ˜Üùÿÿÿÿ
+W	java:S125¸"<This block of commented-out lines of code should be removed.(ĞÒ‘ûÿÿÿÿ
+N
+java:S1874Ü"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ
+K
+java:S1481ã"/Remove this unused "invItemtxs" local variable.(¼ ˜Üùÿÿÿÿ
+W	java:S125ç"<This block of commented-out lines of code should be removed.(£åãÜùÿÿÿÿ
+Q	java:S125é"<This block of commented-out lines of code should be removed.(ç¸•|
+m
+java:S3457ù"Q%n should be used in place of \n to produce the platform-specific line separator.(†ÒÎÅúÿÿÿÿ
+F
+java:S1068C"0Remove this unused "activeFilter" private field.(£©Ú‰
+C
+java:S1068ˆ"-Remove this unused "ivAddItem" private field.(éÇïe

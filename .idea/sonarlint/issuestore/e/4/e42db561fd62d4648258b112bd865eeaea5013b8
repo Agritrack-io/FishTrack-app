@@ -1,0 +1,32 @@
+
+o
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(ø¿±
+d
+java:S1104"NMake id a static final constant or non-public and provide accessors if needed.(€÷ëÚ
+f
+java:S1104"PMake site a static final constant or non-public and provide accessors if needed.(âû¡¦
+k
+java:S1104"PMake user a static final constant or non-public and provide accessors if needed.(¾Êïûùÿÿÿÿ
+g
+java:S1104"QMake totes a static final constant or non-public and provide accessors if needed.(ø¿±
+q
+java:S1104"VMake asset_rfid a static final constant or non-public and provide accessors if needed.(Åçèøÿÿÿÿ
+n
+java:S1104"SMake species a static final constant or non-public and provide accessors if needed.(õİó“ÿÿÿÿÿ
+u
+java:S1104"ZMake collection_lot a static final constant or non-public and provide accessors if needed.(£ÎÍçùÿÿÿÿ
+p
+java:S1104"UMake plant_lot a static final constant or non-public and provide accessors if needed.(³¹…¦üÿÿÿÿ
+k
+java:S1104"UMake totes_cnt a static final constant or non-public and provide accessors if needed.(è¤¹Æ
+p
+java:S1104"UMake longitude a static final constant or non-public and provide accessors if needed.(ŠÜ®ùÿÿÿÿ
+o
+java:S1104"TMake latitude a static final constant or non-public and provide accessors if needed.(éı¾Ùúÿÿÿÿ
+l
+java:S1104"VMake created_at a static final constant or non-public and provide accessors if needed.(ãÊï†
+o	java:S116"URename this field "asset_rfid" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Åçèøÿÿÿÿ
+s	java:S116"YRename this field "collection_lot" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(£ÎÍçùÿÿÿÿ
+n	java:S116"TRename this field "plant_lot" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(³¹…¦üÿÿÿÿ
+i	java:S116"TRename this field "totes_cnt" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(è¤¹Æ
+j	java:S116"URename this field "created_at" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ãÊï†

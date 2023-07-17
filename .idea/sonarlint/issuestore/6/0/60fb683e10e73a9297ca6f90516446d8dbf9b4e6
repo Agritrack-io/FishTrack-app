@@ -1,0 +1,36 @@
+
+g
+java:S1301®"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
+E
+java:S5411v"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
+M
+java:S2589"7Remove this expression which always evaluates to "true"(»½Ãİ
+p	java:S116<"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ê¼“Ğ
+^
+java:S1659B"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
+Q
+java:S1874?"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+L
+java:S1874`"6Remove this use of "ProgressDialog"; it is deprecated.(Õ›÷¾
+N
+java:S1874a"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+L
+java:S1874a"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+K
+java:S1874a"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+W	java:S125ˆ"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+
+java:S5803©"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç
+N
+java:S1874È"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ
+h
+java:S3457å"Q%n should be used in place of \n to produce the platform-specific line separator.(Âõü•
+h
+java:S3457é"Q%n should be used in place of \n to produce the platform-specific line separator.(Ö¾¹ò
+T	java:S106ñ"9Replace this use of System.out or System.err by a logger.(Ü‡„åıÿÿÿÿ
+=	java:S131®""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+W	java:S125½"<This block of commented-out lines of code should be removed.(ßûŒ×üÿÿÿÿ
+>
+java:S3398ï"'Move this method into "SyncTxCallBack".(Àâé¼
+I
+java:S1068¦"-Remove this unused "mActivity" private field.(Ööš¯ûÿÿÿÿ

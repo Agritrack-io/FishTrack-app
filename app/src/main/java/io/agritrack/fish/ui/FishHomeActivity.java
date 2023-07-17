@@ -558,7 +558,7 @@ public class FishHomeActivity extends AppCompatActivity {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
-                if (response.body() != null) {
+                if (response.isSuccessful()) {
                     String fileName = response.body().string();
                     FileUtils.deleteCrashFile(FishHomeActivity.this, fileName);
                 }

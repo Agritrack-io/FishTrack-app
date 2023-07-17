@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -177,7 +178,8 @@ public class LocalPreferences {
     }
 
     public static String HeaderMsg() {
-        return String.format(getCurrentSiteName()+"\n"+getLoggedInUser("N/A") + " <-> " + Today());
+        return "";//TODO:: Remove
+        //return String.format(getCurrentSiteName()+"\n"+getLoggedInUser("N/A") + " <-> " + Today());
     }
 
     public static String getLoggedInUser(String defVal) {

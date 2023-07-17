@@ -49,6 +49,7 @@ import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.caen.common.CAENState;
+import io.agritrack.common.FileUtils;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.BinInfo;
@@ -222,7 +223,8 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), ReceiptQualityTemperatureProfilesActivity.class);
+//                Intent i = new Intent(getApplicationContext(), ReceiptQualityTemperatureProfilesActivity.class);
+                Intent i = new Intent(getApplicationContext(), ReceiptQualityInfoActivity.class);
                 startActivity(i);
             }
         });
@@ -273,9 +275,9 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (recQuality.qualityBins == null || recQuality.qualityBins.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Received bins'"));
-            }
+//            if (recQuality.qualityBins == null || recQuality.qualityBins.isEmpty()) {
+//                sb.append(String.format("\n%s is missing", "'Received bins'"));
+//            }
         }
         return sb.toString();
     }

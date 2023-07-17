@@ -354,7 +354,7 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     protected void onClick(View view) {
         singleShot_runnable = new SingleShotScanner(mScanHandler);
-        singleShot_runnable.setFilter(Filters.RFID_LOGGER);
+        singleShot_runnable.setFilter(Filters.RFID_BIN);//TODO:: Remove
         singleShot_runnable.startReading();
         mScanHandler.postDelayed(singleShot_runnable, 0);
     }
@@ -384,10 +384,12 @@ public class FishingBinsActivity extends AppCompatActivity {
                         if (!Strings.isEmptyOrWhitespace(epcStr) && epcStr != null) {
                             loggerEPC = epcStr;
                             // after bin is identified, initialize the temperatures logger.
-                            Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
-                            if (bin != null) {
-                                binEPC = bin.rfid;
-                                scannedBinEPCs.add(bin.rfid);
+                            //Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
+                            if (loggerEPC != null) {
+                                //binEPC = bin.rfid;//TODO:: Remove
+                                //scannedBinEPCs.add(bin.rfid);
+                                binEPC = loggerEPC;
+                                scannedBinEPCs.add(loggerEPC);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();
@@ -395,16 +397,16 @@ public class FishingBinsActivity extends AppCompatActivity {
                                 GlobalState.commitFishing(db, Boolean.FALSE);
 
 // ------------------------------------------
-                                //--- New implementation of Logger Dialog ---
-                                if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-                                    FragmentManager fm = getSupportFragmentManager();
-
-                                    ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
-                                    loggerDlg.setStateObserver(loggerStateObserver);
-                                    InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
-                                    initLoggerDecorator.show(fm);
-
-                                }
+//                                //--- New implementation of Logger Dialog ---
+//                                if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+//                                    FragmentManager fm = getSupportFragmentManager();
+//
+//                                    ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
+//                                    loggerDlg.setStateObserver(loggerStateObserver);
+//                                    InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
+//                                    initLoggerDecorator.show(fm);
+//
+//                                }
 
                                 /*FragmentManager fm = getSupportFragmentManager();
                                 LoggerInitDialogFragment loggerDlg = LoggerInitDialogFragment.newInstance(loggerEPC, binEPC, false, true, true);

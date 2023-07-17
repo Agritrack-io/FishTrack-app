@@ -541,7 +541,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
-                if (response.body() != null) {
+                if (response.isSuccessful()) {
                     String fileName = response.body().string();
                     boolean res = FileUtils.deleteInventoryFile(HotelInventoryLinenActivity.this, fileName);
                     if (res) {

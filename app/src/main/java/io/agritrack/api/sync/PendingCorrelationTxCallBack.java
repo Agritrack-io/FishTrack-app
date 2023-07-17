@@ -20,9 +20,7 @@ public class PendingCorrelationTxCallBack extends BaseSyncCallBack<ResponseBody>
 
     @Override
     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-        ResponseBody rs = response.body();
-
-        if (rs != null) {
+        if (response.isSuccessful()) {
             // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 

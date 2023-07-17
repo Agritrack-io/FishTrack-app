@@ -1,0 +1,46 @@
+
+t
+java:S2293g"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ÿˆèùÿÿÿÿ
+f
+java:S1192¡"ODefine a constant instead of duplicating this literal "ROLE_WAREHOUSE" 6 times.(äØ‘’
+b
+java:S1192¡"KDefine a constant instead of duplicating this literal "ROLE_ADMIN" 6 times.(äØ‘’
+g
+java:S1192¡"PDefine a constant instead of duplicating this literal "ROLE_SUPER_USER" 6 times.(äØ‘’
+_
+java:S1192ã"HDefine a constant instead of duplicating this literal "Bearer " 7 times.(º‰ıÚ
+D
+java:S1604›"(Make this anonymous inner class a lambda(Ìáìÿÿÿÿÿ
+t	java:S115L"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.( ‰òşÿÿÿÿ
+t	java:S115L"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.( ‰òşÿÿÿÿ
+t	java:S115L"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.( ‰òşÿÿÿÿ
+t	java:S115L"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.( ‰òşÿÿÿÿ
+t	java:S115L"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.( ‰òşÿÿÿÿ
+t	java:S115L"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.( ‰òşÿÿÿÿ
+d
+java:S1659L"IDeclare "Outgoing_Idx" and all following declarations on a separate line.( ‰òşÿÿÿÿ
+B
+java:S1659Q"'Declare "ivRefresh" on a separate line.(®Ññ¬úÿÿÿÿ
+s
+java:S1450Q"XRemove the "ivRefresh" field and declare it as a local variable in the relevant methods.(®Ññ¬úÿÿÿÿ
+s
+java:S1450Q"XRemove the "ivSupport" field and declare it as a local variable in the relevant methods.(®Ññ¬úÿÿÿÿ
+Q
+java:S1874P"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+Q
+java:S1874|"6Remove this use of "ProgressDialog"; it is deprecated.(……Â—ıÿÿÿÿ
+N
+java:S1874}"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+L
+java:S1874}"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+K
+java:S1874}"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+I
+java:S1874†"2Remove this use of "setMessage"; it is deprecated.(ßôÁ®
+W	java:S125"<This block of commented-out lines of code should be removed.(¼Â¥şûÿÿÿÿ
+R	java:S125—"<This block of commented-out lines of code should be removed.(–Ê¯¨
+?	java:S108ç")Either remove or fill this block of code.(”ı¾
+?	java:S108é")Either remove or fill this block of code.(Úîø›
+?	java:S108")Either remove or fill this block of code.(Úîø›
+I
+java:S1874—"2Remove this use of "setMessage"; it is deprecated.(´¯

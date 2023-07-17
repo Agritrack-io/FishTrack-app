@@ -1,8 +1,8 @@
 
 _
 java:S1192Ğ"HDefine a constant instead of duplicating this literal "Bearer " 4 times.(µ“÷¨
-M
-java:S5411"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ8ßÜ²ÍÊ0
+F
+java:S5411"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
 <
 java:S1659F"&Declare "measRepo" on a separate line.(¦éó”
 f
@@ -19,10 +19,10 @@ L
 java:S1874o"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
 K
 java:S1874o"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
-›
-java:S5803²"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(Ô»¹Ìÿÿÿÿÿ8‡è£ÍÊ0
+”
+java:S5803²"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(Ô»¹Ìÿÿÿÿÿ
 N
 java:S1874è"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ
-U	java:S106š"9Replace this use of System.out or System.err by a logger.(ñŠø8”ªÍÊ0
+N	java:S106š"9Replace this use of System.out or System.err by a logger.(ñŠø
 C
 java:S3398˜"'Move this method into "SyncTxCallBack".(ÿªÒ’ùÿÿÿÿ

@@ -399,7 +399,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
-                if (response.body() != null) {
+                if (response.isSuccessful()) {
                     String fileName = response.body().string();
                     FileUtils.deletePhotoFile(ReceiptQualityConfirmActivity.this, fileName);
                 }

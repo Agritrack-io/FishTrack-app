@@ -1,0 +1,40 @@
+
+t
+java:S1104
+"YMake packagingSite a static final constant or non-public and provide accessors if needed.(¸è¶’øÿÿÿÿ
+q
+java:S1104"VMake driverName a static final constant or non-public and provide accessors if needed.(¦×‹îıÿÿÿÿ
+m
+java:S1104"WMake driverPhone a static final constant or non-public and provide accessors if needed.(­˜ì¶
+s
+java:S1104"XMake licensePlate a static final constant or non-public and provide accessors if needed.(á©”ßùÿÿÿÿ
+x
+java:S1104"]Make refrigeratedTruck a static final constant or non-public and provide accessors if needed.(«‡„¦üÿÿÿÿ
+x
+java:S1104"]Make parallelTransport a static final constant or non-public and provide accessors if needed.(´›¦’ûÿÿÿÿ
+q
+java:S1104"VMake clipNumber a static final constant or non-public and provide accessors if needed.(¼àï—ıÿÿÿÿ
+n
+java:S1104"SMake sitePos a static final constant or non-public and provide accessors if needed.(ç°ñÜúÿÿÿÿ
+q
+java:S1104"VMake companyPos a static final constant or non-public and provide accessors if needed.(Š÷ÿøúÿÿÿÿ
+p
+java:S1104"UMake availBins a static final constant or non-public and provide accessors if needed.(’‰Ç’üÿÿÿÿ
+u
+java:S1104"ZMake signatureBytes a static final constant or non-public and provide accessors if needed.(±‰£Æüÿÿÿÿ
+p
+java:S1104"UMake signature a static final constant or non-public and provide accessors if needed.(¥˜‡çøÿÿÿÿ
+p
+java:S1104"UMake longitude a static final constant or non-public and provide accessors if needed.(ŠÜ®ùÿÿÿÿ
+o
+java:S1104"TMake latitude a static final constant or non-public and provide accessors if needed.(éı¾Ùúÿÿÿÿ
+l
+java:S1104"QMake txKey a static final constant or non-public and provide accessors if needed.(®şßşÿÿÿÿ
+o
+java:S1104"TMake hashCode a static final constant or non-public and provide accessors if needed.(ØÇéõşÿÿÿÿ
+j
+java:S1104"TMake capacity a static final constant or non-public and provide accessors if needed.(Íí™
+œ
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Áê¸úÿÿÿÿ
+™
+java:S1845"~Rename field "hashCode" to prevent any misunderstanding/clash with method "hashCode" defined in superclass "java.lang.Object".(ØÇéõşÿÿÿÿ

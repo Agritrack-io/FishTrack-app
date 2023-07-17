@@ -316,9 +316,8 @@ public class CorrelationCageActivity extends LocationAwareActivity {
     public class SyncTxCallBack implements Callback<ResponseBody> {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-            ResponseBody rs = response.body();
 
-            if (rs != null) {
+            if (response.isSuccessful()) {
                 deleteCorrelationTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
                 tvCorrCageBarcode.setText("");

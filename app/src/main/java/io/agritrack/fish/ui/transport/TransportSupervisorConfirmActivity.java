@@ -9,9 +9,14 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,24 +25,31 @@ import android.widget.Toast;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
+import com.google.zxing.WriterException;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import androidmads.library.qrgenearator.QRGContents;
+import androidmads.library.qrgenearator.QRGEncoder;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.common.MediaDTO;
 import io.agritrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.data.model.tx.TransportTransaction;
+import io.agritrack.dialog.ScanQrDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
+import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.ui.LocationAwareActivity;
-import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -57,6 +69,10 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
     private ImageView ivSupport, ivNext, ivBack;
     private boolean proceedWithoutLocation = false;
     private SupportDialog supportDialog;
+    private ScanQrDialog scanQrDialog;
+
+    private Bitmap bitmap;
+    private QRGEncoder qrgEncoder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,8 +122,7 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
 
             if (proceed) {
                 // move to next activity.
-                Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
-                startActivity(i);
+                generateQrCode();
             }
         }
     }
@@ -192,6 +207,68 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
         return authentication;
     }
 
+    private void generateQrCode() {
+        if (TextUtils.isEmpty(recTransport.driverName) || TextUtils.isEmpty(recTransport.clipNumber)
+                || TextUtils.isEmpty(recTransport.licensePlate) || TextUtils.isEmpty(recTransport.packagingSite)) {
+
+            // if the edittext inputs are empty then execute
+            // this method showing a toast message.
+            runOnUiThread(() -> CToast(getApplicationContext(), render("Some info is missing to generate QR Code"), Toast.LENGTH_LONG));
+        } else {
+            // below line is for getting
+            // the windowmanager service.
+            WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+
+            // initializing a variable for default display.
+            Display display = manager.getDefaultDisplay();
+
+            // creating a variable for point which
+            // is to be displayed in QR Code.
+            Point point = new Point();
+            display.getSize(point);
+
+            // getting width and
+            // height of a point
+            int width = point.x;
+            int height = point.y;
+
+            // generating dimension from width and height.
+            int dimen = width < height ? width : height;
+            dimen = dimen * 3 / 4;
+
+            String message = null;
+            try {
+                JSONObject json = new JSONObject();
+                json.put("driver_name", recTransport.driverName);
+                json.put("security_clip_number", recTransport.clipNumber);
+                json.put("license_plate", recTransport.licensePlate);
+                json.put("packaging_site", recTransport.packagingSite);
+                json.put("farm", LocalPreferences.getCurrentSiteName());
+                json.put("date", LocalDateTime.now().toString());
+
+                message = json.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // setting this dimensions inside our qr code
+            // encoder to generate our qr code.
+            qrgEncoder = new QRGEncoder(message, null, QRGContents.Type.TEXT, dimen);
+            try {
+                // getting our qrcode in the form of bitmap.
+                bitmap = qrgEncoder.encodeAsBitmap();
+                // the bitmap is set inside our image
+                // view using .setimagebitmap method.
+                scanQrDialog = new ScanQrDialog(TransportSupervisorConfirmActivity.this, bitmap);
+                scanQrDialog.showDialog();
+            } catch (WriterException e) {
+                // this method is called for
+                // exception handling.
+                Log.e("Tag", e.toString());
+            }
+        }
+    }
+
     private boolean updateState() {
         try {
             progressDialog.setCancelable(false);
@@ -222,7 +299,7 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
                 Call<TransportTxDTO> syncTxAsyncCall = updService.syncTransportTx(TransportTxDTO.convert(tx), "Bearer " + token);
                 syncTxAsyncCall.enqueue(new SyncTxCallBack());
             } else {
-                for (int i=0; i < 3; i++) {
+                for (int i = 0; i < 3; i++) {
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
                 }
             }
@@ -237,15 +314,15 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
         }
     }
 
-    private void deleteTransportTx(){
+    private void deleteTransportTx() {
         try {
             List<TransportTransaction> transportTxs = db.transportTransactionDAO().getAllByHash(recTransport.hashCode);
-            for (TransportTransaction tx : transportTxs){
+            for (TransportTransaction tx : transportTxs) {
                 db.transportTransactionDAO().delete(tx);
             }
             /*int count = db.transportTransactionDAO().deleteAllByHash(recTransport.hashCode);
             System.out.println("About to delete transport tx" + count);*/
-        } catch (Exception x){
+        } catch (Exception x) {
             x.printStackTrace();
         }
     }
@@ -253,10 +330,9 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
     public class SyncTxCallBack implements Callback<TransportTxDTO> {
         @Override
         public void onResponse(Call<TransportTxDTO> call, Response<TransportTxDTO> response) {
-            TransportTxDTO rs = response.body();
-
-            if (rs != null || IsDemo) {
+            if (response.isSuccessful() || IsDemo) {
                 deleteTransportTx();
+//                runOnUiThread(TransportSupervisorConfirmActivity.this::generateQrCode);
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {
                 // could not update Transport TX on backend!!!
@@ -269,7 +345,7 @@ public class TransportSupervisorConfirmActivity extends LocationAwareActivity {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                for (int i=0; i < 3; i++) {
+                for (int i = 0; i < 3; i++) {
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
                 }
             } else {

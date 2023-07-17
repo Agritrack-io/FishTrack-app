@@ -1,0 +1,26 @@
+
+E
+java:S3740}"/Provide the parametrized type for this generic.(¿ºè÷
+K
+java:S1066¯"/Merge this if statement with the enclosing one.(‰èùÿÿÿÿ
+g	java:S117İ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(›ß¾ª
+l	java:S117ß"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(íìø÷ÿÿÿÿÿ
+>
+java:S1604h"(Make this anonymous inner class a lambda(·¥•ı
+g
+java:S1301Û"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
+o	java:S116@"ZRename this field "search_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¬Úç¢
+{
+java:S1450Q"`Remove the "searchProgressBar" field and declare it as a local variable in the relevant methods.(ù¤Çûÿÿÿÿ
+v
+java:S3923k"[Remove this conditional structure or edit its code blocks so that they're not all the same.(‹Ş‰¾øÿÿÿÿ
+
+java:S1186‘"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¹Æº×şÿÿÿÿ
+W	java:S125š"<This block of commented-out lines of code should be removed.(îÇÒéûÿÿÿÿ
+R	java:S125µ"<This block of commented-out lines of code should be removed.(ùüÌ
+W	java:S125×"<This block of commented-out lines of code should be removed.(ç§´ùúÿÿÿÿ
+W	java:S125™"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+–
+java:S5803´"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ô¸÷„8ÛãìÀ×0
+=	java:S131Û""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+R	java:S125Ş"<This block of commented-out lines of code should be removed.(¥¬Æ

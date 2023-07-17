@@ -710,4 +710,9 @@
     <string name="fill_telephone">Fill your telephone</string>
     <string name="telephone">Telephone</string>
     <string name="invalid_telephone">Please enter a valid phone number</string>
+
+    <string name="qr_code">qr_code</string>
+    <string name="enter_your_info">Enter your info</string>
+    <string name="generate_qr_code">Generate QR Code</string>
+    <string name="scan_qr_code">Please scan QR</string>
 </resources>

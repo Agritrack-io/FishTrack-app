@@ -7,6 +7,8 @@ t
 java:S2293]"YReplace the type specification in this constructor call with the diamond operator ("<>").(æð÷²ýÿÿÿÿ
 f	java:S117k"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ìƒéç
 k	java:S117l"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¢³¨œûÿÿÿÿ
+C
+java:S1604R"(Make this anonymous inner class a lambda(¯öÑáÿÿÿÿÿ
 f
 java:S1301W"KReplace this "switch" statement by "if" statements to increase readability.(¼œóÛüÿÿÿÿ
 ^
