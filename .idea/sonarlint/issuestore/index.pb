@@ -171,16 +171,12 @@ j
 :app/src/main/java/io/agritrack/fish/state/GlobalState.java,4\f\4fdf0d1f7b73d59250cd6aa0485f7832f7b76a1d
 s
 Capp/src/main/java/io/agritrack/data/dao/tx/AssetTransactionDAO.java,3\9\39a96637353497ea3e6ac0f6d089a49eace769b2
-j
-:app/src/main/java/io/agritrack/ui/login/LoginActivity.java,7\5\75c27282a465dc3e9cd2e5a874702c3f4dbd15ce
 Å
 Qapp/src/main/java/io/agritrack/fish/ui/seaTemperature/SeaTemperatureActivity.java,b\e\be059d8df3912c96ab4157ee7b7be32a0d08d6ad
 z
 Japp/src/main/java/io/agritrack/fish/ui/fishing/FishingDetailsActivity.java,f\3\f312725732c07ccfd78e68fd615a1a002b8c3b27
 d
 4app/src/main/java/io/agritrack/data/dao/SiteDAO.java,e\d\ed33dd363f5fd4d26e10562d35db0e5c022387de
-h
-8app/src/main/java/io/agritrack/FishTrackApplication.java,5\1\51bad9f5c9c39de36f8e64ef5b048a73c7c45af0
 j
 :app/src/main/java/io/agritrack/rfid/SingleShotScanner.java,2\6\26fb1a9fcd92eb4532181288aae35fd96a2d6d2a
 o
@@ -225,7 +221,3 @@ k
 ;app/src/main/java/io/agritrack/api/APIServiceGenerator.java,3\c\3cc61a208337c6405a11cef7737ecff59f215df0
 
 Oapp/src/main/java/io/agritrack/fruit/ui/packaging/PackagingConfirmActivity.java,8\6\8644e063a154210a7527a071137ba96d63184970
-j
-:app/src/main/java/io/agritrack/fish/ui/WhMenuActivity.java,0\c\0c4a27c429f11415763c93ac7f09f73432ee9324
-l
-<app/src/main/java/io/agritrack/fish/ui/FishHomeActivity.java,7\3\73143087e53588b8a0cbbe2a1802eec68a98feea

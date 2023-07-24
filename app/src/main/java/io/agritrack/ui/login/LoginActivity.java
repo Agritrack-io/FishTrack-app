@@ -72,6 +72,7 @@ import io.agritrack.data.dto.wh.FoodSkuDTO;
 import io.agritrack.data.model.AppUser;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.fruit.ui.FruitHomeActivity;
 import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.hotel.ui.HotelMenuProgramActivity;
@@ -402,7 +403,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             i.putExtra("syncErrors", this.syncResult.toString());
             startActivity(i);
         } else if (AgritrackProducts.FISH.name().equalsIgnoreCase(FishTrackApplication.getProduct())) {
-            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             i.putExtra("syncErrors", this.syncResult.toString());
             startActivity(i);
         } else if (AgritrackProducts.HOTEL.name().equalsIgnoreCase(FishTrackApplication.getProduct())) {

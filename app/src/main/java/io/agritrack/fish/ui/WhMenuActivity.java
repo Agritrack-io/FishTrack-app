@@ -31,7 +31,7 @@ import io.agritrack.ui.service.LocalPreferences;
 
 public class WhMenuActivity extends AppCompatActivity {
 
-    private static final int Incoming_Idx = 0, Outgoing_Idx = 1, InternalIdx = 2, Inventory_Idx = 3, Correlation_Idx = 4, Search_Idx = 5;
+    private static final int Incoming_Idx = 0, Outgoing_Idx = 1, Inventory_Idx = 2, Correlation_Idx = 3, Search_Idx = 4; // InternalIdx = 2,
     GridView gvWhMainMenu;
 
     private ImageView ivSupport, ivRefresh;
@@ -52,7 +52,7 @@ public class WhMenuActivity extends AppCompatActivity {
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), IncomingStartActivity.class, R.drawable.incoming));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_outgoing), OutgoingStartActivity.class, R.drawable.outgoing));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_internal), InternalAssetActivity.class, R.drawable.internal_asset));
+//        menuItemsList.add(new MenuItem(getString(R.string.menu_title_internal), InternalAssetActivity.class, R.drawable.internal_asset));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), InventoryStartActivity.class, R.drawable.inventory));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_program), CorrelationMenuActivity.class, R.drawable.program));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), SearchActivity.class, R.drawable.search));
@@ -74,10 +74,10 @@ public class WhMenuActivity extends AppCompatActivity {
                         GlobalState.initWHOutgoingRecord();
                         i = new Intent(appCtx, OutgoingStartActivity.class);
                         break;
-                    case InternalIdx:
-                        GlobalState.initWHInternalRecord();
-                        i = new Intent(appCtx, InternalAssetActivity.class);
-                        break;
+//                    case InternalIdx:
+//                        GlobalState.initWHInternalRecord();
+//                        i = new Intent(appCtx, InternalAssetActivity.class);
+//                        break;
                     case Inventory_Idx:
                         i = new Intent(appCtx, InventoryStartActivity.class);
                         break;
@@ -114,7 +114,7 @@ public class WhMenuActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(i);
         });
     }
