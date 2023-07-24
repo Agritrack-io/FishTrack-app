@@ -40,6 +40,7 @@
     <string name="menu_title_outgoing">Εξερχόμενα</string>
     <string name="menu_title_inventory">Απογραφή</string>
     <string name="menu_title_correlation">Συσχέτιση</string>
+    <string name="menu_title_program">Προγραμματισμός</string>
     <string name="menu_title_search">Αναζήτηση</string>
     <string name="menu_title_synchronize">Αρχεία προς Συγχρονισμό</string>
 
@@ -697,4 +698,10 @@
     <string name="enter_your_info">Enter your info</string>
     <string name="generate_qr_code">Generate QR Code</string>
     <string name="scan_qr_code">Σκανάρετε το QR</string>
+    <string name="header_search_bin_platform">EPC\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Κωδικός\u00A0\u00A0\u00A0\u00A0</string>
+    <string name="header_search_net">EPC\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Κωδικός\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Περίμετρος\u00A0\u00A0\u00A0\u00A0Μάτι</string>
+    <string name="header_search_cage">EPC\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Κωδικός\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Περίμετρος\u00A0\u00A0\u00A0</string>
+    <string name="code">Κωδικός</string>
+    <string name="perimeter">Περίμετρος</string>
+    <string name="eye">Μάτι</string>
 </resources>

@@ -54,7 +54,7 @@ public class WhMenuActivity extends AppCompatActivity {
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_outgoing), OutgoingStartActivity.class, R.drawable.outgoing));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_internal), InternalAssetActivity.class, R.drawable.internal_asset));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), InventoryStartActivity.class, R.drawable.inventory));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationMenuActivity.class, R.drawable.correlation));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_program), CorrelationMenuActivity.class, R.drawable.program));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), SearchActivity.class, R.drawable.search));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);

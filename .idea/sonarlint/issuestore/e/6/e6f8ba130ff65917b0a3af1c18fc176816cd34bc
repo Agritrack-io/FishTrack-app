@@ -1,0 +1,8 @@
+
+C
+java:S16045"(Make this anonymous inner class a lambda(§µãÆüÿÿÿÿ
+v
+java:S1488"`Immediately return this expression instead of assigning it to the temporary variable "fragment".(û”ø´
+y
+java:S1450"^Remove the "confirmationCmd" field and declare it as a local variable in the relevant methods.(Ò‡³Øýÿÿÿÿ
+V	java:S125,"<This block of commented-out lines of code should be removed.(¦Íû”þÿÿÿÿ

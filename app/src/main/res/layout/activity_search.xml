@@ -84,7 +84,7 @@
         <RelativeLayout
             android:id="@+id/SearchALayout"
             android:layout_width="0dp"
-            android:layout_height="380dp"
+            android:layout_height="0dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
@@ -132,16 +132,29 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/bg_rounded_dialog_input"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:padding="5dp"
                     android:paddingStart="10dp"
-                    android:visibility="invisible"
                     android:queryHint="Search Here"
+                    app:layout_constraintBottom_toTopOf="@+id/tvHeaders"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spAssetType"/>
+
+                <TextView
+                    android:id="@+id/tvHeaders"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="22dp"
+                    android:text="@string/header_search_bin_platform"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@+id/rvAssets"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spAssetType"
-                    app:searchHintIcon="@null" />
+                    app:layout_constraintTop_toBottomOf="@+id/svSearchAsset" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvAssets"
@@ -156,7 +169,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/etAssetBarcode"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/svSearchAsset">
+                    app:layout_constraintTop_toBottomOf="@+id/tvHeaders">
                 </androidx.recyclerview.widget.RecyclerView>
 
                 <EditText
@@ -212,7 +225,7 @@
         <RelativeLayout
             android:id="@+id/SearchBLayout"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="170dp"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -231,7 +244,7 @@
                 <FrameLayout
                     android:id="@+id/frameLayout"
                     android:layout_width="300dp"
-                    android:layout_height="60dp"
+                    android:layout_height="50dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     app:layout_constraintBottom_toTopOf="@+id/btnSearchAsset"
@@ -271,7 +284,7 @@
                 <Button
                     android:id="@+id/btnSearchAsset"
                     android:layout_width="0dp"
-                    android:layout_height="74dp"
+                    android:layout_height="64dp"
                     android:layout_marginStart="100dp"
                     android:layout_marginEnd="100dp"
                     android:layout_marginBottom="8dp"

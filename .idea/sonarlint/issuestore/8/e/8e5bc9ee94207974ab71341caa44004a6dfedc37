@@ -1,8 +1,0 @@
-
-t
-java:S2293D"YReplace the type specification in this constructor call with the diamond operator ("<>").(á¹Ù°üÿÿÿÿ
-„
-java:S1319"iThe type of "arrayList" should be an interface such as "List" rather than the implementation "ArrayList".(Öß±Žþÿÿÿÿ
-y
-java:S1488?"^Immediately return this expression instead of assigning it to the temporary variable "filter".(¿«Ëåþÿÿÿÿ
-g	java:S101b"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(åö°½ûÿÿÿÿ

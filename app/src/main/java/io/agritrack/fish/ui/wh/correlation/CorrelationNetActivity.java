@@ -143,7 +143,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
         this.rvNets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.code)).collect(Collectors.toList());
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.rfid, x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();

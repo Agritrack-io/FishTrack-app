@@ -5,6 +5,7 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
@@ -14,6 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -37,7 +39,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -70,13 +71,12 @@ public class SearchActivity extends AppCompatActivity {
     private Spinner spAssetType;
     private EditText etAssetBarcode;
     private SearchView svSearchAsset;
-    private TextView tvProximity;
+    private TextView tvProximity, tvHeaders;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
     private RecyclerView rvAssets;
     private Button btnSearchAsset;
     private String selectedAssetType, code;
-    private String selectedBarcode = "";
     private ProgressBar searchProgressBar;
     private final String epcPrefix = "BE0019A0000";
     private boolean isScanning = false;
@@ -119,7 +119,16 @@ public class SearchActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
                 code = schemeSvc.codeOf(selectedAssetType);
+                tvHeaders.setText(selectedAssetType.equalsIgnoreCase("HARVEST_BIN") || selectedAssetType.equalsIgnoreCase("PLATFORM") ?
+                        getString(R.string.header_search_bin_platform) : (selectedAssetType.equalsIgnoreCase("NET") ? getString(R.string.header_search_net) : getString(R.string.header_search_cage)));
                 loadAssetsByTypeFromLocalDB(selectedAssetType);
+                adapterAssets.clearSelectedValue();
+                etAssetBarcode.setText("");
+                svSearchAsset.setQuery("", false);
+                svSearchAsset.setIconified(true);
+                svSearchAsset.clearFocus();
+                pbProximity.setProgress(0);
+                tvProximity.setText(R.string.proximity);
                 if (adapterAssets == null) {
                     svSearchAsset.setVisibility(View.GONE);
                 } else {
@@ -131,6 +140,12 @@ public class SearchActivity extends AppCompatActivity {
 
             }
         });
+
+        if (svSearchAsset.requestFocus()) {
+            InputMethodManager imm = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(svSearchAsset, InputMethodManager.SHOW_IMPLICIT);
+        }
 
         etAssetBarcode.setOnClickListener(v -> {
             if (adapterAssets != null && adapterAssets.getSelectedValue() != null) {
@@ -161,7 +176,8 @@ public class SearchActivity extends AppCompatActivity {
         this.rvAssets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsByTypeForSearch(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid.substring(x.rfid.length()-10))).collect(Collectors.toList());
+//            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid.substring(x.rfid.length()-10))).collect(Collectors.toList());
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.rfid.substring(x.rfid.length()-10), x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
@@ -219,6 +235,7 @@ public class SearchActivity extends AppCompatActivity {
         spAssetType = findViewById(R.id.spAssetType);
         svSearchAsset = findViewById(R.id.svSearchAsset);
         etAssetBarcode = findViewById(R.id.etAssetBarcode);
+        tvHeaders = findViewById(R.id.tvHeaders);
         rvAssets = findViewById(R.id.rvAssets);
         btnSearchAsset = findViewById(R.id.btnSearchAsset);
         pbProximity = findViewById(R.id.pbProximity);
@@ -239,6 +256,12 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if (Strings.isEmptyOrWhitespace(newText)) {
+                    if (adapterAssets != null) {
+                        adapterAssets.clearSelectedValue();
+                    }
+                    etAssetBarcode.setText("");
+                }
                 adapterAssets.getFilter().filter(newText);
                 return false;
             }
@@ -273,9 +296,18 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
+        View v = this.getCurrentFocus();
+        if (v != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
+        String selectedBarcode = "";
         if (adapterAssets != null) {
             if (adapterAssets.getSelectedValue() != null) {
                 selectedBarcode = adapterAssets.getSelectedValue();
+//                String[] selectedCodes = selectedBarcode.split("/");
+//                String selectedCode = selectedCodes[0];
+//                Asset selectedAsset = db.assetDAO().getByCode(selectedCode);
                 etAssetBarcode.setText(selectedBarcode);
             }
         }

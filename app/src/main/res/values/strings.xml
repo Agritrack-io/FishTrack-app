@@ -40,6 +40,7 @@
     <string name="menu_title_outgoing">Outgoing</string>
     <string name="menu_title_inventory">Inventory</string>
     <string name="menu_title_correlation">Correlation</string>
+    <string name="menu_title_program">Program</string>
     <string name="menu_title_search">Search</string>
 
     <string name="menu_title_internal">Internal track</string>
@@ -715,4 +716,12 @@
     <string name="enter_your_info">Enter your info</string>
     <string name="generate_qr_code">Generate QR Code</string>
     <string name="scan_qr_code">Please scan QR</string>
+    <string name="header_search_bin_platform">EPC\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Code\u00A0\u00A0\u00A0\u00A0</string>
+    <string name="header_search_net">EPC\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Code\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Perimeter\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Eye</string>
+    <string name="header_search_cage">EPC\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Code\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Perimeter\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0</string>
+    <string name="epc" translatable="false">EPC</string>
+    <string name="code">Code</string>
+    <string name="perimeter">Perimeter</string>
+    <string name="eye">Eye</string>
+
 </resources>

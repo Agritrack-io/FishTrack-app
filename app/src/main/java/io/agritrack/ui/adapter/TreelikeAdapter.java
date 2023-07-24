@@ -1,6 +1,7 @@
 package io.agritrack.ui.adapter;
 
-import android.content.ClipData;
+import static io.agritrack.FishTrackApplication.getAppContext;
+
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -17,16 +18,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import io.agritrack.R;
-import io.agritrack.common.Filters;
+import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.wh.Asset;
 import io.agritrack.data.service.EncodingSchemeService;
 
 public class TreelikeAdapter extends BaseExpandableListAdapter {
     private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
 
     private final Context mCtx;
+    private MobileDB db;
     // child data in format of: <Type, List of children<Type>>
     private TreeMap<String, List<String>> mValues = new TreeMap<>();
     private List<String> keys;
@@ -35,6 +37,8 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         this.mCtx = context;
         this.mValues.putAll(listData);
         this.keys = new LinkedList<>(this.mValues.keySet());
+        // get an instance of local DB
+        db = MobileDB.getInstance(getAppContext());
     }
 
     @Override
@@ -53,7 +57,7 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         if (this.mValues == null) {
             return 0;
         }
-        return this.mValues.get(this.keys.get(groupPosition)).size();
+        return this.mValues.get(this.keys.get(groupPosition)).size() + 1;
     }
 
     @Override
@@ -63,11 +67,26 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        List<String> _sites = this.mValues.get(this.keys.get(groupPosition));
-        if (_sites.get(childPosition).length()>=24) {
-            return _sites.get(childPosition).substring(14);
+        List<String> children = this.mValues.get(this.keys.get(groupPosition));
+        if (childPosition == 0) {
+            return "";
         } else {
-            return _sites.get(childPosition);
+            childPosition = childPosition - 1;
+            String selectedChild = children.get(childPosition);
+            if (selectedChild.length() >= 24) {
+                Asset selectedAsset = db.assetDAO().getAssetByEpc(selectedChild);
+                if (selectedAsset != null) {
+                    return selectedAsset.netEyeGirth != null && selectedAsset.netEyeGirth != 0.0 && selectedAsset.perimeter != null
+                            ? String.format("%s/%s/%.2f/%.2f", selectedAsset.rfid.substring(14), selectedAsset.code, selectedAsset.perimeter, selectedAsset.netEyeGirth)
+                            : ((selectedAsset.netEyeGirth != null && selectedAsset.netEyeGirth == 0.0) && selectedAsset.perimeter != null
+                            ? String.format("%s/%s/%.2f", selectedAsset.rfid.substring(14), selectedAsset.code, selectedAsset.perimeter)
+                            : selectedAsset.rfid.substring(14) + "/" + selectedAsset.code);
+                } else {
+                    return selectedChild.substring(14);
+                }
+            } else {
+                return selectedChild;
+            }
         }
     }
 
@@ -101,7 +120,7 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         TextView lbClusterDescription = convertView.findViewById(R.id.tvClusterDescription);
         lbClusterDescription.setText(getAssetTypeName(clusterName));
         TextView lbClusterSize = convertView.findViewById(R.id.tvClusterSize);
-        lbClusterSize.setText(getChildrenCount(groupPosition) + "");
+        lbClusterSize.setText(getChildrenCount(groupPosition) - 1 + "");
 
         return convertView;
     }
@@ -109,12 +128,53 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final String child = (String) getChild(groupPosition, childPosition);
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) this.mCtx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.site_layout, null);
+        final String group = (String) getGroup(groupPosition);
+
+        LayoutInflater inflater = (LayoutInflater) this.mCtx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        convertView = inflater.inflate(R.layout.simple_filterable_view_item, null);
+        TextView txtRfid = convertView.findViewById(R.id.tvRfid);
+        TextView txtCode = convertView.findViewById(R.id.tvCode);
+        TextView txtPerimeter = convertView.findViewById(R.id.tvPerimeter);
+        TextView txtNetEye = convertView.findViewById(R.id.tvNetEye);
+        String[] childSplit = child.split("/");
+
+        //the first row is used as header
+        if (childPosition == 0) {
+            if (group.equalsIgnoreCase("1410") || group.equalsIgnoreCase("1414")) {
+                txtRfid.setText(R.string.epc);
+                txtCode.setText(R.string.code);
+                txtPerimeter.setVisibility(View.GONE);
+                txtNetEye.setVisibility(View.GONE);
+            } else if (group.equalsIgnoreCase("1412")) {
+                txtRfid.setText(R.string.epc);
+                txtCode.setText(R.string.code);
+                txtPerimeter.setText(R.string.perimeter);
+                txtNetEye.setVisibility(View.GONE);
+            } else if (group.equalsIgnoreCase("1411")) {
+                txtRfid.setText(R.string.epc);
+                txtCode.setText(R.string.code);
+                txtPerimeter.setText(R.string.perimeter);
+                txtNetEye.setText(R.string.eye);
+            }
         }
-        TextView txtListChild = convertView.findViewById(R.id.tvSiteName);
-        txtListChild.setText(child);
+
+        //Here is the ListView of the ChildView
+        if (childPosition > 0 && childPosition <= getChildrenCount(groupPosition) - 1) {
+            txtRfid.setText(childSplit[0]);
+            if (group.equalsIgnoreCase("1410") || group.equalsIgnoreCase("1414")) {
+                txtCode.setText(childSplit.length == 2 ? childSplit[1] : "");
+                txtPerimeter.setVisibility(View.GONE);
+                txtNetEye.setVisibility(View.GONE);
+            } else if (group.equalsIgnoreCase("1412")) {
+                txtCode.setText(childSplit.length == 2 || childSplit.length == 3 ? childSplit[1] : "");
+                txtPerimeter.setText(childSplit.length == 3 ? childSplit[2] : "");
+                txtNetEye.setVisibility(View.GONE);
+            } else if (group.equalsIgnoreCase("1411")) {
+                txtCode.setText(childSplit.length == 2 || childSplit.length == 3 || childSplit.length == 4 ? childSplit[1] : "");
+                txtPerimeter.setText(childSplit.length == 3 || childSplit.length == 4 ? childSplit[2] : "");
+                txtNetEye.setText(childSplit.length == 4 ? childSplit[3] : "");
+            }
+        }
         return convertView;
     }
 
@@ -154,7 +214,7 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         List<String> children = this.mValues.get(key);
         children.remove(childPosition);
 
-        if(getChildrenCount(parentPosition)==0){
+        if (getChildrenCount(parentPosition) == 0) {
             this.mValues.remove(key);
             this.keys.remove(parentPosition);
         }

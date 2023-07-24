@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_item_bottom"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvRfid"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvCode"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvCode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/tvRfid"
+        app:layout_constraintEnd_toStartOf="@+id/tvPerimeter"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvPerimeter"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/tvCode"
+        app:layout_constraintEnd_toStartOf="@+id/tvNetEye"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvNetEye"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvPerimeter"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

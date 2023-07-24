@@ -8,13 +8,26 @@ import java.util.UUID;
  *  and (if required) a check box to allow for multiple items selection.
  */
 public class GenericListModel {
+
     public enum origin {Normal, Split, Offline};
 
     private UUID id;
     private String label, requestId;
+    private String rfid, code;
+    private Double netEyeGirth, perimeter;
     private String[] labels;
     private Boolean checked;
     private origin type = origin.Normal;
+
+    public GenericListModel(String rfid, String code, Double netEyeGirth, Double perimeter) {
+        this.rfid = rfid;
+        this.code = code;
+        this.netEyeGirth = netEyeGirth;
+        this.perimeter = perimeter;
+
+//        this.label = netEyeGirth != null && netEyeGirth != 0.0 && perimeter != null ? String.format("%s %s/%.2f/%.2f", rfid, code, netEyeGirth, perimeter) :
+//                ((netEyeGirth != null && netEyeGirth == 0.0) && perimeter != null ? String.format("%s %s/%.2f", rfid, code, perimeter) : rfid + " " + code);
+    }
 
     public GenericListModel(UUID id, String label) {
         this.id = id;
@@ -53,6 +66,38 @@ public class GenericListModel {
         this.requestId = requestId;
         this.label = label;
         this.checked = isChecked;
+    }
+
+    public void setRfid(String rfid) {
+        this.rfid = rfid;
+    }
+
+    public String getRfid() {
+        return rfid;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setNetEyeGirth(Double netEyeGirth) {
+        this.netEyeGirth = netEyeGirth;
+    }
+
+    public Double getNetEyeGirth() {
+        return netEyeGirth;
+    }
+
+    public void setPerimeter(Double perimeter) {
+        this.perimeter = perimeter;
+    }
+
+    public Double getPerimeter() {
+        return perimeter;
     }
 
     public UUID getId() {

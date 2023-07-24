@@ -523,6 +523,7 @@ public class IncomingAssetActivity extends LocationAwareActivity {
                     if (epcList != null && !epcList.isEmpty()) {
                         Map<String, List<String>> values = epcList.stream().filter(f -> ArrayUtils.contains(acceptedCodes, schemeSvc.nameOf(schemeSvc.nativeSchemeCode(f)))).map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
 
+
                         if (adapterIncomingItems == null) {
                             adapterIncomingItems = new TreelikeAdapter(mActivity.get(), values);
                             xvIncomingItems.setAdapter(adapterIncomingItems);

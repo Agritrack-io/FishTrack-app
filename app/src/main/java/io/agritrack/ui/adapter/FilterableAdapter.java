@@ -5,12 +5,15 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 
@@ -37,20 +40,38 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
 
     public void clearSelectedValue() {
         this.selectedValue = null;
+        selectedPos = RecyclerView.NO_POSITION;
+        notifyDataSetChanged();
     }
 
     @Override
     public viewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.simple_recycler_view_item, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.simple_filterable_view_item, viewGroup, false);
         return new viewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(viewHolder viewHolder, int position) {
-        viewHolder.label.setText(arrayListFiltered.get(position).getLabel());
-        viewHolder.itemView.setSelected(selectedPos == position);
+        viewHolder.rfid.setVisibility(!Strings.isEmptyOrWhitespace(arrayListFiltered.get(position).getRfid()) ? View.VISIBLE : View.GONE);
+        viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
+        viewHolder.perimeter.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
+        if (position==0) {
+            viewHolder.rfid.setText(R.string.epc);
+            viewHolder.code.setText(R.string.code);
+            viewHolder.netEye.setText(R.string.eye);
+            viewHolder.perimeter.setText(R.string.perimeter);
+        } else {
+            viewHolder.rfid.setText(arrayListFiltered.get(position).getRfid());
+            viewHolder.code.setText(!Strings.isEmptyOrWhitespace(arrayListFiltered.get(position).getCode()) ? arrayListFiltered.get(position).getCode() : arrayListFiltered.get(position).getLabel());
+            viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
+            viewHolder.netEye.setText(arrayListFiltered.get(position).getNetEyeGirth() != null ? String.valueOf(arrayListFiltered.get(position).getNetEyeGirth()) : "");
+            viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
+            viewHolder.perimeter.setText(arrayListFiltered.get(position).getPerimeter() != null ? String.valueOf(arrayListFiltered.get(position).getPerimeter()) : "");
 
-        viewHolder.itemView.setBackgroundColor(selectedPos == position ? Color.GRAY : Color.TRANSPARENT);
+            viewHolder.itemView.setSelected(selectedPos == position);
+
+            viewHolder.itemView.setBackgroundColor(selectedPos == position ? Color.GRAY : Color.TRANSPARENT);
+        }
     }
 
     @Override
@@ -60,7 +81,7 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
 
     @Override
     public Filter getFilter() {
-        Filter filter = new Filter() {
+        return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();
@@ -72,7 +93,8 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
                     results.values = arrayList;
                 } else {
                     for (GenericListModel item : arrayList) {
-                        if (item != null && item.getLabel() != null && item.getLabel().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                        String strToSearch = String.format("%s %s %s %s", item.getRfid(), item.getCode(), item.getNetEyeGirth(), item.getPerimeter()).toLowerCase();
+                        if (item != null && strToSearch.contains(constraint.toString().toLowerCase())) {
                             arrayListFilter.add(item);
                         }
                     }
@@ -92,15 +114,17 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
                 }
             }
         };
-        return filter;
     }
 
     public class viewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView label;
+        TextView rfid, code, netEye, perimeter;
 
         public viewHolder(View itemView) {
             super(itemView);
-            label = (TextView) itemView.findViewById(R.id.tvRecyclerItem);
+            rfid = (TextView) itemView.findViewById(R.id.tvRfid);
+            code = (TextView) itemView.findViewById(R.id.tvCode);
+            netEye = (TextView) itemView.findViewById(R.id.tvNetEye);
+            perimeter = (TextView) itemView.findViewById(R.id.tvPerimeter);
             itemView.setOnClickListener(this);
         }
 
@@ -120,8 +144,14 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
             // Updating old as well as new positions
             notifyItemChanged(selectedPos);
             selectedPos = getAdapterPosition();
-            selectedValue = this.label.getText().toString();
+            selectedValue = this.rfid.getText().toString();
             notifyItemChanged(selectedPos);
+
+            // Check if no view has focus:
+            if (itemView != null) {
+                InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(itemView.getWindowToken(), 0);
+            }
 
             // Do your another stuff for your onClick
         }

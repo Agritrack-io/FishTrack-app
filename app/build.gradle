@@ -156,6 +156,6 @@ dependencies {
     // QR Code
     implementation "androidmads.library.qrgenearator:QRGenearator:1.0.3"
 
-   /* // browse local db //:TODO:: Delete before production
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'*/
+    // browse local db //:TODO:: Delete before production
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
 }
