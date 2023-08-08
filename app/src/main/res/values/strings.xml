@@ -40,7 +40,8 @@
     <string name="menu_title_outgoing">Outgoing</string>
     <string name="menu_title_inventory">Inventory</string>
     <string name="menu_title_correlation">Correlation</string>
-    <string name="menu_title_program">Program</string>
+    <string name="menu_title_existing_tags">Existing tags</string>
+    <string name="menu_title_new_tags">New tags</string>
     <string name="menu_title_search">Search</string>
 
     <string name="menu_title_internal">Internal track</string>
@@ -626,8 +627,8 @@
     <string name="supplier">SUPPLIER</string>
     <string name="site">SITE</string>
     <string name="customer">CUSTOMER</string>
-    <string name="net">NET</string>
-    <string name="bin">BIN</string>
+    <string name="net">Net</string>
+    <string name="bin">Bin</string>
     <string name="food">FOOD</string>
     <string name="vaccine">VACCINE</string>
     <string name="antibiotic">ANTIBIOTIC</string>
@@ -676,7 +677,7 @@
     <string name="already_scannned_bin_first_sync_temps">You have already retrieved temperatures from bin \%1$s\! Please first click on check button!</string>
     <string name="select_reason">Please select a reason!</string>
     <string name="not_same_cnt"># different codes</string>
-    <string name="title_program_menu">PROGRAM LINEN</string>
+    <string name="title_program_menu">Program \%1$s\</string>
     <string name="false_tags">False tags</string>
     <string name="scan_false_assets">Scan false</string>
     <string name="not_encoded_tags">" not encoded items have been detected"</string>
@@ -716,12 +717,26 @@
     <string name="enter_your_info">Enter your info</string>
     <string name="generate_qr_code">Generate QR Code</string>
     <string name="scan_qr_code">Please scan QR</string>
-    <string name="header_search_bin_platform">EPC\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Code\u00A0\u00A0\u00A0\u00A0</string>
-    <string name="header_search_net">EPC\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Code\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Perimeter\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Eye</string>
-    <string name="header_search_cage">EPC\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Code\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Perimeter\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0</string>
-    <string name="epc" translatable="false">EPC</string>
+    <string name="header_search_bin_platform">RFID\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Code\u00A0\u00A0\u00A0\u00A0</string>
+    <string name="header_search_net">RFID\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Code\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Perimeter\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Eye</string>
+    <string name="header_search_cage">RFID\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Code\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Perimeter\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0</string>
+    <string name="epc" translatable="false">RFID</string>
     <string name="code">Code</string>
     <string name="perimeter">Perimeter</string>
     <string name="eye">Eye</string>
+    <string name="old_epc">RFID</string>
+    <string name="cancel">Cancel</string>
+    <string name="scan_tag_to_program">Tag you just scanned is unprogrammed. Do you want to program it?</string>
+    <string name="successfully_programed_tag">Tag was successfully programmed! Please check!</string>
+    <string name="successfully_validated_tag">Tag was successfully validated!</string>
+    <string name="title_select_asset_type_menu">PLEASE SELECT ASSET tYPE</string>
+    <string name="choose_asset">Choose asset</string>
+    <string name="check_tag">Check</string>
+    <string name="check_tag_msg_1">Tag you just programmed has RFID\u00A0</string>
+    <string name="check_tag_msg_2">, and is now associated with asset\u00A0</string>
+    <string name="program">Program</string>
+    <string name="type_no_of_assets">How many assets will you program tags for?</string>
+    <string name="important_note">Important note</string>
+    <string name="important_note_msg">Please scan only one stack of \%1$s\ tags at a time. Place the remaining tag bundles well away from the one you want to program!</string>
 
 </resources>

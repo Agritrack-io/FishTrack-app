@@ -1,0 +1,18 @@
+
+o
+java:S1104"TMake IsOnline a static final constant or non-public and provide accessors if needed.(Ê®Ùøøÿÿÿÿ
+I
+java:S1444".Make this "public static IsOnline" field final(Ê®Ùøøÿÿÿÿ
+t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ËÓå€üÿÿÿÿ
+m
+java:S3008"RRename this field "PRODUCT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ç›ëŒþÿÿÿÿ
+n
+java:S3008"SRename this field "IsOnline" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ê®Ùøøÿÿÿÿ
+P
+java:S1161*":Add the "@Override" annotation above this method signature(Î¢ŽÈ
+L
+java:S2696,"6Make the enclosing method "static" or remove this set.(±¼©Â
+Ž
+java:S58039"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(š¢¶ý
+L
+java:S2696<"6Make the enclosing method "static" or remove this set.(òÆ®ø

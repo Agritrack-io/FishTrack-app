@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" tools:ignore="ProtectedPermissions"/>
     <uses-permission android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -40,8 +41,19 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
-            android:name=".TransportQrCodeActivity"
-            android:exported="false" />
+            android:name=".fish.ui.wh.correlation.NewTagActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".fish.ui.wh.correlation.ExistingTagActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".fish.ui.wh.correlation.CorrelationSubMenuActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".hotel.ui.HotelMenuProgramActivity"
             android:exported="false"

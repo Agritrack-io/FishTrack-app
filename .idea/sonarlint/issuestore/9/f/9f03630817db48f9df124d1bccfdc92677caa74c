@@ -1,0 +1,77 @@
+
+F
+java:S1066†"/Merge this if statement with the enclosing one.(å°ò“
+g
+java:S1301“"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
+`
+java:S2259ø"I"NullPointerException" will be thrown when invoking method "addDevice()".(ÊŒµù
+N
+java:S2589€"7Remove this expression which always evaluates to "true"(»½Ãİ
+p	java:S116M"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ê¼“Ğ
+c
+java:S1659Q"HDeclare "btnAddCatch" and all following declarations on a separate line.(»›©Äøÿÿÿÿ
+^
+java:S1659R"HDeclare "tvBinWeight" and all following declarations on a separate line.(ûµı£
+^
+java:S1659["CDeclare "ivInfo" and all following declarations on a separate line.(±ôòäüÿÿÿÿ
+m
+java:S3776h"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(¨Œşÿÿÿÿ
+R	java:S125¡"<This block of commented-out lines of code should be removed.(¨Ç
+
+java:S5803½"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(³ƒœ
+N
+java:S1135Ê"2Complete the task associated to this TODO comment.(¤˜ô²ÿÿÿÿÿ
+W	java:S125ü"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+R	java:S125ƒ"<This block of commented-out lines of code should be removed.(•£²
+W	java:S125š"<This block of commented-out lines of code should be removed.(ÄÛ‚îúÿÿÿÿ
+W	java:S125Ö"<This block of commented-out lines of code should be removed.(«Õ¹¾ıÿÿÿÿ
+r
+java:S3923ê"[Remove this conditional structure or edit its code blocks so that they're not all the same.(²åë©
+R	java:S125ë"<This block of commented-out lines of code should be removed.(áÖª¥
+W	java:S125í"<This block of commented-out lines of code should be removed.(¾÷†¼úÿÿÿÿ
+R	java:S125ø"<This block of commented-out lines of code should be removed.(×§´
+m
+java:S3457‡"Q%n should be used in place of \n to produce the platform-specific line separator.(ãÆ‰Úıÿÿÿÿ
+X
+java:S1854"<Remove this useless assignment to local variable "tvStatus".(šñ¦ˆûÿÿÿÿ
+I
+java:S1481"-Remove this unused "tvStatus" local variable.(šñ¦ˆûÿÿÿÿ
+W	java:S125Ÿ"<This block of commented-out lines of code should be removed.(ø…¨§ıÿÿÿÿ
+R	java:S125¯"<This block of commented-out lines of code should be removed.(ÜÉ÷Û
+r
+java:S3923Ç"[Remove this conditional structure or edit its code blocks so that they're not all the same.(²åë©
+R	java:S125É"<This block of commented-out lines of code should be removed.(áÖª¥
+W	java:S125Ì"<This block of commented-out lines of code should be removed.(¾÷†¼úÿÿÿÿ
+C
+java:S1602Ñ",Remove useless curly braces around statement(ï»²å
+V
+java:S1854í"?Remove this useless assignment to local variable "sentReadCmd".(ÚÈ‹È
+G
+java:S1481í"0Remove this unused "sentReadCmd" local variable.(ÚÈ‹È
+n
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ
+=	java:S131“""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+W	java:S125"<This block of commented-out lines of code should be removed.(Ğ–­Íşÿÿÿÿ
+W	java:S125¿"<This block of commented-out lines of code should be removed.(İİ¹‚şÿÿÿÿ
+i	java:S100Ê"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆ‚àşùÿÿÿÿ
+i	java:S100Ò"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¥®ß‰ıÿÿÿÿ
+n
+java:S3252Ù"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(À¤¬Ù
+N
+java:S1135Ú"2Complete the task associated to this TODO comment.(áÃæùÿÿÿÿ
+R	java:S125í"<This block of commented-out lines of code should be removed.(‹Íù
+R	java:S125ó"<This block of commented-out lines of code should be removed.(¹ÅÉÖ
+Z
+java:S1117õ"CRename "bluetoothDevice" which hides the field declared at line 98.(¦·Ú×
+[
+java:S3398Ö"?Move this method into the anonymous class declared at line 614.(¨ççşÿÿÿÿ
+C
+java:S1068e"-Remove this unused "currState" private field.(â©¸Í
+D
+java:S1068ˆ"-Remove this unused "mActivity" private field.(…»’å
+K
+java:S1144Û"4Remove this unused private "getScaleReading" method.(„ïĞï
+[
+java:S1144Ê"?Remove this unused private "bluetooth_RegisterHandlers" method.(ˆ‚àşùÿÿÿÿ
+Z
+java:S1144Ò">Remove this unused private "Bluetooth_DisposeHandlers" method.(¥®ß‰ıÿÿÿÿ

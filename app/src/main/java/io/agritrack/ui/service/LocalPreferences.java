@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import io.agritrack.data.dto.SiteDTO;
+import io.agritrack.data.type.EpcPerDevice;
 
 public class LocalPreferences {
     public static final String Pref_Name = "agritrack";
@@ -46,6 +48,11 @@ public class LocalPreferences {
     public static final String Box_Sn_Key = "BoxSns";
 
     public static final String Device_Key = "DeviceModel";
+    public static final String Step_Key = "Step";
+    public static final String Prefix_Key = "Prefix";
+    public static final String Current_Epc_Key = "CurrentEpcs";
+
+    private static final Gson gson = new Gson();
 
     private static SharedPreferences pref;
 
@@ -266,5 +273,30 @@ public class LocalPreferences {
 
     public static void setFastingDays(Long days){
         writeValue(Fasting_Days, days);
+    }
+
+    public static String getStep() {
+        return pref.getString(Step_Key, null);
+    }
+
+    public static String getPrefix() {
+        return pref.getString(Prefix_Key, null);
+    }
+
+    public static void putCurrentEpcList(List<EpcPerDevice> objs) {
+
+        String json = gson.toJson(objs);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(Current_Epc_Key, json);
+        editor.commit();
+    }
+
+    public static List<EpcPerDevice> getCurrentEpcList() {
+        String json = pref.getString(Current_Epc_Key, "[]");
+        if (!json.equalsIgnoreCase("[]")) {
+            return Arrays.asList(gson.fromJson(json, EpcPerDevice[].class));
+        } else {
+            return null;
+        }
     }
 }

@@ -29,5 +29,11 @@ public abstract class AbstractX9Programmer {
 
     abstract public Reader.READER_ERR writeTagEPCByFilter(String epc, String fdata);
 
+    abstract public Reader.READER_ERR writeTagEPCByTIDFilter(String epc, String fdata);
+
+    abstract public String getTagTIDDataByFilter(String epc);
+
+    abstract public String getTagEpcDataByFilter(String tid);
+
     abstract public void stopProgramming();
 }

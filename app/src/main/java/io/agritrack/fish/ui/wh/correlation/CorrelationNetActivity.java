@@ -15,13 +15,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -64,11 +64,12 @@ public class CorrelationNetActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final CorrelationNetActivity.ScanHandler mScanHandler = new CorrelationNetActivity.ScanHandler(this);
+    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button btnScanAssetTag, btnCorrelate;
+    private ImageButton ibSyncNet;
     private SearchView svSearchAsset;
-    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     private RecyclerView rvNets;
     private TextView tvCorrNetBarcode;
     private FilterableAdapter adapterAssets;
@@ -121,6 +122,27 @@ public class CorrelationNetActivity extends LocationAwareActivity {
             supportDialog.showDialog();
         });
 
+        ibSyncNet.setOnClickListener(view -> {
+            stopScanner();
+            recWHCorrelation.type = Constants.ftNet;
+            recWHCorrelation.code = adapterAssets.getSelectedValue();
+
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+            if (mLastLocation != null) {
+                recWHCorrelation.longitude = mLastLocation.getLongitude();
+                recWHCorrelation.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            }
+        });
+
         configFooter();
     }
 
@@ -131,7 +153,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
 
             if (proceed) {
                 // move to next activity.
-                Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
+                Intent i = new Intent(getApplicationContext(), CorrelationNetActivity.class);
                 startActivity(i);
             }
         }
@@ -143,7 +165,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
         this.rvNets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.rfid, x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid, x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
@@ -184,7 +206,8 @@ public class CorrelationNetActivity extends LocationAwareActivity {
     protected void configFooter() {
         ivBack.setOnClickListener(view -> {
             stopScanner();
-            Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
+            Intent i = new Intent(getApplicationContext(), CorrelationSubMenuActivity.class);
+            i.putExtra("id", 1);
             startActivity(i);
         });
 
@@ -216,7 +239,9 @@ public class CorrelationNetActivity extends LocationAwareActivity {
         tvCorrNetBarcode = findViewById(R.id.tvCorrNetBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
         btnCorrelate = findViewById(R.id.btnCorrelate);
+        ibSyncNet = findViewById(R.id.ibSyncNet);
         ivNext = findViewById(R.id.ivToCongs);
+        ivNext.setVisibility(View.GONE);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);
         ivSupport = findViewById(R.id.ivSupport);
 
@@ -288,20 +313,21 @@ public class CorrelationNetActivity extends LocationAwareActivity {
         return sb.toString();
     }
 
-    private boolean deleteCorrelationTx(){
+    private boolean deleteCorrelationTx() {
         try {
             System.out.println("About to delete correlate tx");
             CorrelationTransaction delObj = new CorrelationTransaction();
             delObj.id = recWHCorrelation.txKey;
             db.correlationTransactionDAO().delete(delObj);
             return true;
-        } catch (Exception x){
+        } catch (Exception x) {
             x.printStackTrace();
             return false;
         }
     }
 
     protected void onClick(View view) {
+        tvCorrNetBarcode.setText("");
         scanner_runnable.setFilter(Filters.RFID_NET);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
@@ -354,9 +380,13 @@ public class CorrelationNetActivity extends LocationAwareActivity {
                     String epcStr = msg.getData().getString("epc");
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            String label = epcStr.length()>15 ? epcStr.substring(14) : epcStr;
-                            GlobalState.recWHCorrelation.rfid = epcStr;
-                            tvCorrNetBarcode.setText(label);
+                            if (adapterAssets.getSelectedValue() != null) {
+                                String label = epcStr.length() > 15 ? epcStr.substring(14) : epcStr;
+                                GlobalState.recWHCorrelation.rfid = epcStr;
+                                tvCorrNetBarcode.setText(label);
+                            } else {
+                                CToast(getApplicationContext(), render("Please first select asset!"), Toast.LENGTH_LONG);
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

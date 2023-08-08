@@ -122,7 +122,9 @@ public class SearchActivity extends AppCompatActivity {
                 tvHeaders.setText(selectedAssetType.equalsIgnoreCase("HARVEST_BIN") || selectedAssetType.equalsIgnoreCase("PLATFORM") ?
                         getString(R.string.header_search_bin_platform) : (selectedAssetType.equalsIgnoreCase("NET") ? getString(R.string.header_search_net) : getString(R.string.header_search_cage)));
                 loadAssetsByTypeFromLocalDB(selectedAssetType);
-                adapterAssets.clearSelectedValue();
+                if (adapterAssets!=null) {
+                    adapterAssets.clearSelectedValue();
+                }
                 etAssetBarcode.setText("");
                 svSearchAsset.setQuery("", false);
                 svSearchAsset.setIconified(true);
@@ -177,7 +179,7 @@ public class SearchActivity extends AppCompatActivity {
         List<Asset> assetsList = db.assetDAO().getAssetsByTypeForSearch(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
 //            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid.substring(x.rfid.length()-10))).collect(Collectors.toList());
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.rfid.substring(x.rfid.length()-10), x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid.substring(x.rfid.length()-10), x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();

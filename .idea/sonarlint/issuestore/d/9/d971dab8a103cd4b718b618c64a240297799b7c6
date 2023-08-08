@@ -1,0 +1,26 @@
+
+J
+java:S3740""/Provide the parametrized type for this generic.(ŸŸºÖùÿÿÿÿ
+t
+java:S2293:"YReplace the type specification in this constructor call with the diamond operator ("<>").(öù‹­üÿÿÿÿ
+E
+java:S1604Z"(Make this anonymous inner class a lambda(”¼®à8¾Íß‘™1
+t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(‚ ø³şÿÿÿÿ
+t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(‚ ø³şÿÿÿÿ
+{	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(‚ ø³şÿÿÿÿ8íª¤¸™1
+o
+java:S1659"MDeclare "Existing_Tag_Idx" and all following declarations on a separate line.(‚ ø³şÿÿÿÿ8›÷£¸™1
+n
+java:S1450"XRemove the "ivSupport" field and declare it as a local variable in the relevant methods.(ÄÖ¬
+x
+java:S1450 "]Remove the "progressDialog" field and declare it as a local variable in the relevant methods.(·á…Çùÿÿÿÿ
+Q
+java:S1874 "6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+Q
+java:S18747"6Remove this use of "ProgressDialog"; it is deprecated.(ú‡¥øÿÿÿÿ
+N
+java:S18748"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+L
+java:S18748"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+K
+java:S18748"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿

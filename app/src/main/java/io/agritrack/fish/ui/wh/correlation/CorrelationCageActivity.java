@@ -3,7 +3,6 @@ package io.agritrack.fish.ui.wh.correlation;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
@@ -11,21 +10,18 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -48,7 +44,6 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
-import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -69,11 +64,12 @@ public class CorrelationCageActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final CorrelationCageActivity.ScanHandler mScanHandler = new CorrelationCageActivity.ScanHandler(this);
+    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button btnScanAssetTag, btnCorrelate;
+    private ImageButton ibSyncNet;
     private SearchView svSearchAsset;
-    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     private RecyclerView rvCages;
     private TextView tvCorrCageBarcode;
     private FilterableAdapter adapterAssets;
@@ -126,6 +122,26 @@ public class CorrelationCageActivity extends LocationAwareActivity {
             supportDialog.showDialog();
         });
 
+        ibSyncNet.setOnClickListener(view -> {
+            stopScanner();
+            GlobalState.recWHCorrelation.type = Constants.ftCage;
+            GlobalState.recWHCorrelation.code = adapterAssets.getSelectedValue();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+            if (mLastLocation != null) {
+                recWHCorrelation.longitude = mLastLocation.getLongitude();
+                recWHCorrelation.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            }
+        });
+
         configFooter();
     }
 
@@ -136,7 +152,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
 
             if (proceed) {
                 // move to next activity.
-                Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
+                Intent i = new Intent(getApplicationContext(), CorrelationCageActivity.class);
                 startActivity(i);
             }
         }
@@ -148,7 +164,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
         this.rvCages.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.rfid, x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid, x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
@@ -189,7 +205,8 @@ public class CorrelationCageActivity extends LocationAwareActivity {
     protected void configFooter() {
         ivBack.setOnClickListener(view -> {
             stopScanner();
-            Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
+            Intent i = new Intent(getApplicationContext(), CorrelationSubMenuActivity.class);
+            i.putExtra("id", 0);
             startActivity(i);
         });
 
@@ -220,7 +237,9 @@ public class CorrelationCageActivity extends LocationAwareActivity {
         tvCorrCageBarcode = findViewById(R.id.tvCorrCageBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
         btnCorrelate = findViewById(R.id.btnCorrelate);
+        ibSyncNet = findViewById(R.id.ibSyncNet);
         ivNext = findViewById(R.id.ivToCongs);
+        ivNext.setVisibility(View.GONE);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);
         ivSupport = findViewById(R.id.ivSupport);
 
@@ -235,7 +254,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(adapterAssets != null && adapterAssets.getFilter() != null) {
+                if (adapterAssets != null && adapterAssets.getFilter() != null) {
                     adapterAssets.getFilter().filter(newText);
                 }
                 return false;
@@ -294,20 +313,21 @@ public class CorrelationCageActivity extends LocationAwareActivity {
         return sb.toString();
     }
 
-    private boolean deleteCorrelationTx(){
+    private boolean deleteCorrelationTx() {
         try {
             System.out.println("About to delete correlate tx");
             CorrelationTransaction delObj = new CorrelationTransaction();
             delObj.id = recWHCorrelation.txKey;
             db.correlationTransactionDAO().delete(delObj);
             return true;
-        } catch (Exception x){
+        } catch (Exception x) {
             x.printStackTrace();
             return false;
         }
     }
 
     protected void onClick(View view) {
+        tvCorrCageBarcode.setText("");
         scanner_runnable.setFilter(Filters.RFID_CAGE);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
@@ -360,9 +380,13 @@ public class CorrelationCageActivity extends LocationAwareActivity {
                     String epcStr = msg.getData().getString("epc");
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            String label = epcStr.length() > 15 ? epcStr.substring(14) : epcStr;
-                            GlobalState.recWHCorrelation.rfid = epcStr;
-                            tvCorrCageBarcode.setText(label);
+                            if (adapterAssets.getSelectedValue() != null) {
+                                String label = epcStr.length() > 15 ? epcStr.substring(14) : epcStr;
+                                GlobalState.recWHCorrelation.rfid = epcStr;
+                                tvCorrCageBarcode.setText(label);
+                            } else {
+                                CToast(getApplicationContext(), render("Please first select asset!"), Toast.LENGTH_LONG);
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -43,7 +43,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationMenuActivity">
             android:layout_marginTop="16dp"
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
-            android:text="@string/title_correlation_menu"
+            android:text="@string/title_select_asset_type_menu"
             android:textColor="@color/yellow"
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toTopOf="@+id/tvHeaderCorrelationMenu"
@@ -81,7 +81,25 @@ tools:context=".fish.ui.wh.correlation.CorrelationMenuActivity">
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
-        <GridView
+        <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/gridView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:verticalSpacing="60dp"
+            android:horizontalSpacing="20dp"
+            android:numColumns="2"
+            android:columnWidth="60dp"
+            android:stretchMode="columnWidth"
+            android:scrollbars="none"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+       <!-- <GridView
             android:id="@+id/gvCorrelationMenu"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -92,7 +110,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationMenuActivity">
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

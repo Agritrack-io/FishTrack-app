@@ -5,6 +5,12 @@ e
 java:S1192§"IDefine a constant instead of duplicating this literal "%s:%s:%s" 3 times.(ÑÈá•üÿÿÿÿ
 K
 java:S1066õ"/Merge this if statement with the enclosing one.(±®ú“üÿÿÿÿ
+F
+java:S1604‘"(Make this anonymous inner class a lambda(¶ò”Ò8Îšâã˜1
+K
+java:S1604í"(Make this anonymous inner class a lambda(Êœüûÿÿÿÿ8Ïšâã˜1
+F
+java:S1604ç"(Make this anonymous inner class a lambda(ÀËÜ•8Ïšâã˜1
 B
 java:S1659;",Declare "ibSplitRequest" on a separate line.(­íïÑ
 s
@@ -17,12 +23,18 @@ v
 java:S1450:"[Remove the "tgChooseDate" field and declare it as a local variable in the relevant methods.(õÅôÙûÿÿÿÿ
 f
 java:S1450@"PRemove the "v" field and declare it as a local variable in the relevant methods.(íÜäñ
-W
-java:S1117t"5Rename "v" which hides the field declared at line 64.(òùéÿÿÿÿÿ8§ı  Ì0
+o
+java:S3252T"MUse static access with "android.widget.AbsListView" for "CHOICE_MODE_SINGLE".(¢Ì¥ùÿÿÿÿ8¦›âã˜1
+•
+java:S5803u"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç8¬›âã˜1
 @
 java:S1905¼")Remove this unnecessary cast to "double".(€ìº
 E
 java:S1905Á")Remove this unnecessary cast to "double".(¥ıæŠúÿÿÿÿ
+Q
+java:S1905ì".Remove this unnecessary cast to "AlertDialog".(İÆÆ„ùÿÿÿÿ8¾›âã˜1
+r
+java:S3252ì"OUse static access with "android.content.DialogInterface" for "BUTTON_POSITIVE".(İÆÆ„ùÿÿÿÿ8¾›âã˜1
 2
 java:S3626ˆ"Remove this redundant jump.(ûÁİ…
 \
@@ -40,3 +52,5 @@ java:S1481˜"1Remove this unused "previousDate" local variable.(ÕáÑİùÿÿÿÿ
 R	java:S125Å"<This block of commented-out lines of code should be removed.(‡µâğ
 A
 java:S3457ö"%String contains no format specifiers.(şàı·şÿÿÿÿ
+F
+java:S1185ş"(Remove this method to simply inherit it.(ÍÙ÷¢8Ò›âã˜1

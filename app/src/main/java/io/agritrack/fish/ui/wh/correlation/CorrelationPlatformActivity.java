@@ -16,12 +16,12 @@ import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -54,10 +54,11 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final CorrelationPlatformActivity.ScanHandler mScanHandler = new CorrelationPlatformActivity.ScanHandler(this);
+    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button btnScanAssetTag;
-    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
+    private ImageButton ibSyncNet;
     private TextView tvCorrPlatformBarcode;
     private EditText etPlatformBarcode;
     private ProgressDialog progressDialog;
@@ -105,6 +106,27 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(CorrelationPlatformActivity.this);
             supportDialog.showDialog();
+        });
+
+        ibSyncNet.setOnClickListener(view -> {
+            stopScanner();
+            recWHCorrelation.type = Constants.ftPlatform;
+            recWHCorrelation.code = etPlatformBarcode.getText() != null ? etPlatformBarcode.getText().toString() : null;
+
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+            if (mLastLocation != null) {
+                recWHCorrelation.longitude = mLastLocation.getLongitude();
+                recWHCorrelation.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            }
         });
 
         configFooter();
@@ -156,7 +178,8 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
     protected void configFooter() {
         ivBack.setOnClickListener(view -> {
             stopScanner();
-            Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
+            Intent i = new Intent(getApplicationContext(), CorrelationSubMenuActivity.class);
+            i.putExtra("id", 3);
             startActivity(i);
         });
 
@@ -186,7 +209,9 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         etPlatformBarcode = findViewById(R.id.etPlatformBarcode);
         tvCorrPlatformBarcode = findViewById(R.id.tvCorrPlatformBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
+        ibSyncNet = findViewById(R.id.ibSyncNet);
         ivNext = findViewById(R.id.ivToCongs);
+        ivNext.setVisibility(View.GONE);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);
         ivSupport = findViewById(R.id.ivSupport);
     }
@@ -236,21 +261,21 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
         return sb.toString();
     }
 
-    private boolean deleteCorrelationTx(){
+    private boolean deleteCorrelationTx() {
         try {
             System.out.println("About to delete correlate tx");
             CorrelationTransaction delObj = new CorrelationTransaction();
             delObj.id = recWHCorrelation.txKey;
             db.correlationTransactionDAO().delete(delObj);
             return true;
-        } catch (Exception x){
+        } catch (Exception x) {
             x.printStackTrace();
             return false;
         }
     }
 
     protected void onClick(View view) {
-
+        tvCorrPlatformBarcode.setText("");
         scanner_runnable.setFilter(Filters.RFID_PLATFORM);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
@@ -302,9 +327,9 @@ public class CorrelationPlatformActivity extends LocationAwareActivity {
             switch (msg.what) {
                 case 1:
                     String epcStr = msg.getData().getString("epc");
-                    String label = epcStr.length() > 15 ? epcStr.substring(14) : epcStr;
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            String label = epcStr.length() > 15 ? epcStr.substring(14) : epcStr;
                             GlobalState.recWHCorrelation.rfid = epcStr;
                             tvCorrPlatformBarcode.setText(label);
                         }

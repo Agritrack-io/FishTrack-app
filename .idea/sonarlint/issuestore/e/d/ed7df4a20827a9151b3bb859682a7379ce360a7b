@@ -1,0 +1,11 @@
+
+t
+java:S2293+"YReplace the type specification in this constructor call with the diamond operator ("<>").(öù‹­üÿÿÿÿ
+C
+java:S16042"(Make this anonymous inner class a lambda(Ìáìÿÿÿÿÿ
+t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(»úúıÿÿÿÿ
+t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(»úúıÿÿÿÿ
+B
+java:S1659"'Declare "False_Idx" on a separate line.(»úúıÿÿÿÿ
+n
+java:S1450"XRemove the "ivSupport" field and declare it as a local variable in the relevant methods.(ÄÖ¬

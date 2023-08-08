@@ -52,15 +52,13 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
 
     @Override
     public void onBindViewHolder(viewHolder viewHolder, int position) {
-        viewHolder.rfid.setVisibility(!Strings.isEmptyOrWhitespace(arrayListFiltered.get(position).getRfid()) ? View.VISIBLE : View.GONE);
-        viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
-        viewHolder.perimeter.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
-        if (position==0) {
+        if (position == 0) {
             viewHolder.rfid.setText(R.string.epc);
             viewHolder.code.setText(R.string.code);
             viewHolder.netEye.setText(R.string.eye);
             viewHolder.perimeter.setText(R.string.perimeter);
-        } else {
+        } else if (position > 0 && position <= getItemCount() - 1) {
+            position = position -1;
             viewHolder.rfid.setText(arrayListFiltered.get(position).getRfid());
             viewHolder.code.setText(!Strings.isEmptyOrWhitespace(arrayListFiltered.get(position).getCode()) ? arrayListFiltered.get(position).getCode() : arrayListFiltered.get(position).getLabel());
             viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
@@ -68,15 +66,18 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
             viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
             viewHolder.perimeter.setText(arrayListFiltered.get(position).getPerimeter() != null ? String.valueOf(arrayListFiltered.get(position).getPerimeter()) : "");
 
-            viewHolder.itemView.setSelected(selectedPos == position);
+            viewHolder.itemView.setSelected(selectedPos == position + 1);
 
-            viewHolder.itemView.setBackgroundColor(selectedPos == position ? Color.GRAY : Color.TRANSPARENT);
+            viewHolder.itemView.setBackgroundColor(selectedPos == position + 1 ? Color.GRAY : Color.TRANSPARENT);
         }
+        viewHolder.rfid.setVisibility(!Strings.isEmptyOrWhitespace(arrayListFiltered.get(position).getRfid()) ? View.VISIBLE : View.GONE);
+        viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
+        viewHolder.perimeter.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public int getItemCount() {
-        return arrayListFiltered != null ? arrayListFiltered.size() : 0;
+        return arrayListFiltered != null ? arrayListFiltered.size() + 1 : 0;
     }
 
     @Override
@@ -93,8 +94,13 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
                     results.values = arrayList;
                 } else {
                     for (GenericListModel item : arrayList) {
-                        String strToSearch = String.format("%s %s %s %s", item.getRfid(), item.getCode(), item.getNetEyeGirth(), item.getPerimeter()).toLowerCase();
-                        if (item != null && strToSearch.contains(constraint.toString().toLowerCase())) {
+                        String strToSearch;
+                        if (item.getRfid() != null) {
+                            strToSearch = String.format("%s%s%s%s", item.getRfid(), item.getCode(), item.getNetEyeGirth(), item.getPerimeter());
+                        } else {
+                            strToSearch = String.format("%s%s%s", item.getCode(), item.getNetEyeGirth(), item.getPerimeter()).toLowerCase();
+                        }
+                        if (strToSearch.contains(constraint.toString().toLowerCase())) { //item != null &&
                             arrayListFilter.add(item);
                         }
                     }
@@ -144,7 +150,7 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
             // Updating old as well as new positions
             notifyItemChanged(selectedPos);
             selectedPos = getAdapterPosition();
-            selectedValue = this.rfid.getText().toString();
+            selectedValue = !Strings.isEmptyOrWhitespace(this.rfid.getText().toString()) ? this.rfid.getText().toString() : this.code.getText().toString();
             notifyItemChanged(selectedPos);
 
             // Check if no view has focus:

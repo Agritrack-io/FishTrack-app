@@ -192,36 +192,36 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
 
                 if (username.isEmpty() || pin.isEmpty()) {
                     noCredentialsEnteredAlert();
-                } else if ("config".equals(username) && "8888".equals(pin)) {
-                    Intent i = new Intent(getApplicationContext(), ConfigActivity.class);
-                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-                    startActivity(i);
-                    finish();
-                } else if ("caen".equals(username) && "8888".equals(pin)) {
-                    Intent i = new Intent(getApplicationContext(), CAENLoggerActivity.class);
-                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-                    startActivity(i);
-                    finish();
+//                } else if ("config".equals(username) && "8888".equals(pin)) {
+//                    Intent i = new Intent(getApplicationContext(), ConfigActivity.class);
+//                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+//                    startActivity(i);
+//                    finish();
+//                } else if ("caen".equals(username) && "8888".equals(pin)) {
+//                    Intent i = new Intent(getApplicationContext(), CAENLoggerActivity.class);
+//                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+//                    startActivity(i);
+//                    finish();
                 } else if ("root".equals(username) && "8888".equals(pin)) {
                     FragmentManager fm = getSupportFragmentManager();
                     AppOptionsFragment optionsDlg = AppOptionsFragment.newInstance();
                     optionsDlg.show(fm, AppOptionsFragment.TAG);
                     fm.executePendingTransactions();
-                } else if ("logger".equals(username) && "8888".equals(pin)) {
-                    Intent i = new Intent(getApplicationContext(), ImportCAENLoggersToDBActivity.class);
-                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-                    startActivity(i);
-                    finish();
-                } else if ("scale".equals(username) && "8888".equals(pin)) {
-                    Intent i = new Intent(getApplicationContext(), DiniArgeoScaleActivity.class);
-                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-                    startActivity(i);
-                    finish();
-                } else if ("linen".equals(username) && "8888".equals(pin)) {
-                    Intent i = new Intent(getApplicationContext(), HotelMenuProgramActivity.class);
-                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-                    startActivity(i);
-                    finish();
+//                } else if ("logger".equals(username) && "8888".equals(pin)) {
+//                    Intent i = new Intent(getApplicationContext(), ImportCAENLoggersToDBActivity.class);
+//                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+//                    startActivity(i);
+//                    finish();
+//                } else if ("scale".equals(username) && "8888".equals(pin)) {
+//                    Intent i = new Intent(getApplicationContext(), DiniArgeoScaleActivity.class);
+//                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+//                    startActivity(i);
+//                    finish();
+//                } else if ("linen".equals(username) && "8888".equals(pin)) {
+//                    Intent i = new Intent(getApplicationContext(), HotelMenuProgramActivity.class);
+//                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+//                    startActivity(i);
+//                    finish();
                 } else {
                     // display spinning progress bar
                     toggleProgress(Boolean.TRUE, R.string.authenticating);
@@ -325,36 +325,13 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             UUID siteId = LocalPreferences.getCurrentSiteId();
             String clusterId = LocalPreferences.getCurrentClusterId();
 
-            //Clean bin info table before update
-            this.db.binInfoDAO().deleteAll();
-
             // sync sites for current cluster
             Call<List<SiteDTO>> syncSitesAsyncCall = syncService.getSitesByCluster(clusterId, "Bearer " + token);
             syncSitesAsyncCall.enqueue(new SyncClusterSitesCallBack(this.syncResult));
 
-            // sync harvestRequests for current Site
-            Call<List<FishingRequestDTO>> syncHarvestResAsyncCall = syncService.getFishingRequestsBySiteId(siteId, "Bearer " + token);
-            syncHarvestResAsyncCall.enqueue(new SyncFishingRequestCallBack(this.syncResult));
-
             // sync users
             Call<List<AppUserDTO>> syncUsersAsyncCall = syncService.getUsersBySiteId(siteId, "Bearer " + token);
             syncUsersAsyncCall.enqueue(new SyncUsersCallBack(this.syncResult));
-
-            // sync employees
-            Call<List<EmployeeDTO>> syncEmployeesAsyncCall = syncService.getEmployeesBySiteId(siteId, "Bearer " + token);
-            syncEmployeesAsyncCall.enqueue(new SyncEmployeesCallBack(this.syncResult));
-
-            /*// sync suppliers
-            Call<List<SupplierDTO>> syncSuppliersAsyncCall = syncService.getSuppliersBySiteId(siteId, "Bearer " + token);
-            syncSuppliersAsyncCall.enqueue(new SyncSuppliersCallBack(this.syncResult));*/
-
-            // sync customers
-            Call<List<CustomerDTO>> syncCustomersAsyncCall = syncService.getCustomersBySiteId(siteId, "Bearer " + token);
-            syncCustomersAsyncCall.enqueue(new SyncCustomersCallBack(this.syncResult));
-
-            /*// sync assets  (cages, nets, bins, platforms)
-            Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
-            syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));*/
 
             // sync only Harvest_Bins assets
             Call<List<AssetDTO>> syncHarvestBinsAsyncCall = syncService.getAssetsByHarvestBinType("Bearer " + token);
@@ -364,31 +341,11 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             Call<List<AssetDTO>> syncPlatformsAsyncCall = syncService.getAssetsByPlatformType("Bearer " + token);
             syncPlatformsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
 
-            // sync Cage Details
-            Call<List<CageDetailsDTO>> syncCageDetailsAsyncCall = syncService.getCageDetailsBySiteId(siteId, "Bearer " + token);
-            syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
-
-            // sync fish species
-            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.getProduct(), "Bearer " + token);
-            syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
-
-            // sync IOT Loggers
-            Call<List<IotLoggerDTO>> syncIOTLoggersAsyncCall = syncService.getIOTLoggersBySiteId(siteId, "Bearer " + token);
-            syncIOTLoggersAsyncCall.enqueue(new SyncIOTLoggersCallBack(this.syncResult));
-
             // sync Encoding scheme info
             // due to sync problems, we get ALL encoding scheme from DB.
             //Call<List<EncodingSchemeDTO>> syncEncodingShemeAsyncCall = syncService.getEncodingSchemeByCustomerName(clusterId, "Bearer " + token);
             Call<List<EncodingSchemeDTO>> syncEncodingShemeAsyncCall = syncService.getEncodingScheme("Bearer " + token);
             syncEncodingShemeAsyncCall.enqueue(new EncodingSchemeCallBack(this.syncResult));
-
-            // sync Food sku
-            Call<List<FoodSkuDTO>> syncFoodSkuAsyncCall = syncService.getFoodSkus("Bearer " + token);
-            syncFoodSkuAsyncCall.enqueue(new SyncFoodSkuCallBack(this.syncResult));
-
-            // sync All Bin Info
-            Call<List<BinInfoDTO>> syncAllsBinInfoAsyncCall = syncService.getCompleteBinLedger("Bearer " + token);
-            syncAllsBinInfoAsyncCall.enqueue(new SyncBinInfo(this.syncResult));
 
             goToProductMenu();
 

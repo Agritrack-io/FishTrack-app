@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ public class SingleShotScanner implements Runnable {
     private String EXCL_RFID_FILTER = null;
     private Boolean trimEPCFlag = Boolean.TRUE;
     private Integer maxLength = null;
+    private boolean readEpcList = false;
     private int encodingIdx = schemeSvc.encodingIndex();
     private int encodingWth = schemeSvc.encodingWidth();
 
@@ -63,6 +65,10 @@ public class SingleShotScanner implements Runnable {
         if (uhfReader!=null) {
             uhfReader.StopReading();
         }
+    }
+
+    public void readEpcList() {
+        readEpcList = true;
     }
 
     public void setFilter(String rfidFilter) {
@@ -108,11 +114,20 @@ public class SingleShotScanner implements Runnable {
                     } else {
                         filteredList = tagList.stream().filter(f -> this.RFID_FILTER == null || (f.getEpc().indexOf(this.RFID_FILTER) == encodingIdx && encodingIdx > -1) || (f.getEpc().indexOf(this.RFID_FILTER) > -1)).collect(Collectors.toList());
                     }
-                    Optional<RFIDTag> tag = filteredList.stream().sorted((y, x) -> Integer.compare(x.getRssi(), y.getRssi())).findFirst();
 
-                    if (tag.isPresent()) {
-                        String tagStr = tag.get().getEpc();
-                        b.putString("epc", tagStr);
+                    if (!readEpcList) {
+                        Optional<RFIDTag> tag = filteredList.stream().sorted((y, x) -> Integer.compare(x.getRssi(), y.getRssi())).findFirst();
+
+                        if (tag.isPresent()) {
+                            String tagStr = tag.get().getEpc();
+                            b.putString("epc", tagStr);
+                        }
+                    } else {
+                        ArrayList<String> epcList = new ArrayList<>();
+                        for (RFIDTag tag : filteredList) {
+                            epcList.add(tag.getEpc());
+                        }
+                        b.putStringArrayList("epcList", epcList);
                     }
                     msg.setData(b);
                     mScanHandler.sendMessage(msg);

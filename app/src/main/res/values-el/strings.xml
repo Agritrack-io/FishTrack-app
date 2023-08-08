@@ -40,7 +40,8 @@
     <string name="menu_title_outgoing">Εξερχόμενα</string>
     <string name="menu_title_inventory">Απογραφή</string>
     <string name="menu_title_correlation">Συσχέτιση</string>
-    <string name="menu_title_program">Προγραμματισμός</string>
+    <string name="menu_title_existing_tags">Υπάρχουσες ετικέτες</string>
+    <string name="menu_title_new_tags">Νέες ετικέτες</string>
     <string name="menu_title_search">Αναζήτηση</string>
     <string name="menu_title_synchronize">Αρχεία προς Συγχρονισμό</string>
 
@@ -557,7 +558,7 @@
     <string name="totes_for_semi_storage">Εισερχόμενα τελάρα</string>
     <string name="type_total_weight">Συνολικό βάρος</string>
     <string name="scan_warehouse">Σκάναρε αποθήκη</string>
-    <string name="scan_tag">Σκάναρε</string>
+    <string name="scan_tag">Σκανάρετε</string>
     <string name="palettes">Παλέτες</string>
     <string name="warehouse">Αποθήκη:</string>
     <string name="weight">Βάρος (kg):</string>
@@ -628,8 +629,8 @@
     <string name="supplier">ΠΡΟΜΗΘΕΥΤΗΣ</string>
     <string name="site">ΧΩΡΟΣ</string>
     <string name="customer">ΠΕΛΑΤΗΣ</string>
-    <string name="net">ΔΙΧΤΥ</string>
-    <string name="bin">ΒΟΥΤΑ</string>
+    <string name="net">Δίχτυ</string>
+    <string name="bin">Βούτα</string>
     <string name="food">ΤΡΟΦΗ</string>
     <string name="vaccine">ΕΜΒΟΛΙΟ</string>
     <string name="antibiotic">ΑΝΤΙΒΙΟΤΙΚΑ</string>
@@ -659,7 +660,7 @@
     <string name="already_scannned_bin_first_sync_temps">Έχετε ήδη ανακτήσει τις θερμοκρασίες από τη βούτα \%1$s\! Παρακαλώ πρώτα πατήστε το κουμπί συγχρονισμού!</string>
     <string name="select_reason">Παρακαλώ επιλέξτε ένα λόγο!</string>
     <string name="not_same_cnt"># διαφ. κωδικών</string>
-    <string name="title_program_menu">ΠΡΟΓΡΑΜΜΑΤΙΣΜΟΣ ΛΙΝΩΝ</string>
+    <string name="title_program_menu">Προγραμματισμός \%1$s\</string>
     <string name="false_tags">Λάθος ετικέτες</string>
     <string name="scan_false_assets">Βρες τις λάθος</string>
     <string name="not_encoded_tags">" απρογραμμάτιστες ετικέτες βρέθηκαν"</string>
@@ -698,10 +699,25 @@
     <string name="enter_your_info">Enter your info</string>
     <string name="generate_qr_code">Generate QR Code</string>
     <string name="scan_qr_code">Σκανάρετε το QR</string>
-    <string name="header_search_bin_platform">EPC\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Κωδικός\u00A0\u00A0\u00A0\u00A0</string>
-    <string name="header_search_net">EPC\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Κωδικός\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Περίμετρος\u00A0\u00A0\u00A0\u00A0Μάτι</string>
-    <string name="header_search_cage">EPC\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Κωδικός\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Περίμετρος\u00A0\u00A0\u00A0</string>
+    <string name="header_search_bin_platform">RFID\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Κωδικός\u00A0\u00A0\u00A0\u00A0</string>
+    <string name="header_search_net">RFID\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Κωδικός\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Περίμετρος\u00A0\u00A0\u00A0\u00A0Μάτι</string>
+    <string name="header_search_cage">RFID\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Κωδικός\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Περίμετρος\u00A0\u00A0\u00A0</string>
     <string name="code">Κωδικός</string>
     <string name="perimeter">Περίμετρος</string>
     <string name="eye">Μάτι</string>
+    <string name="old_epc">RFID</string>
+    <string name="cancel">Ακύρωση</string>
+    <string name="scan_tag_to_program">Η ετικέτα που σκανάρατε είναι απρογραμμάτιστη. Θέλετε να την προγραμματίσετε?</string>
+    <string name="successfully_programed_tag">Η ετικέτα προγραμματίστηκε επιτυχώς! Πατήστε Έλεγχος!</string>
+    <string name="successfully_validated_tag">Η ετικέτα επαληθεύτηκε επιτυχώς!</string>
+    <string name="title_select_asset_type_menu">ΠΑΡΑΚΑΛΩ ΕΠΙΛΕΞΤΕ ΤΥΠΟ ΠΑΓΙΟΥ</string>
+    <string name="choose_asset">Επιλέξτε πάγιο</string>
+    <string name="check_tag">Έλεγχος</string>
+    <string name="check_tag_msg_1">Η ετικέτα που προγραμματίσατε έχει RFID\u00A0</string>
+    <string name="check_tag_msg_2">, και είναι πλέον συσχετισμένη με το πάγιο\u00A0</string>
+    <string name="program">Προγραμματισμός</string>
+    <string name="type_no_of_assets">Για ποσα πάγια θα προγραμματίσετε ετικέτες?</string>
+    <string name="important_note">Σημαντική σημείωση</string>
+    <string name="important_note_msg">Παρακαλώ σκανάρετε μόνο μία δεσμίδα από \%1$s\ ετικέτες κάθε φορά. Τοποθετήστε τις υπόλοιπες δεσμίδες ετικετών αρκετά μακριά από αυτή που θέλετε να προγραμματίσετε!</string>
+
 </resources>

@@ -1,9 +1,9 @@
 
 e
-java:S2095“"NUse try-with-resources or close this "FileOutputStream" in a "finally" clause.(ç±æÄ
+java:S2095”"NUse try-with-resources or close this "FileOutputStream" in a "finally" clause.(ç±æÄ
 u
-java:S1149x"_Replace the synchronized class "StringBuffer" by an unsynchronized one such as "StringBuilder".(í…Ò‰
-N	java:S106D"9Replace this use of System.out or System.err by a logger.(¨¶Îû
-S	java:S106E"9Replace this use of System.out or System.err by a logger.(Ûˆ‰úÿÿÿÿ
-Q	java:S125J"<This block of commented-out lines of code should be removed.(Ş–Ãß
-V	java:S125i"<This block of commented-out lines of code should be removed.(¬ÑÌáùÿÿÿÿ
+java:S1149y"_Replace the synchronized class "StringBuffer" by an unsynchronized one such as "StringBuilder".(í…Ò‰
+N	java:S106E"9Replace this use of System.out or System.err by a logger.(¨¶Îû
+S	java:S106F"9Replace this use of System.out or System.err by a logger.(Ûˆ‰úÿÿÿÿ
+Q	java:S125K"<This block of commented-out lines of code should be removed.(Ş–Ãß
+V	java:S125j"<This block of commented-out lines of code should be removed.(¬ÑÌáùÿÿÿÿ

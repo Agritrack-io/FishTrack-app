@@ -231,6 +231,19 @@ tools:context=".fish.ui.wh.correlation.CorrelationCageActivity">
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvCorrCageBarcode" />
 
+            <ImageButton
+                android:id="@+id/ibSyncNet"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/transparent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvCorrCageBarcode"
+                app:srcCompat="@drawable/ic_add_stock_opname" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

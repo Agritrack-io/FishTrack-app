@@ -16,12 +16,12 @@ import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.List;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -56,10 +55,11 @@ public class CorrelationBinActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final ScanHandler mScanHandler = new ScanHandler(this);
+    private final MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button btnScanAssetTag;
-    private final MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
+    private ImageButton ibSyncNet;
     private TextView tvCorrBinBarcode, tvCorrTempLoggerBarcode, tvCounter;
     private EditText etAssetBarcode;
     private ProgressDialog progressDialog;
@@ -112,6 +112,28 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             supportDialog.showDialog();
         });
 
+        ibSyncNet.setOnClickListener(view -> {
+            stopScanner();
+            GlobalState.recWHCorrelation.assetType = Constants.ftBin;
+            GlobalState.recWHCorrelation.assetCode = etAssetBarcode.getText() != null ? etAssetBarcode.getText().toString() : null;
+            GlobalState.recWHCorrelation.type = Constants.ftDataLogger;
+
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
+            }
+            if (mLastLocation != null) {
+                recWHCorrelation.longitude = mLastLocation.getLongitude();
+                recWHCorrelation.latitude = mLastLocation.getLatitude();
+                proceedWithoutLocation = true;
+                moveToNextScreen();
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+            }
+        });
+
         configFooter();
     }
 
@@ -161,7 +183,8 @@ public class CorrelationBinActivity extends LocationAwareActivity {
     protected void configFooter() {
         ivBack.setOnClickListener(view -> {
             stopScanner();
-            Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
+            Intent i = new Intent(getApplicationContext(), CorrelationSubMenuActivity.class);
+            i.putExtra("id", 2);
             startActivity(i);
         });
 
@@ -194,7 +217,9 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         tvCorrTempLoggerBarcode = findViewById(R.id.tvCorrTempLoggerBarcode);
         tvCounter = findViewById(R.id.tvCounter);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
+        ibSyncNet = findViewById(R.id.ibSyncNet);
         ivNext = findViewById(R.id.ivToCongs);
+        ivNext.setVisibility(View.GONE);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);
         ivSupport = findViewById(R.id.ivSupport);
     }
@@ -252,14 +277,14 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         return sb.toString();
     }
 
-    private boolean deleteCorrelationTx(){
+    private boolean deleteCorrelationTx() {
         try {
             System.out.println("About to delete correlate tx");
             CorrelationTransaction delObj = new CorrelationTransaction();
             delObj.id = recWHCorrelation.txKey;
             db.correlationTransactionDAO().delete(delObj);
             return true;
-        } catch (Exception x){
+        } catch (Exception x) {
             x.printStackTrace();
             return false;
         }

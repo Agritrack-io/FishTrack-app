@@ -1,0 +1,41 @@
+
+f
+java:S1192Ÿ"ODefine a constant instead of duplicating this literal "
+%s is missing" 4 times.(ãÈ›
+W
+java:S1659/"ADeclare "etT2" and all following declarations on a separate line.(£Ì €
+_
+java:S16590"IDeclare "tvCurrentLot" and all following declarations on a separate line.(‡ûùÅ
+^
+java:S1659M"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
+x
+java:S14501"]Remove the "progressDialog" field and declare it as a local variable in the relevant methods.(·á…Çùÿÿÿÿ
+Q
+java:S18741"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+h	java:S100Q"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ì°Ûêıÿÿÿÿ
+m
+java:S3776\"RRefactor this method to reduce its Cognitive Complexity from 25 to the 15 allowed.(¨Œşÿÿÿÿ
+L
+java:S1874e"6Remove this use of "ProgressDialog"; it is deprecated.(çÈÅ¶
+N
+java:S1874f"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+L
+java:S1874f"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+K
+java:S1874f"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+<
+java:S1170z"!Make this final field static too.(­öÙ¿ÿÿÿÿÿ
+<
+java:S1170{"!Make this final field static too.(ëàÚ†ûÿÿÿÿ
+
+java:S5803–"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(¬áÄ‹
+h
+java:S3457Ÿ"Q%n should be used in place of \n to produce the platform-specific line separator.(ãÈ›
+m
+java:S3457£"Q%n should be used in place of \n to produce the platform-specific line separator.(ĞéƒÈşÿÿÿÿ
+h
+java:S3457§"Q%n should be used in place of \n to produce the platform-specific line separator.(È¼Æ
+m
+java:S3457«"Q%n should be used in place of \n to produce the platform-specific line separator.(ÿª¼ùÿÿÿÿ
+?
+java:S1185Ç"(Remove this method to simply inherit it.(ÍÙ÷¢

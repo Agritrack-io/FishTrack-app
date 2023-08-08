@@ -1,0 +1,11 @@
+
+k
+java:S1226†"HIntroduce a new variable instead of reusing the parameter "convertView".(õ¬Üüÿÿÿÿ8ÅŞ¼˜1
+m
+java:S3776E"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(–ÜÁÁùÿÿÿÿ
+_
+java:S3358Q"DExtract this nested ternary operation into an independent statement.(õº„áşÿÿÿÿ
+n
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 34 to the 15 allowed.(Ïêƒ¢üÿÿÿÿ
+R
+java:S2864È"4Iterate over the "entrySet" instead of the "keySet".(öÚª¬8¨ß¼˜1

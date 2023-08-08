@@ -1,0 +1,34 @@
+
+t	java:S115 "ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(†Ç³ôÿÿÿÿÿ
+t	java:S115 "ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(†Ç³ôÿÿÿÿÿ
+t	java:S115 "ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(†Ç³ôÿÿÿÿÿ
+t	java:S115 "ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(†Ç³ôÿÿÿÿÿ
+f
+java:S1659 "DDeclare "Net_Idx" and all following declarations on a separate line.(†Ç³ôÿÿÿÿÿ8£ÃÛŒ™1
+i
+java:S1450'"SRemove the "grid" field and declare it as a local variable in the relevant methods.(‡§³¤
+n
+java:S1450""XRemove the "ivSupport" field and declare it as a local variable in the relevant methods.(ÄÖž¬
+x
+java:S1450&"bRemove the "onItemClickListener" field and declare it as a local variable in the relevant methods.(ôýÏº
+x
+java:S1450$"]Remove the "progressDialog" field and declare it as a local variable in the relevant methods.(·á…Çùÿÿÿÿ
+Q
+java:S1874$"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+V	java:S125."<This block of commented-out lines of code should be removed.(íÅ°ûùÿÿÿÿ
+Q
+java:S1874H"6Remove this use of "ProgressDialog"; it is deprecated.(œœæªüÿÿÿÿ
+N
+java:S1874I"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+L
+java:S1874I"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+K
+java:S1874I"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+N
+java:S1068 ",Remove this unused "Cage_Idx" private field.(†Ç³ôÿÿÿÿÿ8ÇÞ¼Ž™1
+M
+java:S1068 "+Remove this unused "Net_Idx" private field.(†Ç³ôÿÿÿÿÿ8ÇÞ¼Ž™1
+M
+java:S1068 "+Remove this unused "Bin_Idx" private field.(†Ç³ôÿÿÿÿÿ8ÇÞ¼Ž™1
+R
+java:S1068 "0Remove this unused "Platform_Idx" private field.(†Ç³ôÿÿÿÿÿ8ÇÞ¼Ž™1

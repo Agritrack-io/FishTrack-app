@@ -100,6 +100,48 @@ public class BX6100Programmer  extends AbstractX9Programmer {
     }
 
     @Override
+    public Reader.READER_ERR writeTagEPCByTIDFilter(String epc, String fdata) {
+        if(this.mUhfRManager != null) {
+            byte[] epcBytes = Tools.HexString2Bytes(epc) ;
+            byte[] accessBytes = Tools.HexString2Bytes(accessPwd) ;
+            byte[] fdataBytes = Tools.HexString2Bytes(fdata) ;
+
+            Reader.READER_ERR outcome = this.mUhfRManager.writeTagEPCByFilter(epcBytes, accessBytes, this.timeout, fdataBytes, 2, 0, true);
+            this.mUhfRManager.setCancleInventoryFilter();
+            return outcome;
+        }
+        return null;
+    }
+
+    @Override
+    public String getTagTIDDataByFilter(String epc) {
+        if(this.mUhfRManager != null) {
+            byte[] epcBytes = Tools.HexString2Bytes(epc) ;
+            byte[] accessBytes = Tools.HexString2Bytes(accessPwd) ;
+
+            byte[] outcome = this.mUhfRManager.getTagDataByFilter(2, 0, 6, accessBytes, this.timeout, epcBytes, 1, 2, true);
+            this.mUhfRManager.setCancleInventoryFilter();
+            String outEpc = Tools.Bytes2HexString(outcome, 12);
+            return outEpc;
+        }
+        return null;
+    }
+
+    @Override
+    public String getTagEpcDataByFilter(String tid) {
+        if(this.mUhfRManager != null) {
+            byte[] epcBytes = Tools.HexString2Bytes(tid) ;
+            byte[] accessBytes = Tools.HexString2Bytes(accessPwd) ;
+
+            byte[] outcome = this.mUhfRManager.getTagDataByFilter(1, 2, 6, accessBytes, this.timeout, epcBytes, 2, 0, true);
+            this.mUhfRManager.setCancleInventoryFilter();
+            String outEpc = Tools.Bytes2HexString(outcome, 12);
+            return outEpc;
+        }
+        return null;
+    }
+
+    @Override
     public void setFilterEPC(String epc) {
         this.tagToSearch = epc;
         this.epcBytes = Tools.HexString2Bytes(epc);

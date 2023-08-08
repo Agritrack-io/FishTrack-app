@@ -1,13 +1,25 @@
 
+K
+java:S1604˜"(Make this anonymous inner class a lambda(Êœüûÿÿÿÿ8Ê¸×š™1
+F
+java:S1604’"(Make this anonymous inner class a lambda(ÀËÜ•8Ê¸×š™1
 —
 java:S1186Ú"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ôŒùb
 l
 java:S1450:"VRemove the "tvTitle" field and declare it as a local variable in the relevant methods.(Æ¶‡
+o
+java:S3252X"MUse static access with "android.widget.AbsListView" for "CHOICE_MODE_SINGLE".(°´µ¯ûÿÿÿÿ8Œ¹×š™1
 Q	java:S125g"<This block of commented-out lines of code should be removed.(„ïµû
 Q
 java:S1117Š":Rename "dialog" which hides the field declared at line 61.(ç¶ĞŸ
+Q
+java:S1905—".Remove this unnecessary cast to "AlertDialog".(İÆÆ„ùÿÿÿÿ8š¹×š™1
+r
+java:S3252—"OUse static access with "android.content.DialogInterface" for "BUTTON_POSITIVE".(İÆÆ„ùÿÿÿÿ8š¹×š™1
 2
 java:S3626·"Remove this redundant jump.(ûÁİ…
+›
+java:S5803Ÿ"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ˆñ½øÿÿÿÿ8¹×š™1
 I
 java:S10687".Remove this unused "syncResult" private field.(Œ·ôµÿÿÿÿÿ
 A

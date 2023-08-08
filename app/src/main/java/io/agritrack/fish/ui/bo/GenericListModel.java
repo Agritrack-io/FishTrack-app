@@ -19,7 +19,8 @@ public class GenericListModel {
     private Boolean checked;
     private origin type = origin.Normal;
 
-    public GenericListModel(String rfid, String code, Double netEyeGirth, Double perimeter) {
+    public GenericListModel(UUID id, String rfid, String code, Double netEyeGirth, Double perimeter) {
+        this.id = id;
         this.rfid = rfid;
         this.code = code;
         this.netEyeGirth = netEyeGirth;

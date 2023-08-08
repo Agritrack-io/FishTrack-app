@@ -1,5 +1,7 @@
 package io.agritrack.common;
 
+import io.agritrack.data.model.EncodingSchemeEntity;
+
 public class Filters {
     // 11-14 chars
     public static final String RFID_BIN = "1410";   //1410// e.g. BE0019A00001410XXXXXXXXX
@@ -17,4 +19,8 @@ public class Filters {
     public static final String RFID_TOTE = "BE20";
     public static final String RFID_POLE = "1416";
     public static final String RFID_LOGGER = "01C0";
+
+    public void setExcludedFilter(String exclFilter) {
+
+    }
 }
