@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-mergeinterfacesaggressively
+-overloadaggressively
+-keepclassmembers class io.agritrack.data.dto.* {
+    private <fields>;
+}
+#Keep SQLCypher classes
+-keep class net.sqlcipher.** { *; }

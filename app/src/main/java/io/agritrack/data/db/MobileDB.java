@@ -1,11 +1,17 @@
 package io.agritrack.data.db;
 
 import android.content.Context;
+import android.provider.Settings;
 
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SupportFactory;
+
+import java.security.Security;
 
 import io.agritrack.data.converter.ConsumableTypeConverter;
 import io.agritrack.data.converter.DateConverter;
@@ -99,7 +105,7 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
         IfcoTransaction.class, AssetTransaction.class, ConsumableTransaction.class, CorrelationTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, CoInventory.class, CoInventoryItem.class, Customer.class,
         Measurement.class, TemperatureData.class, SeaTemperatureTransaction.class, RepairTransaction.class},
-        version = 2, exportSchema = false)
+        version = 1, exportSchema = false)
 
 
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class, UUIDConverter.class})
@@ -110,8 +116,12 @@ public abstract class MobileDB extends RoomDatabase {
     public static MobileDB getInstance(Context context) {
         synchronized (sLock) {
             if (INSTANCE == null) {
+                SQLiteDatabase.loadLibs(context);
+                final byte[] passphrase = Settings.Secure.getString(context.getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID).getBytes();
+                final SupportFactory factory = new SupportFactory(passphrase);
                 INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                         MobileDB.class, "AGRIFISH_local.db")
+                        .openHelperFactory(factory)
                         .fallbackToDestructiveMigration()
                         .allowMainThreadQueries()
                         .build();
