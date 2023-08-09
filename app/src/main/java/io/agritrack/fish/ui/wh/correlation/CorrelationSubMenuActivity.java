@@ -59,22 +59,22 @@ public class CorrelationSubMenuActivity extends AppCompatActivity {
 
         switch (finalPosition) {
             case 0:
-                tvTitleToolbar.setText(getString(R.string.title_program_menu, getString(R.string.cage)));
+                tvTitleToolbar.setText(getString(R.string.title_program_menu, getString(R.string.of_cage)));
                 menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationCageActivity.class, R.drawable.cage));
                 clazz = CorrelationCageActivity.class;
                 break;
             case 1:
-                tvTitleToolbar.setText(getString(R.string.title_program_menu, getString(R.string.net)));
+                tvTitleToolbar.setText(getString(R.string.title_program_menu, getString(R.string.of_net)));
                 menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationNetActivity.class, R.drawable.net));
                 clazz = CorrelationNetActivity.class;
                 break;
             case 2:
-                tvTitleToolbar.setText(getString(R.string.title_program_menu, getString(R.string.bin)));
+                tvTitleToolbar.setText(getString(R.string.title_program_menu, getString(R.string.of_bin)));
                 menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationBinActivity.class, R.drawable.bin));
                 clazz = CorrelationBinActivity.class;
                 break;
             case 3:
-                tvTitleToolbar.setText(getString(R.string.title_program_menu, getString(R.string.platform)));
+                tvTitleToolbar.setText(getString(R.string.title_program_menu, getString(R.string.of_platform)));
                 menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationPlatformActivity.class, R.drawable.platform));
                 clazz = CorrelationPlatformActivity.class;
                 break;

@@ -15,13 +15,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,15 +65,13 @@ public class NewTagActivity extends LocationAwareActivity {
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private final NewTagActivity.ScanHandler mScanHandler = new NewTagActivity.ScanHandler(this);
+    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     protected BroadcastReceiver keyReceiver;
     private BX6100Programmer x9programmer;
     private MobileDB db;
-    private Spinner spAssetType;
     private String selectedAssetType;
-    private EditText etNoAssets;
     private TextView tvInfo, tvImportantNote;
     private Button btnProgramTag;
-    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     private ProgressDialog progressDialog;
     private YesNoDialogFragment confirmGPSSelectionDlg;
     private boolean proceedWithoutLocation = false;
@@ -86,6 +79,7 @@ public class NewTagActivity extends LocationAwareActivity {
     private SupportDialog supportDialog;
     private CheckTagDialog checkTagDialog;
     private int assetType;
+    private int programmedTags = 0;
     private String filter, rfid, code;
     private int noOfAssets, noOfTags, index = 0;
     private String lastEpcPerAsset, prefix;
@@ -103,8 +97,6 @@ public class NewTagActivity extends LocationAwareActivity {
             assetType = bundle != null ? bundle.getInt("assetType") : 0;
         }
 
-        //step = LocalPreferences.getStep();
-
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
 
@@ -116,12 +108,6 @@ public class NewTagActivity extends LocationAwareActivity {
 
         // get  references of the controls
         assignCtrlVars();
-//
-//        if (LocalPreferences.getCurrentEpcList()!=null) {
-//
-//        } else {
-//
-//        }
 
         syncResult.observe(this, response -> {
             syncCounter++;
@@ -172,35 +158,6 @@ public class NewTagActivity extends LocationAwareActivity {
         }
 
         tvImportantNote.setText(getString(R.string.important_note_msg, noOfTags));
-
-        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.distinctNamesOnly()) {
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                if (position % 2 == 0) { // we're on an even row
-                    view.setBackgroundColor(getColor(R.color.white));
-                } else {
-                    view.setBackgroundColor(getColor(R.color.light_grey));
-                }
-                return view;
-            }
-        };
-        hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
-        spAssetType.setAdapter(hrAdapter);
-        int spinnerPosition = hrAdapter.getPosition(selectedAssetType);
-        spAssetType.setSelection(spinnerPosition);
-
-        spAssetType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
-                selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
-                filter = schemeSvc.codeOf(selectedAssetType);
-            }
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-
-            }
-        });
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
@@ -308,8 +265,6 @@ public class NewTagActivity extends LocationAwareActivity {
     }
 
     private void assignCtrlVars() {
-        spAssetType = findViewById(R.id.spAssetType);
-        etNoAssets = findViewById(R.id.etNoAssets);
         tvInfo = findViewById(R.id.tvInfo);
         tvImportantNote = findViewById(R.id.tvImportantNote);
         btnProgramTag = findViewById(R.id.btnProgramTag);
@@ -333,11 +288,6 @@ public class NewTagActivity extends LocationAwareActivity {
     }
 
     protected void onClick(View view) {
-        if (Strings.isEmptyOrWhitespace(etNoAssets.getText().toString())) {
-            CToast(getApplicationContext(), render("Please type number of assets to program!"), Toast.LENGTH_LONG);
-            return;
-        }
-        noOfAssets = Integer.parseInt(etNoAssets.getText().toString());
         scanner_runnable.setFilter(""); //Filters.RFID_NET
         scanner_runnable.startReading();
         scanner_runnable.LowEnergy();
@@ -363,6 +313,45 @@ public class NewTagActivity extends LocationAwareActivity {
             e.printStackTrace();
         } finally {
 
+        }
+    }
+
+    private void writeEpcByTid(String epcToWrite, String tid) {
+        Reader.READER_ERR res = x9programmer.writeTagEPCByTIDFilter(epcToWrite, tid);
+        if (Reader.READER_ERR.MT_OK_ERR.compareTo(res) == 0) {
+        } else {
+            return;
+        }
+    }
+
+    private int validateTags(String epcToWrite, String tid) {
+        String res = x9programmer.getTagEpcDataByTIDFilter(tid);
+        if (res.equalsIgnoreCase(epcToWrite)) {
+            programmedTags++;
+            return 1;
+        }
+        return 0;
+    }
+
+    @SuppressLint("StringFormatMatches")
+    private void programLoop(Map<String, String> epcTid, String epcToWrite, String outStr) {
+        for (String tid : epcTid.keySet()) {
+            writeEpcByTid(epcToWrite, tid);
+            int res = validateTags(epcToWrite, tid);
+            int counter = 2;
+            while (res == 0 && counter > 0) {
+                res = validateTags(epcToWrite, tid);
+                counter--;
+            }
+            if (res == 0) {
+                writeEpcByTid(epcToWrite, tid);
+                res = validateTags(epcToWrite, tid);
+                if (res == 0) {
+
+                }
+            }
+            outStr = outStr + getString(R.string.programmed_tags, programmedTags);
+            tvInfo.setText(outStr);
         }
     }
 
@@ -404,61 +393,76 @@ public class NewTagActivity extends LocationAwareActivity {
             mActivity = new WeakReference<>(activity);
         }
 
+        @SuppressLint("StringFormatMatches")
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
                     ArrayList<String> epcList = msg.getData().getStringArrayList("epcList");
-                        try {
-                            tvInfo.setText("Reading tags");
-                            if (epcList.size() < noOfTags) {
-                                tvInfo.setText("You scanned less tags than "  + noOfTags + ". Please scan again!");
-                                return;
-//                            CToast(getApplicationContext(), render("You just scanned less tags programmed"), Toast.LENGTH_LONG);
-                            } else if (epcList.size() > noOfTags) {
-                                tvInfo.setText("You scanned more tags than " + noOfTags + ". Please scan again!");
-                                return;
-//                            CToast(getApplicationContext(), render("Tag you just scanned is programmed"), Toast.LENGTH_LONG);
-                            }
-                            for (String epcStr : epcList) {
-                                if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                                    if (epcStr.substring(11).startsWith(filter)) {
-                                        tvInfo.setText("Tag you just scanned is programmed" + "Please scan again!");
-                                        return;
-//                                    CToast(getApplicationContext(), render("Tag you just scanned is programmed"), Toast.LENGTH_LONG);
-                                    } else if (epcStr.substring(11).startsWith("141")) {
-                                        tvInfo.setText("Tag you just scanned is associated with other type of asset" + "Please scan again!");
-                                        return;
-//                                    CToast(getApplicationContext(), render("Tag you just scanned is associated with other type of asset"), Toast.LENGTH_LONG);
-                                    }
+                    try {
+                        String outStr = getString(R.string.reading_tags);
+                        tvInfo.setText(outStr);
+                        if (epcList.size() < noOfTags) {
+                            tvInfo.setText(getString(R.string.less_tags, noOfTags));
+                            return;
+                        } else if (epcList.size() > noOfTags) {
+                            tvInfo.setText(getString(R.string.more_tags, noOfTags));
+                            return;
+                        }
+                        for (String epcStr : epcList) {
+                            if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                                if (epcStr.substring(11).startsWith(filter)) {
+                                    tvInfo.setText(R.string.programmed_tag);
+                                    return;
+                                } else if (epcStr.substring(11).startsWith("141")) {
+                                    tvInfo.setText(R.string.associated_tag);
+                                    return;
                                 }
                             }
+                        }
 
-                            for (String epcStr : epcList) {
-                                String tid = x9programmer.getTagTIDDataByFilter(epcStr);
-                                epcTid.put(tid, epcStr);
+                        for (String epcStr : epcList) {
+                            String tid = x9programmer.getTagTIDDataByFilter(epcStr);
+                            epcTid.put(tid, epcStr);
+                        }
+
+                        String epcToWrite = "BE0019A0000" + filter + prefix + lastEpcPerAsset;
+                        outStr = outStr + getString(R.string.programming_tags);
+                        tvInfo.setText(outStr);
+
+                        for (String tid : epcTid.keySet()) {
+                            writeEpcByTid(epcToWrite, tid);
+                            int res = validateTags(epcToWrite, tid);
+                            int counter = 2;
+                            while (res == 0 && counter > 0) {
+                                res = validateTags(epcToWrite, tid);
+                                counter--;
                             }
-
-                            String epcToWrite = "BE0019A0000" + filter + prefix + lastEpcPerAsset;
-                            for (String tid : epcTid.keySet()) {
-                                tvInfo.setText("Programming tags");
+                            if (res == 0) {
                                 writeEpcByTid(epcToWrite, tid);
-                            }
+                                res = validateTags(epcToWrite, tid);
+                                if (res == 0) {
 
-                            for (String tid : epcTid.keySet()) {
-                                tvInfo.setText("Programming tags");
-                                validateTags(epcToWrite, tid);
+                                }
                             }
-                            String finalEpc = String.format("%0" + epcToWrite.substring(17).length() + "d", Long.parseLong(epcToWrite.substring(17)) + 1);
-//                            String newEpc = epcToWrite.substring(17);
-//                            long newEpcNo = Long.valueOf(newEpc) + 1;
-//                            String finalEpc = String.valueOf(newEpcNo);
-                            List<EpcPerDevice> oldList = LocalPreferences.getCurrentEpcList();
-                            EpcPerDevice epcPerDevice = new EpcPerDevice();
-                            epcPerDevice.setType(filter);
-                            epcPerDevice.setEpc(finalEpc);
-                            oldList.set(index, epcPerDevice);
-                            LocalPreferences.putCurrentEpcList(oldList);
+                            outStr = outStr + getString(R.string.programmed_tags, programmedTags);
+                            tvInfo.setText(outStr);
+                        }
+
+                        if (programmedTags == noOfTags) {
+                            outStr = outStr + getString(R.string.successfully_validated_tag) + getString(R.string.write_tag, epcToWrite.substring(14));
+                            tvInfo.setText(outStr);
+                        } else {
+                            programLoop(epcTid, epcToWrite, outStr);
+                        }
+
+                        String finalEpc = String.format("%0" + epcToWrite.substring(17).length() + "d", Long.parseLong(epcToWrite.substring(17)) + 1);
+                        List<EpcPerDevice> oldList = LocalPreferences.getCurrentEpcList();
+                        EpcPerDevice epcPerDevice = new EpcPerDevice();
+                        epcPerDevice.setType(filter);
+                        epcPerDevice.setEpc(finalEpc);
+                        oldList.set(index, epcPerDevice);
+                        LocalPreferences.putCurrentEpcList(oldList);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -469,26 +473,6 @@ public class NewTagActivity extends LocationAwareActivity {
                     }
                     break;
             }
-        }
-    }
-
-    private void writeEpcByTid(String epcToWrite, String tid) {
-        Reader.READER_ERR res = x9programmer.writeTagEPCByTIDFilter(epcToWrite, tid);
-        if (Reader.READER_ERR.MT_OK_ERR.compareTo(res) == 0) {
-            tvInfo.setText(getString(R.string.successfully_programed_tag));
-        } else {
-            tvInfo.setText("Something went wrong, Please try again!");
-            return;
-        }
-    }
-
-    private void validateTags(String epcToWrite, String tid) {
-        String res = x9programmer.getTagEpcDataByFilter(tid);
-        if (res.equalsIgnoreCase(epcToWrite)) {
-            tvInfo.setText(getString(R.string.successfully_validated_tag));
-        } else {
-            tvInfo.setText("Something went wrong, Please try again!");
-            return;
         }
     }
 }

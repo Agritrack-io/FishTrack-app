@@ -33,7 +33,7 @@ public abstract class AbstractX9Programmer {
 
     abstract public String getTagTIDDataByFilter(String epc);
 
-    abstract public String getTagEpcDataByFilter(String tid);
+    abstract public String getTagEpcDataByTIDFilter(String tid);
 
     abstract public void stopProgramming();
 }

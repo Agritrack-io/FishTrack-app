@@ -128,7 +128,7 @@ public class BX6100Programmer  extends AbstractX9Programmer {
     }
 
     @Override
-    public String getTagEpcDataByFilter(String tid) {
+    public String getTagEpcDataByTIDFilter(String tid) {
         if(this.mUhfRManager != null) {
             byte[] epcBytes = Tools.HexString2Bytes(tid) ;
             byte[] accessBytes = Tools.HexString2Bytes(accessPwd) ;

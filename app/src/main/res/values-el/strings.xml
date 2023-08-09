@@ -677,6 +677,10 @@
     <string name="idle_logger">Αδρανής</string>
     <string name="idle_logger_with_data">Αδρανής. \nΠατήστε ξανά!</string>
     <string name="invalid_status">Μη έγκυρη κατάσταση</string>
+    <string name="of_cage">κλωβού</string>
+    <string name="of_net">διχτυού</string>
+    <string name="of_bin">βούτας</string>
+    <string name="of_platform">πλατφόρμας</string>
     <string name="error_reading_logger">Σφάλμα στο διάβασμα…\nΠατήστε ξανά!</string>
     <string name="failed_logger_press_again">Σφάλμα. Πατήστε ξανά.</string>
     <string name="error_resetting_logger">Σφάλμα στη διαγραφή…\nΠατήστε ξανά!</string>
@@ -709,8 +713,8 @@
     <string name="cancel">Ακύρωση</string>
     <string name="scan_tag_to_program">Η ετικέτα που σκανάρατε είναι απρογραμμάτιστη. Θέλετε να την προγραμματίσετε?</string>
     <string name="successfully_programed_tag">Η ετικέτα προγραμματίστηκε επιτυχώς! Πατήστε Έλεγχος!</string>
-    <string name="successfully_validated_tag">Η ετικέτα επαληθεύτηκε επιτυχώς!</string>
-    <string name="title_select_asset_type_menu">ΠΑΡΑΚΑΛΩ ΕΠΙΛΕΞΤΕ ΤΥΠΟ ΠΑΓΙΟΥ</string>
+
+    <string name="title_select_asset_type_menu">ΠΑΡΑΚΑΛΩ ΕΠΙΛΕΞΤΕ \n ΤΥΠΟ ΠΑΓΙΟΥ</string>
     <string name="choose_asset">Επιλέξτε πάγιο</string>
     <string name="check_tag">Έλεγχος</string>
     <string name="check_tag_msg_1">Η ετικέτα που προγραμματίσατε έχει RFID\u00A0</string>
@@ -719,5 +723,13 @@
     <string name="type_no_of_assets">Για ποσα πάγια θα προγραμματίσετε ετικέτες?</string>
     <string name="important_note">Σημαντική σημείωση</string>
     <string name="important_note_msg">Παρακαλώ σκανάρετε μόνο μία δεσμίδα από \%1$s\ ετικέτες κάθε φορά. Τοποθετήστε τις υπόλοιπες δεσμίδες ετικετών αρκετά μακριά από αυτή που θέλετε να προγραμματίσετε!</string>
-
+    <string name="reading_tags">Ανάγνωση ετικετών…\n</string>
+    <string name="programming_tags">Προγραμματισμός ετικετών…\n</string>
+    <string name="programmed_tags">Η ετικέτα \%1$s\ προγραμματίστηκε…\n</string>
+    <string name="successfully_validated_tag">Οι ετικέτες προγραμματίστηκαν και επαληθεύτηκαν επιτυχώς!\n\n</string>
+    <string name="less_tags">Σκανάρατε λιγότερες ετικέτες από \%1$s\. Παρακαλώ σκανάρετε ξανά!</string>
+    <string name="more_tags">Σκανάρατε περισσότερες ετικέτες από \%1$s\. Παρακαλώ σκανάρετε ξανά!</string>
+    <string name="programmed_tag">Η ετικέτα που μόλις σκάναρατε είναι προγραμματισμένη. Παρακαλώ σκανάρετε ξανά!</string>
+    <string name="associated_tag">Η ετικέτα που μόλις σκάναρατε είναι προγραμματισμένη με άλλο τύπο παγίου. Παρακαλώ σκανάρετε ξανά!</string>
+    <string name="write_tag">Παρακαλώ γράψτε στην ετικέτα το ακόλουθο barcode: \%1$s\</string>
 </resources>
