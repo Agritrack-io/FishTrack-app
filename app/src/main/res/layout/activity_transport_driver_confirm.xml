@@ -98,9 +98,7 @@ tools:context=".fish.ui.transport.TransportDriverConfirmActivity">
             android:layout_marginTop="12dp"
             android:background="@drawable/shape_rounded_corner_with_shadow"
             android:orientation="vertical"
-            android:padding="15dp"
-            app:layout_constraintEnd_toEndOf="@+id/tvSitePackagingLabel"
-            app:layout_constraintStart_toEndOf="@+id/tvSitePackagingLabel">
+            android:padding="15dp">
 
             <TextView
                 android:id="@+id/tvSitePackagingLabel"

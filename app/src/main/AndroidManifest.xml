@@ -40,9 +40,6 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
-            android:name=".TransportQrCodeActivity"
-            android:exported="false" />
-        <activity
             android:name=".hotel.ui.HotelMenuProgramActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -339,9 +336,19 @@
             android:name=".fish.ui.fishing.HarvestRequestsActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".fish.ui.wh.search.StandaloneSearchActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="io.agritrack.action.RFID"/>
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".fish.ui.wh.search.SearchActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan">
+        </activity>
         <activity
             android:name=".ui.config.ConfigActivity"
             android:screenOrientation="portrait" />
