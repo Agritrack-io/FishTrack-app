@@ -2,11 +2,14 @@ package io.agritrack.ui.adapter;
 
 import android.app.Activity;
 import android.content.res.ColorStateList;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -17,8 +20,11 @@ public class OptionGridAdapter<T extends OptionGridAdapter.IDrawableWithText> ex
     final int paddingDp = 25;
     final float density;
     final int paddingPixel;
+    private LayoutInflater mLayoutInflater = null;
     final int drawableWidth;
     private Activity mActivity;
+    private TextView tvMenuCaptionDown, tvNoItem;
+    private ImageView ivImage;
     private List<T> mOptions;
     private IOnItemClickListener<T> mOnItemClickListener;
 
@@ -29,23 +35,29 @@ public class OptionGridAdapter<T extends OptionGridAdapter.IDrawableWithText> ex
         density = mActivity.getResources().getDisplayMetrics().density;
         paddingPixel = (int) (paddingDp * density);
         drawableWidth = (int) (80 * density + 0.5f);
+        this.mLayoutInflater = LayoutInflater.from(mActivity.getApplicationContext());
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView i = new ImageView(mActivity);
+        View view = mLayoutInflater.inflate(R.layout.grid_item_menu, parent, false);
+        tvMenuCaptionDown = view.findViewById(R.id.tvMenuCaptionDown);
+        tvNoItem = view.findViewById(R.id.tvNoItem);
+        ivImage = view.findViewById(R.id.ivImage);
         T option = mOptions.get(position);
-        i.setBackground(mActivity.getDrawable(R.drawable.button_press_effect_round));
-        i.setImageResource(option.getResourceId());
-        i.setImageTintList(ColorStateList.valueOf(mActivity.getColor(R.color.white)));
-        i.setPadding(paddingPixel, paddingPixel, paddingPixel, paddingPixel);
-        i.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        i.setLayoutParams(new GridView.LayoutParams(drawableWidth * 2, drawableWidth * 2));
-        i.setOnClickListener(v -> {
+        tvMenuCaptionDown.setText(option.getText());
+        tvNoItem.setText(""+(position+1));
+        ivImage.setImageResource(option.getResourceId());
+        view.setBackground(mActivity.getDrawable(R.drawable.button_press_effect_round));
+        ivImage.setImageTintList(ColorStateList.valueOf(mActivity.getColor(R.color.white)));
+        view.setPadding(paddingPixel, paddingPixel, paddingPixel, paddingPixel);
+        ivImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        view.setLayoutParams(new GridView.LayoutParams(drawableWidth * 2, drawableWidth * 2));
+        view.setOnClickListener(v -> {
             if (mOnItemClickListener != null) {
                 mOnItemClickListener.onItemClick(position, option);
             }
         });
-        return i;
+        return view;
     }
 
     public final int getCount() {

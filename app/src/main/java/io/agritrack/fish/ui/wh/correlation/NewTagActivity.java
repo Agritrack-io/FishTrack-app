@@ -79,7 +79,6 @@ public class NewTagActivity extends LocationAwareActivity {
     private SupportDialog supportDialog;
     private CheckTagDialog checkTagDialog;
     private int assetType;
-    private int programmedTags = 0;
     private String filter, rfid, code;
     private int noOfAssets, noOfTags, index = 0;
     private String lastEpcPerAsset, prefix;
@@ -327,32 +326,9 @@ public class NewTagActivity extends LocationAwareActivity {
     private int validateTags(String epcToWrite, String tid) {
         String res = x9programmer.getTagEpcDataByTIDFilter(tid);
         if (res.equalsIgnoreCase(epcToWrite)) {
-            programmedTags++;
             return 1;
         }
         return 0;
-    }
-
-    @SuppressLint("StringFormatMatches")
-    private void programLoop(Map<String, String> epcTid, String epcToWrite, String outStr) {
-        for (String tid : epcTid.keySet()) {
-            writeEpcByTid(epcToWrite, tid);
-            int res = validateTags(epcToWrite, tid);
-            int counter = 2;
-            while (res == 0 && counter > 0) {
-                res = validateTags(epcToWrite, tid);
-                counter--;
-            }
-            if (res == 0) {
-                writeEpcByTid(epcToWrite, tid);
-                res = validateTags(epcToWrite, tid);
-                if (res == 0) {
-
-                }
-            }
-            outStr = outStr + getString(R.string.programmed_tags, programmedTags);
-            tvInfo.setText(outStr);
-        }
     }
 
     public class SyncTxCallBack implements Callback<ResponseBody> {
@@ -401,14 +377,9 @@ public class NewTagActivity extends LocationAwareActivity {
                     ArrayList<String> epcList = msg.getData().getStringArrayList("epcList");
                     try {
                         String outStr = getString(R.string.reading_tags);
-                        tvInfo.setText(outStr);
-                        if (epcList.size() < noOfTags) {
-                            tvInfo.setText(getString(R.string.less_tags, noOfTags));
-                            return;
-                        } else if (epcList.size() > noOfTags) {
-                            tvInfo.setText(getString(R.string.more_tags, noOfTags));
-                            return;
-                        }
+                        String finalOutStr3 = outStr;
+                        runOnUiThread(() -> tvInfo.setText(finalOutStr3));
+
                         for (String epcStr : epcList) {
                             if (!Strings.isEmptyOrWhitespace(epcStr)) {
                                 if (epcStr.substring(11).startsWith(filter)) {
@@ -421,6 +392,14 @@ public class NewTagActivity extends LocationAwareActivity {
                             }
                         }
 
+                        if (epcList.size() < noOfTags) {
+                            tvInfo.setText(getString(R.string.less_tags, noOfTags));
+                            return;
+                        } else if (epcList.size() > noOfTags) {
+                            tvInfo.setText(getString(R.string.more_tags, noOfTags));
+                            return;
+                        }
+
                         for (String epcStr : epcList) {
                             String tid = x9programmer.getTagTIDDataByFilter(epcStr);
                             epcTid.put(tid, epcStr);
@@ -428,32 +407,31 @@ public class NewTagActivity extends LocationAwareActivity {
 
                         String epcToWrite = "BE0019A0000" + filter + prefix + lastEpcPerAsset;
                         outStr = outStr + getString(R.string.programming_tags);
-                        tvInfo.setText(outStr);
+                        String finalOutStr = outStr;
+                        runOnUiThread(() -> tvInfo.setText(finalOutStr));
 
+                        int programmedTags = 0;
                         for (String tid : epcTid.keySet()) {
                             writeEpcByTid(epcToWrite, tid);
                             int res = validateTags(epcToWrite, tid);
-                            int counter = 2;
+                            int counter = 1;
                             while (res == 0 && counter > 0) {
                                 res = validateTags(epcToWrite, tid);
                                 counter--;
                             }
-                            if (res == 0) {
-                                writeEpcByTid(epcToWrite, tid);
-                                res = validateTags(epcToWrite, tid);
-                                if (res == 0) {
+                            programmedTags+=res;
 
-                                }
-                            }
                             outStr = outStr + getString(R.string.programmed_tags, programmedTags);
-                            tvInfo.setText(outStr);
+                            String finalOutStr1 = outStr;
+                            runOnUiThread(() -> tvInfo.setText(finalOutStr1));
                         }
 
                         if (programmedTags == noOfTags) {
                             outStr = outStr + getString(R.string.successfully_validated_tag) + getString(R.string.write_tag, epcToWrite.substring(14));
-                            tvInfo.setText(outStr);
+                            String finalOutStr2 = outStr;
+                            runOnUiThread(() -> tvInfo.setText(finalOutStr2));
                         } else {
-                            programLoop(epcTid, epcToWrite, outStr);
+                            runOnUiThread(() -> tvInfo.setText(getString(R.string.contact_admin)));
                         }
 
                         String finalEpc = String.format("%0" + epcToWrite.substring(17).length() + "d", Long.parseLong(epcToWrite.substring(17)) + 1);

@@ -1,0 +1,26 @@
+
+y
+java:S1488|"^Immediately return this expression instead of assigning it to the temporary variable "outEpc".(¤¯ûäýÿÿÿÿ
+z
+java:S1488Š"^Immediately return this expression instead of assigning it to the temporary variable "outEpc".(¤¯ûäýÿÿÿÿ
+7
+java:S1170"!Make this final field static too.(ã»óÔ
+7
+java:S1170"!Make this final field static too.(¹•–™
+<
+java:S1170"!Make this final field static too.(Ç»âÿÿÿÿÿ
+Q	java:S125"<This block of commented-out lines of code should be removed.(½®…¼
+Q	java:S125!"<This block of commented-out lines of code should be removed.(ÿø×ˆ
+W
+java:S1117O"<Rename "epcBytes" which hides the field declared at line 18.(ÕÓ– úÿÿÿÿ
+Q	java:S125S"<This block of commented-out lines of code should be removed.(¢ç²Ô
+W
+java:S1117["<Rename "epcBytes" which hides the field declared at line 18.(ÕÓ– úÿÿÿÿ
+W
+java:S1117i"<Rename "epcBytes" which hides the field declared at line 18.(ÕÓ– úÿÿÿÿ
+W
+java:S1117w"<Rename "epcBytes" which hides the field declared at line 18.(ÕÓ– úÿÿÿÿ
+X
+java:S1117…"<Rename "epcBytes" which hides the field declared at line 18.(±Ø¹¿ûÿÿÿÿ
+D
+java:S1068"/Remove this unused "tagToSearch" private field.(¶Û¯2

@@ -743,12 +743,13 @@
     <string name="successfully_validated_tag">Tags were successfully programmed and validated!\n\n</string>
     <string name="less_tags">You scanned less tags than \%1$s\. Please scan again!</string>
     <string name="more_tags">You scanned more tags than \%1$s\. Please scan again!</string>
-    <string name="programmed_tag">Tag you just scanned is programmed. Please scan again!</string>
-    <string name="associated_tag">Tag you just scanned is associated with other type of asset. Please scan again!</string>
+    <string name="programmed_tag">Some tag you just scanned is programmed. Please scan again!</string>
+    <string name="associated_tag">Some tag you just scanned is associated with other type of asset. Please scan again!</string>
     <string name="of_cage">of cage</string>
     <string name="of_net">of net</string>
     <string name="of_bin">of bin</string>
     <string name="of_platform">of platform</string>
     <string name="write_tag">Please write on tag following barcode: \%1$s\</string>
+    <string name="contact_admin">This tag stack could not be programmed.\n Please contact the administrator!</string>
 
 </resources>
