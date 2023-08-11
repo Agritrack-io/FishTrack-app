@@ -21,8 +21,12 @@
 #-renamesourcefileattribute SourceFile
 -mergeinterfacesaggressively
 -overloadaggressively
--keepclassmembers class io.agritrack.data.dto.* {
-    private <fields>;
+-keepclassmembers class io.agritrack.data.dto.** {
+    public protected private <fields>;
 }
+-keepclassmembers class cn.pda.serialport.SerialPort{
+	private <fields>;
+}
+-keep class io.agritrack.ui.login.api.** { *; }
 #Keep SQLCypher classes
 -keep class net.sqlcipher.** { *; }

@@ -57,29 +57,31 @@ import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class SearchActivity extends AppCompatActivity {
-    private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
-    private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-    private final ScanHandler mScanHandler = new ScanHandler(this);
-    private final ICAEN_API uhfReader = RFIDModuleFactory.getInstance();
+    protected static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
+    protected static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+    protected final ScanHandler mScanHandler = new ScanHandler(this);
+    protected final ICAEN_API uhfReader = RFIDModuleFactory.getInstance();
     // **************************************************************
-    private final Runnable search_runnable = new SearchRunnable();
+    protected final Runnable search_runnable = new SearchRunnable();
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
-    private ProgressBar pbProximity;
-    private MobileDB db;
-    private FilterableAdapter adapterAssets;
-    private Spinner spAssetType;
-    private EditText etAssetBarcode;
-    private SearchView svSearchAsset;
-    private TextView tvProximity, tvHeaders;
-    private ImageView ivSupport;
-    private SupportDialog supportDialog;
-    private RecyclerView rvAssets;
-    private Button btnSearchAsset;
-    private String selectedAssetType, code;
-    private ProgressBar searchProgressBar;
-    private final String epcPrefix = "BE0019A0000";
-    private boolean isScanning = false;
+    protected ProgressBar pbProximity;
+    protected MobileDB db;
+    protected FilterableAdapter adapterAssets = new FilterableAdapter(this, new ArrayList<>());
+    protected Spinner spAssetType;
+    protected EditText etAssetBarcode;
+    protected SearchView svSearchAsset;
+    protected TextView tvProximity, tvHeaders;
+    protected ImageView ivSupport;
+    protected SupportDialog supportDialog;
+    protected RecyclerView rvAssets;
+    protected Button btnSearchAsset;
+    protected String selectedAssetType, code;
+    protected ProgressBar searchProgressBar;
+    protected final String epcPrefix = "BE0019A0000";
+    protected boolean isScanning = false;
+    protected List<Asset> assetsList;
+    protected ArrayAdapter<String> hrAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +104,7 @@ public class SearchActivity extends AppCompatActivity {
         assignCtrlVars();
 
         String[] names = schemeSvc.distinctNamesOnly();
-        ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, names) {
+        hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, names) {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -170,15 +172,15 @@ public class SearchActivity extends AppCompatActivity {
         configFooter();
     }
 
-    private void loadAssetsByTypeFromLocalDB(String assetType) {
+    protected void loadAssetsByTypeFromLocalDB(String assetType) {
         // load assets for current Site and filter by asset type (if selected).
         this.rvAssets.setAdapter(null);
         this.rvAssets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        List<Asset> assetsList = db.assetDAO().getAssetsByTypeForSearch(assetType.toUpperCase(Locale.ROOT));
+        assetsList = db.assetDAO().getAssetsByTypeForSearch(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
 //            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid.substring(x.rfid.length()-10))).collect(Collectors.toList());
             List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.rfid.substring(x.rfid.length()-10), x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
-            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
+            adapterAssets.setDataSet((ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
             this.rvAssets.setAdapter(adapterAssets);

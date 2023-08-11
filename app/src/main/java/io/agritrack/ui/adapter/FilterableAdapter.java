@@ -23,15 +23,21 @@ import io.agritrack.fish.ui.bo.GenericListModel;
 public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.viewHolder> implements Filterable {
 
     private final Context context;
-    private final ArrayList<GenericListModel> arrayList;
+    private ArrayList<GenericListModel> arrayList;
     private ArrayList<GenericListModel> arrayListFiltered;
     private int selectedPos = RecyclerView.NO_POSITION;
     private String selectedValue = null;
+    private String filter = "";
 
     public FilterableAdapter(Context context, ArrayList<GenericListModel> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
         this.arrayListFiltered = arrayList;
+    }
+
+    public void setDataSet(ArrayList<GenericListModel> arrayList) {
+        this.arrayList = arrayList;
+        getFilter().filter(filter);
     }
 
     public String getSelectedValue() {
@@ -84,6 +90,7 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
+                filter = constraint.toString();
                 FilterResults results = new FilterResults();
 
                 ArrayList<GenericListModel> arrayListFilter = new ArrayList<GenericListModel>();

@@ -36,4 +36,9 @@ public class SyncClusterSitesCallBack extends BaseSyncCallBack<List<SiteDTO>> {
             syncResult.setValue(getAppContext().getString(R.string.no_sites_found_alert));
         }
     }
+
+    @Override
+    public void onFailure(Call<List<SiteDTO>> call, Throwable t) {
+        super.onFailure(call, t);
+    }
 }
