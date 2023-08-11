@@ -477,7 +477,8 @@
     <string name="customers_sync_completed">Customers sync completed!</string>
     <string name="users_sync_completed">Users sync completed!</string>
     <string name="delete_selected_item">"About to delete: "</string>
-    <string name="delete_all_items">"Do you want to clear all items?"</string>
+    <string name="delete_all_items">"Do you want to clear all items? If no, please select a item!"</string>
+    <string name="empty_list">Item list is empty!! Please scan!</string>
     <string name="select_site">Please select site</string>
     <string name="select_cage">Please scan cage</string>
     <string name="select_supplier">Please select supplier</string>
@@ -731,8 +732,9 @@
     <string name="title_select_asset_type_menu">PLEASE SELECT \n ASSET TYPE</string>
     <string name="choose_asset">Choose asset</string>
     <string name="check_tag">Check</string>
-    <string name="check_tag_msg_1">Tag you just programmed has RFID\u00A0</string>
-    <string name="check_tag_msg_2">, and is now associated with asset\u00A0</string>
+    <string name="check_tag_msg_1">Tag was successfully programmed</string>
+    <string name="check_tag_msg_2">, and is now associated with asset:\u00A0</string>
+    <string name="check_tag_msg_3">. Please write on tag following barcode:\u00A0</string>
     <string name="program">Program</string>
     <string name="type_no_of_assets">How many assets will you program tags for?</string>
     <string name="important_note">Important note</string>
@@ -743,13 +745,18 @@
     <string name="successfully_validated_tag">Tags were successfully programmed and validated!\n\n</string>
     <string name="less_tags">You scanned less tags than \%1$s\. Please scan again!</string>
     <string name="more_tags">You scanned more tags than \%1$s\. Please scan again!</string>
-    <string name="programmed_tag">Some tag you just scanned is programmed. Please scan again!</string>
-    <string name="associated_tag">Some tag you just scanned is associated with other type of asset. Please scan again!</string>
+    <string name="programmed_tags_scan_again">Some tag you just scanned is programmed. Please scan again!</string>
+    <string name="associated_tags_scan_again">Some tag you just scanned is associated with other type of asset. Please scan again!</string>
     <string name="of_cage">of cage</string>
     <string name="of_net">of net</string>
     <string name="of_bin">of bin</string>
     <string name="of_platform">of platform</string>
     <string name="write_tag">Please write on tag following barcode: \%1$s\</string>
     <string name="contact_admin">This tag stack could not be programmed.\n Please contact the administrator!</string>
+    <string name="contact_admin_for_tag">This tag could not be programmed.\n Please contact the administrator!</string>
+    <string name="scan_again">Please scan again!</string>
+    <string name="select_asset">Please first select asset!</string>
+    <string name="programmed_tag_scan_again">Tag you just scanned is programmed. Please scan again!</string>
+    <string name="associated_tag_scan_again">Tag you just scanned is associated with other type of asset. Please scan again!</string>
 
 </resources>

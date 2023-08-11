@@ -1,0 +1,54 @@
+
+t
+java:S2293u"YReplace the type specification in this constructor call with the diamond operator ("<>").(Şşßşÿÿÿÿ
+f
+java:S1192`"KDefine a constant instead of duplicating this literal "%.2f\u2103" 3 times.(ë€øØüÿÿÿÿ
+k	java:S117L"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(»³‘‰üÿÿÿÿ
+k	java:S117L"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(»³‘‰üÿÿÿÿ
+k	java:S117L"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(»³‘‰üÿÿÿÿ
+>
+java:S1604j"(Make this anonymous inner class a lambda(Ö¹™º
+n
+java:S1104'"SMake context a static final constant or non-public and provide accessors if needed.(±¹ï±úÿÿÿÿ
+j
+java:S1104"TMake mContext a static final constant or non-public and provide accessors if needed.(Ù’ş
+s
+java:S1104Ÿ"\Make temperatureChart a static final constant or non-public and provide accessors if needed.(´¿»”
+g
+java:S1104 "PMake data a static final constant or non-public and provide accessors if needed.(åïì
+k
+java:S1104¡"TMake cardView a static final constant or non-public and provide accessors if needed.(ÙÉ›ù
+p
+java:S1104¢"TMake tvBinEPC a static final constant or non-public and provide accessors if needed.(ÅØ¼¡ùÿÿÿÿ
+l
+java:S1104£"VMake tvCageCode a static final constant or non-public and provide accessors if needed.(Èƒ‹`
+p
+java:S1104¤"TMake tvWeight a static final constant or non-public and provide accessors if needed.(Æ¥‘›ùÿÿÿÿ
+n
+java:S1104¥"RMake tvHigh a static final constant or non-public and provide accessors if needed.(Š°ßˆÿÿÿÿÿ
+m
+java:S1104¦"QMake tvAvg a static final constant or non-public and provide accessors if needed.(ã˜ùêøÿÿÿÿ
+h
+java:S1104§"QMake tvLow a static final constant or non-public and provide accessors if needed.(¸¨Çô
+\
+java:S1659*"ADeclare "avgT" and all following declarations on a separate line.(®ÏüØüÿÿÿÿ
+T
+java:S1854L"9Remove this useless assignment to local variable "_lowT".(»³‘‰üÿÿÿÿ
+T
+java:S1854L"9Remove this useless assignment to local variable "_avgT".(»³‘‰üÿÿÿÿ
+U
+java:S1854L":Remove this useless assignment to local variable "_highT".(»³‘‰üÿÿÿÿ
+]
+java:S1659L"BDeclare "_avgT" and all following declarations on a separate line.(»³‘‰üÿÿÿÿ
+P
+java:S1874m":Remove this use of "getAdapterPosition"; it is deprecated.(ë¶Ê
+R
+java:S2696Û"6Make the enclosing method "static" or remove this set.(Òœ¤ªüÿÿÿÿ
+J
+java:S1068&"/Remove this unused "selectedPos" private field.(Š‰àÛÿÿÿÿÿ
+D
+java:S1068*")Remove this unused "highT" private field.(®ÏüØüÿÿÿÿ
+C
+java:S1068*"(Remove this unused "avgT" private field.(®ÏüØüÿÿÿÿ
+C
+java:S1068*"(Remove this unused "lowT" private field.(®ÏüØüÿÿÿÿ

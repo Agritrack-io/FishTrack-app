@@ -1,0 +1,6 @@
+
+g	java:S117ú"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ôÑ¦
+^
+java:S1874";Remove this use of "updateConfiguration"; it is deprecated.(˜•µÊûÿÿÿÿ8¸§1
+X
+java:S1126È"AReplace this if-then-else statement by a single return statement.(¯‡…Í

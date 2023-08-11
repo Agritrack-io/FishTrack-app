@@ -180,15 +180,17 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
         android:layout_height="60dp"
         android:layout_marginStart="24dp"
         android:layout_marginBottom="8dp"
+        android:padding="@dimen/margin10"
         android:background="@drawable/button_press_effect"
         android:text="@string/program"
         android:textColor="@color/yellow"
         android:textSize="@dimen/button_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/correlateAssetLayout" />
 
-    <Button
+    <!--<Button
         android:id="@+id/btnCheckTag"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
@@ -199,7 +201,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
         android:textColor="@color/yellow"
         android:textSize="@dimen/button_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />-->
 
    <!-- <Button
         android:id="@+id/btnCorrelate"

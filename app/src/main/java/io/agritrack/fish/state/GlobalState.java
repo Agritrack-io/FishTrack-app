@@ -551,7 +551,7 @@ public class GlobalState {
     public static RFIDInventory commitWHRFIDInventory(MobileDB db) {
         try {
             RFIDInventory txWHRFIDInventory = new RFIDInventory();
-            txWHRFIDInventory.site = recWHInventory.subSite;
+            txWHRFIDInventory.site = recWHInventory.selectedSite;
             txWHRFIDInventory.performedAt = System.currentTimeMillis();
             txWHRFIDInventory.longitude = recWHInventory.longitude;
             txWHRFIDInventory.rfidInvType = "BLIND";

@@ -70,9 +70,11 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
 
             viewHolder.itemView.setBackgroundColor(selectedPos == position + 1 ? Color.GRAY : Color.TRANSPARENT);
         }
-        viewHolder.rfid.setVisibility(!Strings.isEmptyOrWhitespace(arrayListFiltered.get(position).getRfid()) ? View.VISIBLE : View.GONE);
-        viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
-        viewHolder.perimeter.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
+        if (arrayListFiltered.size()>0) {
+            viewHolder.rfid.setVisibility(!Strings.isEmptyOrWhitespace(arrayListFiltered.get(position).getRfid()) ? View.VISIBLE : View.GONE);
+            viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
+            viewHolder.perimeter.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
+        }
     }
 
     @Override
@@ -100,7 +102,7 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
                         } else {
                             strToSearch = String.format("%s%s%s", item.getCode(), item.getNetEyeGirth(), item.getPerimeter()).toLowerCase();
                         }
-                        if (strToSearch.contains(constraint.toString().toLowerCase())) { //item != null &&
+                        if (strToSearch.toLowerCase().contains(constraint.toString().toLowerCase())) { //item != null &&
                             arrayListFilter.add(item);
                         }
                     }

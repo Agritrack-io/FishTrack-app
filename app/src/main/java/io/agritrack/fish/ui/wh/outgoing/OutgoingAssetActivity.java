@@ -164,18 +164,32 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 clearSelectedItem();
-
-                selectedParent = null;
-                selectedChild = null;
+                selectedParent = 0;
+                selectedChild = 0;
                 return false;
             }
         });
 
+        final int[] taps = {0};
+
         xvOutgoingAssets.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                if (childPosition==0) {
+                    return false;
+                }
+
+                if (groupPosition == selectedParent && childPosition == selectedChild  && (taps[0] % 2)==0) {
+                    clearSelectedItem();
+                    selectedBarcode = null;
+                    taps[0]++;
+                    v.setSelected(false);
+                    return false;
+                }
+                taps[0] = 0;
+
                 ConstraintLayout view = (ConstraintLayout) v;
-                TextView tvSiteName = v.findViewById(R.id.tvSiteName);
+                TextView tvSiteName = v.findViewById(R.id.tvCode);
                 selectedBarcode = tvSiteName.getText().toString();
 
                 clearSelectedItem();
@@ -203,7 +217,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
         // onClick button event handling...
         ivDeleteItem.setOnClickListener(view -> {
 
-            if (selectedParent != null && selectedChild != null) {
+            if (selectedParent != null && selectedChild != null && selectedBarcode != null) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                 confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
@@ -218,13 +232,18 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
                         tvGroupsCnt.setText(String.valueOf(adapterOutgoingItems.getGroupCount()));
                         tvItemsCnt.setText(String.valueOf(adapterOutgoingItems.getItemsCount()));
                         selectedBarcode = null;
-                        selectedChild = null;
+                        selectedChild = 0;
                     }
+                });
+
+                confirmSiteSelectionDlg.onReject(bundle -> {
+                    clearSelectedItem();
+                    selectedBarcode = null;
                 });
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else if (adapterOutgoingItems.getGroupCount() > 0) {
+            } else if (adapterOutgoingItems!=null && adapterOutgoingItems.getGroupCount() > 0) {
                 // <delete> Button was pressed without selecting a Bin first.
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
@@ -239,13 +258,13 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
                 });
 
                 confirmSiteSelectionDlg.onReject(bundle -> {
-                    CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+//                    CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
                 });
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
-                CToast(getApplicationContext(), render("Item list is empty!!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.empty_list), Toast.LENGTH_LONG);
             }
         });
 

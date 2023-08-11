@@ -49,6 +49,7 @@ import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.RFIDInventoryDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
+import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.data.service.EncodingSchemeService;
@@ -56,6 +57,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.state.InventoryWHRecord;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
@@ -79,7 +81,7 @@ public class InventoryAssetActivity extends LocationAwareActivity {
     private ScanInventoryThread scanner_runnable;
     private MobileDB db;
     private ExpandableListView xvInventoryItems;
-    private Spinner spAssetType;
+    private Spinner spAssetType, spSite;
 
     private TreelikeAdapter adapterInventoryItems;
     private String selectedAssetType = AssetType.ALL;
@@ -106,6 +108,9 @@ public class InventoryAssetActivity extends LocationAwareActivity {
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
 
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
+
         // initiate raw sound
         SoundUtil.initSoundPool(this);
 
@@ -118,6 +123,15 @@ public class InventoryAssetActivity extends LocationAwareActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
+        List<Site> sites = db.siteDAO().getCurrentSiteSubSites(LocalPreferences.getCurrentSiteLevel3());
+        if (sites != null && !sites.isEmpty()) {
+            String[] site = sites.stream().map(x -> x.name).toArray(String[]::new);
+            ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item_1, site);
+            hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
+            spSite.setAdapter(hrAdapter);
+        }
 
         ArrayAdapter<String> hrAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item_1, schemeSvc.allNames()) {
             @Override
@@ -172,16 +186,31 @@ public class InventoryAssetActivity extends LocationAwareActivity {
 
         xvInventoryItems.setOnGroupClickListener((parent, v, groupPosition, id) -> {
             clearSelectedItem();
-            selectedParent = null;
-            selectedChild = null;
+            selectedParent = 0;
+            selectedChild = 0;
             return false;
         });
+
+        final int[] taps = {0};
 
         xvInventoryItems.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                if (childPosition==0) {
+                    return false;
+                }
+
+                if (groupPosition == selectedParent && childPosition == selectedChild  && (taps[0] % 2)==0) {
+                    clearSelectedItem();
+                    selectedBarcode = null;
+                    taps[0]++;
+                    v.setSelected(false);
+                    return false;
+                }
+                taps[0] = 0;
+
                 ConstraintLayout view = (ConstraintLayout) v;
-                TextView tvSiteName = v.findViewById(R.id.tvSiteName);
+                TextView tvSiteName = v.findViewById(R.id.tvCode);
                 selectedBarcode = tvSiteName.getText().toString();
 
                 clearSelectedItem();
@@ -200,7 +229,7 @@ public class InventoryAssetActivity extends LocationAwareActivity {
         // onClick button event handling...
         ivDeleteItem.setOnClickListener(view -> {
 
-            if (selectedParent != null && selectedChild != null) {
+            if (selectedParent != null && selectedChild != null && selectedBarcode != null) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                 confirmSiteSelectionDlg.args().putString("selectedBarcode", selectedBarcode);
@@ -215,13 +244,18 @@ public class InventoryAssetActivity extends LocationAwareActivity {
                         tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
                         tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
                         selectedBarcode = null;
-                        selectedChild = null;
+                        selectedChild = 0;
                     }
+                });
+
+                confirmSiteSelectionDlg.onReject(bundle -> {
+                    clearSelectedItem();
+                    selectedBarcode = null;
                 });
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else if (adapterInventoryItems.getGroupCount() > 0) {
+            } else if (adapterInventoryItems!=null && adapterInventoryItems.getGroupCount() > 0) {
                 // <delete> Button was pressed without selecting a Bin first.
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
@@ -236,13 +270,13 @@ public class InventoryAssetActivity extends LocationAwareActivity {
                 });
 
                 confirmSiteSelectionDlg.onReject(bundle -> {
-                    CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+//                    CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
                 });
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
-                CToast(getApplicationContext(), render("Item list is empty!!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.empty_list), Toast.LENGTH_LONG);
             }
         });
 
@@ -299,6 +333,7 @@ public class InventoryAssetActivity extends LocationAwareActivity {
     }
 
     private void assignCtrlVars() {
+        spSite = findViewById(R.id.spSite);
         spAssetType = findViewById(R.id.spAssetType);
         xvInventoryItems = findViewById(R.id.xvInventoryItems);
         ivDeleteItem = findViewById(R.id.ivDeleteItem);
@@ -343,14 +378,18 @@ public class InventoryAssetActivity extends LocationAwareActivity {
                 scanner_runnable.stopReading();
             }
 
-            Intent i = new Intent(getApplicationContext(), InventoryStartActivity.class);
+            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
         });
     }
 
     private boolean updateState() {
-        // get an instance of local DB
-        this.db = MobileDB.getInstance(getAppContext());
+        recWHInventory.selectedSite = LocalPreferences.getCurrentSiteName();
+
+        if (spSite.getSelectedItem() != null) {
+            recWHInventory.subSite = spSite.getSelectedItem().toString();
+        }
+        recWHInventory.subSitePos = spSite.getSelectedItemPosition();
 
         try {
             progressDialog.setCancelable(false);

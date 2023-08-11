@@ -34,8 +34,9 @@ public class CheckTagDialog {
         findViews();
 
 //        tvTitle.setText(activity.getString(R.string.check_tag_msg, rfid, code));
-        tvTitle.setText(Html.fromHtml(getAppContext().getResources().getString(R.string.check_tag_msg_1) + "<b>"+"<font color='#16325c'>" + rfid +"</font>"+ "</b>"
-                + getAppContext().getResources().getString(R.string.check_tag_msg_2) + "<b>"+"<font color='#16325c'>" + code +"</font>" +"</b>" , HtmlCompat.FROM_HTML_MODE_LEGACY));
+        tvTitle.setText(Html.fromHtml(getAppContext().getResources().getString(R.string.check_tag_msg_1)
+                + getAppContext().getResources().getString(R.string.check_tag_msg_2) + "<b>"+"<font color='#16325c'>"
+                + code +"</font>" +"</b>" + getAppContext().getResources().getString(R.string.check_tag_msg_3) + "<b>"+"<font color='#16325c'>" + rfid, HtmlCompat.FROM_HTML_MODE_LEGACY));
         tvTitle.setBackgroundColor(Color.WHITE);
         tvTitle.setPadding(10, 10, 10, 10);
         tvTitle.setGravity(Gravity.CENTER);

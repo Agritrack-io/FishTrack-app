@@ -146,7 +146,7 @@ public class SearchActivity extends AppCompatActivity {
         if (svSearchAsset.requestFocus()) {
             InputMethodManager imm = (InputMethodManager)
                     getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(svSearchAsset, InputMethodManager.SHOW_IMPLICIT);
+            imm.showSoftInput(svSearchAsset, InputMethodManager.RESULT_SHOWN);
         }
 
         etAssetBarcode.setOnClickListener(v -> {
@@ -261,6 +261,11 @@ public class SearchActivity extends AppCompatActivity {
                 if (Strings.isEmptyOrWhitespace(newText)) {
                     if (adapterAssets != null) {
                         adapterAssets.clearSelectedValue();
+                        View view = getCurrentFocus();
+                        if (view != null) {
+                            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                        }
                     }
                     etAssetBarcode.setText("");
                 }

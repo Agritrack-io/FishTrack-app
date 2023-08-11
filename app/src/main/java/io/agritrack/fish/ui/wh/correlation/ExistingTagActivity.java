@@ -10,7 +10,6 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -67,12 +66,12 @@ public class ExistingTagActivity extends LocationAwareActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final ExistingTagActivity.ScanHandler mScanHandler = new ExistingTagActivity.ScanHandler(this);
+    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     protected BroadcastReceiver keyReceiver;
     private BX6100Programmer x9programmer;
     private MobileDB db;
-    private Button btnScanAssetTag, btnCorrelate, btnCheckTag;
+    private Button btnScanAssetTag, btnCorrelate;
     private SearchView svSearchAsset;
-    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     private RecyclerView rvNets;
     private TextView tvCorrNetBarcode;
     private FilterableAdapter adapterAssets;
@@ -149,14 +148,6 @@ public class ExistingTagActivity extends LocationAwareActivity {
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
 
-        btnCheckTag.setEnabled(false);
-        btnCheckTag.setTextColor(Color.DKGRAY);
-
-        btnCheckTag.setOnClickListener(v -> {
-            checkTagDialog = new CheckTagDialog(ExistingTagActivity.this, rfid, code);
-            checkTagDialog.showDialog();
-        });
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(ExistingTagActivity.this);
             supportDialog.showDialog();
@@ -184,7 +175,7 @@ public class ExistingTagActivity extends LocationAwareActivity {
         this.rvNets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsByTypeForSearch(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid.length()>15 ?
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid.length() > 15 ?
                     x.rfid.substring(14) : x.rfid, x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
@@ -258,7 +249,6 @@ public class ExistingTagActivity extends LocationAwareActivity {
         rvNets = findViewById(R.id.rvNets);
         tvCorrNetBarcode = findViewById(R.id.tvCorrNetBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
-        btnCheckTag = findViewById(R.id.btnCheckTag);
         btnCorrelate = findViewById(R.id.btnCorrelate);
         ivNext = findViewById(R.id.ivToCongs);
         ivNext.setVisibility(View.GONE);
@@ -333,14 +323,14 @@ public class ExistingTagActivity extends LocationAwareActivity {
         return sb.toString();
     }
 
-    private boolean deleteCorrelationTx(){
+    private boolean deleteCorrelationTx() {
         try {
             System.out.println("About to delete correlate tx");
             CorrelationTransaction delObj = new CorrelationTransaction();
             delObj.id = recWHCorrelation.txKey;
             db.correlationTransactionDAO().delete(delObj);
             return true;
-        } catch (Exception x){
+        } catch (Exception x) {
             x.printStackTrace();
             return false;
         }
@@ -350,6 +340,23 @@ public class ExistingTagActivity extends LocationAwareActivity {
         scanner_runnable.setFilter(""); //Filters.RFID_NET
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
+    }
+
+    private boolean writeEpcByTid(String epcToWrite, String tid) {
+        Reader.READER_ERR res = x9programmer.writeTagEPCByTIDFilter(epcToWrite, tid);
+        if (Reader.READER_ERR.MT_OK_ERR.compareTo(res) == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private int validateTags(String epcToWrite, String tid) {
+        String res = x9programmer.getTagEpcDataByTIDFilter(tid);
+        if (res.equalsIgnoreCase(epcToWrite)) {
+            return 1;
+        }
+        return 0;
     }
 
     public class SyncTxCallBack implements Callback<ResponseBody> {
@@ -398,31 +405,43 @@ public class ExistingTagActivity extends LocationAwareActivity {
                 case 1:
                     String epcStr = msg.getData().getString("epc");
                     try {
-                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            if (epcStr.substring(11).startsWith(filter)) {
-                                CToast(getApplicationContext(), render("Tag you just scanned is programmed"), Toast.LENGTH_LONG);
-                            } else if (epcStr.substring(11).startsWith("141")) {
-                                CToast(getApplicationContext(), render("Tag you just scanned is associated with other type of asset"), Toast.LENGTH_LONG);
-                            } else {
-                                if (adapterAssets.getSelectedValue() != null) {
+                        if (adapterAssets.getSelectedValue() != null) {
+                            if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                                if (epcStr.substring(11).startsWith(filter)) {
+                                    CToast(getApplicationContext(), render(R.string.programmed_tag_scan_again), Toast.LENGTH_LONG);
+                                } else if (epcStr.substring(11).startsWith("141")) {
+                                    CToast(getApplicationContext(), render(R.string.associated_tag_scan_again), Toast.LENGTH_LONG);
+                                } else {
+                                    String tid = x9programmer.getTagTIDDataByFilter(epcStr);
+
                                     String epcToWrite = "BE0019A0000141" + adapterAssets.getSelectedValue();
-                                    Reader.READER_ERR res = x9programmer.writeTagEPCByFilter(epcToWrite, epcStr);
-                                    if (Reader.READER_ERR.MT_OK_ERR.compareTo(res) == 0) {
-                                        btnCheckTag.setEnabled(true);
-                                        btnCheckTag.setTextColor(getColor(R.color.aqua));
-                                        btnScanAssetTag.setEnabled(false);
-                                        btnScanAssetTag.setTextColor(Color.DKGRAY);
+                                    int programmedTags = 0;
+                                    if (writeEpcByTid(epcToWrite, tid)) {
+                                        int res = validateTags(epcToWrite, tid);
+                                        int counter = 1;
+                                        while (res == 0 && counter > 0) {
+                                            res = validateTags(epcToWrite, tid);
+                                            counter--;
+                                        }
+                                        programmedTags += res;
+                                    } else {
+                                        CToast(getApplicationContext(), render(R.string.scan_again), Toast.LENGTH_LONG);
+                                        return;
+                                    }
+                                    if (programmedTags == 1) {
                                         rfid = epcToWrite.substring(14);
                                         Asset asset = db.assetDAO().getAssetByEpc(epcToWrite);
                                         code = asset.code;
-                                        CToast(getApplicationContext(), render(R.string.successfully_programed_tag), Toast.LENGTH_LONG);
+
+                                        checkTagDialog = new CheckTagDialog(ExistingTagActivity.this, rfid, code);
+                                        checkTagDialog.showDialog();
                                     } else {
-                                        CToast(getApplicationContext(), render("Please try again!"), Toast.LENGTH_LONG);
+                                        CToast(getApplicationContext(), render(R.string.contact_admin_for_tag), Toast.LENGTH_LONG);
                                     }
-                                } else {
-                                    CToast(getApplicationContext(), render("Please first select asset!"), Toast.LENGTH_LONG);
                                 }
                             }
+                        } else {
+                            CToast(getApplicationContext(), render(R.string.select_asset), Toast.LENGTH_LONG);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

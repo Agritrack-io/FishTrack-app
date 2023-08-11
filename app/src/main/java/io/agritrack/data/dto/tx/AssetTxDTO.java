@@ -1,16 +1,14 @@
 package io.agritrack.data.dto.tx;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import io.agritrack.data.model.tx.AssetTransaction;
 
 public class AssetTxDTO {
 
-    public Long id;
+    public UUID id;
     public String asset_type;
     public String source_site;
     public String target_site;

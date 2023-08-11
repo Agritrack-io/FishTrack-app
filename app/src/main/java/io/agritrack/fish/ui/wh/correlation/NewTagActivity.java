@@ -383,10 +383,10 @@ public class NewTagActivity extends LocationAwareActivity {
                         for (String epcStr : epcList) {
                             if (!Strings.isEmptyOrWhitespace(epcStr)) {
                                 if (epcStr.substring(11).startsWith(filter)) {
-                                    tvInfo.setText(R.string.programmed_tag);
+                                    tvInfo.setText(R.string.programmed_tags_scan_again);
                                     return;
                                 } else if (epcStr.substring(11).startsWith("141")) {
-                                    tvInfo.setText(R.string.associated_tag);
+                                    tvInfo.setText(R.string.associated_tags_scan_again);
                                     return;
                                 }
                             }

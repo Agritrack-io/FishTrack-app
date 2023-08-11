@@ -217,9 +217,10 @@ tools:context=".fish.ui.wh.correlation.CorrelationPlatformActivity">
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="-1dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="@string/scan_platform"
+            android:text="@string/scan_tag"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
     </RelativeLayout>
