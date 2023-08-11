@@ -28,5 +28,9 @@
 	private <fields>;
 }
 -keep class io.agritrack.ui.login.api.** { *; }
+-keep class io.agritrack.api.login.** { *; }
+-keep class io.agritrack.api.query.** { *; }
+-keep class io.agritrack.api.sync.** { *; }
+-keep class io.agritrack.api.upload.** { *; }
 #Keep SQLCypher classes
 -keep class net.sqlcipher.** { *; }
