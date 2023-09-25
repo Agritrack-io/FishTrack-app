@@ -107,9 +107,10 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
             <TextView
                 android:id="@+id/tvImportantNote"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:text=""
+                android:gravity="center_vertical"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size_medium"
                 app:layout_constraintBottom_toBottomOf="parent"

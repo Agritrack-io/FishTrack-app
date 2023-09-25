@@ -1,8 +1,0 @@
-
-u
-java:S1488€"^Immediately return this expression instead of assigning it to the temporary variable "result".(ÂÉã
-Q	java:S125 "<This block of commented-out lines of code should be removed.(´©ï
-V	java:S125-"<This block of commented-out lines of code should be removed.(ñöĞ¶şÿÿÿÿ
-V	java:S125P"<This block of commented-out lines of code should be removed.(Ù¸˜üÿÿÿÿ
-
-java:S5803d"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(¯–Ô

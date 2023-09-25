@@ -4,11 +4,14 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
+
+import androidx.core.text.HtmlCompat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -141,20 +144,38 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         //the first row is used as header
         if (childPosition == 0) {
             if (group.equalsIgnoreCase("1410") || group.equalsIgnoreCase("1414")) {
-                txtRfid.setText(R.string.epc);
-                txtCode.setText(R.string.code);
+                txtRfid.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                        + getAppContext().getResources().getString(R.string.barcode) +"</font>" +"</b>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY));
+                txtCode.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                        + getAppContext().getResources().getString(R.string.code) +"</font>" +"</b>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY));
                 txtPerimeter.setVisibility(View.GONE);
                 txtNetEye.setVisibility(View.GONE);
             } else if (group.equalsIgnoreCase("1412")) {
-                txtRfid.setText(R.string.epc);
-                txtCode.setText(R.string.code);
-                txtPerimeter.setText(R.string.perimeter);
+                txtRfid.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                        + getAppContext().getResources().getString(R.string.barcode) +"</font>" +"</b>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY));
+                txtCode.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                        + getAppContext().getResources().getString(R.string.code) +"</font>" +"</b>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY));
+                txtPerimeter.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                        + getAppContext().getResources().getString(R.string.perimeter) +"</font>" +"</b>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY));
                 txtNetEye.setVisibility(View.GONE);
             } else if (group.equalsIgnoreCase("1411")) {
-                txtRfid.setText(R.string.epc);
-                txtCode.setText(R.string.code);
-                txtPerimeter.setText(R.string.perimeter);
-                txtNetEye.setText(R.string.eye);
+                txtRfid.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                        + getAppContext().getResources().getString(R.string.barcode) +"</font>" +"</b>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY));
+                txtCode.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                        + getAppContext().getResources().getString(R.string.code) +"</font>" +"</b>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY));
+                txtPerimeter.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                        + getAppContext().getResources().getString(R.string.perimeter) +"</font>" +"</b>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY));
+                txtNetEye.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                        + getAppContext().getResources().getString(R.string.eye) +"</font>" +"</b>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY));
             }
         }
 

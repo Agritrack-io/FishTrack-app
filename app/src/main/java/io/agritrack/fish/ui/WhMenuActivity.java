@@ -111,6 +111,7 @@ public class WhMenuActivity extends AppCompatActivity {
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), SearchActivity.class, R.drawable.search));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
+
         gvWhMainMenu.setAdapter(adapter);
 
         gvWhMainMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -18,8 +18,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.SearchView;
 
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -105,6 +105,8 @@ public class ExistingTagActivity extends LocationAwareActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        svSearchAsset.setIconifiedByDefault(false);
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));

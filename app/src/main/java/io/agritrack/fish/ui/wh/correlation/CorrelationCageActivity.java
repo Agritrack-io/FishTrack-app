@@ -15,12 +15,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.SearchView;
 
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -68,7 +67,6 @@ public class CorrelationCageActivity extends LocationAwareActivity {
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button btnScanAssetTag, btnCorrelate;
-    private ImageButton ibSyncNet;
     private SearchView svSearchAsset;
     private RecyclerView rvCages;
     private TextView tvCorrCageBarcode;
@@ -93,6 +91,8 @@ public class CorrelationCageActivity extends LocationAwareActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        svSearchAsset.setIconifiedByDefault(false);
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
@@ -120,26 +120,6 @@ public class CorrelationCageActivity extends LocationAwareActivity {
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(CorrelationCageActivity.this);
             supportDialog.showDialog();
-        });
-
-        ibSyncNet.setOnClickListener(view -> {
-            stopScanner();
-            GlobalState.recWHCorrelation.type = Constants.ftCage;
-            GlobalState.recWHCorrelation.code = adapterAssets.getSelectedValue();
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-                return;
-            }
-            if (mLastLocation != null) {
-                recWHCorrelation.longitude = mLastLocation.getLongitude();
-                recWHCorrelation.latitude = mLastLocation.getLatitude();
-                proceedWithoutLocation = true;
-                moveToNextScreen();
-            } else {
-                FragmentManager fm = getSupportFragmentManager();
-                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            }
         });
 
         configFooter();
@@ -237,9 +217,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
         tvCorrCageBarcode = findViewById(R.id.tvCorrCageBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
         btnCorrelate = findViewById(R.id.btnCorrelate);
-        ibSyncNet = findViewById(R.id.ibSyncNet);
         ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setVisibility(View.GONE);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);
         ivSupport = findViewById(R.id.ivSupport);
 

@@ -1,0 +1,58 @@
+
+g
+java:S1301–"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
+F
+java:S5411¦"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
+N
+java:S2589¾"7Remove this expression which always evaluates to "true"(»½Ãİ
+p	java:S116E"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ê¼“Ğ
+@
+java:S1659I"*Declare "btnCorrelate" on a separate line.(ãä½Ã
+^
+java:S1659Q"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
+\
+java:S1659U"ADeclare "rfid" and all following declarations on a separate line.(ú¦Ëˆüÿÿÿÿ
+q
+java:S1450I"[Remove the "btnCorrelate" field and declare it as a local variable in the relevant methods.(ãä½Ã
+Q
+java:S1874N"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+Q
+java:S1874{"6Remove this use of "ProgressDialog"; it is deprecated.(…ŠÙúÿÿÿÿ
+N
+java:S1874|"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+L
+java:S1874|"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+K
+java:S1874|"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+Q
+java:S1117È":Rename "filter" which hides the field declared at line 85.(Œ‘¾
+W	java:S125Ç"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+
+java:S5803é"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç
+C
+java:S1481”"'Remove this unused "kk" local variable.(¨í¾ıüÿÿÿÿ
+N
+java:S1874"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ
+h
+java:S3457¾"Q%n should be used in place of \n to produce the platform-specific line separator.(ƒ÷èÖ
+m
+java:S3457Â"Q%n should be used in place of \n to produce the platform-specific line separator.(Ş±©Ãúÿÿÿÿ
+T	java:S106Ê"9Replace this use of System.out or System.err by a logger.(Ü‡„åıÿÿÿÿ
+]
+java:S1126İ"AReplace this if-then-else statement by a single return statement.(îéÇÆùÿÿÿÿ
+n
+java:S3776•"RRefactor this method to reduce its Cognitive Complexity from 36 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ
+=	java:S131–""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+_
+java:S4635œ"HReplace "startsWith" with the overload that accepts an offset parameter.(è¶±ó
+d
+java:S4635"HReplace "startsWith" with the overload that accepts an offset parameter.(ë‘ëúÿÿÿÿ
+W	java:S125Æ"<This block of commented-out lines of code should be removed.(ßûŒ×üÿÿÿÿ
+@
+java:S3398ä"$Move this method into "ScanHandler".(æˆÈÎÿÿÿÿÿ
+;
+java:S3398Û"$Move this method into "ScanHandler".(‹ãÅ€
+>
+java:S3398È"'Move this method into "SyncTxCallBack".(Àâé¼
+I
+java:S1068"-Remove this unused "mActivity" private field.(±‘ûÿÿÿÿÿ

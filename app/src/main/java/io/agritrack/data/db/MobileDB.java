@@ -1,11 +1,14 @@
 package io.agritrack.data.db;
 
 import android.content.Context;
+import net.sqlcipher.database.SQLiteDatabase;
 
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+
+import net.sqlcipher.database.SupportFactory;
 
 import io.agritrack.data.converter.ConsumableTypeConverter;
 import io.agritrack.data.converter.DateConverter;
@@ -110,8 +113,12 @@ public abstract class MobileDB extends RoomDatabase {
     public static MobileDB getInstance(Context context) {
         synchronized (sLock) {
             if (INSTANCE == null) {
+                SQLiteDatabase.loadLibs(context);
+                final byte[] passphrase = "{password}".getBytes();
+                final SupportFactory factory = new SupportFactory(passphrase);
                 INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                         MobileDB.class, "AGRIFISH_local.db")
+                        .openHelperFactory(factory)
                         .fallbackToDestructiveMigration()
                         .allowMainThreadQueries()
                         .build();

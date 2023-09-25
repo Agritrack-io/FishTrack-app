@@ -104,7 +104,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <androidx.appcompat.widget.SearchView
+            <android.widget.SearchView
                 android:id="@+id/svSearchAsset"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -114,7 +114,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
                 android:background="@drawable/bg_rounded_dialog_input"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                android:queryHint="Search Here"
+                android:queryHint="@string/search_hint"
                 app:layout_constraintBottom_toTopOf="@+id/rvNets"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -136,29 +136,6 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/svSearchAsset" />
-
-            <!--<EditText
-                android:id="@+id/etNetBarcode"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:hint="@string/type_code_of_net"
-                android:inputType="text"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:scrollbarFadeDuration="0"
-                android:scrollbars="horizontal"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvNets" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -231,19 +208,6 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvCorrNetBarcode" />
 
-            <ImageButton
-                android:id="@+id/ibSyncNet"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/transparent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvCorrNetBarcode"
-                app:srcCompat="@drawable/ic_add_stock_opname" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
@@ -257,23 +221,6 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
     </RelativeLayout>
-
-   <!-- <Button
-        android:id="@+id/btnCorrelate"
-        android:layout_width="180dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/button_press_effect"
-        android:text="@string/button_correlate"
-        android:textColor="@color/yellow"
-        android:textSize="@dimen/button_font_size"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/correlateBLayout" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

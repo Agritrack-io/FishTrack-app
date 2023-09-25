@@ -139,6 +139,8 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
             }
         });
 
+        spAssetType.setSelection(3);
+
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
         confirmGPSSelectionDlg.onConfirm(bundle -> {

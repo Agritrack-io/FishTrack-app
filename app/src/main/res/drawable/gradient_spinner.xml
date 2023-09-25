@@ -11,8 +11,14 @@
                 </shape>
 
             </item>
-            <item>
-                <bitmap android:gravity="center|right" android:src="@drawable/ic_shortcut_keyboard_arrow_down" />
+            <item
+                android:width="@dimen/margin30"
+                android:height="@dimen/margin30"
+                android:gravity="end">
+                <bitmap
+                    android:gravity="fill"
+                    android:src="@drawable/ic_shortcut_keyboard_arrow_down"
+                    android:mipMap="true"/>
             </item>
         </layer-list>
     </item>

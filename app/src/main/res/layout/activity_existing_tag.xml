@@ -43,7 +43,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
         android:layout_marginTop="16dp"
         android:width="250sp"
         android:gravity="center|top|fill_vertical"
-        android:text="@string/menu_title_existing_tags"
+        android:text="@string/menu_title_replace_tags"
         android:textColor="@color/yellow"
         android:textSize="@dimen/title_font_size"
         app:layout_constraintBottom_toTopOf="@+id/tvHeaderProgramTagCorrelation"
@@ -104,7 +104,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <androidx.appcompat.widget.SearchView
+            <android.widget.SearchView
                 android:id="@+id/svSearchAsset"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -114,7 +114,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
                 android:background="@drawable/bg_rounded_dialog_input"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                android:queryHint="Search Here"
+                android:queryHint="@string/search_hint"
                 app:layout_constraintBottom_toTopOf="@+id/rvNets"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

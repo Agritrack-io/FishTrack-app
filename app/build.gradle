@@ -156,6 +156,9 @@ dependencies {
     // QR Code
     implementation "androidmads.library.qrgenearator:QRGenearator:1.0.3"
 
+    // SQL cipher
+    implementation 'net.zetetic:android-database-sqlcipher:4.5.3'
+
 //    // browse local db //:TODO:: Delete before production
 //    debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
 }

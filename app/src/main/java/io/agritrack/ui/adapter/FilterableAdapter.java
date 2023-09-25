@@ -1,7 +1,10 @@
 package io.agritrack.ui.adapter;
 
+import static io.agritrack.FishTrackApplication.getAppContext;
+
 import android.content.Context;
 import android.graphics.Color;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
@@ -53,10 +57,18 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
     @Override
     public void onBindViewHolder(viewHolder viewHolder, int position) {
         if (position == 0) {
-            viewHolder.rfid.setText(R.string.epc);
-            viewHolder.code.setText(R.string.code);
-            viewHolder.netEye.setText(R.string.eye);
-            viewHolder.perimeter.setText(R.string.perimeter);
+            viewHolder.rfid.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                    + getAppContext().getResources().getString(R.string.barcode) +"</font>" +"</b>",
+                    HtmlCompat.FROM_HTML_MODE_LEGACY));
+            viewHolder.code.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                    + getAppContext().getResources().getString(R.string.code) +"</font>" +"</b>",
+                    HtmlCompat.FROM_HTML_MODE_LEGACY));
+            viewHolder.netEye.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                    + getAppContext().getResources().getString(R.string.eye) +"</font>" +"</b>",
+                    HtmlCompat.FROM_HTML_MODE_LEGACY));
+            viewHolder.perimeter.setText(Html.fromHtml("<b>"+"<font color='#16325c'>"
+                    + getAppContext().getResources().getString(R.string.perimeter) +"</font>" +"</b>",
+                    HtmlCompat.FROM_HTML_MODE_LEGACY));
         } else if (position > 0 && position <= getItemCount() - 1) {
             position = position -1;
             viewHolder.rfid.setText(arrayListFiltered.get(position).getRfid());

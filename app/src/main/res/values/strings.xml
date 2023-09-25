@@ -40,7 +40,7 @@
     <string name="menu_title_outgoing">Outgoing</string>
     <string name="menu_title_inventory">Inventory</string>
     <string name="menu_title_correlation">Correlation</string>
-    <string name="menu_title_existing_tags">Existing tags</string>
+    <string name="menu_title_replace_tags">Replace tags</string>
     <string name="menu_title_new_tags">New tags</string>
     <string name="menu_title_search">Search</string>
 
@@ -329,7 +329,7 @@
     <string name="down_item_inventory_consumable">[Scan barcode]</string>
     <string name="inventory_details">Inventory details</string>
     <string name="inventory">Inventory</string>
-    <string name="inventory_header">Code\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Description\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0#</string>
+    <string name="inventory_header">\u00A0Code\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Description\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0#</string>
     <string name="inventory_item_label">Items</string>
     <string name="inventory_codes">Codes:</string>
     <string name="inventory_items">Items:</string>
@@ -721,10 +721,10 @@
     <string name="header_search_bin_platform">RFID\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Code\u00A0\u00A0\u00A0\u00A0</string>
     <string name="header_search_net">RFID\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Code\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Perimeter\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Eye</string>
     <string name="header_search_cage">RFID\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Code\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Perimeter\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0</string>
-    <string name="epc" translatable="false">RFID</string>
+    <string name="barcode" translatable="false">Barcode</string>
     <string name="code">Code</string>
-    <string name="perimeter">Perimeter</string>
-    <string name="eye">Eye</string>
+    <string name="perimeter">Perim.(m)</string>
+    <string name="eye">Eye(cm)</string>
     <string name="old_epc">RFID</string>
     <string name="cancel">Cancel</string>
     <string name="scan_tag_to_program">Tag you just scanned is unprogrammed. Do you want to program it?</string>
@@ -758,5 +758,6 @@
     <string name="select_asset">Please first select asset!</string>
     <string name="programmed_tag_scan_again">Tag you just scanned is programmed. Please scan again!</string>
     <string name="associated_tag_scan_again">Tag you just scanned is associated with other type of asset. Please scan again!</string>
+    <string name="search_hint">Search here</string>
 
 </resources>

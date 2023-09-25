@@ -22,12 +22,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -115,13 +115,16 @@ public class SearchActivity extends AppCompatActivity {
             }
         };
 
+        hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
+        spAssetType.setAdapter(hrAdapter);
+
         spAssetType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
                 code = schemeSvc.codeOf(selectedAssetType);
-                tvHeaders.setText(selectedAssetType.equalsIgnoreCase("HARVEST_BIN") || selectedAssetType.equalsIgnoreCase("PLATFORM") ?
+                /*tvHeaders.setText(selectedAssetType.equalsIgnoreCase("HARVEST_BIN") || selectedAssetType.equalsIgnoreCase("PLATFORM") ?
                         getString(R.string.header_search_bin_platform) : (selectedAssetType.equalsIgnoreCase("NET") ? getString(R.string.header_search_net) : getString(R.string.header_search_cage)));
-                loadAssetsByTypeFromLocalDB(selectedAssetType);
+                */loadAssetsByTypeFromLocalDB(selectedAssetType);
                 if (adapterAssets!=null) {
                     adapterAssets.clearSelectedValue();
                 }
@@ -143,20 +146,34 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        if (svSearchAsset.requestFocus()) {
+        spAssetType.setSelection(2);
+
+        svSearchAsset.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    InputMethodManager imm = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm != null) {
+                        imm.showSoftInput(view, 0);
+                    }
+                }
+            }
+        });
+
+        svSearchAsset.setIconifiedByDefault(false);
+
+        /*if (svSearchAsset.requestFocus()) {
             InputMethodManager imm = (InputMethodManager)
                     getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(svSearchAsset, InputMethodManager.RESULT_SHOWN);
-        }
+        }*/
 
         etAssetBarcode.setOnClickListener(v -> {
             if (adapterAssets != null && adapterAssets.getSelectedValue() != null) {
                 adapterAssets.clearSelectedValue();
             }
         });
-
-        hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item_1);
-        spAssetType.setAdapter(hrAdapter);
 
         // instantiate Local Handler that will process the scanning stream.
         //mScanHandler = new ScanHandler(this);

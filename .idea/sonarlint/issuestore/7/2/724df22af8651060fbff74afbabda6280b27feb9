@@ -1,44 +1,42 @@
 
-g
-java:S1301ú"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
-F
-java:S5411™"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
-N
-java:S2589°"7Remove this expression which always evaluates to "true"(»½Ãİ
-p	java:S116C"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ê¼“Ğ
-@
-java:S1659F"*Declare "btnCorrelate" on a separate line.(ãä½Ã
-^
-java:S1659O"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
-q
-java:S1450F"[Remove the "btnCorrelate" field and declare it as a local variable in the relevant methods.(ãä½Ã
-w
-java:S1450H"\Remove the "svSearchAsset" field and declare it as a local variable in the relevant methods.(ŒÅÑòıÿÿÿÿ
-Q
-java:S1874L"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
-L
-java:S1874m"6Remove this use of "ProgressDialog"; it is deprecated.(ÓÈàè
+n
+java:S1301ä"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ8õ†´¤1
+M
+java:S5411…"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ8ö†´¤1
+U
+java:S2589œ"7Remove this expression which always evaluates to "true"(»½Ãİ8Ã‚†´¤1
+w	java:S116B"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ê¼“Ğ8Ä‚†´¤1
+G
+java:S1659E"*Declare "btnCorrelate" on a separate line.(ãä½Ã8Ç‚†´¤1
+e
+java:S1659M"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ8È‚†´¤1
+x
+java:S1450E"[Remove the "btnCorrelate" field and declare it as a local variable in the relevant methods.(ãä½Ã8É‚†´¤1
+X
+java:S1874J"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8Ï‚†´¤1
+S
+java:S1874m"6Remove this use of "ProgressDialog"; it is deprecated.(ÓÈàè8Ô‚†´¤1
 N
 java:S1874n"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
-L
-java:S1874n"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
-K
-java:S1874n"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
-
-java:S5803‚"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç
-W	java:S125¹"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
-C
-java:S1481ˆ"'Remove this unused "kk" local variable.(¨í¾ıüÿÿÿÿ
-N
-java:S1874’"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ
-h
-java:S3457²"Q%n should be used in place of \n to produce the platform-specific line separator.(½¬ßø
-h
-java:S3457¶"Q%n should be used in place of \n to produce the platform-specific line separator.(í¬õÁ
-T	java:S106¾"9Replace this use of System.out or System.err by a logger.(Ü‡„åıÿÿÿÿ
-=	java:S131ú""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
-W	java:S125"<This block of commented-out lines of code should be removed.(ßûŒ×üÿÿÿÿ
->
-java:S3398¼"'Move this method into "SyncTxCallBack".(Àâé¼
-I
-java:S1068ò"-Remove this unused "mActivity" private field.(¦ûıÈıÿÿÿÿ
+S
+java:S1874n"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿8Ô‚†´¤1
+R
+java:S1874n"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿8Õ‚†´¤1
+^	java:S125¥"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ8á‚†´¤1
+–
+java:S5803Æ"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç8å‚†´¤1
+J
+java:S1481ò"'Remove this unused "kk" local variable.(¨í¾ıüÿÿÿÿ8ê‚†´¤1
+U
+java:S1874ü"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ8ë‚†´¤1
+o
+java:S3457œ"Q%n should be used in place of \n to produce the platform-specific line separator.(½¬ßø8ï‚†´¤1
+o
+java:S3457 "Q%n should be used in place of \n to produce the platform-specific line separator.(í¬õÁ8ï‚†´¤1
+[	java:S106¨"9Replace this use of System.out or System.err by a logger.(Ü‡„åıÿÿÿÿ8ğ‚†´¤1
+D	java:S131ä""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ8ô‚†´¤1
+^	java:S125÷"<This block of commented-out lines of code should be removed.(ßûŒ×üÿÿÿÿ8õ‚†´¤1
+E
+java:S3398¦"'Move this method into "SyncTxCallBack".(Àâé¼8õ‚†´¤1
+P
+java:S1068Ü"-Remove this unused "mActivity" private field.(¦ûıÈıÿÿÿÿ8÷‚†´¤1

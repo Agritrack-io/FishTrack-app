@@ -1,0 +1,24 @@
+
+t
+java:S2293h"YReplace the type specification in this constructor call with the diamond operator ("<>").(á¹Ù°üÿÿÿÿ
+e
+java:S1192="HDefine a constant instead of duplicating this literal "</font>" 4 times.(¤£Ó©8®Ï•‹¤1
+y
+java:S1192<"WDefine a constant instead of duplicating this literal "<font color='#16325c'>" 4 times.(Ü¶ˆ¿ıÿÿÿÿ8®Ï•‹¤1
+„
+java:S1319#"iThe type of "arrayList" should be an interface such as "List" rather than the implementation "ArrayList".(Öß±şÿÿÿÿ
+h	java:S101‹"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(åö°½ûÿÿÿÿ
+m
+java:S3776:"RRefactor this method to reduce its Cognitive Complexity from 22 to the 15 allowed.(Ê¤Âÿÿÿÿÿ
+“
+java:S5803K"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(æß½™ûÿÿÿÿ
+h
+java:S3776b"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(½ş­è
+X
+java:S1659Œ"ADeclare "code" and all following declarations on a separate line.(“Å›‹
+V
+java:S1874›":Remove this use of "getAdapterPosition"; it is deprecated.(îù¾ùÿÿÿÿ
+V
+java:S1874":Remove this use of "getAdapterPosition"; it is deprecated.(Òã”úÿÿÿÿ
+V
+java:S1874¦":Remove this use of "getAdapterPosition"; it is deprecated.(–¸•Üüÿÿÿÿ

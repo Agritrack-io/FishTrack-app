@@ -1,0 +1,15 @@
+
+_
+java:S1192”"HDefine a constant instead of duplicating this literal "</font>" 9 times.(¤£Ó©
+n
+java:S1192“"WDefine a constant instead of duplicating this literal "<font color='#16325c'>" 9 times.(Á”ôŠ
+d
+java:S1226‰"HIntroduce a new variable instead of reusing the parameter "convertView".(õ¬Üüÿÿÿÿ
+m
+java:S3776H"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(–ÜÁÁùÿÿÿÿ
+_
+java:S3358T"DExtract this nested ternary operation into an independent statement.(õº„áşÿÿÿÿ
+n
+java:S3776„"RRefactor this method to reduce its Cognitive Complexity from 34 to the 15 allowed.(Ïêƒ¢üÿÿÿÿ
+K
+java:S2864İ"4Iterate over the "entrySet" instead of the "keySet".(öÚª¬

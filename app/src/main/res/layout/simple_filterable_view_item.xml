@@ -8,48 +8,49 @@
 
     <TextView
         android:id="@+id/tvRfid"
-        android:layout_width="120dp"
+        android:layout_width="95dp"
         android:layout_height="wrap_content"
         android:paddingTop="3dp"
+        android:paddingLeft="4dp"
         android:textAlignment="viewStart"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@+id/tvCode"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvCode"
-        android:layout_width="0dp"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:paddingTop="3dp"
         android:textAlignment="viewStart"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/tvRfid"
         app:layout_constraintEnd_toStartOf="@+id/tvPerimeter"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvPerimeter"
-        android:layout_width="100dp"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:paddingTop="3dp"
-        android:textAlignment="viewEnd"
+        android:textAlignment="viewStart"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/tvCode"
         app:layout_constraintEnd_toStartOf="@+id/tvNetEye"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvNetEye"
-        android:layout_width="60dp"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:paddingTop="3dp"
-        android:textAlignment="viewEnd"
+        android:textAlignment="viewStart"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvPerimeter"
         app:layout_constraintTop_toTopOf="parent" />

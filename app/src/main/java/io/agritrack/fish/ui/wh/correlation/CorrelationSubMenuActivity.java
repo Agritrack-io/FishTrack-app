@@ -81,7 +81,7 @@ public class CorrelationSubMenuActivity extends AppCompatActivity {
             default:
         }
 
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_existing_tags), ExistingTagActivity.class, R.drawable.program));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_replace_tags), ExistingTagActivity.class, R.drawable.program));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_new_tags), NewTagActivity.class, R.drawable.program));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);

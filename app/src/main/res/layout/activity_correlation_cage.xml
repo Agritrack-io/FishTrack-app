@@ -104,7 +104,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationCageActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <androidx.appcompat.widget.SearchView
+            <android.widget.SearchView
                 android:id="@+id/svSearchAsset"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -114,7 +114,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationCageActivity">
                 android:background="@drawable/bg_rounded_dialog_input"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                android:queryHint="Search Here"
+                android:queryHint="@string/search_hint"
                 app:layout_constraintBottom_toTopOf="@+id/rvCages"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -230,19 +230,6 @@ tools:context=".fish.ui.wh.correlation.CorrelationCageActivity">
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvCorrCageBarcode" />
-
-            <ImageButton
-                android:id="@+id/ibSyncNet"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/transparent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvCorrCageBarcode"
-                app:srcCompat="@drawable/ic_add_stock_opname" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
