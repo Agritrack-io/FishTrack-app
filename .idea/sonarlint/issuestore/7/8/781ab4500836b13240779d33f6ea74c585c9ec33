@@ -1,0 +1,37 @@
+
+L
+java:S3740k"/Provide the parametrized type for this generic.(îÅ¨­8³¢à¥³1
+K
+java:S1066´"/Merge this if statement with the enclosing one.(‰èùÿÿÿÿ
+g	java:S117å"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(›ß¾ª
+l	java:S117ç"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(íìø÷ÿÿÿÿÿ
+g
+java:S1301ã"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
+g
+java:S2259‹"KA "NullPointerException" could be thrown; "adapterAssets" is nullable here.(´ÅÓëÿÿÿÿÿ
+g
+java:S2583†"DChange this condition so that it does not always evaluate to "false"(Í›âªúÿÿÿÿ8’¤à¥³1
+v	java:S116A"ZRename this field "search_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ØšÊã8”¤à¥³1
+>
+java:S1170Q"!Make this final field static too.(‘ÌÂ¨8¡¤à¥³1
+D
+java:S1659J"'Declare "tvHeaders" on a separate line.(¦ÅÎ÷8±¤à¥³1
+D
+java:S1659O""Declare "code" on a separate line.(ù—Îûıÿÿÿÿ8²¤à¥³1
+t
+java:S3776W"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(¨Œşÿÿÿÿ8¿¤à¥³1
+¤
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¹Æº×şÿÿÿÿ8Å¤à¥³1
+a
+java:S3358}"DExtract this nested ternary operation into an independent statement.(üí¤ 8Æ¤à¥³1
+^	java:S125¢"<This block of commented-out lines of code should be removed.(îÇÒéûÿÿÿÿ8Ë¤à¥³1
+^	java:S125µ"<This block of commented-out lines of code should be removed.(ñ©“øÿÿÿÿ8Ï¤à¥³1
+Y	java:S125Ë"<This block of commented-out lines of code should be removed.(ùüÌ8Ö¤à¥³1
+›
+java:S5803…"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ÛÑ‚‰şÿÿÿÿ8ß¤à¥³1
+W	java:S125˜"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+?
+java:S1185¨"(Remove this method to simply inherit it.(ÍÙ÷¢
+R	java:S125¶"<This block of commented-out lines of code should be removed.(³²ªŞ
+=	java:S131ã""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+R	java:S125æ"<This block of commented-out lines of code should be removed.(¥¬Æ

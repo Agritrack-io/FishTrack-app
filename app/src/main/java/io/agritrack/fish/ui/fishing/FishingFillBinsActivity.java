@@ -339,7 +339,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         FishingRecord hvst = GlobalState.recFishing;
 
         if (recFishing.totalFishWeight != null) {
-            //tvTotalWeightCount.setText(recFishing.totalFishWeight.toString());
+            tvTotalWeightCount.setText(recFishing.totalFishWeight.toString());
         }
 
         if (recFishing.totalBinsUsed != null) {
@@ -373,7 +373,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         MobileDB db = MobileDB.getInstance(getAppContext());
 
         if (tvTotalWeightCount.getText() != null) {
-            //recFishing.totalFishWeight = loadsMap.totalWeight();
+            recFishing.totalFishWeight = loadsMap.totalWeight();
         }
 
         if (tvUsedBinsCount.getText() != null && !Strings.isEmptyOrWhitespace(tvUsedBinsCount.getText().toString())) {

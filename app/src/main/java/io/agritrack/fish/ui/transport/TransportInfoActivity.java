@@ -64,7 +64,7 @@ public class TransportInfoActivity extends AppCompatActivity {
             ArrayAdapter<String> hrAdapter = new ArrayAdapter<>(this, R.layout.simple_spinner_item, packagingSite);
             hrAdapter.setDropDownViewResource(R.layout.simple_spinner_item);
             spPackagingSite.setAdapter(hrAdapter);
-            spPackagingSite.setSelection(hrAdapter.getPosition("VONITSA PP"));
+            spPackagingSite.setSelection(hrAdapter.getPosition("PLANT"));
         }
 
         // AutoCompleteTextView driverNames, driverPhones, licensePlates

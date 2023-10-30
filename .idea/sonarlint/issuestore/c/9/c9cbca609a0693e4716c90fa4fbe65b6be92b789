@@ -5,6 +5,8 @@ u
 java:S2293…"YReplace the type specification in this constructor call with the diamond operator ("<>").(æğ÷²ıÿÿÿÿ
 F
 java:S1066À"/Merge this if statement with the enclosing one.(ŒÁü½
+R
+java:S1066–"/Merge this if statement with the enclosing one.(ªˆ×šûÿÿÿÿ8‡²êƒ·1
 D
 java:S1604…"(Make this anonymous inner class a lambda(Êœüûÿÿÿÿ
 ?
@@ -20,12 +22,13 @@ m
 java:S3776b"RRefactor this method to reduce its Cognitive Complexity from 25 to the 15 allowed.(¨Œşÿÿÿÿ
 
 java:S5803"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ˆüˆ­
-W	java:S125â"<This block of commented-out lines of code should be removed.(™ÍØŠúÿÿÿÿ
+Y	java:S125ã"<This block of commented-out lines of code should be removed.(Íø‹ø8â³éƒ·1
 @
 java:S1940ó")Use the opposite operator ("!=") instead.(†¥êÓ
 @
 java:S1940ó")Use the opposite operator ("!=") instead.(†¥êÓ
-W	java:S125–"<This block of commented-out lines of code should be removed.(åíúÒşÿÿÿÿ
+t
+java:S3457—"Q%n should be used in place of \n to produce the platform-specific line separator.(Â¥ôğùÿÿÿÿ8´êƒ·1
 ?
 java:S1185"(Remove this method to simply inherit it.(Ñ‚«µ
 W	java:S125¥"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ

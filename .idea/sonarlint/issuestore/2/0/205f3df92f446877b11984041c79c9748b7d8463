@@ -30,10 +30,10 @@ R	java:S125Ï"<This block of commented-out lines of code should be removed.(’
 H
 java:S1602å",Remove useless curly braces around statement(‡ş¡ûÿÿÿÿ
 C
-java:S3398ï",Move this method into "CAENCommandsHandler".(ÁØ‚†
-C
 java:S3398¦",Move this method into "CAENCommandsHandler".(ÅÍƒŠ
 C
 java:S3398‰",Move this method into "CAENCommandsHandler".(ÉıüÆ
+C
+java:S3398ï",Move this method into "CAENCommandsHandler".(ÁØ‚†
 G
 java:S1068Q",Remove this unused "initedAt" private field.(ÊæÚúÿÿÿÿ
