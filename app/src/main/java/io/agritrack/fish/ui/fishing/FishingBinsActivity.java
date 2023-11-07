@@ -381,13 +381,13 @@ public class FishingBinsActivity extends AppCompatActivity {
                     String epcStr = msg.getData().getString("epc");
                     String rssi = msg.getData().getString("rssi");
                     try {
-                        if (!Strings.isEmptyOrWhitespace(epcStr) && epcStr != null) {
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
                             loggerEPC = epcStr;
                             // after bin is identified, initialize the temperatures logger.
                             Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
                             if (bin != null) {
                                 binEPC = bin.rfid;
-                                scannedBinEPCs.add(bin.rfid);
+                                scannedBinEPCs.add(binEPC);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                                 adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
                                 adapterBins.notifyDataSetChanged();

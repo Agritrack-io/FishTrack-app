@@ -178,8 +178,8 @@ public class LocalPreferences {
     }
 
     public static String HeaderMsg() {
-        return "nikos" + " <-> " + "30 Oct 2023";//TODO:: Remove
-        //return String.format(getCurrentSiteName()+"\n"+getLoggedInUser("N/A") + " <-> " + Today());
+//        return "nikos" + " <-> " + "30 Oct 2023";//TODO:: Remove
+        return String.format(getCurrentSiteName()+"\n"+getLoggedInUser("N/A") + " <-> " + Today());
     }
 
     public static String getLoggedInUser(String defVal) {

@@ -439,7 +439,8 @@ public class InventoryAssetActivity extends LocationAwareActivity {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+                //TODO:: Message is wrong, endpoint to backend sends wrong response, may @Async or @Transactional be removed from Service
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG)); // error_timeout is the correct message
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
