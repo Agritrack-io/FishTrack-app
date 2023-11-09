@@ -9,7 +9,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.media.AudioManager;
@@ -53,7 +52,6 @@ import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SimpleListDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.hotel.ui.HotelMenuProgramActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
@@ -336,8 +334,8 @@ public class ProgramEveryLinenTagsActivity extends AppCompatActivity {
             if (scanner != null) {
                 scanner.stopReading();
             }
-            Intent i = new Intent(getApplicationContext(), HotelMenuProgramActivity.class);
-            startActivity(i);
+//            Intent i = new Intent(getApplicationContext(), HotelMenuProgramActivity.class);
+//            startActivity(i);
         });
     }
 

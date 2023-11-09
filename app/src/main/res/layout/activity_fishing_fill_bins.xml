@@ -96,49 +96,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
-        <TextView
-            android:id="@+id/tvBinName"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_rounded_dialog_non_input"
-            android:gravity="center|center_vertical"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_view_font_size"
-            android:textStyle="normal"
-            app:layout_constraintEnd_toStartOf="@+id/btnScanCurrentBin"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/btnScanCurrentBin"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/button_press_effect"
-            android:text="@string/scan_bin"
-            android:textColor="@color/yellow"
-            android:textSize="@dimen/text_view_font_size_small"
-            app:layout_constraintEnd_toStartOf="@+id/ivCheckLastTemp"
-            app:layout_constraintStart_toEndOf="@+id/tvBinName"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/ivCheckLastTemp"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/button_press_effect"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/test_bin_temp"
-            app:tint="@color/yellow" />
-
         <RelativeLayout
             android:id="@+id/fishBatchLayout"
             android:layout_width="0dp"
@@ -148,7 +105,7 @@
             app:layout_constraintBottom_toTopOf="@+id/fishSummaryLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnScanCurrentBin">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -160,120 +117,16 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvWeightBatchesBin"
-                    android:layout_width="250dp"
-                    android:layout_height="200dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_rounded_input_spinner"
                     android:padding="5dp"
                     android:paddingStart="10dp"
-                    app:layout_constraintBottom_toTopOf="@+id/textView"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/weight_bin"
-                    android:textColor="@color/label_blue"
-                    android:textSize="20sp"
-                    app:layout_constraintEnd_toStartOf="@+id/tvBinWeight"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rvWeightBatchesBin"
-                    tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp" />
-
-                <TextView
-                    android:id="@+id/tvBinWeight"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/border_bottom"
-                    android:inputType="number"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/black"
-                    android:textIsSelectable="false"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/textView"
-                    app:layout_constraintTop_toBottomOf="@+id/rvWeightBatchesBin" />
-
-                <TextView
-                    android:id="@+id/tvKg"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:paddingLeft="4dp"
-                    android:text="Kg"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/black"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvBinWeight"
-                    app:layout_constraintStart_toEndOf="@+id/tvBinWeight"
-                    app:layout_constraintTop_toTopOf="@+id/tvBinWeight" />
-
-                <Button
-                    android:id="@+id/btnEndBin"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/button_press_effect"
-                    android:text="@string/end_bin_button"
-                    android:textColor="@color/aqua"
-                    android:textSize="@dimen/text_view_font_size_medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView"
-                    app:layout_constraintVertical_bias="0.6" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/btnAddCatch"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="32dp"
-                    android:background="@drawable/button_press_effect"
-                    android:padding="5dp"
-                    android:text="@string/add_catch_button"
-                    android:textColor="@color/yellow"
-                    android:textSize="@dimen/text_view_font_size_small"
-                    app:layout_constraintBottom_toTopOf="@+id/pbBluetooth"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/rvWeightBatchesBin"
-                    app:layout_constraintTop_toTopOf="@id/rvWeightBatchesBin" />
-
-                <ProgressBar
-                    android:id="@+id/pbBluetooth"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:elevation="@dimen/margin10"
-                    android:visibility="invisible"
-                    app:layout_constraintBottom_toTopOf="@+id/btnDeleteCatch"
-                    app:layout_constraintEnd_toEndOf="@+id/btnDeleteCatch"
-                    app:layout_constraintStart_toStartOf="@+id/btnDeleteCatch"
-                    app:layout_constraintTop_toBottomOf="@+id/btnAddCatch" />
-
-                <Button
-                    android:id="@+id/btnDeleteCatch"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginBottom="32dp"
-                    android:background="@drawable/button_press_effect"
-                    android:padding="5dp"
-                    android:text="@string/delete_catch_button"
-                    android:textColor="@color/yellow"
-                    android:textSize="@dimen/text_view_font_size_small"
-                    app:layout_constraintBottom_toBottomOf="@+id/rvWeightBatchesBin"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/rvWeightBatchesBin"
-                    app:layout_constraintTop_toBottomOf="@+id/pbBluetooth" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView

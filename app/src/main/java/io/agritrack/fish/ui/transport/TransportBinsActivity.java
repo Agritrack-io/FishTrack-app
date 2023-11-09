@@ -2,7 +2,6 @@ package io.agritrack.fish.ui.transport;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recTransport;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
@@ -10,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,9 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,26 +33,19 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.api.query.EnquiryApi;
-import io.agritrack.api.sync.RfidBatchByRfidBarcode;
 import io.agritrack.common.Filters;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.TransportationRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity;
 import io.agritrack.rfid.ScanInventoryThread;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
-import retrofit2.Call;
 
 public class TransportBinsActivity extends AppCompatActivity {
     // listens to trigger button clicks.
@@ -101,7 +90,7 @@ public class TransportBinsActivity extends AppCompatActivity {
         rvBinsForTransport.setLayoutManager(layoutManager);
         rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
         rvBinsForTransport.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(),true);
+        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(), true);
         rvBinsForTransport.setAdapter(adapterBins);
         rvBinsForTransport.setNestedScrollingEnabled(false);
 
@@ -170,7 +159,7 @@ public class TransportBinsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         //unregister the receiver
-        if(keyReceiver != null)
+        if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
         this.stopScanner();
     }
@@ -206,7 +195,7 @@ public class TransportBinsActivity extends AppCompatActivity {
         ImageView ivNext = findViewById(R.id.ivToDriverConfirm);
         ivNext.setOnClickListener(view -> {
             //Stop scanning since we navigate to next activity
-            if (scanner_runnable!=null) {
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -223,7 +212,7 @@ public class TransportBinsActivity extends AppCompatActivity {
         ImageView ivBack = findViewById(R.id.ivBackToStartTransport);
         ivBack.setOnClickListener(view -> {
             //Stop scanning since we navigate to previous activity
-            if (scanner_runnable!=null) {
+            if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
 
@@ -295,7 +284,7 @@ public class TransportBinsActivity extends AppCompatActivity {
 
     // ###################################################
     private void stopScanner() {
-        if(this.scanner_runnable !=null) {
+        if (this.scanner_runnable != null) {
             this.scanner_runnable.stopReading();
             mScanHandler.removeCallbacks(null);
             //mScanHandler.removeCallbacks(this.scanner_runnable);
@@ -315,7 +304,7 @@ public class TransportBinsActivity extends AppCompatActivity {
                 case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     if (epcList != null && !epcList.isEmpty()) {
-                        epcList.stream().forEach(x->adapterBins.addUniqueItem(x.toString()));
+                        epcList.stream().forEach(x -> adapterBins.addUniqueItem(x.toString()));
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         adapterBins.notifyDataSetChanged();
                     }

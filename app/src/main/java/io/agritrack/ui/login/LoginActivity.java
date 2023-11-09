@@ -3,7 +3,6 @@ package io.agritrack.ui.login;
 import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 import static io.agritrack.ui.service.LocalPreferences.Logged_In_User_Key;
 import static io.agritrack.ui.service.LocalPreferences.Token_Key;
@@ -46,47 +45,22 @@ import io.agritrack.api.login.AuthApi;
 import io.agritrack.api.sync.EncodingSchemeCallBack;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
-import io.agritrack.api.sync.SyncBinInfo;
-import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
-import io.agritrack.api.sync.SyncCustomersCallBack;
-import io.agritrack.api.sync.SyncEmployeesCallBack;
-import io.agritrack.api.sync.SyncFishingRequestCallBack;
-import io.agritrack.api.sync.SyncFoodSkuCallBack;
-import io.agritrack.api.sync.SyncIOTLoggersCallBack;
-import io.agritrack.api.sync.SyncSpeciesCallBack;
 import io.agritrack.api.sync.SyncUsersCallBack;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.AppUserDTO;
-import io.agritrack.data.dto.BinInfoDTO;
-import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.EncodingSchemeDTO;
-import io.agritrack.data.dto.FishingRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
-import io.agritrack.data.dto.common.CustomerDTO;
-import io.agritrack.data.dto.common.EmployeeDTO;
-import io.agritrack.data.dto.common.IotLoggerDTO;
-import io.agritrack.data.dto.common.SpeciesDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
-import io.agritrack.data.dto.wh.FoodSkuDTO;
 import io.agritrack.data.model.AppUser;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.fruit.ui.FruitHomeActivity;
-import io.agritrack.hotel.ui.HotelHomeActivity;
-import io.agritrack.hotel.ui.HotelMenuProgramActivity;
 import io.agritrack.su.AppOptionsFragment;
-import io.agritrack.ui.config.ConfigActivity;
 import io.agritrack.ui.login.api.AuthInfoRS;
 import io.agritrack.ui.login.api.LoginRQ;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.CAENLoggerActivity;
-import io.agritrack.ui.tools.DiniArgeoScaleActivity;
-import io.agritrack.ui.tools.ImportCAENLoggersToDBActivity;
-import io.agritrack.ui.tools.ProgramEveryLinenTagsActivity;
-import io.agritrack.ui.tools.ProgramLinenTagsActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -355,16 +329,8 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     }
 
     private void goToProductMenu() {
-        if (AgritrackProducts.TOMATO.name().equalsIgnoreCase(FishTrackApplication.getProduct())) {
-            Intent i = new Intent(getApplicationContext(), FruitHomeActivity.class);
-            i.putExtra("syncErrors", this.syncResult.toString());
-            startActivity(i);
-        } else if (AgritrackProducts.FISH.name().equalsIgnoreCase(FishTrackApplication.getProduct())) {
-            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
-            i.putExtra("syncErrors", this.syncResult.toString());
-            startActivity(i);
-        } else if (AgritrackProducts.HOTEL.name().equalsIgnoreCase(FishTrackApplication.getProduct())) {
-            Intent i = new Intent(getApplicationContext(), HotelHomeActivity.class);
+        if (AgritrackProducts.FISH.name().equalsIgnoreCase(FishTrackApplication.getProduct())) {
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             i.putExtra("syncErrors", this.syncResult.toString());
             startActivity(i);
         }
@@ -453,7 +419,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     public boolean validateJwtToken(String authToken) {
         try {
             DecodedJWT jwt = JWT.decode(authToken);
-            if( jwt.getExpiresAt().before(new Date())) {
+            if (jwt.getExpiresAt().before(new Date())) {
                 return false;
             }
             return true;

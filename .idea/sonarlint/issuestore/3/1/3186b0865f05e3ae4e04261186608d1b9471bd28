@@ -1,0 +1,52 @@
+
+o
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(•Õµ
+d
+java:S1104
+"NMake id a static final constant or non-public and provide accessors if needed.(€÷ëÚ
+u
+java:S1104"ZMake transport_head a static final constant or non-public and provide accessors if needed.(ÛĞÅÑıÿÿÿÿ
+u
+java:S1104"ZMake packaging_site a static final constant or non-public and provide accessors if needed.(­ä¤×ùÿÿÿÿ
+y
+java:S1104"^Make truck_refrigerated a static final constant or non-public and provide accessors if needed.(’§Ï†ÿÿÿÿÿ
+t
+java:S1104"^Make parallel_transport a static final constant or non-public and provide accessors if needed.(ƒ©ÏÍ
+z
+java:S1104"_Make truck_license_plate a static final constant or non-public and provide accessors if needed.(âö˜Êÿÿÿÿÿ
+{
+java:S1104"`Make security_clip_number a static final constant or non-public and provide accessors if needed.(µ¾¯êüÿÿÿÿ
+r
+java:S1104"WMake driver_name a static final constant or non-public and provide accessors if needed.(¡µ¶€ûÿÿÿÿ
+s
+java:S1104"XMake driver_phone a static final constant or non-public and provide accessors if needed.(•“±øøÿÿÿÿ
+w
+java:S1104"\Make driver_signature a static final constant or non-public and provide accessors if needed.(Ì®­ûÿÿÿÿ
+m
+java:S1104"WMake bins_loaded a static final constant or non-public and provide accessors if needed.(•Õµ
+f
+java:S1104"PMake site a static final constant or non-public and provide accessors if needed.(âû¡¦
+k
+java:S1104"PMake user a static final constant or non-public and provide accessors if needed.(¾Êïûùÿÿÿÿ
+r
+java:S1104"WMake occurred_at a static final constant or non-public and provide accessors if needed.(†äØÿıÿÿÿÿ
+p
+java:S1104"UMake longitude a static final constant or non-public and provide accessors if needed.(ŠÜ®ùÿÿÿÿ
+o
+java:S1104"TMake latitude a static final constant or non-public and provide accessors if needed.(éı¾Ùúÿÿÿÿ
+l
+java:S1104"QMake items a static final constant or non-public and provide accessors if needed.(¢§…¾üÿÿÿÿ
+j
+java:S1104"TMake capacity a static final constant or non-public and provide accessors if needed.(Íí™
+s	java:S116"YRename this field "transport_head" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÛĞÅÑıÿÿÿÿ
+s	java:S116"YRename this field "packaging_site" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(­ä¤×ùÿÿÿÿ
+w	java:S116"]Rename this field "truck_refrigerated" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’§Ï†ÿÿÿÿÿ
+r	java:S116"]Rename this field "parallel_transport" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ƒ©ÏÍ
+x	java:S116"^Rename this field "truck_license_plate" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(âö˜Êÿÿÿÿÿ
+y	java:S116"_Rename this field "security_clip_number" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(µ¾¯êüÿÿÿÿ
+p	java:S116"VRename this field "driver_name" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¡µ¶€ûÿÿÿÿ
+q	java:S116"WRename this field "driver_phone" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(•“±øøÿÿÿÿ
+u	java:S116"[Rename this field "driver_signature" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ì®­ûÿÿÿÿ
+k	java:S116"VRename this field "bins_loaded" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(•Õµ
+p	java:S116"VRename this field "occurred_at" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(†äØÿıÿÿÿÿ
+Q	java:S125("<This block of commented-out lines of code should be removed.(ÉÙß—

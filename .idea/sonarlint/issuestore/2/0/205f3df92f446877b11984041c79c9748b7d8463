@@ -8,8 +8,8 @@ _
 java:S1659I"DDeclare "btnInit" and all following declarations on a separate line.(ó®œôþÿÿÿÿ
 r
 java:S1450Q"WRemove the "initedAt" field and declare it as a local variable in the relevant methods.(ÊžæÚúÿÿÿÿ
-“
-java:S5803Y"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(‘‰Ìçÿÿÿÿÿ
+š
+java:S5803Y"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(‘‰Ìçÿÿÿÿÿ8ú€ŒÉº1
 G
 java:S1172Ž"+Remove this unused method parameter "view".(¸§¶Üúÿÿÿÿ
 n
@@ -30,10 +30,10 @@ R	java:S125Ï"<This block of commented-out lines of code should be removed.(’
 H
 java:S1602å",Remove useless curly braces around statement(‡þ¡ûÿÿÿÿ
 C
-java:S3398ï",Move this method into "CAENCommandsHandler".(ÁØ‚†
+java:S3398‰",Move this method into "CAENCommandsHandler".(ÉýüÆ
 C
 java:S3398¦",Move this method into "CAENCommandsHandler".(ÅÍƒŠ
 C
-java:S3398‰",Move this method into "CAENCommandsHandler".(ÉýüÆ
+java:S3398ï",Move this method into "CAENCommandsHandler".(ÁØ‚†
 G
 java:S1068Q",Remove this unused "initedAt" private field.(ÊžæÚúÿÿÿÿ

@@ -1,45 +1,46 @@
 
-e
-java:S1192™"NDefine a constant instead of duplicating this literal "Type 4 digits" 3 times.(¯’¿â
-g	java:S117Ğ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(›ß¾ª
-l	java:S117Ò"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(íìø÷ÿÿÿÿÿ
-D
-java:S1604”"(Make this anonymous inner class a lambda(´ıù›ıÿÿÿÿ
-?
-java:S1604›"(Make this anonymous inner class a lambda(²™æê
->
-java:S1604­"(Make this anonymous inner class a lambda(®µ
-o	java:S116D"ZRename this field "search_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¬Úç¢
-_
-java:S1659M"IDeclare "tvNotSameCnt" and all following declarations on a separate line.(ïÅû
-c
-java:S1659N"HDeclare "btnWriteEPC" and all following declarations on a separate line.(ûøÁäùÿÿÿÿ
+l
+java:S1192—"NDefine a constant instead of duplicating this literal "Type 4 digits" 3 times.(¯’¿â8Ôò‹õº1
+n	java:S117Î"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(›ß¾ª8Öò‹õº1
+s	java:S117Ğ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(íìø÷ÿÿÿÿÿ8‰ã‹õº1
 K
-java:S1659Y"0Declare "currentProductCode" on a separate line.(óŞÚúÿÿÿÿ
-o
-java:S1450W"YRemove the "adapterEPC" field and declare it as a local variable in the relevant methods.(£äøï
-g
-java:S1450I"QRemove the "db" field and declare it as a local variable in the relevant methods.(û¸ÛÃ
-u
-java:S1450L"ZRemove the "typeEPCSMap" field and declare it as a local variable in the relevant methods.(Îğ³’úÿÿÿÿ
-m
-java:S3776_"RRefactor this method to reduce its Cognitive Complexity from 33 to the 15 allowed.(¨Œşÿÿÿÿ
-
-java:S5803|"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(Ëê€ÿ
-W	java:S125…"<This block of commented-out lines of code should be removed.(Õ¶ğ†ÿÿÿÿÿ
-w
-java:S3923—"[Remove this conditional structure or edit its code blocks so that they're not all the same.(‹Ş‰¾øÿÿÿÿ
-W	java:S125Ñ"<This block of commented-out lines of code should be removed.(íŠôÉüÿÿÿÿ
-W	java:S125ı"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
-R	java:S125İ"<This block of commented-out lines of code should be removed.(¥ãÆš
-R	java:S125‡"<This block of commented-out lines of code should be removed.( Ô£¶
-n
-java:S3776±"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ
-T
-java:S1854·"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿÿ
-=	java:S131²""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+java:S1604’"(Make this anonymous inner class a lambda(´ıù›ıÿÿÿÿ8×ò‹õº1
+F
+java:S1604™"(Make this anonymous inner class a lambda(²™æê8×ò‹õº1
 E
-java:S1481·")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ
-R	java:S125Ì"<This block of commented-out lines of code should be removed.(íµé›
-R	java:S125Ñ"<This block of commented-out lines of code should be removed.(¥¬Æ
-W	java:S125ì"<This block of commented-out lines of code should be removed.(¶¦¹Ùúÿÿÿÿ
+java:S1604«"(Make this anonymous inner class a lambda(®µ8Øò‹õº1
+v	java:S116B"ZRename this field "search_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¬Úç¢8®ó‹õº1
+f
+java:S1659K"IDeclare "tvNotSameCnt" and all following declarations on a separate line.(ïÅû8´ó‹õº1
+j
+java:S1659L"HDeclare "btnWriteEPC" and all following declarations on a separate line.(ûøÁäùÿÿÿÿ8µó‹õº1
+R
+java:S1659W"0Declare "currentProductCode" on a separate line.(óŞÚúÿÿÿÿ8µó‹õº1
+v
+java:S1450U"YRemove the "adapterEPC" field and declare it as a local variable in the relevant methods.(£äøï8¶ó‹õº1
+n
+java:S1450G"QRemove the "db" field and declare it as a local variable in the relevant methods.(û¸ÛÃ8¹ó‹õº1
+|
+java:S1450J"ZRemove the "typeEPCSMap" field and declare it as a local variable in the relevant methods.(Îğ³’úÿÿÿÿ8ºó‹õº1
+t
+java:S3776]"RRefactor this method to reduce its Cognitive Complexity from 33 to the 15 allowed.(¨Œşÿÿÿÿ8Åó‹õº1
+•
+java:S5803z"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(Ëê€ÿ8Éó‹õº1
+^	java:S125ƒ"<This block of commented-out lines of code should be removed.(Õ¶ğ†ÿÿÿÿÿ8Êó‹õº1
+~
+java:S3923•"[Remove this conditional structure or edit its code blocks so that they're not all the same.(‹Ş‰¾øÿÿÿÿ8Ğó‹õº1
+^	java:S125Ï"<This block of commented-out lines of code should be removed.(íŠôÉüÿÿÿÿ8Õó‹õº1
+^	java:S125û"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ8Üó‹õº1
+Y	java:S125Ñ"<This block of commented-out lines of code should be removed.(Ô¨¿’8êó‹õº1
+Y	java:S125Û"<This block of commented-out lines of code should be removed.(¥ãÆš8ëó‹õº1
+Y	java:S125…"<This block of commented-out lines of code should be removed.( Ô£¶8òó‹õº1
+u
+java:S3776¯"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ8÷ó‹õº1
+[
+java:S1854µ"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿÿ8øó‹õº1
+D	java:S131°""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ8ùó‹õº1
+L
+java:S1481µ")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ8úó‹õº1
+Y	java:S125Ê"<This block of commented-out lines of code should be removed.(íµé›8şó‹õº1
+Y	java:S125Ï"<This block of commented-out lines of code should be removed.(¥¬Æ8ÿó‹õº1
+^	java:S125ê"<This block of commented-out lines of code should be removed.(¶¦¹Ùúÿÿÿÿ8ô‹õº1

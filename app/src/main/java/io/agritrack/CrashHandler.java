@@ -6,8 +6,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
-import android.util.Log;
 import android.os.Process;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,24 +17,18 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.fruit.ui.FruitHomeActivity;
-import io.agritrack.hotel.ui.HotelHomeActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private static final String TAG = CrashHandler.class.getSimpleName();
-
-    //System default UncaughtException processing class
-    private Thread.UncaughtExceptionHandler mDefaultHandler;
     private static final CrashHandler INSTANCE = new CrashHandler();
-
-    //Context object for program
-    private Context mContext;
-
     // format the date as part of the log file name
     private final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
+    //System default UncaughtException processing class
+    private Thread.UncaughtExceptionHandler mDefaultHandler;
+    //Context object for program
+    private Context mContext;
 
     //Private construction method guarantees only one instance of CrashHandler
     private CrashHandler() {
@@ -47,6 +41,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
     /**
      * A.Initialization
+     *
      * @param context
      */
     public void init(Context context) {
@@ -77,19 +72,15 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         }
     }
 
-    private void restartApplication(){
+    private void restartApplication() {
         String product = LocalPreferences.getActivePRODUCT();
         Intent intent = new Intent();
         //[FISH, TOMATO, HOTEL, MILK]
-        if (product.equalsIgnoreCase("FISH")){
+        if (product.equalsIgnoreCase("FISH")) {
             intent = new Intent(this.mContext, WhMenuActivity.class);
-        } else if (product.equalsIgnoreCase("TOMATO")){
-            intent = new Intent(this.mContext, FruitHomeActivity.class);
-        } else if (product.equalsIgnoreCase("HOTEL")){
-            intent = new Intent(this.mContext, HotelHomeActivity.class);
         }
 
-        intent.putExtra("crash",true);
+        intent.putExtra("crash", true);
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -113,6 +104,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
     /**
      * Save error information to file
+     *
      * @param ex
      * @return Return file name for easy file transfer to server
      */

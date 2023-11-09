@@ -105,6 +105,7 @@ import io.agritrack.fish.ui.fishing.FishingBinsActivity;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
+import io.agritrack.fish.ui.initBins.InitBinsActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.fish.ui.quality.receipt.ReceiptQualityConfirmActivity;
@@ -126,8 +127,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FishHomeActivity extends AppCompatActivity {
-    private static final int Fishing_Idx = 0, Test_Temp_Idx = 1, Transport_Idx = 2, Receiving_Idx = 3, Packaging_Quality_Idx = 4, Bin_Overturn_Idx = 5, Warehouse_Idx = 6, /*Maintenance_Idx = 5,*/
-            SeaTemp_Idx = 7;
+    private static final int InitBins_Idx = 0, Fishing_Idx = 1, Receiving_Idx = 2, Packaging_Quality_Idx = 3, Bin_Overturn_Idx = 4, Warehouse_Idx = 5; /*Maintenance_Idx = 5,*/
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
@@ -157,12 +157,15 @@ public class FishHomeActivity extends AppCompatActivity {
         db = MobileDB.getInstance(getAppContext());
 
         Set<MenuItem> menuItemsSet = new LinkedHashSet<MenuItem>();
+        if (roleCanAccessMenu(userRoles, InitBins_Idx)) {
+            menuItemsSet.add(new MenuItem(InitBins_Idx, getString(R.string.menu_title_init_bins), TestBinTempActivity.class, R.drawable.test_bin_temp));
+        }
         if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
             menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
         }
-        if (roleCanAccessMenu(userRoles, Test_Temp_Idx)) {
-            menuItemsSet.add(new MenuItem(Test_Temp_Idx, getString(R.string.menu_title_test_temp), TestBinTempActivity.class, R.drawable.test_bin_temp));
-        }
+//        if (roleCanAccessMenu(userRoles, Test_Temp_Idx)) {
+//            menuItemsSet.add(new MenuItem(Test_Temp_Idx, getString(R.string.menu_title_test_temp), TestBinTempActivity.class, R.drawable.test_bin_temp));
+//        }
         if (roleCanAccessMenu(userRoles, Receiving_Idx)) {
             menuItemsSet.add(new MenuItem(Receiving_Idx, getString(R.string.menu_title_fish_receiving), ProcessBinsActivity.class, R.drawable.processing));
         }
@@ -172,18 +175,18 @@ public class FishHomeActivity extends AppCompatActivity {
         if (roleCanAccessMenu(userRoles, Bin_Overturn_Idx)) {
             menuItemsSet.add(new MenuItem(Bin_Overturn_Idx, getString(R.string.menu_title_bin_overturn), BinTurnoverActivity.class, R.drawable.bin_turnover));
         }
-        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
-            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
-        }
+//        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
+//            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
+//        }
         if (roleCanAccessMenu(userRoles, Warehouse_Idx)) {
             menuItemsSet.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
         }
 //        if (roleCanAccessMenu(userRoles, Maintenance_Idx)) {
 //            menuItemsSet.add(new MenuItem(Maintenance_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
 //        }
-        if (roleCanAccessMenu(userRoles, SeaTemp_Idx)) {
-            menuItemsSet.add(new MenuItem(SeaTemp_Idx, getString(R.string.menu_title_sea_temp), SeaTemperatureActivity.class, R.drawable.sea_temp));
-        }
+//        if (roleCanAccessMenu(userRoles, SeaTemp_Idx)) {
+//            menuItemsSet.add(new MenuItem(SeaTemp_Idx, getString(R.string.menu_title_sea_temp), SeaTemperatureActivity.class, R.drawable.sea_temp));
+//        }
 
 
         // instantiate ProgressDialog and set style.
@@ -216,6 +219,9 @@ public class FishHomeActivity extends AppCompatActivity {
                 MenuItem mi = (MenuItem) gvMainMenu.getItemAtPosition(position);
 
                 switch (mi.getLoc()) {
+                    case InitBins_Idx:
+                        i = new Intent(appCtx, InitBinsActivity.class);
+                        break;
                     case Fishing_Idx:
                         FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
                         FishingRecord fishingRecord;
@@ -248,14 +254,14 @@ public class FishHomeActivity extends AppCompatActivity {
                             i = new Intent(appCtx, HarvestRequestsActivity.class);
                         }
                         break;
-                    case Test_Temp_Idx:
-                        i = new Intent(appCtx, TestBinTempActivity.class);
-                        i.putExtra("BinActivity", false);
-                        break;
-                    case Transport_Idx:
-                        GlobalState.initTransportationRecord();
-                        i = new Intent(appCtx, TransportBinsActivity.class);
-                        break;
+//                    case Test_Temp_Idx:
+//                        i = new Intent(appCtx, TestBinTempActivity.class);
+//                        i.putExtra("BinActivity", false);
+//                        break;
+//                    case Transport_Idx:
+//                        GlobalState.initTransportationRecord();
+//                        i = new Intent(appCtx, TransportBinsActivity.class);
+//                        break;
                     case Receiving_Idx:
                         GlobalState.initProcessingRecord();
                         i = new Intent(appCtx, ProcessBinsActivity.class);
@@ -272,10 +278,10 @@ public class FishHomeActivity extends AppCompatActivity {
 //                    case Maintenance_Idx:
 //                        i = new Intent(appCtx, MaintenanceMenuActivity.class);
 //                        break;
-                    case SeaTemp_Idx:
-                        i = new Intent(appCtx, SeaTemperatureActivity.class);
-                        break;
-                    default:
+//                    case SeaTemp_Idx:
+//                        i = new Intent(appCtx, SeaTemperatureActivity.class);
+//                        break;
+//                    default:
                 }
 
                 // Pass image index
@@ -531,15 +537,16 @@ public class FishHomeActivity extends AppCompatActivity {
     }
 
     private void assignPrivilegesToRoles() {
+        Privileges.put(InitBins_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Test_Temp_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+//        Privileges.put(Test_Temp_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Receiving_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Packaging_Quality_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Bin_Overturn_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Transport_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+//        Privileges.put(Transport_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Warehouse_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
 //        Privileges.put(Maintenance_Idx, new String[]{"ROLE_PACKAGING", "ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(SeaTemp_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+//        Privileges.put(SeaTemp_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
     }
 
     private boolean roleCanAccessMenu(List<String> roles, Integer menuId) {

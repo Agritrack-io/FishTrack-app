@@ -55,10 +55,6 @@
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".hotel.ui.HotelMenuProgramActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.tools.DiniArgeoScaleActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -132,51 +128,6 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".hotel.ui.status.HotelChangeStatusActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".hotel.ui.sync.HotelSynchronizeActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".hotel.ui.outgoing.HotelOutgoingLinenActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".hotel.ui.incoming.HotelIncomingLinenActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".hotel.ui.incoming.HotelIncomingStartActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".hotel.ui.inventory.HotelInventoryLinenActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".hotel.ui.inventory.HotelInventoryAssetActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".hotel.ui.search.HotelSearchActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".hotel.ui.outgoing.HotelOutgoingStartActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".hotel.ui.inventory.HotelInventoryStartActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".hotel.ui.HotelHomeActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".fish.ui.quality.packaging.PackageQualityConfirmActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -213,10 +164,6 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fruit.ui.warehouse.incoming.IncomingIfcoActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".fish.ui.quality.receipt.ReceiptQualityConfirmActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -233,107 +180,8 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fruit.ui.packaging.PackagingSelectOrderActivity"
+            android:name=".fish.ui.initBins.InitBinsActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.warehouse.measurements.DailyTemperatureMeasurementsActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.shipping.ShippingConfirmActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.shipping.ShippingDetailsActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysVisible" />
-        <activity
-            android:name=".fruit.ui.shipping.ShippingStartActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.storage_ready.ReadyStorageConfirmActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.storage_ready.ReadyStorageStartActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.packaging.PackagingConfirmActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.packaging.PackagingIfcoActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.packaging.PackagingLotActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.packaging.PackagingStartActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.storage_semi_ready.SemiReadyStorageWeightActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.storage_semi_ready.SemiReadyStorageConfirmActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.storage_semi_ready.SemiReadyStorageScanActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.warehouse.correlation.FruitCorrelationActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.warehouse.inventory.IfcoInventoryActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.warehouse.inventory.TotesInventoryActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.warehouse.inventory.FruitInventoryStartActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.FruitWhMenuActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.harvesting.HarvestingConfirmActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.harvesting.HarvestingTotesActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.harvesting.HarvestingStartActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.planting.PlantingConfirmActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.planting.PlantingStartActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fish.ui.seaTemperature.SeaTemperatureActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".fruit.ui.FruitHomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.wh.outgoing.OutgoingConsumableActivity"

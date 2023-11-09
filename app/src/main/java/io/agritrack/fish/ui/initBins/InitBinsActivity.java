@@ -1,14 +1,12 @@
-package io.agritrack.fish.ui.fishing;
+package io.agritrack.fish.ui.initBins;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.FileUtils.saveCrashInfo2File;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
-import static io.agritrack.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 import static io.agritrack.ui.tools.caen.ILoggerDialog.StatesEnum.INIT;
-import static io.agritrack.ui.tools.caen.ILoggerDialog.StatesEnum.READ_VALUES;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -49,7 +47,6 @@ import io.agritrack.R;
 import io.agritrack.caen.common.CAENState;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.model.BinInfo;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.InfoDialog;
@@ -57,9 +54,9 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.bo.LoggerReading;
 import io.agritrack.fish.ui.testBinTemperature.TestBinTempActivity;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
@@ -69,7 +66,7 @@ import io.agritrack.ui.tools.caen.ILoggerDialog;
 import io.agritrack.ui.tools.caen.InitLoggerDialogDecorator;
 import io.agritrack.ui.tools.caen.LoggerDialogFragment;
 
-public class FishingBinsActivity extends AppCompatActivity {
+public class InitBinsActivity extends AppCompatActivity {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
@@ -79,7 +76,7 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
-    private ScanInventoryThread scanner_runnable;
+    private SingleShotScanner singleShot_runnable;
     private MobileDB db;
     private TemplateRecyclerAdapter adapterBins;
     private RecyclerView rvBins;
@@ -99,7 +96,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fishing_bins);
+        setContentView(R.layout.activity_init_bins);
 
         if (getIntent() != null) {
             Bundle bundle = getIntent().getExtras();
@@ -193,12 +190,12 @@ public class FishingBinsActivity extends AppCompatActivity {
         });
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(FishingBinsActivity.this);
+            supportDialog = new SupportDialog(InitBinsActivity.this);
             supportDialog.showDialog();
         });
 
         ivInfo.setOnClickListener(view -> {
-            infoDialog = new InfoDialog(FishingBinsActivity.this);
+            infoDialog = new InfoDialog(InitBinsActivity.this);
             infoDialog.showDialog();
         });
 
@@ -209,7 +206,7 @@ public class FishingBinsActivity extends AppCompatActivity {
 
             recFishing.binTemperatureRecord.addRecord(binEPC, ts, temp);
 
-            tempLoggerDialog = new GetTempDataDialog(FishingBinsActivity.this, temp, binEPC);
+            tempLoggerDialog = new GetTempDataDialog(InitBinsActivity.this, temp, binEPC);
             tempLoggerDialog.showDialog();
         });
 
@@ -258,34 +255,30 @@ public class FishingBinsActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        this.stopScanner();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
-        this.stopScanner();
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToTeam);
+        ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
-            if (scanner_runnable != null) {
-                scanner_runnable.stopReading();
-            }
+            this.stopScanner();
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), FishingCageActivity.class);
+                Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
                 startActivity(i);
             }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToMain);
         ivBack.setOnClickListener(view -> {
-            if (scanner_runnable != null) {
-                scanner_runnable.stopReading();
-            }
-            Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
+            this.stopScanner();
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);
         });
     }
@@ -358,53 +351,66 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
-        if (scanner_runnable == null) {
-            btnScanBin.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable = new ScanInventoryThread(mScanHandler);
-            scanner_runnable.setFilter(Filters.RFID_BIN);
-            scanner_runnable.startReading();
-            btnScanBin.setText(R.string.stop_scan);
-            mScanHandler.postDelayed(scanner_runnable, 0);
-        } else if (!scanner_runnable.isReading()) {
-            btnScanBin.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            scanner_runnable.setFilter(Filters.RFID_BIN);
-            scanner_runnable.startReading();
-            btnScanBin.setText(R.string.stop_scan);
-            mScanHandler.postDelayed(scanner_runnable, 0);
-        } else {
-            btnScanBin.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-            scanner_runnable.stopReading();
-            btnScanBin.setText(R.string.scan_bin);
-            mScanHandler.removeCallbacks(scanner_runnable);
-        }
+        singleShot_runnable = new SingleShotScanner(mScanHandler);
+        singleShot_runnable.setFilter(Filters.RFID_LOGGER);
+        singleShot_runnable.startReading();
+        mScanHandler.postDelayed(singleShot_runnable, 0);
     }
 
     // ###################################################
     private void stopScanner() {
-        if (this.scanner_runnable != null) {
-            this.scanner_runnable.stopReading();
-            mScanHandler.removeCallbacks(this.scanner_runnable);
+        if (this.singleShot_runnable != null) {
+            this.singleShot_runnable.stopReading();
+            mScanHandler.removeCallbacks(this.singleShot_runnable);
         }
     }
 
     private class ScanHandler extends Handler {
-        private final WeakReference<FishingBinsActivity> mActivity;
+        private final WeakReference<InitBinsActivity> mActivity;
 
-        public ScanHandler(FishingBinsActivity activity) {
+        public ScanHandler(InitBinsActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 100:
-                    ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
-                    if (epcList != null && !epcList.isEmpty()) {
-                        epcList.stream().forEach(x -> adapterBins.addUniqueItem(x.toString()));
-                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-                        adapterBins.notifyDataSetChanged();
-                        recFishing.availBins = new LinkedList<>(adapterBins.getValues());
-                        GlobalState.commitFishing(db, Boolean.FALSE);
+                case 1:
+                    String epcStr = msg.getData().getString("epc");
+                    String rssi = msg.getData().getString("rssi");
+                    try {
+                        if (!Strings.isEmptyOrWhitespace(epcStr) && epcStr != null) {
+                            loggerEPC = epcStr;
+                            // after bin is identified, initialize the temperatures logger.
+                            Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
+                            if (bin != null) {
+                                binEPC = bin.rfid;
+                                scannedBinEPCs.add(binEPC);
+                                tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
+                                adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
+                                adapterBins.notifyDataSetChanged();
+                                recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+                                GlobalState.commitFishing(db, Boolean.FALSE);
+
+                                // ------------------------------------------
+                                //--- New implementation of Logger Dialog ---
+                                if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+                                    FragmentManager fm = getSupportFragmentManager();
+
+                                    ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
+                                    loggerDlg.setStateObserver(loggerStateObserver);
+                                    InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
+                                    initLoggerDecorator.show(fm);
+                                }
+                            } else if (!IsDemo) {
+                                CToast(getApplicationContext(), render(R.string.no_logger_found_linked_to_bin), Toast.LENGTH_SHORT);
+                            }
+                        } else {
+                            CToast(getApplicationContext(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        saveCrashInfo2File(e);
                     }
                     break;
                 case 1980:

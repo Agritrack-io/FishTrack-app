@@ -1,6 +1,36 @@
 
-g	java:S117ú"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ôÑ¦
-^
-java:S1874";Remove this use of "updateConfiguration"; it is deprecated.(˜•µÊûÿÿÿÿ8¸§1
+k
+java:S1192¯"HDefine a constant instead of duplicating this literal "Bearer " 5 times.(Š›äœıÿÿÿÿ8êóøôº1
+R
+java:S1066œ"/Merge this if statement with the enclosing one.(Èİ¯ƒÿÿÿÿÿ8íóøôº1
+n	java:S117İ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Öâôş8îóøôº1
+n	java:S117Ø"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ôÑ¦8Âêûôº1
+g
+java:S2583÷"DChange this condition so that it does not always evaluate to "false"(âıâûÿÿÿÿ8”üøôº1
+J
+java:S1659M"(Declare "etPassword" on a separate line.(¤ô¶ûûÿÿÿÿ8¥üøôº1
 X
-java:S1126È"AReplace this if-then-else statement by a single return statement.(¯‡…Í
+java:S1874K"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8ºüøôº1
+t
+java:S3776Q"RRefactor this method to reduce its Cognitive Complexity from 34 to the 15 allowed.(¨Œşÿÿÿÿ8»üøôº1
+X
+java:S1874`"6Remove this use of "ProgressDialog"; it is deprecated.(—Èôÿÿÿÿÿ8Áüøôº1
+U
+java:S1874a"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿8Ãüøôº1
+S
+java:S1874a"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿8Ãüøôº1
+R
+java:S1874a"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿8Äüøôº1
+N
+java:S1602i",Remove useless curly braces around statement(µÂ—ìşÿÿÿÿ8Æüøôº1
+Y	java:S125€"<This block of commented-out lines of code should be removed.(•ø³Ğ8Êüøôº1
+Y	java:S125©"<This block of commented-out lines of code should be removed.(ƒ²Ñ°8Ôüøôº1
+Y	java:S125¸"<This block of commented-out lines of code should be removed.(áÀåÿ8×üøôº1
+Y	java:S125ö"<This block of commented-out lines of code should be removed.(š†ÈŸ8åüøôº1
+U
+java:S1874‰"2Remove this use of "setMessage"; it is deprecated.(ƒ¬ƒİşÿÿÿÿ8éüøôº1
+^	java:S125À"<This block of commented-out lines of code should be removed.(ê¿¿Èúÿÿÿÿ8óüøôº1
+^
+java:S1874ì";Remove this use of "updateConfiguration"; it is deprecated.(˜•µÊûÿÿÿÿ8şëûôº1
+_
+java:S1126¦"AReplace this if-then-else statement by a single return statement.(¯‡…Í8…ìûôº1
