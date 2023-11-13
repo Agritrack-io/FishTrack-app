@@ -1,0 +1,43 @@
+
+F
+java:S1066Ó"/Merge this if statement with the enclosing one.(†ÃéÁ
+g
+java:S1301‰"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
+p	java:S116;"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŒÖÉ
+7
+java:S1170:"!Make this final field static too.(ÄéûÏ
+?
+java:S1659C"$Declare "binEPC" on a separate line.(™îÖêÿÿÿÿÿ
+r
+java:S1450G"\Remove the "loggerReading" field and declare it as a local variable in the relevant methods.(†¤
+
+java:S5803q"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ˆüˆ­
+W	java:S125•"<This block of commented-out lines of code should be removed.(‡ñ‰ûÿÿÿÿÿ
+W	java:S125˜"<This block of commented-out lines of code should be removed.(¥„ıßÿÿÿÿÿ
+N
+java:S1135—"2Complete the task associated to this TODO comment.(å‚ó¹úÿÿÿÿ
+X
+java:S1854¾"ARemove this useless assignment to local variable "qualityRecord".(„Ùé©
+I
+java:S1481¾"2Remove this unused "qualityRecord" local variable.(„Ùé©
+W	java:S125À"<This block of commented-out lines of code should be removed.(Šğ²àûÿÿÿÿ
+R	java:S125Ë"<This block of commented-out lines of code should be removed.(ñÁ†ª
+m
+java:S3457Ô"Q%n should be used in place of \n to produce the platform-specific line separator.(Â¥ôğùÿÿÿÿ
+W	java:S125İ"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+?
+java:S1185í"(Remove this method to simply inherit it.(ÍÙ÷¢
+T
+java:S1854Œ"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿÿ
+=	java:S131‰""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+E
+java:S1481Œ")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ
+W	java:S125"<This block of commented-out lines of code should be removed.(¢¿“£ûÿÿÿÿ
+W	java:S125“"<This block of commented-out lines of code should be removed.(§À¿®ûÿÿÿÿ
+R	java:S125œ"<This block of commented-out lines of code should be removed.(È“ĞÊ
+M
+java:S1068:"7Remove this unused "intentForProcessing" private field.(ÄéûÏ
+E
+java:S1068C"*Remove this unused "binEPC" private field.(™îÖêÿÿÿÿÿ
+I
+java:S1068"-Remove this unused "mActivity" private field.(¹«ü»øÿÿÿÿ

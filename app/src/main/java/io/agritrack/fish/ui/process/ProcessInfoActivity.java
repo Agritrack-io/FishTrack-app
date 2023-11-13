@@ -56,6 +56,8 @@ public class ProcessInfoActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        etDispatchNote.setText("AM00409");
+
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(ProcessInfoActivity.this);
             supportDialog.showDialog();

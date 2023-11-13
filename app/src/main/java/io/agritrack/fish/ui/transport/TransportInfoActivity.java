@@ -74,10 +74,12 @@ public class TransportInfoActivity extends AppCompatActivity {
         etDriverName.setThreshold(3);
         etDriverName.setAdapter(driverNamesAdapter);
 
+
         Set<String> driverPhones = LocalPreferences.getDriverPhones();
         ArrayAdapter<String> driverPhonesAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, driverPhones.toArray(new String[driverPhones.size()]));
         etDriverPhone.setThreshold(3);
         etDriverPhone.setAdapter(driverPhonesAdapter);
+
 
         Set<String> licensePlates = LocalPreferences.getLicensePlates();
         ArrayAdapter<String> licensePlatesAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, licensePlates.toArray(new String[licensePlates.size()]));
@@ -86,6 +88,10 @@ public class TransportInfoActivity extends AppCompatActivity {
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
+
+        etDriverName.setText("Nikos Papagiannakis");
+        etDriverPhone.setText("6932373347");
+        etLicensePlate.setText("YKO6673");
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(TransportInfoActivity.this);
