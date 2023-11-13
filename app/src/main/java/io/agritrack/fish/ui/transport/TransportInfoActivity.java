@@ -89,10 +89,6 @@ public class TransportInfoActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-        etDriverName.setText("Nikos Papagiannakis");
-        etDriverPhone.setText("6932373347");
-        etLicensePlate.setText("YKO6673");
-
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(TransportInfoActivity.this);
             supportDialog.showDialog();

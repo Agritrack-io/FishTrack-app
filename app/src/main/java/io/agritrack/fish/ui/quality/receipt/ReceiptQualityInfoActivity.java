@@ -162,8 +162,6 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
             }
         });
 
-        etPlot.setText("4579");
-
         configFooter();
     }
 
