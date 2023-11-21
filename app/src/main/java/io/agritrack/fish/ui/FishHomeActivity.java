@@ -112,6 +112,7 @@ import io.agritrack.fish.ui.quality.receipt.ReceiptQualityConfirmActivity;
 import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
 import io.agritrack.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.fish.ui.transport.TransportBinsActivity;
+import io.agritrack.fish.ui.transport.TransportBinsSecurityClipsActivity;
 import io.agritrack.fish.ui.transport.TransportInfoActivity;
 import io.agritrack.fish.ui.transport.TransportSupervisorConfirmActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
@@ -127,7 +128,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FishHomeActivity extends AppCompatActivity {
-    private static final int InitBins_Idx = 0, Fishing_Idx = 1, Receiving_Idx = 2, Packaging_Quality_Idx = 3, Bin_Overturn_Idx = 4, Warehouse_Idx = 5; /*Maintenance_Idx = 5,*/
+    private static final int InitBins_Idx = 0, Fishing_Idx = 1, Transport_Idx = 2, Receiving_Idx = 3, Packaging_Quality_Idx = 4, Bin_Overturn_Idx = 5, Warehouse_Idx = 6; /*Maintenance_Idx = 5,*/
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
@@ -175,9 +176,9 @@ public class FishHomeActivity extends AppCompatActivity {
         if (roleCanAccessMenu(userRoles, Bin_Overturn_Idx)) {
             menuItemsSet.add(new MenuItem(Bin_Overturn_Idx, getString(R.string.menu_title_bin_overturn), BinTurnoverActivity.class, R.drawable.bin_turnover));
         }
-//        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
-//            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
-//        }
+        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
+            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
+        }
         if (roleCanAccessMenu(userRoles, Warehouse_Idx)) {
             menuItemsSet.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
         }
@@ -226,8 +227,8 @@ public class FishHomeActivity extends AppCompatActivity {
                         FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
                         FishingRecord fishingRecord;
 
-                        // default Next Activity is FishingStart...
-                        i = new Intent(appCtx, FishingStartActivity.class);
+                        // default Next Activity is FishingTeam...
+                        i = new Intent(appCtx, FishingTeamActivity.class);
                         if (openTx != null && !Strings.isEmptyOrWhitespace(openTx.fishingRq)) {
                             // there is a FishingTx in progress
                             fishingRecord = FishingRecord.convert(openTx);
@@ -258,10 +259,10 @@ public class FishHomeActivity extends AppCompatActivity {
 //                        i = new Intent(appCtx, TestBinTempActivity.class);
 //                        i.putExtra("BinActivity", false);
 //                        break;
-//                    case Transport_Idx:
-//                        GlobalState.initTransportationRecord();
-//                        i = new Intent(appCtx, TransportBinsActivity.class);
-//                        break;
+                    case Transport_Idx:
+                        GlobalState.initTransportationRecord();
+                        i = new Intent(appCtx, TransportBinsActivity.class);
+                        break;
                     case Receiving_Idx:
                         GlobalState.initProcessingRecord();
                         i = new Intent(appCtx, ProcessBinsActivity.class);
@@ -543,7 +544,7 @@ public class FishHomeActivity extends AppCompatActivity {
         Privileges.put(Receiving_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Packaging_Quality_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Bin_Overturn_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
-//        Privileges.put(Transport_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Transport_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Warehouse_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
 //        Privileges.put(Maintenance_Idx, new String[]{"ROLE_PACKAGING", "ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
 //        Privileges.put(SeaTemp_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});

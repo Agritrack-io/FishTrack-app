@@ -100,7 +100,7 @@ public class InitBinsActivity extends AppCompatActivity {
 
         if (getIntent() != null) {
             Bundle bundle = getIntent().getExtras();
-            intentForBinActivity = bundle != null ? bundle.getBoolean("BinActivity") : intentForBinActivity;
+            intentForBinActivity = bundle != null ? bundle.getBoolean("BinInitActivity") : intentForBinActivity;
         }
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
@@ -110,7 +110,7 @@ public class InitBinsActivity extends AppCompatActivity {
         db = MobileDB.getInstance(getAppContext());
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderFishingBins);
+        TextView tvHeader = findViewById(R.id.tvHeaderInitBins);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
@@ -185,7 +185,7 @@ public class InitBinsActivity extends AppCompatActivity {
             updateState();
             this.stopScanner();
             Intent i = new Intent(getApplicationContext(), TestBinTempActivity.class);
-            i.putExtra("BinActivity", true);
+            i.putExtra("BinInitActivity", true);
             startActivity(i);
         });
 

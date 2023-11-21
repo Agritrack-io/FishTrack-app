@@ -159,6 +159,12 @@ dependencies {
     // SQL cipher
     implementation 'net.zetetic:android-database-sqlcipher:4.5.3'
 
+    //OCR
+    implementation 'com.jakewharton:butterknife:10.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
+
+    implementation 'com.rmtheis:tess-two:9.0.0'
+
 //    // browse local db //:TODO:: Delete before production
 //    debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
 }

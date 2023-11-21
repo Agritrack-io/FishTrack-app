@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -36,13 +35,14 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.bo.BinLoadsMap;
+import io.agritrack.fish.ui.bo.BinWeightRecord;
 import io.agritrack.scale.diniargeo.MCWScale;
 import io.agritrack.ui.adapter.BinLoadAdapter;
 import io.agritrack.ui.adapter.BinLoadAdapter.BinLoadItem;
 import io.agritrack.ui.service.LocalPreferences;
 
 
-public class FishingFillBinsActivity extends AppCompatActivity {
+public class FishingFillBinsActivity extends AppCompatActivity implements ISummaryActivity {
 
     protected BroadcastReceiver keyReceiver;
     private TextView tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
@@ -57,7 +57,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private ImageView ivSupport, ivInfo, ivCheckLastTemp;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
-    private boolean isClicked = false;
+    private boolean isClicked = true;
 
     // Bluetooth variables
     private BluetoothAdapter bluetoothAdapter = null;
@@ -77,6 +77,8 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        loadsMap = new BinLoadsMap();
 
         ArrayList<BinLoadItem> list = recFishing.availBins != null
                 ? recFishing.availBins.stream()
@@ -130,7 +132,7 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 //                        adapterCatches.notifyDataSetChanged();
 //
 //                        tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-////                        tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));//TODO:: Remove
+//                        tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));//TODO:: Remove
 //                        tvTotalWeightCount.setText(String.format("%s", loadsMap.totalWeight().toString()));
 //                        adapterCatches.clearSelectedValue();
 //                        btnDeleteCatch.setEnabled(false);
@@ -236,12 +238,12 @@ public class FishingFillBinsActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToDetails);
         ivBack.setOnClickListener(view -> {
-            if (!isClicked && loadsMap.hasLoads()) {
+            if (!isClicked) { // && loadsMap.hasLoads()
                 CToast(getApplicationContext(), render(R.string.fill_bin), Toast.LENGTH_LONG);
                 return;
             }
             updateState();
-            Intent i = new Intent(getApplicationContext(), FishingDetailsActivity.class);
+            Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
             startActivity(i);
         });
     }
@@ -268,34 +270,60 @@ public class FishingFillBinsActivity extends AppCompatActivity {
         if (recFishing.totalBinsUsed != null) {
             tvUsedBinsCount.setText(recFishing.totalBinsUsed.toString());
         }
-//        if (!loadsMap.hasLoads()) {
-//            recFishing.binWeightRecord.getBinsData();
-//            tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-//        }
+
 
         // sometimes 'hvst.availBins' is null!!!
         int availBinsCnt = hvst.availBins != null ? hvst.availBins.size() : 0;
         tvAvailableBinsCount.setText(String.valueOf(availBinsCnt));
 
-//        if (!recFishing.binWeightRecord.isEmpty()) {
-//            for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBinsData()) {
-//                loadsMap.addLoad(bin.binEPC, bin.weight + "");
-//            }
-//            if (recFishing.reqWeight!=null) {
-////                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
-//            } else {
-////                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), "N/A"));
-//            }
-//            isClicked = true;
-//        }
+        if (!recFishing.binWeightRecord.isEmpty()) {
+            for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBinsData()) {
+                loadsMap.addLoad(bin.binEPC, bin.weight + "");
+            }
+            adapterCatches.setValues(recFishing.binWeightRecord.getBinsData().stream().map(x -> new BinLoadItem(x.binEPC, x.weight, x.temp)).collect(Collectors.toList()));
+            if (recFishing.reqWeight != null) {
+                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
+            } else {
+                tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), "N/A"));
+            }
+            isClicked = true;
+        }
+
+        if (loadsMap.hasLoads()) {
+            recFishing.binWeightRecord.getBinsData();
+            tvUsedBinsCount.setText(loadsMap.loadsCnt());
+        }
+    }
+
+    @Override
+    public void refreshSummary() {
+        if (adapterCatches.getValues() != null) {
+            for (BinLoadItem binLoad : adapterCatches.getValues()) {
+                loadsMap.addLoad(binLoad.epc, binLoad.weight + "");
+            }
+        }
+        if (recFishing.reqWeight != null) {
+            tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
+        } else {
+            tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), "N/A"));
+        }
+
+        if (loadsMap.hasLoads()) {
+            recFishing.binWeightRecord.getBinsData();
+            tvUsedBinsCount.setText(loadsMap.loadsCnt());
+        }
     }
 
     private FishingRecord updateState() {
         // get an instance of local DB
         MobileDB db = MobileDB.getInstance(getAppContext());
 
+        if (adapterCatches.getValues() != null) {
+            for (BinLoadItem binLoad : adapterCatches.getValues())
+                recFishing.binWeightRecord.addRecord(binLoad.epc, binLoad.weight, binLoad.temperature, null, null, null);
+        }
         if (tvTotalWeightCount.getText() != null) {
-            //recFishing.totalFishWeight = loadsMap.totalWeight();
+            recFishing.totalFishWeight = loadsMap.totalWeight();
         }
 
         if (tvUsedBinsCount.getText() != null && !Strings.isEmptyOrWhitespace(tvUsedBinsCount.getText().toString())) {
@@ -309,9 +337,9 @@ public class FishingFillBinsActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (GlobalState.recFishing.totalBinsUsed == null) {
-                sb.append(String.format("\n%s is missing", "'Harvest bins'"));
-            }
+//            if (GlobalState.recFishing.totalBinsUsed == null) {
+//                sb.append(String.format("\n%s is missing", "'Harvest bins'"));
+//            }
         }
         return sb.toString();
     }

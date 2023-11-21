@@ -19,7 +19,8 @@
     <string name="label_login_header_content">Παρακαλώ εισέλθετε με τους κωδικούς σας</string>
     <string name="label_tv_forgot_pwd">Ξεχάσατε τον κωδικό σας;</string>
 
-    <string name="empty_credentials_alert">Παρακαλώ συμπληρώστε τους κωδικούς σας.</string>
+    <string name="empty_credentials_alert">Παρακαλώ συμπληρώστε τον κωδικό σας.</string>
+    <string name="empty_username_alert">Παρακαλώ συμπληρώστε το όνομα χρήστη.</string>
 
     <string name="label_version_fish_track_profile">FishTrack v1.0.0</string>
 
@@ -742,5 +743,7 @@
     <string name="associated_tag_scan_again">Η ετικέτα που μόλις σκάναρατε είναι προγραμματισμένη με άλλο τύπο παγίου. Παρακαλώ σκανάρετε ξανά!</string>
     <string name="search_hint">Αναζητήστε εδώ</string>
     <string name="menu_title_init_bins">Αρχικοποίηση βουτών</string>
+    <string name="title_init_bins">ΑΡΧΙΚΟΠΟΙΗΣΗ ΒΟΥΤΩΝ</string>
+    <string name="initialized_bins">Αρχικοποιημένες βούτες</string>
 
 </resources>

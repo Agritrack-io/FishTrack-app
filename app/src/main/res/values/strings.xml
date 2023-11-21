@@ -19,7 +19,8 @@
     <string name="label_login_header_content">Please login with your credentials</string>
     <string name="label_tv_forgot_pwd">Did you forget your PIN?</string>
 
-    <string name="empty_credentials_alert">Please fill-in Username and PIN.</string>
+    <string name="empty_credentials_alert">Please fill-in PIN.</string>
+    <string name="empty_username_alert">Please fill-in Username.</string>
 
     <string name="label_version_fish_track_profile">FishTrack v1.0.0</string>
 
@@ -133,7 +134,7 @@
     <string name="add_catch_button">ADD CATCH</string>
     <string name="delete_catch_button">DELETE CATCH</string>
     <string name="end_bin_button">BIN FILLED</string>
-    <string name="weight_bin">Weight of Bin:</string>
+    <string name="weight_bin">Bin Weight:</string>
     <string name="type_weight">Please type weight</string>
     <string name="fish_catch_weight">Fish Catch Weight</string>
     <string name="bt_scale_reading">Scale reading</string>
@@ -760,5 +761,9 @@
     <string name="associated_tag_scan_again">Tag you just scanned is associated with other type of asset. Please scan again!</string>
     <string name="search_hint">Search here</string>
     <string name="menu_title_init_bins">Initialize bins</string>
+    <string name="clip1" translatable="false">Clip 1:</string>
+    <string name="clip2" translatable="false">Clip 2:</string>
+    <string name="title_init_bins">INITIALIZE BINS</string>
+    <string name="initialized_bins">Initialized bins</string>
 
 </resources>

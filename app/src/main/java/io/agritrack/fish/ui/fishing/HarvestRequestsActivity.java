@@ -120,7 +120,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
                 // transfer existing Record Data to Entity and persist to db.
                 GlobalState.commitFishing(this.db, false);
 
-                Intent i = new Intent(getApplicationContext(), FishingStartActivity.class);
+                Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
                 startActivity(i);
             }
         });

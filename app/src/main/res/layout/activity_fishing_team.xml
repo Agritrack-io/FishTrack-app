@@ -97,12 +97,12 @@
         <RelativeLayout
             android:id="@+id/fishMainLayout"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="400dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/fishCageLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -208,6 +208,79 @@
                 android:text="@string/select_fishing_team"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/fishCageLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fishMainLayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <TextView
+                    android:id="@+id/tvCageName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:gravity="center|center_vertical"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toTopOf="@+id/btnScanCage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnScanCage"
+                    android:layout_width="200dp"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginBottom="32dp"
+                    android:background="@drawable/button_press_effect"
+                    android:text="@string/scan_cage"
+                    android:textColor="@color/yellow"
+                    android:textSize="@dimen/button_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCageName"
+                    tools:layout_conversion_absoluteHeight="120dp"
+                    tools:layout_conversion_absoluteWidth="0dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_semi_green"
+                android:paddingHorizontal="8dp"
+                android:text="@string/cage"
+                android:textColor="@color/label_blue"
+                android:textSize="18sp" />
+
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

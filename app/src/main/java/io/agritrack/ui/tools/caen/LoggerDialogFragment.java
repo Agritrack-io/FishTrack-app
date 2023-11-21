@@ -6,6 +6,7 @@ import static io.agritrack.caen.api.CAEN_CONSTANTS.ResetSΤΑΤΕ;
 import static io.agritrack.caen.api.CAEN_CONSTANTS.ValidSΤΑΤΕ;
 import static io.agritrack.caen.api.ICAEN_API.DefaultInterval;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.sound.SoundUtil.Beep;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 import static io.agritrack.ui.tools.caen.LoggerDialogDecorator.InitOp;
 import static io.agritrack.ui.tools.caen.LoggerDialogDecorator.LEVEL_INCREMENT;
@@ -55,6 +56,7 @@ import io.agritrack.caen.api.CAENLoggerService;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.common.CAENState;
+import io.agritrack.sound.SoundUtil;
 
 /**
  * Component implementation of ILoggerDialog.
@@ -276,6 +278,9 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 
         // assign global variable to button objects.
         assignCtrlVars(rootView);
+
+        // initiate raw sound
+        SoundUtil.initSoundPool(mContext);
 
         // show dialog at bottom-center of current screen.
         getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);

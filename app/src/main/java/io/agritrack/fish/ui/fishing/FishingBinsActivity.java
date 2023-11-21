@@ -275,7 +275,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), FishingCageActivity.class);
+                Intent i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
                 startActivity(i);
             }
         });

@@ -189,7 +189,7 @@ public class WhMenuActivity extends AppCompatActivity {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
             LocalPreferences.resetLogin();
-            Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
             startActivity(i);
         });
     }

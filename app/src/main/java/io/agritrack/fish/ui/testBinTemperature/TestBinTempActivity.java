@@ -39,6 +39,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.fishing.FishingBinsActivity;
 import io.agritrack.fish.ui.fishing.FishingFillBinsActivity;
+import io.agritrack.fish.ui.initBins.InitBinsActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
@@ -58,6 +59,7 @@ public class TestBinTempActivity extends AppCompatActivity {
     private int readSamplesCountCnt = 0;
     private boolean intentForBinActivity = false;
     private boolean intentForFillBinActivity = false;
+    private boolean intentForInitBinActivity = false;
     final Runnable readLastSampleThread = new Runnable() {
         @Override
         public void run() {
@@ -111,6 +113,8 @@ public class TestBinTempActivity extends AppCompatActivity {
                 intentForBinActivity = bundle.getBoolean("BinActivity");
             } else if (bundle.getBoolean("FillBinActivity")) {
                 intentForFillBinActivity = bundle.getBoolean("FillBinActivity");
+            } else if (bundle.getBoolean("BinInitActivity")) {
+                intentForInitBinActivity = bundle.getBoolean("BinInitActivity");
             }
         }
 
@@ -187,6 +191,9 @@ public class TestBinTempActivity extends AppCompatActivity {
             } else if (intentForFillBinActivity) {
                 i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
                 i.putExtra("FillBinActivity", true);
+            } else if (intentForInitBinActivity) {
+                i = new Intent(getApplicationContext(), InitBinsActivity.class);
+                i.putExtra("BinInitActivity", true);
             } else {
                 i = new Intent(getApplicationContext(), FishHomeActivity.class);
             }

@@ -185,8 +185,8 @@ public class LocalPreferences {
     }
 
     public static String HeaderMsg() {
-        return "";//TODO:: Remove
-        //return String.format(getCurrentSiteName()+"\n"+getLoggedInUser("N/A") + " <-> " + Today());
+//        return "";//TODO:: Remove
+        return String.format(getCurrentSiteName()+"\n"+getLoggedInUser("N/A") + " <-> " + Today());
     }
 
     public static String getLoggedInUser(String defVal) {

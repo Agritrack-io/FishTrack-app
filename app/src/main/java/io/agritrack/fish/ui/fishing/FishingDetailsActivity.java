@@ -96,7 +96,7 @@ public class FishingDetailsActivity extends AppCompatActivity {
 
         ImageView ivBack = findViewById(R.id.ivBackToCage);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FishingCageActivity.class);
+            Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
             startActivity(i);
         });
     }

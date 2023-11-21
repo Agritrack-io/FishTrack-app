@@ -11,7 +11,9 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,6 +39,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.su.AppOptionsFragment;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
@@ -93,7 +96,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-        if (recFishing.reqWeight!=null) {
+        if (recFishing.reqWeight!=null && recFishing.totalFishWeight != null) {
             if (Math.abs(recFishing.reqWeight - recFishing.totalFishWeight) >= 250) {
                 selectReasonDialog = new SelectReasonOfFishingWeightDeviationDialog(FishingConfirmActivity.this);
                 selectReasonDialog.showDialog();
@@ -108,6 +111,41 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         ivInfo.setOnClickListener(view -> {
             infoDialog = new InfoDialog(FishingConfirmActivity.this);
             infoDialog.showDialog();
+        });
+
+        etPIN.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable editable) {
+                // get credential string values
+                final String username = LocalPreferences.getLoggedInUser("").trim();
+                final String pin = editable.toString().trim();
+
+               if (pin.isEmpty()) {
+                   CToast(FishingConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
+                } else if (editable != null && editable.length() == 4) {
+                    // invoke login
+                   boolean userIsValid = isAuthenticated(username, pin);
+                   if (!userIsValid) {
+                       CToast(FishingConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
+                       return;
+                   } else if (mLastLocation != null) {
+                       recFishing.longitude = mLastLocation.getLongitude();
+                       recFishing.latitude = mLastLocation.getLatitude();
+                       proceedWithoutLocation = true;
+                       moveToNextScreen();
+                   } else if (!proceedWithoutLocation) {
+                       FragmentManager fm = getSupportFragmentManager();
+                       confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+                   }
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+            }
         });
 
         configFooter();
@@ -130,23 +168,23 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(etPIN.getText().toString())) {
-                    CToast(FishingConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
-                    return;
-                }
-                boolean userIsValid = isAuthenticated();
-                if (!userIsValid) {
-                    CToast(FishingConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
-                    return;
-                } else if (mLastLocation != null) {
-                    recFishing.longitude = mLastLocation.getLongitude();
-                    recFishing.latitude = mLastLocation.getLatitude();
-                    proceedWithoutLocation = true;
-                    moveToNextScreen();
-                } else if (!proceedWithoutLocation) {
-                    FragmentManager fm = getSupportFragmentManager();
-                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-                }
+//                if (TextUtils.isEmpty(etPIN.getText().toString())) {
+//                    CToast(FishingConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
+//                    return;
+//                }
+//                boolean userIsValid = isAuthenticated();
+//                if (!userIsValid) {
+//                    CToast(FishingConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
+//                    return;
+//                } else if (mLastLocation != null) {
+//                    recFishing.longitude = mLastLocation.getLongitude();
+//                    recFishing.latitude = mLastLocation.getLatitude();
+//                    proceedWithoutLocation = true;
+//                    moveToNextScreen();
+//                } else if (!proceedWithoutLocation) {
+//                    FragmentManager fm = getSupportFragmentManager();
+//                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+//                }
             }
         });
 
@@ -193,9 +231,9 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         tvTypeOfFishConfirm.setText(recFishing.speciesName != null ? recFishing.speciesName : "N/A");
     }
 
-    private boolean isAuthenticated() {
-        String login = LocalPreferences.getLoggedInUser("").trim();
-        String pin = etPIN.getText().toString().trim();
+    private boolean isAuthenticated(String login, String pin) {
+//        String login = LocalPreferences.getLoggedInUser("").trim();
+//        String pin = etPIN.getText().toString().trim();
 
         // use typed-in PIN to compare credentials with those stored in the Local DB.
         AuthenticationService authSvc = new AuthenticationService();

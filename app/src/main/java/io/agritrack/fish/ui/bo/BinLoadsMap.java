@@ -23,7 +23,7 @@ public class BinLoadsMap {
 
     public void addLoad(String bin, String load) {
         // Bug fix, due to load = "null"!!
-        if(Strings.isEmptyOrWhitespace(load) || "".equalsIgnoreCase(load)) {
+        if("null".equalsIgnoreCase(load) || Strings.isEmptyOrWhitespace(load) || "".equalsIgnoreCase(load)) {
             return;
         }
 
@@ -31,6 +31,8 @@ public class BinLoadsMap {
 
         if(loadsforBin==null) {
             loadsforBin = new ArrayList<>();
+        } else {
+            loadsforBin.clear();
         }
 
         loadsforBin.add(load);

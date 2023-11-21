@@ -13,8 +13,12 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -29,6 +33,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.google.api.SystemParameterOrBuilder;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -56,6 +61,7 @@ import io.agritrack.data.model.AppUser;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.su.AppOptionsFragment;
+import io.agritrack.ui.adapter.FishCatchAdapter;
 import io.agritrack.ui.login.api.AuthInfoRS;
 import io.agritrack.ui.login.api.LoginRQ;
 import io.agritrack.ui.service.AuthenticationService;
@@ -159,28 +165,43 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                 }
             });
 
-            btLogin.setOnClickListener(v -> {
-                // get credential string values
-                final String username = etUserName.getText().toString().trim();
-                final String pin = etPassword.getText().toString().trim();
+            etPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        //Clear focus here from edittext
+                        etPassword.clearFocus();
+                    }
+                    return false;
+                }
+            });
 
-                if (username.isEmpty() || pin.isEmpty()) {
-                    noCredentialsEnteredAlert();
+            etPassword.addTextChangedListener(new TextWatcher() {
+
+                public void afterTextChanged(Editable editable) {
+                    // get credential string values
+                    final String username = etUserName.getText().toString().trim();
+                    final String pin = editable.toString().trim();
+
+                    if (username.isEmpty()) {
+                        CToast(getApplicationContext(), render(R.string.empty_username_alert), Toast.LENGTH_LONG);
+                    } else if (pin.isEmpty()) {
+                        noCredentialsEnteredAlert();
 //                } else if ("config".equals(username) && "8888".equals(pin)) {
 //                    Intent i = new Intent(getApplicationContext(), ConfigActivity.class);
 //                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
 //                    startActivity(i);
 //                    finish();
-//                } else if ("caen".equals(username) && "8888".equals(pin)) {
-//                    Intent i = new Intent(getApplicationContext(), CAENLoggerActivity.class);
-//                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-//                    startActivity(i);
-//                    finish();
-                } else if ("root".equals(username) && "8888".equals(pin)) {
-                    FragmentManager fm = getSupportFragmentManager();
-                    AppOptionsFragment optionsDlg = AppOptionsFragment.newInstance();
-                    optionsDlg.show(fm, AppOptionsFragment.TAG);
-                    fm.executePendingTransactions();
+                } else if ("caen".equals(username) && "8888".equals(pin)) {
+                    Intent i = new Intent(getApplicationContext(), CAENLoggerActivity.class);
+                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+                    startActivity(i);
+                    finish();
+                    } else if ("root".equals(username) && "8888".equals(pin)) {
+                        FragmentManager fm = getSupportFragmentManager();
+                        AppOptionsFragment optionsDlg = AppOptionsFragment.newInstance();
+                        optionsDlg.show(fm, AppOptionsFragment.TAG);
+                        fm.executePendingTransactions();
 //                } else if ("logger".equals(username) && "8888".equals(pin)) {
 //                    Intent i = new Intent(getApplicationContext(), ImportCAENLoggersToDBActivity.class);
 //                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
@@ -196,20 +217,76 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
 //                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
 //                    startActivity(i);
 //                    finish();
-                } else {
-                    // display spinning progress bar
-                    toggleProgress(Boolean.TRUE, R.string.authenticating);
+                    } else if (editable != null && editable.length() == 4) {
+                        // display spinning progress bar
+                        toggleProgress(Boolean.TRUE, R.string.authenticating);
 
-                    // invoke login
-                    invokeLogin(username, pin);
+                        // invoke login
+                        invokeLogin(username, pin);
+                    }
+                }
+
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                public void onTextChanged(CharSequence s, int start,
+                                          int before, int count) {
                 }
             });
-
-            tvForgotYourPassword.setOnClickListener(view -> {
-                Intent i = new Intent(getApplicationContext(), ForgotYourPinActivity.class);
-                startActivity(i);
-            });
         }
+
+//            btLogin.setOnClickListener(v -> {
+//                // get credential string values
+//                final String username = etUserName.getText().toString().trim();
+//                final String pin = etPassword.getText().toString().trim();
+//
+//                if (username.isEmpty() || pin.isEmpty()) {
+//                    noCredentialsEnteredAlert();
+////                } else if ("config".equals(username) && "8888".equals(pin)) {
+////                    Intent i = new Intent(getApplicationContext(), ConfigActivity.class);
+////                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+////                    startActivity(i);
+////                    finish();
+////                } else if ("caen".equals(username) && "8888".equals(pin)) {
+////                    Intent i = new Intent(getApplicationContext(), CAENLoggerActivity.class);
+////                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+////                    startActivity(i);
+////                    finish();
+//                } else if (!username.isEmpty() && pin.isEmpty()) {
+//                    CToast(getApplicationContext(), render(R.string.empty_credentials_alert), Toast.LENGTH_LONG);
+//                } else if ("root".equals(username) && "8888".equals(pin)) {
+//                    FragmentManager fm = getSupportFragmentManager();
+//                    AppOptionsFragment optionsDlg = AppOptionsFragment.newInstance();
+//                    optionsDlg.show(fm, AppOptionsFragment.TAG);
+//                    fm.executePendingTransactions();
+////                } else if ("logger".equals(username) && "8888".equals(pin)) {
+////                    Intent i = new Intent(getApplicationContext(), ImportCAENLoggersToDBActivity.class);
+////                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+////                    startActivity(i);
+////                    finish();
+////                } else if ("scale".equals(username) && "8888".equals(pin)) {
+////                    Intent i = new Intent(getApplicationContext(), DiniArgeoScaleActivity.class);
+////                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+////                    startActivity(i);
+////                    finish();
+////                } else if ("linen".equals(username) && "8888".equals(pin)) {
+////                    Intent i = new Intent(getApplicationContext(), HotelMenuProgramActivity.class);
+////                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+////                    startActivity(i);
+////                    finish();
+//                } else {
+//                    // display spinning progress bar
+//                    toggleProgress(Boolean.TRUE, R.string.authenticating);
+//
+//                    // invoke login
+//                    invokeLogin(username, pin);
+//                }
+//            });
+//
+//            tvForgotYourPassword.setOnClickListener(view -> {
+//                Intent i = new Intent(getApplicationContext(), ForgotYourPinActivity.class);
+//                startActivity(i);
+//            });
 
         // Tap PoweredByLogo to reset LocalSharedPreferences
         tapLogToResetPreferences();
