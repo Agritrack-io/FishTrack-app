@@ -86,6 +86,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     private ClipDrawable mClipDrawable;
     private CAENLoggerService loggerSvc;
     private ICAEN_API cmd;
+    boolean toExit = false;
 
     protected final View.OnClickListener validBtnListener = v -> {
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {

@@ -113,8 +113,6 @@ n
 >app/src/main/java/io/agritrack/dialog/YesNoDialogFragment.java,e\6\e6f8ba130ff65917b0a3af1c18fc176816cd34bc
 t
 Dapp/src/main/java/io/agritrack/fish/ui/wh/InternalAssetActivity.java,e\1\e10ef74bf8011135a2bf368643e7ed711de5e73d
-h
-8app/src/main/java/io/agritrack/FishTrackApplication.java,5\1\51bad9f5c9c39de36f8e64ef5b048a73c7c45af0
 g
 7app/src/main/java/io/agritrack/dialog/ScanQrDialog.java,1\a\1ab45a6c4a1fc55571a58ead21eb21b2b14c9d79
 d
@@ -217,8 +215,6 @@ u
 Eapp/src/main/java/io/agritrack/ui/tools/ProgramLinenTagsActivity.java,6\d\6d7968960aa0cd701ac6de8214a3d4b86d0328e3
 t
 Dapp/src/main/java/io/agritrack/ui/service/AuthenticationService.java,b\8\b870b974ba3569fc6b9a78f066cebc8195a496f7
-k
-;app/src/main/java/io/agritrack/api/APIServiceGenerator.java,3\c\3cc61a208337c6405a11cef7737ecff59f215df0
 d
 4app/src/main/java/io/agritrack/data/dto/SiteDTO.java,8\a\8af07ccdc6cfc3eb27924a291dc1b2282211bc28
 d
@@ -287,8 +283,6 @@ Happ/src/main/java/io/agritrack/fish/ui/fishing/FishingStartActivity.java,3\6\3
 Kapp/src/main/java/io/agritrack/fish/ui/fishing/HarvestRequestsActivity.java,1\4\14b759d446c07fd27db187a360660ea016343f51
 j
 :app/src/main/java/io/agritrack/ui/login/LoginActivity.java,7\5\75c27282a465dc3e9cd2e5a874702c3f4dbd15ce
-m
-=app/src/main/java/io/agritrack/ui/adapter/BinLoadAdapter.java,0\0\00312965dc0fc75f6229aec0c82da8f8bb004623
 l
 <app/src/main/java/io/agritrack/fish/state/FishingRecord.java,b\3\b3080653e19759349734cb82322858d4b50d03c3
 j
@@ -307,8 +301,6 @@ j
 :app/src/main/java/io/agritrack/rfid/SingleShotScanner.java,2\6\26fb1a9fcd92eb4532181288aae35fd96a2d6d2a
 v
 Fapp/src/main/java/io/agritrack/ui/adapter/TemplateRecyclerAdapter.java,a\2\a24c915e9d3ea96755f303a7f95d15dec40781d8
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 d
 4app/src/main/java/io/agritrack/api/sync/SyncApi.java,8\7\87e16c86400f99825e9bd29b98b1599f888c56c2
 k
@@ -319,3 +311,27 @@ A
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 t
 Dapp/src/main/java/io/agritrack/fish/ui/fishing/ISummaryActivity.java,6\3\63dc25643fe9efcbd6b79a61dd8b33b4c07ad37d
+l
+<app/src/main/java/io/agritrack/fish/ui/FishHomeActivity.java,7\3\73143087e53588b8a0cbbe2a1802eec68a98feea
+‚
+Rapp/src/main/java/io/agritrack/fish/ui/testBinTemperature/TestBinTempActivity.java,d\b\db7af4ec5e6589ca44c5bceeddc84c79272a4b23
+o
+?app/src/main/java/io/agritrack/ui/tools/CAENLoggerActivity.java,c\0\c0d9610dd318c793f0d87360d0192acb0b51b168
+l
+<app/src/main/java/io/agritrack/rfid/ScanInventoryThread.java,a\5\a5098938827ef03bcec57029d94f5e34e05914b1
+c
+3app/src/main/java/io/agritrack/sound/SoundUtil.java,7\4\74c9f414b3ca6dc977e6456bb4cf975f48fb19c3
+n
+>app/src/main/java/io/agritrack/caen/api/CAENLoggerService.java,8\5\852bb489a1819109e0acdbafc9eb028b597ee2f7
+o
+?app/src/main/java/io/agritrack/ui/service/LocalPreferences.java,c\f\cfa1ca5f480f5be403815c14d55a81dc141e01e7
+
+Oapp/src/main/java/io/agritrack/fish/ui/wh/inventory/InventoryAssetActivity.java,a\5\a58def678e60a17eda7315f4711c657d2fe71abc
+h
+8app/src/main/java/io/agritrack/FishTrackApplication.java,5\1\51bad9f5c9c39de36f8e64ef5b048a73c7c45af0
+v
+Fapp/src/main/java/io/agritrack/ui/tools/caen/LoggerDialogFragment.java,2\0\205f3df92f446877b11984041c79c9748b7d8463
+{
+Kapp/src/main/java/io/agritrack/fish/ui/transport/TransportInfoActivity.java,e\5\e56288f9ac76e27daaeaf88f779de348d2d44e92
+x
+Happ/src/main/java/io/agritrack/ui/adapter/RecyclerItemClickListener.java,3\a\3ae6767bca79beb0bbcdbfca07d30ffabd23e381

@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvParent"
     android:layout_width="match_parent"
-    android:layout_height="96dp"
+    android:layout_height="86dp"
+    android:layout_margin="@dimen/margin5"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@drawable/button_rounded_shape_corners_blue"
     android:padding="5dp">
 
+    <!-- Top part -->
+
+    <!-- Divider between top and bottom parts -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout1"
-        android:layout_width="200dp"
-        android:layout_height="match_parent"
-        android:background="@drawable/border_left"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        app:layout_constraintBottom_toTopOf="@+id/divider1"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -21,11 +29,13 @@
             android:id="@+id/tvRecyclerItemSNo"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="70dp"
+            android:layout_marginEnd="4dp"
             android:paddingTop="3dp"
             android:paddingEnd="15dp"
-            android:textAlignment="viewEnd"
             android:textColor="@color/agri_yellow"
             android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvRfid"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -35,16 +45,41 @@
             fontPath="fonts/open_sans_extra_bold.ttf"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="80dp"
             android:fontFamily="sans-serif"
             android:text="@string/item_home_adapter_menu_item"
             android:textAlignment="center"
             android:textColor="@color/yellow"
             android:textSize="20sp"
             android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvRecyclerItemSNo"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/divider1"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/yellow"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout1" />
+
+    <!-- Left-bottom part -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="170dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/divider2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider1">
 
         <TextView
             android:id="@+id/tvBinWeightLabel"
@@ -52,7 +87,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
             android:fontFamily="sans-serif"
             android:text="@string/weight_bin"
             android:textAlignment="center"
@@ -61,6 +95,7 @@
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
 
         <EditText
@@ -69,16 +104,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:inputType="numberDecimal"
-            android:textColor="@color/yellow"
             android:completionThreshold="1"
-            android:imeOptions="actionDone"
             android:fontFamily="sans-serif"
+            android:imeOptions="actionDone"
+            android:inputType="numberDecimal"
             android:textAlignment="center"
-            android:textSize="20sp"
+            android:textColor="@color/yellow"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvBinWeightLabel"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
 
         <TextView
@@ -97,27 +133,42 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Divider between left-bottom and right-bottom parts -->
+    <TextView
+        android:id="@+id/divider2"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/yellow"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout2" />
 
+    <!-- Right-bottom part -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:background="@drawable/border_left"
+        android:id="@+id/constraintLayout3"
+        android:layout_width="200dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout1"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toEndOf="@+id/divider2"
+        app:layout_constraintTop_toBottomOf="@+id/divider1">
 
-        <ImageButton
-            android:id="@+id/ibAddTemp"
-            android:layout_width="48sp"
-            android:layout_height="48sp"
+        <TextView
+            android:id="@+id/tvAddTemp"
+            fontPath="fonts/open_sans_extra_bold.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:backgroundTint="@color/yellow"
-            android:src="@drawable/quality"
+            android:fontFamily="sans-serif"
+            android:text="@string/temp"
+            android:textAlignment="center"
+            android:textColor="@color/yellow"
+            android:textSize="20sp"
+            android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingPrefix" />
 
         <EditText
             android:id="@+id/etBinTemperature"
@@ -131,10 +182,10 @@
             android:inputType="numberDecimal"
             android:textAlignment="center"
             android:textColor="@color/yellow"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ibAddTemp"
+            app:layout_constraintStart_toEndOf="@+id/tvAddTemp"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
 

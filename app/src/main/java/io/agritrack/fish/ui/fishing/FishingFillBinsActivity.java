@@ -4,14 +4,20 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
+import static io.agritrack.sound.SoundUtil.context;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,6 +45,7 @@ import io.agritrack.fish.ui.bo.BinWeightRecord;
 import io.agritrack.scale.diniargeo.MCWScale;
 import io.agritrack.ui.adapter.BinLoadAdapter;
 import io.agritrack.ui.adapter.BinLoadAdapter.BinLoadItem;
+import io.agritrack.ui.adapter.RecyclerItemClickListener;
 import io.agritrack.ui.service.LocalPreferences;
 
 

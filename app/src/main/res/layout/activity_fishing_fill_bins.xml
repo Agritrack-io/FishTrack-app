@@ -5,7 +5,8 @@
     android:id="@+id/fishingStartActivityLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="beforeDescendants"
+    android:clickable="true"
+    android:focusable="true"
     android:focusableInTouchMode="true"
     android:background="@color/agri_semi_green"
     tools:context=".fish.ui.fishing.FishingFillBinsActivity">
@@ -82,7 +83,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/info"
-            app:tint="@color/agri_green" />
+            app:tint="@color/agri_green"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -92,14 +93,13 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/footerLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
         <RelativeLayout
             android:id="@+id/fishBatchLayout"
             android:layout_width="0dp"
-            android:layout_height="360dp"
+            android:layout_height="0dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toTopOf="@+id/fishSummaryLayout"
@@ -113,15 +113,15 @@
                 android:layout_marginTop="12dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
                 android:orientation="vertical"
-                android:padding="15dp">
+                android:paddingTop="@dimen/margin15"
+                android:padding="5dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvWeightBatchesBin"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginTop="8dp"
-                    android:padding="5dp"
-                    android:paddingStart="10dp"
+                    android:layout_marginTop="4dp"
+                    android:padding="2dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -145,7 +145,7 @@
         <RelativeLayout
             android:id="@+id/fishSummaryLayout"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="80dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
@@ -172,6 +172,7 @@
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/border_bottom"
                     android:gravity="end"
+                    android:visibility="gone"
                     android:inputType="number"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
@@ -192,6 +193,7 @@
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/border_bottom"
                     android:gravity="end"
+                    android:visibility="gone"
                     android:inputType="number"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
@@ -230,6 +232,7 @@
                     android:layout_marginBottom="8dp"
                     android:text="@string/available_bins"
                     android:textColor="@color/label_blue"
+                    android:visibility="gone"
                     android:textSize="@dimen/text_semi_large"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/tvAvailableBinsCount"
@@ -245,6 +248,7 @@
                     android:text="@string/used_bins"
                     android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_semi_large"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/tvAvailableBins"
                     app:layout_constraintEnd_toStartOf="@+id/tvUsedBinsCount"
                     app:layout_constraintStart_toStartOf="parent"
