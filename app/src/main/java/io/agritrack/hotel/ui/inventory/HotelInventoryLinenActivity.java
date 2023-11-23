@@ -527,7 +527,7 @@ public class HotelInventoryLinenActivity extends LocationAwareActivity {
                     }
                     break;
                 case 1980:
-                    if (adapterInventoryItems.getValues().containsKey("XXXX")){
+                    if (adapterInventoryItems != null && adapterInventoryItems.getValues().containsKey("XXXX")){
                         for(int i=0; i<2; i++) {
                             CToast(getApplicationContext(), render(adapterInventoryItems.getValues().get("XXXX").size() + getResources().getString(R.string.not_encoded_tags)), Toast.LENGTH_LONG);
                         }

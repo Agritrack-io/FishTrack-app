@@ -59,8 +59,6 @@ l
 <app/src/main/java/io/agritrack/data/dto/tx/CollectTxDTO.java,e\4\e42db561fd62d4648258b112bd865eeaea5013b8
 t
 Dapp/src/main/java/io/agritrack/data/model/tx/CollectTransaction.java,3\2\3281c4770a3d58a414700a0b1d84f9f1464e306b
-w
-Gapp/src/main/java/io/agritrack/hotel/ui/search/HotelSearchActivity.java,8\a\8a3b0cd984791b59d02678ae24a075846ab104ff
 j
 :app/src/main/java/io/agritrack/data/dto/tx/AssetTxDTO.java,9\9\9964c909a0172e2c05315acd701594f06d23f36d
 s
@@ -133,12 +131,8 @@ Capp/src/main/java/io/agritrack/data/dao/tx/AssetTransactionDAO.java,3\9\39a966
 Qapp/src/main/java/io/agritrack/fish/ui/seaTemperature/SeaTemperatureActivity.java,b\e\be059d8df3912c96ab4157ee7b7be32a0d08d6ad
 z
 Japp/src/main/java/io/agritrack/fish/ui/fishing/FishingDetailsActivity.java,f\3\f312725732c07ccfd78e68fd615a1a002b8c3b27
-h
-8app/src/main/java/io/agritrack/FishTrackApplication.java,5\1\51bad9f5c9c39de36f8e64ef5b048a73c7c45af0
 o
 ?app/src/main/java/io/agritrack/ui/tools/CAENLoggerActivity.java,c\0\c0d9610dd318c793f0d87360d0192acb0b51b168
-k
-;app/src/main/java/io/agritrack/api/upload/UploadingApi.java,6\6\66dd88d29d6ccfdd5d245dcc83da17a256dde82a
 w
 Gapp/src/main/java/io/agritrack/api/sync/PendingTransportTxCallBack.java,d\8\d84d766d5933f125adaa39926ff160499e3767dc
 †
@@ -147,8 +141,6 @@ z
 Japp/src/main/java/io/agritrack/hotel/ui/sync/HotelSynchronizeActivity.java,d\a\da9bdfbab82adee27d6ff8baeb56e0272faf0378
 y
 Iapp/src/main/java/io/agritrack/api/sync/PendingCorrelationTxCallBack.java,e\b\ebe1890a067b5c5e437125e920b0df389255ee53
-‚
-Rapp/src/main/java/io/agritrack/hotel/ui/inventory/HotelInventoryLinenActivity.java,6\1\61cdabf166bbb00957ce6af6302e5a8206b7c9eb
 }
 Mapp/src/main/java/io/agritrack/hotel/ui/status/HotelChangeStatusActivity.java,a\d\ada28e252608064caaf4ea1e05ecabda2a1885c7
 ‹
@@ -177,8 +169,6 @@ F
 app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
 t
 Dapp/src/main/java/io/agritrack/ui/service/AuthenticationService.java,b\8\b870b974ba3569fc6b9a78f066cebc8195a496f7
-k
-;app/src/main/java/io/agritrack/api/APIServiceGenerator.java,3\c\3cc61a208337c6405a11cef7737ecff59f215df0
 z
 Japp/src/main/java/io/agritrack/fish/ui/fishing/FishingConfirmActivity.java,4\7\477a6fdfffe17982895def7d2fb7561af180c99c
 d
@@ -199,8 +189,6 @@ l
 <app/src/main/java/io/agritrack/data/dto/wh/OrderItemDTO.java,5\4\5406c279d4adc8385d2075fad5545ebb5b102926
 p
 @app/src/main/java/io/agritrack/data/dto/wh/RFIDInventoryDTO.java,2\3\2330204b6a9eb7e39122b96b2be2892434fc5a3b
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 o
 ?app/src/main/java/io/agritrack/ui/service/LocalPreferences.java,c\f\cfa1ca5f480f5be403815c14d55a81dc141e01e7
 „
@@ -217,8 +205,6 @@ Fapp/src/main/java/io/agritrack/data/model/tx/TransportTransaction.java,1\f\1fe
 Kapp/src/main/java/io/agritrack/fish/ui/transport/TransportBinsActivity.java,d\b\dbe148c7e0cccf3fffdf64bd2dd656d7cbe9e268
 t
 Dapp/src/main/java/io/agritrack/fish/ui/wh/search/SearchActivity.java,7\8\781ab4500836b13240779d33f6ea74c585c9ec33
-{
-Kapp/src/main/java/io/agritrack/fish/ui/fishing/FishingFillBinsActivity.java,9\f\9f03630817db48f9df124d1bccfdc92677caa74c
 w
 Gapp/src/main/java/io/agritrack/fish/ui/fishing/FishingBinsActivity.java,8\4\8403e2f1485536013bd6a18f013bfc0b17690620
 ‰
