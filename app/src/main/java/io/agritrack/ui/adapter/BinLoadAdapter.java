@@ -14,11 +14,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +37,7 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
     private int previousSelectedPos = -1;
     private String selectedValue = null;
     private String selectedLabel = null;
+    private boolean showTemp = false;
 
     public BinLoadAdapter(Context context, ArrayList<BinLoadItem> values) {
         this.context = context;
@@ -89,12 +93,21 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        mList.sort(Comparator.comparing(o -> o.epc.substring(o.epc.length() - 5)));
         if (mList.size() <= holder.getAdapterPosition()) {
             return;
         }
         BinLoadItem currBin = mList.get(holder.getAdapterPosition());
         String tag = currBin.epc.length() > 5 ? currBin.epc.substring(currBin.epc.length() - 5) : currBin.epc;
         holder.tvRfid.setText(tag);
+
+        if (showTemp) {
+            holder.constraintLayout2.setVisibility(View.GONE);
+            holder.constraintLayout3.setVisibility(View.VISIBLE);
+        } else {
+            holder.constraintLayout2.setVisibility(View.VISIBLE);
+            holder.constraintLayout3.setVisibility(View.GONE);
+        }
 
         holder.etWeight.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -177,7 +190,7 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
         }
 
 //        holder.itemView.setBackgroundColor(selectedPos == holder.getAdapterPosition() ? Color.GRAY : R.color.agri_blue);
-        holder.tvItemSNo.setText(position + 1 + ".");
+//        holder.tvItemSNo.setText(position + 1 + ".");
     }
 
     public void hideKeyboard(View view) {
@@ -193,6 +206,11 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
     @Override
     public int getItemCount() {
         return mList.size();
+    }
+
+    public void showTemp(boolean showTemp) {
+        this.showTemp = showTemp;
+        notifyDataSetChanged();
     }
 
     public static class BinLoadItem {
@@ -219,8 +237,9 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final TextView tvRfid, tvItemSNo, tvBinWeightLabel, tvAddTemp;
+        private final TextView tvRfid, tvItemSNo, tvBinWeightLabel, tvAddTemp, tvKg, tvCelsius;
         private final EditText etBinTemperature, etWeight;
+        private final ConstraintLayout constraintLayout2, constraintLayout3;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -230,6 +249,10 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
             etWeight = itemView.findViewById(R.id.etBinWeight);
             tvBinWeightLabel = itemView.findViewById(R.id.tvBinWeightLabel);
             etBinTemperature = itemView.findViewById(R.id.etBinTemperature);
+            tvKg = itemView.findViewById(R.id.tvKg);
+            tvCelsius = itemView.findViewById(R.id.tvCelsius);
+            constraintLayout2 = itemView.findViewById(R.id.constraintLayout2);
+            constraintLayout3 = itemView.findViewById(R.id.constraintLayout3);
             etWeight.setSelectAllOnFocus(true);
             etBinTemperature.setSelectAllOnFocus(true);
 

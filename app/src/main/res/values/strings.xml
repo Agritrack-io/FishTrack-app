@@ -134,7 +134,7 @@
     <string name="add_catch_button">ADD CATCH</string>
     <string name="delete_catch_button">DELETE CATCH</string>
     <string name="end_bin_button">BIN FILLED</string>
-    <string name="weight_bin">Weight:</string>
+    <string name="weight_bin">Weight</string>
     <string name="type_weight">Please type weight</string>
     <string name="fish_catch_weight">Fish Catch Weight</string>
     <string name="bt_scale_reading">Scale reading</string>
@@ -765,6 +765,6 @@
     <string name="clip2" translatable="false">Clip 2:</string>
     <string name="title_init_bins">INITIALIZE BINS</string>
     <string name="initialized_bins">Initialized bins</string>
-    <string name="temp">Temp:</string>
+    <string name="temp">Temp</string>
 
 </resources>

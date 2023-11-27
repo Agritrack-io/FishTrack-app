@@ -135,7 +135,7 @@
     <string name="add_catch_button">ΠΡΟΣΘΕΣΕ ΨΑΡΙΑ</string>
     <string name="delete_catch_button">ΔΙΕΓΡΑΨΕ ΨΑΡΙΑ</string>
     <string name="end_bin_button">ΤΕΛΟΣ ΒΟΥΤΑΣ</string>
-    <string name="weight_bin">Βάρος:</string>
+    <string name="weight_bin">Βάρος</string>
     <string name="type_weight">Παρακαλώ πληκτρολογήστε βάρος</string>
     <string name="fishing_catches">Ψαριές</string>
     <string name="fish_catch_weight">Βάρος ψαριάς</string>
@@ -143,7 +143,7 @@
     <string name="bt_scale_status">Κατάσταση ζυγαριάς</string>
     <string name="fishing_summary">Σύνολα αλίευσης</string>
     <string name="fill_bin">Παρακαλώ πατήστε ΤΕΛΟΣ ΒΟΥΤΑΣ</string>
-    <string name="total_weight">ΣΥΝΟΛΙΚΟ ΒΑΡΟΣ:</string>
+    <string name="total_weight">ΣΥΝ. ΒΑΡΟΣ (Kg):</string>
     <string name="used_bins">ΧΡΗΣΙΜ. ΒΟΥΤΕΣ:</string>
     <string name="available_bins">ΔΙΑΘΕΣΙΜΕΣ ΒΟΥΤΕΣ:</string>
     <string name="total_quantity">Συνολική ποσότητα:</string>
@@ -745,6 +745,6 @@
     <string name="menu_title_init_bins">Αρχικοποίηση βουτών</string>
     <string name="title_init_bins">ΑΡΧΙΚΟΠΟΙΗΣΗ ΒΟΥΤΩΝ</string>
     <string name="initialized_bins">Αρχικοποιημένες βούτες</string>
-    <string name="temp">Θερμ:</string>
+    <string name="temp">Θερμ.</string>
 
 </resources>

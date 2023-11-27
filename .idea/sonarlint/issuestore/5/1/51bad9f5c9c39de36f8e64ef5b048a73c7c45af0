@@ -5,7 +5,7 @@ I
 java:S1444".Make this "public static IsOnline" field final(Ê®Ùøøÿÿÿÿ
 t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ËÓå€üÿÿÿÿ
 m
-java:S3008"RRename this field "PRODUCT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ç›ëŒþÿÿÿÿ
+java:S3008"RRename this field "PRODUCT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(âˆ½…ùÿÿÿÿ
 n
 java:S3008"SRename this field "IsOnline" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ê®Ùøøÿÿÿÿ
 P

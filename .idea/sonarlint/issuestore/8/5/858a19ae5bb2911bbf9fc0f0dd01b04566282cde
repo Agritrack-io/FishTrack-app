@@ -1,0 +1,37 @@
+
+?
+java:S1604"(Make this anonymous inner class a lambda(ŽÕä
+D
+java:S1604˜"(Make this anonymous inner class a lambda(çÄÝöøÿÿÿÿ
+g
+java:S1301Ç"KReplace this "switch" statement by "if" statements to increase readability.(ýÞ³‹ùÿÿÿÿ
+ˆ
+java:S1488¤"lImmediately return this expression instead of assigning it to the temporary variable "transportationRecord".(ñûÀ¹ùÿÿÿÿ
+c
+java:S2637¹"GParameter 1 to this call is marked "@NonNull" but null could be passed.(¼„ç‰üÿÿÿÿ
+s	java:S116H"^Rename this field "singleShot_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÏÌ‡È
+>
+java:S1659O")Declare "ivDeleteBin" on a separate line.(‡á§
+Ž
+java:S5803"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ˆüˆ­
+B
+java:S1602—",Remove useless curly braces around statement(…¼½p
+W	java:S125¯"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+?
+java:S1185¿"(Remove this method to simply inherit it.(ÍÙ÷¢
+`
+java:S1874Ó"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(¹Î¾
+W	java:S125ü"<This block of commented-out lines of code should be removed.(ñ®ÅÀùÿÿÿÿ
+V
+java:S1117ÿ"?Rename "tvBinsCount" which hides the field declared at line 77.(¹®Ì
+R	java:S125¦"<This block of commented-out lines of code should be removed.(ïØÎË
+W	java:S125®"<This block of commented-out lines of code should be removed.(è®Ïèùÿÿÿÿ
+R	java:S125º"<This block of commented-out lines of code should be removed.(ÍÏüý
+T
+java:S1854Ê"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿÿ
+=	java:S131Ç""Add a default case to this switch.(ýÞ³‹ùÿÿÿÿ
+E
+java:S1481Ê")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ
+W	java:S125Ø"<This block of commented-out lines of code should be removed.(¬ÀŠ„ÿÿÿÿÿ
+C
+java:S1068¿"-Remove this unused "mActivity" private field.(·¼Æ}

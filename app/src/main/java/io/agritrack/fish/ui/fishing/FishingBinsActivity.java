@@ -41,6 +41,7 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -134,6 +135,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             // instantiate a set to hold scanned EPCS.it will be passed to adapter which feeds the ListView.
             scannedBinEPCs = new LinkedHashSet<>();
         } else {
+            recFishing.availBins.sort(Comparator.comparing(o -> o.substring(o.length() - 10)));
             scannedBinEPCs = new LinkedHashSet<>(recFishing.availBins);
         }
 

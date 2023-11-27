@@ -5,9 +5,7 @@
     android:id="@+id/fishingStartActivityLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
+
     android:background="@color/agri_semi_green"
     tools:context=".fish.ui.fishing.FishingFillBinsActivity">
 
@@ -118,6 +116,8 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvWeightBatchesBin"
+                    android:descendantFocusability="beforeDescendants"
+                    android:focusableInTouchMode="true"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="4dp"
@@ -155,7 +155,8 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+                android:id="@+id/totalWeight"
+                android:layout_width="320dp"
                 android:layout_height="match_parent"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
@@ -172,13 +173,13 @@
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/border_bottom"
                     android:gravity="end"
-                    android:visibility="gone"
                     android:inputType="number"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
                     android:textIsSelectable="false"
                     android:textSize="20sp"
                     android:textStyle="bold"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvAvailableBins"
@@ -193,13 +194,13 @@
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/border_bottom"
                     android:gravity="end"
-                    android:visibility="gone"
                     android:inputType="number"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
                     android:textIsSelectable="false"
                     android:textSize="20sp"
                     android:textStyle="bold"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/tvAvailableBinsCount"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvUsedBins"
@@ -207,11 +208,10 @@
 
                 <TextView
                     android:id="@+id/tvTotalWeightCount"
-                    android:layout_width="0dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
                     android:background="@drawable/border_bottom"
                     android:inputType="number"
                     android:textAlignment="textEnd"
@@ -232,8 +232,8 @@
                     android:layout_marginBottom="8dp"
                     android:text="@string/available_bins"
                     android:textColor="@color/label_blue"
-                    android:visibility="gone"
                     android:textSize="@dimen/text_semi_large"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/tvAvailableBinsCount"
                     app:layout_constraintHorizontal_bias="0.6"
@@ -256,7 +256,7 @@
 
                 <TextView
                     android:id="@+id/tvTotalWeight"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/total_weight"
@@ -278,6 +278,20 @@
                 android:text="@string/fishing_summary"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/ivAddTemp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="10dp"
+                android:layout_toEndOf="@+id/totalWeight"
+                android:src="@drawable/quality" />
 
         </RelativeLayout>
 

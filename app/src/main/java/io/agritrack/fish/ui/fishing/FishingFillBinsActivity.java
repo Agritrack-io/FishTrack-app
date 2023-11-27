@@ -4,20 +4,16 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
-import static io.agritrack.sound.SoundUtil.context;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,6 +28,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
@@ -45,7 +43,6 @@ import io.agritrack.fish.ui.bo.BinWeightRecord;
 import io.agritrack.scale.diniargeo.MCWScale;
 import io.agritrack.ui.adapter.BinLoadAdapter;
 import io.agritrack.ui.adapter.BinLoadAdapter.BinLoadItem;
-import io.agritrack.ui.adapter.RecyclerItemClickListener;
 import io.agritrack.ui.service.LocalPreferences;
 
 
@@ -53,6 +50,7 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
 
     protected BroadcastReceiver keyReceiver;
     private TextView tvTotalWeightCount, tvUsedBinsCount, tvAvailableBinsCount;
+    private ImageView ivAddTemp;
     private RecyclerView rvWeightBatchesBin;
     private BinLoadAdapter adapterCatches;
     private boolean intentForFillBinActivity = false;
@@ -65,6 +63,7 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
     private boolean isClicked = true;
+    private boolean showTemp = true;
 
     // Bluetooth variables
     private BluetoothAdapter bluetoothAdapter = null;
@@ -77,6 +76,8 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_fill_bins);
+
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE|WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingFillBins);
@@ -172,6 +173,16 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
 //            startActivity(i);
 //        });
 
+        ivAddTemp.setOnClickListener(v -> {
+            adapterCatches.showTemp(showTemp);
+            if (showTemp) {
+                ivAddTemp.setImageDrawable(getDrawable(R.drawable.weight));
+            } else {
+                ivAddTemp.setImageDrawable(getDrawable(R.drawable.quality));
+            }
+            showTemp = !showTemp;
+        });
+
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(FishingFillBinsActivity.this);
             supportDialog.showDialog();
@@ -261,6 +272,7 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
         tvAvailableBinsCount = findViewById(R.id.tvAvailableBinsCount);
         rvWeightBatchesBin = findViewById(R.id.rvWeightBatchesBin);
         ivCheckLastTemp = findViewById(R.id.ivCheckLastTemp);
+        ivAddTemp = findViewById(R.id.ivAddTemp);
         ivSupport = findViewById(R.id.ivSupport);
         ivInfo = findViewById(R.id.ivInfo);
         // bluetooth progress bar

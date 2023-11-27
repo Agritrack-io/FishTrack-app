@@ -259,7 +259,7 @@
         <activity
             android:name=".fish.ui.fishing.FishingFillBinsActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".fish.ui.fishing.FishingDetailsActivity"
             android:screenOrientation="portrait" />

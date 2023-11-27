@@ -8,7 +8,6 @@
     android:layout_height="86dp"
     android:layout_margin="@dimen/margin5"
     android:clickable="true"
-    android:focusable="true"
     android:focusableInTouchMode="true"
     android:background="@drawable/button_rounded_shape_corners_blue"
     android:padding="5dp">
@@ -18,27 +17,12 @@
     <!-- Divider between top and bottom parts -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout1"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        app:layout_constraintBottom_toTopOf="@+id/divider1"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="200dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/divider1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tvRecyclerItemSNo"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="70dp"
-            android:layout_marginEnd="4dp"
-            android:paddingTop="3dp"
-            android:paddingEnd="15dp"
-            android:textColor="@color/agri_yellow"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvRfid"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvRfid"
@@ -46,16 +30,15 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="80dp"
             android:fontFamily="sans-serif"
             android:text="@string/item_home_adapter_menu_item"
             android:textAlignment="center"
             android:textColor="@color/yellow"
-            android:textSize="20sp"
+            android:textSize="30sp"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvRecyclerItemSNo"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
 
@@ -63,13 +46,12 @@
 
     <TextView
         android:id="@+id/divider1"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
         android:background="@color/yellow"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout1" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout1"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Left-bottom part -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -77,23 +59,22 @@
         android:layout_width="170dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/divider2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider1">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/divider1"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tvBinWeightLabel"
             fontPath="fonts/open_sans_extra_bold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:fontFamily="sans-serif"
             android:text="@string/weight_bin"
             android:textAlignment="center"
             android:textColor="@color/yellow"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
@@ -101,7 +82,7 @@
         <EditText
             android:id="@+id/etBinWeight"
             fontPath="fonts/open_sans_extra_bold.ttf"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:completionThreshold="1"
@@ -110,11 +91,11 @@
             android:inputType="numberDecimal"
             android:textAlignment="center"
             android:textColor="@color/yellow"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
+            android:backgroundTint="@color/yellow"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvBinWeightLabel"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             tools:ignore="MissingPrefix" />
 
         <TextView
@@ -128,30 +109,22 @@
             android:textColor="@color/yellow"
             android:textSize="@dimen/text_view_font_size_medium"
             app:layout_constraintBottom_toBottomOf="@+id/etBinWeight"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/etBinWeight"
             app:layout_constraintTop_toTopOf="@+id/etBinWeight" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Divider between left-bottom and right-bottom parts -->
-    <TextView
-        android:id="@+id/divider2"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:background="@color/yellow"
-        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout2" />
-
     <!-- Right-bottom part -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
-        android:layout_width="200dp"
+        android:layout_width="170dp"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/divider2"
-        app:layout_constraintTop_toBottomOf="@+id/divider1">
+        app:layout_constraintStart_toEndOf="@+id/divider1"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tvAddTemp"
@@ -163,9 +136,9 @@
             android:text="@string/temp"
             android:textAlignment="center"
             android:textColor="@color/yellow"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
@@ -173,7 +146,7 @@
         <EditText
             android:id="@+id/etBinTemperature"
             fontPath="fonts/open_sans_extra_bold.ttf"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:completionThreshold="1"
@@ -182,11 +155,11 @@
             android:inputType="numberDecimal"
             android:textAlignment="center"
             android:textColor="@color/yellow"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
+            android:backgroundTint="@color/yellow"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvAddTemp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             tools:ignore="MissingPrefix" />
 
         <TextView
@@ -200,6 +173,7 @@
             android:textColor="@color/yellow"
             android:textSize="@dimen/text_view_font_size_medium"
             app:layout_constraintBottom_toBottomOf="@+id/etBinTemperature"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/etBinTemperature"
             app:layout_constraintTop_toTopOf="@+id/etBinTemperature" />
 
