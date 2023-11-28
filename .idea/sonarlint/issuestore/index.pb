@@ -169,8 +169,6 @@ F
 app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
 t
 Dapp/src/main/java/io/agritrack/ui/service/AuthenticationService.java,b\8\b870b974ba3569fc6b9a78f066cebc8195a496f7
-z
-Japp/src/main/java/io/agritrack/fish/ui/fishing/FishingConfirmActivity.java,4\7\477a6fdfffe17982895def7d2fb7561af180c99c
 d
 4app/src/main/java/io/agritrack/data/dao/SiteDAO.java,e\d\ed33dd363f5fd4d26e10562d35db0e5c022387de
 j
@@ -205,8 +203,6 @@ Fapp/src/main/java/io/agritrack/data/model/tx/TransportTransaction.java,1\f\1fe
 Kapp/src/main/java/io/agritrack/fish/ui/transport/TransportBinsActivity.java,d\b\dbe148c7e0cccf3fffdf64bd2dd656d7cbe9e268
 t
 Dapp/src/main/java/io/agritrack/fish/ui/wh/search/SearchActivity.java,7\8\781ab4500836b13240779d33f6ea74c585c9ec33
-w
-Gapp/src/main/java/io/agritrack/fish/ui/fishing/FishingBinsActivity.java,8\4\8403e2f1485536013bd6a18f013bfc0b17690620
 ‰
 Yapp/src/main/java/io/agritrack/fish/ui/quality/packaging/PackageQualityStartActivity.java,a\1\a1548d95a89bff3a5dd4d120cce30684c16f70e0
 ‡
@@ -219,3 +215,15 @@ v
 Fapp/src/main/java/io/agritrack/data/service/EncodingSchemeService.java,c\9\c95138254debc88a6db8bf35382dd7c7b950518e
 w
 Gapp/src/main/java/io/agritrack/fish/ui/process/ProcessBinsActivity.java,d\c\dc15fc007e1e1fd859b23f6d265986336e31ddbf
+z
+Japp/src/main/java/io/agritrack/fish/ui/fishing/FishingConfirmActivity.java,4\7\477a6fdfffe17982895def7d2fb7561af180c99c
+w
+Gapp/src/main/java/io/agritrack/fish/ui/fishing/FishingBinsActivity.java,8\4\8403e2f1485536013bd6a18f013bfc0b17690620
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+k
+;app/src/main/java/io/agritrack/api/APIServiceGenerator.java,3\c\3cc61a208337c6405a11cef7737ecff59f215df0
+h
+8app/src/main/java/io/agritrack/FishTrackApplication.java,5\1\51bad9f5c9c39de36f8e64ef5b048a73c7c45af0
+f
+6app/src/main/java/io/agritrack/caen/api/ICAEN_API.java,c\5\c56a92aed2cff4a5230458a9fabc6b380d7a44d7

@@ -1,32 +1,32 @@
 
-E
-java:S1066a"/Merge this if statement with the enclosing one.(‡ºáì
-?
-java:S1604‚"(Make this anonymous inner class a lambda(æ¶ßù
+L
+java:S1066a"/Merge this if statement with the enclosing one.(‡ºáì8îŠßƒÁ1
+F
+java:S1604‚"(Make this anonymous inner class a lambda(æ¶ßù8ïŠßƒÁ1
 |
 java:S1488Ê"fImmediately return this expression instead of assigning it to the temporary variable "authentication".(îÿ‰
-E
-java:S5411y"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
-e
-java:S16597"ODeclare "tvReqQuantityCount" and all following declarations on a separate line.(¿§†½
-^
-java:S16599"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
-x
-java:S14506"]Remove the "progressDialog" field and declare it as a local variable in the relevant methods.(·á…Çùÿÿÿÿ
-|
-java:S14504"aRemove the "selectReasonDialog" field and declare it as a local variable in the relevant methods.(¼æùùşÿÿÿÿ
-Q
-java:S18746"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
-Q
-java:S1874Z"6Remove this use of "ProgressDialog"; it is deprecated.(¶ï×Áûÿÿÿÿ
-N
-java:S1874["8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
 L
-java:S1874["6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
-K
-java:S1874["5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
-2
-java:S3626Œ"Remove this redundant jump.(ûÁİ…
-O	java:S106¯"9Replace this use of System.out or System.err by a logger.(úÕÃÙ
-C
-java:S3398­"'Move this method into "SyncTxCallBack".(å˜êùÿÿÿÿ
+java:S5411y"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ8òŠßƒÁ1
+l
+java:S16597"ODeclare "tvReqQuantityCount" and all following declarations on a separate line.(¿§†½8œßƒÁ1
+e
+java:S16599"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ8ßƒÁ1
+
+java:S14506"]Remove the "progressDialog" field and declare it as a local variable in the relevant methods.(·á…Çùÿÿÿÿ8ŸßƒÁ1
+ƒ
+java:S14504"aRemove the "selectReasonDialog" field and declare it as a local variable in the relevant methods.(¼æùùşÿÿÿÿ8ŸßƒÁ1
+X
+java:S18746"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8©ßƒÁ1
+X
+java:S1874Z"6Remove this use of "ProgressDialog"; it is deprecated.(¶ï×Áûÿÿÿÿ8±ßƒÁ1
+U
+java:S1874["8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿8²ßƒÁ1
+S
+java:S1874["6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿8²ßƒÁ1
+R
+java:S1874["5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿8²ßƒÁ1
+9
+java:S3626Œ"Remove this redundant jump.(ûÁİ…8ÅßƒÁ1
+V	java:S106¯"9Replace this use of System.out or System.err by a logger.(úÕÃÙ8ÍßƒÁ1
+J
+java:S3398­"'Move this method into "SyncTxCallBack".(å˜êùÿÿÿÿ8ÚßƒÁ1

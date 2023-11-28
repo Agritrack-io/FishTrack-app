@@ -1,42 +1,42 @@
 
+M
+java:S1066â"/Merge this if statement with the enclosing one.(Î‡†8œ’ßƒÁ1
+R
+java:S1066Ü"/Merge this if statement with the enclosing one.(½åğìúÿÿÿÿ8’ßƒÁ1
 F
-java:S1066â"/Merge this if statement with the enclosing one.(Î‡†
+java:S1604Á"(Make this anonymous inner class a lambda(Õä8’ßƒÁ1
 K
-java:S1066Ü"/Merge this if statement with the enclosing one.(½åğìúÿÿÿÿ
-?
-java:S1604Á"(Make this anonymous inner class a lambda(Õä
-D
-java:S1604Ë"(Make this anonymous inner class a lambda(çÄİöøÿÿÿÿ
-g
-java:S1301û"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
-s	java:S116Q"^Rename this field "singleShot_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÏÌ‡È
->
-java:S1659Z")Declare "ivDeleteBin" on a separate line.(‡á§
-^
-java:S1659\"CDeclare "binEPC" and all following declarations on a separate line.(¹œêßıÿÿÿÿ
-H
-java:S1659]"-Declare "ivCheckLastTemp" on a separate line.(ê±òøıÿÿÿÿ
-r
-java:S1450W"\Remove the "loggerReading" field and declare it as a local variable in the relevant methods.(†¤
-m
-java:S3776c"RRefactor this method to reduce its Cognitive Complexity from 26 to the 15 allowed.(¨Œşÿÿÿÿ
-
-java:S5803”"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ˆüˆ­
-B
-java:S1602¶",Remove useless curly braces around statement(…¼½p
-W	java:S125õ"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
-I
-java:S1135Å"2Complete the task associated to this TODO comment.(°ªêî
-m
-java:S3457İ"Q%n should be used in place of \n to produce the platform-specific line separator.(†ªÄ¶øÿÿÿÿ
+java:S1604Ë"(Make this anonymous inner class a lambda(çÄİöøÿÿÿÿ8’ßƒÁ1
 n
-java:S3776ú"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ
-T
-java:S1854ş"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿÿ
-=	java:S131û""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+java:S1301û"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ8Ÿ’ßƒÁ1
+z	java:S116Q"^Rename this field "singleShot_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÏÌ‡È8Ä“ßƒÁ1
 E
-java:S1481ş")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ
-W	java:S125—"<This block of commented-out lines of code should be removed.(¨ø–ıÿÿÿÿ
+java:S1659Z")Declare "ivDeleteBin" on a separate line.(‡á§8Ø“ßƒÁ1
+e
+java:S1659\"CDeclare "binEPC" and all following declarations on a separate line.(¹œêßıÿÿÿÿ8Ù“ßƒÁ1
+O
+java:S1659]"-Declare "ivCheckLastTemp" on a separate line.(ê±òøıÿÿÿÿ8Ù“ßƒÁ1
+y
+java:S1450W"\Remove the "loggerReading" field and declare it as a local variable in the relevant methods.(†¤8İ“ßƒÁ1
+t
+java:S3776c"RRefactor this method to reduce its Cognitive Complexity from 26 to the 15 allowed.(¨Œşÿÿÿÿ8ï“ßƒÁ1
+–
+java:S5803”"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ˆüˆ­8”ßƒÁ1
+I
+java:S1602¶",Remove useless curly braces around statement(…¼½p8–”ßƒÁ1
+^	java:S125õ"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ8¬”ßƒÁ1
+P
+java:S1135Å"2Complete the task associated to this TODO comment.(°ªêî8–•ßƒÁ1
+t
+java:S3457İ"Q%n should be used in place of \n to produce the platform-specific line separator.(†ªÄ¶øÿÿÿÿ8•ßƒÁ1
+u
+java:S3776ú"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ8§•ßƒÁ1
+[
+java:S1854ş"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿÿ8¨•ßƒÁ1
+D	java:S131û""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ8©•ßƒÁ1
+L
+java:S1481ş")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ8ª•ßƒÁ1
+^	java:S125—"<This block of commented-out lines of code should be removed.(¨ø–ıÿÿÿÿ8¯•ßƒÁ1
 W	java:S125§"<This block of commented-out lines of code should be removed.(¶¦¹Ùúÿÿÿÿ
-D
-java:S1068ó"-Remove this unused "mActivity" private field.(î¼¹€
+K
+java:S1068ó"-Remove this unused "mActivity" private field.(î¼¹€8³•ßƒÁ1
