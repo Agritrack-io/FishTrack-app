@@ -1,30 +1,0 @@
-
-o	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Ì©Õ†
-k	java:S116"VRename this field "TagToString" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±äİú
-t	java:S116"ZRename this field "TagInfoToString" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆ«şëùÿÿÿÿ
-`
-java:S1124"EReorder the modifiers to comply with the Java Language Specification.(ë££ıÿÿÿÿ
-[
-java:S1124"EReorder the modifiers to comply with the Java Language Specification.(Œö„ã
-h	java:S100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±Æàíÿÿÿÿÿ
-`
-java:S1124"EReorder the modifiers to comply with the Java Language Specification.(±Æàíÿÿÿÿÿ
-h	java:S100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÙËÎ€úÿÿÿÿ
-`
-java:S1124"EReorder the modifiers to comply with the Java Language Specification.(ÙËÎ€úÿÿÿÿ
-`
-java:S1124"EReorder the modifiers to comply with the Java Language Specification.(œİ¯Šúÿÿÿÿ
-Z
-java:S1124"EReorder the modifiers to comply with the Java Language Specification.(åæ“M
-`
-java:S1124"EReorder the modifiers to comply with the Java Language Specification.(ò½„‘úÿÿÿÿ
-[
-java:S1124 "EReorder the modifiers to comply with the Java Language Specification.(¸¬ß¢
-`
-java:S1124""EReorder the modifiers to comply with the Java Language Specification.(ôÚãØúÿÿÿÿ
-`
-java:S1124$"EReorder the modifiers to comply with the Java Language Specification.(¡¹¾Ùüÿÿÿÿ
-b
-java:S1124&"EReorder the modifiers to comply with the Java Language Specification.(àğª8İÅò§1
-F
-java:S1068"0Remove this unused "LoggerIsOpen" private field.(Ì©Õ†

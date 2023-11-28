@@ -1,8 +1,6 @@
 
 o
 ?app/src/main/java/io/agritrack/fish/state/LoggerDataRecord.java,a\9\a959397269fed8bfa1bfa946822c484fd31a2861
-l
-<app/src/main/java/io/agritrack/caen/api/BX6100Commander.java,f\e\fe3d64cddf7be1aa58001288e127e027ff873b77
 {
 Kapp/src/main/java/io/agritrack/ui/tools/caen/SortLoggerDialogDecorator.java,f\7\f7156028b8c64a43a90ce875c79c42c1da1d784d
 
@@ -73,14 +71,10 @@ l
 <app/src/main/java/io/agritrack/dialog/GetTempDataDialog.java,6\d\6dd1a5a52118ff09b6727d96ce5471efd24f6851
 j
 :app/src/main/java/io/agritrack/dialog/ScanAssetDialog.java,9\0\9077a949491214f445d27ae41d23ae22656656ab
-<
-build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 N
 RFIDlibrary/proguard-rules.pro,a\0\a0a49459eb9b800333f7390bca1f135541d92ee7
 A
 gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
-?
-settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
 H
 RFIDlibrary/build.gradle,0\d\0d32ad866bf4e8c9f54cbc5e881240f8ed6b740f
 N
@@ -105,8 +99,6 @@ X
 (RFIDlibrary/src/main/AndroidManifest.xml,f\a\fa4072fbed3c49eb4eac8860bb1536e144a7cf2a
 y
 Iapp/src/main/java/io/agritrack/data/converter/LocalDateTimeConverter.java,f\d\fd48a626b334d0162aad449cc114c3cddfbdc05b
-f
-6app/src/main/java/io/agritrack/caen/api/ICAEN_API.java,c\5\c56a92aed2cff4a5230458a9fabc6b380d7a44d7
 t
 Dapp/src/main/java/io/agritrack/ui/config/ClusterListViewAdapter.java,2\7\27e5487ce8f64726f01a3fc2a42ed2ac6dd7e7aa
 p
@@ -211,8 +203,6 @@ r
 Bapp/src/main/java/io/agritrack/api/sync/SyncSuppliersCallBack.java,1\d\1d4a7962178071d29e574991c253fec601154f4e
 f
 6app/src/main/java/io/agritrack/common/DeviceUtils.java,8\9\896c2045a74b4f585bdf01f422569d34bdd8b23d
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 f
 6app/src/main/java/io/agritrack/data/model/BinInfo.java,6\2\6258e583f7ab8eec1e010c9d4f3a98b6207e71e1
 e
@@ -233,30 +223,18 @@ t
 Dapp/src/main/java/io/agritrack/api/sync/SyncCurrentEpcsCallBack.java,d\8\d8fed2a001a2aa5614f322bdd66515d40a88ca10
 j
 :app/src/main/java/io/agritrack/data/type/ConfigDevice.java,9\b\9b96a9146effae7b88b5c4e419927e770e677d66
-k
-;app/src/main/java/io/agritrack/rfid/ScanFilterRunnable.java,0\7\07a1b733e26a342376a026319c213facb652fded
 u
 Eapp/src/main/java/io/agritrack/ui/tools/ProgramLinenTagsActivity.java,6\d\6d7968960aa0cd701ac6de8214a3d4b86d0328e3
 x
 Happ/src/main/java/io/agritrack/rfid/MultipleFilterSingleShotScanner.java,4\e\4e0ac44f5f8d96435523fc6fb057c98702b22206
-l
-<app/src/main/java/io/agritrack/rfid/ScanInventoryThread.java,a\5\a5098938827ef03bcec57029d94f5e34e05914b1
-j
-:app/src/main/java/io/agritrack/rfid/SingleShotScanner.java,2\6\26fb1a9fcd92eb4532181288aae35fd96a2d6d2a
 w
 Gapp/src/main/java/io/agritrack/fish/ui/fishing/FishingCageActivity.java,0\2\023c159cb54b2d1d6ef3a728667d7d5c852a9ccd
 u
 Eapp/src/main/java/io/agritrack/api/sync/SyncClusterSitesCallBack.java,f\1\f1dd2bf06e564130f378ad1c390fbd07a0d78475
 o
 ?app/src/main/java/io/agritrack/ui/service/LocalPreferences.java,c\f\cfa1ca5f480f5be403815c14d55a81dc141e01e7
-q
-Aapp/src/main/java/io/agritrack/caen/api/AbstractX9Programmer.java,7\f\7fa8a12ce517a80f160881026506aa17bcfe027d
-m
-=app/src/main/java/io/agritrack/caen/api/BX6100Programmer.java,7\e\7e3cf423c4c61066efaf0e84e66323f050aa9ca4
 l
 <app/src/main/java/io/agritrack/ui/config/ConfigActivity.java,c\f\cf1ba2908fa8f1cde34a920278e14e134035775b
-j
-:app/src/main/java/io/agritrack/ui/login/LoginActivity.java,7\5\75c27282a465dc3e9cd2e5a874702c3f4dbd15ce
 x
 Happ/src/main/java/io/agritrack/ui/adapter/TemperatureProfileAdapter.java,c\2\c2d26e46b0925546585839f459eca06833074419
 
@@ -311,5 +289,3 @@ j
 :app/src/main/java/io/agritrack/enums/WarehouseTxState.java,f\3\f345c68406d0b577175920b9166e40cfc381bdff
 c
 3app/src/main/java/io/agritrack/enums/AssetType.java,1\2\124a65ca17caeba7c4bf92bd7598f492c6b8bf22
-@
-app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164

@@ -1,17 +1,0 @@
-
-s	java:S135d"YReduce the total number of break and continue statements in this loop to use at most one.(˜ïˆžÿÿÿÿÿ
-k	java:S116"VRename this field "RFID_FILTER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¯òÅâ
-u	java:S116"[Rename this field "EXCL_RFID_FILTER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ã­í¶ûÿÿÿÿ
-p
-java:S1450"ZRemove the "RFID_FILTER" field and declare it as a local variable in the relevant methods.(¯òÅâ
-p
-java:S1450"ZRemove the "trimEPCFlag" field and declare it as a local variable in the relevant methods.(®Þ®ž
-h	java:S100-"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÈÜ½³øÿÿÿÿ
-c	java:S1003"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¯Ù‡À
-h
-java:S3776b"RRefactor this method to reduce its Cognitive Complexity from 38 to the 15 allowed.(“–ýþ
-V	java:S125f"<This block of commented-out lines of code should be removed.(€ð¡®úÿÿÿÿ
-E
-java:S1068"/Remove this unused "trimEPCFlag" private field.(®Þ®ž
-J
-java:S1068 "/Remove this unused "encodingWth" private field.(…³ˆÞùÿÿÿÿ
