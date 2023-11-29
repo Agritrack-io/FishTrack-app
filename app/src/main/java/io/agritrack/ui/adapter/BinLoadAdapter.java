@@ -92,7 +92,7 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
 
     @SuppressLint("ResourceAsColor")
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         mList.sort(Comparator.comparing(o -> o.epc.substring(o.epc.length() - 5)));
         if (mList.size() <= holder.getAdapterPosition()) {
             return;
@@ -237,7 +237,7 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final TextView tvRfid, tvItemSNo, tvBinWeightLabel, tvAddTemp, tvKg, tvCelsius;
+        private final TextView tvRfid, tvItemSNo, tvKg, tvCelsius; //tvBinWeightLabel, tvAddTemp,
         private final EditText etBinTemperature, etWeight;
         private final ConstraintLayout constraintLayout2, constraintLayout3;
 
@@ -245,9 +245,9 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
             super(itemView);
             tvRfid = itemView.findViewById(R.id.tvRfid);
             tvItemSNo = itemView.findViewById(R.id.tvRecyclerItemSNo);
-            tvAddTemp = itemView.findViewById(R.id.tvAddTemp);
+//            tvAddTemp = itemView.findViewById(R.id.tvAddTemp);
             etWeight = itemView.findViewById(R.id.etBinWeight);
-            tvBinWeightLabel = itemView.findViewById(R.id.tvBinWeightLabel);
+//            tvBinWeightLabel = itemView.findViewById(R.id.tvBinWeightLabel);
             etBinTemperature = itemView.findViewById(R.id.etBinTemperature);
             tvKg = itemView.findViewById(R.id.tvKg);
             tvCelsius = itemView.findViewById(R.id.tvCelsius);
@@ -256,8 +256,8 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
             etWeight.setSelectAllOnFocus(true);
             etBinTemperature.setSelectAllOnFocus(true);
 
-            tvBinWeightLabel.setOnClickListener(this);
-            tvAddTemp.setOnClickListener(v -> {
+            constraintLayout2.setOnClickListener(this);
+            constraintLayout3.setOnClickListener(v -> {
                 etBinTemperature.requestFocus();
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(etBinTemperature, InputMethodManager.SHOW_IMPLICIT);

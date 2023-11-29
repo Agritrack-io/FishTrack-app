@@ -7,9 +7,12 @@ import static io.agritrack.ui.custom.CustomToast.CToast;
 import static io.agritrack.ui.service.LocalPreferences.Logged_In_User_Key;
 import static io.agritrack.ui.service.LocalPreferences.Token_Key;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,15 +31,19 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.api.SystemParameterOrBuilder;
+import com.sun.mail.imap.Utility;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -82,6 +89,8 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     private int syncCounter = 1;
     private EditText etUserName, etPassword;
 
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 101;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +99,8 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
 
         // bind the flags button
         ibLocale = findViewById(R.id.ibLocale);
+
+       checkAndRequestPermissions(this);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
@@ -308,6 +319,64 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             applyLocale(code);
             LoginActivity.this.recreate();
         });
+    }
+
+    public static boolean checkAndRequestPermissions(final Activity context) {
+        int extStorePermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int cameraPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.CAMERA);
+        int locationPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+        if (extStorePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded
+                    .add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (locationPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded
+                    .add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(context, listPermissionsNeeded
+                            .toArray(new String[listPermissionsNeeded.size()]),
+                    REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_ID_MULTIPLE_PERMISSIONS:
+                if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(),
+                                    "FishTrack Requires Access to Camara.", Toast.LENGTH_SHORT)
+                            .show();
+                    finish();
+                } else if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(),
+                            "FishTrack Requires Access to Your Storage.",
+                            Toast.LENGTH_SHORT).show();
+                    finish();
+                } else if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(),
+                            "FishTrack Requires Access to Your Location.",
+                            Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+//                    doWork();
+                }
+                break;
+        }
     }
 
     private void noCredentialsEnteredAlert() {

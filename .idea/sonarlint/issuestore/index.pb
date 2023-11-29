@@ -121,8 +121,6 @@ s
 Capp/src/main/java/io/agritrack/ui/adapter/IOnItemClickListener.java,7\7\778e89f0f14a2a537e077f55c6c632d4b4cf7d02
 Œ
 \app/src/main/java/io/agritrack/fish/ui/quality/postpackage/PostPackagingQualityActivity.java,0\5\0521c13b86841142715e94e9863519848a332801
-‡
-Wapp/src/main/java/io/agritrack/fish/ui/quality/receipt/ReceiptQualityStartActivity.java,c\9\c9cbca609a0693e4716c90fa4fbe65b6be92b789
 ~
 Napp/src/main/java/io/agritrack/fish/ui/quality/QualitySelectStepsActivity.java,0\c\0c7bbbe9807c1e54bc1dc0d465035fe249872c06
 h
@@ -277,8 +275,6 @@ x
 Happ/src/main/java/io/agritrack/fish/ui/fishing/FishingStartActivity.java,3\6\36147d766c9b21bfe4264859b520c6b8a307c0df
 {
 Kapp/src/main/java/io/agritrack/fish/ui/fishing/HarvestRequestsActivity.java,1\4\14b759d446c07fd27db187a360660ea016343f51
-j
-:app/src/main/java/io/agritrack/ui/login/LoginActivity.java,7\5\75c27282a465dc3e9cd2e5a874702c3f4dbd15ce
 l
 <app/src/main/java/io/agritrack/fish/state/FishingRecord.java,b\3\b3080653e19759349734cb82322858d4b50d03c3
 j
@@ -303,8 +299,6 @@ A
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 t
 Dapp/src/main/java/io/agritrack/fish/ui/fishing/ISummaryActivity.java,6\3\63dc25643fe9efcbd6b79a61dd8b33b4c07ad37d
-l
-<app/src/main/java/io/agritrack/fish/ui/FishHomeActivity.java,7\3\73143087e53588b8a0cbbe2a1802eec68a98feea
 ‚
 Rapp/src/main/java/io/agritrack/fish/ui/testBinTemperature/TestBinTempActivity.java,d\b\db7af4ec5e6589ca44c5bceeddc84c79272a4b23
 o
@@ -329,8 +323,6 @@ p
 @app/src/main/java/io/agritrack/ui/adapter/FilterableAdapter.java,8\e\8e5bc9ee94207974ab71341caa44004a6dfedc37
 k
 ;app/src/main/java/io/agritrack/api/APIServiceGenerator.java,3\c\3cc61a208337c6405a11cef7737ecff59f215df0
-h
-8app/src/main/java/io/agritrack/FishTrackApplication.java,5\1\51bad9f5c9c39de36f8e64ef5b048a73c7c45af0
 j
 :app/src/main/java/io/agritrack/rfid/SingleShotScanner.java,2\6\26fb1a9fcd92eb4532181288aae35fd96a2d6d2a
 u

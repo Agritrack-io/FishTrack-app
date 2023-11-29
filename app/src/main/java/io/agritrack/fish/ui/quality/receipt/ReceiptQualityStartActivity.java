@@ -223,8 +223,8 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-//                Intent i = new Intent(getApplicationContext(), ReceiptQualityTemperatureProfilesActivity.class);
-                Intent i = new Intent(getApplicationContext(), ReceiptQualityInfoActivity.class);
+                Intent i = new Intent(getApplicationContext(), ReceiptQualityTemperatureProfilesActivity.class);
+//                Intent i = new Intent(getApplicationContext(), ReceiptQualityInfoActivity.class);
                 startActivity(i);
             }
         });
