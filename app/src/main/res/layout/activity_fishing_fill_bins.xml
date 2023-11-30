@@ -136,7 +136,7 @@
                 android:layout_marginStart="16dp"
                 android:background="@color/agri_semi_green"
                 android:paddingHorizontal="8dp"
-                android:text="@string/fishing_catches"
+                android:text="@string/bins_to_use"
                 android:textColor="@color/label_blue"
                 android:textSize="18sp" />
 
@@ -291,7 +291,9 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="10dp"
                 android:layout_toEndOf="@+id/totalWeight"
-                android:src="@drawable/quality" />
+                android:background="@drawable/button_press_effect"
+                android:src="@drawable/quality"
+                app:tint="@color/yellow"/>
 
         </RelativeLayout>
 

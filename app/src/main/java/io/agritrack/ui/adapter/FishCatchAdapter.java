@@ -1,7 +1,6 @@
 package io.agritrack.ui.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
@@ -13,24 +12,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import io.agritrack.R;
-import io.agritrack.dialog.BinLoadDialog;
 
 public class FishCatchAdapter extends RecyclerView.Adapter<FishCatchAdapter.MyViewHolder> {
 
@@ -64,15 +57,15 @@ public class FishCatchAdapter extends RecyclerView.Adapter<FishCatchAdapter.MyVi
         }
     }
 
-    public String getSelectedValue(){
+    public String getSelectedValue() {
         return this.selectedValue;
     }
 
-    public String getSelectedLabel(){
+    public String getSelectedLabel() {
         return this.selectedLabel;
     }
 
-    public void clearSelectedValue(){
+    public void clearSelectedValue() {
         selectedPos = RecyclerView.NO_POSITION;
         this.selectedValue = null;
     }
@@ -98,14 +91,14 @@ public class FishCatchAdapter extends RecyclerView.Adapter<FishCatchAdapter.MyVi
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        if (mList.size()<=holder.getAdapterPosition()){
+        if (mList.size() <= holder.getAdapterPosition()) {
             return;
         }
         FishCatchItem currCatch = mList.get(holder.getAdapterPosition());
 
         if (currCatch.weight != null) {
             holder.etCatch.setText(currCatch.weight.toString());
-        }  else {
+        } else {
             holder.etCatch.setText("");
         }
 

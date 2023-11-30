@@ -8,6 +8,7 @@ import static io.agritrack.common.LargeString.render;
 import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -63,6 +64,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
 
+    @SuppressLint("StringFormatMatches")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,9 +99,13 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         initControlsFromState();
 
         if (recFishing.reqWeight!=null && recFishing.totalFishWeight != null) {
-            if (Math.abs(recFishing.reqWeight - recFishing.totalFishWeight) >= 250) {
+            if (recFishing.reqWeight - recFishing.totalFishWeight >= 250) {
                 selectReasonDialog = new SelectReasonOfFishingWeightDeviationDialog(FishingConfirmActivity.this);
                 selectReasonDialog.showDialog();
+            } else if (recFishing.totalFishWeight - recFishing.reqWeight >= 250) {
+                CToast(FishingConfirmActivity.this,
+                        render(String.format(getString(R.string.weight_deviation), recFishing.totalFishWeight - recFishing.reqWeight)),
+                        Toast.LENGTH_LONG);
             }
         }
 

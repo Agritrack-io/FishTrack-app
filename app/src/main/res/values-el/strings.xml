@@ -67,6 +67,7 @@
     <string name="fill_all_fields">Παρακαλώ συμπληρώστε όλα τα πεδία!</string>
     <string name="select_reason_out_of_system">Επιλέξτε λόγο εξωσυστημικής αλίευσης</string>
     <string name="select_reason_of_weight_deviation">Το βάρος αλίευσης διαφέρει από τη ζητούμενη ποσότητα κατά \%1$s\ kg. Παρακαλώ επιλέξτε λόγο για αυτή την απόκλιση!</string>
+    <string name="weight_deviation">Αλιεύσατε \%1$s\ kg περισσότερα από τη ζητούμενη ποσότητα.</string>
     <string name="inability_to_fish">Αδυναμία αλίευσης</string>
     <string name="empty_cage">Ο κλωβός άδειασε</string>
     <string name="fed_fish">Ταϊσμένα ψάρια</string>
@@ -746,5 +747,9 @@
     <string name="title_init_bins">ΑΡΧΙΚΟΠΟΙΗΣΗ ΒΟΥΤΩΝ</string>
     <string name="initialized_bins">Αρχικοποιημένες βούτες</string>
     <string name="temp">Θερμ.</string>
+    <string name="other_reason">Άλλος λόγος</string>
+    <string name="fish_temp">T ψ:</string>
+    <string name="water_temp">T ν:</string>
+    <string name="fish_temp_2">T2 ψ:</string>
 
 </resources>

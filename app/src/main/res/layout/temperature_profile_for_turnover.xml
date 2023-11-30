@@ -66,48 +66,140 @@
             app:layout_constraintStart_toEndOf="@+id/tvCageCode"
             app:layout_constraintTop_toBottomOf="@+id/tempChart" />
 
-        <com.github.mikephil.charting.charts.LineChart
+        <FrameLayout
             android:id="@+id/tempChart"
-            android:layout_width="0dp"
+            android:layout_width="280dp"
             android:layout_height="0dp"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layoutDirection="locale"
             app:layout_constraintBottom_toTopOf="@id/tvBinEPC"
-            app:layout_constraintEnd_toStartOf="@id/infoLayout"
+            app:layout_constraintEnd_toStartOf="@id/infoTempLayout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/tempChartIn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="@id/tempChart"
+            app:layout_constraintEnd_toEndOf="@id/tempChart"
+            app:layout_constraintStart_toStartOf="@+id/tempChart"
+            app:layout_constraintTop_toTopOf="@+id/tempChart" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/infoLayout"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="150dp"
+                android:background="#30000000"
+                app:layout_constraintBottom_toBottomOf="@+id/tempChart"
+                app:layout_constraintEnd_toEndOf="@+id/tempChart"
+                app:layout_constraintTop_toTopOf="@+id/tempChart">
+
+                <TextView
+                    android:id="@+id/lbHigh"
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center|left"
+                    android:text="@string/high_temp"
+                    android:textAlignment="gravity"
+                    android:textStyle="normal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvHigh"
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center|right"
+                    android:textAlignment="gravity"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/lbHigh"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/lbAvg"
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center|left"
+                    android:text="@string/avg_temp"
+                    android:textAlignment="gravity"
+                    android:textStyle="normal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lbHigh" />
+
+                <TextView
+                    android:id="@+id/tvAvg"
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center|right"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/lbAvg"
+                    app:layout_constraintTop_toBottomOf="@id/tvHigh" />
+
+                <TextView
+                    android:id="@+id/lbLow"
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center|left"
+                    android:text="@string/low_temp"
+                    android:textAlignment="gravity"
+                    android:textStyle="normal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/lbAvg" />
+
+                <TextView
+                    android:id="@+id/tvLow"
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center|right"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/lbLow"
+                    app:layout_constraintTop_toBottomOf="@id/tvAvg" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/infoLayout"
-            android:layout_width="99dp"
-            android:layout_height="90dp"
+            android:id="@+id/infoTempLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_margin="0dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/tvBinEPC"
+            app:layout_constraintBottom_toTopOf="@+id/tvWeight"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tempChart"
+            app:layout_constraintStart_toEndOf="@+id/tempChart"
             app:layout_constraintTop_toTopOf="parent">
 
 
             <TextView
-                android:id="@+id/lbHigh"
+                android:id="@+id/lbFishT"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:gravity="center|left"
-                android:text="@string/high_temp"
+                android:text="@string/fish_temp"
                 android:textAlignment="gravity"
                 android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvHigh"
+                android:id="@+id/tvFishT"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"
@@ -117,23 +209,23 @@
                 android:textAlignment="gravity"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/lbHigh"
+                app:layout_constraintStart_toEndOf="@id/lbFishT"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/lbAvg"
+                android:id="@+id/lbWaterT"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="8dp"
                 android:gravity="center|left"
-                android:text="@string/avg_temp"
+                android:text="@string/water_temp"
                 android:textAlignment="gravity"
                 android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/lbHigh" />
+                app:layout_constraintTop_toBottomOf="@id/lbFishT" />
 
             <TextView
-                android:id="@+id/tvAvg"
+                android:id="@+id/tvWaterT"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"
@@ -141,33 +233,32 @@
                 android:gravity="center|right"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/lbAvg"
-                app:layout_constraintTop_toBottomOf="@id/tvHigh" />
+                app:layout_constraintStart_toEndOf="@id/lbWaterT"
+                app:layout_constraintTop_toBottomOf="@id/tvFishT" />
 
             <TextView
-                android:id="@+id/lbLow"
+                android:id="@+id/lbFishT2"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="8dp"
                 android:gravity="center|left"
-                android:text="@string/low_temp"
+                android:text="@string/fish_temp_2"
                 android:textAlignment="gravity"
                 android:textStyle="normal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/lbAvg" />
+                app:layout_constraintTop_toBottomOf="@id/lbWaterT" />
 
             <TextView
-                android:id="@+id/tvLow"
+                android:id="@+id/tvFishT2"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
-
                 android:layout_gravity="center"
                 android:layout_marginEnd="8dp"
                 android:gravity="center|right"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/lbLow"
-                app:layout_constraintTop_toBottomOf="@id/tvAvg" />
+                app:layout_constraintStart_toEndOf="@id/lbFishT2"
+                app:layout_constraintTop_toBottomOf="@id/tvWaterT" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

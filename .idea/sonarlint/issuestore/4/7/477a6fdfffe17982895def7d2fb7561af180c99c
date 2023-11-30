@@ -1,0 +1,38 @@
+
+?
+java:S1604®"(Make this anonymous inner class a lambda(æ¶ßù
+|
+java:S1488ö"fImmediately return this expression instead of assigning it to the temporary variable "authentication".(îÿ‰
+F
+java:S5411¥"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
+S
+java:S2589ƒ"7Remove this expression which always evaluates to "true"(Ãíİ¤ûÿÿÿÿ
+e
+java:S1659;"ODeclare "tvReqQuantityCount" and all following declarations on a separate line.(¿§†½
+^
+java:S1659="CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
+x
+java:S1450:"]Remove the "progressDialog" field and declare it as a local variable in the relevant methods.(·á…Çùÿÿÿÿ
+|
+java:S14508"aRemove the "selectReasonDialog" field and declare it as a local variable in the relevant methods.(¼æùùşÿÿÿÿ
+Q
+java:S1874:"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+Q
+java:S1874_"6Remove this use of "ProgressDialog"; it is deprecated.(¶ï×Áûÿÿÿÿ
+N
+java:S1874`"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+L
+java:S1874`"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+K
+java:S1874`"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+˜
+java:S1186•"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(«û³±
+
+java:S1186˜"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Íñø»úÿÿÿÿ
+2
+java:S3626ˆ"Remove this redundant jump.(ûÁİ…
+W	java:S125±"<This block of commented-out lines of code should be removed.(í©ë˜øÿÿÿÿ
+O	java:S106Û"9Replace this use of System.out or System.err by a logger.(úÕÃÙ
+W	java:S125ñ"<This block of commented-out lines of code should be removed.(Í—‹Üüÿÿÿÿ
+C
+java:S3398Ù"'Move this method into "SyncTxCallBack".(å˜êùÿÿÿÿ

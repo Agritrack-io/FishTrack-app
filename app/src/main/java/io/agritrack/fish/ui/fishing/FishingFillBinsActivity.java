@@ -77,8 +77,6 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fishing_fill_bins);
 
-//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE|WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFishingFillBins);
         tvHeader.setText(LocalPreferences.HeaderMsg());

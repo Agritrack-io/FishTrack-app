@@ -66,6 +66,7 @@
     <string name="fill_all_fields">Please fill all fields!</string>
     <string name="select_reason_out_of_system">Select reason for out of system fishing</string>
     <string name="select_reason_of_weight_deviation">Fished weight differs from requested weight by \%1$s\ kg. Please select reason for this deviation!</string>
+    <string name="weight_deviation">You caught \%1$s\ kg more than the requested quantity.</string>
     <string name="inability_to_fish">Inability to fish</string>
     <string name="empty_cage">Cage was emptied</string>
     <string name="fed_fish">Fed fish</string>
@@ -766,5 +767,9 @@
     <string name="title_init_bins">INITIALIZE BINS</string>
     <string name="initialized_bins">Initialized bins</string>
     <string name="temp">Temp</string>
+    <string name="other_reason">Other reason</string>
+    <string name="fish_temp">T f:</string>
+    <string name="water_temp">T w:</string>
+    <string name="fish_temp_2">T2 f:</string>
 
 </resources>

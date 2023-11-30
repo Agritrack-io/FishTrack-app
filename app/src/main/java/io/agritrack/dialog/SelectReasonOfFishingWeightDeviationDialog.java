@@ -63,7 +63,7 @@ public class SelectReasonOfFishingWeightDeviationDialog implements AdapterView.O
         setDialog();
         findViews();
 
-        String[] reasonList = {this.activity.getString(R.string.bad_weather), this.activity.getString(R.string.inability_to_fish), this.activity.getString(R.string.empty_cage)};
+        String[] reasonList = {this.activity.getString(R.string.bad_weather), this.activity.getString(R.string.inability_to_fish), this.activity.getString(R.string.empty_cage), this.activity.getString(R.string.other_reason)};
 
         ArrayAdapter<String> hrAdapter = new ArrayAdapter<String>(activity, R.layout.simple_list_checked_item_1, reasonList) {
             @Override

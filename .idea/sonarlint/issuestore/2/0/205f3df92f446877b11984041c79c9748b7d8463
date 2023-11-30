@@ -32,8 +32,8 @@ java:S1602ë",Remove useless curly braces around statement(‡ş¡ûÿÿÿÿ
 C
 java:S3398õ",Move this method into "CAENCommandsHandler".(ÁØ‚†
 C
-java:S3398¬",Move this method into "CAENCommandsHandler".(ÅÍƒŠ
-C
 java:S3398",Move this method into "CAENCommandsHandler".(ÉıüÆ
+C
+java:S3398¬",Move this method into "CAENCommandsHandler".(ÅÍƒŠ
 G
 java:S1068S",Remove this unused "initedAt" private field.(ÊæÚúÿÿÿÿ

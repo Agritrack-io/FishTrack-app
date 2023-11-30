@@ -1,5 +1,6 @@
 package io.agritrack.ui.adapter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -30,20 +32,23 @@ import java.util.stream.DoubleStream;
 
 import io.agritrack.R;
 import io.agritrack.data.model.BinInfo;
+import io.agritrack.dialog.DataListener;
+import io.agritrack.dialog.SetTempDataDialog;
 import io.agritrack.fish.state.LoggerDataRecord;
 import io.agritrack.fish.ui.binTurnover.BinTurnoverActivity;
 
-public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureProfileAdapter.ViewHolder> {
+public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureProfileAdapter.ViewHolder> implements DataListener {
     private static LineDataSet set1;
     private static int selectedPos = RecyclerView.NO_POSITION;
     public Context context;
     private LayoutInflater mLayoutInflater = null;
     private ArrayList<String> listOfEPCs = new ArrayList<>();
     private double highT, avgT, lowT;
-    private String cageCode;
+    private String cageCode, fishT, waterT, fishT2;
     private Double weight;
     private Map<String, LoggerDataRecord.TemperatureModel> mapOfData;
-
+    private SetTempDataDialog setTempDialog;
+    private DataListener mListener;
 
     public TemperatureProfileAdapter(Context ctx, Map<String, LoggerDataRecord.TemperatureModel> data) {
         this.mapOfData = data;
@@ -92,6 +97,9 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
                 if (mLayoutInflater.getContext() instanceof BinTurnoverActivity) {
                     holder.tvCageCode.setText(cageCode);
                     holder.tvWeight.setText(String.valueOf(weight));
+                    holder.tvFish.setText(fishT);
+                    holder.tvWater.setText(waterT);
+                    holder.tvFish2.setText(fishT2);
                 }
                 holder.tvHigh.setText(String.format("%.2f\u2103", _highT));
                 holder.tvAvg.setText(String.format("%.2f\u2103", _avgT));
@@ -103,7 +111,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             }
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.infoLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String key = listOfEPCs.get(holder.getAdapterPosition());
@@ -125,6 +133,41 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
                 dlgBuilder.create().show();
             }
         });
+
+        if (context instanceof Activity) {
+            Activity activity = (Activity) context;
+            setTempDialog = new SetTempDataDialog(activity, fishT, waterT, fishT2);
+            setTempDialog.setMyDialogListener(this);
+        }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTempDialog.showDialog();
+
+//                AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(context);
+//                dlgBuilder.setTitle("Logger Data");
+//
+//                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.agri_list_item_12dp);
+//
+//                int idx = 1;
+//                for (String[] value : values) {
+//                    arrayAdapter.add(String.format("%04d. [%s] --> %s", idx++, value[0], value[1]));
+//                }
+//                dlgBuilder.setAdapter(arrayAdapter, null);
+//                dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
+//                dlgBuilder.create().show();
+            }
+        });
+    }
+
+    @Override
+    public void onDataPassed(String fishT, String waterT, String fishT2) {
+        // Handle the passed data here
+        this.fishT = fishT;
+        this.waterT = waterT;
+        this.fishT2 = fishT2;
+        notifyDataSetChanged();
     }
 
     public String getEpc(){
@@ -157,6 +200,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public Context mContext;
         public LineChart temperatureChart;
+        public ConstraintLayout infoLayout;
         public LineData data;
         public CardView cardView;
         public TextView tvBinEPC;
@@ -165,16 +209,23 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
         public TextView tvHigh;
         public TextView tvAvg;
         public TextView tvLow;
+        public TextView tvFish;
+        public TextView tvWater;
+        public TextView tvFish2;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mContext = itemView.getContext();
             if (this.mContext instanceof BinTurnoverActivity){
                 cardView = itemView.findViewById(R.id.crdlayoutForTurnover);
+                tvFish = itemView.findViewById(R.id.tvFishT);
+                tvWater = itemView.findViewById(R.id.tvWaterT);
+                tvFish2 = itemView.findViewById(R.id.tvFishT2);
+                infoLayout = itemView.findViewById(R.id.infoLayout);
             } else {
                 cardView = itemView.findViewById(R.id.crdlayout);
             }
-            temperatureChart = itemView.findViewById(R.id.tempChart);
+            temperatureChart = itemView.findViewById(R.id.tempChartIn);
 
             tvBinEPC = itemView.findViewById(R.id.tvBinEPC);
             tvCageCode = itemView.findViewById(R.id.tvCageCode);
@@ -182,6 +233,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             tvHigh = itemView.findViewById(R.id.tvHigh);
             tvAvg = itemView.findViewById(R.id.tvAvg);
             tvLow = itemView.findViewById(R.id.tvLow);
+
         }
 
         private void customiseChart() {

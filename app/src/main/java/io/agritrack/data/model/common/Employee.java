@@ -6,6 +6,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.util.Locale;
 import java.util.UUID;
 
 @Entity(tableName = "employee", indices = {@Index("supervisor"), @Index(value = {"last_name", "first_name"})})
@@ -61,6 +62,7 @@ public class Employee {
     public User user;*/
 
     public String fullName() {
-        return this.firstName + " " + this.lastName;
+        return this.firstName.substring(0,1).toUpperCase() + this.firstName.substring(1).toLowerCase()
+                + " " + this.lastName.substring(0,1).toUpperCase() + this.lastName.substring(1).toLowerCase();
     }
 }

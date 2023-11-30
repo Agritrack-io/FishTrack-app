@@ -17,6 +17,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.service.LocalPreferences;
 
@@ -77,7 +78,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         Intent intent = new Intent();
         //[FISH, TOMATO, HOTEL, MILK]
         if (product.equalsIgnoreCase("FISH")) {
-            intent = new Intent(this.mContext, WhMenuActivity.class);
+            intent = new Intent(this.mContext, FishHomeActivity.class);
         }
 
         intent.putExtra("crash", true);

@@ -142,7 +142,7 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         List<Employee> teamCandidates = db.employeeDAO().getBySite(LocalPreferences.getCurrentSiteId());
         if (teamCandidates != null && !teamCandidates.isEmpty()) {
             this.candidates = teamCandidates.stream().map(x -> new GenericListModel(x.id, x.fullName())).collect(Collectors.toList());
-            candidatesAdapter = new ArrayAdapter<GenericListModel>(this, android.R.layout.simple_list_item_checked, candidates) {
+            candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, candidates) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);
