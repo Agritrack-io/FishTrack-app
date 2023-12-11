@@ -1,11 +1,11 @@
 
 r
-java:S1104"WMake isClickable a static final constant or non-public and provide accessors if needed.(Ìß§ÿÿÿÿÿ
+java:S1104"WMake isClickable a static final constant or non-public and provide accessors if needed.(Ìß§ÿÿÿÿÿ
 B
-java:S1659n"'Declare "tvItemSNo" on a separate line.(‡Ø¢©ùÿÿÿÿ
+java:S1659p"'Declare "tvItemSNo" on a separate line.(‡Ø¢©ùÿÿÿÿ
 U
-java:S1874|":Remove this use of "getAdapterPosition"; it is deprecated.(îù¾ùÿÿÿÿ
-U
-java:S1874~":Remove this use of "getAdapterPosition"; it is deprecated.(Òã”úÿÿÿÿ
+java:S1874~":Remove this use of "getAdapterPosition"; it is deprecated.(îù¾ùÿÿÿÿ
 V
-java:S1874ˆ":Remove this use of "getAdapterPosition"; it is deprecated.(–¸•Üüÿÿÿÿ
+java:S1874€":Remove this use of "getAdapterPosition"; it is deprecated.(Òã”úÿÿÿÿ
+V
+java:S1874Š":Remove this use of "getAdapterPosition"; it is deprecated.(–¸•Üüÿÿÿÿ

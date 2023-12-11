@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -171,12 +172,17 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
 //            startActivity(i);
 //        });
 
+        int yellowColor = ContextCompat.getColor(this, R.color.yellow);
+        int whiteColor = ContextCompat.getColor(this, R.color.white);
+
         ivAddTemp.setOnClickListener(v -> {
             adapterCatches.showTemp(showTemp);
             if (showTemp) {
                 ivAddTemp.setImageDrawable(getDrawable(R.drawable.weight));
+                ivAddTemp.setColorFilter(yellowColor);
             } else {
                 ivAddTemp.setImageDrawable(getDrawable(R.drawable.quality));
+                ivAddTemp.setColorFilter(whiteColor);
             }
             showTemp = !showTemp;
         });
@@ -354,9 +360,27 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-//            if (GlobalState.recFishing.totalBinsUsed == null) {
-//                sb.append(String.format("\n%s is missing", "'Harvest bins'"));
-//            }
+            if (recFishing.totalBinsUsed == null) {
+                sb.append(String.format("\n%s is missing", "'Harvest bins'"));
+            }
+            recFishing.binWeightRecord.getBinsData().stream().filter(item -> item.weight != null)
+                    .forEach(item -> {
+                        if (item.temp != null) {
+
+                        } else {
+                            sb.append(String.format("\n"+item.binEPC.substring(item.binEPC.length()-5) +" has no registered temperature"));
+                        }
+                    });
+
+            recFishing.binWeightRecord.getBinsData().stream().filter(item -> item.temp != null)
+                    .forEach(item -> {
+                        if (item.weight != null) {
+
+                        } else {
+                            sb.append(String.format("\n"+item.binEPC.substring(item.binEPC.length()-5) +" has no registered weight"));
+                        }
+                    });
+
         }
         return sb.toString();
     }

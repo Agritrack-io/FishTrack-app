@@ -33,10 +33,14 @@ import androidx.core.text.HtmlCompat;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
@@ -51,7 +55,11 @@ import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class HarvestRequestsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, ToggleGroup.OnCheckedChangeListener {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat formatString = new SimpleDateFormat("dd-MM-yyyy");
+    private SimpleDateFormat formatDateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+    private SimpleDateFormat formatStringDateTime = new SimpleDateFormat("dd-MM-yyyy hh:mm");
     private MobileDB db;
     private ListView lvFishingRequests;
     private GenericListModel[] fishingRQs;
@@ -292,8 +300,25 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         this.lvFishingRequests.setAdapter(null);
         List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getTodayRecord();
         if (fishingRequests != null && !fishingRequests.isEmpty()) {
-            this.fishingRQs = fishingRequests.stream().sorted(Comparator.comparing(lc -> String.format("%s:%s:%s", lc.cageCode, lc.farmArrival, lc.itinSNo)))
-                    .map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species), "Split Request".equalsIgnoreCase(x.notes) ? GenericListModel.origin.Split : GenericListModel.origin.Normal)).toArray(GenericListModel[]::new);
+            List<FishingRequest> newFishingReq = fishingRequests.stream().map(
+                    fr -> {
+                        try{
+                            Date harvestDate = formatDate.parse(fr.harvestDate);
+                            fr.harvestDate = formatString.format(harvestDate);
+                            if (fr.farmArrival!=null) {
+                                Date farmArrival = formatDateTime.parse(fr.farmArrival);
+                                fr.farmArrival = formatStringDateTime.format(farmArrival);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        return fr;
+                    }).collect(Collectors.toList());
+
+            this.fishingRQs = newFishingReq.stream().sorted(Comparator.comparing(lc -> String.format("%s:%s:%s", lc.cageCode, lc.farmArrival, lc.itinSNo)))
+                    .map(x -> new GenericListModel(x.requestId,
+                            String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species),
+                            "Split Request".equalsIgnoreCase(x.notes) ? GenericListModel.origin.Split : GenericListModel.origin.Normal)).toArray(GenericListModel[]::new);
 
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {
                 @Override
@@ -322,8 +347,22 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         this.lvFishingRequests.setAdapter(null);
         List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getYesterdayRecord();
         if (fishingRequests != null && !fishingRequests.isEmpty()) {
+            List<FishingRequest> newFishingReq = fishingRequests.stream().map(
+                    fr -> {
+                        try{
+                            Date harvestDate = formatDate.parse(fr.harvestDate);
+                            fr.harvestDate = formatString.format(harvestDate);
+                            if (fr.farmArrival!=null) {
+                                Date farmArrival = formatDateTime.parse(fr.farmArrival);
+                                fr.farmArrival = formatStringDateTime.format(farmArrival);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        return fr;
+                    }).collect(Collectors.toList());
             //this.fishingRQs = fishingRequests.stream().map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.harvestDate.substring(0, x.harvestDate.indexOf("T")), x.cageCode, x.reqQty, x.species))).toArray(GenericListModel[]::new);
-            this.fishingRQs = fishingRequests.stream().sorted(Comparator.comparing(lc -> String.format("%s:%s:%s", lc.cageCode, lc.farmArrival, lc.itinSNo)))
+            this.fishingRQs = newFishingReq.stream().sorted(Comparator.comparing(lc -> String.format("%s:%s:%s", lc.cageCode, lc.farmArrival, lc.itinSNo)))
                     .map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species))).toArray(GenericListModel[]::new);
 
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {
@@ -345,8 +384,21 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
         this.lvFishingRequests.setAdapter(null);
         List<FishingRequest> fishingRequests = db.fishingRequestsDAO().getPreviousRecord();
         if (fishingRequests != null && !fishingRequests.isEmpty()) {
-            //
-            this.fishingRQs = fishingRequests.stream().sorted(Comparator.comparing(lc -> String.format("%s:%s:%s", lc.cageCode, lc.farmArrival, lc.itinSNo)))
+            List<FishingRequest> newFishingReq = fishingRequests.stream().map(
+                    fr -> {
+                        try{
+                            Date harvestDate = formatDate.parse(fr.harvestDate);
+                            fr.harvestDate = formatString.format(harvestDate);
+                            if (fr.farmArrival!=null) {
+                                Date farmArrival = formatDateTime.parse(fr.farmArrival);
+                                fr.farmArrival = formatStringDateTime.format(farmArrival);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        return fr;
+                    }).collect(Collectors.toList());
+            this.fishingRQs = newFishingReq.stream().sorted(Comparator.comparing(lc -> String.format("%s:%s:%s", lc.cageCode, lc.farmArrival, lc.itinSNo)))
                     .map(x -> new GenericListModel(x.requestId, String.format("%s, %s, %s, %s kg, %s", x.itinSNo, x.farmArrival != null ? x.farmArrival : x.harvestDate, x.cageCode, x.quantity, x.species))).toArray(GenericListModel[]::new);
 
             ArrayAdapter<GenericListModel> candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, fishingRQs) {

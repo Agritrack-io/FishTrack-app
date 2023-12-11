@@ -24,6 +24,9 @@ public class BinLoadsMap {
     public void addLoad(String bin, String load) {
         // Bug fix, due to load = "null"!!
         if("null".equalsIgnoreCase(load) || Strings.isEmptyOrWhitespace(load) || "".equalsIgnoreCase(load)) {
+            if (loads.get(bin)!=null) {
+                loads.get(bin).clear();
+            }
             return;
         }
 

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,6 +87,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        mList.sort(Comparator.comparing(o -> o.substring(o.length() - 10)));
         String epc = mList.get(position);
         if (epc != null) {
             String tag = isEPC ? epc.substring(epc.length() - 10) : epc;
