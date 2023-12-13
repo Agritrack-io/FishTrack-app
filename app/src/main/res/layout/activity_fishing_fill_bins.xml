@@ -293,7 +293,7 @@
                 android:layout_toEndOf="@+id/totalWeight"
                 android:background="@drawable/button_press_effect"
                 android:src="@drawable/quality"
-                app:tint="@color/white" />
+                app:tint="@color/turquoise" />
 
         </RelativeLayout>
 

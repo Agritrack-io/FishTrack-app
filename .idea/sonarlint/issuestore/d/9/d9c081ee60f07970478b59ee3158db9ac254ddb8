@@ -1,0 +1,92 @@
+
+K
+java:S3740µ"/Provide the parametrized type for this generic.(šÏ³Öşÿÿÿÿ
+p
+java:S2293„"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ä“®
+u
+java:S2293‡"YReplace the type specification in this constructor call with the diamond operator ("<>").(æğ÷²ıÿÿÿÿ
+p
+java:S2293‰"YReplace the type specification in this constructor call with the diamond operator ("<>").(Çş¿º
+f
+java:S1192‘"PDefine a constant instead of duplicating this literal "expectedBinList" 3 times.(‰‘ØJ
+k
+java:S1192"ODefine a constant instead of duplicating this literal "scannedBinList" 3 times.(®Ÿüùÿÿÿÿ
+k
+java:S1192"ODefine a constant instead of duplicating this literal "adapterBinList" 3 times.(¬á£Şüÿÿÿÿ
+F
+java:S1066ø"/Merge this if statement with the enclosing one.(ŒÁü½
+F
+java:S1066ß"/Merge this if statement with the enclosing one.(É—Ÿ¢
+K
+java:S1066"/Merge this if statement with the enclosing one.(ë¡±€şÿÿÿÿ
+D
+java:S1604×"(Make this anonymous inner class a lambda(Êœüûÿÿÿÿ
+?
+java:S1604Ñ"(Make this anonymous inner class a lambda(ÀËÜ•
+g
+java:S1301ş"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
+F
+java:S5411Š"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ş´ä¹
+p	java:S116m"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŒÖÉ
+<
+java:S1659f"&Declare "measRepo" on a separate line.(¦éó”
+>
+java:S1659o"#Declare "tvLot" on a separate line.(®Ü² úÿÿÿÿ
+?
+java:S1659y"$Declare "binEPC" on a separate line.(™îÖêÿÿÿÿÿ
+?
+java:S1659z"$Declare "ivBack" on a separate line.(Ë°¡âùÿÿÿÿ
+x
+java:S1450s"]Remove the "adapterBinList" field and declare it as a local variable in the relevant methods.(ß¼—úÿÿÿÿ
+r
+java:S1450l"\Remove the "concatAdapter" field and declare it as a local variable in the relevant methods.(š¯€¥
+v
+java:S1450x"[Remove the "ibShowValues" field and declare it as a local variable in the relevant methods.(’ÁÇşÿÿÿÿ
+Q
+java:S1874h"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+m
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 30 to the 15 allowed.(¨Œşÿÿÿÿ
+R
+java:S1874¯"6Remove this use of "ProgressDialog"; it is deprecated.(ëù¬¢úÿÿÿÿ
+O
+java:S1874°"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+M
+java:S1874°"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+L
+java:S1874°"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+U
+java:S1155Ë">Use isEmpty() to check whether the collection is empty or not.(Å¨Úø
+
+java:S5803§"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç
+N
+java:S1874¸"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ
+m
+java:S3457à"Q%n should be used in place of \n to produce the platform-specific line separator.(ˆÎİıÿÿÿÿ
+W	java:S125é"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+U
+java:S1117²"9Rename "data" which hides the field declared at line 118.(îÔ¦êøÿÿÿÿ
+J
+java:S1905Ö".Remove this unnecessary cast to "AlertDialog".(İÆÆ„ùÿÿÿÿ
+k
+java:S3252Ö"OUse static access with "android.content.DialogInterface" for "BUTTON_POSITIVE".(İÆÆ„ùÿÿÿÿ
+2
+java:S3626ë"Remove this redundant jump.(ûÁİ…
+n
+java:S3776ı"RRefactor this method to reduce its Cognitive Complexity from 67 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ
+T
+java:S1854"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿÿ
+=	java:S131ş""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+E
+java:S1481")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ
+M
+java:S1751—"6Remove this "return" statement or make it conditional.(ûÁİ…
+M
+java:S1751¶"6Remove this "return" statement or make it conditional.(ûÁİ…
+R	java:S125ç"<This block of commented-out lines of code should be removed.(Š“Ç
+@
+java:S3398º"$Move this method into "ScanHandler".(ŒÅÑùÿÿÿÿ
+D
+java:S1068õ"-Remove this unused "mActivity" private field.(‚¸Ú
+S
+java:S1144"<Remove this unused private "convertEPCsToBinDetails" method.(ã£ÇÕ

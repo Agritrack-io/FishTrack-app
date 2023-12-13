@@ -612,7 +612,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
             //--- New implementation of Logger Dialog ---
             FragmentManager fm = getSupportFragmentManager();
 
-            String productionLane = spProductionLine.getSelectedItem().toString();
+            String productionLane = "1"; //spProductionLine.getSelectedItem().toString();
             if (tmpBin != null && tmpBin.initedAt != null) {
                 ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt);
                 loggerDlg.setStateObserver(stateResult);

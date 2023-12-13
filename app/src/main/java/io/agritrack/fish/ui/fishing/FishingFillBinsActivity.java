@@ -173,7 +173,7 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
 //        });
 
         int yellowColor = ContextCompat.getColor(this, R.color.yellow);
-        int whiteColor = ContextCompat.getColor(this, R.color.white);
+        int turquoiseColor = ContextCompat.getColor(this, R.color.turquoise);
 
         ivAddTemp.setOnClickListener(v -> {
             adapterCatches.showTemp(showTemp);
@@ -182,7 +182,7 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
                 ivAddTemp.setColorFilter(yellowColor);
             } else {
                 ivAddTemp.setImageDrawable(getDrawable(R.drawable.quality));
-                ivAddTemp.setColorFilter(whiteColor);
+                ivAddTemp.setColorFilter(turquoiseColor);
             }
             showTemp = !showTemp;
         });

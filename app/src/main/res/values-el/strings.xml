@@ -751,5 +751,6 @@
     <string name="fish_temp">T ψ:</string>
     <string name="water_temp">T ν:</string>
     <string name="fish_temp_2">T2 ψ:</string>
+    <string name="insert_temperatures">Παρακαλώ εισάγετε θερμοκρασίες.</string>
 
 </resources>

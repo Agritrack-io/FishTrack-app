@@ -771,5 +771,7 @@
     <string name="fish_temp">T f:</string>
     <string name="water_temp">T w:</string>
     <string name="fish_temp_2">T2 f:</string>
+    <string name="insert_temperatures">Please insert temperatures.</string>
+
 
 </resources>
