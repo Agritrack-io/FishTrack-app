@@ -276,6 +276,7 @@ j
 c
 3app/src/main/java/io/agritrack/enums/AssetType.java,1\2\124a65ca17caeba7c4bf92bd7598f492c6b8bf22
 <<<<<<< HEAD
+<<<<<<< HEAD
 <
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 @
@@ -288,6 +289,10 @@ j
 :app/src/main/java/io/agritrack/ui/login/LoginActivity.java,7\5\75c27282a465dc3e9cd2e5a874702c3f4dbd15ce
 k
 ;app/src/main/java/io/agritrack/rfid/ScanFilterRunnable.java,0\7\07a1b733e26a342376a026319c213facb652fded
+=======
+?
+settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
+>>>>>>> 38b051521d5ae3688cb96012da3ca3367232a3f4
 =======
 ?
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
