@@ -227,8 +227,6 @@ u
 Eapp/src/main/java/io/agritrack/api/sync/SyncClusterSitesCallBack.java,f\1\f1dd2bf06e564130f378ad1c390fbd07a0d78475
 o
 ?app/src/main/java/io/agritrack/ui/service/LocalPreferences.java,c\f\cfa1ca5f480f5be403815c14d55a81dc141e01e7
-l
-<app/src/main/java/io/agritrack/ui/config/ConfigActivity.java,c\f\cf1ba2908fa8f1cde34a920278e14e134035775b
 x
 Happ/src/main/java/io/agritrack/ui/adapter/TemperatureProfileAdapter.java,c\2\c2d26e46b0925546585839f459eca06833074419
 j
@@ -277,6 +275,7 @@ j
 :app/src/main/java/io/agritrack/enums/WarehouseTxState.java,f\3\f345c68406d0b577175920b9166e40cfc381bdff
 c
 3app/src/main/java/io/agritrack/enums/AssetType.java,1\2\124a65ca17caeba7c4bf92bd7598f492c6b8bf22
+<<<<<<< HEAD
 <
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 @
@@ -289,3 +288,7 @@ j
 :app/src/main/java/io/agritrack/ui/login/LoginActivity.java,7\5\75c27282a465dc3e9cd2e5a874702c3f4dbd15ce
 k
 ;app/src/main/java/io/agritrack/rfid/ScanFilterRunnable.java,0\7\07a1b733e26a342376a026319c213facb652fded
+=======
+?
+settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
+>>>>>>> 38b051521d5ae3688cb96012da3ca3367232a3f4
