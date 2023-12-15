@@ -21,8 +21,6 @@ v
 Fapp/src/main/java/io/agritrack/data/repo/FishingRequestRepository.java,c\f\cfa0a415d7dfb39e1e28db31d5792d781a92a85a
 €
 Papp/src/main/java/io/agritrack/hotel/ui/incoming/HotelIncomingLinenActivity.java,6\c\6c47567d2ef3f6847d4e8d39843eafa2c3b3b5e5
-w
-Gapp/src/main/java/io/agritrack/fish/ui/process/ProcessBinsActivity.java,d\c\dc15fc007e1e1fd859b23f6d265986336e31ddbf
 h
 8app/src/main/java/io/agritrack/ui/login/api/LoginRQ.java,c\5\c508a62ed59764603e677dc648a6c41adc968989
 k
@@ -85,8 +83,6 @@ y
 Iapp/src/main/java/io/agritrack/ui/tools/LoggerReadFishDialogFragment.java,1\c\1c3a19ec50eae9728a7afde3a46ba5bf52d4c272
 n
 >app/src/main/java/io/agritrack/caen/api/CAENLoggerService.java,8\5\852bb489a1819109e0acdbafc9eb028b597ee2f7
-r
-Bapp/src/main/java/io/agritrack/caen/api/AbstractCAENCommander.java,1\8\18a02229c803bda87650998c826caa9b18f02f51
 p
 @app/src/main/java/io/agritrack/data/converter/DateConverter.java,a\b\ab4496477e30e06f24379cda114bcfd678ea4324
 u
@@ -149,8 +145,6 @@ t
 Dapp/src/main/java/io/agritrack/fish/ui/wh/InternalAssetActivity.java,e\1\e10ef74bf8011135a2bf368643e7ed711de5e73d
 
 Oapp/src/main/java/io/agritrack/fruit/ui/packaging/PackagingConfirmActivity.java,8\6\8644e063a154210a7527a071137ba96d63184970
-h
-8app/src/main/java/io/agritrack/FishTrackApplication.java,5\1\51bad9f5c9c39de36f8e64ef5b048a73c7c45af0
 u
 Eapp/src/main/java/io/agritrack/hotel/ui/HotelMenuProgramActivity.java,e\d\ed7df4a20827a9151b3bb859682a7379ce360a7b
 {
@@ -237,8 +231,6 @@ l
 <app/src/main/java/io/agritrack/ui/config/ConfigActivity.java,c\f\cf1ba2908fa8f1cde34a920278e14e134035775b
 x
 Happ/src/main/java/io/agritrack/ui/adapter/TemperatureProfileAdapter.java,c\2\c2d26e46b0925546585839f459eca06833074419
-
-Oapp/src/main/java/io/agritrack/fish/ui/wh/inventory/InventoryStartActivity.java,e\9\e93cac1451bcac31cd2343f1b6bf9b9f5e2c96f3
 j
 :app/src/main/java/io/agritrack/fish/state/GlobalState.java,4\f\4fdf0d1f7b73d59250cd6aa0485f7832f7b76a1d
 j
@@ -249,16 +241,12 @@ v
 Fapp/src/main/java/io/agritrack/ui/adapter/TemplateRecyclerAdapter.java,a\2\a24c915e9d3ea96755f303a7f95d15dec40781d8
 m
 =app/src/main/java/io/agritrack/api/sync/SyncStepCallBack.java,8\1\81736d8aac3ed88ab5f2f88eca652736e62d4993
-l
-<app/src/main/java/io/agritrack/fish/ui/FishHomeActivity.java,7\3\73143087e53588b8a0cbbe2a1802eec68a98feea
 }
 Mapp/src/main/java/io/agritrack/fish/ui/wh/outgoing/OutgoingAssetActivity.java,c\1\c105ef45703dfdbe59b2c635052f7a7240541e08
 }
 Mapp/src/main/java/io/agritrack/fish/ui/wh/incoming/IncomingAssetActivity.java,b\5\b5f83d3f22e026bad608a2a462ae3355849e7191
 i
 9app/src/main/java/io/agritrack/dialog/CheckTagDialog.java,7\3\7305df627e31825b5b630c8fa622f6dcac682ddb
-j
-:app/src/main/java/io/agritrack/fish/ui/WhMenuActivity.java,0\c\0c4a27c429f11415763c93ac7f09f73432ee9324
 ‚
 Rapp/src/main/java/io/agritrack/fish/ui/wh/correlation/CorrelationMenuActivity.java,b\1\b1cb49ab5bc2e049db5b76744b17ac8079d8ee5a
 …
@@ -289,3 +277,15 @@ j
 :app/src/main/java/io/agritrack/enums/WarehouseTxState.java,f\3\f345c68406d0b577175920b9166e40cfc381bdff
 c
 3app/src/main/java/io/agritrack/enums/AssetType.java,1\2\124a65ca17caeba7c4bf92bd7598f492c6b8bf22
+<
+build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
+@
+app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
+?
+settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+j
+:app/src/main/java/io/agritrack/ui/login/LoginActivity.java,7\5\75c27282a465dc3e9cd2e5a874702c3f4dbd15ce
+k
+;app/src/main/java/io/agritrack/rfid/ScanFilterRunnable.java,0\7\07a1b733e26a342376a026319c213facb652fded

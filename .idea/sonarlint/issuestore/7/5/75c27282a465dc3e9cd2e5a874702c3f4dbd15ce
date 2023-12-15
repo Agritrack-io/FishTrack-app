@@ -1,0 +1,36 @@
+
+n
+java:S1192è"KDefine a constant instead of duplicating this literal "syncErrors" 3 times.(’èÔĞÿÿÿÿÿ8 È‰´Á1
+k
+java:S1192É"HDefine a constant instead of duplicating this literal "Bearer " 5 times.(Š›äœıÿÿÿÿ8¢È‰´Á1
+R
+java:S1066¶"/Merge this if statement with the enclosing one.(Èİ¯ƒÿÿÿÿÿ8±È‰´Á1
+n	java:S117÷"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Öâôş8³È‰´Á1
+g	java:S117ú"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ôÑ¦
+J
+java:S1659g"(Declare "etPassword" on a separate line.(¤ô¶ûûÿÿÿÿ8¬Ë‰´Á1
+X
+java:S1874e"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8ÔË‰´Á1
+t
+java:S3776k"RRefactor this method to reduce its Cognitive Complexity from 34 to the 15 allowed.(¨Œşÿÿÿÿ8ãË‰´Á1
+X
+java:S1874z"6Remove this use of "ProgressDialog"; it is deprecated.(—Èôÿÿÿÿÿ8ıË‰´Á1
+U
+java:S1874{"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿8ıË‰´Á1
+S
+java:S1874{"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿8şË‰´Á1
+R
+java:S1874{"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿8şË‰´Á1
+O
+java:S1602ƒ",Remove useless curly braces around statement(µÂ—ìşÿÿÿÿ8‚Ì‰´Á1
+Y	java:S125š"<This block of commented-out lines of code should be removed.(•ø³Ğ8‹Ì‰´Á1
+Y	java:S125Ã"<This block of commented-out lines of code should be removed.(ƒ²Ñ°8”Ì‰´Á1
+Y	java:S125Ò"<This block of commented-out lines of code should be removed.(áÀåÿ8˜Ì‰´Á1
+Y	java:S125"<This block of commented-out lines of code should be removed.(š†ÈŸ8«Ì‰´Á1
+U
+java:S1874£"2Remove this use of "setMessage"; it is deprecated.(ƒ¬ƒİşÿÿÿÿ8®Ì‰´Á1
+^	java:S125Ú"<This block of commented-out lines of code should be removed.(ê¿¿Èúÿÿÿÿ8ÀÌ‰´Á1
+^
+java:S1874";Remove this use of "updateConfiguration"; it is deprecated.(˜•µÊûÿÿÿÿ8¸§1
+X
+java:S1126È"AReplace this if-then-else statement by a single return statement.(¯‡…Í
