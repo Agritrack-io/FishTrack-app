@@ -44,6 +44,10 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
+            android:name=".fish.ui.wh.zebra.ZebraInventoryAssetActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".fish.ui.wh.correlation.NewTagActivity"
             android:exported="false"
             android:screenOrientation="portrait"

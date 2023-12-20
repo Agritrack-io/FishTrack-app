@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.uhf.api.cls.Reader;
 import com.zebra.rfid.api3.ACCESS_OPERATION_CODE;
 import com.zebra.rfid.api3.ACCESS_OPERATION_STATUS;
@@ -31,6 +32,7 @@ import com.zebra.rfid.api3.RfidEventsListener;
 import com.zebra.rfid.api3.RfidReadEvents;
 import com.zebra.rfid.api3.RfidStatusEvents;
 import com.zebra.rfid.api3.SESSION;
+import com.zebra.rfid.api3.SL_FLAG;
 import com.zebra.rfid.api3.START_TRIGGER_TYPE;
 import com.zebra.rfid.api3.STATE_AWARE_ACTION;
 import com.zebra.rfid.api3.STATUS_EVENT_TYPE;
@@ -41,59 +43,57 @@ import com.zebra.rfid.api3.TagDataArray;
 import com.zebra.rfid.api3.TriggerInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.agritrack.caen.pojo.RFIDTag;
 import io.agritrack.common.async.AsyncTaskExecutorService;
 
 public class ZebraTC26Commander extends AbstractCAENCommander implements Readers.RFIDReaderEventHandler {
     final static String TAG = "Zebra_TC26";
-
-    // Power levels
-    private int MIN_POWER = 0;
-    private int MAX_POWER = 1; //TODO: test actual values!
-
     // available RFID readers
     private static Readers readers;
-
     // RFID Reader
     private static RFIDReader currentReader;
-
     // the actual RFID reader
     private static ReaderDevice readerDevice;
-
-    // Activity where this class was invoked from.
-    private Context context;
-
     // list of available RFID readers...
     private static ArrayList<ReaderDevice> availableRFIDReaderList;
-
+    // Power levels
+    private int MIN_POWER = 0;
+    private int MAX_POWER = 270; //TODO: test actual values!
+    // Activity where this class was invoked from.
+    private Context context;
+    private String filterEPC;
 
     //private final Handler mScanHandler;
     // listener handling RFID events
     private RfidEventsListener rfidEventsListener;
 
-    public ZebraTC26Commander() {
-        this.context = getAppContext();
+    public ZebraTC26Commander(Context ctx) {
+        this.context = ctx;
         // SDK
         InitSDK();
     }
 
+
     //.........................................................
     @Override
     public void setFilterEPC(String epc) {
-        AccessFilter accessFilter = new AccessFilter();
-        byte[] tagMask = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff,
-                (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-
-        // Tag Pattern A
-        accessFilter.TagPatternA.setMemoryBank(MEMORY_BANK.MEMORY_BANK_RESERVED);
-        accessFilter.TagPatternA.setTagPattern(epc.getBytes());
-        accessFilter.TagPatternA.setTagPatternBitCount(8 * 8);
-        accessFilter.TagPatternA.setBitOffset(0);
-        accessFilter.TagPatternA.setTagMask(tagMask);
-        accessFilter.TagPatternA.setTagMaskBitCount(tagMask.length * 8);
-        accessFilter.setAccessFilterMatchPattern(FILTER_MATCH_PATTERN.A);
+        this.filterEPC = epc;
+//        AccessFilter accessFilter = new AccessFilter();
+//        byte[] tagMask = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff,
+//                (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+//
+//        // Tag Pattern A
+//        accessFilter.TagPatternA.setMemoryBank(MEMORY_BANK.MEMORY_BANK_RESERVED);
+//        accessFilter.TagPatternA.setTagPattern(epc.getBytes());
+//        accessFilter.TagPatternA.setTagPatternBitCount(8 * 8);
+//        accessFilter.TagPatternA.setBitOffset(0);
+//        accessFilter.TagPatternA.setTagMask(tagMask);
+//        accessFilter.TagPatternA.setTagMaskBitCount(tagMask.length * 8);
+//        accessFilter.setAccessFilterMatchPattern(FILTER_MATCH_PATTERN.A);
     }
 
     // Add state aware pre-filter for given EPC or Tag ID
@@ -140,7 +140,10 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
         // delete any prefilters
         try {
             if (currentReader != null && currentReader.isConnected()) {
-                currentReader.Actions.PreFilters.deleteAll();
+                this.filterEPC = null;
+                if (currentReader.Actions.PreFilters.length() > 0) {
+                    currentReader.Actions.PreFilters.deleteAll();
+                }
             } else {
                 return false;
             }
@@ -182,11 +185,13 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
 
     @Override
     public void CloseReader() {
+//        this.Status(Boolean.FALSE);
+//        RFIDModuleFactory.Reset();
         try {
             if (currentReader != null) {
                 currentReader.Events.removeEventsListener(rfidEventsListener);
                 currentReader.disconnect();
-                Toast.makeText((AppCompatActivity)context, "Disconnecting reader", Toast.LENGTH_LONG).show();
+                Toast.makeText((AppCompatActivity) context, "Disconnecting reader", Toast.LENGTH_LONG).show();
                 currentReader = null;
                 readers.Dispose();
                 readers = null;
@@ -202,11 +207,13 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
 
     @Override
     public void StopReading() {
-        new AsyncTaskExecutorService<Void, Void, Void>() {
+        new AsyncTaskExecutorService<Object, Void, Void>() {
             @Override
-            protected Void doInBackground(Void... params) {
+            protected Void doInBackground(Object... params) {
                 try {
                     currentReader.Actions.Inventory.stop();
+//                    Status(Boolean.FALSE);
+//                    RFIDModuleFactory.Reset();
                 } catch (InvalidUsageException e) {
                     e.printStackTrace();
                 } catch (OperationFailureException e) {
@@ -214,14 +221,20 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
                 }
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(Void unused) {
+                int k = 0;
+            }
+
         }.execute();
     }
 
     @Override
     public List<RFIDTag> inventoryRealTime() {
-        new AsyncTaskExecutorService<Void, Void, Void>() {
+        new AsyncTaskExecutorService<Object, Void, Void>() {
             @Override
-            protected Void doInBackground(Void... params) {
+            protected Void doInBackground(Object... params) {
                 try {
                     currentReader.Actions.Inventory.perform();
                 } catch (InvalidUsageException e) {
@@ -231,6 +244,12 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
                 }
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(Void unused) {
+                int k = 0;
+            }
+
         }.execute();
 
 
@@ -239,6 +258,39 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
 
     @Override
     public List<RFIDTag> inventoryByTimer() {
+        new AsyncTaskExecutorService<Object, Void, Void>() {
+            @Override
+            protected Void doInBackground(Object... params) {
+                try {
+                    currentReader.Actions.Inventory.perform();
+
+                    // Sleep or wait
+                    try {
+                        Thread.sleep(50, 100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    // stop the inventory
+                    currentReader.Actions.Inventory.stop();
+
+                } catch (InvalidUsageException e) {
+
+                    e.printStackTrace();
+                } catch (OperationFailureException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void unused) {
+                int k = 0;
+            }
+
+        }.execute();
+
+
         return null;
     }
 
@@ -254,6 +306,14 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
 
     @Override
     public boolean startSearching() {
+        try {
+            currentReader.Actions.TagLocationing.Perform(this.filterEPC, null, null);
+            return true;
+        } catch (InvalidUsageException e) {
+            e.printStackTrace();
+        } catch (OperationFailureException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -264,6 +324,13 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
 
     @Override
     public boolean stopSearching() {
+        try {
+            currentReader.Actions.Inventory.stop();
+        } catch (InvalidUsageException e) {
+            e.printStackTrace();
+        } catch (OperationFailureException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -343,7 +410,10 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
 
     private synchronized void connectReader() {
         if (!isReaderConnected()) {
-            new ConnectionTask().execute();
+            Log.d(TAG, "ConnectionTask");
+            GetAvailableReader();
+            if (currentReader != null)
+                connect();
         }
     }
 
@@ -378,9 +448,27 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
     private void InitSDK() {
         Log.d(TAG, "InitZebraSDK");
         if (readers == null) {
-            new DetectAvailableZebraReadersTask().execute();
-        } else
-            connectReader();
+            Log.d(TAG, "DetectAvailableZebraReadersTask");
+            try {
+                // Based on support available on host device choose the reader type
+                if (readers == null) {
+                    readers = new Readers(context, ENUM_TRANSPORT.ALL);
+                }
+
+                availableRFIDReaderList = readers.GetAvailableRFIDReaderList();
+            } catch (InvalidUsageException e) {
+                // log the Exception
+                e.printStackTrace();
+
+                // discard and re-instantiate the readers object again.
+                readers.Dispose();
+                readers = null;
+                if (readers == null) {
+                    readers = new Readers(context, ENUM_TRANSPORT.BLUETOOTH);
+                }
+            }
+        }
+        connectReader();
     }
 
 
@@ -463,8 +551,6 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
                 }
                 currentReader.Events.addEventsListener(rfidEventsListener);
 
-                //currentReader.Actions.Inventory.perform();
-
                 // HH event
                 currentReader.Events.setHandheldEvent(true);
 
@@ -486,18 +572,24 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
                 MAX_POWER = currentReader.ReaderCapabilities.getTransmitPowerLevelValues().length - 1;
 
                 // set antenna configurations
-//                Antennas.AntennaRfConfig config = currentReader.Config.Antennas.getAntennaRfConfig(1);
-//                config.setTransmitPowerIndex(MAX_POWER);
-//                config.setrfModeTableIndex(0);
-//                config.setTari(0);
-//                currentReader.Config.Antennas.setAntennaRfConfig(1, config);
+                Antennas.AntennaRfConfig config = currentReader.Config.Antennas.getAntennaRfConfig(1);
+                config.setTransmitPowerIndex(MAX_POWER);
+                config.setrfModeTableIndex(0);
+                config.setTari(0);
+                currentReader.Config.Antennas.setAntennaRfConfig(1, config);
 
                 // Set the singulation control
-//                Antennas.SingulationControl s1_singulationControl = currentReader.Config.Antennas.getSingulationControl(1);
-//                s1_singulationControl.setSession(SESSION.SESSION_S0);
-//                s1_singulationControl.Action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_A);
+                Antennas.SingulationControl s1_singulationControl = currentReader.Config.Antennas.getSingulationControl(1);
+                s1_singulationControl.setSession(SESSION.SESSION_S0);
+                s1_singulationControl.Action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_A);
 //                s1_singulationControl.Action.setSLFlag(SL_FLAG.SL_ALL);
-//                currentReader.Config.Antennas.setSingulationControl(1, s1_singulationControl);
+                currentReader.Config.Antennas.setSingulationControl(1, s1_singulationControl);
+
+//                // Get tag storage settings from the reader
+//                TagStorageSettings tagStorageSettings = currentReader.Config.getTagStorageSettings();
+//                // set tag storage settings on the reader with all fields
+//                tagStorageSettings.setTagFields(TAG_FIELD.ALL_TAG_FIELDS);
+//                currentReader.Config.setTagStorageSettings(tagStorageSettings);
 
                 // delete any prefilters
                 currentReader.Actions.PreFilters.deleteAll();
@@ -510,69 +602,69 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
 
     //########################################################
     //----  Zebra related asynchronous tasks -----------------
-    // Enumerates SDK based on host device
-    private class DetectAvailableZebraReadersTask extends AsyncTaskExecutorService<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            Log.d(TAG, "DetectAvailableZebraReadersTask");
 
-            try {
-                // Based on support available on host device choose the reader type
-                if (readers == null) {
-                    readers = new Readers(context, ENUM_TRANSPORT.ALL);
-                }
 
-                availableRFIDReaderList = readers.GetAvailableRFIDReaderList();
-            } catch (InvalidUsageException e) {
-                // log the Exception
-                e.printStackTrace();
+    /**
+     * defines the methods that should be implemented by every activity that uses ZebraT26Commander.
+     */
+    public interface ResponseHandlerInterface {
+        void handleTagsdata(TagData[] tagData);
 
-                // discard and re-instantiate the readers object again.
-                readers.Dispose();
-                readers = null;
-                if (readers == null) {
-                    readers = new Readers(context, ENUM_TRANSPORT.BLUETOOTH);
-                }
-            }
+        void handleTagdata(TagData tagData);
 
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void param) {
-            connectReader();
-        }
+        void handleTriggerPress(boolean pressed);
+        //void handleStatusEvents(Events.StatusEventData eventData);
     }
-
-    // Task that attempts to connect to a Reader and assign to 'currentReader'
-    private class ConnectionTask extends AsyncTaskExecutorService<Void, Void, String> {
-
-        @Override
-        protected String doInBackground(Void... params) {
-            Log.d(TAG, "ConnectionTask");
-            GetAvailableReader();
-            if (currentReader != null)
-                return connect();
-            return "Failed to find or connect reader";
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText((Context) context, "Reader Connected", Toast.LENGTH_LONG).show();
-        }
-    }
-
 
     // Read/Status Notify handler
     // Implement the RfidEventsLister class to receive event notifications
     public class ZebraRFIDEventsListener implements RfidEventsListener {
         // Read Event Notification
         public void eventReadNotify(RfidReadEvents e) {
+
+//            // Recommended to use new method getReadTagsEx for better performance in case of large tag population
+//            TagData[] tagsRead = currentReader.Actions.getReadTags(100);
+//
+//            // if >0 tags were read, proceed...
+//            if (tagsRead != null) {
+//                // stop the inventory
+//
+//                List<TagData> tagsList = Arrays.asList(tagsRead);
+//                List<TagData> tagsFound = tagsList.stream().filter(f -> f.isContainsLocationInfo()).collect(Collectors.toList());
+//
+//                int tagsCnt = tagsRead.length;
+//                for (int index = 0; index < tagsCnt; index++) {
+//                    Log.d(TAG, "Tag ID " + tagsRead[index].getTagID());
+//
+//                    if (tagsRead[index].getOpCode() == ACCESS_OPERATION_CODE.ACCESS_OPERATION_READ &&
+//                            tagsRead[index].getOpStatus() == ACCESS_OPERATION_STATUS.ACCESS_SUCCESS) {
+//                        if (tagsRead[index].getMemoryBankData().length() > 0) {
+//                            Log.d(TAG, " Mem Bank Data " + tagsRead[index].getMemoryBankData());
+//                        }
+//                    }
+//                    if (tagsRead[index].isContainsLocationInfo()) {
+//                        short dist = tagsRead[index].LocationInfo.getRelativeDistance();
+//                        Log.d(TAG, "Tag relative distance " + dist + " EPC = " + tagsRead[index].getTagID());
+//                        new AsyncDataSearch().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tagsRead[index]);
+//                    }
+//                }
+//
+//                // possibly if operation was invoked from async task and still busy
+//                // handle tag data responses on parallel thread thus THREAD_POOL_EXECUTOR
+//                if (CollectionUtils.isEmpty(tagsFound) && !CollectionUtils.isEmpty(tagsList)) {
+//                    new AsyncDataUpdate().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tagsRead);
+//                }
+//            }
+
             // Recommended to use new method getReadTagsEx for better performance in case of large tag population
             TagDataArray tagsRead = currentReader.Actions.getReadTagsEx(100);
 
             // if >0 tags were read, proceed...
             if (tagsRead != null) {
+
+                List<TagData> tagsList = Arrays.asList(tagsRead.getTags());
+                List<TagData> tagsFound = tagsList.stream().filter(f -> f.isContainsLocationInfo()).collect(Collectors.toList());
+
                 TagData[] tags = tagsRead.getTags();
                 int tagsCnt = tagsRead.getLength();
                 for (int index = 0; index < tagsCnt; index++) {
@@ -586,13 +678,16 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
                     }
                     if (tags[index].isContainsLocationInfo()) {
                         short dist = tags[index].LocationInfo.getRelativeDistance();
-                        Log.d(TAG, "Tag relative distance " + dist);
+                        Log.d(TAG, "Tag relative distance " + dist + " EPC = " + tags[index].getTagID());
+                        new AsyncDataSearch().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tags[index]);
                     }
                 }
 
                 // possibly if operation was invoked from async task and still busy
                 // handle tag data responses on parallel thread thus THREAD_POOL_EXECUTOR
-                new AsyncDataUpdate().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tags);
+                if (CollectionUtils.isEmpty(tagsFound) && !CollectionUtils.isEmpty(tagsList)) {
+                    new AsyncDataUpdate().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tags);
+                }
             }
         }
 
@@ -622,22 +717,19 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
         }
     }
 
-
     private class AsyncDataUpdate extends AsyncTask<TagData[], Void, Void> {
         @Override
         protected Void doInBackground(TagData[]... params) {
-            context.handleTagdata(params[0]);
+            ((ResponseHandlerInterface) context).handleTagsdata(params[0]);
             return null;
         }
     }
 
-    /**
-     * defines the methods that should be implemented by every activity that uses ZebraT26Commander.
-     */
-    interface ResponseHandlerInterface {
-        void handleTagdata(TagData[] tagData);
-
-        void handleTriggerPress(boolean pressed);
-        //void handleStatusEvents(Events.StatusEventData eventData);
+    private class AsyncDataSearch extends AsyncTask<TagData, Void, Void> {
+        @Override
+        protected Void doInBackground(TagData... param) {
+            ((ResponseHandlerInterface) context).handleTagdata(param[0]);
+            return null;
+        }
     }
 }

@@ -53,6 +53,7 @@ import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.wh.correlation.CorrelationMenuActivity;
 import io.agritrack.fish.ui.wh.inventory.InventoryAssetActivity;
+import io.agritrack.fish.ui.wh.zebra.ZebraInventoryAssetActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
@@ -106,7 +107,7 @@ public class WhMenuActivity extends AppCompatActivity {
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_incoming), IncomingStartActivity.class, R.drawable.incoming));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_outgoing), OutgoingStartActivity.class, R.drawable.outgoing));
 //        menuItemsList.add(new MenuItem(getString(R.string.menu_title_internal), InternalAssetActivity.class, R.drawable.internal_asset));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), InventoryAssetActivity.class, R.drawable.inventory));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), ZebraInventoryAssetActivity.class, R.drawable.inventory));
         menuItemsList.add(new MenuItem(getString(R.string.program), CorrelationMenuActivity.class, R.drawable.program));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), SearchActivity.class, R.drawable.search));
 
@@ -133,7 +134,7 @@ public class WhMenuActivity extends AppCompatActivity {
 //                        i = new Intent(appCtx, InternalAssetActivity.class);
 //                        break;
                     case Inventory_Idx:
-                        i = new Intent(appCtx, InventoryAssetActivity.class);
+                        i = new Intent(appCtx, ZebraInventoryAssetActivity.class);
                         break;
                     case Correlation_Idx:
                         i = new Intent(appCtx, CorrelationMenuActivity.class);

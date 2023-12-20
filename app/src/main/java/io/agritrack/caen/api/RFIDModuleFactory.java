@@ -1,5 +1,7 @@
 package io.agritrack.caen.api;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.hdhe.uhf.reader.UhfReader;
 import com.google.android.gms.common.util.Strings;
 import com.handheld.uhfr.UHFRManager;
@@ -45,8 +47,8 @@ public class RFIDModuleFactory {
                     LocalPreferences.writeValue(LocalPreferences.Device_Key, "BX6200");
                     return "BX6200";
                 } else { //TODO: we assume that it is Zebra terminal!!
-                    LocalPreferences.writeValue(LocalPreferences.Device_Key, "TC26");
-                    return "TC26";
+                    LocalPreferences.writeValue(LocalPreferences.Device_Key, "RFID_Zebra_TC26");
+                    return "RFID_Zebra_TC26";
                 }
             }
         } catch (Throwable ex) {
@@ -64,8 +66,16 @@ public class RFIDModuleFactory {
             } else if ("BX6200".equalsIgnoreCase(model)) {
                 instance = new BX6200Commander();
                 instance.Status(Boolean.TRUE);
-            } else if ("TC26".equalsIgnoreCase(model)) {
-                instance = new ZebraTC26Commander();
+            }
+        }
+        return instance;
+    }
+
+    public static ICAEN_API getInstance(ZebraTC26Commander.ResponseHandlerInterface ctx) {
+        if (instance == null || !instance.IsOpen()) {
+            String model = detectModel();
+            if ("RFID_Zebra_TC26".equalsIgnoreCase(model)) {
+                instance = new ZebraTC26Commander((AppCompatActivity) ctx);
                 instance.Status(Boolean.TRUE);
             }
         }
