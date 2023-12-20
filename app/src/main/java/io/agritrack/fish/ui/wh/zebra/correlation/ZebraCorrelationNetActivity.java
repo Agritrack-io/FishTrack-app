@@ -1,4 +1,4 @@
-package io.agritrack.fish.ui.wh.correlation;
+package io.agritrack.fish.ui.wh.zebra.correlation;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
@@ -16,9 +16,9 @@ import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.SearchView;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -46,7 +45,6 @@ import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.api.ZebraTC26Commander;
-import io.agritrack.caen.pojo.RFIDTag;
 import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
@@ -59,19 +57,16 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.bo.GenericListModel;
-import io.agritrack.fish.ui.wh.zebra.inventory.ZebraInventoryAssetActivity;
-import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.FilterableAdapter;
-import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CorrelationNetActivity extends LocationAwareActivity implements ZebraTC26Commander.ResponseHandlerInterface {
+public class ZebraCorrelationNetActivity extends LocationAwareActivity implements ZebraTC26Commander.ResponseHandlerInterface {
 
     private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
@@ -93,7 +88,7 @@ public class CorrelationNetActivity extends LocationAwareActivity implements Zeb
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_correlation_net);
+        setContentView(R.layout.activity_zebra_correlation_net);
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
@@ -121,7 +116,7 @@ public class CorrelationNetActivity extends LocationAwareActivity implements Zeb
         });
 
         // instantiate ProgressDialog and set style.
-        progressDialog = new ProgressDialog(CorrelationNetActivity.this);
+        progressDialog = new ProgressDialog(ZebraCorrelationNetActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // get an instance of local DB
@@ -133,7 +128,7 @@ public class CorrelationNetActivity extends LocationAwareActivity implements Zeb
         btnScanAssetTag.setOnClickListener(this::onClick);
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(CorrelationNetActivity.this);
+            supportDialog = new SupportDialog(ZebraCorrelationNetActivity.this);
             supportDialog.showDialog();
         });
 
@@ -147,7 +142,7 @@ public class CorrelationNetActivity extends LocationAwareActivity implements Zeb
 
             if (proceed) {
                 // move to next activity.
-                Intent i = new Intent(getApplicationContext(), CorrelationNetActivity.class);
+                Intent i = new Intent(getApplicationContext(), ZebraCorrelationNetActivity.class);
                 startActivity(i);
             }
         }
@@ -199,7 +194,7 @@ public class CorrelationNetActivity extends LocationAwareActivity implements Zeb
     protected void configFooter() {
         ivBack.setOnClickListener(view -> {
             stopScanner();
-            Intent i = new Intent(getApplicationContext(), CorrelationSubMenuActivity.class);
+            Intent i = new Intent(getApplicationContext(), ZebraCorrelationSubMenuActivity.class);
             i.putExtra("id", 1);
             startActivity(i);
         });
@@ -276,7 +271,7 @@ public class CorrelationNetActivity extends LocationAwareActivity implements Zeb
             ArrayList<CorrelationTxDTO> dtos = new ArrayList<>();
             dtos.add(CorrelationTxDTO.convert(tx));
             Call<ResponseBody> syncTxAsyncCall = updService.syncAssetCorrelationTx(dtos, "Bearer " + token);
-            syncTxAsyncCall.enqueue(new CorrelationNetActivity.SyncTxCallBack());
+            syncTxAsyncCall.enqueue(new ZebraCorrelationNetActivity.SyncTxCallBack());
 
             return true;
         } catch (Exception e) {
@@ -404,9 +399,9 @@ public class CorrelationNetActivity extends LocationAwareActivity implements Zeb
 
     // ###################################################
     private class ScanHandler extends Handler {
-        private final WeakReference<CorrelationNetActivity> mActivity;
+        private final WeakReference<ZebraCorrelationNetActivity> mActivity;
 
-        public ScanHandler(CorrelationNetActivity activity) {
+        public ScanHandler(ZebraCorrelationNetActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 

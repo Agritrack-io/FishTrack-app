@@ -1,4 +1,4 @@
-package io.agritrack.fish.ui.wh.search;
+package io.agritrack.fish.ui.wh.zebra.search;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
@@ -13,6 +13,7 @@ import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -33,17 +34,24 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.common.util.Strings;
+import com.zebra.rfid.api3.TagData;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.agritrack.R;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
+import io.agritrack.caen.api.ZebraTC26Commander;
 import io.agritrack.caen.pojo.RFIDTag;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;
@@ -56,14 +64,10 @@ import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 
-public class SearchActivity extends AppCompatActivity {
+public class ZebraSearchActivity extends AppCompatActivity implements ZebraTC26Commander.ResponseHandlerInterface {
     private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-    private final ScanHandler mScanHandler = new ScanHandler(this);
-    private final ICAEN_API uhfReader = RFIDModuleFactory.getInstance();
-    // **************************************************************
-    private final Runnable search_runnable = new SearchRunnable();
-    // listens to trigger button clicks.
+    private ICAEN_API uhfReader =null;
     protected BroadcastReceiver keyReceiver;
     private ProgressBar pbProximity;
     private MobileDB db;
@@ -84,7 +88,7 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_zebra_search);
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
@@ -92,7 +96,9 @@ public class SearchActivity extends AppCompatActivity {
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
-        SoundUtil.initSoundPool(SearchActivity.this);
+        SoundUtil.initSoundPool(ZebraSearchActivity.this);
+
+        uhfReader = RFIDModuleFactory.getInstance(this);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderSearch);
@@ -182,7 +188,7 @@ public class SearchActivity extends AppCompatActivity {
         btnSearchAsset.setOnClickListener(this::onClick);
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(SearchActivity.this);
+            supportDialog = new SupportDialog(ZebraSearchActivity.this);
             supportDialog.showDialog();
         });
 
@@ -208,9 +214,9 @@ public class SearchActivity extends AppCompatActivity {
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);
         ivBack.setOnClickListener(view -> {
             //Stop searching since we navigate to previous activity
-            if (mScanHandler != null) {
-                mScanHandler.removeCallbacks(search_runnable);
-            }
+//            if (mScanHandler != null) {
+//                mScanHandler.removeCallbacks(search_runnable);
+//            }
 
             Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
             startActivity(i);
@@ -352,7 +358,6 @@ public class SearchActivity extends AppCompatActivity {
             btnSearchAsset.setText(R.string.stop_search);
             uhfReader.setFilterEPC(epcPrefix + code.substring(0,3) + selectedBarcode);
             uhfReader.startSearching();
-            mScanHandler.postDelayed(search_runnable, 0);
         } else {
             isScanning = false;
             btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
@@ -360,85 +365,53 @@ public class SearchActivity extends AppCompatActivity {
             pbProximity.setProgress(0);
             tvProximity.setText(R.string.proximity);
             uhfReader.stopSearching();
-            mScanHandler.removeCallbacks(search_runnable);
+//
         }
     }
 
-    // ###################################################
-    private static class ScanHandler extends Handler {
-        private final WeakReference<SearchActivity> mActivity;
-
-        public ScanHandler(SearchActivity activity) {
-            mActivity = new WeakReference<>(activity);
+    @Override
+    public void handleTagdata(TagData tagData) {
+        int rssi_from_tag = 0;
+        if (tagData != null) {
+            short distance = tagData.LocationInfo.getRelativeDistance();
+            rssi_from_tag = normalize(distance);
         }
 
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 10:
-                    int rssi_from_tag = msg.getData().getInt("rssi");
-                    //System.out.println("RSSI:" + rssi_from_tag);
-                    int rssi_norm = normalize(rssi_from_tag);
+        int rssi_norm = normalize(rssi_from_tag);
 
-                    if (rssi_norm > 5 && rssi_norm < 95) {
-                        mActivity.get().tvProximity.setText(String.valueOf(rssi_norm));
-                        mActivity.get().pbProximity.setProgress(rssi_norm);
-                        if (rssi_norm < 95 && rssi_norm >= 80) {
-                            toneG.startTone(ToneGenerator.TONE_DTMF_D, 200);
-                        } else if (rssi_norm < 80 && rssi_norm >= 60) {
-                            toneG.startTone(ToneGenerator.TONE_DTMF_9, 130);
-                        } else if (rssi_norm < 60 && rssi_norm >= 40) {
-                            toneG.startTone(ToneGenerator.TONE_DTMF_5, 100);
-                        } else {
-                            toneG.startTone(ToneGenerator.TONE_DTMF_1, 50);
-                        }
-                    } else if (rssi_norm >= 95) {
-                        toneG.startTone(ToneGenerator.TONE_DTMF_D, 300);
-                        mActivity.get().tvProximity.setText(">= 95%");
-                        mActivity.get().pbProximity.setProgress(100);
-                    } else {
-                        toneG.startTone(ToneGenerator.TONE_DTMF_1, 10);
-                        mActivity.get().tvProximity.setText("<= 5%");
-                        mActivity.get().pbProximity.setProgress(0);
-                    }
-                    break;
-                case 1980:
-                    mActivity.get().tvProximity.setText("");
-                    mActivity.get().pbProximity.setProgress(0);
-            }
-        }
-
-        private int normalize(double rssi) {
-            final double MAX_RSSI = -35d;
-            final double MIN_RSSI = -70;
-            rssi = rssi > MAX_RSSI ? MAX_RSSI : rssi;
-            rssi = rssi < MIN_RSSI ? MIN_RSSI : rssi;
-            return (int) (Math.abs(rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI) * 100);
+        if (rssi_norm > 5 && rssi_norm < 95) {
+            runOnUiThread(() -> {
+                this.tvProximity.setText(String.valueOf(rssi_norm));
+                this.pbProximity.setProgress(rssi_norm);
+            });
+        } else if (rssi_norm >= 95) {
+            runOnUiThread(() -> {
+                this.tvProximity.setText(">= 95%");
+                this.pbProximity.setProgress(100);
+            });
+        } else {
+            runOnUiThread(() -> {
+                this.tvProximity.setText("<= 5%");
+                this.pbProximity.setProgress(0);
+            });
         }
     }
 
-    private final class SearchRunnable implements Runnable {
+    @Override
+    public void handleTagsdata(TagData[] tagData) {
 
-        @Override
-        public void run() {
-            try {
-                List<RFIDTag> tagList = uhfReader.search();
-
-                if (tagList != null && !tagList.isEmpty()) {
-                    RFIDTag tag = tagList.get(0);
-                    Message msg = new Message();
-                    msg.what = 10;
-                    Bundle b = new Bundle();
-                    b.putInt("rssi", tag.getRssi());
-                    b.putString("epc", tag.getEpc());
-                    msg.setData(b);
-                    mScanHandler.sendMessage(msg);
-                }
-            } catch (Exception ignored) {
-                ignored.printStackTrace();
-            }
-            mScanHandler.post(search_runnable);
-        }
     }
 
+    private int normalize(double rssi) {
+        final double MAX_RSSI = 80d;
+        final double MIN_RSSI = 0;
+        rssi = rssi > MAX_RSSI ? MAX_RSSI : rssi;
+        rssi = rssi < MIN_RSSI ? MIN_RSSI : rssi;
+        return (int) (Math.abs(rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI) * 100);
+    }
+
+    @Override
+    public void handleTriggerPress(boolean pressed) {
+
+    }
 }

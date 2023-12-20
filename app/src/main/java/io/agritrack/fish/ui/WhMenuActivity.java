@@ -53,7 +53,13 @@ import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.wh.correlation.CorrelationMenuActivity;
 import io.agritrack.fish.ui.wh.inventory.InventoryAssetActivity;
+<<<<<<< Updated upstream
 import io.agritrack.fish.ui.wh.zebra.ZebraInventoryAssetActivity;
+=======
+import io.agritrack.fish.ui.wh.zebra.correlation.ZebraCorrelationMenuActivity;
+import io.agritrack.fish.ui.wh.zebra.inventory.ZebraInventoryAssetActivity;
+import io.agritrack.fish.ui.wh.zebra.search.ZebraSearchActivity;
+>>>>>>> Stashed changes
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
@@ -108,8 +114,13 @@ public class WhMenuActivity extends AppCompatActivity {
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_outgoing), OutgoingStartActivity.class, R.drawable.outgoing));
 //        menuItemsList.add(new MenuItem(getString(R.string.menu_title_internal), InternalAssetActivity.class, R.drawable.internal_asset));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), ZebraInventoryAssetActivity.class, R.drawable.inventory));
+<<<<<<< Updated upstream
         menuItemsList.add(new MenuItem(getString(R.string.program), CorrelationMenuActivity.class, R.drawable.program));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), SearchActivity.class, R.drawable.search));
+=======
+        menuItemsList.add(new MenuItem(getString(R.string.program), ZebraCorrelationMenuActivity.class, R.drawable.program));
+        menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), ZebraSearchActivity.class, R.drawable.search));
+>>>>>>> Stashed changes
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
 
@@ -137,10 +148,10 @@ public class WhMenuActivity extends AppCompatActivity {
                         i = new Intent(appCtx, ZebraInventoryAssetActivity.class);
                         break;
                     case Correlation_Idx:
-                        i = new Intent(appCtx, CorrelationMenuActivity.class);
+                        i = new Intent(appCtx, ZebraCorrelationMenuActivity.class);
                         break;
                     case Search_Idx:
-                        i = new Intent(appCtx, SearchActivity.class);
+                        i = new Intent(appCtx, ZebraSearchActivity.class);
                         break;
                     default:
                 }

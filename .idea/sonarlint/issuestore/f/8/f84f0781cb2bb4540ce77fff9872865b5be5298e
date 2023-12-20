@@ -1,38 +1,53 @@
 
-n
-java:S1301â"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ8µş„´¤1
-M
-java:S5411…"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ8·ş„´¤1
-U
-java:S2589œ"7Remove this expression which always evaluates to "true"(»½Ãİ8ÿ„´¤1
-w	java:S116B"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ê¼“Ğ8ÿ„´¤1
+g
+java:S1301Ÿ"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
+F
+java:S5411”"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
+c
+java:S2259Ç"GA "NullPointerException" could be thrown; "uhfReader" is nullable here.(¢ÙŞ«ùÿÿÿÿ
+o	java:S116N"ZRename this field "scanner_running" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(å´ñº
+¤
+java:S1186ì"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(·èüåûÿÿÿÿ8Êå¢ŠÈ1
+
+java:S1186ñ"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÂÖêµûÿÿÿÿ
+^
+java:S1659Z"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
+Q
+java:S1874W"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+Q
+java:S1874|"6Remove this use of "ProgressDialog"; it is deprecated.(îàãşÿÿÿÿ
+N
+java:S1874}"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+L
+java:S1874}"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+K
+java:S1874}"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+W	java:S125³"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+
+java:S5803Õ"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç
+C
+java:S1481ş"'Remove this unused "kk" local variable.(¨í¾ıüÿÿÿÿ
+N
+java:S1874ˆ"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ
+h
+java:S3457¨"Q%n should be used in place of \n to produce the platform-specific line separator.(ƒ÷èÖ
+m
+java:S3457¬"Q%n should be used in place of \n to produce the platform-specific line separator.(Ş±©Ãúÿÿÿÿ
+T	java:S106´"9Replace this use of System.out or System.err by a logger.(Ü‡„åıÿÿÿÿ
+R	java:S125Á"<This block of commented-out lines of code should be removed.(ÙÎ«¶
+Q	java:S125È"<This block of commented-out lines of code should be removed.(×”©I
+^	java:S125Ö"<This block of commented-out lines of code should be removed.(Š””ûÿÿÿÿ8’ç¢ŠÈ1
+˜
+java:S5803Û"{Remove this usage of "ArrayUtils", it is annotated with @VisibleForTesting and should not be accessed from production code.(ó¦=8•ç¢ŠÈ1
 e
-java:S1659M"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ8ÿ„´¤1
-X
-java:S1874J"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8•ÿ„´¤1
-X
-java:S1874m"6Remove this use of "ProgressDialog"; it is deprecated.(îàãşÿÿÿÿ8™ÿ„´¤1
-U
-java:S1874n"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿8šÿ„´¤1
-S
-java:S1874n"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿8šÿ„´¤1
-R
-java:S1874n"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿8šÿ„´¤1
-^	java:S125¥"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ8§ÿ„´¤1
-–
-java:S5803Ç"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç8ªÿ„´¤1
-J
-java:S1481ğ"'Remove this unused "kk" local variable.(¨í¾ıüÿÿÿÿ8¯ÿ„´¤1
-U
-java:S1874ú"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ8°ÿ„´¤1
-o
-java:S3457š"Q%n should be used in place of \n to produce the platform-specific line separator.(ƒ÷èÖ8µÿ„´¤1
-t
-java:S3457"Q%n should be used in place of \n to produce the platform-specific line separator.(Ş±©Ãúÿÿÿÿ8¶ÿ„´¤1
-[	java:S106¦"9Replace this use of System.out or System.err by a logger.(Ü‡„åıÿÿÿÿ8·ÿ„´¤1
-D	java:S131â""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ8¼ÿ„´¤1
-^	java:S125õ"<This block of commented-out lines of code should be removed.(ßûŒ×üÿÿÿÿ8¾ÿ„´¤1
-E
-java:S3398¤"'Move this method into "SyncTxCallBack".(Àâé¼8¾ÿ„´¤1
-P
-java:S1068Ú"-Remove this unused "mActivity" private field.(íºçşÿÿÿÿ8¾ÿ„´¤1
+java:S4635Û"HReplace "startsWith" with the overload that accepts an offset parameter.(ó¦=8—ç¢ŠÈ1
+K
+java:S3985–"/Remove this unused private "ScanHandler" class.(Ã¸Ÿøÿÿÿÿ
+=	java:S131Ÿ""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+W	java:S125²"<This block of commented-out lines of code should be removed.(ßûŒ×üÿÿÿÿ
+>
+java:S3398²"'Move this method into "SyncTxCallBack".(Àâé¼
+I
+java:S1068N"3Remove this unused "scanner_running" private field.(å´ñº
+I
+java:S1068—"-Remove this unused "mActivity" private field.(íºçşÿÿÿÿ

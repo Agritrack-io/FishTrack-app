@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
+import io.agritrack.caen.api.ZebraTC26Commander;
 import io.agritrack.caen.pojo.RFIDTag;
 import io.agritrack.data.model.EncodingSchemeEntity;
 import io.agritrack.data.service.EncodingSchemeService;
@@ -38,6 +39,17 @@ public class ScanInventoryThread implements Runnable {
         mScanHandler = handler;
         // use by default high energy. Explicitly set to Low Energy (after initialization) where required.
         this.HighEnergy();
+    }
+
+    public ScanInventoryThread(Handler handler, ZebraTC26Commander.ResponseHandlerInterface activity) {
+        super();
+        uhfReader = RFIDModuleFactory.getInstance(activity);
+        if (uhfReader != null) {
+            uhfReader.clearEPCFilter();
+        }
+        mScanHandler = handler;
+        // use by default high energy. Explicitly set to Low Energy (after initialization) where required.
+//        this.HighEnergy();
     }
 
     public void LowEnergy() {

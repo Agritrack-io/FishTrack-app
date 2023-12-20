@@ -28,6 +28,7 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.fish.ui.WhMenuActivity;
+import io.agritrack.fish.ui.wh.zebra.outgoing.ZebraOutgoingAssetActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.SiteInfoRS;
 import io.agritrack.ui.service.LocalPreferences;

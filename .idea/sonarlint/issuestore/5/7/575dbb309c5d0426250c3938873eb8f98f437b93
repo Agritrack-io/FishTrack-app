@@ -48,10 +48,10 @@ java:S4635œ"HReplace "startsWith" with the overload that accepts an offset par
 d
 java:S4635"HReplace "startsWith" with the overload that accepts an offset parameter.(ë‘ëúÿÿÿÿ
 W	java:S125Æ"<This block of commented-out lines of code should be removed.(ßûŒ×üÿÿÿÿ
-@
-java:S3398ä"$Move this method into "ScanHandler".(æˆÈÎÿÿÿÿÿ
 ;
 java:S3398Û"$Move this method into "ScanHandler".(‹ãÅ€
+@
+java:S3398ä"$Move this method into "ScanHandler".(æˆÈÎÿÿÿÿÿ
 >
 java:S3398È"'Move this method into "SyncTxCallBack".(Àâé¼
 I
