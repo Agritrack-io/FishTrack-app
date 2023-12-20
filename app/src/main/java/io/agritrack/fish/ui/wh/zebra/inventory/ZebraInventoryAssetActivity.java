@@ -115,7 +115,7 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
         // initiate raw sound
         SoundUtil.initSoundPool(this);
 
-        uhfReader = RFIDModuleFactory.getInstance(this);
+        uhfReader = RFIDModuleFactory.getInstance(ZebraInventoryAssetActivity.this);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderInventory);

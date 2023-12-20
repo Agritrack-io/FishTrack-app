@@ -36,6 +36,7 @@ import com.zebra.rfid.api3.STOP_TRIGGER_TYPE;
 import com.zebra.rfid.api3.TAG_FIELD;
 import com.zebra.rfid.api3.TARGET;
 import com.zebra.rfid.api3.TagData;
+import com.zebra.rfid.api3.TagDataArray;
 import com.zebra.rfid.api3.TagStorageSettings;
 import com.zebra.rfid.api3.TriggerInfo;
 
@@ -579,11 +580,7 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
                 Antennas.SingulationControl s1_singulationControl = currentReader.Config.Antennas.getSingulationControl(1);
                 s1_singulationControl.setSession(SESSION.SESSION_S0);
                 s1_singulationControl.Action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_A);
-<<<<<<< Updated upstream
-//                s1_singulationControl.Action.setSLFlag(SL_FLAG.SL_ALL);
-=======
                 s1_singulationControl.Action.setSLFlag(SL_FLAG.SL_ALL);
->>>>>>> Stashed changes
                 currentReader.Config.Antennas.setSingulationControl(1, s1_singulationControl);
 
 //                // Get tag storage settings from the reader
@@ -623,7 +620,6 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
         // Read Event Notification
         public void eventReadNotify(RfidReadEvents e) {
 
-<<<<<<< Updated upstream
 //            // Recommended to use new method getReadTagsEx for better performance in case of large tag population
 //            TagData[] tagsRead = currentReader.Actions.getReadTags(100);
 //
@@ -658,14 +654,11 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
 //                }
 //            }
 
-=======
->>>>>>> Stashed changes
             // Recommended to use new method getReadTagsEx for better performance in case of large tag population
-            TagData[] tagsRead = currentReader.Actions.getReadTags(100);
+            TagDataArray tagsRead = currentReader.Actions.getReadTagsEx(100);
 
             // if >0 tags were read, proceed...
             if (tagsRead != null) {
-<<<<<<< Updated upstream
 
                 List<TagData> tagsList = Arrays.asList(tagsRead.getTags());
                 List<TagData> tagsFound = tagsList.stream().filter(f -> f.isContainsLocationInfo()).collect(Collectors.toList());
@@ -674,81 +667,26 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
                 int tagsCnt = tagsRead.getLength();
                 for (int index = 0; index < tagsCnt; index++) {
                     Log.d(TAG, "Tag ID " + tags[index].getTagID());
-=======
-                // stop the inventory
->>>>>>> Stashed changes
 
-                List<TagData> tagsList = Arrays.asList(tagsRead);
-                List<TagData> tagsFound = tagsList.stream().filter(f -> f.isContainsLocationInfo()).collect(Collectors.toList());
-
-                int tagsCnt = tagsRead.length;
-                for (int index = 0; index < tagsCnt; index++) {
-                    Log.d(TAG, "Tag ID " + tagsRead[index].getTagID());
-
-                    if (tagsRead[index].getOpCode() == ACCESS_OPERATION_CODE.ACCESS_OPERATION_READ &&
-                            tagsRead[index].getOpStatus() == ACCESS_OPERATION_STATUS.ACCESS_SUCCESS) {
-                        if (tagsRead[index].getMemoryBankData().length() > 0) {
-                            Log.d(TAG, " Mem Bank Data " + tagsRead[index].getMemoryBankData());
+                    if (tags[index].getOpCode() == ACCESS_OPERATION_CODE.ACCESS_OPERATION_READ &&
+                            tags[index].getOpStatus() == ACCESS_OPERATION_STATUS.ACCESS_SUCCESS) {
+                        if (tags[index].getMemoryBankData().length() > 0) {
+                            Log.d(TAG, " Mem Bank Data " + tags[index].getMemoryBankData());
                         }
                     }
-<<<<<<< Updated upstream
                     if (tags[index].isContainsLocationInfo()) {
                         short dist = tags[index].LocationInfo.getRelativeDistance();
                         Log.d(TAG, "Tag relative distance " + dist + " EPC = " + tags[index].getTagID());
                         new AsyncDataSearch().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tags[index]);
-=======
-                    if (tagsRead[index].isContainsLocationInfo()) {
-                        short dist = tagsRead[index].LocationInfo.getRelativeDistance();
-                        Log.d(TAG, "Tag relative distance " + dist + " EPC = " + tagsRead[index].getTagID());
-                        new AsyncDataSearch().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tagsRead[index]);
->>>>>>> Stashed changes
                     }
                 }
 
                 // possibly if operation was invoked from async task and still busy
                 // handle tag data responses on parallel thread thus THREAD_POOL_EXECUTOR
                 if (CollectionUtils.isEmpty(tagsFound) && !CollectionUtils.isEmpty(tagsList)) {
-<<<<<<< Updated upstream
                     new AsyncDataUpdate().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tags);
-=======
-                    new AsyncDataUpdate().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tagsRead);
->>>>>>> Stashed changes
                 }
             }
-
-//            // Recommended to use new method getReadTagsEx for better performance in case of large tag population
-//            TagDataArray tagsRead = currentReader.Actions.getReadTagsEx(100);
-//
-//            // if >0 tags were read, proceed...
-//            if (tagsRead != null) {
-//
-//                List<TagData> tagsList = Arrays.asList(tagsRead.getTags());
-//                List<TagData> tagsFound = tagsList.stream().filter(f -> f.isContainsLocationInfo()).collect(Collectors.toList());
-//
-//                TagData[] tags = tagsRead.getTags();
-//                int tagsCnt = tagsRead.getLength();
-//                for (int index = 0; index < tagsCnt; index++) {
-//                    Log.d(TAG, "Tag ID " + tags[index].getTagID());
-//
-//                    if (tags[index].getOpCode() == ACCESS_OPERATION_CODE.ACCESS_OPERATION_READ &&
-//                            tags[index].getOpStatus() == ACCESS_OPERATION_STATUS.ACCESS_SUCCESS) {
-//                        if (tags[index].getMemoryBankData().length() > 0) {
-//                            Log.d(TAG, " Mem Bank Data " + tags[index].getMemoryBankData());
-//                        }
-//                    }
-//                    if (tags[index].isContainsLocationInfo()) {
-//                        short dist = tags[index].LocationInfo.getRelativeDistance();
-//                        Log.d(TAG, "Tag relative distance " + dist + " EPC = " + tags[index].getTagID());
-//                        new AsyncDataSearch().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tags[index]);
-//                    }
-//                }
-//
-//                // possibly if operation was invoked from async task and still busy
-//                // handle tag data responses on parallel thread thus THREAD_POOL_EXECUTOR
-//                if (CollectionUtils.isEmpty(tagsFound) && !CollectionUtils.isEmpty(tagsList)) {
-//                    new AsyncDataUpdate().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tags);
-//                }
-//            }
         }
 
         // Status Event Notification

@@ -74,11 +74,7 @@ public class RFIDModuleFactory {
     public static ICAEN_API getInstance(ZebraTC26Commander.ResponseHandlerInterface ctx) {
         if (instance == null || !instance.IsOpen()) {
             String model = detectModel();
-<<<<<<< Updated upstream
-            if ("RFID_Zebra_TC26".equalsIgnoreCase(model)) {
-=======
            if ("RFID_Zebra_TC26".equalsIgnoreCase(model)) {
->>>>>>> Stashed changes
                 instance = new ZebraTC26Commander((AppCompatActivity) ctx);
                 instance.Status(Boolean.TRUE);
             }

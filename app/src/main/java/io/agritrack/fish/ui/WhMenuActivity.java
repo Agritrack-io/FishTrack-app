@@ -51,22 +51,14 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.SyncAssetDialog;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.ui.wh.correlation.CorrelationMenuActivity;
-import io.agritrack.fish.ui.wh.inventory.InventoryAssetActivity;
-<<<<<<< Updated upstream
-import io.agritrack.fish.ui.wh.zebra.ZebraInventoryAssetActivity;
-=======
+import io.agritrack.fish.ui.wh.incoming.IncomingStartActivity;
+import io.agritrack.fish.ui.wh.outgoing.OutgoingStartActivity;
 import io.agritrack.fish.ui.wh.zebra.correlation.ZebraCorrelationMenuActivity;
 import io.agritrack.fish.ui.wh.zebra.inventory.ZebraInventoryAssetActivity;
 import io.agritrack.fish.ui.wh.zebra.search.ZebraSearchActivity;
->>>>>>> Stashed changes
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
-import io.agritrack.fish.ui.wh.incoming.IncomingStartActivity;
-import io.agritrack.fish.ui.wh.inventory.InventoryStartActivity;
-import io.agritrack.fish.ui.wh.outgoing.OutgoingStartActivity;
-import io.agritrack.fish.ui.wh.search.SearchActivity;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -79,13 +71,12 @@ import retrofit2.Response;
 public class WhMenuActivity extends AppCompatActivity {
 
     private static final int Incoming_Idx = 0, Outgoing_Idx = 1, Inventory_Idx = 2, Correlation_Idx = 3, Search_Idx = 4; // InternalIdx = 2,
+    private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     GridView gvWhMainMenu;
-
     private ImageView ivSupport, ivRefresh;
     private SyncAssetDialog syncAssetDialog;
     private SupportDialog supportDialog;
     private ProgressDialog progressDialog;
-    private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private MobileDB db;
     private int syncCounter = 1;
 
@@ -103,7 +94,7 @@ public class WhMenuActivity extends AppCompatActivity {
 
         gvWhMainMenu = findViewById(R.id.gvWhMainMenu);
 
-        if (LocalPreferences.getCurrentEpcList()!=null) {
+        if (LocalPreferences.getCurrentEpcList() != null) {
 
         } else {
             getCurrentEpcsDevice();
@@ -114,13 +105,8 @@ public class WhMenuActivity extends AppCompatActivity {
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_outgoing), OutgoingStartActivity.class, R.drawable.outgoing));
 //        menuItemsList.add(new MenuItem(getString(R.string.menu_title_internal), InternalAssetActivity.class, R.drawable.internal_asset));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_inventory), ZebraInventoryAssetActivity.class, R.drawable.inventory));
-<<<<<<< Updated upstream
-        menuItemsList.add(new MenuItem(getString(R.string.program), CorrelationMenuActivity.class, R.drawable.program));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), SearchActivity.class, R.drawable.search));
-=======
         menuItemsList.add(new MenuItem(getString(R.string.program), ZebraCorrelationMenuActivity.class, R.drawable.program));
         menuItemsList.add(new MenuItem(getString(R.string.menu_title_search), ZebraSearchActivity.class, R.drawable.search));
->>>>>>> Stashed changes
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
 
