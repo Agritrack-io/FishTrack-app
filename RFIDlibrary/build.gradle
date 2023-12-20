@@ -28,6 +28,7 @@ android {
             jniLibs.srcDirs = ['src/main/jniLibs']
         }
     }
+    namespace 'io.agritrack.xchange'
 }
 
 dependencies {

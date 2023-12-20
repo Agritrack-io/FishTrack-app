@@ -1,7 +1,6 @@
 package io.agritrack.caen.api;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -33,11 +32,9 @@ import com.zebra.rfid.api3.START_TRIGGER_TYPE;
 import com.zebra.rfid.api3.STATE_AWARE_ACTION;
 import com.zebra.rfid.api3.STATUS_EVENT_TYPE;
 import com.zebra.rfid.api3.STOP_TRIGGER_TYPE;
-import com.zebra.rfid.api3.TAG_FIELD;
 import com.zebra.rfid.api3.TARGET;
 import com.zebra.rfid.api3.TagData;
 import com.zebra.rfid.api3.TagDataArray;
-import com.zebra.rfid.api3.TagStorageSettings;
 import com.zebra.rfid.api3.TriggerInfo;
 
 import java.util.ArrayList;
@@ -62,7 +59,7 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
     private int MIN_POWER = 0;
     private int MAX_POWER = 270; //TODO: test actual values!
     // Activity where this class was invoked from.
-    private Context context;
+    private final Context context;
     private String filterEPC;
 
     //private final Handler mScanHandler;
@@ -489,7 +486,7 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
     private synchronized void GetAvailableReader() {
         Log.d(TAG, "GetAvailableReader");
         if (readers != null) {
-            readers.attach(this);
+            Readers.attach(this);
 
             try {
                 availableRFIDReaderList = readers.GetAvailableRFIDReaderList();
@@ -677,14 +674,14 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
                     if (tags[index].isContainsLocationInfo()) {
                         short dist = tags[index].LocationInfo.getRelativeDistance();
                         Log.d(TAG, "Tag relative distance " + dist + " EPC = " + tags[index].getTagID());
-                        new AsyncDataSearch().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tags[index]);
+                        new AsyncDataSearch().execute(tags[index]);
                     }
                 }
 
                 // possibly if operation was invoked from async task and still busy
                 // handle tag data responses on parallel thread thus THREAD_POOL_EXECUTOR
                 if (CollectionUtils.isEmpty(tagsFound) && !CollectionUtils.isEmpty(tagsList)) {
-                    new AsyncDataUpdate().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tags);
+                    new AsyncDataUpdate().execute(tags);
                 }
             }
         }
@@ -715,7 +712,7 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
         }
     }
 
-    private class AsyncDataUpdate extends AsyncTask<TagData[], Void, Void> {
+    private class AsyncDataUpdate extends AsyncTaskExecutorService<TagData[], Void, Void> {
         @Override
         protected Void doInBackground(TagData[]... params) {
             ((ResponseHandlerInterface) context).handleTagsdata(params[0]);
@@ -723,7 +720,7 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
         }
     }
 
-    private class AsyncDataSearch extends AsyncTask<TagData, Void, Void> {
+    private class AsyncDataSearch extends AsyncTaskExecutorService<TagData, Void, Void> {
         @Override
         protected Void doInBackground(TagData... param) {
             ((ResponseHandlerInterface) context).handleTagdata(param[0]);
