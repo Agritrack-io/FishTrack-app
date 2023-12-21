@@ -24,3 +24,17 @@ Bapp/src/main/java/io/agritrack/caen/api/AbstractCAENCommander.java,1\8\18a0222
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
+n
+>app/src/main/java/io/agritrack/ui/adapter/TreelikeAdapter.java,b\a\baa8a498d8ac08265e633228e017306b7ebc6fc3
+?
+settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
+@
+app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
+<
+build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
+
+Oapp/src/main/java/io/agritrack/fish/ui/wh/inventory/InventoryAssetActivity.java,a\5\a58def678e60a17eda7315f4711c657d2fe71abc
+n
+>app/src/main/java/io/agritrack/caen/api/RFIDModuleFactory.java,3\2\325866d938e143acb51c39e79c5317e11829ba9b
+r
+Bapp/src/main/java/io/agritrack/data/dto/wh/RFIDInventoryRqDTO.java,c\4\c4c77d8b3700a1757a95779e79ff924ad5a99be0

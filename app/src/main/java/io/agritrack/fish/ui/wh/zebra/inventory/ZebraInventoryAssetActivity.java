@@ -12,8 +12,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -34,11 +32,9 @@ import com.google.android.gms.common.util.Strings;
 import com.zebra.rfid.api3.TagData;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -49,7 +45,7 @@ import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.api.ZebraTC26Commander;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.wh.RFIDInventoryDTO;
+import io.agritrack.data.dto.wh.RFIDInventoryRqDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.RFIDInventory;
@@ -61,9 +57,7 @@ import io.agritrack.enums.AssetType;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
-import io.agritrack.rfid.ZebraInventoryThread;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
@@ -115,7 +109,7 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
         // initiate raw sound
         SoundUtil.initSoundPool(this);
 
-        uhfReader = RFIDModuleFactory.getInstance(ZebraInventoryAssetActivity.this);
+        uhfReader = RFIDModuleFactory.getInstance(this);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderInventory);
@@ -313,12 +307,6 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
         this.registerReceiver(keyReceiver, filter);
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        xvInventoryItems.setAdapter(xvInventoryItems.getAdapter());
-//    }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -411,11 +399,11 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
             List<RFIDInventoryItem> invItemtxs = GlobalState.commitWHRFIDInventoryItem(db, invtx);
 
             // sync WH Inventory Tx
-            RFIDInventoryDTO inventoryDto = RFIDInventoryDTO.convert(invtx);
+            RFIDInventoryRqDTO inventoryDto = RFIDInventoryRqDTO.convert(invtx);
             List<RFIDInventoryItemDTO> invItemsDto = RFIDInventoryItemDTO.convert(invItemtxs);
             inventoryDto.rfid_items = invItemsDto.stream().map(x -> new RFIDInventoryItemDTO(x.rfid)).collect(Collectors.groupingBy(g -> g.code, Collectors.toCollection(ArrayList::new)));
 
-            Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(inventoryDto, "Bearer " + token);
+            Call<RFIDInventoryRqDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(inventoryDto, "Bearer " + token);
             syncInvTxCallBack.enqueue(new SyncInvTxCallBack());
 
             return true;
@@ -471,10 +459,10 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
         }
     }
 
-    public class SyncInvTxCallBack implements Callback<RFIDInventoryDTO> {
+    public class SyncInvTxCallBack implements Callback<RFIDInventoryRqDTO> {
         @Override
-        public void onResponse(Call<RFIDInventoryDTO> call, Response<RFIDInventoryDTO> response) {
-            RFIDInventoryDTO rs = response.body();
+        public void onResponse(Call<RFIDInventoryRqDTO> call, Response<RFIDInventoryRqDTO> response) {
+            RFIDInventoryRqDTO rs = response.body();
             if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
             } else {
@@ -484,7 +472,7 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
         }
 
         @Override
-        public void onFailure(Call<RFIDInventoryDTO> call, Throwable error) {
+        public void onFailure(Call<RFIDInventoryRqDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
@@ -526,7 +514,7 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
 
         //Create treeLikeAdapter and pass the values
         if (adapterInventoryItems == null) {
-            adapterInventoryItems = new TreelikeAdapter(ZebraInventoryAssetActivity.this, treeLikeValues);
+            adapterInventoryItems = new TreelikeAdapter(this, treeLikeValues);
             runOnUiThread(() -> xvInventoryItems.setAdapter(adapterInventoryItems));
         } else {
             runOnUiThread(() -> adapterInventoryItems.appendItems(treeLikeValues));

@@ -39,7 +39,7 @@ import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.wh.RFIDInventoryDTO;
+import io.agritrack.data.dto.wh.RFIDInventoryRqDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
@@ -331,11 +331,11 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
             List<RFIDInventoryItem> invItemtxs = GlobalState.commitWHRFIDInventoryItem(db, invtx);
 
             // sync WH Inventory Tx
-            RFIDInventoryDTO inventoryDto = RFIDInventoryDTO.convert(invtx);
+            RFIDInventoryRqDTO inventoryDto = RFIDInventoryRqDTO.convert(invtx);
             List<RFIDInventoryItemDTO> invItemsDto = RFIDInventoryItemDTO.convert(invItemtxs);
             inventoryDto.rfid_items = invItemsDto.stream().map(x -> new RFIDInventoryItemDTO(x.rfid)).collect(Collectors.groupingBy(g -> g.code, Collectors.toCollection(ArrayList::new)));
 
-            Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(inventoryDto, "Bearer " + token);
+            Call<RFIDInventoryRqDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(inventoryDto, "Bearer " + token);
             syncInvTxCallBack.enqueue(new HotelInventoryAssetActivity.SyncInvTxCallBack());
 
             return true;
@@ -419,10 +419,10 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
         }
     }
 
-    public class SyncInvTxCallBack implements Callback<RFIDInventoryDTO> {
+    public class SyncInvTxCallBack implements Callback<RFIDInventoryRqDTO> {
         @Override
-        public void onResponse(Call<RFIDInventoryDTO> call, Response<RFIDInventoryDTO> response) {
-            RFIDInventoryDTO rs = response.body();
+        public void onResponse(Call<RFIDInventoryRqDTO> call, Response<RFIDInventoryRqDTO> response) {
+            RFIDInventoryRqDTO rs = response.body();
             if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_LONG));
             } else {
@@ -432,7 +432,7 @@ public class HotelInventoryAssetActivity extends LocationAwareActivity implement
         }
 
         @Override
-        public void onFailure(Call<RFIDInventoryDTO> call, Throwable error) {
+        public void onFailure(Call<RFIDInventoryRqDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

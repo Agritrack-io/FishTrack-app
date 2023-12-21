@@ -5,6 +5,7 @@ import android.os.Looper;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,10 +47,10 @@ public abstract class AsyncTaskExecutorService<Params, Progress, Result> {
         // Override this method whereever you want to perform task before background execution get started
     }
 
-    protected abstract Result doInBackground(Params... params);
+    protected abstract Result doInBackground(Params params);
 
     protected void onPostExecute(Result result) {
-        throw new RuntimeException("onPostExecute Stub!");
+        //throw new RuntimeException("onPostExecute Stub!");
     }
 
     protected void onProgressUpdate(@NotNull Progress value) {

@@ -268,7 +268,7 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
             db.assetDAO().update(net);
 
             // sync WH Correlation Tx
-            ArrayList<CorrelationTxDTO> dtos = new ArrayList<>();
+            List<CorrelationTxDTO> dtos = new ArrayList<>();
             dtos.add(CorrelationTxDTO.convert(tx));
             Call<ResponseBody> syncTxAsyncCall = updService.syncAssetCorrelationTx(dtos, "Bearer " + token);
             syncTxAsyncCall.enqueue(new ZebraCorrelationNetActivity.SyncTxCallBack());

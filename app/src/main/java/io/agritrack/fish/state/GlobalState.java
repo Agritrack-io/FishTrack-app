@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import io.agritrack.data.db.MobileDB;
@@ -644,6 +645,7 @@ public class GlobalState {
             txCorrelation.timestamp = System.currentTimeMillis();
             txCorrelation.longitude = recWHCorrelation.longitude;
             txCorrelation.latitude = recWHCorrelation.latitude;
+            txCorrelation.user = LocalPreferences.getLoggedInUser("");
             txCorrelation.site = LocalPreferences.getCurrentSiteId();
 
             recWHCorrelation.txKey = db.correlationTransactionDAO().insert(txCorrelation);

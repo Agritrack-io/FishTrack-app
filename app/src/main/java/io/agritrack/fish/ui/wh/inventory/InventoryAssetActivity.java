@@ -14,7 +14,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.ArrayUtils;
@@ -38,18 +36,14 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.common.Constants;
-import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.wh.RFIDInventoryDTO;
+import io.agritrack.data.dto.wh.RFIDInventoryRqDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.RFIDInventory;
@@ -59,14 +53,12 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.AssetType;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.InventoryWHRecord;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.ScanInventoryThread;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
-import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -407,11 +399,11 @@ public class InventoryAssetActivity extends LocationAwareActivity {
             List<RFIDInventoryItem> invItemtxs = GlobalState.commitWHRFIDInventoryItem(db, invtx);
 
             // sync WH Inventory Tx
-            RFIDInventoryDTO inventoryDto = RFIDInventoryDTO.convert(invtx);
+            RFIDInventoryRqDTO inventoryDto = RFIDInventoryRqDTO.convert(invtx);
             List<RFIDInventoryItemDTO> invItemsDto = RFIDInventoryItemDTO.convert(invItemtxs);
             inventoryDto.rfid_items = invItemsDto.stream().map(x -> new RFIDInventoryItemDTO(x.rfid)).collect(Collectors.groupingBy(g -> g.code, Collectors.toCollection(ArrayList::new)));
 
-            Call<RFIDInventoryDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(inventoryDto, "Bearer " + token);
+            Call<RFIDInventoryRqDTO> syncInvTxCallBack = updService.syncRFIDInventoryTx(inventoryDto, "Bearer " + token);
             syncInvTxCallBack.enqueue(new SyncInvTxCallBack());
 
             return true;
@@ -465,10 +457,10 @@ public class InventoryAssetActivity extends LocationAwareActivity {
         }
     }
 
-    public class SyncInvTxCallBack implements Callback<RFIDInventoryDTO> {
+    public class SyncInvTxCallBack implements Callback<RFIDInventoryRqDTO> {
         @Override
-        public void onResponse(Call<RFIDInventoryDTO> call, Response<RFIDInventoryDTO> response) {
-            RFIDInventoryDTO rs = response.body();
+        public void onResponse(Call<RFIDInventoryRqDTO> call, Response<RFIDInventoryRqDTO> response) {
+            RFIDInventoryRqDTO rs = response.body();
             if (rs != null || IsDemo) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
             } else {
@@ -478,7 +470,7 @@ public class InventoryAssetActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<RFIDInventoryDTO> call, Throwable error) {
+        public void onFailure(Call<RFIDInventoryRqDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

@@ -204,7 +204,7 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
     public void StopReading() {
         new AsyncTaskExecutorService<Object, Void, Void>() {
             @Override
-            protected Void doInBackground(Object... params) {
+            protected Void doInBackground(Object params) {
                 try {
                     currentReader.Actions.Inventory.stop();
 //                    Status(Boolean.FALSE);
@@ -229,7 +229,7 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
     public List<RFIDTag> inventoryRealTime() {
         new AsyncTaskExecutorService<Object, Void, Void>() {
             @Override
-            protected Void doInBackground(Object... params) {
+            protected Void doInBackground(Object params) {
                 try {
                     currentReader.Actions.Inventory.perform();
                 } catch (InvalidUsageException e) {
@@ -239,12 +239,6 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
                 }
                 return null;
             }
-
-            @Override
-            protected void onPostExecute(Void unused) {
-                int k = 0;
-            }
-
         }.execute();
 
 
@@ -255,7 +249,7 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
     public List<RFIDTag> inventoryByTimer() {
         new AsyncTaskExecutorService<Object, Void, Void>() {
             @Override
-            protected Void doInBackground(Object... params) {
+            protected Void doInBackground(Object params) {
                 try {
                     currentReader.Actions.Inventory.perform();
 
@@ -714,16 +708,16 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
 
     private class AsyncDataUpdate extends AsyncTaskExecutorService<TagData[], Void, Void> {
         @Override
-        protected Void doInBackground(TagData[]... params) {
-            ((ResponseHandlerInterface) context).handleTagsdata(params[0]);
+        protected Void doInBackground(TagData[] params) {
+            ((ResponseHandlerInterface) context).handleTagsdata(params);
             return null;
         }
     }
 
     private class AsyncDataSearch extends AsyncTaskExecutorService<TagData, Void, Void> {
         @Override
-        protected Void doInBackground(TagData... param) {
-            ((ResponseHandlerInterface) context).handleTagdata(param[0]);
+        protected Void doInBackground(TagData param) {
+            ((ResponseHandlerInterface) context).handleTagdata(param);
             return null;
         }
     }

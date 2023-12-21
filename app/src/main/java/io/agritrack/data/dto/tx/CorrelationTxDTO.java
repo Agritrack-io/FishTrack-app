@@ -15,7 +15,7 @@ public class CorrelationTxDTO {
     public String user;
     public UUID site;
     public Long timestamp;
-    public boolean create_if_empty = false;
+    public boolean create_if_empty = true;
     public Double longitude;
     public Double latitude;
 
@@ -32,7 +32,7 @@ public class CorrelationTxDTO {
         correlationTxDTO.timestamp = corrTx.timestamp;
         correlationTxDTO.longitude = corrTx.longitude;
         correlationTxDTO.latitude = corrTx.latitude;
-        correlationTxDTO.create_if_empty = corrTx.type.equalsIgnoreCase(Constants.ftBin) || corrTx.type.equalsIgnoreCase(Constants.ftPlatform);
+//        correlationTxDTO.create_if_empty = corrTx.type.equalsIgnoreCase(Constants.ftBin) || corrTx.type.equalsIgnoreCase(Constants.ftPlatform);
 
         return correlationTxDTO;
     }

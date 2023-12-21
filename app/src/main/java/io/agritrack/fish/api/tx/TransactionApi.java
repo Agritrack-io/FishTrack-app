@@ -3,7 +3,6 @@ package io.agritrack.fish.api.tx;
 import java.util.List;
 import java.util.Map;
 
-import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.MediaDTO;
 import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
@@ -23,7 +22,7 @@ import io.agritrack.data.dto.tx.StorageTxDTO;
 import io.agritrack.data.dto.tx.TransportTxDTO;
 import io.agritrack.data.dto.wh.CoInventoryDTO;
 import io.agritrack.data.dto.wh.IfcoInventoryDTO;
-import io.agritrack.data.dto.wh.RFIDInventoryDTO;
+import io.agritrack.data.dto.wh.RFIDInventoryRqDTO;
 import io.agritrack.data.dto.wh.TotesInventoryDTO;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -104,7 +103,7 @@ public interface TransactionApi {
     Call<CorrelationTxDTO> syncLoggerCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/asset/correlate")
+    @POST("/wh/fish/correlate")
     Call<ResponseBody> syncAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
@@ -120,8 +119,8 @@ public interface TransactionApi {
     Call<IfcoInventoryDTO> syncIfcoInventoryTx(@Body IfcoInventoryDTO coInventory, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/inventory/wh")
-    Call<RFIDInventoryDTO> syncRFIDInventoryTx(@Body RFIDInventoryDTO rFIDInventory, @Header("Authorization") String token);
+    @POST("/wh/fish/inventory")
+    Call<RFIDInventoryRqDTO> syncRFIDInventoryTx(@Body RFIDInventoryRqDTO rFIDInventory, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/inventory/wh")
