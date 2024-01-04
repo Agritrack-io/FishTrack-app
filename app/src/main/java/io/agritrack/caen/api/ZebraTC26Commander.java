@@ -239,8 +239,13 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
                 }
                 return null;
             }
-        }.execute();
 
+            @Override
+            protected void onPostExecute(Void unused) {
+                int k = 0;
+            }
+
+        }.execute();
 
         return null;
     }
@@ -253,15 +258,15 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
                 try {
                     currentReader.Actions.Inventory.perform();
 
-                    // Sleep or wait
-                    try {
-                        Thread.sleep(50, 100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+//                    // Sleep or wait
+//                    try {
+//                        Thread.sleep(50, 100);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
 
-                    // stop the inventory
-                    currentReader.Actions.Inventory.stop();
+//                    // stop the inventory
+//                    currentReader.Actions.Inventory.stop();
 
                 } catch (InvalidUsageException e) {
 
@@ -675,7 +680,9 @@ public class ZebraTC26Commander extends AbstractCAENCommander implements Readers
                 // possibly if operation was invoked from async task and still busy
                 // handle tag data responses on parallel thread thus THREAD_POOL_EXECUTOR
                 if (CollectionUtils.isEmpty(tagsFound) && !CollectionUtils.isEmpty(tagsList)) {
-                    new AsyncDataUpdate().execute(tags);
+                    ((ResponseHandlerInterface) context).handleTagsdata(tags);
+//                    new AsyncDataUpdate().execute(tags);
+
                 }
             }
         }

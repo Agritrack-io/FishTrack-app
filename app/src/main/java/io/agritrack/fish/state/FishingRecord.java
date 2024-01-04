@@ -6,8 +6,6 @@ import java.util.List;
 
 import io.agritrack.common.FishTrackUtils;
 import io.agritrack.data.model.tx.FishingTransaction;
-import io.agritrack.fish.ui.bo.BinTemperatureRecord;
-import io.agritrack.fish.ui.bo.BinWeightRecord;
 
 public class FishingRecord {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
@@ -35,8 +33,8 @@ public class FishingRecord {
     public Double latitude;
     public String notes;
     public String packagingPlant;
-    public BinTemperatureRecord binTemperatureRecord = new BinTemperatureRecord();
-    public BinWeightRecord binWeightRecord = new BinWeightRecord();
+//    public BinTemperatureRecord binTemperatureRecord = new BinTemperatureRecord();
+//    public BinWeightRecord binWeightRecord = new BinWeightRecord();
     public String typedCageCode;
     public boolean outOfSystemFishing = false;
     public String reasonOutOfSystemFishing;
@@ -72,9 +70,9 @@ public class FishingRecord {
         if(tx.lastFeed!=null) {
             fishingRecord.lastFed = tx.lastFeed;
         }
-        for (BinWeightRecord.BinRecord rec : tx.harvestBinsData){
-            fishingRecord.binWeightRecord.addRecord(rec.binEPC,rec.weight, rec.init, rec.from, rec.to);
-        }
+//        for (BinWeightRecord.BinRecord rec : tx.harvestBinsData){
+//            fishingRecord.binWeightRecord.addRecord(rec.binEPC,rec.weight, rec.init, rec.from, rec.to);
+//        }
         fishingRecord.fishingTeam = tx.team;
         fishingRecord.longitude = tx.longitude;
         fishingRecord.latitude = tx.latitude;

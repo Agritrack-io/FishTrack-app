@@ -1,11 +1,9 @@
 package io.agritrack.data.dto.tx;
 
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import io.agritrack.data.model.tx.FishingTransaction;
-import io.agritrack.fish.ui.bo.BinWeightRecord;
 
 public class FishingTxDTO {
 
@@ -23,7 +21,7 @@ public class FishingTxDTO {
     public Integer ordered_quantity;
     public Integer total_quantity;
     public Short number_harvest_bins;
-    public List<BinWeightRecord.BinRecord> harvest_bins_data;
+//    public List<BinWeightRecord.BinRecord> harvest_bins_data;
     public List<String> fishing_team = new LinkedList<String>();
     public String status;
     public String user;
@@ -51,7 +49,7 @@ public class FishingTxDTO {
         fishingTxDTO.ordered_quantity = fishingTx.orderedQuantity;
         fishingTxDTO.total_quantity = fishingTx.totalQty;
         fishingTxDTO.number_harvest_bins = fishingTx.harvestBinsCnt;
-        fishingTxDTO.harvest_bins_data = fishingTx.harvestBinsData;
+//        fishingTxDTO.harvest_bins_data = fishingTx.harvestBinsData;
         fishingTxDTO.fishing_team = fishingTx.team;
         fishingTxDTO.status = fishingTx.txStatus.name();
         fishingTxDTO.user = fishingTx.user;

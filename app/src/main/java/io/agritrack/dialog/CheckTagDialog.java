@@ -1,7 +1,6 @@
 package io.agritrack.dialog;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -18,12 +17,12 @@ import android.widget.TextView;
 import androidx.core.text.HtmlCompat;
 
 import io.agritrack.R;
-import io.agritrack.fish.ui.wh.correlation.ExistingTagActivity;
+import io.agritrack.fish.ui.wh.zebra.correlation.ZebraExistingTagActivity;
 
 public class CheckTagDialog {
+    private final Activity activity;
     private TextView tvTitle;
     private Button btnOk;
-    private final Activity activity;
     private Dialog dialog;
 
     @SuppressLint("StringFormatMatches")
@@ -35,15 +34,15 @@ public class CheckTagDialog {
 
 //        tvTitle.setText(activity.getString(R.string.check_tag_msg, rfid, code));
         tvTitle.setText(Html.fromHtml(getAppContext().getResources().getString(R.string.check_tag_msg_1)
-                + getAppContext().getResources().getString(R.string.check_tag_msg_2) + "<b>"+"<font color='#16325c'>"
-                + code +"</font>" +"</b>" + getAppContext().getResources().getString(R.string.check_tag_msg_3) + "<b>"+"<font color='#16325c'>" + rfid, HtmlCompat.FROM_HTML_MODE_LEGACY));
+                + getAppContext().getResources().getString(R.string.check_tag_msg_2) + "<b>" + "<font color='#16325c'>"
+                + code + "</font>" + "</b>" + getAppContext().getResources().getString(R.string.check_tag_msg_3) + "<b>" + "<font color='#16325c'>" + rfid, HtmlCompat.FROM_HTML_MODE_LEGACY));
         tvTitle.setBackgroundColor(Color.WHITE);
         tvTitle.setPadding(10, 10, 10, 10);
         tvTitle.setGravity(Gravity.CENTER);
         tvTitle.setTextColor(Color.BLACK);
 
         btnOk.setOnClickListener(view -> {
-            Intent i = new Intent(activity.getApplicationContext(), ExistingTagActivity.class);
+            Intent i = new Intent(activity.getApplicationContext(), ZebraExistingTagActivity.class);
             activity.startActivity(i);
             dismiss();
         });

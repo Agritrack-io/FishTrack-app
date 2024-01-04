@@ -26,8 +26,6 @@ import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.ui.config.ConfigActivity;
 import io.agritrack.ui.service.LocalPreferences;
-import io.agritrack.ui.tools.CAENLoggerActivity;
-import io.agritrack.ui.tools.ImportCAENLoggersToDBActivity;
 
 
 public class AppOptionsFragment extends DialogFragment {
@@ -39,10 +37,6 @@ public class AppOptionsFragment extends DialogFragment {
     private String selectedProduct;
 
     private final View.OnClickListener btSiteSelectionClickListener = v -> gotoSiteSelection(v);
-
-    private final View.OnClickListener btRT0012ClickListener = v -> gotoRT0012(v);
-
-    private final View.OnClickListener btImportRT0012ClickListener = v -> gotoImportRT0012(v);
 
     private final View.OnClickListener btDelCfgClickListener = v -> delCfg(v);
 
@@ -85,8 +79,6 @@ public class AppOptionsFragment extends DialogFragment {
 
         // set onClick listeners for the menu buttons
         btnSiteSelection.setOnClickListener(btSiteSelectionClickListener);
-        btnRT0012.setOnClickListener(btRT0012ClickListener);
-        btnImportRT0012.setOnClickListener(btImportRT0012ClickListener);
         btnDelCfg.setOnClickListener(btDelCfgClickListener);
         btnTruncDB.setOnClickListener(btTruncDBClickListener);
         tbEnvironment.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -147,20 +139,6 @@ public class AppOptionsFragment extends DialogFragment {
 
     public void gotoSiteSelection(View v) {
         Intent i = new Intent(getActivity(), ConfigActivity.class);
-        i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-        startActivity(i);
-        dismiss();
-    }
-
-    public void gotoRT0012(View v) {
-        Intent i = new Intent(getActivity(), CAENLoggerActivity.class);
-        i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-        startActivity(i);
-        dismiss();
-    }
-
-    public void gotoImportRT0012(View v) {
-        Intent i = new Intent(getActivity(), ImportCAENLoggersToDBActivity.class);
         i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
         startActivity(i);
         dismiss();

@@ -5,20 +5,14 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.agritrack.data.converter.BinRecordConverter;
 import io.agritrack.data.converter.LocalDateConverter;
 import io.agritrack.data.converter.StringListConverter;
 import io.agritrack.data.converter.TxStatusEnumConverter;
 import io.agritrack.enums.TxStatus;
-import io.agritrack.fish.ui.bo.BinWeightRecord;
 
 @Entity(tableName = "fishing_transaction")
 public class FishingTransaction {
@@ -75,9 +69,9 @@ public class FishingTransaction {
     @ColumnInfo(name = "number_harvest_bins")
     public Short harvestBinsCnt;
 
-    @TypeConverters(BinRecordConverter.class)
-    @ColumnInfo(name = "harvest_bins_data")
-    public List<BinWeightRecord.BinRecord> harvestBinsData;
+//    @TypeConverters(BinRecordConverter.class)
+//    @ColumnInfo(name = "harvest_bins_data")
+//    public List<BinWeightRecord.BinRecord> harvestBinsData;
 
     @TypeConverters(StringListConverter.class)
     @ColumnInfo(name = "avail_bins")

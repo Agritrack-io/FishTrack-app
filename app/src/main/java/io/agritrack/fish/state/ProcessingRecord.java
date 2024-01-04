@@ -1,7 +1,4 @@
 package io.agritrack.fish.state;
-import java.util.List;
-
-import io.agritrack.ui.adapter.BinWeightCageAdapter;
 
 public class ProcessingRecord {
     public long txKey;
@@ -13,7 +10,7 @@ public class ProcessingRecord {
     public Short totalBinsUsed;
     public boolean cleanTruck = Boolean.TRUE;
     public boolean smellyTruck = Boolean.FALSE;
-    public List<BinWeightCageAdapter.BinDetails> availBins;
+    //    public List<BinWeightCageAdapter.BinDetails> availBins;
     public Double longitude;
     public Double latitude;
 

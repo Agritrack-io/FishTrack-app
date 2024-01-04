@@ -1,5 +1,8 @@
 package io.agritrack.dialog;
 
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Bitmap;
@@ -17,18 +20,6 @@ import android.widget.Toast;
 import androidx.annotation.StringRes;
 import androidx.lifecycle.MutableLiveData;
 
-import io.agritrack.R;
-import io.agritrack.fish.ui.quality.receipt.ReceiptQualityInfoActivity;
-import io.agritrack.hotel.ui.inventory.HotelInventoryLinenActivity;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,17 +29,19 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import io.agritrack.R;
+
 public class PhotoDialog {
 
+    private final MutableLiveData<Bitmap> liveItem;
+    private final Activity activity;
+    private final String binEpc;
     private TextView tvTitle;
     private ImageView ivPhoto;
     private Button btnOk, btnCancel;
-    private final MutableLiveData<Bitmap> liveItem;
-    private final Activity activity;
     private Dialog dialog;
-    private final String binEpc;
 
-    public PhotoDialog (Activity activity, MutableLiveData<Bitmap> selection, String binEpc, @StringRes int title) {
+    public PhotoDialog(Activity activity, MutableLiveData<Bitmap> selection, String binEpc, @StringRes int title) {
         this.activity = activity;
         this.liveItem = selection;
         this.binEpc = binEpc;
@@ -107,7 +100,7 @@ public class PhotoDialog {
 
         try {
             outStream = new FileOutputStream(file);
-            bmp. compress(Bitmap.CompressFormat.PNG, 100, outStream);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
             outStream.flush();
             outStream.close();
 

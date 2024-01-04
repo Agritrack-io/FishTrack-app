@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,8 +46,8 @@ import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.api.ZebraTC26Commander;
 import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.wh.RFIDInventoryRqDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
+import io.agritrack.data.dto.wh.RFIDInventoryRqDTO;
 import io.agritrack.data.model.Site;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
@@ -58,7 +59,6 @@ import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.X9KeyReceiver;
-import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
 import io.agritrack.ui.service.LocalPreferences;
@@ -68,6 +68,7 @@ import retrofit2.Response;
 
 public class ZebraInventoryAssetActivity extends LocationAwareActivity implements ZebraTC26Commander.ResponseHandlerInterface {
     private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
+    private static final Map<String, List<String>> inventoryEPCs = new HashMap<>();
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
@@ -77,7 +78,6 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
     private MobileDB db;
     private ExpandableListView xvInventoryItems;
     private Spinner spAssetType, spSite;
-
     private TreelikeAdapter adapterInventoryItems;
     private String selectedAssetType = AssetType.ALL;
     private String activeFilter = null;
@@ -86,9 +86,7 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
     private Integer selectedParent, selectedChild;
     private ConstraintLayout selectedItem;
     private String selectedBarcode;
-
     private ProgressDialog progressDialog;
-
     private ImageView ivSupport, ivNext, ivBack;
     private YesNoDialogFragment confirmGPSSelectionDlg;
     private boolean proceedWithoutLocation = false;
@@ -106,8 +104,8 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
         // get an instance of local DB
         this.db = MobileDB.getInstance(getAppContext());
 
-        // initiate raw sound
-        SoundUtil.initSoundPool(this);
+//        // initiate raw sound
+//        SoundUtil.initSoundPool(this);
 
         uhfReader = RFIDModuleFactory.getInstance(this);
 
@@ -143,13 +141,12 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
         spAssetType.setAdapter(hrAdapter);
 
         spAssetType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedAssetType = parent.getItemAtPosition(position).toString(); //this is your selected item
                 activeFilter = schemeSvc.codeOf(selectedAssetType);
             }
-            public void onNothingSelected(AdapterView<?> parent)
-            {
+
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -192,11 +189,11 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
         xvInventoryItems.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                if (childPosition==0) {
+                if (childPosition == 0) {
                     return false;
                 }
 
-                if (groupPosition == selectedParent && childPosition == selectedChild  && (taps[0] % 2)==0) {
+                if (groupPosition == selectedParent && childPosition == selectedChild && (taps[0] % 2) == 0) {
                     clearSelectedItem();
                     selectedBarcode = null;
                     taps[0]++;
@@ -251,7 +248,7 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else if (adapterInventoryItems!=null && adapterInventoryItems.getGroupCount() > 0) {
+            } else if (adapterInventoryItems != null && adapterInventoryItems.getGroupCount() > 0) {
                 // <delete> Button was pressed without selecting a Bin first.
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
@@ -310,7 +307,6 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
     @Override
     protected void onStop() {
         super.onStop();
-        closeScanner();
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
@@ -319,7 +315,6 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        closeScanner();
     }
 
     private void clearSelectedItem() {
@@ -374,7 +369,7 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
                 uhfReader.StopReading();
             }
 
-            Intent i = new Intent(getApplicationContext(), WhMenuActivity.class);
+            Intent i = new Intent(getAppContext(), WhMenuActivity.class);
             startActivity(i);
         });
     }
@@ -439,6 +434,19 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
             scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
             scanButton.setText(R.string.scan_assets);
             scanner_running = false;
+
+////            Create treeLikeAdapter and pass the values
+//        if (adapterInventoryItems == null) {
+//            adapterInventoryItems = new TreelikeAdapter(this, inventoryEPCs);
+//            xvInventoryItems.setAdapter(adapterInventoryItems);
+//        } else {
+//            adapterInventoryItems.appendItems(inventoryEPCs);
+//        }
+//        runOnUiThread(() -> {
+//            adapterInventoryItems.notifyDataSetChanged();
+//            tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
+//            tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
+//        });
         }
     }
 
@@ -457,6 +465,64 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
         if (uhfReader != null) {
             uhfReader.StopReading();
         }
+    }
+
+    @Override
+    public void handleTagsdata(TagData[] tagData) {
+        String[] acceptedCodes = schemeSvc.distinctNamesOnly();
+        clearSelectedItem();
+
+        List<TagData> tagList = Arrays.asList(tagData);
+
+        // Extract epcs from tagData
+        List<String> epcList = tagList.stream().map(t -> t.getTagID()).collect(Collectors.toList());
+        //Filter tags by accepted codes
+        List<String> acceptedEpcs = epcList.stream().filter(f -> ArrayUtils.contains(acceptedCodes, schemeSvc.nameOf(schemeSvc.nativeSchemeCode(f)))).collect(Collectors.toList());
+        //Filter acceptedEpcs by activeFilter
+        Map<String, List<String>> values = null;
+
+        //Filter AcceptedEpcs by activeFilter and group by schemeCode
+        if (activeFilter != null) {
+            values = acceptedEpcs.stream().filter(f -> f.substring(11).startsWith(activeFilter)).map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
+        } else {
+            values = acceptedEpcs.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
+        }
+
+        inventoryEPCs.putAll(values);
+
+//        final Map<String, List<String>> treeLikeValues = values;
+
+//        Create treeLikeAdapter and pass the values
+        if (adapterInventoryItems == null) {
+            adapterInventoryItems = new TreelikeAdapter(this, inventoryEPCs);
+            runOnUiThread(() -> xvInventoryItems.setAdapter(adapterInventoryItems));
+        } else {
+            runOnUiThread(() -> {
+                xvInventoryItems.setAdapter(adapterInventoryItems);
+                adapterInventoryItems.appendItems(inventoryEPCs);
+            });
+        }
+        runOnUiThread(() -> {
+            adapterInventoryItems.notifyDataSetChanged();
+        });
+        runOnUiThread(() -> {
+            tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
+            tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
+
+        });
+    }
+
+    @Override
+    public void handleTagdata(TagData tagData) {
+
+    }
+
+    @Override
+    public void handleTriggerPress(boolean pressed) {
+        if (pressed) {
+//            rfidHandler.performInventory();
+        }
+//            rfidHandler.stopInventory();
     }
 
     public class SyncInvTxCallBack implements Callback<RFIDInventoryRqDTO> {
@@ -487,55 +553,5 @@ public class ZebraInventoryAssetActivity extends LocationAwareActivity implement
                 }
             }
         }
-    }
-
-    @Override
-    public void handleTagsdata(TagData[] tagData) {
-        String[] acceptedCodes = schemeSvc.distinctNamesOnly();
-        clearSelectedItem();
-
-        List<TagData> tagList = Arrays.asList(tagData);
-
-        // Extract epcs from tagData
-        List<String> epcList = tagList.stream().map(t -> t.getTagID()).collect(Collectors.toList());
-        //Filter tags by accepted codes
-        List<String> acceptedEpcs = epcList.stream().filter(f -> ArrayUtils.contains(acceptedCodes, schemeSvc.nameOf(schemeSvc.nativeSchemeCode(f)))).collect(Collectors.toList());
-        //Filter acceptedEpcs by activeFilter
-        Map<String, List<String>> values = null;
-
-        //Filter AcceptedEpcs by activeFilter and group by schemeCode
-        if (activeFilter != null) {
-            values = acceptedEpcs.stream().filter(f -> f.substring(11).startsWith(activeFilter)).map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
-        } else {
-            values = acceptedEpcs.stream().map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
-        }
-
-        final Map<String, List<String>> treeLikeValues = values;
-
-        //Create treeLikeAdapter and pass the values
-        if (adapterInventoryItems == null) {
-            adapterInventoryItems = new TreelikeAdapter(this, treeLikeValues);
-            runOnUiThread(() -> xvInventoryItems.setAdapter(adapterInventoryItems));
-        } else {
-            runOnUiThread(() -> adapterInventoryItems.appendItems(treeLikeValues));
-        }
-        runOnUiThread(() -> {
-            adapterInventoryItems.notifyDataSetChanged();
-            tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));
-            tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemsCount()));
-        });
-    }
-
-    @Override
-    public void handleTagdata(TagData tagData) {
-
-    }
-
-    @Override
-    public void handleTriggerPress(boolean pressed) {
-        if (pressed) {
-//            rfidHandler.performInventory();
-        }
-//            rfidHandler.stopInventory();
     }
 }

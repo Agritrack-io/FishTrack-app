@@ -1,4 +1,9 @@
-package io.agritrack.fish.ui.wh.incoming;
+package io.agritrack.fish.ui.wh.zebra.incoming;
+
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,15 +33,9 @@ import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.WHTxRecord;
 import io.agritrack.fish.ui.WhMenuActivity;
-import io.agritrack.fish.ui.wh.zebra.incoming.ZebraIncomingAssetActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.SiteInfoRS;
 import io.agritrack.ui.service.LocalPreferences;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class IncomingStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -129,12 +128,13 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else if (selectedIncomingItemType == Constants.ftAsset) {
-                Intent i = new Intent(getApplicationContext(), IncomingAssetActivity.class);
-                startActivity(i);
-            } else {
-                Intent i = new Intent(getApplicationContext(), IncomingConsumableActivity.class);
+                Intent i = new Intent(getApplicationContext(), ZebraIncomingAssetActivity.class);
                 startActivity(i);
             }
+//            } else {
+//                Intent i = new Intent(getApplicationContext(), IncomingConsumableActivity.class);
+//                startActivity(i);
+//            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToWhMenu);

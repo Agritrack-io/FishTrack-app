@@ -1,9 +1,0 @@
-
-–
-java:S1186{"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ôŒùb
-l
-java:S14503"VRemove the "tvTitle" field and declare it as a local variable in the relevant methods.(Æ¶‡
-h
-java:S3252Q"MUse static access with "android.widget.AbsListView" for "CHOICE_MODE_SINGLE".(°´µ¯ûÿÿÿÿ
-I
-java:S10680".Remove this unused "syncResult" private field.(Œ·ôµÿÿÿÿÿ

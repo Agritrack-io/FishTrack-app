@@ -216,7 +216,6 @@ public class ZebraCorrelationCageActivity extends LocationAwareActivity {
         rvCages = findViewById(R.id.rvCages);
         tvCorrCageBarcode = findViewById(R.id.tvCorrCageBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
-        btnCorrelate = findViewById(R.id.btnCorrelate);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);
         ivSupport = findViewById(R.id.ivSupport);

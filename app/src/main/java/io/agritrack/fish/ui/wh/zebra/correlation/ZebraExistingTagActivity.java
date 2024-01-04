@@ -251,7 +251,6 @@ public class ZebraExistingTagActivity extends LocationAwareActivity {
         rvNets = findViewById(R.id.rvNets);
         tvCorrNetBarcode = findViewById(R.id.tvCorrNetBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
-        btnCorrelate = findViewById(R.id.btnCorrelate);
         ivNext = findViewById(R.id.ivToCongs);
         ivNext.setVisibility(View.GONE);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);

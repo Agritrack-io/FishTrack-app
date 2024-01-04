@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_semi_green"
-    tools:context=".fish.ui.wh.outgoing.OutgoingStartActivity">
+    tools:context=".fish.ui.wh.zebra.outgoing.OutgoingStartActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
