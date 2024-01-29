@@ -1,0 +1,14 @@
+
+E
+java:S1659."*Declare "tvIncomingTo" on a separate line.(ÍÚüıÿÿÿÿ
+h
+java:S1659/"RDeclare "tgIncomingDestination" and all following declarations on a separate line.(ı¹ªÇ
+O
+java:S16590"4Declare "selectedToggleButtonTo" on a separate line.(ãâ¸Êøÿÿÿÿ
+
+java:S5803€"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç
+W	java:S125è"<This block of commented-out lines of code should be removed.(“Ç‘Ïÿÿÿÿÿ
+m
+java:S3457í"Q%n should be used in place of \n to produce the platform-specific line separator.(ŒêˆÊûÿÿÿÿ
+m
+java:S3457ñ"Q%n should be used in place of \n to produce the platform-specific line separator.(„‘µ§ıÿÿÿÿ

@@ -19,8 +19,8 @@ public interface EmployeeDAO {
     List<Employee> getAll();
 
 
-    @Query("SELECT * from employee where site=:siteId")
-    List<Employee> getBySite(UUID siteId);
+    @Query("SELECT * from employee where site=:siteName")
+    List<Employee> getBySite(String siteName);
 
     @Query("SELECT * from employee where id=:employeeId LIMIT 1")
     Employee getById(Long employeeId);

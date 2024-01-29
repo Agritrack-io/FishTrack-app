@@ -36,23 +36,23 @@ java:S1874°":Remove this use of "getAdapterPosition"; it is deprecated.(â§«øÿ
 R	java:S125À"<This block of commented-out lines of code should be removed.(á…ÿ
 c
 java:S3252Å"LUse static access with "android.content.Context" for "INPUT_METHOD_SERVICE".(ˆ¤ø
-]
-java:S1659ğ"FDeclare "tvItemSNo" and all following declarations on a separate line.(Î¨ÚÊ
+d
+java:S1659õ"FDeclare "tvItemSNo" and all following declarations on a separate line.(Î¨ÚÊ8İ¼‘Ô1
 B
-java:S1659ñ"&Declare "etWeight" on a separate line.(¯§æùıÿÿÿÿ
+java:S1659ö"&Declare "etWeight" on a separate line.(¯§æùıÿÿÿÿ
 F
-java:S1659ò"/Declare "constraintLayout3" on a separate line.(µ–Š¬
-R	java:S125ø"<This block of commented-out lines of code should be removed.(úî×Ù
-W	java:S125ú"<This block of commented-out lines of code should be removed.(Ü³ªÔüÿÿÿÿ
-W	java:S125‰"<This block of commented-out lines of code should be removed.(º£úøÿÿÿÿ
-V
-java:S1874":Remove this use of "getAdapterPosition"; it is deprecated.(îù¾ùÿÿÿÿ
-W	java:S125’"<This block of commented-out lines of code should be removed.(ù³ß’şÿÿÿÿ
-R	java:S125›"<This block of commented-out lines of code should be removed.(ŸÚˆ§
-R	java:S125¥"<This block of commented-out lines of code should be removed.(óÑĞ
+java:S1659÷"/Declare "constraintLayout3" on a separate line.(µ–Š¬
+Y	java:S125ı"<This block of commented-out lines of code should be removed.(úî×Ù8ß¼‘Ô1
+^	java:S125ÿ"<This block of commented-out lines of code should be removed.(Ü³ªÔüÿÿÿÿ8ß¼‘Ô1
+^	java:S125"<This block of commented-out lines of code should be removed.(º£úøÿÿÿÿ8ã¼‘Ô1
+]
+java:S1874•":Remove this use of "getAdapterPosition"; it is deprecated.(îù¾ùÿÿÿÿ8ä¼‘Ô1
+^	java:S125—"<This block of commented-out lines of code should be removed.(ù³ß’şÿÿÿÿ8å¼‘Ô1
+Y	java:S125 "<This block of commented-out lines of code should be removed.(ŸÚˆ§8å¼‘Ô1
+Y	java:S125ª"<This block of commented-out lines of code should be removed.(óÑĞ8å¼‘Ô1
 E
 java:S1068$"/Remove this unused "selectedPos" private field.(ğ´à
 M
 java:S1068%"7Remove this unused "previousSelectedPos" private field.(ø„ı…
-D
-java:S1068ğ"-Remove this unused "tvItemSNo" private field.(Î¨ÚÊ
+K
+java:S1068õ"-Remove this unused "tvItemSNo" private field.(Î¨ÚÊ8ç¼‘Ô1

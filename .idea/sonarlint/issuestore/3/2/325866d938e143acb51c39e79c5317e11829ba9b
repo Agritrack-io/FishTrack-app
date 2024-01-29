@@ -1,0 +1,8 @@
+
+]
+java:S1192"GDefine a constant instead of duplicating this literal "BX6100" 3 times.(œæÉ°
+b
+java:S1192"GDefine a constant instead of duplicating this literal "BX6200" 3 times.(ƒÒšùÿÿÿÿ
+“
+java:S5803"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ı‹“ıÿÿÿÿ
+h	java:S1005"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(·å“îüÿÿÿÿ

@@ -139,7 +139,7 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         this.lvFishingTeam.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
         // load employees belonging to current Site and fill in the spFishingTeam Spinner.
-        List<Employee> teamCandidates = db.employeeDAO().getBySite(LocalPreferences.getCurrentSiteId());
+        List<Employee> teamCandidates = db.employeeDAO().getBySite(LocalPreferences.getCurrentSiteName());
         if (teamCandidates != null && !teamCandidates.isEmpty()) {
             this.candidates = teamCandidates.stream().map(x -> new GenericListModel(x.id, x.fullName())).collect(Collectors.toList());
             candidatesAdapter = new ArrayAdapter<GenericListModel>(this, R.layout.simple_list_checked_item_1, candidates) {

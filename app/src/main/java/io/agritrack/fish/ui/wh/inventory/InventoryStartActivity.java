@@ -91,16 +91,7 @@ public class InventoryStartActivity extends AppCompatActivity {
                             i = new Intent(appCtx, InventoryAssetActivity.class);
                             break;
                         }
-                    /*case Consumable_Idx:
-                        updateState();
-                        String vld = validate();
-                        if (!Strings.isEmptyOrWhitespace(vld)) {
-                            CToast(getApplicationContext(), render("Invalid inputs : " + vld), Toast.LENGTH_LONG);
-                        } else {
-                            i = new Intent(appCtx, InventoryConsumableActivity.class);
-                            break;
-                        }*/
-                    default:
+                   default:
                 }
 
                 // Pass image index

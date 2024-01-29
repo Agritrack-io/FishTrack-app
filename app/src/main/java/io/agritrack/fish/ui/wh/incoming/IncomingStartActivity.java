@@ -1,5 +1,10 @@
 package io.agritrack.fish.ui.wh.incoming;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -31,11 +36,6 @@ import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.SiteInfoRS;
 import io.agritrack.ui.service.LocalPreferences;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class IncomingStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -129,9 +129,6 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else if (selectedIncomingItemType == Constants.ftAsset) {
                 Intent i = new Intent(getApplicationContext(), IncomingAssetActivity.class);
-                startActivity(i);
-            } else {
-                Intent i = new Intent(getApplicationContext(), IncomingConsumableActivity.class);
                 startActivity(i);
             }
         });

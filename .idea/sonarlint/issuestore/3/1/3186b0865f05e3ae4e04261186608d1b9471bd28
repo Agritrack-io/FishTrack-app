@@ -34,10 +34,8 @@ p
 java:S1104"UMake longitude a static final constant or non-public and provide accessors if needed.(ŠÜ®ùÿÿÿÿ
 o
 java:S1104"TMake latitude a static final constant or non-public and provide accessors if needed.(éı¾Ùúÿÿÿÿ
-l
-java:S1104"QMake items a static final constant or non-public and provide accessors if needed.(¢§…¾üÿÿÿÿ
 j
-java:S1104"TMake capacity a static final constant or non-public and provide accessors if needed.(Íí™
+java:S1104"TMake capacity a static final constant or non-public and provide accessors if needed.(Íí™
 s	java:S116"YRename this field "transport_head" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÛĞÅÑıÿÿÿÿ
 s	java:S116"YRename this field "packaging_site" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(­ä¤×ùÿÿÿÿ
 w	java:S116"]Rename this field "truck_refrigerated" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’§Ï†ÿÿÿÿÿ
@@ -49,4 +47,4 @@ q	java:S116"WRename this field "driver_phone" to match the regular expression
 u	java:S116"[Rename this field "driver_signature" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ì®­ûÿÿÿÿ
 k	java:S116"VRename this field "bins_loaded" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(•Õµ
 p	java:S116"VRename this field "occurred_at" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(†äØÿıÿÿÿÿ
-Q	java:S125("<This block of commented-out lines of code should be removed.(ÉÙß—
+Q	java:S125'"<This block of commented-out lines of code should be removed.(ÉÙß—

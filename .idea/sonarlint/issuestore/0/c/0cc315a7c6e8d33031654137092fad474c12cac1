@@ -1,0 +1,43 @@
+
+l
+java:S1104"VMake request_id a static final constant or non-public and provide accessors if needed.(£äö˜
+j
+java:S1104"OMake lot a static final constant or non-public and provide accessors if needed.(ÜôÚôşÿÿÿÿ
+s
+java:S1104	"XMake harvest_date a static final constant or non-public and provide accessors if needed.(³„²ìûÿÿÿÿ
+n
+java:S1104
+"XMake farm_arrival a static final constant or non-public and provide accessors if needed.(‰—„ã
+g
+java:S1104"QMake plant a static final constant or non-public and provide accessors if needed.(Å«ö£
+f
+java:S1104"PMake site a static final constant or non-public and provide accessors if needed.(âû¡¦
+p
+java:S1104"UMake cage_rfid a static final constant or non-public and provide accessors if needed.(‡ŠÛııÿÿÿÿ
+k
+java:S1104"UMake cage_code a static final constant or non-public and provide accessors if needed.(¾çŸ
+n
+java:S1104"SMake species a static final constant or non-public and provide accessors if needed.(õİó“ÿÿÿÿÿ
+l
+java:S1104"VMake avg_weight a static final constant or non-public and provide accessors if needed.(É·ŸŸ
+w
+java:S1104"\Make request_quantity a static final constant or non-public and provide accessors if needed.(¡œôôùÿÿÿÿ
+j
+java:S1104"TMake quantity a static final constant or non-public and provide accessors if needed.(¶ôÛš
+k
+java:S1104"UMake requester a static final constant or non-public and provide accessors if needed.(–š©Â
+h
+java:S1104"RMake driver a static final constant or non-public and provide accessors if needed.(ÿÈ¬
+j
+java:S1104"TMake comments a static final constant or non-public and provide accessors if needed.(°¤µŸ
+n
+java:S1104"SMake itin_no a static final constant or non-public and provide accessors if needed.(Íó†¹ùÿÿÿÿ
+j	java:S116"URename this field "request_id" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(£äö˜
+q	java:S116	"WRename this field "harvest_date" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(³„²ìûÿÿÿÿ
+l	java:S116
+"WRename this field "farm_arrival" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‰—„ã
+n	java:S116"TRename this field "cage_rfid" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡ŠÛııÿÿÿÿ
+i	java:S116"TRename this field "cage_code" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¾çŸ
+j	java:S116"URename this field "avg_weight" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(É·ŸŸ
+u	java:S116"[Rename this field "request_quantity" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¡œôôùÿÿÿÿ
+l	java:S116"RRename this field "itin_no" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Íó†¹ùÿÿÿÿ

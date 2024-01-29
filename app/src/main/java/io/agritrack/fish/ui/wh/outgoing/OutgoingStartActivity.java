@@ -1,5 +1,10 @@
 package io.agritrack.fish.ui.wh.outgoing;
 
+import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.getAppContext;
+import static io.agritrack.common.LargeString.render;
+import static io.agritrack.ui.custom.CustomToast.CToast;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -31,11 +36,6 @@ import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.ui.custom.ToggleGroup;
 import io.agritrack.ui.login.api.SiteInfoRS;
 import io.agritrack.ui.service.LocalPreferences;
-
-import static io.agritrack.FishTrackApplication.IsDemo;
-import static io.agritrack.FishTrackApplication.getAppContext;
-import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 public class OutgoingStartActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
@@ -115,11 +115,8 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            } else if (selectedOutgoingItemType == Constants.ftAsset){
+            } else if (selectedOutgoingItemType == Constants.ftAsset) {
                 Intent i = new Intent(getApplicationContext(), OutgoingAssetActivity.class);
-                startActivity(i);
-            } else {
-                Intent i = new Intent(getApplicationContext(), OutgoingConsumableActivity.class);
                 startActivity(i);
             }
         });
@@ -228,7 +225,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         return whOutgoingRecord;
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.outgoingItemType)) {
@@ -247,7 +244,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
         return sb.toString();
     }
 
-    private void initControlsFromState()    {
+    private void initControlsFromState() {
 
         if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonFrom)) {
             tgOutgoingSource.setCheckedStateForView(R.id.tbSite, true);

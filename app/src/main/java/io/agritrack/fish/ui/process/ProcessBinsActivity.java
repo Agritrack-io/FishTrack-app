@@ -21,7 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -346,7 +345,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
             String token = LocalPreferences.getToken();
 
             // sync RFID batch for this rfidBarcode
-            Call<List<String>> enquiryEpcsByEpcAsyncCall = enquiryService.getTransportEpcsBatch(epc, "Bearer " + token);
+            Call<List<String>> enquiryEpcsByEpcAsyncCall = enquiryService.getFishingEpcsBatch(epc, "Bearer " + token);
             enquiryEpcsByEpcAsyncCall.enqueue(new RfidBatchByRfidBarcode(this.enquiryResult));
 
 

@@ -1,10 +1,10 @@
 
 k
-java:S1192Á"HDefine a constant instead of duplicating this literal "Bearer " 5 times.(Š›äœıÿÿÿÿ8ºËğÂÅ1
+java:S1192Á"HDefine a constant instead of duplicating this literal "Bearer " 6 times.(Š›äœıÿÿÿÿ8ºËğÂÅ1
 R
 java:S1066­"/Merge this if statement with the enclosing one.(Èİ¯ƒÿÿÿÿÿ8½ËğÂÅ1
 n	java:S117µ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Öâôş8¿ËğÂÅ1
-n	java:S117ê"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ôÑ¦8¿ËğÂÅ1
+n	java:S117î"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ôÑ¦8¿ËğÂÅ1
 F
 java:S1604³"(Make this anonymous inner class a lambda(—¿Ç“8ÀËğÂÅ1
 n
@@ -54,8 +54,8 @@ Y	java:S125ø"<This block of commented-out lines of code should be removed.(‰ô
 Y	java:S125ˆ"<This block of commented-out lines of code should be removed.(š†ÈŸ8„ÔğÂÅ1
 U
 java:S1874›"2Remove this use of "setMessage"; it is deprecated.(ƒ¬ƒİşÿÿÿÿ8‹ÔğÂÅ1
-^	java:S125Ò"<This block of commented-out lines of code should be removed.(ê¿¿Èúÿÿÿÿ8šÔğÂÅ1
+^	java:S125Ö"<This block of commented-out lines of code should be removed.(ê¿¿Èúÿÿÿÿ8šÔğÂÅ1
 ^
-java:S1874ş";Remove this use of "updateConfiguration"; it is deprecated.(˜•µÊûÿÿÿÿ8«ÔğÂÅ1
+java:S1874‚";Remove this use of "updateConfiguration"; it is deprecated.(˜•µÊûÿÿÿÿ8«ÔğÂÅ1
 _
-java:S1126¸"AReplace this if-then-else statement by a single return statement.(¯‡…Í8¿ÔğÂÅ1
+java:S1126¼"AReplace this if-then-else statement by a single return statement.(¯‡…Í8¿ÔğÂÅ1

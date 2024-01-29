@@ -14,7 +14,6 @@ public class RFIDInventoryDTO {
     public Double latitude;
 
     public Map<String, List<RFIDInventoryItemDTO>> rfid_items;
-    public Map<String, List<CoInventoryItemDTO>> bc_items;
 
     public static RFIDInventoryDTO convert(RFIDInventory inventory) {
         RFIDInventoryDTO inventoryDTO = new RFIDInventoryDTO();

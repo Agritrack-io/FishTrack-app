@@ -229,6 +229,11 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
             this.epc = x.toString();
         }
 
+        public BinLoadItem(String epc, Integer binWeight) {
+            this.epc = epc;
+            this.weight = binWeight;
+        }
+
         public BinLoadItem(String epc, Integer binWeight, Double temperature) {
             this.epc = epc;
             this.weight = binWeight;

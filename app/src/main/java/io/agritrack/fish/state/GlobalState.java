@@ -1,15 +1,12 @@
 package io.agritrack.fish.state;
 
-import static io.agritrack.data.converter.DateConverter.toDate;
 import static io.agritrack.enums.AssetType.ALL;
 
 import android.util.Base64;
 
-import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,17 +21,12 @@ import io.agritrack.data.model.common.Measurement;
 import io.agritrack.data.model.common.TemperatureData;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.AssetTransaction;
-import io.agritrack.data.model.tx.ConsumableTransaction;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.PostPackageQualityTransaction;
 import io.agritrack.data.model.tx.ProcessingTransaction;
 import io.agritrack.data.model.tx.QualityTransaction;
-import io.agritrack.data.model.tx.RepairTransaction;
-import io.agritrack.data.model.tx.SeaTemperatureTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
-import io.agritrack.data.model.wh.CoInventory;
-import io.agritrack.data.model.wh.CoInventoryItem;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.enums.TxStatus;
@@ -182,16 +174,15 @@ public class GlobalState {
             txFishing.harvestBinsCnt = recFishing.totalBinsUsed;
             txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight).intValue() : null;
             txFishing.totalQty = recFishing.totalFishWeight;
-            if(finalCommit){    //filter empty bins on final commit
-                if(recFishing.binWeightRecord.getBinsData() != null){
+            if (finalCommit) {    //filter empty bins on final commit
+                if (recFishing.binWeightRecord.getBinsData() != null) {
                     txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData()
                             .stream()
                             .filter(x -> x.weight != null && x.weight > 0)
                             .collect(Collectors.toList());
                 }
                 txFishing.createdAt = System.currentTimeMillis();
-            }
-            else{
+            } else {
                 txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData();
             }
             txFishing.reasonOfDeviation = recFishing.reasonOfDeviation;
@@ -331,7 +322,7 @@ public class GlobalState {
             txQuality.overallEvaluation = recQuality.evaluation;
             txQuality.selectedRgId = recQuality.selectedRgId;
             txQuality.remarks = recQuality.remarks;
-            if (recQuality.qualityBins!=null) {
+            if (recQuality.qualityBins != null) {
                 txQuality.qualityBins = recQuality.qualityBins.stream().map(x -> x.epc).collect(Collectors.toList());
             }
             txQuality.expectedBins = recQuality.expectedBins;
@@ -389,7 +380,7 @@ public class GlobalState {
                 LoggerDataRecord.TemperatureModel model = recLoggerData.data.get(epc);
                 TemperatureTimeSeries meas = db.measurementsDAO().getByEPC(epc);
                 if (meas != null) {
-                    if (meas.measurement.productionLane==null) {
+                    if (meas.measurement.productionLane == null) {
                         meas.measurement.lot = plot;
                         db.measurementsDAO().update(meas.measurement);
                     }
@@ -423,7 +414,7 @@ public class GlobalState {
 
         try {
             TemperatureTimeSeries meas = db.measurementsDAO().getByEPC(epc);
-            if (meas != null && productionLane==null) {
+            if (meas != null && productionLane == null) {
                 return;
             }
             LoggerDataRecord.TemperatureModel model = recLoggerData.data.get(epc);
@@ -518,36 +509,6 @@ public class GlobalState {
         }
     }
 
-    public static List<ConsumableTransaction> commitWHBarcodeOutgoing(MobileDB db) {
-        try {
-            List<ConsumableTransaction> consumablesList = new ArrayList<>();
-            Set<Map.Entry<String, Integer>> barcodeEntries = recWHOutgoing.barcodeItems.entrySet();
-
-            for (Map.Entry<String, Integer> entry : barcodeEntries) {
-                ConsumableTransaction txWHOutgoing = new ConsumableTransaction();
-
-                txWHOutgoing.state = recWHOutgoing.state.name();
-                txWHOutgoing.consumableType = (recWHOutgoing.consumableType != null) ? recWHOutgoing.consumableType.name() : ALL;
-                txWHOutgoing.barcode = entry.getKey();
-                txWHOutgoing.quantity = entry.getValue();
-                txWHOutgoing.timestamp = System.currentTimeMillis();
-                txWHOutgoing.from = recWHOutgoing.fromSite;
-                txWHOutgoing.to = recWHOutgoing.toSite;
-                txWHOutgoing.site = recWHOutgoing.site;
-                txWHOutgoing.longitude = recWHOutgoing.longitude;
-                txWHOutgoing.latitude = recWHOutgoing.latitude;
-
-                consumablesList.add(txWHOutgoing);
-            }
-            db.consumableTransactionDAO().insert(consumablesList.toArray(new ConsumableTransaction[consumablesList.size()]));
-
-            return consumablesList;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
     public static RFIDInventory commitWHRFIDInventory(MobileDB db) {
         try {
             RFIDInventory txWHRFIDInventory = new RFIDInventory();
@@ -591,47 +552,6 @@ public class GlobalState {
         }
     }
 
-    public static CoInventory commitWHCoInventory(MobileDB db) {
-        try {
-            CoInventory txWHCoInventory = new CoInventory();
-            txWHCoInventory.site = recWHInventory.subSite;
-            txWHCoInventory.performedAt = System.currentTimeMillis();
-            txWHCoInventory.longitude = recWHInventory.longitude;
-            txWHCoInventory.latitude = recWHInventory.latitude;
-            long _id = db.coInventoryDAO().insert(txWHCoInventory);
-            txWHCoInventory.id = _id;
-
-            return txWHCoInventory;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    public static List<CoInventoryItem> commitWHCoInventoryItem(MobileDB db, CoInventory inventory) {
-        try {
-            List<CoInventoryItem> items = new ArrayList<>();
-            Set<Map.Entry<String, Integer>> inventoryData = recWHInventory.barcodeItems.entrySet();
-
-            for (Map.Entry<String, Integer> entry : inventoryData) {
-                CoInventoryItem newItem = new CoInventoryItem();
-                newItem.consumableType = (recWHInventory.consumableType != null) ? recWHInventory.consumableType.name() : ALL;
-                newItem.barcode = entry.getKey();
-                newItem.quantity = entry.getValue();
-                newItem.timestamp = System.currentTimeMillis();
-                newItem.coInventory = inventory.id;
-
-                items.add(newItem);
-            }
-
-            db.coInventoryItemDAO().insert(items.toArray(new CoInventoryItem[items.size()]));
-            return items;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
     public static CorrelationTransaction commitWHCorrelation(MobileDB db) {
         try {
             CorrelationTransaction txCorrelation = new CorrelationTransaction();
@@ -655,63 +575,12 @@ public class GlobalState {
         }
     }
 
-    public static RepairTransaction commitInternalRepair(MobileDB db) {
-        try {
-            RepairTransaction txIndoorsRepair = new RepairTransaction();
-            txIndoorsRepair.timestamp = System.currentTimeMillis();
-            txIndoorsRepair.longitude = recInternalRepair.longitude;
-            txIndoorsRepair.latitude = recInternalRepair.latitude;
-
-            db.repairTransactionDAO().insert(txIndoorsRepair);
-
-            return txIndoorsRepair;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    public static RepairTransaction commitExternalRepair(MobileDB db) {
-        try {
-            RepairTransaction txOutdoorsRepair = new RepairTransaction();
-            txOutdoorsRepair.timestamp = System.currentTimeMillis();
-            txOutdoorsRepair.longitude = recExternalRepair.longitude;
-            txOutdoorsRepair.latitude = recExternalRepair.latitude;
-
-            db.repairTransactionDAO().insert(txOutdoorsRepair);
-
-            return txOutdoorsRepair;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    public static SeaTemperatureTransaction commitSeaTemp(MobileDB db) {
-        try {
-            SeaTemperatureTransaction seaTemperatureTransaction = new SeaTemperatureTransaction();
-            seaTemperatureTransaction.timestamp = System.currentTimeMillis();
-            seaTemperatureTransaction.siteId = LocalPreferences.getCurrentSiteName();
-            seaTemperatureTransaction.refTemp = recTools.referencePointTemp;
-            seaTemperatureTransaction.cageTemp = recTools.cageTemp;
-            seaTemperatureTransaction.longitude = recTools.longitude;
-            seaTemperatureTransaction.latitude = recTools.latitude;
-
-            recTools.txKey = db.seaTemperatureTransactionDAO().insert(seaTemperatureTransaction);
-
-            return seaTemperatureTransaction;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
     public static void commitBinInitTimes(MobileDB db) {
         try {
-            for(String epc : recLoggerData.loggerInitData.keySet()){
+            for (String epc : recLoggerData.loggerInitData.keySet()) {
                 Long initTs = recLoggerData.loggerInitData.get(epc);
                 BinInfo bin = db.binInfoDAO().getByRFId(epc);
-                if (bin == null){
+                if (bin == null) {
                     bin = new BinInfo();
                     bin.rfid = epc;
                 }
@@ -720,36 +589,6 @@ public class GlobalState {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
-    }
-
-    public static List<ConsumableTransaction> commitWHBarcodeIncoming(MobileDB db) {
-        try {
-            List<ConsumableTransaction> consumablesList = new ArrayList<>();
-            Set<Map.Entry<String, Integer>> barcodeEntries = recWHIncoming.barcodeItems.entrySet();
-
-            for (Map.Entry<String, Integer> entry : barcodeEntries) {
-                ConsumableTransaction txWHIncoming = new ConsumableTransaction();
-
-                txWHIncoming.state = recWHIncoming.state.name();
-                txWHIncoming.consumableType = (recWHIncoming.consumableType != null) ? recWHIncoming.consumableType.name() : ALL;
-                txWHIncoming.barcode = entry.getKey();
-                txWHIncoming.quantity = entry.getValue();
-                txWHIncoming.timestamp = System.currentTimeMillis();
-                txWHIncoming.from = recWHIncoming.fromSite;
-                txWHIncoming.to = recWHIncoming.toSite;
-                txWHIncoming.site = recWHIncoming.site;
-                txWHIncoming.longitude = recWHIncoming.longitude;
-                txWHIncoming.latitude = recWHIncoming.latitude;
-
-                consumablesList.add(txWHIncoming);
-            }
-            db.consumableTransactionDAO().insert(consumablesList.toArray(new ConsumableTransaction[consumablesList.size()]));
-
-            return consumablesList;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
         }
     }
 

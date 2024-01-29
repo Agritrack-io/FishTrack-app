@@ -453,6 +453,10 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             Call<List<AppUserDTO>> syncUsersAsyncCall = syncService.getUsersBySiteId(siteId, "Bearer " + token);
             syncUsersAsyncCall.enqueue(new SyncUsersCallBack(this.syncResult));
 
+            //sync assets  (cages, nets, bins, platforms)
+            Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
+            syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
+
             // sync only Harvest_Bins assets
             Call<List<AssetDTO>> syncHarvestBinsAsyncCall = syncService.getAssetsByHarvestBinType("Bearer " + token);
             syncHarvestBinsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));

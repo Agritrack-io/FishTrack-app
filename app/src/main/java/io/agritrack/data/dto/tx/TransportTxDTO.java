@@ -23,7 +23,6 @@ public class TransportTxDTO {
     public Long occurred_at;
     public Double longitude;
     public Double latitude;
-    public List<TotesTxDTO> items;
     public Integer capacity;
 
     public static TransportTxDTO convert(TransportTransaction transport) {

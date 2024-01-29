@@ -2,7 +2,7 @@
 t
 java:S2293H"YReplace the type specification in this constructor call with the diamond operator ("<>").(öù‹­üÿÿÿÿ
 E
-java:S1066–"/Merge this if statement with the enclosing one.(ð»Ém
+java:S1066"/Merge this if statement with the enclosing one.(ð»Ém
 >
 java:S1604O"(Make this anonymous inner class a lambda(Â«”©
 f
@@ -14,6 +14,5 @@ Q	java:S125J"<This block of commented-out lines of code should be removed.(àÃÈ
 f	java:S128U"LEnd this switch case with an unconditional break, return or throw statement.(†²ü‡ýÿÿÿÿ
 
 java:S5803X"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(†—ÿQ
-Q	java:S125_"<This block of commented-out lines of code should be removed.(žÙñ×
 h
-java:S3457—"Q%n should be used in place of \n to produce the platform-specific line separator.(ê£´ñ
+java:S3457Ž"Q%n should be used in place of \n to produce the platform-specific line separator.(ê£´ñ

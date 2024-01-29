@@ -14,9 +14,6 @@ o
 java:S1104"TMake latitude a static final constant or non-public and provide accessors if needed.(éý¾Ùúÿÿÿÿ
 l
 java:S1104"VMake rfid_items a static final constant or non-public and provide accessors if needed.(Ÿ†õë
-o
-java:S1104"TMake bc_items a static final constant or non-public and provide accessors if needed.(Â•¥Ëþÿÿÿÿ
 n	java:S116	"YRename this field "inventory_type" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ë¯áç
 j	java:S116"URename this field "created_at" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ãÊï†
 j	java:S116"URename this field "rfid_items" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ÿ†õë
-m	java:S116"SRename this field "bc_items" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Â•¥Ëþÿÿÿÿ

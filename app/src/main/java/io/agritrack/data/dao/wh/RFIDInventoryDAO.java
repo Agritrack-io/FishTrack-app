@@ -11,7 +11,6 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import io.agritrack.data.model.tx.items.TotesInventoryTxWithItems;
 import io.agritrack.data.model.wh.RFIDInventory;
 
 @Dao
@@ -20,16 +19,8 @@ public interface RFIDInventoryDAO {
     @Query("SELECT * from rfid_inventory")
     LiveData<List<RFIDInventory>> getAll();
 
-    @Transaction
-    @Query("SELECT * from rfid_inventory")
-    LiveData<List<TotesInventoryTxWithItems>> getAllInvTotes();
-
     @Query("SELECT * from rfid_inventory where id=:inventoryId LIMIT 1")
     RFIDInventory getById(Long inventoryId);
-
-    @Transaction
-    @Query("SELECT * from rfid_inventory where id=:inventoryId LIMIT 1")
-    TotesInventoryTxWithItems getInvTotesById(Long inventoryId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(RFIDInventory... inventorys);

@@ -1,48 +1,48 @@
 
-k
-java:S1192´"HDefine a constant instead of duplicating this literal "%s (%s)" 4 times.(¶Î´­úÿÿÿÿ8Èì–ÃÅ1
-n
-java:S16595"LDeclare "tvUsedBinsCount" and all following declarations on a separate line.(ççøÿÿÿÿ8ôí–ÃÅ1
-e
-java:S1659?"CDeclare "ivInfo" and all following declarations on a separate line.(±ôòäüÿÿÿÿ8õí–ÃÅ1
-€
-java:S1450?"^Remove the "ivCheckLastTemp" field and declare it as a local variable in the relevant methods.(±ôòäüÿÿÿÿ8öí–ÃÅ1
-|
-java:S1450I"ZRemove the "pbBluetooth" field and declare it as a local variable in the relevant methods.(Ê§ò¡şÿÿÿÿ8öí–ÃÅ1
-X	java:S125j"<This block of commented-out lines of code should be removed.(æÂÿÜ8Œî–ÃÅ1
-U
-java:S1135"2Complete the task associated to this TODO comment.(¤˜ô²ÿÿÿÿÿ8î–ÃÅ1
-Y	java:S125§"<This block of commented-out lines of code should be removed.(¢êµ8î–ÃÅ1
-^	java:S125Ï"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ8–î–ÃÅ1
-Y	java:S125Ö"<This block of commented-out lines of code should be removed.(•£²8›î–ÃÅ1
-^	java:S125ì"<This block of commented-out lines of code should be removed.(ÄÛ‚îúÿÿÿÿ8œî–ÃÅ1
-F
-java:S1185ğ"(Remove this method to simply inherit it.(ÍÙ÷¢8œî–ÃÅ1
-–
-java:S5803ı"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç8Ÿî–ÃÅ1
-t
-java:S3457ì"Q%n should be used in place of \n to produce the platform-specific line separator.(ãÆ‰Úıÿÿÿÿ8»î–ÃÅ1
-K	java:S108ğ")Either remove or fill this block of code.(—¡®ıÿÿÿÿ8»î–ÃÅ1
-K	java:S108ù")Either remove or fill this block of code.(­¡İîûÿÿÿÿ8¼î–ÃÅ1
-^	java:S125„"<This block of commented-out lines of code should be removed.(ŞÓÍúÿÿÿÿ8Áî–ÃÅ1
-Y	java:S125Ò"<This block of commented-out lines of code should be removed.(ÇÏË8Áî–ÃÅ1
-^	java:S125î"<This block of commented-out lines of code should be removed.(ûÂÓ‰ûÿÿÿÿ8Áî–ÃÅ1
-Y	java:S125ö"<This block of commented-out lines of code should be removed.(é³¯8Âî–ÃÅ1
-P
-java:S1135Ñ"2Complete the task associated to this TODO comment.(²Çø£8Ãî–ÃÅ1
-X
-java:S10689"<Remove this unused "intentForFillBinActivity" private field.(‘Ôİ}8Ãî–ÃÅ1
-R
-java:S1068:"0Remove this unused "mCatchWeight" private field.(å’®‡şÿÿÿÿ8Ãî–ÃÅ1
+d
+java:S1192´"HDefine a constant instead of duplicating this literal "%s (%s)" 4 times.(¶Î´­úÿÿÿÿ
+g
+java:S16595"LDeclare "tvUsedBinsCount" and all following declarations on a separate line.(ççøÿÿÿÿ
+^
+java:S1659?"CDeclare "ivInfo" and all following declarations on a separate line.(±ôòäüÿÿÿÿ
+y
+java:S1450?"^Remove the "ivCheckLastTemp" field and declare it as a local variable in the relevant methods.(±ôòäüÿÿÿÿ
+u
+java:S1450I"ZRemove the "pbBluetooth" field and declare it as a local variable in the relevant methods.(Ê§ò¡şÿÿÿÿ
+Q	java:S125j"<This block of commented-out lines of code should be removed.(æÂÿÜ
+N
+java:S1135"2Complete the task associated to this TODO comment.(¤˜ô²ÿÿÿÿÿ
+R	java:S125§"<This block of commented-out lines of code should be removed.(¢êµ
+W	java:S125Ï"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+R	java:S125Ö"<This block of commented-out lines of code should be removed.(•£²
+W	java:S125ì"<This block of commented-out lines of code should be removed.(ÄÛ‚îúÿÿÿÿ
+?
+java:S1185ğ"(Remove this method to simply inherit it.(ÍÙ÷¢
+
+java:S5803ı"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç
+m
+java:S3457ì"Q%n should be used in place of \n to produce the platform-specific line separator.(ãÆ‰Úıÿÿÿÿ
+D	java:S108ğ")Either remove or fill this block of code.(—¡®ıÿÿÿÿ
+D	java:S108ù")Either remove or fill this block of code.(­¡İîûÿÿÿÿ
+W	java:S125„"<This block of commented-out lines of code should be removed.(ŞÓÍúÿÿÿÿ
+R	java:S125Ò"<This block of commented-out lines of code should be removed.(ÇÏË
+W	java:S125î"<This block of commented-out lines of code should be removed.(ûÂÓ‰ûÿÿÿÿ
+R	java:S125ö"<This block of commented-out lines of code should be removed.(é³¯
+I
+java:S1135Ñ"2Complete the task associated to this TODO comment.(²Çø£
+Q
+java:S10689"<Remove this unused "intentForFillBinActivity" private field.(‘Ôİ}
 K
-java:S1068;".Remove this unused "currentBin" private field.(İµëÎ8Ãî–ÃÅ1
-L
-java:S1068<"/Remove this unused "weightOfBin" private field.(—‰İ8Ãî–ÃÅ1
+java:S1068:"0Remove this unused "mCatchWeight" private field.(å’®‡şÿÿÿÿ
+D
+java:S1068;".Remove this unused "currentBin" private field.(İµëÎ
+E
+java:S1068<"/Remove this unused "weightOfBin" private field.(—‰İ
+H
+java:S1068>"-Remove this unused "epochFrom" private field.(­˜Å‡ûÿÿÿÿ
 O
-java:S1068>"-Remove this unused "epochFrom" private field.(­˜Å‡ûÿÿÿÿ8Ãî–ÃÅ1
-V
-java:S1068F"4Remove this unused "bluetoothAdapter" private field.(Ùâæûÿÿÿÿ8Ãî–ÃÅ1
-U
-java:S1068G"3Remove this unused "bluetoothDevice" private field.(Áˆ“øÿÿÿÿ8Äî–ÃÅ1
-J
-java:S1068J"-Remove this unused "currState" private field.(â©¸Í8Äî–ÃÅ1
+java:S1068F"4Remove this unused "bluetoothAdapter" private field.(Ùâæûÿÿÿÿ
+N
+java:S1068G"3Remove this unused "bluetoothDevice" private field.(Áˆ“øÿÿÿÿ
+C
+java:S1068J"-Remove this unused "currState" private field.(â©¸Í

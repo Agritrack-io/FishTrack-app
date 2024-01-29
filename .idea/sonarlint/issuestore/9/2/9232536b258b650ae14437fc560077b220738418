@@ -1,0 +1,18 @@
+
+f
+java:S1192è"ODefine a constant instead of duplicating this literal "
+%s is missing" 3 times.(ÔÒ’¾
+E
+java:S1659."*Declare "tvOutgoingTo" on a separate line.(î¼»Œþÿÿÿÿ
+h
+java:S1659/"RDeclare "tgOutgoingDestination" and all following declarations on a separate line.(ûê²§
+O
+java:S16590"4Declare "selectedToggleButtonTo" on a separate line.(ãâ¸Êøÿÿÿÿ
+Ž
+java:S5803t"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±Ý“Ç
+h
+java:S3457è"Q%n should be used in place of \n to produce the platform-specific line separator.(ÔÒ’¾
+m
+java:S3457ì"Q%n should be used in place of \n to produce the platform-specific line separator.(„‘µ§ýÿÿÿÿ
+m
+java:S3457ð"Q%n should be used in place of \n to produce the platform-specific line separator.(ŒêˆÊûÿÿÿÿ

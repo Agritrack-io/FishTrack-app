@@ -3,7 +3,6 @@ package io.agritrack.fish.ui;
 import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
@@ -38,7 +37,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import io.agritrack.CrashHandler;
 import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
 import io.agritrack.api.APIServiceGenerator;
@@ -50,6 +48,7 @@ import io.agritrack.api.sync.PendingProcessTxCallBack;
 import io.agritrack.api.sync.PendingQualityTxCallBack;
 import io.agritrack.api.sync.PendingTransportTxCallBack;
 import io.agritrack.api.sync.SyncApi;
+import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.api.sync.SyncBinInfo;
 import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
@@ -58,7 +57,6 @@ import io.agritrack.api.sync.SyncEmployeesCallBack;
 import io.agritrack.api.sync.SyncFishingRequestCallBack;
 import io.agritrack.api.sync.SyncFoodSkuCallBack;
 import io.agritrack.api.sync.SyncIOTLoggersCallBack;
-import io.agritrack.api.sync.SyncSeaTempCallBack;
 import io.agritrack.api.sync.SyncSpeciesCallBack;
 import io.agritrack.api.sync.SyncSuppliersCallBack;
 import io.agritrack.api.sync.SyncUsersCallBack;
@@ -82,11 +80,9 @@ import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.dto.tx.PostPackageQualityTxDTO;
 import io.agritrack.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;
-import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
 import io.agritrack.data.dto.tx.TransportTxDTO;
+import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.data.dto.wh.FoodSkuDTO;
-import io.agritrack.data.model.common.Measurement;
-import io.agritrack.data.model.common.TemperatureData;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
@@ -99,22 +95,13 @@ import io.agritrack.enums.TxStatus;
 import io.agritrack.fish.api.tx.TransactionApi;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
-import io.agritrack.fish.state.LoggerDataRecord;
 import io.agritrack.fish.ui.binTurnover.BinTurnoverActivity;
-import io.agritrack.fish.ui.fishing.FishingBinsActivity;
 import io.agritrack.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.fish.ui.initBins.InitBinsActivity;
 import io.agritrack.fish.ui.process.ProcessBinsActivity;
-import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;
-import io.agritrack.fish.ui.quality.receipt.ReceiptQualityConfirmActivity;
-import io.agritrack.fish.ui.seaTemperature.SeaTemperatureActivity;
 import io.agritrack.fish.ui.testBinTemperature.TestBinTempActivity;
-import io.agritrack.fish.ui.transport.TransportBinsActivity;
-import io.agritrack.fish.ui.transport.TransportBinsSecurityClipsActivity;
-import io.agritrack.fish.ui.transport.TransportInfoActivity;
-import io.agritrack.fish.ui.transport.TransportSupervisorConfirmActivity;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
 import io.agritrack.ui.adapter.MenuItem;
 import io.agritrack.ui.login.LoginActivity;
@@ -468,9 +455,9 @@ public class FishHomeActivity extends AppCompatActivity {
             Call<List<CustomerDTO>> syncCustomersAsyncCall = syncService.getCustomersBySiteId(siteId, "Bearer " + token);
             syncCustomersAsyncCall.enqueue(new SyncCustomersCallBack(this.syncResult));
 
-            // sync assets  (cages, nets, bins, platforms)
-//            Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
-//            syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
+            //sync assets  (cages, nets, bins, platforms)
+            Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
+            syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
 
             // sync Cage Details
             Call<List<CageDetailsDTO>> syncCageDetailsAsyncCall = syncService.getCageDetailsBySiteId(siteId, "Bearer " + token);
@@ -491,10 +478,6 @@ public class FishHomeActivity extends AppCompatActivity {
             // sync Food sku
             Call<List<FoodSkuDTO>> syncFoodSkuAsyncCall = syncService.getFoodSkus("Bearer " + token);
             syncFoodSkuAsyncCall.enqueue(new SyncFoodSkuCallBack(this.syncResult));
-
-            // sync sea temperature
-            Call<List<SeaTemperatureTxDTO>> syncSeaTempAsyncCall = syncService.getSeaTemp(siteId, "Bearer " + token);
-            syncSeaTempAsyncCall.enqueue(new SyncSeaTempCallBack(this.syncResult));
 
             //Traverse the crash folder in the sd card to get each file
             File file = new File(FishHomeActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "agriLogs");

@@ -1,0 +1,30 @@
+
+[	java:S112A"FDefine and throw a dedicated exception instead of using a generic one.(†ÌÂ’
+`	java:S112Z"FDefine and throw a dedicated exception instead of using a generic one.(¬Ï«‡ÿÿÿÿÿ
+[	java:S112k"FDefine and throw a dedicated exception instead of using a generic one.(†ÌÂ’
+r
+java:S1488^"\Immediately return this expression instead of assigning it to the temporary variable "data".(œ‚¨ß
+v
+java:S1488¢"ZImmediately return this expression instead of assigning it to the temporary variable "rs".(şîÔÿÿÿÿÿ
+r
+java:S1450"WRemove the "epcBytes" field and declare it as a local variable in the relevant methods.(ÅƒÀúÿÿÿÿ
+O
+java:S1854>"9Remove this useless assignment to local variable "reply".(¶‹Ò¬
+K
+java:S1854J"5Remove this useless assignment to local variable "b".(í¾÷
+<
+java:S1481J"&Remove this unused "b" local variable.(í¾÷
+O
+java:S1854h"9Remove this useless assignment to local variable "reply".(¶‹Ò¬
+W
+java:S1854q"<Remove this useless assignment to local variable "cmdValue".(Ì›†ùÿÿÿÿ
+Q	java:S125f"<This block of commented-out lines of code should be removed.(Õà¶í
+H
+java:S1481q"-Remove this unused "cmdValue" local variable.(Ì›†ùÿÿÿÿ
+u
+java:S2142•"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(ä ¹€
+=
+java:S1168­"&Return an empty array instead of null.(¥¹ï
+R	java:S125º"<This block of commented-out lines of code should be removed.(ïİêß
+W	java:S125Ï"<This block of commented-out lines of code should be removed.(öàŸªşÿÿÿÿ
+W	java:S125Ğ"<This block of commented-out lines of code should be removed.(Ù¾ĞØıÿÿÿÿ

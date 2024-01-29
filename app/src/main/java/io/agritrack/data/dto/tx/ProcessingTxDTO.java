@@ -14,7 +14,6 @@ public class ProcessingTxDTO {
     public String security_clip_number;
     public List<String> bins_received = new LinkedList<String>();
     public String flot;
-    public String harvest_load;
     public String site;
     public String user;
     public Long occurred_at;
@@ -30,7 +29,6 @@ public class ProcessingTxDTO {
         processingTxDto.security_clip_number = processing.securityClipNumber;
         processingTxDto.flot = processing.flot;
         processingTxDto.site = processing.site;
-        processingTxDto.harvest_load = processing.harvestLoad;
         processingTxDto.bins_received = processing.receivedBins;
         processingTxDto.user = processing.user;
         processingTxDto.occurred_at = processing.createdAt;

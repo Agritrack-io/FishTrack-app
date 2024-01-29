@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.List;
 
 import io.agritrack.R;
-import io.agritrack.data.db.MobileDB;
-import io.agritrack.data.dto.tx.SeaTemperatureTxDTO;
 import retrofit2.Call;
 import retrofit2.Response;
 

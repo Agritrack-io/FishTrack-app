@@ -48,7 +48,7 @@ public class Employee {
     public Long supervisor;
 
     @ColumnInfo(name = "site")
-    public UUID site;
+    public String site;
 
     @ColumnInfo(name = "user")
     public Long user;
