@@ -19,3 +19,19 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-mergeinterfacesaggressively
+-overloadaggressively
+-keepclassmembers class io.agritrack.data.dto.** {
+    public protected private <fields>;
+}
+-keepclassmembers class cn.pda.serialport.SerialPort{
+   private <fields>;
+}
+-keep class io.agritrack.ui.login.api.** { *; }
+-keep class io.agritrack.api.login.** { *; }
+-keep class io.agritrack.api.query.** { *; }
+-keep class io.agritrack.api.sync.** { *; }
+-keep class io.agritrack.api.tx.** { *; }
+-keep class io.agritrack.api.upload.** { *; }
+#Keep SQLCypher classes
+-keep class net.sqlcipher.** { *; }

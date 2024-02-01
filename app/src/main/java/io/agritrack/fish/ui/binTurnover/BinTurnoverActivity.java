@@ -53,7 +53,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncBinInfo;
 import io.agritrack.caen.common.CAENState;
@@ -69,7 +68,7 @@ import io.agritrack.data.repo.IFishTrackRepository;
 import io.agritrack.data.repo.MeasurementRepository;
 import io.agritrack.data.repo.TemperatureDataRepository;
 import io.agritrack.dialog.SupportDialog;
-import io.agritrack.fish.api.tx.TransactionApi;
+import io.agritrack.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.LoggerDataRecord;
 import io.agritrack.fish.ui.FishHomeActivity;

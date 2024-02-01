@@ -43,7 +43,6 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
@@ -51,7 +50,7 @@ import io.agritrack.data.model.wh.Asset;
 import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.fish.api.tx.TransactionApi;
+import io.agritrack.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.fish.ui.bo.GenericListModel;

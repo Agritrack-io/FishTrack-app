@@ -82,13 +82,12 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
     app:layout_constraintStart_toStartOf="parent">
 
     <RelativeLayout
-        android:id="@+id/correlateALayout"
+        android:id="@+id/correlateAssetLayout"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="290dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/correlateBLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -103,28 +102,38 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <EditText
-                android:id="@+id/etAssetBarcode"
+            <android.widget.SearchView
+                android:id="@+id/svSearchAsset"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:inputType="text"
                 android:padding="5dp"
                 android:paddingStart="10dp"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:scrollbarFadeDuration="0"
-                android:scrollbars="horizontal"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size"
+                android:queryHint="@string/search_hint"
+                app:layout_constraintBottom_toTopOf="@+id/rvBins"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:searchHintIcon="@null" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBins"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_rounded_input_spinner"
+                android:padding="5dp"
+                android:paddingStart="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/svSearchAsset" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -135,7 +144,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="@string/type_code_of_bin"
+            android:text="@string/choose_net"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
     </RelativeLayout>
@@ -143,15 +152,14 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
     <RelativeLayout
         android:id="@+id/correlateBLayout"
         android:layout_width="0dp"
-        android:layout_height="400dp"
+        android:layout_height="290dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/correlateALayout">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/correlateAssetLayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -252,6 +260,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 android:background="@color/transparent"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvCorrTempLoggerBarcode"
@@ -268,6 +277,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
                 android:textColor="@color/black"
                 android:textIsSelectable="false"
                 android:textSize="20sp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvCounter"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -285,6 +295,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
                 android:textIsSelectable="false"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvCounterLabel" />
 

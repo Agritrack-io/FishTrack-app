@@ -31,7 +31,6 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
@@ -39,7 +38,7 @@ import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.fish.api.tx.TransactionApi;
+import io.agritrack.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;

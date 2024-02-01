@@ -41,7 +41,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.model.tx.AssetTransaction;
@@ -58,7 +57,7 @@ import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.ui.adapter.TreelikeAdapter;
-import io.agritrack.fish.api.tx.TransactionApi;
+import io.agritrack.api.tx.TransactionApi;
 import io.agritrack.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;

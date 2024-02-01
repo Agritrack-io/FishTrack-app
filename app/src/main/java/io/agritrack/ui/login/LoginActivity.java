@@ -3,20 +3,25 @@ package io.agritrack.ui.login;
 import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.crypto.CryptoLicense.isLicenseKeyValid;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 import static io.agritrack.ui.service.LocalPreferences.Logged_In_User_Key;
+import static io.agritrack.ui.service.LocalPreferences.SelectedSiteName_Key;
 import static io.agritrack.ui.service.LocalPreferences.Token_Key;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -38,8 +43,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.google.api.SystemParameterOrBuilder;
-import com.sun.mail.imap.Utility;
+import com.google.android.gms.common.util.Strings;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -48,6 +52,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 
 import io.agritrack.AgritrackProducts;
 import io.agritrack.FishTrackApplication;
@@ -59,6 +64,7 @@ import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
 import io.agritrack.api.sync.SyncUsersCallBack;
+import io.agritrack.common.DeviceUtils;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.AppUserDTO;
 import io.agritrack.data.dto.EncodingSchemeDTO;
@@ -67,19 +73,25 @@ import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.data.model.AppUser;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.settings.ApplicationSettings;
+import io.agritrack.settings.EncryptedSharedPreferences;
+import io.agritrack.settings.SettingsActivity;
 import io.agritrack.su.AppOptionsFragment;
-import io.agritrack.ui.adapter.FishCatchAdapter;
 import io.agritrack.ui.login.api.AuthInfoRS;
 import io.agritrack.ui.login.api.LoginRQ;
 import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.CAENLoggerActivity;
+import io.agritrack.ui.viewmodel.ConfigViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements DialogInterface.OnDismissListener {
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 101;
     private static final String TAG = LoginActivity.class.getSimpleName();
+    private static boolean shouldCheckLicense = true;
+    private static boolean isFirstLoad = true;
     private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private MobileDB db;
@@ -88,26 +100,87 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     private ProgressDialog progressDialog;
     private int syncCounter = 1;
     private EditText etUserName, etPassword;
+    private TextView tvInvalidLicense, tvForgotYourPassword, tvLoginWithCred;
+    private EncryptedSharedPreferences pref;
 
-    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 101;
-
+    public static boolean checkAndRequestPermissions(final Activity context) {
+        int extStorePermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int cameraPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.CAMERA);
+        int locationPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+        if (extStorePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded
+                    .add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (locationPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded
+                    .add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(context, listPermissionsNeeded
+                            .toArray(new String[listPermissionsNeeded.size()]),
+                    REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // get  references of the controls
+        assignCtrlVars();
+
         // bind the flags button
         ibLocale = findViewById(R.id.ibLocale);
 
-       checkAndRequestPermissions(this);
+        checkAndRequestPermissions(this);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
-        // bind the credentials controls
-        etUserName = findViewById(R.id.etUserName);
-        etPassword = findViewById(R.id.etPassword);
+        // init app
+        Executors.newSingleThreadExecutor().execute(() -> {
+
+            if (isFirstLoad) {
+                // load app configuration
+                ApplicationSettings.loadSettings(getApplicationContext());
+                isFirstLoad = false;
+            }
+
+            // check device license
+            pref = new EncryptedSharedPreferences(this);
+            String deviceID = DeviceUtils.getIMEIDeviceId(this);
+            String encrypted = pref.loadPreference("licenseKey");
+
+            List<String> userRoles = new ArrayList<String>();
+
+            if (shouldCheckLicense && (Strings.isEmptyOrWhitespace(encrypted) || !isLicenseKeyValid(encrypted, deviceID))) {
+                userRoles.add("NO_ACCESS");
+                runOnUiThread(() -> {
+                    showCtrlVars(false);
+                    tvInvalidLicense.setVisibility(View.VISIBLE);
+                    tvInvalidLicense.setText(R.string.invalid_license);
+                });
+            } else {
+                showCtrlVars(true);
+                String siteName = pref.loadPreference("centralSite");
+                // persist selected Site to local Preferences.
+                LocalPreferences.writeValue(SelectedSiteName_Key, siteName);
+                // show current Site
+                showCurrentSite();
+                userRoles.add("ROLE_WAREHOUSE");
+                shouldCheckLicense = false;
+            }
+        });
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(LoginActivity.this);
@@ -198,36 +271,16 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                         CToast(getApplicationContext(), render(R.string.empty_username_alert), Toast.LENGTH_LONG);
                     } else if (pin.isEmpty()) {
                         noCredentialsEnteredAlert();
-//                } else if ("config".equals(username) && "8888".equals(pin)) {
-//                    Intent i = new Intent(getApplicationContext(), ConfigActivity.class);
-//                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-//                    startActivity(i);
-//                    finish();
-                } else if ("caen".equals(username) && "8888".equals(pin)) {
-                    Intent i = new Intent(getApplicationContext(), CAENLoggerActivity.class);
-                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-                    startActivity(i);
-                    finish();
+                    } else if ("caen".equals(username) && "8888".equals(pin)) {
+                        Intent i = new Intent(getApplicationContext(), CAENLoggerActivity.class);
+                        i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
+                        startActivity(i);
+                        finish();
                     } else if ("root".equals(username) && "8888".equals(pin)) {
                         FragmentManager fm = getSupportFragmentManager();
                         AppOptionsFragment optionsDlg = AppOptionsFragment.newInstance();
                         optionsDlg.show(fm, AppOptionsFragment.TAG);
                         fm.executePendingTransactions();
-//                } else if ("logger".equals(username) && "8888".equals(pin)) {
-//                    Intent i = new Intent(getApplicationContext(), ImportCAENLoggersToDBActivity.class);
-//                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-//                    startActivity(i);
-//                    finish();
-//                } else if ("scale".equals(username) && "8888".equals(pin)) {
-//                    Intent i = new Intent(getApplicationContext(), DiniArgeoScaleActivity.class);
-//                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-//                    startActivity(i);
-//                    finish();
-//                } else if ("linen".equals(username) && "8888".equals(pin)) {
-//                    Intent i = new Intent(getApplicationContext(), HotelMenuProgramActivity.class);
-//                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-//                    startActivity(i);
-//                    finish();
                     } else if (editable != null && editable.length() == 4) {
                         // display spinning progress bar
                         toggleProgress(Boolean.TRUE, R.string.authenticating);
@@ -246,61 +299,16 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             });
         }
 
-//            btLogin.setOnClickListener(v -> {
-//                // get credential string values
-//                final String username = etUserName.getText().toString().trim();
-//                final String pin = etPassword.getText().toString().trim();
-//
-//                if (username.isEmpty() || pin.isEmpty()) {
-//                    noCredentialsEnteredAlert();
-////                } else if ("config".equals(username) && "8888".equals(pin)) {
-////                    Intent i = new Intent(getApplicationContext(), ConfigActivity.class);
-////                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-////                    startActivity(i);
-////                    finish();
-////                } else if ("caen".equals(username) && "8888".equals(pin)) {
-////                    Intent i = new Intent(getApplicationContext(), CAENLoggerActivity.class);
-////                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-////                    startActivity(i);
-////                    finish();
-//                } else if (!username.isEmpty() && pin.isEmpty()) {
-//                    CToast(getApplicationContext(), render(R.string.empty_credentials_alert), Toast.LENGTH_LONG);
-//                } else if ("root".equals(username) && "8888".equals(pin)) {
-//                    FragmentManager fm = getSupportFragmentManager();
-//                    AppOptionsFragment optionsDlg = AppOptionsFragment.newInstance();
-//                    optionsDlg.show(fm, AppOptionsFragment.TAG);
-//                    fm.executePendingTransactions();
-////                } else if ("logger".equals(username) && "8888".equals(pin)) {
-////                    Intent i = new Intent(getApplicationContext(), ImportCAENLoggersToDBActivity.class);
-////                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-////                    startActivity(i);
-////                    finish();
-////                } else if ("scale".equals(username) && "8888".equals(pin)) {
-////                    Intent i = new Intent(getApplicationContext(), DiniArgeoScaleActivity.class);
-////                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-////                    startActivity(i);
-////                    finish();
-////                } else if ("linen".equals(username) && "8888".equals(pin)) {
-////                    Intent i = new Intent(getApplicationContext(), HotelMenuProgramActivity.class);
-////                    i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-////                    startActivity(i);
-////                    finish();
-//                } else {
-//                    // display spinning progress bar
-//                    toggleProgress(Boolean.TRUE, R.string.authenticating);
-//
-//                    // invoke login
-//                    invokeLogin(username, pin);
-//                }
-//            });
-//
-//            tvForgotYourPassword.setOnClickListener(view -> {
-//                Intent i = new Intent(getApplicationContext(), ForgotYourPinActivity.class);
-//                startActivity(i);
-//            });
-
         // Tap PoweredByLogo to reset LocalSharedPreferences
-        tapLogToResetPreferences();
+        tapLogoToResetPreferences();
+
+        // Tap Logo to access Settings activity
+        tapLogoToAccessSettingsActivity();
+
+        // SETTINGS ACCESS
+        findViewById(R.id.ivPoweredByLogo).setOnClickListener(v -> {
+            loadAndSaveConfig();
+        });
 
         // show current Site
         showCurrentSite();
@@ -321,36 +329,92 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         });
     }
 
-    public static boolean checkAndRequestPermissions(final Activity context) {
-        int extStorePermission = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        int cameraPermission = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.CAMERA);
-        int locationPermission = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+    private void assignCtrlVars() {
+        // bind the credentials controls
+        etUserName = findViewById(R.id.etUserName);
+        etPassword = findViewById(R.id.etPassword);
+        tvForgotYourPassword = findViewById(R.id.tvForgotPasswordText);
+        tvLoginWithCred = findViewById(R.id.textView2);
+        tvInvalidLicense = findViewById(R.id.tvInvalidLicense);
+    }
+
+    private void showCtrlVars(boolean show) {
+        if (!show) {
+            etUserName.setVisibility(View.INVISIBLE);
+            etPassword.setVisibility(View.INVISIBLE);
+            tvForgotYourPassword.setVisibility(View.INVISIBLE);
+            tvLoginWithCred.setVisibility(View.INVISIBLE);
+        } else {
+            etUserName.setVisibility(View.VISIBLE);
+            etPassword.setVisibility(View.VISIBLE);
+            tvForgotYourPassword.setVisibility(View.VISIBLE);
+            tvLoginWithCred.setVisibility(View.VISIBLE);
         }
-        if (extStorePermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded
-                    .add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (locationPermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded
-                    .add(Manifest.permission.ACCESS_FINE_LOCATION);
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(context, listPermissionsNeeded
-                            .toArray(new String[listPermissionsNeeded.size()]),
-                    REQUEST_ID_MULTIPLE_PERMISSIONS);
-            return false;
-        }
-        return true;
+    }
+
+    private void confirmAccessToSettings() {
+        // Store the created AlertDialog instance.
+        // Because only AlertDialog has cancel method.
+        AlertDialog alertDialog = null;
+
+        // Create a alert dialog builder.
+        final AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+
+        // Set title value.
+        builder.setTitle(R.string.type_pin_for_accessing_settings);
+
+        // Get custom login form view.
+        final View accessDeprogramFormView = getLayoutInflater().inflate(R.layout.type_pin_for_accessing_deprogram, null);
+
+        // assign variables to ui controls.
+        final EditText etPin = accessDeprogramFormView.findViewById(R.id.etPin);
+
+        // Set above view in alert dialog.
+        builder.setView(accessDeprogramFormView);
+
+        // Register button click listener.
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+            String insertedPin = etPin.getText().toString().trim();
+
+            if (TextUtils.isEmpty(insertedPin)) {
+                CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG);
+                return;
+            }
+
+            if ("8888".equals(insertedPin)) {
+                Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(i);
+                dialog.dismiss();
+            } else {
+                CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
+                return;
+            }
+        });
+
+        // Reset button click listener.
+        builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
+            // Close Alert Dialog.
+            dialog.cancel();
+        });
+
+        builder.setCancelable(true);
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void loadAndSaveConfig() {
+        ConfigViewModel appSettingsViewModel = new ConfigViewModel(this);
+        appSettingsViewModel.loadConfig();
+        appSettingsViewModel.saveConfig();
+        String siteName = pref.loadPreference("centralSite");
+        // persist selected Site to local Preferences.
+        LocalPreferences.writeValue(SelectedSiteName_Key, siteName);
+        // show current Site
+        showCurrentSite();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_ID_MULTIPLE_PERMISSIONS:
@@ -396,8 +460,8 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             // display spinning progress bar
             toggleProgress(Boolean.TRUE, R.string.syncing);
 
-            // invoke sync all.
-            invokeSyncAll();
+            SyncAllTask syncAllTask = new SyncAllTask();
+            syncAllTask.execute();
         }
     }
 
@@ -535,10 +599,10 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     }
 
     /**
-     * Tap 6 times on PoweredByLogo to clear LocalSharedPreferences
+     * Tap 6 times on PoweredByLogo to access Settings activity
      */
-    private void tapLogToResetPreferences() {
-        final ImageView ivLogo = findViewById(R.id.ivPoweredByLogo);
+    private void tapLogoToAccessSettingsActivity() {
+        final ImageView ivLogo = findViewById(R.id.ivLogoLogin);
         ivLogo.setOnClickListener(new View.OnClickListener() {
             long lastTap = System.currentTimeMillis();
             int taps = 0;
@@ -549,20 +613,36 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                 taps = (now - lastTap > 1500) ? 0 : taps;
                 taps++;
                 if (taps == 6) {
+                    confirmAccessToSettings();
+                    taps = 0;
+                }
+                lastTap = now;
+            }
+        });
+    }
+
+    /**
+     * Tap 6 times on PoweredByLogo to clear LocalSharedPreferences
+     */
+    private void tapLogoToResetPreferences() {
+        final TextView tvWelcome = findViewById(R.id.tvWelcome);
+        tvWelcome.setOnClickListener(new View.OnClickListener() {
+            long lastTap = System.currentTimeMillis();
+            int taps = 0;
+
+            @Override
+            public void onClick(View view) {
+                long now = System.currentTimeMillis();
+                taps = (now - lastTap > 1500) ? 0 : taps;
+                taps++;
+                if (taps == 6) {
                     LocalPreferences.Reset();
+                    EncryptedSharedPreferences.Reset();
                     taps = 0;
                     CToast(getApplicationContext(), render("Preferences Reset!!!"), Toast.LENGTH_SHORT);
                 }
                 lastTap = now;
             }
-        });
-
-        ivLogo.setOnLongClickListener(v -> {
-            Intent i = new Intent(getApplicationContext(), CAENLoggerActivity.class);
-            i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
-            startActivity(i);
-            finish();
-            return false;
         });
     }
 
@@ -632,6 +712,31 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                     runOnUiThread(() -> loginResult.setValue(new LoginResult("Network Error :: " + error.getLocalizedMessage())));
                 }
             }
+        }
+    }
+
+    private class SyncAllTask extends AsyncTask<Void, Integer, Void> {
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            invokeSyncAll();
+            SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
+            String token = LocalPreferences.getToken();
+            Call<List<AssetDTO>> syncNetsAsyncCall = syncService.getAssetsByNetType("Bearer " + token);
+            syncNetsAsyncCall.enqueue(new SyncAssetsCallBack(syncResult));
+            // sync only Cages assets
+            Call<List<AssetDTO>> syncCagesAsyncCall = syncService.getAssetsByCageType("Bearer " + token);
+            syncCagesAsyncCall.enqueue(new SyncAssetsCallBack(syncResult));
+            return null;
         }
     }
 }

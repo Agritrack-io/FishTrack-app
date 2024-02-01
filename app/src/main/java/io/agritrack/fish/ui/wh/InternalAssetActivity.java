@@ -35,7 +35,6 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
@@ -47,7 +46,7 @@ import io.agritrack.dialog.SimpleListDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.enums.WarehouseTxState;
-import io.agritrack.fish.api.tx.TransactionApi;
+import io.agritrack.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;

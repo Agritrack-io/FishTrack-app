@@ -753,4 +753,22 @@
     <string name="fish_temp_2">T2 ψ:</string>
     <string name="insert_temperatures">Παρακαλώ εισάγετε θερμοκρασίες.</string>
 
+    <string name="invalid_license">Μη έγκυρη άδεια. \nΠαρακαλώ επικοινωνήστε με τον διαχειριστή.</string>
+    <string name="type_pin_for_accessing_settings">Πληκτρολογήστε το PIN για να μεταβείτε στις Ρυθμίσεις</string>
+    <string name="current_station">Σταθμός</string>
+    <string name="database_name">Όνομα βάσης</string>
+    <string name="example_uuid4">d44877e2-4c97-4d74-94ac-b2ceee0a2f92</string>
+    <string name="database_configuration">Ρυθμίσεις βάσης</string>
+    <string name="port">Θύρα</string>
+    <string name="station_configuration">Ρυθμίσεις Σταθμού</string>
+    <string name="license">Άδεια</string>
+    <string name="current_license_key">Τρέχον κλειδί</string>
+    <string name="tag_prefix">Πρόθεμα</string>
+    <string name="epc_length">Μήκος EPC</string>
+    <string name="example_station">Chalandri</string>
+    <string name="encoding_scheme">Κωδικοποίηση ετικετών</string>
+    <string name="password">Κωδικός</string>
+    <string name="driver">Οδηγός</string>
+    <string name="station_incoming">Ονόματα Εισόδων Σταθμού</string>
+
 </resources>

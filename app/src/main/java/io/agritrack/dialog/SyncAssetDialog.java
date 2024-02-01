@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.UUID;
 
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.data.dto.wh.AssetDTO;

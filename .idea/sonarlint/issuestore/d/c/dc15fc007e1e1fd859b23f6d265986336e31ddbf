@@ -7,25 +7,25 @@ D
 java:S1604ü"(Make this anonymous inner class a lambda(çÄİöøÿÿÿÿ
 \
 java:S2259Æ"EA "NullPointerException" could be thrown; "epcList" is nullable here.(Ãû·½
-o	java:S116G"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(øÂõ%
-k	java:S116H"VRename this field "scanner_inv" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ıŒ¹ï
->
-java:S1659R")Declare "ivDeleteBin" on a separate line.(‡á§
+v	java:S116G"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(øÂõ%8ØŠ¯¦Õ1
+r	java:S116H"VRename this field "scanner_inv" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ıŒ¹ï8ÙŠ¯¦Õ1
+E
+java:S1659R")Declare "ivDeleteBin" on a separate line.(‡á§8çŠ¯¦Õ1
+{
+java:S1450G"_Remove the "scanner_runnable" field and declare it as a local variable in the relevant methods.(øÂõ%8êŠ¯¦Õ1
+]	java:S125I"<This block of commented-out lines of code should be removed.(†Ÿíøÿÿÿÿ8ôŠ¯¦Õ1
+X	java:S125W"<This block of commented-out lines of code should be removed.(Ì¥½Ç8õŠ¯¦Õ1
 t
-java:S1450G"_Remove the "scanner_runnable" field and declare it as a local variable in the relevant methods.(øÂõ%
-V	java:S125I"<This block of commented-out lines of code should be removed.(†Ÿíøÿÿÿÿ
-Q	java:S125W"<This block of commented-out lines of code should be removed.(Ì¥½Ç
-m
-java:S3776o"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(¨Œşÿÿÿÿ
-
-java:S5803 "xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ˆüˆ­
-B
-java:S1602¾",Remove useless curly braces around statement(…¼½p
-M
-java:S1751Ì"6Remove this "return" statement or make it conditional.(ûÁİ…
-M
-java:S1751Ø"6Remove this "return" statement or make it conditional.(ûÁİ…
-W	java:S125í"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+java:S3776o"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(¨Œşÿÿÿÿ8÷Š¯¦Õ1
+–
+java:S5803 "xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ˆüˆ­8Š‹¯¦Õ1
+I
+java:S1602¾",Remove useless curly braces around statement(…¼½p8‘‹¯¦Õ1
+T
+java:S1751Ì"6Remove this "return" statement or make it conditional.(ûÁİ…8–‹¯¦Õ1
+T
+java:S1751Ø"6Remove this "return" statement or make it conditional.(ûÁİ…8™‹¯¦Õ1
+^	java:S125í"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ8Ÿ‹¯¦Õ1
 ?	java:S108â")Either remove or fill this block of code.(Úîø›
 m
 java:S3457"Q%n should be used in place of \n to produce the platform-specific line separator.(Â¥ôğùÿÿÿÿ
@@ -34,7 +34,7 @@ java:S1854¶"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿ
 =	java:S131³""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
 E
 java:S1481¶")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ
-@
-java:S3398Ö"$Move this method into "ScanHandler".(»ş‡Àÿÿÿÿÿ
+G
+java:S3398Ö"$Move this method into "ScanHandler".(»ş‡Àÿÿÿÿÿ8Ú‹¯¦Õ1
 I
 java:S1068ª"-Remove this unused "mActivity" private field.(æÄÖ™úÿÿÿÿ

@@ -1,5 +1,5 @@
 
-g	java:S117ˆ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²¾÷Ş
+g	java:S117Š"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²¾÷Ş
 q
 java:S1104&"VMake recHarvest a static final constant or non-public and provide accessors if needed.(Û¬÷õÿÿÿÿÿ
 l
@@ -79,6 +79,6 @@ W	java:S125"<This block of commented-out lines of code should be removed.(… 
 Q	java:S125”"<This block of commented-out lines of code should be removed.(Ç¨­`
 W	java:S125â"<This block of commented-out lines of code should be removed.(¨½„¥ıÿÿÿÿ
 I
-java:S1135’"2Complete the task associated to this TODO comment.(ÈÍ–ˆ
+java:S1135”"2Complete the task associated to this TODO comment.(ÈÍ–ˆ
 =
 java:S1068$"'Remove this unused "sdf" private field.(Ô™Ğ·

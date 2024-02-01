@@ -1,0 +1,11 @@
+package io.agritrack.data.dto;
+
+import com.google.gson.annotations.SerializedName;
+
+public class ListenerConfigDTO {
+    @SerializedName("server-ip")
+    public String serverIP;
+
+    @SerializedName("server-port")
+    public Long serverPort;
+}

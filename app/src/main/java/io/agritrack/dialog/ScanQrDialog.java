@@ -1,7 +1,6 @@
 package io.agritrack.dialog;
 
 import static io.agritrack.common.LargeString.render;
-import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -9,31 +8,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.util.SparseBooleanArray;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.lifecycle.MutableLiveData;
-
-import java.util.List;
-import java.util.UUID;
 
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
-import io.agritrack.api.sync.SyncApi;
-import io.agritrack.api.sync.SyncAssetsCallBack;
-import io.agritrack.data.dto.wh.AssetDTO;
 import io.agritrack.fish.ui.FishHomeActivity;
-import io.agritrack.ui.service.LocalPreferences;
-import retrofit2.Call;
 
 public class ScanQrDialog implements AdapterView.OnItemClickListener{
     private TextView tvTitle;

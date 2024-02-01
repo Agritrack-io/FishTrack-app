@@ -6,6 +6,8 @@ import androidx.room.PrimaryKey;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.text.SimpleDateFormat;
+
 @Entity(tableName = "temperature_data")
 public class TemperatureData {
 

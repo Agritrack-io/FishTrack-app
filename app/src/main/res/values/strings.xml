@@ -773,5 +773,29 @@
     <string name="fish_temp_2">T2 f:</string>
     <string name="insert_temperatures">Please insert temperatures.</string>
 
+    <string name="invalid_license">Invalid license. \nPlease contact administrator.</string>
+    <string name="type_pin_for_accessing_settings">Type your PIN to access Settings page</string>
+    <string name="current_station">Current Station</string>
+    <string name="database_configuration">Database Configuration</string>
+    <string name="listener_service" translatable="false">Listener Service</string>
+    <string name="encoding_scheme">Encoding Scheme</string>
+    <string name="tag_prefix">Prefix</string>
+    <string name="epc_length">EPC Length</string>
+    <string name="port">Port</string>
+    <string name="default_port" translatable="false">8080</string>
+    <string name="server_ip" translatable="false">Host</string>
+    <string name="station_configuration">Station Configuration</string>
+    <string name="license">License</string>
+    <string name="current_license_key">Current Key</string>
+    <string name="example_uuid4">d44877e2-4c97-4d74-94ac-b2ceee0a2f92</string>
+    <string name="example_station">Chalandri</string>
+    <string name="database_name">Database Name</string>
+    <string name="example_station_entrance" translatable="false">Chalandri Station</string>
+    <string name="example_station_exit" translatable="false">Chalandri Station Exit</string>
+    <string name="local_ip" translatable="false">127.0.0.1</string>
+    <string name="password">Password</string>
+    <string name="driver">Driver</string>
+    <string name="station_incoming">Incoming Station Names</string>
+
 
 </resources>

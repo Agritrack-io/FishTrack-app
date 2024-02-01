@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
 
 import io.agritrack.FishTrackApplication;
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.PendindQualityMeasurementsTxCallBack;
 import io.agritrack.api.sync.PendingCorrelationTxCallBack;
 import io.agritrack.api.sync.PendingFishingTxCallBack;
@@ -92,7 +91,7 @@ import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.enums.TxStatus;
-import io.agritrack.fish.api.tx.TransactionApi;
+import io.agritrack.api.tx.TransactionApi;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.binTurnover.BinTurnoverActivity;

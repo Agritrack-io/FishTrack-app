@@ -8,6 +8,8 @@ public class EncodingSchemeDTO {
     public String description;
     public String category;
     public Integer encoding_index;
+    public String tagPrefix;
+    public Integer tagLength;
 
 
     public static EncodingSchemeEntity convert(EncodingSchemeDTO schemeDTO) {

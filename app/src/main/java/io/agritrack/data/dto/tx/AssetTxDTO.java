@@ -28,7 +28,7 @@ public class AssetTxDTO {
         //assetTxDTO.id = assetTx.id;
         assetTxDTO.asset_type = assetTx.assetType;
         assetTxDTO.state = assetTx.state;
-        assetTxDTO.rfid_items = assetTx.itemRFIDs;
+//        assetTxDTO.rfid_items = assetTx.itemRFIDs;
         assetTxDTO.source_site = assetTx.fromSite;
         assetTxDTO.target_site = assetTx.toSite;
         assetTxDTO.source_asset = assetTx.fromAsset;

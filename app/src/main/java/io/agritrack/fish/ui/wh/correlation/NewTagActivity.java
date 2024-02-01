@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.query.EnquiryApi;
 import io.agritrack.api.sync.SyncCurrentEpcsCallBack;
 import io.agritrack.caen.api.BX6100Programmer;
@@ -50,7 +49,7 @@ import io.agritrack.data.type.EpcPerDevice;
 import io.agritrack.dialog.CheckTagDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.fish.api.tx.TransactionApi;
+import io.agritrack.api.tx.TransactionApi;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.LocationAwareActivity;

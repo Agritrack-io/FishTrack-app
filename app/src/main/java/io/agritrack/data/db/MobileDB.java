@@ -74,10 +74,10 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
         TransportTransaction.class, ProcessingTransaction.class, QualityTransaction.class,
         PostPackageQualityTransaction.class, AssetTransaction.class, CorrelationTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, Customer.class, Measurement.class, TemperatureData.class},
-        version = 3, exportSchema = false)
+        version = 2, exportSchema = false)
 
-
-@TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class, StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class, UUIDConverter.class})
+@TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class,
+        StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class, UUIDConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
     private static MobileDB INSTANCE;
@@ -91,6 +91,7 @@ public abstract class MobileDB extends RoomDatabase {
                 INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                         MobileDB.class, "AGRIFISH_local.db")
                         .openHelperFactory(factory)
+//                        .setJournalMode(JournalMode.TRUNCATE)
                         .fallbackToDestructiveMigration()
                         .allowMainThreadQueries()
                         .build();

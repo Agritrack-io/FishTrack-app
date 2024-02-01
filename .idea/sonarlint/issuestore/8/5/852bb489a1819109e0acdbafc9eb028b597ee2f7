@@ -75,12 +75,12 @@ A
 java:S5411Ï"*Use the primitive boolean expression here.(Ü×ì
 S
 java:S2589‘"7Remove this expression which always evaluates to "true"(“½€¾øÿÿÿÿ
+N
+java:S2589“"7Remove this expression which always evaluates to "true"(û——
 S
 java:S2589¾"7Remove this expression which always evaluates to "true"(²Íà³şÿÿÿÿ
 S
 java:S2589À"7Remove this expression which always evaluates to "true"(‚íàËüÿÿÿÿ
-N
-java:S2589“"7Remove this expression which always evaluates to "true"(û——
 V	java:S125Q"<This block of commented-out lines of code should be removed.(æ‘±ıÿÿÿÿ
 S	java:S106`"9Replace this use of System.out or System.err by a logger.(šƒ´”şÿÿÿÿ
 Q	java:S125_"<This block of commented-out lines of code should be removed.(¼ìßÍ

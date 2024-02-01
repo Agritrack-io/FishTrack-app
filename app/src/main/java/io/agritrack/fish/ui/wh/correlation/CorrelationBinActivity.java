@@ -15,13 +15,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
@@ -30,21 +33,26 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.data.model.tx.CorrelationTransaction;
+import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
-import io.agritrack.fish.api.tx.TransactionApi;
+import io.agritrack.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
+import io.agritrack.fish.ui.bo.GenericListModel;
 import io.agritrack.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.ui.LocationAwareActivity;
+import io.agritrack.ui.adapter.FilterableAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -59,22 +67,20 @@ public class CorrelationBinActivity extends LocationAwareActivity {
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
     private Button btnScanAssetTag;
-    private ImageButton ibSyncNet;
-    private TextView tvCorrBinBarcode, tvCorrTempLoggerBarcode, tvCounter;
-    private EditText etAssetBarcode;
+    private TextView tvCorrBinBarcode, tvCorrTempLoggerBarcode;
+    private FilterableAdapter adapterAssets;
+    private SearchView svSearchAsset;
+    private RecyclerView rvBins;
     private ProgressDialog progressDialog;
     private YesNoDialogFragment confirmGPSSelectionDlg;
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
-    private long txCounter = 0;
     private SupportDialog supportDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_correlation_bin);
-
-        txCounter = 0;
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
@@ -85,6 +91,8 @@ public class CorrelationBinActivity extends LocationAwareActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+        svSearchAsset.setIconifiedByDefault(false);
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
@@ -104,34 +112,14 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
+        loadBinsFromLocalDB(Constants.ftBin);
+
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(CorrelationBinActivity.this);
             supportDialog.showDialog();
-        });
-
-        ibSyncNet.setOnClickListener(view -> {
-            stopScanner();
-            GlobalState.recWHCorrelation.assetType = Constants.ftBin;
-            GlobalState.recWHCorrelation.assetCode = etAssetBarcode.getText() != null ? etAssetBarcode.getText().toString() : null;
-            GlobalState.recWHCorrelation.type = Constants.ftDataLogger;
-
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-                return;
-            }
-            if (mLastLocation != null) {
-                recWHCorrelation.longitude = mLastLocation.getLongitude();
-                recWHCorrelation.latitude = mLastLocation.getLatitude();
-                proceedWithoutLocation = true;
-                moveToNextScreen();
-            } else {
-                FragmentManager fm = getSupportFragmentManager();
-                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            }
         });
 
         configFooter();
@@ -142,11 +130,29 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             // Update state and proceed to next
             Boolean proceed = correlate();
 
+            if (proceed) {
+                // move to next activity.
+                Intent i = new Intent(getApplicationContext(), CorrelationBinActivity.class);
+                startActivity(i);
+            }
+
             GlobalState.initWHCorrelationRecord();
-            etAssetBarcode.setText("");
             tvCorrBinBarcode.setText("");
             tvCorrTempLoggerBarcode.setText("");
-            tvCounter.setText(String.valueOf(txCounter));
+        }
+    }
+
+    private void loadBinsFromLocalDB(String assetType) {
+        // load assets for current Site and filter by asset type (if selected).
+        this.rvBins.setAdapter(null);
+        this.rvBins.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
+        if (assetsList != null && !assetsList.isEmpty()) {
+            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid, x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
+            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
+            adapterAssets.getFilter().filter("");
+            adapterAssets.notifyDataSetChanged();
+            this.rvBins.setAdapter(adapterAssets);
         }
     }
 
@@ -191,7 +197,7 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(view -> {
             stopScanner();
             GlobalState.recWHCorrelation.assetType = Constants.ftBin;
-            GlobalState.recWHCorrelation.assetCode = etAssetBarcode.getText() != null ? etAssetBarcode.getText().toString() : null;
+            GlobalState.recWHCorrelation.assetCode = adapterAssets.getSelectedValue();
             GlobalState.recWHCorrelation.type = Constants.ftDataLogger;
 
             String v = validate();
@@ -212,16 +218,33 @@ public class CorrelationBinActivity extends LocationAwareActivity {
     }
 
     private void assignCtrlVars() {
-        etAssetBarcode = findViewById(R.id.etAssetBarcode);
+        svSearchAsset = findViewById(R.id.svSearchAsset);
+        rvBins = findViewById(R.id.rvBins);
         tvCorrBinBarcode = findViewById(R.id.tvCorrBinBarcode);
         tvCorrTempLoggerBarcode = findViewById(R.id.tvCorrTempLoggerBarcode);
-        tvCounter = findViewById(R.id.tvCounter);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
-        ibSyncNet = findViewById(R.id.ibSyncNet);
         ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setVisibility(View.GONE);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);
         ivSupport = findViewById(R.id.ivSupport);
+
+        rvBins.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rvBins.setItemAnimator(new DefaultItemAnimator());
+
+        svSearchAsset.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapterAssets.getFilter().filter(newText);
+                return false;
+            }
+        });
+        svSearchAsset.setOnClickListener(view -> {
+            int kk = 0;
+        });
     }
 
     private boolean correlate() {
@@ -238,7 +261,9 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
 
-            txCounter++;
+            Asset bin = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
+            bin.rfid = recWHCorrelation.assetRFID;
+            db.assetDAO().update(bin);
 
             // sync WH Correlation Tx
             ArrayList<CorrelationTxDTO> dtos = new ArrayList<>();
@@ -305,7 +330,6 @@ public class CorrelationBinActivity extends LocationAwareActivity {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
                 tvCorrBinBarcode.setText("");
                 tvCorrTempLoggerBarcode.setText("");
-                etAssetBarcode.setText("");
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_CorrelationTx_update_failure), Toast.LENGTH_LONG));

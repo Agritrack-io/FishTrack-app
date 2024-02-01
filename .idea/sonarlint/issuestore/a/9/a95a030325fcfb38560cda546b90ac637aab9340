@@ -1,48 +1,48 @@
 
-f
-java:S1192Š"ODefine a constant instead of duplicating this literal "
-%s is missing" 3 times.(Ç”èÆ
-g
-java:S1301×"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
-N
-java:S2589š"7Remove this expression which always evaluates to "true"(»½Ãİ
-u	java:S116:"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Òîùéúÿÿÿÿ
-j
-java:S1659?"TDeclare "tvCorrTempLoggerBarcode" and all following declarations on a separate line.(ìºúÚ
-^
-java:S1659D"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
-Q
-java:S1874A"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
-Q
-java:S1874e"6Remove this use of "ProgressDialog"; it is deprecated.(±Ûêãøÿÿÿÿ
-N
-java:S1874f"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
-L
-java:S1874f"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
-K
-java:S1874f"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
-
-java:S5803z"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç
-R
-java:S1854";Remove this useless assignment to local variable "proceed".(Êµ¾–
-C
-java:S1481",Remove this unused "proceed" local variable.(Êµ¾–
-W	java:S125£"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
-N
-java:S1874é"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ
-W	java:S125"<This block of commented-out lines of code should be removed.(ƒ×ù›úÿÿÿÿ
-h
-java:S3457Š"Q%n should be used in place of \n to produce the platform-specific line separator.(Ç”èÆ
 m
-java:S3457"Q%n should be used in place of \n to produce the platform-specific line separator.(ïÎ«šşÿÿÿÿ
-m
-java:S3457’"Q%n should be used in place of \n to produce the platform-specific line separator.(äóà¿ıÿÿÿÿ
-T	java:S106š"9Replace this use of System.out or System.err by a logger.(Ü‡„åıÿÿÿÿ
+java:S1192¦"ODefine a constant instead of duplicating this literal "
+%s is missing" 3 times.(Ç”èÆ8»µøÕ1
 n
-java:S3776Ö"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ
-=	java:S131×""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
-W	java:S125î"<This block of commented-out lines of code should be removed.(ßûŒ×üÿÿÿÿ
->
-java:S3398˜"'Move this method into "SyncTxCallBack".(Àâé¼
-I
-java:S1068Ï"-Remove this unused "mActivity" private field.(ëÅÀÎşÿÿÿÿ
+java:S1301ò"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ8¾µøÕ1
+M
+java:S5411ˆ"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ8ÂµøÕ1
+U
+java:S2589£"7Remove this expression which always evaluates to "true"(»½Ãİ8‡·øÕ1
+u	java:S116E"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Òîùéúÿÿÿÿ
+P
+java:S1659I"5Declare "tvCorrTempLoggerBarcode" on a separate line.(È‹°Áøÿÿÿÿ
+^
+java:S1659P"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
+Q
+java:S1874M"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+Q
+java:S1874p"6Remove this use of "ProgressDialog"; it is deprecated.(±Ûêãøÿÿÿÿ
+N
+java:S1874q"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+L
+java:S1874q"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+K
+java:S1874q"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+^	java:S125¬"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ8¸·øÕ1
+–
+java:S5803Ï"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç8Ä·øÕ1
+J
+java:S1481ù"'Remove this unused "kk" local variable.(¨í¾ıüÿÿÿÿ8Î·øÕ1
+U
+java:S1874ƒ"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ8Ò·øÕ1
+^	java:S125"<This block of commented-out lines of code should be removed.(ƒ×ù›úÿÿÿÿ8ê·øÕ1
+o
+java:S3457¦"Q%n should be used in place of \n to produce the platform-specific line separator.(Ç”èÆ8ì·øÕ1
+t
+java:S3457ª"Q%n should be used in place of \n to produce the platform-specific line separator.(ïÎ«šşÿÿÿÿ8ğ·øÕ1
+t
+java:S3457®"Q%n should be used in place of \n to produce the platform-specific line separator.(äóà¿ıÿÿÿÿ8ó·øÕ1
+[	java:S106¶"9Replace this use of System.out or System.err by a logger.(Ü‡„åıÿÿÿÿ8õ·øÕ1
+u
+java:S3776ñ"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ8ƒ¸øÕ1
+D	java:S131ò""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ8…¸øÕ1
+^	java:S125‰"<This block of commented-out lines of code should be removed.(ßûŒ×üÿÿÿÿ8‰¸øÕ1
+E
+java:S3398´"'Move this method into "SyncTxCallBack".(Àâé¼8Š¸øÕ1
+P
+java:S1068ê"-Remove this unused "mActivity" private field.(ëÅÀÎşÿÿÿÿ8Š¸øÕ1

@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Set;
 
 import io.agritrack.R;
-import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.query.EnquiryApi;
 import io.agritrack.api.sync.RfidBatchByRfidBarcode;
 import io.agritrack.common.Filters;
