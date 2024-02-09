@@ -33,7 +33,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;

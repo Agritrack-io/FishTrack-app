@@ -1,7 +1,0 @@
-
-7
-java:S1170&"!Make this final field static too.(İÂ¾
-Y
-java:S1659%"CDeclare "etName" and all following declarations on a separate line.(ÈÛöë
-
-java:S58031"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(Ÿ¨Ÿ

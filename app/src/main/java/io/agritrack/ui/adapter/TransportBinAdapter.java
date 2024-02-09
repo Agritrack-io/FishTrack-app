@@ -47,7 +47,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.common.TesseractOCR;
 
 public class TransportBinAdapter extends RecyclerView.Adapter<TransportBinAdapter.MyViewHolder> {

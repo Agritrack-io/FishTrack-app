@@ -35,8 +35,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.List;
-
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
 import io.agritrack.fish.state.GlobalState;

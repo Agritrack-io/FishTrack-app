@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.WhMenuActivity;
@@ -29,7 +29,7 @@ import lombok.Data;
 
 public class CorrelationMenuActivity extends AppCompatActivity {
 
-    private static final int Cage_Idx = 0, Net_Idx = 1, Bin_Idx = 3, Platform_Idx = 4;
+    private static final int Cage_Idx = 0, Net_Idx = 1, Bin_Idx = 3, Cage_Net_Idx = 4;
     GridView gvCorrelationMenu;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
@@ -64,7 +64,7 @@ public class CorrelationMenuActivity extends AppCompatActivity {
                 new Option(getString(R.string.menu_title_cage), R.drawable.cage),
                 new Option(getString(R.string.menu_title_net), R.drawable.net),
                 new Option(getString(R.string.menu_title_bin), R.drawable.bin),
-                new Option(getString(R.string.platform), R.drawable.platform)
+                new Option(getString(R.string.menu_title_cage_net), R.drawable.cage_net)
         ), onItemClickListener);
         grid.setAdapter(adapter);
 

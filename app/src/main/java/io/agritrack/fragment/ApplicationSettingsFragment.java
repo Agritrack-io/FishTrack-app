@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
-import io.agritrack.databinding.FragmentApplicationSettingsBinding;
+import io.agritrack.kefalonia.databinding.FragmentApplicationSettingsBinding;
 import io.agritrack.ui.viewmodel.ConfigViewModel;
 
 public class ApplicationSettingsFragment extends Fragment {

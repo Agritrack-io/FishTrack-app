@@ -26,7 +26,7 @@ import retrofit2.http.Query;
 public interface SyncApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/site")
+    @GET("/sites")
     Call<List<SiteDTO>> getSitesByCluster(@Query("clusterId") String clusterId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
@@ -44,10 +44,6 @@ public interface SyncApi {
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/asset/{siteId}")
     Call<List<AssetDTO>> getAssetsBySite(@Path("siteId") UUID siteId, @Header("Authorization") String token);
-
-    @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/hotel/inventory/linen")
-    Call<List<AssetDTO>> getAllLinens(@Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @GET("/asset/{siteId}/{assetType}")

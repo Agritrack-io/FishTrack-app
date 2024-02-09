@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import io.agritrack.R;
-import io.agritrack.databinding.FragmentLicenseSettingsBinding;
+import io.agritrack.kefalonia.R;
+import io.agritrack.kefalonia.databinding.FragmentLicenseSettingsBinding;
 import io.agritrack.ui.viewmodel.ConfigViewModel;
 
 public class LicenseSettingsFragment extends Fragment {

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.util.Strings;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.fish.state.FishingRecord;
 
 public class InfoDialog {

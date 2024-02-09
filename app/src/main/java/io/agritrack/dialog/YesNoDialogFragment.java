@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.function.Function;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 
 public class YesNoDialogFragment extends DialogFragment {
     private final Bundle args = new Bundle();

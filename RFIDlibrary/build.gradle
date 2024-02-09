@@ -37,8 +37,11 @@ dependencies {
 
     // RFID libs
     implementation files('libs/uhfcom13_v20.2.jar')
-    implementation files('libs/uhfr_v1.9.jar')
+//    implementation files('libs/uhfr_v1.9.jar')
     implementation files('libs/ModuleAPI_J.jar')
+
+    implementation files('libs/jxl.jar')
+    implementation files('libs/UHF6_v1.9.7.jar')
 
     testImplementation 'junit:junit:4.13.2'
 }

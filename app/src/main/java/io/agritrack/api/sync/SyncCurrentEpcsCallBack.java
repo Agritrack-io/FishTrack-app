@@ -4,7 +4,7 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 
 import androidx.lifecycle.MutableLiveData;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.dto.common.ReaderDTO;
 import io.agritrack.data.type.ConfigDevice;
 import io.agritrack.ui.service.LocalPreferences;

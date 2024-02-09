@@ -10,7 +10,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 
 public class GetTempDataDialog {
     private final Activity activity;

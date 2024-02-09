@@ -2,12 +2,13 @@ package io.agritrack.data.dto.tx;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.fish.ui.bo.BinWeightRecord;
 
 public class FishingTxDTO {
-
+    public UUID id;
     public String fishing_request;
     public String platform_rfid;
     public String cage_rfid;
@@ -31,6 +32,7 @@ public class FishingTxDTO {
 
     public static FishingTxDTO convert(FishingTransaction fishingTx) {
         FishingTxDTO fishingTxDTO = new FishingTxDTO();
+        fishingTxDTO.id = fishingTx.id;
         fishingTxDTO.fishing_request = fishingTx.fishingRq;
         fishingTxDTO.platform_rfid = fishingTx.platformRFID;
         fishingTxDTO.cage_rfid = fishingTx.cageRFID;

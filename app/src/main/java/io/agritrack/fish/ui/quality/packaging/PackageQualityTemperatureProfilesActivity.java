@@ -19,7 +19,7 @@ import com.google.android.gms.common.util.Strings;
 import java.util.DoubleSummaryStatistics;
 import java.util.Map;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.LoggerDataRecord;
 import io.agritrack.ui.adapter.TemperatureProfileAdapter;

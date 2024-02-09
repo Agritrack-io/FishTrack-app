@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 
 public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdapter.MyViewHolder> {
 

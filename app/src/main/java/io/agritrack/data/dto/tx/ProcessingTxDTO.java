@@ -2,12 +2,13 @@ package io.agritrack.data.dto.tx;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.data.model.tx.ProcessingTransaction;
 
 public class ProcessingTxDTO {
 
-    public Long id;
+    public UUID id;
     public String clean_truck;
     public String species;
     public String dispatch_note;
@@ -22,7 +23,7 @@ public class ProcessingTxDTO {
 
     public static ProcessingTxDTO convert(ProcessingTransaction processing) {
         ProcessingTxDTO processingTxDto = new ProcessingTxDTO();
-
+        processingTxDto.id = processing.id;
         processingTxDto.clean_truck = processing.cleanTruck;
         processingTxDto.species = processing.species;
         processingTxDto.dispatch_note = processing.dispatchNote;

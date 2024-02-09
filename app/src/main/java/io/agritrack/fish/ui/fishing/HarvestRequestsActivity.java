@@ -42,7 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.FishingRequest;
 import io.agritrack.dialog.SelectReasonOutOfSystemFishingDialog;

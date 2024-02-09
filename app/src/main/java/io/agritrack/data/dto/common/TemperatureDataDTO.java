@@ -8,20 +8,16 @@ import io.agritrack.data.model.common.TemperatureData;
 
 public class TemperatureDataDTO {
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
-    private static SimpleDateFormat dmyFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private static SimpleDateFormat dmyFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public String timestamp;
     public Double value;
 
-    public TemperatureDataDTO(){}
+    public TemperatureDataDTO() {
+    }
 
-    public TemperatureDataDTO(String ts, Double val){
-        try {
-            Date date = sdf.parse(ts);
-            this.timestamp = dmyFormat.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    public TemperatureDataDTO(String ts, Double val) {
+        this.timestamp = parseDate(ts);
         this.value = val;
     }
 
@@ -31,5 +27,15 @@ public class TemperatureDataDTO {
         measurementsDTO.value = value.value;
 
         return measurementsDTO;
+    }
+
+    private String parseDate(String ts) {
+        try {
+            Date tts = sdf.parse(ts);
+            return dmyFormat.format(tts);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return ts;
     }
 }

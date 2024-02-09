@@ -1,6 +1,7 @@
 package io.agritrack.fish.ui.initBins;
 
 import static io.agritrack.FishTrackApplication.IsDemo;
+import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.FileUtils.saveCrashInfo2File;
 import static io.agritrack.common.LargeString.render;
@@ -37,16 +38,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.tx.TransactionApi;
 import io.agritrack.caen.common.CAENState;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.dto.BinInfoDTO;
+import io.agritrack.data.dto.tx.FishingTxDTO;
+import io.agritrack.data.model.BinInfo;
+import io.agritrack.data.model.FishingRequest;
+import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.dialog.GetTempDataDialog;
 import io.agritrack.dialog.InfoDialog;
@@ -55,19 +66,25 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.FishingRecord;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.bo.BinWeightRecord;
 import io.agritrack.fish.ui.bo.LoggerReading;
+import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
 import io.agritrack.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.rfid.SingleShotScanner;
 import io.agritrack.rfid.X9KeyReceiver;
 import io.agritrack.sound.SoundUtil;
+import io.agritrack.ui.adapter.BinLoadAdapter;
 import io.agritrack.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.caen.ILoggerDialog;
 import io.agritrack.ui.tools.caen.InitLoggerDialogDecorator;
 import io.agritrack.ui.tools.caen.LoggerDialogFragment;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class InitBinsActivity extends AppCompatActivity {
-
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
 
@@ -80,7 +97,7 @@ public class InitBinsActivity extends AppCompatActivity {
     private MobileDB db;
     private TemplateRecyclerAdapter adapterBins;
     private RecyclerView rvBins;
-    private TextView tvBinsCount;
+    private TextView tvBinsCount, tvSelectBins;
     private Button btnScanBin;
     private LoggerReading loggerReading;
     private GetTempDataDialog tempLoggerDialog;
@@ -287,11 +304,13 @@ public class InitBinsActivity extends AppCompatActivity {
         btnScanBin = findViewById(R.id.btnScanBin);
         rvBins = findViewById(R.id.rvBins);
         tvBinsCount = findViewById(R.id.tvBinsCount);
+        tvSelectBins = findViewById(R.id.tvSelectBins);
         ivDeleteBin = findViewById(R.id.ivDeleteBin1);
         ivCheckLastTemp = findViewById(R.id.ivCheckLastTemp);
         ivAddBin = findViewById(R.id.ivAddBin);
         ivSupport = findViewById(R.id.ivSupport);
         ivInfo = findViewById(R.id.ivInfo);
+        tvSelectBins.setVisibility(View.INVISIBLE);
     }
 
     private void initControlsFromState() {
@@ -335,9 +354,32 @@ public class InitBinsActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void updateState() {
-        recFishing.availBins = new LinkedList<>(adapterBins.getValues());
-        GlobalState.commitFishing(db, Boolean.FALSE);
+    private boolean updateState() {
+        try {
+            String token = LocalPreferences.getToken();
+
+            recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+
+            // persist Fishing Record data to local DB.
+            List<BinInfo> tx = GlobalState.commitBinInfoTx(db);
+
+            if (IsOnline) {
+                // sync fish tx
+                Call<List<BinInfoDTO>> syncTxAsyncCall = updService.syncBinInfoTx(BinInfoDTO.convert(tx), "Bearer " + token);
+                syncTxAsyncCall.enqueue(new InitBinsActivity.SyncTxCallBack());
+            } else {
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
+            }
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+            saveCrashInfo2File(e);
+            return false;
+        }
     }
 
     private String validate() {
@@ -351,6 +393,7 @@ public class InitBinsActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
+        tvSelectBins.setVisibility(View.VISIBLE);
         singleShot_runnable = new SingleShotScanner(mScanHandler);
         singleShot_runnable.setFilter(Filters.RFID_LOGGER);
         singleShot_runnable.startReading();
@@ -418,6 +461,49 @@ public class InitBinsActivity extends AppCompatActivity {
                         //CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);
                     }
                     break;
+            }
+        }
+    }
+
+    private boolean deleteTx(){
+        try {
+            System.out.println("About to delete bin info tx");
+            db.binInfoDAO().deleteAll();
+            return true;
+        } catch (Exception x){
+            x.printStackTrace();
+            return false;
+        }
+    }
+
+    public class SyncTxCallBack implements Callback<List<BinInfoDTO>> {
+        @Override
+        public void onResponse(Call<List<BinInfoDTO>> call, Response<List<BinInfoDTO>> response) {
+            if (response.isSuccessful() || IsDemo) {
+                deleteTx();
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
+            } else {
+                // could not update Fishing TX on backend!!!
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_fishing_tx_update_failure), Toast.LENGTH_LONG));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<BinInfoDTO>> call, Throwable error) {
+            if (error instanceof SocketTimeoutException) {
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
+            } else if (error instanceof IOException) {
+                for (int i=0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
+            } else {
+                if (call.isCanceled()) {
+                    //Call was cancelled by user
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+                } else {
+                    //Generic error handling
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                }
             }
         }
     }

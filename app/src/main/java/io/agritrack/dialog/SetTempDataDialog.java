@@ -11,7 +11,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import io.agritrack.R;
+import com.google.android.gms.common.util.Strings;
+
+import io.agritrack.kefalonia.R;
 
 public class SetTempDataDialog {
     private final Activity activity;
@@ -19,9 +21,9 @@ public class SetTempDataDialog {
     private Button btnOk;
     private Dialog dialog;
     private DataListener mDataListener;
-    private String fishT, waterT, fishT2;
+    private Double fishT, waterT, fishT2;
 
-    public SetTempDataDialog(Activity activity, String fishT, String waterT, String fishT2) {
+    public SetTempDataDialog(Activity activity, Double fishT, Double waterT, Double fishT2) {
         this.activity = activity;
         this.fishT = fishT;
         this.waterT = waterT;
@@ -30,14 +32,14 @@ public class SetTempDataDialog {
         setDialog();
         findViews();
 
-        this.tvFishT.setText(fishT == null ? "" : fishT);
-        this.tvWaterT.setText(waterT == null ? "" : waterT);
-        this.tvFishT2.setText(fishT2 == null ? "" : fishT2);
+        this.tvFishT.setText(fishT == null ? "" : String.valueOf(fishT));
+        this.tvWaterT.setText(waterT == null ? "" : String.valueOf(waterT));
+        this.tvFishT2.setText(fishT2 == null ? "" : String.valueOf(fishT2));
 
         btnOk.setOnClickListener(view -> {
-            String fishTP = this.tvFishT.getText()!=null ? this.tvFishT.getText().toString() : "";
-            String waterTP = this.tvWaterT.getText()!=null ? this.tvWaterT.getText().toString() : "";
-            String fishT2P = this.tvFishT2.getText()!=null ? this.tvFishT2.getText().toString() : "";
+            Double fishTP = !Strings.isEmptyOrWhitespace(this.tvFishT.getText().toString()) ? Double.parseDouble(this.tvFishT.getText().toString()) : 0;
+            Double waterTP = !Strings.isEmptyOrWhitespace(this.tvWaterT.getText().toString()) ? Double.parseDouble(this.tvWaterT.getText().toString()) : 0;
+            Double fishT2P = !Strings.isEmptyOrWhitespace(this.tvFishT2.getText().toString()) ? Double.parseDouble(this.tvFishT2.getText().toString()) : 0;
             if (mDataListener != null) {
                 mDataListener.onDataPassed(fishTP, waterTP, fishT2P);
             }
@@ -46,7 +48,7 @@ public class SetTempDataDialog {
     }
 
     public void setMyDialogListener(DataListener mDataListener) {
-        this.mDataListener = mDataListener;;
+        this.mDataListener = mDataListener;
     }
 
     public void showDialog() {
@@ -82,5 +84,9 @@ public class SetTempDataDialog {
         tvFishT = dialog.findViewById(R.id.tvFishT);
         tvWaterT = dialog.findViewById(R.id.tvWaterT);
         tvFishT2 = dialog.findViewById(R.id.tvFishT2);
+
+        tvFishT.setSelectAllOnFocus(true);
+        tvWaterT.setSelectAllOnFocus(true);
+        tvFishT2.setSelectAllOnFocus(true);
     }
 }

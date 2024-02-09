@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.service.RestfulCommunicationSingleton;
 import io.agritrack.ui.state.ForgotYourPinState;
 

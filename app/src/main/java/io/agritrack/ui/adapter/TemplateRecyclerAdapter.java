@@ -17,7 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 
 public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecyclerAdapter.MyViewHolder> {
     private List<String> mList;

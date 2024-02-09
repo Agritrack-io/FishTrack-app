@@ -37,7 +37,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;

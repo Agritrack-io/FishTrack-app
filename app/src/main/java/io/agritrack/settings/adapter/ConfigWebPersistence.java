@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.config.ConfigAPI;
 import io.agritrack.common.DeviceUtils;

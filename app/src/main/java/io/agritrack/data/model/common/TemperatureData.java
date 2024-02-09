@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey;
 import com.google.android.gms.common.util.Strings;
 
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 @Entity(tableName = "temperature_data")
 public class TemperatureData {
@@ -15,7 +16,7 @@ public class TemperatureData {
     public Long id;
 
     @ColumnInfo(name = "measurement_id")
-    public Long measurementId;
+    public UUID measurementId;
 
     @ColumnInfo
     public String timestamp;
@@ -26,13 +27,13 @@ public class TemperatureData {
     public TemperatureData() {
     }
 
-    public TemperatureData(Long mId, String ts, Double val) {
+    public TemperatureData(UUID mId, String ts, Double val) {
         this.measurementId = mId;
         this.timestamp = ts;
         this.value = val;
     }
 
-    public TemperatureData(Long mId, String ts, String val) {
+    public TemperatureData(UUID mId, String ts, String val) {
         this.measurementId = mId;
         this.timestamp = ts;
         this.value = !Strings.isEmptyOrWhitespace(val) && !"N/A".equalsIgnoreCase(val) ? Double.valueOf(val.replace(',', '.')) : Double.NaN;

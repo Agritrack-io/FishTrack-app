@@ -27,7 +27,7 @@ import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.scale.diniargeo.BluetoothUtils;
 import io.agritrack.scale.diniargeo.ClassREAD;
 import io.agritrack.scale.diniargeo.MCWScale;

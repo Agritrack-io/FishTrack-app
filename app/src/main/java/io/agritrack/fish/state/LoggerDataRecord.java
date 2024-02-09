@@ -18,6 +18,10 @@ public class LoggerDataRecord {
         this.data.put(assetEPC, new TemperatureModel(loggerEPC, assetEPC, productionLane, retrievedAt, values));
     }
 
+    public void addDataSetForBin(String assetEPC, Double fishT, Double waterT, Double fishT2) {
+        this.data.put(assetEPC, new TemperatureModel(getLoggerEPC(assetEPC), assetEPC, "1", getRetrieveAt(assetEPC), getValues(assetEPC), fishT, waterT, fishT2));
+    }
+
     public void addInitData(String assetEPC, Long initedAt) {
         this.loggerInitData.put(assetEPC, initedAt);
     }
@@ -33,16 +37,39 @@ public class LoggerDataRecord {
         return result;
     }
 
+    public String getLoggerEPC(String epc) {
+        String result = null;
+        if (data != null) {
+            TemperatureModel valuesforEPC = data.get(epc);
+            if (valuesforEPC != null) {
+                result = data.get(epc).loggerEPC;
+            }
+        }
+        return result;
+    }
+
+    public Long getRetrieveAt(String epc) {
+        Long result = null;
+        if (data != null) {
+            TemperatureModel valuesforEPC = data.get(epc);
+            if (valuesforEPC != null) {
+                result = data.get(epc).retrievedAt;
+            }
+        }
+        return result;
+    }
+
     public void clearData() {
         data = new HashMap<>();
     }
 
     public class TemperatureModel {
-        public final String loggerEPC;
+        public String loggerEPC;
         public String assetEPC;
         public String productionLane;
-        public final Long retrievedAt;
-        public final List<String[]> values;
+        public Double fishT, waterT, fishT2;
+        public Long retrievedAt;
+        public List<String[]> values;
 
         public TemperatureModel(String loggerEPC, String assetEPC, Long retrievedAt, List<String[]> measurements) {
             this.loggerEPC = loggerEPC;
@@ -59,9 +86,20 @@ public class LoggerDataRecord {
             this.values = measurements;
         }
 
-        @Override
-        public String toString() {
-            return String.format("{EPC:'%s', asset:'%s', retrievedAt:%s, values:%s}", assetEPC, retrievedAt, values);
+        public TemperatureModel(String loggerEPC, String assetEPC, String productionLane, Long retrievedAt, List<String[]> measurements, Double fishT, Double waterT, Double fishT2) {
+            this.loggerEPC = loggerEPC;
+            this.assetEPC = assetEPC;
+            this.productionLane = productionLane;
+            this.retrievedAt = retrievedAt;
+            this.values = measurements;
+            this.fishT = fishT;
+            this.waterT = waterT;
+            this.fishT2 = fishT2;
         }
+
+//        @Override
+//        public String toString() {
+//            return String.format("{EPC:'%s', asset:'%s', retrievedAt:%s, values:%s}", assetEPC, retrievedAt, values);
+//        }
     }
 }

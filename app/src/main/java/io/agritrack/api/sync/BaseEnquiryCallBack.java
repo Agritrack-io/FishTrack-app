@@ -2,7 +2,6 @@ package io.agritrack.api.sync;
 
 import androidx.lifecycle.MutableLiveData;
 
-import io.agritrack.R;
 import io.agritrack.data.db.MobileDB;
 import retrofit2.Call;
 import retrofit2.Callback;

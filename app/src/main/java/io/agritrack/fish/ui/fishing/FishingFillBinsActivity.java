@@ -31,10 +31,14 @@ import com.google.android.gms.common.util.Strings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.db.MobileDB;
+import io.agritrack.data.model.BinInfo;
 import io.agritrack.dialog.InfoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.FishingRecord;
@@ -65,6 +69,7 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
     private InfoDialog infoDialog;
     private boolean isClicked = true;
     private boolean showTemp = true;
+    private MobileDB db;
 
     // Bluetooth variables
     private BluetoothAdapter bluetoothAdapter = null;
@@ -85,6 +90,9 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
         // get  references of the controls
         assignCtrlVars();
 
+        // get an instance of local DB
+        db = MobileDB.getInstance(getAppContext());
+
         loadsMap = new BinLoadsMap();
 
         ArrayList<BinLoadItem> list = recFishing.availBins != null
@@ -101,76 +109,7 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
         rvWeightBatchesBin.setAdapter(adapterCatches);
         rvWeightBatchesBin.setNestedScrollingEnabled(false);
 
-//        // =================================
-//        // Adding bin load completion functionality
-//        btnFillBin.setOnClickListener(view -> {
-//            isClicked = true;
-//            if (weightOfBin != null) {
-//                BinWeightRecord.BinRecord currRec = recFishing.binWeightRecord.getRecordForEPC(currentBin);
-//                if (currRec.from != null) {
-//                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.init, currRec.from, System.currentTimeMillis() / 1000l);
-//                } else {
-//                    GlobalState.recFishing.binWeightRecord.addRecord(currentBin, weightOfBin, currRec.init, epochFrom, System.currentTimeMillis() / 1000l);
-//                }
-//                weightOfBin = null;
-//            }
-//            btnCurrentBinScan.setEnabled(true);
-//            btnCurrentBinScan.setTextColor(getColor(R.color.aqua));
-//            btnAddCatch.setEnabled(false);
-//            btnAddCatch.setTextColor(Color.DKGRAY);
-//            btnDeleteCatch.setEnabled(false);
-//            btnDeleteCatch.setTextColor(Color.DKGRAY);
-//            view.setEnabled(false);
-//            ((Button) view).setTextColor(Color.DKGRAY);
-//            epochFrom = 0;
-//        });
-//
-//        btnDeleteCatch.setOnClickListener(view -> {
-//            if (!Strings.isEmptyOrWhitespace(adapterCatches.getSelectedValue())) {
-//                // instantiate Site selection confirm dialog
-//                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
-//                confirmSiteSelectionDlg.args().putString("selectedCatch", adapterCatches.getSelectedValue());
-//                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + adapterCatches.getSelectedValue() + " kg");
-//
-//                confirmSiteSelectionDlg.onConfirm(bundle -> {
-//                    String aCatch = bundle.getString("selectedCatch");
-//                    if (aCatch != null) {
-//                        adapterCatches.removeItem(aCatch);
-//                        adapterCatches.notifyDataSetChanged();
-//
-//                        tvBinWeight.setText(loadsMap.weightOf(currentBin).toString());
-//                        tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));//TODO:: Remove
-//                        tvTotalWeightCount.setText(String.format("%s", loadsMap.totalWeight().toString()));
-//                        adapterCatches.clearSelectedValue();
-//                        btnDeleteCatch.setEnabled(false);
-//                        btnDeleteCatch.setTextColor(Color.DKGRAY);
-//                    }
-//                });
-//
-//                confirmSiteSelectionDlg.onReject(bundle -> {
-//                    adapterCatches.clearSelectedValue();
-//                    btnDeleteCatch.setEnabled(false);
-//                    btnDeleteCatch.setTextColor(Color.DKGRAY);
-//                });
-//
-//                FragmentManager fm = getSupportFragmentManager();
-//                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-//            } else {
-//                // <delete> Button was pressed without selecting a Catch first.
-//                CToast(getApplicationContext(), render("Plz select a Catch to delete!!"), Toast.LENGTH_LONG);
-//            }
-//        });
-
-        // set (any?) previously selected values to activity Controls.
         initControlsFromState();
-
-//        ivCheckLastTemp.setOnClickListener(view -> {
-//            this.stopScanner();
-//            updateState();
-//            Intent i = new Intent(getApplicationContext(), TestBinTempActivity.class);
-//            i.putExtra("FillBinActivity", true);
-//            startActivity(i);
-//        });
 
         int yellowColor = ContextCompat.getColor(this, R.color.yellow);
         int turquoiseColor = ContextCompat.getColor(this, R.color.turquoise);
@@ -294,6 +233,17 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
             tvUsedBinsCount.setText(recFishing.totalBinsUsed.toString());
         }
 
+        List<BinWeightRecord.BinRecord> bins = recFishing.binWeightRecord.getBinsData();
+
+       List<BinInfo> binInfos = db.binInfoDAO().getAll();
+
+        for (BinWeightRecord.BinRecord bin : bins) {
+            Optional<BinInfo> binInfo = binInfos.stream().filter(b -> b.rfid.equals(bin.binEPC)).findFirst();
+            if (binInfo.isPresent()) {
+                bin.init = binInfo.get().initedAt;
+                binInfos.remove(binInfo);
+            }
+        }
 
         // sometimes 'hvst.availBins' is null!!!
         int availBinsCnt = hvst.availBins != null ? hvst.availBins.size() : 0;
@@ -342,8 +292,13 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
         MobileDB db = MobileDB.getInstance(getAppContext());
 
         if (adapterCatches.getValues() != null) {
-            for (BinLoadItem binLoad : adapterCatches.getValues())
-                recFishing.binWeightRecord.addRecord(binLoad.epc, binLoad.weight, binLoad.temperature, null, null, null);
+            BinWeightRecord.BinRecord currRec = null;
+            for (BinLoadItem binLoad : adapterCatches.getValues()){
+                loadsMap.addLoad(binLoad.epc, binLoad.weight + "");
+                currRec = recFishing.binWeightRecord.getRecordForEPC(binLoad.epc);
+                epochFrom = System.currentTimeMillis() / 1000l;
+                GlobalState.recFishing.binWeightRecord.addRecord(binLoad.epc, binLoad.weight, binLoad.temperature, currRec.init, epochFrom, null);
+            }
         }
         if (tvTotalWeightCount.getText() != null) {
             recFishing.totalFishWeight = loadsMap.totalWeight();

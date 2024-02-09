@@ -1,11 +1,0 @@
-
-k
-java:S1659"PDeclare "tvNumberOfBinsCount" and all following declarations on a separate line.(éË„…ýÿÿÿÿ
-Ž
-java:S5803A"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±Ý“Ç
-V	java:S125{"<This block of commented-out lines of code should be removed.(øƒ‡²ûÿÿÿÿ
-V	java:S125"<This block of commented-out lines of code should be removed.(³åÂ°þÿÿÿÿ
-m
-java:S3457‘"Q%n should be used in place of \n to produce the platform-specific line separator.(ºèÔñüÿÿÿÿ
-g
-java:S3457–"Q%n should be used in place of \n to produce the platform-specific line separator.(×í”

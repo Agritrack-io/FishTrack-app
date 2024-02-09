@@ -8,7 +8,7 @@ import android.media.SoundPool;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 
 public class SoundUtil {
     public static final int Msg = 1, Beep = 2, Geiger2 = 3, Geiger4 = 4, Geiger6 = 5;

@@ -6,7 +6,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.AssetTxDTO;
 import io.agritrack.data.dto.tx.FishingTxDTO;

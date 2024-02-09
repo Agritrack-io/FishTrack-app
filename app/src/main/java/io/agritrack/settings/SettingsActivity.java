@@ -19,10 +19,10 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 
 import com.google.android.material.tabs.TabLayout;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.DeviceUtils;
-import io.agritrack.databinding.ActivitySettingsBinding;
+import io.agritrack.kefalonia.databinding.ActivitySettingsBinding;
 import io.agritrack.fragment.ApplicationSettingsFragment;
 import io.agritrack.fragment.LicenseSettingsFragment;
 import io.agritrack.ui.adapter.ViewPagerAdapter;

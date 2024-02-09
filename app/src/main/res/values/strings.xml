@@ -640,7 +640,7 @@
     <string name="lot_restriction_message">More than one harvest LOT returned for these totes. Please go back and select totes of a single LOT.</string>
     <string name="invalid_inputs">Invalid inputs :</string>
     <string name="laundry">LAUNDRY</string>
-    <string name="EncodeScheme_sync_completed">Encoding scheme synchronised successfuly!</string>
+    <string name="EncodeScheme_sync_completed">Encoding scheme synchronised successfully!</string>
     <string name="no_EncodeScheme_found_alert">No Encoding Scheme entry was found!</string>
     <string name="tx_saved_local_find_network_and_sync">No network found. Do not repeat the process. Please login with active network and sync.</string>
     <string name="pending_correlation_tx_upload_completed">Pending correlations successfully uploaded!</string>
@@ -666,8 +666,8 @@
     <string name="tx_successfully_updated">Tx successfully updated!!!</string>
     <string name="correlate_cage">Please correlate cage with RFID, go to Correlation Menu, and tap Cage</string>
     <string name="correlate_net">Please correlate net with RFID, go to Correlation Menu, and tap Net</string>
-    <string name="diniargeo_scale">DiniArgeo MCW Scale</string>
     <string name="offline_work">Offline work</string>
+    <string name="diniargeo_scale" translatable="false">DiniArgeo MCW Scale</string>
     <string name="expected_bins">Expected bins</string>
     <string name="received_bins_uppercase">Received bins</string>
     <string name="qualified_bins">Quality checked bins</string>
@@ -753,6 +753,7 @@
     <string name="of_net">of net</string>
     <string name="of_bin">of bin</string>
     <string name="of_platform">of platform</string>
+    <string name="of_cage_net">of cage-net</string>
     <string name="write_tag">Please write on tag following barcode: \%1$s\</string>
     <string name="contact_admin">This tag stack could not be programmed.\n Please contact the administrator!</string>
     <string name="contact_admin_for_tag">This tag could not be programmed.\n Please contact the administrator!</string>
@@ -768,9 +769,12 @@
     <string name="initialized_bins">Initialized bins</string>
     <string name="temp">Temp</string>
     <string name="other_reason">Other reason</string>
-    <string name="fish_temp">T f:</string>
-    <string name="water_temp">T w:</string>
-    <string name="fish_temp_2">T2 f:</string>
+    <string name="fish_temp_small">T f:</string>
+    <string name="water_temp_small">T w:</string>
+    <string name="fish_temp_2_small">T2 f:</string>
+    <string name="fish_temp">T fish °C:</string>
+    <string name="water_temp">T water °C:</string>
+    <string name="fish_temp_2">T2 fish °C:</string>
     <string name="insert_temperatures">Please insert temperatures.</string>
 
     <string name="invalid_license">Invalid license. \nPlease contact administrator.</string>
@@ -796,6 +800,7 @@
     <string name="password">Password</string>
     <string name="driver">Driver</string>
     <string name="station_incoming">Incoming Station Names</string>
-
+    <string name="source_site">Source site</string>
+    <string name="target_site">Target site</string>
 
 </resources>

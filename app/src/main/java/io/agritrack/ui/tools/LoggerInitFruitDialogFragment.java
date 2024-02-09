@@ -39,7 +39,7 @@ import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 

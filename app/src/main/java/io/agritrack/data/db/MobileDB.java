@@ -32,6 +32,7 @@ import io.agritrack.data.dao.iotlogger.MeasurementsDAO;
 import io.agritrack.data.dao.iotlogger.ReaderDAO;
 import io.agritrack.data.dao.iotlogger.TemperatureDataDAO;
 import io.agritrack.data.dao.tx.AssetTransactionDAO;
+import io.agritrack.data.dao.tx.AssetTxItemDAO;
 import io.agritrack.data.dao.tx.CorrelationTransactionDAO;
 import io.agritrack.data.dao.tx.FishingTransactionDAO;
 import io.agritrack.data.dao.tx.PostPackageQualityTransactionDAO;
@@ -57,6 +58,7 @@ import io.agritrack.data.model.common.Species;
 import io.agritrack.data.model.common.Supplier;
 import io.agritrack.data.model.common.TemperatureData;
 import io.agritrack.data.model.tx.AssetTransaction;
+import io.agritrack.data.model.tx.AssetTxItem;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.PostPackageQualityTransaction;
@@ -72,9 +74,9 @@ import io.agritrack.data.model.wh.RFIDInventoryItem;
         FishingRequest.class, EncodingSchemeEntity.class, CageDetails.class, BinInfo.class,
         Employee.class, Species.class, Reader.class, IotLogger.class, FishingTransaction.class,
         TransportTransaction.class, ProcessingTransaction.class, QualityTransaction.class,
-        PostPackageQualityTransaction.class, AssetTransaction.class, CorrelationTransaction.class,
+        PostPackageQualityTransaction.class, AssetTransaction.class, AssetTxItem.class, CorrelationTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, Customer.class, Measurement.class, TemperatureData.class},
-        version = 2, exportSchema = false)
+        version = 7, exportSchema = false)
 
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class,
         StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class, UUIDConverter.class})
@@ -91,7 +93,6 @@ public abstract class MobileDB extends RoomDatabase {
                 INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                         MobileDB.class, "AGRIFISH_local.db")
                         .openHelperFactory(factory)
-//                        .setJournalMode(JournalMode.TRUNCATE)
                         .fallbackToDestructiveMigration()
                         .allowMainThreadQueries()
                         .build();
@@ -136,13 +137,13 @@ public abstract class MobileDB extends RoomDatabase {
 
     public abstract AssetTransactionDAO assetTransactionDAO();
 
+    public abstract AssetTxItemDAO assetTxItemDAO();
+
     public abstract CorrelationTransactionDAO correlationTransactionDAO();
 
     public abstract EmployeeDAO employeeDAO();
 
     public abstract SpeciesDAO speciesDAO();
-
-    public abstract ReaderDAO readerDAO();
 
     public abstract IotLoggerDAO iotLoggerDAO();
 

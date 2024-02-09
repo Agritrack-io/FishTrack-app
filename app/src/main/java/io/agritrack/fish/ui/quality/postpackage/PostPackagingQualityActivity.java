@@ -34,7 +34,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Set;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.barcode.BarcodeScanService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.ui.quality.QualitySelectStepsActivity;

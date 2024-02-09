@@ -18,7 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.StringRes;
 import androidx.lifecycle.MutableLiveData;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.common.EmailService;
 
 import static io.agritrack.common.LargeString.render;

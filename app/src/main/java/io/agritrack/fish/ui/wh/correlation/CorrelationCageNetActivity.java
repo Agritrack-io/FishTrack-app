@@ -29,7 +29,8 @@ import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;

@@ -22,7 +22,7 @@ import com.google.android.gms.common.util.Strings;
 
 import io.agritrack.AgritrackProducts;
 import io.agritrack.FishTrackApplication;
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.ui.config.ConfigActivity;
 import io.agritrack.ui.service.LocalPreferences;

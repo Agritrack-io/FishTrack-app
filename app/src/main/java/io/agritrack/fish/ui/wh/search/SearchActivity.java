@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
 import io.agritrack.caen.pojo.RFIDTag;

@@ -40,10 +40,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.AssetTxDTO;
+import io.agritrack.data.dto.tx.AssetTxItemDTO;
 import io.agritrack.data.model.tx.AssetTransaction;
+import io.agritrack.data.model.tx.AssetTxItem;
 import io.agritrack.data.service.EncodingSchemeService;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.dialog.YesNoDialogFragment;
@@ -138,7 +141,7 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
             }
         });
 
-        spAssetType.setSelection(3);
+//        spAssetType.setSelection(3);
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
@@ -393,9 +396,16 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
 
             // persist WHIncomingAssetTX Record data to local DB.
             AssetTransaction tx = GlobalState.commitWHRFIDOutgoing(db);
+            List<AssetTxItem> assetItemtxs = GlobalState.commitAssetTxItem(db, tx);
 
             // sync WH Incoming Tx
-            Call<AssetTxDTO> syncTxAsyncCall = updService.syncRFIDIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
+            AssetTxDTO inventoryDto = AssetTxDTO.convert(tx);
+            List<AssetTxItemDTO> invItemsDto = AssetTxItemDTO.convert(assetItemtxs);
+            inventoryDto.rfid_items = invItemsDto.stream().map(x -> new AssetTxItemDTO(x.rfid))
+                    .collect(Collectors.groupingBy(g -> g.code, Collectors.toCollection(ArrayList::new)));
+
+            // sync WH Incoming Tx
+            Call<AssetTxDTO> syncTxAsyncCall = updService.syncRFIDIOTx(inventoryDto, "Bearer " + token);
             syncTxAsyncCall.enqueue(new SyncTxCallBack());
 
             return true;

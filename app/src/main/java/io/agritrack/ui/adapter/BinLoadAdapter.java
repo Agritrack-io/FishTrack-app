@@ -25,7 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.fish.ui.fishing.ISummaryActivity;
 
 public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHolder> {

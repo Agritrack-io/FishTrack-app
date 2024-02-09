@@ -28,7 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.login.AuthApi;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.ConfirmationDialogCommand;

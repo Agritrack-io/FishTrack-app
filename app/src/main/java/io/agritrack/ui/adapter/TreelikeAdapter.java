@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;
 import io.agritrack.data.service.EncodingSchemeService;

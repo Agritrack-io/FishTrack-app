@@ -1,16 +1,0 @@
-
-p	java:S116"[Rename this field "ACTION_SCAN_INIT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’òœµ
-k	java:S116"VRename this field "ACTION_SCAN" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÛŽŸû
-q	java:S116"\Rename this field "ACTION_CLOSE_SCAN" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ª‘¯¡
-y	java:S116"_Rename this field "ACTION_SET_SCAN_MODE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²Þ‘Äüÿÿÿÿ
-p	java:S116"[Rename this field "ACTION_SCAN_TIME" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Œ²€Ž
-7
-java:S1170"!Make this final field static too.(’òœµ
-7
-java:S1170"!Make this final field static too.(ÛŽŸû
-7
-java:S1170"!Make this final field static too.(ª‘¯¡
-<
-java:S1170"!Make this final field static too.(²Þ‘Äüÿÿÿÿ
-7
-java:S1170"!Make this final field static too.(Œ²€Ž

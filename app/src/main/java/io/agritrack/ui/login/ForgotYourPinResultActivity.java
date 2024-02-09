@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.ui.state.ForgotYourPinState;
 
 

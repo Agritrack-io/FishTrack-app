@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.ui.adapter.BinLoadAdapter;
 import io.agritrack.ui.adapter.FishCatchAdapter;
 

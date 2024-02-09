@@ -3,6 +3,7 @@ package io.agritrack.api.tx;
 import java.util.List;
 import java.util.Map;
 
+import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.common.MediaDTO;
 import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
@@ -25,16 +26,12 @@ import retrofit2.http.PUT;
 public interface TransactionApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/bin-init")
+    Call<List<BinInfoDTO>> syncBinInfoTx(@Body List<BinInfoDTO> binInfoTxs, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/fishing")
     Call<FishingTxDTO> syncFishingTx(@Body FishingTxDTO fishingTx, @Header("Authorization") String token);
-
-    @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/transport")
-    Call<TransportTxDTO> syncTransportTx(@Body TransportTxDTO transportTx, @Header("Authorization") String token);
-
-    @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/transport/signature")
-    Call<MediaDTO> syncTransportTxDriverSignature(@Body MediaDTO transportTxDriverSig, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/receipt")

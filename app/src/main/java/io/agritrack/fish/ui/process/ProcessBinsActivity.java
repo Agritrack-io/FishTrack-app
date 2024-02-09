@@ -4,6 +4,7 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recProcessing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.annotation.SuppressLint;
@@ -39,8 +40,10 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.query.EnquiryApi;
 import io.agritrack.api.sync.RfidBatchByRfidBarcode;
 import io.agritrack.common.Filters;
@@ -294,7 +297,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
     }
 
     private void initControlsFromState() {
-        ProcessingRecord prcRecord = GlobalState.recProcessing;
+        ProcessingRecord prcRecord = recProcessing;
 
         if (prcRecord.availBins != null) {
             adapterBins.setValues(prcRecord.availBins);
@@ -387,15 +390,15 @@ public class ProcessBinsActivity extends AppCompatActivity {
     }
 
     private void updateState() {
-        GlobalState.initProcessingRecord();
+//        GlobalState.initProcessingRecord();
 
-        GlobalState.recProcessing.availBins = adapterBins.getValues();
+//        recProcessing.availBins = adapterBins.getValues();
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (GlobalState.recProcessing.availBins == null || GlobalState.recProcessing.availBins.isEmpty()) {
+            if (recProcessing.availBins == null || recProcessing.availBins.isEmpty()) {
                 sb.append(String.format("\n%s is missing", "'Received bins'"));
             }
         }
@@ -452,6 +455,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
                     } else {
                         epcList.stream().forEach(x -> adapterBins.addUniqueItem(loadBinInfo(x)));
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+                        recProcessing.availBins = adapterBins.getValues();
                         adapterBins.notifyDataSetChanged();
                     }
                     tvSelectBins.setText(R.string.received_bins_uppercase);

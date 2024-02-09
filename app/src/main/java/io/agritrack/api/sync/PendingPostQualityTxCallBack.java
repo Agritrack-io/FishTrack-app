@@ -5,8 +5,7 @@ import static io.agritrack.FishTrackApplication.getAppContext;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
-
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.PostPackageQualityTxDTO;
 import io.agritrack.data.dto.tx.QualityTxDTO;

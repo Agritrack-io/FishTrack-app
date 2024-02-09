@@ -1,6 +1,11 @@
 package io.agritrack.data.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
 import io.agritrack.data.model.BinInfo;
+import io.agritrack.data.model.wh.RFIDInventoryItem;
 
 public class BinInfoDTO {
 
@@ -31,5 +36,33 @@ public class BinInfoDTO {
         }
 
         return binInfo;
+    }
+
+    public static BinInfoDTO convert(BinInfo binInfo) {
+        BinInfoDTO binInfoDTO = new BinInfoDTO();
+        binInfoDTO.rfid = binInfo.rfid;
+        binInfoDTO.lot = binInfo.lot;
+        binInfoDTO.fishing_request = binInfo.fishingRequest;
+        binInfoDTO.cage = binInfo.cage;
+        binInfoDTO.species = binInfo.species;
+        binInfoDTO.total_weight = binInfo.totalWeight;
+        binInfoDTO.farm = binInfo.farm;
+        binInfoDTO.last_update = binInfo.lastUpdate;
+        if (binInfo.initedAt != null && String.valueOf(binInfo.initedAt).length() == 10) {
+            binInfoDTO.inited_at = binInfo.initedAt * 1000L;
+        } else {
+            binInfoDTO.inited_at = binInfo.initedAt;
+        }
+
+        return binInfoDTO;
+    }
+
+    public static List<BinInfoDTO> convert(List<BinInfo> binInfoDTOs) {
+        List<BinInfoDTO> result = new ArrayList<>();
+        for (BinInfo binInfoDTO : binInfoDTOs) {
+            BinInfoDTO itemDto = convert(binInfoDTO);
+            result.add(itemDto);
+        }
+        return result;
     }
 }

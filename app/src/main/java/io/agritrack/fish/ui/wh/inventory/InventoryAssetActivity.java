@@ -40,7 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.RFIDInventoryDTO;
 import io.agritrack.data.dto.wh.RFIDInventoryItemDTO;
@@ -153,7 +154,6 @@ public class InventoryAssetActivity extends LocationAwareActivity {
             }
         });
 
-        spAssetType.setSelection(3);
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));

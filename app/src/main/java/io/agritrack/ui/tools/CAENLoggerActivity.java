@@ -42,7 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.caen.api.CAENLoggerService;
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;

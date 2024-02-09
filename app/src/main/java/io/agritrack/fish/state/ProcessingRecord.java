@@ -1,10 +1,11 @@
 package io.agritrack.fish.state;
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.ui.adapter.BinWeightCageAdapter;
 
 public class ProcessingRecord {
-    public long txKey;
+    public UUID txKey;
     public String dispatchNote;
     public String securityClip;
 
@@ -14,6 +15,7 @@ public class ProcessingRecord {
     public boolean cleanTruck = Boolean.TRUE;
     public boolean smellyTruck = Boolean.FALSE;
     public List<BinWeightCageAdapter.BinDetails> availBins;
+    public List<BinWeightCageAdapter.BinDetails> expectedBins;
     public Double longitude;
     public Double latitude;
 

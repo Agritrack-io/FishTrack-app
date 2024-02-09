@@ -125,6 +125,7 @@
                     android:adjustViewBounds="true"
                     android:background="@color/transparent"
                     android:scaleType="fitCenter"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toTopOf="@+id/lvFishingTeam"
                     app:layout_constraintEnd_toStartOf="@+id/tvPickMembers"
                     app:layout_constraintStart_toStartOf="parent"

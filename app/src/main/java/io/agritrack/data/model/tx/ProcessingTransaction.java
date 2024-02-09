@@ -1,5 +1,6 @@
 package io.agritrack.data.model.tx;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -9,6 +10,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import io.agritrack.data.converter.StringListConverter;
@@ -16,8 +18,13 @@ import io.agritrack.data.converter.StringListConverter;
 @Entity(tableName = "process_transaction")
 public class ProcessingTransaction {
 
+    public ProcessingTransaction() {
+        this.id = UUID.randomUUID();
+    }
+
     @PrimaryKey
-    public Long id;
+    @NonNull
+    public UUID id;
 
     @ColumnInfo(name = "created_at")
     public Long createdAt;

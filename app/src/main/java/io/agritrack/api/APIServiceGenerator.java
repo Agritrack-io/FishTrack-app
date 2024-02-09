@@ -14,9 +14,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APIServiceGenerator {
 
     private static final String AGRISENSE_URL = "http://agrisense.agritrack.info:5100";
-    //    private static final String BASE_URL = "http://fishtrack-be.eu-central-1.elasticbeanstalk.com";
-//    private static final String BASE_URL = "http://fishtrack-be-dev.eu-central-1.elasticbeanstalk.com/";
-    private static final String BASE_URL = "http://192.168.2.37:5000";
+    private static final String BASE_URL = "http://3.123.142.122:5000"; //production
+//    private static final String BASE_URL = "http://192.168.2.37:5000";
 //    private static final String BASE_URL = "http://192.168.150.163:5000";
 
     private static final Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());

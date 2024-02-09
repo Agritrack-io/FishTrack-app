@@ -46,7 +46,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.caen.common.CAENState;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
@@ -346,6 +346,9 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     private void updateState() {
         recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+        for (String bin : recFishing.availBins) {
+            recFishing.binWeightRecord.addRecord(bin, 0, null, null, null);
+        }
         GlobalState.commitFishing(db, Boolean.FALSE);
     }
 

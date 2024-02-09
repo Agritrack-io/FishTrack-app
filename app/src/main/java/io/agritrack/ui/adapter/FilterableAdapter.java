@@ -21,7 +21,7 @@ import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.fish.ui.bo.GenericListModel;
 
 public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.viewHolder> implements Filterable {

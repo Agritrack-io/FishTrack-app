@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 
 public class TemplateActivity extends AppCompatActivity {
 

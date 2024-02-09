@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.util.Strings;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.common.InputFilterMinMax;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.dialog.SupportDialog;

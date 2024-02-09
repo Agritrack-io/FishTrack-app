@@ -26,7 +26,8 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.upload.UploadingApi;
 import io.agritrack.common.FileUtils;
 import io.agritrack.data.db.MobileDB;

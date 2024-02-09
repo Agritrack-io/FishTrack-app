@@ -1,6 +1,6 @@
 
-k	java:S117*"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‘Ê¯Ïüÿÿÿÿ
+k	java:S117+"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‘Ê¯Ïüÿÿÿÿ
 Ž
-java:S5803&"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(Ä–¬ú
+java:S5803'"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(Ä–¬ú
 T
-java:S1128	"7Remove this unused import 'java.text.SimpleDateFormat'.(ú¡ÙÛ8Ãç¨ÿÕ1
+java:S1128	"7Remove this unused import 'java.text.SimpleDateFormat'.(ú¡ÙÛ8Ä× ñ×1

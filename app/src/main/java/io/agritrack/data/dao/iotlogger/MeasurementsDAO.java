@@ -10,6 +10,7 @@ import androidx.room.Transaction;
 import androidx.room.Update;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.data.model.common.Measurement;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
@@ -23,7 +24,7 @@ public interface MeasurementsDAO {
 
     @Transaction
     @Query("SELECT * from measurements where id=:measurementsId LIMIT 1")
-    TemperatureTimeSeries getById(Long measurementsId);
+    TemperatureTimeSeries getById(UUID measurementsId);
 
     @Transaction
     @Query("SELECT * from measurements where asset_rfid=:epc order by retrieved_at desc LIMIT 1")
@@ -35,9 +36,6 @@ public interface MeasurementsDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Measurement... measurements);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(Measurement measurement);
 
     @Delete
     void delete(Measurement measurement);

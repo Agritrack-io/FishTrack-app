@@ -34,7 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.query.EnquiryApi;
 import io.agritrack.api.sync.SyncCurrentEpcsCallBack;
 import io.agritrack.caen.api.BX6100Programmer;

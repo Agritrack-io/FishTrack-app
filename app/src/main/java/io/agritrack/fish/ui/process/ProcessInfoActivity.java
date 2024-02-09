@@ -23,7 +23,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.dialog.PhotoDialog;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
@@ -34,7 +34,7 @@ import io.agritrack.ui.service.LocalPreferences;
 public class ProcessInfoActivity extends AppCompatActivity {
 
 
-    private TextView etDispatchNote, etSecurityClip;
+    private TextView etDispatchNote;
     private SwitchCompat swCleanTruck, swSmell;
 
 
@@ -86,7 +86,6 @@ public class ProcessInfoActivity extends AppCompatActivity {
 
     private void assignCtrlVars() {
         etDispatchNote = findViewById(R.id.etDispatchNote);
-        etSecurityClip = findViewById(R.id.etSecurityClipNum);
         swCleanTruck = findViewById(R.id.swCleanTruck);
         swSmell = findViewById(R.id.swSmell);
         ivSupport = findViewById(R.id.ivSupport);
@@ -99,10 +98,6 @@ public class ProcessInfoActivity extends AppCompatActivity {
             etDispatchNote.setText(prcTx.dispatchNote);
         }
 
-        if (!Strings.isEmptyOrWhitespace(prcTx.securityClip)) {
-            etSecurityClip.setText(prcTx.securityClip);
-        }
-
         swCleanTruck.setChecked(prcTx.cleanTruck);
         swSmell.setChecked(prcTx.smellyTruck);
     }
@@ -112,9 +107,6 @@ public class ProcessInfoActivity extends AppCompatActivity {
 
         if (etDispatchNote.getText() != null) {
             processingRecord.dispatchNote = etDispatchNote.getText().toString();
-        }
-        if (etSecurityClip.getText() != null) {
-            processingRecord.securityClip = etSecurityClip.getText().toString();
         }
 
         processingRecord.cleanTruck = swCleanTruck.isChecked();
@@ -128,10 +120,6 @@ public class ProcessInfoActivity extends AppCompatActivity {
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.dispatchNote)) {
                 sb.append(String.format("\n%s is missing", "'Dispatch note'"));
-            }
-
-            if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.securityClip)) {
-                sb.append(String.format("\n%s is missing", "'Security clip number'"));
             }
         }
 

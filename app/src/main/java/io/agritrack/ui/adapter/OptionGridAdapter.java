@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 
 public class OptionGridAdapter<T extends OptionGridAdapter.IDrawableWithText> extends BaseAdapter {
 

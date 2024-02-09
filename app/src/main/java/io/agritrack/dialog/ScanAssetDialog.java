@@ -28,7 +28,7 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.wh.Asset;

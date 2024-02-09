@@ -14,7 +14,7 @@ public class AssetTxDTO {
     public String target_site;
     public String source_asset;
     public String target_asset;
-    public Map<String, List<String>> rfid_items;
+    public Map<String, List<AssetTxItemDTO>> rfid_items;
     public String state;
     public String site;
     public String user;

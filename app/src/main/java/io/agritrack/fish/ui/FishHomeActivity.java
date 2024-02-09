@@ -38,7 +38,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import io.agritrack.FishTrackApplication;
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
+import io.agritrack.api.sync.EncodingSchemeCallBack;
 import io.agritrack.api.sync.PendindQualityMeasurementsTxCallBack;
 import io.agritrack.api.sync.PendingCorrelationTxCallBack;
 import io.agritrack.api.sync.PendingFishingTxCallBack;
@@ -65,6 +67,7 @@ import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.AppUserDTO;
 import io.agritrack.data.dto.BinInfoDTO;
 import io.agritrack.data.dto.CageDetailsDTO;
+import io.agritrack.data.dto.EncodingSchemeDTO;
 import io.agritrack.data.dto.FishingRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
 import io.agritrack.data.dto.common.CustomerDTO;
@@ -207,6 +210,7 @@ public class FishHomeActivity extends AppCompatActivity {
 
                 switch (mi.getLoc()) {
                     case InitBins_Idx:
+                        GlobalState.initFishingRecord();
                         i = new Intent(appCtx, InitBinsActivity.class);
                         break;
                     case Fishing_Idx:
@@ -233,7 +237,8 @@ public class FishHomeActivity extends AppCompatActivity {
                             if (openTx == null) {
                                 openTx = new FishingTransaction();
                                 openTx.txStatus = TxStatus.PENDING;
-                                fishingRecord.txKey = db.fishingTransactionDAO().insert(openTx);
+                                db.fishingTransactionDAO().insert(openTx);
+                                fishingRecord.txKey = openTx.id;
                             } else {
                                 fishingRecord.txKey = openTx.id;
                             }
@@ -315,12 +320,8 @@ public class FishHomeActivity extends AppCompatActivity {
 
     private void invokeUploadPendingAll() {
         try {
-            SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
             TransactionApi pendingTxSvc = APIServiceGenerator.createAPI(TransactionApi.class);
             String token = LocalPreferences.getToken();
-            UUID siteId = LocalPreferences.getCurrentSiteId();
-            String clusterId = LocalPreferences.getCurrentClusterId();
-
 
             // select all pending fishing TXs
             List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAllCompleted();
@@ -328,29 +329,6 @@ public class FishHomeActivity extends AppCompatActivity {
                 for (FishingTransaction fishingTX : fishingTXs) {
                     Call<FishingTxDTO> fishingTxAsyncCall = pendingTxSvc.syncFishingTx(FishingTxDTO.convert(fishingTX), "Bearer " + token);
                     fishingTxAsyncCall.enqueue(new PendingFishingTxCallBack(this.syncResult));
-                }
-            }
-
-            // select all pending transport TXs
-            List<TransportTransaction> transportTXs = db.transportTransactionDAO().getAll();
-            if (!transportTXs.isEmpty()) {
-                for (TransportTransaction transportTX : transportTXs) {
-                    // driver signature
-                    Call<MediaDTO> syncDriverSigAsyncCall = pendingTxSvc.syncTransportTxDriverSignature(MediaDTO.convert(transportTX), "Bearer " + token);
-                    syncDriverSigAsyncCall.enqueue(new Callback<MediaDTO>() {
-                        @Override
-                        public void onResponse(Call<MediaDTO> call, Response<MediaDTO> response) {
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<MediaDTO> call, Throwable t) {
-
-                        }
-                    });
-                    // transport
-                    Call<TransportTxDTO> transportTxAsyncCall = pendingTxSvc.syncTransportTx(TransportTxDTO.convert(transportTX), "Bearer " + token);
-                    transportTxAsyncCall.enqueue(new PendingTransportTxCallBack(this.syncResult));
                 }
             }
 
@@ -369,15 +347,6 @@ public class FishHomeActivity extends AppCompatActivity {
                 for (QualityTransaction qualityTX : qualityTXs) {
                     Call<QualityTxDTO> qualityTxAsyncCall = pendingTxSvc.syncQualityTx(QualityTxDTO.convert(qualityTX), "Bearer " + token);
                     qualityTxAsyncCall.enqueue(new PendingQualityTxCallBack(this.syncResult));
-                }
-            }
-
-            // select all pending post quality TXs
-            List<PostPackageQualityTransaction> postQualityTXs = db.postPackageQualityTransactionDAO().getAll();
-            if (!postQualityTXs.isEmpty()) {
-                for (PostPackageQualityTransaction postQualityTX : postQualityTXs) {
-                    Call<PostPackageQualityTxDTO> postQualityTxAsyncCall = pendingTxSvc.syncPostPackageQualityTx(PostPackageQualityTxDTO.convert(postQualityTX), "Bearer " + token);
-                    postQualityTxAsyncCall.enqueue(new PendingPostQualityTxCallBack(this.syncResult));
                 }
             }
 
@@ -474,9 +443,9 @@ public class FishHomeActivity extends AppCompatActivity {
             Call<List<IotLoggerDTO>> syncIOTLoggersAsyncCall = syncService.getIOTLoggersBySiteId(siteId, "Bearer " + token);
             syncIOTLoggersAsyncCall.enqueue(new SyncIOTLoggersCallBack(this.syncResult));
 
-            // sync Food sku
-            Call<List<FoodSkuDTO>> syncFoodSkuAsyncCall = syncService.getFoodSkus("Bearer " + token);
-            syncFoodSkuAsyncCall.enqueue(new SyncFoodSkuCallBack(this.syncResult));
+            // sync Encoding scheme info
+            Call<List<EncodingSchemeDTO>> syncEncodingShemeAsyncCall = syncService.getEncodingScheme("Bearer " + token);
+            syncEncodingShemeAsyncCall.enqueue(new EncodingSchemeCallBack(this.syncResult));
 
             //Traverse the crash folder in the sd card to get each file
             File file = new File(FishHomeActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "agriLogs");

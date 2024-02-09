@@ -3,6 +3,7 @@ package io.agritrack.fish.state;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.common.FishTrackUtils;
 import io.agritrack.data.model.tx.FishingTransaction;
@@ -12,7 +13,7 @@ import io.agritrack.fish.ui.bo.BinWeightRecord;
 public class FishingRecord {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
 
-    public long txKey;
+    public UUID txKey;
     public String fishingRq;
     public String requesterName;
     public Double reqWeight;

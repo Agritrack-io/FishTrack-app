@@ -3,6 +3,7 @@ package io.agritrack.fish.ui.wh.outgoing;
 import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recWHOutgoing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.content.Intent;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.common.Constants;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.Site;
@@ -143,6 +144,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
     private Map<String, List<SiteInfoRS>> fillAvramarData() {
         Map<String, List<SiteInfoRS>> result = new HashMap<>();
         List<Site> allSites = db.siteDAO().getAll();
+        allSites.removeIf(s -> s.id.equals(LocalPreferences.getCurrentSiteId()));
         if (allSites != null && !allSites.isEmpty()) {
             result = allSites.stream().filter(x -> x.siteLevel == 3).map(s -> new SiteInfoRS(s.name, s.description, s.lvl2)).collect(Collectors.groupingBy(SiteInfoRS::getCode));
         }
@@ -172,12 +174,12 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
 
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        if (checkedId == R.id.tbSite) {
+        /*if (checkedId == R.id.tbSite) {
             siteDialog = new SimpleListDialog(OutgoingStartActivity.this, fillSubSiteData(), fromSiteSelection, R.string.select_subsite);
             siteDialog.showDialog();
             selectedToggleButtonFrom = Constants.ftSite;
-        } else if (checkedId == R.id.tbAssetFrom) {
-            GlobalState.recWHOutgoing.fromSite = Constants.ftAsset;
+        } else */if (checkedId == R.id.tbAssetFrom) {
+            recWHOutgoing.fromSite = Constants.ftAsset;
             tvOutgoingFrom.setText(Constants.ftAsset);
             selectedToggleButtonFrom = Constants.ftAsset;
         } else if (checkedId == R.id.tbAvramar) {
@@ -189,7 +191,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
             customerDialog.showDialog();
             selectedToggleButtonTo = Constants.ftSupplier;
         } else if (checkedId == R.id.tbOutAssetTo) {
-            GlobalState.recWHOutgoing.toSite = Constants.ftAsset;
+            recWHOutgoing.toSite = Constants.ftAsset;
             tvOutgoingTo.setText(Constants.ftAsset);
             selectedToggleButtonTo = Constants.ftAsset;
         }
@@ -201,7 +203,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
     }
 
     private WHTxRecord updateState() {
-        WHTxRecord whOutgoingRecord = GlobalState.recWHOutgoing;
+        WHTxRecord whOutgoingRecord = recWHOutgoing;
 
         if (!Strings.isEmptyOrWhitespace(selectedOutgoingItemType)) {
             whOutgoingRecord.outgoingItemType = selectedOutgoingItemType;
@@ -228,15 +230,15 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.outgoingItemType)) {
-                sb.append(String.format("\n%s is missing", "'Item type'"));
-            }
+//            if (Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.outgoingItemType)) {
+//                sb.append(String.format("\n%s is missing", "'Item type'"));
+//            }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.toSite)) {
+            if (Strings.isEmptyOrWhitespace(recWHOutgoing.toSite)) {
                 sb.append(String.format("\n%s is missing", "'Target site'"));
             }
 
-            if (Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.fromSite)) {
+            if (Strings.isEmptyOrWhitespace(recWHOutgoing.fromSite)) {
                 sb.append(String.format("\n%s is missing", "'Source site'"));
             }
         }
@@ -246,35 +248,40 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
 
     private void initControlsFromState() {
 
-        if (Constants.ftSite.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonFrom)) {
+        selectedToggleButtonFrom = Constants.ftSite;
+        tgOutgoingSource.setCheckedStateForView(R.id.tbSite, true);
+        recWHOutgoing.fromSite = LocalPreferences.getCurrentSiteName();
+        tgOutgoingSource.setEnabled(false);
+
+        if (Constants.ftSite.equalsIgnoreCase(recWHOutgoing.selectedToggleButtonFrom)) {
             tgOutgoingSource.setCheckedStateForView(R.id.tbSite, true);
-            siteDialog.dismiss();
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonFrom)) {
+//            siteDialog.dismiss();
+        } else if (Constants.ftAsset.equalsIgnoreCase(recWHOutgoing.selectedToggleButtonFrom)) {
             tgOutgoingSource.check(R.id.tbAssetFrom);
         }
 
-        if (Constants.ftAvramar.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
+        if (Constants.ftAvramar.equalsIgnoreCase(recWHOutgoing.selectedToggleButtonTo)) {
             tgOutgoingDestination.setCheckedStateForView(R.id.tbAvramar, true);
             avramarDialog.dismiss();
-        } else if (Constants.ftCustomer.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
+        } else if (Constants.ftCustomer.equalsIgnoreCase(recWHOutgoing.selectedToggleButtonTo)) {
             tgOutgoingDestination.setCheckedStateForView(R.id.tbCustomer, true);
             customerDialog.dismiss();
-        } else if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.selectedToggleButtonTo)) {
+        } else if (Constants.ftAsset.equalsIgnoreCase(recWHOutgoing.selectedToggleButtonTo)) {
             tgOutgoingDestination.check(R.id.tbOutAssetTo);
         }
 
-        if (Constants.ftAsset.equalsIgnoreCase(GlobalState.recWHOutgoing.outgoingItemType)) {
+        if (Constants.ftAsset.equalsIgnoreCase(recWHOutgoing.outgoingItemType)) {
             tgOutgoingItemType.check(R.id.tbAsset);
-        } else if (Constants.ftConsumable.equalsIgnoreCase(GlobalState.recWHOutgoing.outgoingItemType)) {
+        } else if (Constants.ftConsumable.equalsIgnoreCase(recWHOutgoing.outgoingItemType)) {
             tgOutgoingItemType.check(R.id.tbConsumable);
         }
 
-        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.fromSite)) {
-            tvOutgoingFrom.setText(GlobalState.recWHOutgoing.fromSite);
+        if (!Strings.isEmptyOrWhitespace(recWHOutgoing.fromSite)) {
+            tvOutgoingFrom.setText(recWHOutgoing.fromSite);
         }
 
-        if (!Strings.isEmptyOrWhitespace(GlobalState.recWHOutgoing.toSite)) {
-            tvOutgoingTo.setText(GlobalState.recWHOutgoing.toSite);
+        if (!Strings.isEmptyOrWhitespace(recWHOutgoing.toSite)) {
+            tvOutgoingTo.setText(recWHOutgoing.toSite);
         }
     }
 }

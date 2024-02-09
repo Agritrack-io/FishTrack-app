@@ -1,5 +1,5 @@
 package io.agritrack.dialog;
 
 public interface DataListener {
-    void onDataPassed(String fishT, String waterT, String fishT2);
+    void onDataPassed(Double fishT, Double waterT, Double fishT2);
 }

@@ -641,6 +641,25 @@
     <string name="lot_restriction">Λανθασμένο LOT</string>
     <string name="lot_restriction_message">Περισσότερα του ενός LOT βρέθηκαν για τα τελάρα που σκανάρατε. Παρακαλώ πηγαίντε πίσω και σκανάρετε τελάρα από ένα LOT.</string>
     <string name="invalid_inputs">Μη έγκυρα δεδομένα :</string>
+    <string name="laundry">LAUNDRY</string>
+    <string name="EncodeScheme_sync_completed">Encoding scheme συγχρονίστηκε επιτυχώς!</string>
+    <string name="no_EncodeScheme_found_alert">No Encoding Scheme entry was found!</string>
+    <string name="pending_correlation_tx_upload_completed">Pending correlations συγχρονίστηκε επιτυχώς!</string>
+    <string name="pending_correlation_tx_upload_failure_alert">Αποτυχία συσχρονισμού pending correlations!</string>
+    <string name="pending_fishing_tx_upload_failure_alert">Αποτυχία συσχρονισμού pending fishing tx!</string>
+    <string name="pending_fishing_tx_upload_completed">Pending fishing tx συγχρονίστηκε επιτυχώς!</string>
+    <string name="pending_transport_tx_upload_failure_alert">Αποτυχία συσχρονισμού pending transport tx!</string>
+    <string name="pending_transport_tx_upload_completed">Pending transport tx συγχρονίστηκε επιτυχώς!</string>
+    <string name="pending_process_tx_upload_failure_alert">Αποτυχία συσχρονισμού pending process tx!</string>
+    <string name="pending_process_tx_upload_completed">Pending process tx συγχρονίστηκε επιτυχώς!</string>
+    <string name="pending_quality_tx_upload_failure_alert">Αποτυχία συσχρονισμού pending quality tx!</string>
+    <string name="pending_quality_tx_upload_completed">Pending quality tx συγχρονίστηκε επιτυχώς!</string>
+    <string name="pending_measurement_tx_upload_failure_alert">Αποτυχία συσχρονισμού pending measurement tx!</string>
+    <string name="pending_measurement_tx_upload_completed">Pending measurement tx συγχρονίστηκε επιτυχώς!</string>
+    <string name="pending_asset_tx_upload_failure_alert">Αποτυχία συσχρονισμού pending asset tx!</string>
+    <string name="pending_asset_tx_upload_completed">Pending asset tx συγχρονίστηκε επιτυχώς!</string>
+    <string name="bt_not_supported">Bluetooth not supported!</string>
+    <string name="offline_work">Εργασία εκτός σύνδεσης</string>
     <string name="tx_saved_local_find_network_and_sync">Δεν βρέθηκε δίκτυο. Μην επαναλάβετε τη διαδικασία. Μπείτε στην εφαρμογή με κάλυψη δικτύου και συγχρονίστε.</string>
 
     <string name="no_logger_found_linked_to_bin">Δε βρέθηκε συσχετισμένο καταγραφικό θερμοκρασίας με αυτή τη βούτα! Παρακαλώ συσχετίστε!</string>
@@ -684,6 +703,7 @@
     <string name="of_net">διχτυού</string>
     <string name="of_bin">βούτας</string>
     <string name="of_platform">πλατφόρμας</string>
+    <string name="of_cage_net">κλωβού-διχτυού</string>
     <string name="error_reading_logger">Σφάλμα στο διάβασμα…\nΠατήστε ξανά!</string>
     <string name="failed_logger_press_again">Σφάλμα. Πατήστε ξανά.</string>
     <string name="error_resetting_logger">Σφάλμα στη διαγραφή…\nΠατήστε ξανά!</string>
@@ -748,9 +768,12 @@
     <string name="initialized_bins">Αρχικοποιημένες βούτες</string>
     <string name="temp">Θερμ.</string>
     <string name="other_reason">Άλλος λόγος</string>
-    <string name="fish_temp">T ψ:</string>
-    <string name="water_temp">T ν:</string>
-    <string name="fish_temp_2">T2 ψ:</string>
+    <string name="fish_temp_small">T ψ:</string>
+    <string name="water_temp_small">T ν:</string>
+    <string name="fish_temp_2_small">T2 ψ:</string>
+    <string name="fish_temp">T ψαριού °C:</string>
+    <string name="water_temp">T νερού °C:</string>
+    <string name="fish_temp_2">T2 ψαριού °C:</string>
     <string name="insert_temperatures">Παρακαλώ εισάγετε θερμοκρασίες.</string>
 
     <string name="invalid_license">Μη έγκυρη άδεια. \nΠαρακαλώ επικοινωνήστε με τον διαχειριστή.</string>
@@ -770,5 +793,7 @@
     <string name="password">Κωδικός</string>
     <string name="driver">Οδηγός</string>
     <string name="station_incoming">Ονόματα Εισόδων Σταθμού</string>
+    <string name="source_site">Τοποθεσία</string>
+    <string name="target_site">Προορισμός</string>
 
 </resources>

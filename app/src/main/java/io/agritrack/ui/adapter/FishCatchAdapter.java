@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 
 public class FishCatchAdapter extends RecyclerView.Adapter<FishCatchAdapter.MyViewHolder> {
 

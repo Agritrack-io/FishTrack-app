@@ -1,5 +1,7 @@
 package io.agritrack.ui.adapter;
 
+import static io.agritrack.fish.state.GlobalState.recLoggerData;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -30,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.model.BinInfo;
 import io.agritrack.dialog.DataListener;
 import io.agritrack.dialog.SetTempDataDialog;
@@ -44,8 +46,8 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
     private LayoutInflater mLayoutInflater = null;
     private ArrayList<String> listOfEPCs = new ArrayList<>();
     private double highT, avgT, lowT;
-    private String cageCode, fishT, waterT, fishT2;
-    private Double weight;
+    private String cageCode;
+    private Double weight, fishT, waterT, fishT2;
     private Map<String, LoggerDataRecord.TemperatureModel> mapOfData;
     private SetTempDataDialog setTempDialog;
     private DataListener mListener;
@@ -97,9 +99,14 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
                 if (mLayoutInflater.getContext() instanceof BinTurnoverActivity) {
                     holder.tvCageCode.setText(cageCode);
                     holder.tvWeight.setText(String.valueOf(weight));
-                    holder.tvFish.setText(fishT);
-                    holder.tvWater.setText(waterT);
-                    holder.tvFish2.setText(fishT2);
+                    holder.tvFish.setText(fishT != null ? String.valueOf(fishT) : "");
+                    holder.tvWater.setText(waterT != null ? String.valueOf(waterT) : "");
+                    holder.tvFish2.setText(fishT2 != null ? String.valueOf(fishT2) : "");
+                    List<String[]> values = recLoggerData.getValues(key);
+
+                    if (values != null) {
+                        recLoggerData.addDataSetForBin(key, fishT, waterT, fishT2);
+                    }
                 }
                 holder.tvHigh.setText(String.format("%.2f\u2103", _highT));
                 holder.tvAvg.setText(String.format("%.2f\u2103", _avgT));
@@ -162,7 +169,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
     }
 
     @Override
-    public void onDataPassed(String fishT, String waterT, String fishT2) {
+    public void onDataPassed(Double fishT, Double waterT, Double fishT2) {
         // Handle the passed data here
         this.fishT = fishT;
         this.waterT = waterT;
@@ -242,7 +249,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             temperatureChart.setDragEnabled(false);
             temperatureChart.getLegend().setEnabled(false);
             temperatureChart.setScaleEnabled(true);
-            temperatureChart.setScaleYEnabled(false);
+            temperatureChart.setScaleYEnabled(true);
             temperatureChart.setScaleXEnabled(true);
             temperatureChart.getXAxis().setEnabled(false);
             temperatureChart.getLineData().setDrawValues(false);

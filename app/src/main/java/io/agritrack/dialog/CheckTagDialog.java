@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import androidx.core.text.HtmlCompat;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.fish.ui.wh.correlation.ExistingTagActivity;
 
 public class CheckTagDialog {

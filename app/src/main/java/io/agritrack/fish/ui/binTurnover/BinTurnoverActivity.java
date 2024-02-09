@@ -52,7 +52,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncBinInfo;
 import io.agritrack.caen.common.CAENState;
@@ -67,6 +68,7 @@ import io.agritrack.data.repo.BinInfoRepository;
 import io.agritrack.data.repo.IFishTrackRepository;
 import io.agritrack.data.repo.MeasurementRepository;
 import io.agritrack.data.repo.TemperatureDataRepository;
+import io.agritrack.dialog.DataListener;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.api.tx.TransactionApi;
 import io.agritrack.fish.state.GlobalState;
@@ -115,9 +117,11 @@ public class BinTurnoverActivity extends AppCompatActivity {
     private int attemptsToGetEpcList = 0;
     private int attemptsToScanBinOutOfLot = 0;
     private LoggerDataRecord.TemperatureModel data;
+    private long retrievedAt;
     private Spinner spProductionLine;
     private ImageButton ibShowValues;
     private String loggerEPC, binEPC;
+    private String fishT, waterT, fishT2;
     private ImageView ivSupport,ivBack;
     private Button btnScanBin;
     private SupportDialog supportDialog;
@@ -245,8 +249,8 @@ public class BinTurnoverActivity extends AppCompatActivity {
                     }
                 } else if (READ_VALUES.equals(rs.state)) {
                     if (!CollectionUtils.isEmpty(rs.samples)) {
-                        long now = System.currentTimeMillis();
-                        recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), now, rs.samples);
+                        retrievedAt = System.currentTimeMillis();
+                        recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), retrievedAt, rs.samples);
                         GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
                         fillTemperatureProfileAdapter();
                         ivBack.setVisibility(View.INVISIBLE);
@@ -637,6 +641,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
 
                 recLoggerData.clearData();
                 tempDataRepo.removeAll(db);
+                db.measurementsDAO().deleteAll();
                 measRepo.removeAll(db);
                 binInfoRepo.removeOneBin(db,tmpBin);
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));

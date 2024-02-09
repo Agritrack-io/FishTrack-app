@@ -20,6 +20,7 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -45,6 +46,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.android.gms.common.util.Strings;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -53,24 +55,59 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import io.agritrack.AgritrackProducts;
 import io.agritrack.FishTrackApplication;
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.api.login.AuthApi;
 import io.agritrack.api.sync.EncodingSchemeCallBack;
+import io.agritrack.api.sync.PendindQualityMeasurementsTxCallBack;
+import io.agritrack.api.sync.PendingCorrelationTxCallBack;
+import io.agritrack.api.sync.PendingFishingTxCallBack;
+import io.agritrack.api.sync.PendingProcessTxCallBack;
+import io.agritrack.api.sync.PendingQualityTxCallBack;
 import io.agritrack.api.sync.SyncApi;
 import io.agritrack.api.sync.SyncAssetsCallBack;
+import io.agritrack.api.sync.SyncBinInfo;
+import io.agritrack.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.api.sync.SyncClusterSitesCallBack;
+import io.agritrack.api.sync.SyncCustomersCallBack;
+import io.agritrack.api.sync.SyncEmployeesCallBack;
+import io.agritrack.api.sync.SyncFishingRequestCallBack;
+import io.agritrack.api.sync.SyncFoodSkuCallBack;
+import io.agritrack.api.sync.SyncIOTLoggersCallBack;
+import io.agritrack.api.sync.SyncSpeciesCallBack;
+import io.agritrack.api.sync.SyncSuppliersCallBack;
 import io.agritrack.api.sync.SyncUsersCallBack;
+import io.agritrack.api.tx.TransactionApi;
 import io.agritrack.common.DeviceUtils;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.AppUserDTO;
+import io.agritrack.data.dto.BinInfoDTO;
+import io.agritrack.data.dto.CageDetailsDTO;
 import io.agritrack.data.dto.EncodingSchemeDTO;
+import io.agritrack.data.dto.FishingRequestDTO;
 import io.agritrack.data.dto.SiteDTO;
+import io.agritrack.data.dto.common.CustomerDTO;
+import io.agritrack.data.dto.common.EmployeeDTO;
+import io.agritrack.data.dto.common.IotLoggerDTO;
+import io.agritrack.data.dto.common.SpeciesDTO;
+import io.agritrack.data.dto.common.SupplierDTO;
+import io.agritrack.data.dto.common.TemperatureTimeSeriesDTO;
+import io.agritrack.data.dto.tx.CorrelationTxDTO;
+import io.agritrack.data.dto.tx.FishingTxDTO;
+import io.agritrack.data.dto.tx.ProcessingTxDTO;
+import io.agritrack.data.dto.tx.QualityTxDTO;
 import io.agritrack.data.dto.wh.AssetDTO;
+import io.agritrack.data.dto.wh.FoodSkuDTO;
 import io.agritrack.data.model.AppUser;
+import io.agritrack.data.model.common.TemperatureTimeSeries;
+import io.agritrack.data.model.tx.CorrelationTransaction;
+import io.agritrack.data.model.tx.FishingTransaction;
+import io.agritrack.data.model.tx.ProcessingTransaction;
+import io.agritrack.data.model.tx.QualityTransaction;
 import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.settings.ApplicationSettings;
@@ -83,6 +120,10 @@ import io.agritrack.ui.service.AuthenticationService;
 import io.agritrack.ui.service.LocalPreferences;
 import io.agritrack.ui.tools.CAENLoggerActivity;
 import io.agritrack.ui.viewmodel.ConfigViewModel;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -344,11 +385,13 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             etPassword.setVisibility(View.INVISIBLE);
             tvForgotYourPassword.setVisibility(View.INVISIBLE);
             tvLoginWithCred.setVisibility(View.INVISIBLE);
+            tvInvalidLicense.setVisibility(View.VISIBLE);
         } else {
             etUserName.setVisibility(View.VISIBLE);
             etPassword.setVisibility(View.VISIBLE);
             tvForgotYourPassword.setVisibility(View.VISIBLE);
             tvLoginWithCred.setVisibility(View.VISIBLE);
+            tvInvalidLicense.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -411,6 +454,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         LocalPreferences.writeValue(SelectedSiteName_Key, siteName);
         // show current Site
         showCurrentSite();
+        showCtrlVars(true);
     }
 
     @Override
@@ -513,25 +557,47 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             Call<List<SiteDTO>> syncSitesAsyncCall = syncService.getSitesByCluster(clusterId, "Bearer " + token);
             syncSitesAsyncCall.enqueue(new SyncClusterSitesCallBack(this.syncResult));
 
+            // sync harvestRequests for current Site
+            Call<List<FishingRequestDTO>> syncHarvestResAsyncCall = syncService.getFishingRequestsBySiteId(siteId, "Bearer " + token);
+            syncHarvestResAsyncCall.enqueue(new SyncFishingRequestCallBack(this.syncResult));
+
             // sync users
             Call<List<AppUserDTO>> syncUsersAsyncCall = syncService.getUsersBySiteId(siteId, "Bearer " + token);
             syncUsersAsyncCall.enqueue(new SyncUsersCallBack(this.syncResult));
+
+            // sync employees
+            Call<List<EmployeeDTO>> syncEmployeesAsyncCall = syncService.getEmployeesBySiteId(siteId, "Bearer " + token);
+            syncEmployeesAsyncCall.enqueue(new SyncEmployeesCallBack(this.syncResult));
+
+            // sync suppliers
+            Call<List<SupplierDTO>> syncSuppliersAsyncCall = syncService.getAllSuppliers("Bearer " + token);
+            syncSuppliersAsyncCall.enqueue(new SyncSuppliersCallBack(this.syncResult));
+
+            // sync customers
+            Call<List<CustomerDTO>> syncCustomersAsyncCall = syncService.getCustomersBySiteId(siteId, "Bearer " + token);
+            syncCustomersAsyncCall.enqueue(new SyncCustomersCallBack(this.syncResult));
 
             //sync assets  (cages, nets, bins, platforms)
             Call<List<AssetDTO>> syncAssetsAsyncCall = syncService.getAssetsBySite(siteId, "Bearer " + token);
             syncAssetsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
 
-            // sync only Harvest_Bins assets
-            Call<List<AssetDTO>> syncHarvestBinsAsyncCall = syncService.getAssetsByHarvestBinType("Bearer " + token);
-            syncHarvestBinsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
+            // sync Cage Details
+            Call<List<CageDetailsDTO>> syncCageDetailsAsyncCall = syncService.getCageDetailsBySiteId(siteId, "Bearer " + token);
+            syncCageDetailsAsyncCall.enqueue(new SyncCageDetailsCallBack(this.syncResult));
 
-            // sync only Platform assets for this site
-            Call<List<AssetDTO>> syncPlatformsAsyncCall = syncService.getAssetsByPlatformType("Bearer " + token);
-            syncPlatformsAsyncCall.enqueue(new SyncAssetsCallBack(this.syncResult));
+            // sync Bin Info (complete BinLedger)
+            Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getCompleteBinLedger("Bearer " + token);
+            syncBinsByPlantAsyncCall.enqueue(new SyncBinInfo(this.syncResult));
+
+            // sync fish species
+            Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.getProduct(), "Bearer " + token);
+            syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
+
+            // sync IOT Loggers
+            Call<List<IotLoggerDTO>> syncIOTLoggersAsyncCall = syncService.getIOTLoggersBySiteId(siteId, "Bearer " + token);
+            syncIOTLoggersAsyncCall.enqueue(new SyncIOTLoggersCallBack(this.syncResult));
 
             // sync Encoding scheme info
-            // due to sync problems, we get ALL encoding scheme from DB.
-            //Call<List<EncodingSchemeDTO>> syncEncodingShemeAsyncCall = syncService.getEncodingSchemeByCustomerName(clusterId, "Bearer " + token);
             Call<List<EncodingSchemeDTO>> syncEncodingShemeAsyncCall = syncService.getEncodingScheme("Bearer " + token);
             syncEncodingShemeAsyncCall.enqueue(new EncodingSchemeCallBack(this.syncResult));
 
@@ -539,6 +605,79 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void invokeUploadPendingAll() {
+        try {
+            TransactionApi pendingTxSvc = APIServiceGenerator.createAPI(TransactionApi.class);
+            String token = LocalPreferences.getToken();
+
+            // select all pending fishing TXs
+            List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAllCompleted();
+            if (!fishingTXs.isEmpty()) {
+                for (FishingTransaction fishingTX : fishingTXs) {
+                    Call<FishingTxDTO> fishingTxAsyncCall = pendingTxSvc.syncFishingTx(FishingTxDTO.convert(fishingTX), "Bearer " + token);
+                    fishingTxAsyncCall.enqueue(new PendingFishingTxCallBack(this.syncResult));
+                }
+            }
+
+            // select all pending receipt TXs
+            List<ProcessingTransaction> processTXs = db.processingTransactionDAO().getAll();
+            if (!processTXs.isEmpty()) {
+                for (ProcessingTransaction processTX : processTXs) {
+                    Call<ProcessingTxDTO> processTxAsyncCall = pendingTxSvc.syncProcessingTx(ProcessingTxDTO.convert(processTX), "Bearer " + token);
+                    processTxAsyncCall.enqueue(new PendingProcessTxCallBack(this.syncResult));
+                }
+            }
+
+            // select all pending quality TXs
+            List<QualityTransaction> qualityTXs = db.qualityTransactionDAO().getAll();
+            if (!qualityTXs.isEmpty()) {
+                for (QualityTransaction qualityTX : qualityTXs) {
+                    Call<QualityTxDTO> qualityTxAsyncCall = pendingTxSvc.syncQualityTx(QualityTxDTO.convert(qualityTX), "Bearer " + token);
+                    qualityTxAsyncCall.enqueue(new PendingQualityTxCallBack(this.syncResult));
+                }
+            }
+
+            // select all pending post quality TXs
+            List<TemperatureTimeSeriesDTO> temperatureTimeSeriesDTOs = new ArrayList<>();
+            for ( TemperatureTimeSeries ts : db.measurementsDAO().getAll()){
+                temperatureTimeSeriesDTOs.add(TemperatureTimeSeriesDTO.convert(ts));
+            }
+
+            if (!temperatureTimeSeriesDTOs.isEmpty()) {
+                Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = pendingTxSvc.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
+                syncMsAsyncCall.enqueue(new PendindQualityMeasurementsTxCallBack(this.syncResult));
+            }
+
+            //===================================================================================================
+            // select all SIMPLE pending correlation TXs (identification events, e.g. correlate rfid <--> code)
+            List<CorrelationTransaction> correlationTXs = db.correlationTransactionDAO().getAll();
+            if (!correlationTXs.isEmpty()) {
+                // filter out the simple correlation transactions
+                List<CorrelationTransaction> identifications = correlationTXs.stream().filter(f -> f.assetRFID == null).collect(Collectors.toList());
+                // filter out the inter-correlation transactions
+                List<CorrelationTransaction> interCorrelations = correlationTXs.stream().filter(f -> f.assetRFID != null).collect(Collectors.toList());
+
+                if (!identifications.isEmpty()) {
+                    List<CorrelationTxDTO> identificationDTOs = identifications.stream().map(tx -> CorrelationTxDTO.convert(tx)).collect(Collectors.toList());
+
+                    Call<ResponseBody> assetIdentificationAsyncCall = pendingTxSvc.syncAssetCorrelationTx(identificationDTOs, "Bearer " + token);
+                    assetIdentificationAsyncCall.enqueue(new PendingCorrelationTxCallBack(this.syncResult));
+                }
+
+                if (!interCorrelations.isEmpty()) {
+                    List<CorrelationTxDTO> interCorrelationDTOs = interCorrelations.stream().map(tx -> CorrelationTxDTO.convert(tx)).collect(Collectors.toList());
+
+                    Call<ResponseBody> assetInterCorrelationAsyncCall = pendingTxSvc.syncAssetWithAssetCorrelationTx(interCorrelationDTOs, "Bearer " + token);
+                    assetInterCorrelationAsyncCall.enqueue(new PendingCorrelationTxCallBack(this.syncResult));
+                }
+            }
+        } catch (Exception e) {
+
+        } finally {
+
         }
     }
 
@@ -729,6 +868,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         @Override
         protected Void doInBackground(Void... voids) {
             invokeSyncAll();
+            invokeUploadPendingAll();
             SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
             String token = LocalPreferences.getToken();
             Call<List<AssetDTO>> syncNetsAsyncCall = syncService.getAssetsByNetType("Bearer " + token);

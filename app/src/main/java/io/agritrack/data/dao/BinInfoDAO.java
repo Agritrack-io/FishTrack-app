@@ -16,7 +16,7 @@ import io.agritrack.data.model.BinInfo;
 public interface BinInfoDAO {
 
     @Query("SELECT * from bin_info")
-    LiveData<List<BinInfo>> getAll();
+    List<BinInfo> getAll();
 
     @Query("SELECT * from bin_info where bin_rfid=:rfId LIMIT 1")
     BinInfo getByRFId(String rfId);
@@ -32,7 +32,7 @@ public interface BinInfoDAO {
     void insert(BinInfo... bins);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(BinInfo bin);
+    long insert(BinInfo bin);
 
     @Delete
     void delete(BinInfo bin);

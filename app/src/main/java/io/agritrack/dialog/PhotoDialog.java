@@ -28,8 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 
 public class PhotoDialog {
 

@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.caen.common.CAENState;
 import io.agritrack.common.FileUtils;
 import io.agritrack.common.Filters;

@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.agritrack.BR;
+import io.agritrack.kefalonia.BR;
 import io.agritrack.common.DeviceUtils;
 import io.agritrack.common.utilities.WifiUtils;
 import io.agritrack.data.dto.AgricenseDTO;

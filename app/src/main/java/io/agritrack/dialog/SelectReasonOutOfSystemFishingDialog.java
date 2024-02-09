@@ -36,7 +36,7 @@ import com.google.android.gms.common.util.Strings;
 
 import java.util.List;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.api.sync.SyncAssetsCallBack;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.wh.AssetDTO;

@@ -20,7 +20,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.dialog.InfoDialog;

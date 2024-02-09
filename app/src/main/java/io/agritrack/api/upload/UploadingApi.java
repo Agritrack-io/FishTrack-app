@@ -11,23 +11,11 @@ import retrofit2.http.Part;
 
 public interface UploadingApi {
 
-    @POST("hotel/inventory/change_status")
-    @Multipart
-    Call<ResponseBody> uploadHotelInventoryWithStatus(@Part MultipartBody.Part file, @Part("status") RequestBody status, @Header("Authorization") String token);
-
-    @POST("hotel/inventory/upload")
-    @Multipart
-    Call<ResponseBody> uploadHotelInventory(@Part MultipartBody.Part file, @Header("Authorization") String token);
-
     @POST("quality/pp1/photo")
     @Multipart
     Call<ResponseBody> uploadPhoto(@Part MultipartBody.Part file, @Header("Authorization") String token);
 
-    @POST("hotel/inventory/upload")
-    @Multipart
-    Call<ResponseBody> uploadDataLoggers(@Part MultipartBody.Part file, @Header("Authorization") String token);
-
-    @POST("log/crash/upload")
+    @POST("logs/crash/upload")
     @Multipart
     Call<ResponseBody> uploadCrashLog(@Part MultipartBody.Part file, @Header("Authorization") String token);
 }

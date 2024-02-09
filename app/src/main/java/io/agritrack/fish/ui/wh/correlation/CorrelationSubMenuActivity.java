@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.dialog.SupportDialog;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.ui.adapter.HomeMenuAdapter;
@@ -74,15 +74,15 @@ public class CorrelationSubMenuActivity extends AppCompatActivity {
                 clazz = CorrelationBinActivity.class;
                 break;
             case 3:
-                tvTitleToolbar.setText(getString(R.string.title_program_menu, getString(R.string.of_platform)));
-                menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationPlatformActivity.class, R.drawable.platform));
-                clazz = CorrelationPlatformActivity.class;
+                tvTitleToolbar.setText(getString(R.string.title_program_menu, getString(R.string.of_cage_net)));
+                menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationCageNetActivity.class, R.drawable.cage_net));
+                clazz = CorrelationCageNetActivity.class;
                 break;
             default:
         }
 
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_replace_tags), ExistingTagActivity.class, R.drawable.program));
-        menuItemsList.add(new MenuItem(getString(R.string.menu_title_new_tags), NewTagActivity.class, R.drawable.program));
+//        menuItemsList.add(new MenuItem(getString(R.string.menu_title_replace_tags), ExistingTagActivity.class, R.drawable.program));
+//        menuItemsList.add(new MenuItem(getString(R.string.menu_title_new_tags), NewTagActivity.class, R.drawable.program));
 
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, menuItemsList);
         gvCorrelationMenu.setAdapter(adapter);
@@ -97,12 +97,12 @@ public class CorrelationSubMenuActivity extends AppCompatActivity {
                         GlobalState.initWHCorrelationRecord();
                         i = new Intent(appCtx, clazz);
                         break;
-                    case Existing_Tag_Idx:
-                        i = new Intent(appCtx, ExistingTagActivity.class);
-                        break;
-                    case New_Tag_Idx:
-                        i = new Intent(appCtx, NewTagActivity.class);
-                        break;
+//                    case Existing_Tag_Idx:
+//                        i = new Intent(appCtx, ExistingTagActivity.class);
+//                        break;
+//                    case New_Tag_Idx:
+//                        i = new Intent(appCtx, NewTagActivity.class);
+//                        break;
                     default:
                 }
 

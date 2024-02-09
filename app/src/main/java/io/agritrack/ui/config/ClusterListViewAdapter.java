@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.ui.login.api.SiteInfoRS;
 
 public class ClusterListViewAdapter extends BaseExpandableListAdapter {

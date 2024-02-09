@@ -34,7 +34,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.common.Constants;
 import io.agritrack.common.Filters;
 import io.agritrack.data.db.MobileDB;

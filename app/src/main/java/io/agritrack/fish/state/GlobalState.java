@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import io.agritrack.data.db.MobileDB;
@@ -21,6 +22,7 @@ import io.agritrack.data.model.common.Measurement;
 import io.agritrack.data.model.common.TemperatureData;
 import io.agritrack.data.model.common.TemperatureTimeSeries;
 import io.agritrack.data.model.tx.AssetTransaction;
+import io.agritrack.data.model.tx.AssetTxItem;
 import io.agritrack.data.model.tx.CorrelationTransaction;
 import io.agritrack.data.model.tx.FishingTransaction;
 import io.agritrack.data.model.tx.PostPackageQualityTransaction;
@@ -30,6 +32,7 @@ import io.agritrack.data.model.tx.TransportTransaction;
 import io.agritrack.data.model.wh.RFIDInventory;
 import io.agritrack.data.model.wh.RFIDInventoryItem;
 import io.agritrack.enums.TxStatus;
+import io.agritrack.fish.ui.bo.BinWeightRecord;
 import io.agritrack.ui.service.LocalPreferences;
 
 public class GlobalState {
@@ -149,6 +152,26 @@ public class GlobalState {
         return recLoggerData;
     }
 
+    public static List<BinInfo> commitBinInfoTx(MobileDB db) {
+        try {
+            List<BinInfo> binInfos = new ArrayList<>();
+            if (recFishing.binWeightRecord.getBinsData() != null) {
+                for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBinsData()) {
+                    BinInfo txBinInfo = new BinInfo();
+                    txBinInfo.rfid = bin.binEPC;
+                    txBinInfo.initedAt = bin.init;
+                    binInfos.add(txBinInfo);
+                    db.binInfoDAO().insert(txBinInfo);
+                }
+            }
+
+            return binInfos;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     public static FishingTransaction commitFishing(MobileDB db, Boolean finalCommit) {
         try {
             FishingTransaction txFishing = new FishingTransaction();
@@ -205,7 +228,7 @@ public class GlobalState {
         try {
             TransportTransaction txTransport = new TransportTransaction();
 
-            //txTransport.id = recTransport.txKey;
+//            txTransport.id = recTransport.txKey;
             txTransport.destination = recTransport.packagingSite;
             txTransport.driverName = recTransport.driverName;
             txTransport.driverPhone = recTransport.driverPhone;
@@ -248,7 +271,7 @@ public class GlobalState {
         try {
             ProcessingTransaction txProcess = new ProcessingTransaction();
 
-            //txProcess.id = recProcessing.txKey;
+//            txProcess.id = recProcessing.txKey;
             txProcess.dispatchNote = recProcessing.dispatchNote;
             txProcess.cleanTruck = Boolean.toString(recProcessing.cleanTruck);
             txProcess.smells = Boolean.toString(recProcessing.smellyTruck);
@@ -268,12 +291,11 @@ public class GlobalState {
 
             // Persist record if no duplicates exist
             if (cnt < 1) {
-                recProcessing.txKey = db.processingTransactionDAO().insert(txProcess);
+                db.processingTransactionDAO().insert(txProcess);
+                recProcessing.txKey = txProcess.id;
             } else {
                 return db.processingTransactionDAO().getByHash(txProcess.hashCode);
             }
-
-            //recProcessing.txKey = db.processingTransactionDAO().insert(txProcess);
 
             return txProcess;
         } catch (Exception ex) {
@@ -380,10 +402,11 @@ public class GlobalState {
                 LoggerDataRecord.TemperatureModel model = recLoggerData.data.get(epc);
                 TemperatureTimeSeries meas = db.measurementsDAO().getByEPC(epc);
                 if (meas != null) {
-                    if (meas.measurement.productionLane == null) {
-                        meas.measurement.lot = plot;
-                        db.measurementsDAO().update(meas.measurement);
-                    }
+                    meas.measurement.lot = plot;
+                    meas.measurement.fishTemp = model.fishT;
+                    meas.measurement.fish2Temp = model.fishT2;
+                    meas.measurement.waterTemp = model.waterT;
+                    db.measurementsDAO().update(meas.measurement);
                     result.add(meas);
                     continue;
                 }
@@ -393,9 +416,14 @@ public class GlobalState {
                 measurement.retrievedAt = model.retrievedAt;
                 measurement.productionLane = model.productionLane;
                 measurement.lot = plot;
+                measurement.fishTemp = model.fishT;
+                measurement.fish2Temp = model.fishT2;
+                measurement.waterTemp = model.waterT;
 
-                long measurementId = db.measurementsDAO().insert(measurement);
-                if (measurementId > 0 && model.values != null && !model.values.isEmpty()) {
+                db.measurementsDAO().insert(measurement);
+                UUID measurementId = measurement.id;
+
+                if (measurementId != null && model.values != null && !model.values.isEmpty()) {
                     List<TemperatureData> data = model.values.stream()
                             .map(x -> new TemperatureData(measurementId, x[0], Double.valueOf(x[1].replace(',', '.'))))
                             .collect(Collectors.toList());
@@ -426,9 +454,14 @@ public class GlobalState {
             measurement.assetRFID = model.assetEPC;
             measurement.retrievedAt = model.retrievedAt;
             measurement.productionLane = model.productionLane;
+            measurement.fishTemp = model.fishT;
+            measurement.fish2Temp = model.fishT2;
+            measurement.waterTemp = model.waterT;
 
-            long measurementId = db.measurementsDAO().insert(measurement);
-            if (measurementId > 0 && model.values != null && !model.values.isEmpty()) {
+            db.measurementsDAO().insert(measurement);
+            UUID measurementId = measurement.id;
+
+            if (measurementId != null  && model.values != null && !model.values.isEmpty()) {
                 List<TemperatureData> data = model.values.stream().map(x -> new TemperatureData(measurementId, x[0], x[1])).collect(Collectors.toList());
                 db.temperatureDataDAO().insert(data.toArray(new TemperatureData[data.size()]));
             }
@@ -480,6 +513,30 @@ public class GlobalState {
             db.assetTransactionDAO().insert(txWHOutgoing);
 
             return txWHOutgoing;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<AssetTxItem> commitAssetTxItem(MobileDB db, AssetTransaction assetTx) {
+        try {
+            List<AssetTxItem> items = new ArrayList<>();
+            Set<Map.Entry<String, List<String>>> inventoryData = recWHIncoming.items != null ? recWHIncoming.items.entrySet() : recWHOutgoing.items.entrySet();
+
+            for (Map.Entry<String, List<String>> entry : inventoryData) {
+                List<String> epcs = entry.getValue();
+                for (String epc : epcs) {
+                    AssetTxItem newItem = new AssetTxItem();
+                    newItem.assetType = entry.getKey();
+                    newItem.itemRFID = epc;
+                    newItem.inventory = assetTx.id;
+                    items.add(newItem);
+                }
+            }
+
+            db.assetTxItemDAO().insert(items.toArray(new AssetTxItem[items.size()]));
+            return items;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

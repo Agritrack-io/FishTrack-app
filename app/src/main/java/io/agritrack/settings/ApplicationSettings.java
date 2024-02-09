@@ -5,7 +5,7 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.dto.AgricenseDTO;
 
 public class ApplicationSettings {

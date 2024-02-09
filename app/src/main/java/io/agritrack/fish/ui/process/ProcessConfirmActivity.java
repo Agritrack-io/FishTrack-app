@@ -4,13 +4,16 @@ import static io.agritrack.FishTrackApplication.IsDemo;
 import static io.agritrack.FishTrackApplication.IsOnline;
 import static io.agritrack.FishTrackApplication.getAppContext;
 import static io.agritrack.common.LargeString.render;
+import static io.agritrack.fish.state.GlobalState.recFishing;
 import static io.agritrack.fish.state.GlobalState.recProcessing;
 import static io.agritrack.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,7 +27,8 @@ import com.google.android.gms.common.util.Strings;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.data.model.tx.ProcessingTransaction;
@@ -33,6 +37,7 @@ import io.agritrack.dialog.YesNoDialogFragment;
 import io.agritrack.fish.state.GlobalState;
 import io.agritrack.fish.state.ProcessingRecord;
 import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.fish.ui.fishing.FishingConfirmActivity;
 import io.agritrack.ui.LocationAwareActivity;
 import io.agritrack.api.tx.TransactionApi;
 import io.agritrack.ui.service.AuthenticationService;
@@ -48,7 +53,7 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
     private YesNoDialogFragment confirmGPSSelectionDlg;
 
     private ProgressDialog progressDialog;
-    private TextView tvNumberOfBinsCount, tvDispatchNote, tvPackagingLot, tvSecurityClipNumber, tvUsername;
+    private TextView tvNumberOfBinsCount, tvDispatchNote, tvPackagingLot, tvUsername;
     private EditText etPIN;
     private ImageView ivSupport, ivNext, ivBack;
     private boolean proceedWithoutLocation = false;
@@ -92,6 +97,41 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
             supportDialog.showDialog();
         });
 
+        etPIN.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable editable) {
+                // get credential string values
+                final String username = LocalPreferences.getLoggedInUser("").trim();
+                final String pin = editable.toString().trim();
+
+                if (pin.isEmpty()) {
+                    CToast(ProcessConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
+                } else if (editable != null && editable.length() == 4) {
+                    // invoke login
+                    boolean userIsValid = isAuthenticated(username, pin);
+                    if (!userIsValid) {
+                        CToast(ProcessConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
+                        return;
+                    } else if (mLastLocation != null) {
+                        recFishing.longitude = mLastLocation.getLongitude();
+                        recFishing.latitude = mLastLocation.getLatitude();
+                        proceedWithoutLocation = true;
+                        moveToNextScreen();
+                    } else if (!proceedWithoutLocation) {
+                        FragmentManager fm = getSupportFragmentManager();
+                        confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+                    }
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+            }
+        });
+
         configFooter();
     }
 
@@ -112,23 +152,7 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(etPIN.getText().toString())) {
-                    CToast(ProcessConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
-                    return;
-                }
-                boolean userIsValid = isAuthenticated();
-                if (!userIsValid) {
-                    CToast(ProcessConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
-                    return;
-                } else if (mLastLocation != null) {
-                    recProcessing.longitude = mLastLocation.getLongitude();
-                    recProcessing.latitude = mLastLocation.getLatitude();
-                    proceedWithoutLocation = true;
-                    moveToNextScreen();
-                } else if (!proceedWithoutLocation) {
-                    FragmentManager fm = getSupportFragmentManager();
-                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-                }
+
             }
         });
 
@@ -142,7 +166,6 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
         tvNumberOfBinsCount = findViewById(R.id.tvNumberOfBinsCount);
         tvDispatchNote = findViewById(R.id.tvDispatchNote);
         tvPackagingLot = findViewById(R.id.tvPackagingLot);
-        tvSecurityClipNumber = findViewById(R.id.tvSecurityClipNumber);
         tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
         ivNext = findViewById(R.id.ivToCongs);
@@ -161,18 +184,14 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
             tvNumberOfBinsCount.setText(String.valueOf(prcRecord.availBins.size()));
         }
 
-        if (!Strings.isEmptyOrWhitespace(prcRecord.securityClip)) {
-            tvSecurityClipNumber.setText(prcRecord.securityClip);
-        }
-
         //tvNumberOfBinsCount.setText(prcRecord.totalBinsUsed != null ? prcRecord.totalBinsUsed.toString() : "N/A");
 
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }
 
-    private boolean isAuthenticated() {
-        String login = LocalPreferences.getLoggedInUser("").trim();
-        String pin = etPIN.getText().toString().trim();
+    private boolean isAuthenticated(String login, String pin) {
+//        String login = LocalPreferences.getLoggedInUser("").trim();
+//        String pin = etPIN.getText().toString().trim();
 
         // use typed-in PIN to compare credentials with those stored in the Local DB.
         AuthenticationService authSvc = new AuthenticationService();
@@ -188,7 +207,6 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
             progressDialog.show();
 
             String token = LocalPreferences.getToken();
-            //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
             // persist Transportation Record data to local DB.
             ProcessingTransaction tx = GlobalState.commitProcessing(db);

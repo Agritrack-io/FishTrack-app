@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.caen.api.ICAEN_API;
 import io.agritrack.caen.api.RFIDModuleFactory;
@@ -129,7 +130,9 @@ public class MultipleFilterSingleShotScanner implements Runnable {
     private List<Optional<RFIDTag>> filterTags(List<RFIDTag> tagList) {
         Set<Optional<RFIDTag>> filteredTags = new HashSet<>();
         for (String filter : this.RFID_FILTERS) {
-            Optional<RFIDTag> aTag = tagList.stream().filter(i -> i.getEpc().indexOf(filter) == encodingIdx && encodingIdx > -1).min(Comparator.comparing(RFIDTag::getRssi));
+            Optional<RFIDTag> aTag = tagList.stream()
+                    .filter(i -> filter == null ||  i.getEpc().indexOf(filter) == encodingIdx && encodingIdx > -1
+                            || (i.getEpc().indexOf(filter) > -1)).min(Comparator.comparing(RFIDTag::getRssi));
             filteredTags.add(aTag);
         }
         return new ArrayList<>(filteredTags);

@@ -208,8 +208,8 @@
                         android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="SITE"
-                        android:textOn="SITE"
+                        android:textOff="@string/source_site"
+                        android:textOn="@string/source_site"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton
@@ -327,8 +327,8 @@
                         android:background="@drawable/togglebutton_selector"
                         android:gravity="center"
                         android:textColor="@drawable/button_text_color"
-                        android:textOff="@string/site"
-                        android:textOn="@string/site"
+                        android:textOff="@string/target_site"
+                        android:textOn="@string/target_site"
                         android:textSize="@dimen/text_view_font_size_medium" />
 
                     <ToggleButton

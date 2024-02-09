@@ -25,7 +25,8 @@ import androidx.fragment.app.FragmentManager;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.FishingTxDTO;
 import io.agritrack.data.model.FishingRequest;
@@ -170,23 +171,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         ivNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (TextUtils.isEmpty(etPIN.getText().toString())) {
-//                    CToast(FishingConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
-//                    return;
-//                }
-//                boolean userIsValid = isAuthenticated();
-//                if (!userIsValid) {
-//                    CToast(FishingConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
-//                    return;
-//                } else if (mLastLocation != null) {
-//                    recFishing.longitude = mLastLocation.getLongitude();
-//                    recFishing.latitude = mLastLocation.getLatitude();
-//                    proceedWithoutLocation = true;
-//                    moveToNextScreen();
-//                } else if (!proceedWithoutLocation) {
-//                    FragmentManager fm = getSupportFragmentManager();
-//                    confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-//                }
+
             }
         });
 
@@ -234,9 +219,6 @@ public class FishingConfirmActivity extends LocationAwareActivity {
     }
 
     private boolean isAuthenticated(String login, String pin) {
-//        String login = LocalPreferences.getLoggedInUser("").trim();
-//        String pin = etPIN.getText().toString().trim();
-
         // use typed-in PIN to compare credentials with those stored in the Local DB.
         AuthenticationService authSvc = new AuthenticationService();
         boolean authentication = authSvc.authenticateUser(this.db, login, pin);

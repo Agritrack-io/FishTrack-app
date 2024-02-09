@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 
 public class CustomToast {
 

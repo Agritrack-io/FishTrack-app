@@ -1,4 +1,4 @@
-package io.agritrack.ui.bo;
+package io.agritrack.fish.ui.bo;
 
 public class MenuItemData {
     private int id;

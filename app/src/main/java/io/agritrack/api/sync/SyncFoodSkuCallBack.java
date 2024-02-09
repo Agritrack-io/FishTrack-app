@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.common.IotLoggerDTO;
 import io.agritrack.data.dto.wh.FoodSkuDTO;

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.StringRes;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 
 import static io.agritrack.FishTrackApplication.getAppContext;
 

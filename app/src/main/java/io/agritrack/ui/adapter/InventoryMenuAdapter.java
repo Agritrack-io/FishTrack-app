@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
 
 public class InventoryMenuAdapter extends ArrayAdapter<MenuItem> {
 

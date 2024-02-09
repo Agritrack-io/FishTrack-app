@@ -51,7 +51,7 @@ public class BinWeightRecord {
         public Double temp;
         public final Long from;
         public final Long to;
-        public final Long init;
+        public Long init;
 
 
         public BinRecord(String binEPC, Integer weight, Long epochInit, Long epochFrom, Long epochTo) {

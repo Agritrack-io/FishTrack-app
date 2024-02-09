@@ -8,6 +8,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.data.model.Site;
 
@@ -30,7 +31,10 @@ public interface SiteDAO {
     List<Site> getCurrentSiteSubSites(String parentId);
 
     @Query("SELECT * from site where id=:siteId LIMIT 1")
-    Site getById(Long siteId);
+    Site getById(UUID siteId);
+
+    @Query("SELECT * from site where name=:site_name LIMIT 1")
+    Site getBySiteName(String site_name);
 
     @Query("SELECT * from site where lvl3=:site_name and lvl4=:site_code LIMIT 1")
     Site getBySiteNameAndCode(String site_name, String site_code);

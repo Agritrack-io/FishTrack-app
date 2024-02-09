@@ -1,19 +1,0 @@
-
-j
-java:S1104"OMake lot a static final constant or non-public and provide accessors if needed.(ÜôÚôşÿÿÿÿ
-v
-java:S1104"[Make production_lane a static final constant or non-public and provide accessors if needed.(Üëüüÿÿÿÿ
-r
-java:S1104"WMake logger_rfid a static final constant or non-public and provide accessors if needed.(‹ÆüĞûÿÿÿÿ
-q
-java:S1104"VMake asset_rfid a static final constant or non-public and provide accessors if needed.(Åçèøÿÿÿÿ
-n
-java:S1104"XMake retrieved_at a static final constant or non-public and provide accessors if needed.(œ¢ÙÍ
-o
-java:S1104"TMake interval a static final constant or non-public and provide accessors if needed.(§û£Êúÿÿÿÿ
-m
-java:S1104"RMake values a static final constant or non-public and provide accessors if needed.(¿¹ÄÈùÿÿÿÿ
-t	java:S116"ZRename this field "production_lane" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Üëüüÿÿÿÿ
-p	java:S116"VRename this field "logger_rfid" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹ÆüĞûÿÿÿÿ
-o	java:S116"URename this field "asset_rfid" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Åçèøÿÿÿÿ
-l	java:S116"WRename this field "retrieved_at" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(œ¢ÙÍ

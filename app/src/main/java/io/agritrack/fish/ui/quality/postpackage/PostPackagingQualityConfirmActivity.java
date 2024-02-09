@@ -26,7 +26,8 @@ import java.math.RoundingMode;
 import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
 
-import io.agritrack.R;
+import io.agritrack.kefalonia.R;
+import io.agritrack.api.APIServiceGenerator;
 import io.agritrack.data.db.MobileDB;
 import io.agritrack.data.dto.tx.PostPackageQualityTxDTO;
 import io.agritrack.data.model.tx.PostPackageQualityTransaction;
