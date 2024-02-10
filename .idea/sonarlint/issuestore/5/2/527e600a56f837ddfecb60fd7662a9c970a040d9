@@ -1,0 +1,35 @@
+
+a
+java:S1192B"FDefine a constant instead of duplicating this literal "FOUND" 3 times.(ŠóÃ¡ùÿÿÿÿ
+C
+java:S1604V"(Make this anonymous inner class a lambda(Ùãºèùÿÿÿÿ
+_
+java:S2259A"I"NullPointerException" will be thrown when invoking method "addDevice()".(ÊŒµù
+L
+java:S2589e"7Remove this expression which always evaluates to "true"(Æˆ›
+]
+java:S1659$"BDeclare "tvMac" and all following declarations on a separate line.(¹Ôêøÿÿÿÿ
+Y
+java:S1117>"CRename "bluetoothDevice" which hides the field declared at line 41.(¦·Ú×
+m
+java:S3776I"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(¨Œşÿÿÿÿ
+U
+java:S1854a"?Remove this useless assignment to local variable "sentReadCmd".(ÚÈ‹È
+F
+java:S1481a"0Remove this unused "sentReadCmd" local variable.(ÚÈ‹È
+
+java:S5803c"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(û«Šº
+=
+java:S1185z"(Remove this method to simply inherit it.(ºŠñ=
+C
+java:S1185"(Remove this method to simply inherit it.(èüù±ùÿÿÿÿ
+i	java:S100±"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆ‚àşùÿÿÿÿ
+i	java:S100¹"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¥®ß‰ıÿÿÿÿ
+n
+java:S3252Ê"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(À¤¬Ù
+N
+java:S1135Ë"2Complete the task associated to this TODO comment.(áÃæùÿÿÿÿ
+Z
+java:S3398Ç">Move this method into the anonymous class declared at line 44.(¨ççşÿÿÿÿ
+N
+java:S1068)"3Remove this unused "bluetoothDevice" private field.(Áˆ“øÿÿÿÿ

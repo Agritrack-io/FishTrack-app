@@ -1,0 +1,17 @@
+
+k
+java:S1104"NMake id a static final constant or non-public and provide accessors if needed.(€÷ëÚ8…ê«ïØ1
+i
+java:S1104"SMake country a static final constant or non-public and provide accessors if needed.(Ø¬
+n
+java:S1104	"SMake sc_name a static final constant or non-public and provide accessors if needed.(â¡Ü‹şÿÿÿÿ
+l
+java:S1104
+"VMake local_name a static final constant or non-public and provide accessors if needed.(”§ôÈ
+f
+java:S1104"PMake name a static final constant or non-public and provide accessors if needed.( şÍ¾
+k
+java:S1104"PMake type a static final constant or non-public and provide accessors if needed.(ÙşÓ¼ûÿÿÿÿ
+s	java:S116	"RRename this field "sc_name" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(â¡Ü‹şÿÿÿÿ8ê«ïØ1
+j	java:S116
+"URename this field "local_name" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(”§ôÈ

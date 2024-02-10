@@ -1,0 +1,11 @@
+
+n
+java:S1104"SMake loggers a static final constant or non-public and provide accessors if needed.(€Ä·±ıÿÿÿÿ
+k
+java:S1104"PMake type a static final constant or non-public and provide accessors if needed.(ÙşÓ¼ûÿÿÿÿ
+l
+java:S1104"QMake model a static final constant or non-public and provide accessors if needed.(¢úõşÿÿÿÿ
+h
+java:S1104	"RMake vendor a static final constant or non-public and provide accessors if needed.(¹·Çæ
+œ
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¾óá’ıÿÿÿÿ

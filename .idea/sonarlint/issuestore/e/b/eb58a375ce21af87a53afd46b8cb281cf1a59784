@@ -1,0 +1,12 @@
+
+P
+java:S1143A"5Remove this return statement from this finally block.(áÿèˆýÿÿÿÿ
+P
+java:S1143L"5Remove this return statement from this finally block.(áÿèˆýÿÿÿÿ
+D
+java:S3010".Remove this assignment of "sharedPreferences".(Ë»Ôæ
+c	java:S100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(›¤Þ‚
+V	java:S1250"<This block of commented-out lines of code should be removed.(Å„ÿãøÿÿÿÿ
+Q	java:S125?"<This block of commented-out lines of code should be removed.(¬ËÛ×
+V	java:S125J"<This block of commented-out lines of code should be removed.(®†ÿ‘üÿÿÿÿ
+W	java:S125"<This block of commented-out lines of code should be removed.(ÈÿÃ¼þÿÿÿÿ

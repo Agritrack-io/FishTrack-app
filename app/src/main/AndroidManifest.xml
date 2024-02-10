@@ -66,19 +66,9 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.tools.ProgramEveryLinenTagsActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
             android:name=".fish.ui.testBinTemperature.TestBinTempActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.tools.ProgramLinenTagsActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".fish.ui.wh.correlation.CorrelationCageNetActivity"
             android:exported="false"

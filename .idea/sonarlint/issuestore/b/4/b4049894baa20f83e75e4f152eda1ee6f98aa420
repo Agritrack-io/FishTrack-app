@@ -1,0 +1,12 @@
+
+J
+java:S1066Q"/Merge this if statement with the enclosing one.(…ñÖÀşÿÿÿÿ
+B
+java:S1659)"'Declare "btnCancel" on a separate line.(ûş‡üÿÿÿÿ
+D
+java:S1481?")Remove this unused "file" local variable.(¸«ùéşÿÿÿÿ
+V	java:S125M"<This block of commented-out lines of code should be removed.(¯Öÿèüÿÿÿÿ
+U	java:S899`";Do something with the "boolean" value returned by "delete".(²Œ­ûÿÿÿÿ
+i
+java:S4042`"NUse "java.nio.file.Files#delete" here for better messages on error conditions.(²Œ­ûÿÿÿÿ
+i	java:S100‰"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨à÷¢úÿÿÿÿ

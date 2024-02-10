@@ -1,0 +1,25 @@
+
+p
+java:S1104"UMake soundPool a static final constant or non-public and provide accessors if needed.(±†± üÿÿÿÿ
+j
+java:S1104"TMake soundMap a static final constant or non-public and provide accessors if needed.(¦ºÁä
+i
+java:S1104"SMake context a static final constant or non-public and provide accessors if needed.(Òò®­
+J
+java:S1444"/Make this "public static soundPool" field final(±†± üÿÿÿÿ
+D
+java:S1444".Make this "public static soundMap" field final(¦ºÁä
+C
+java:S1444"-Make this "public static context" field final(Òò®­
+t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(âÈìûÿÿÿÿ
+t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(âÈìûÿÿÿÿ
+t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(âÈìûÿÿÿÿ
+t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(âÈìûÿÿÿÿ
+t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(âÈìûÿÿÿÿ
+\
+java:S1659"ADeclare "Beep" and all following declarations on a separate line.(âÈìûÿÿÿÿ
+P
+java:S1118":Add a private constructor to hide the implicit public one.(éà´
+>
+java:S2386"#Make member "soundMap" "protected".(¸ÓÉüÿÿÿÿ
+V	java:S125)"<This block of commented-out lines of code should be removed.(ºåÒıÿÿÿÿ

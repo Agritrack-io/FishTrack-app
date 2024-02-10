@@ -1,0 +1,24 @@
+
+t
+java:S1104"WMake sample_date a static final constant or non-public and provide accessors if needed.(­İ«§8ÖÜ±ïØ1
+f
+java:S1104"PMake plot a static final constant or non-public and provide accessors if needed.(ŸÇÏİ
+h
+java:S1104	"RMake box_sn a static final constant or non-public and provide accessors if needed.(ÖÑÏù
+m
+java:S1104
+"RMake tempT1 a static final constant or non-public and provide accessors if needed.(™…Ïÿÿÿÿÿ
+h
+java:S1104"RMake tempT2 a static final constant or non-public and provide accessors if needed.(‹Ü’¦
+h
+java:S1104"RMake tempT3 a static final constant or non-public and provide accessors if needed.(„Âƒü
+g
+java:S1104"QMake plant a static final constant or non-public and provide accessors if needed.(Å«ö£
+k
+java:S1104"PMake user a static final constant or non-public and provide accessors if needed.(¾Êïûùÿÿÿÿ
+p
+java:S1104"UMake longitude a static final constant or non-public and provide accessors if needed.(ŠÜ®ùÿÿÿÿ
+o
+java:S1104"TMake latitude a static final constant or non-public and provide accessors if needed.(éı¾Ùúÿÿÿÿ
+r	java:S116"VRename this field "sample_date" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(­İ«§8ŞÜ±ïØ1
+m	java:S116	"QRename this field "box_sn" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÖÑÏù8ŞÜ±ïØ1

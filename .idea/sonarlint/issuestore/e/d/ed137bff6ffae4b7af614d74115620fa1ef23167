@@ -1,0 +1,100 @@
+
+R
+java:S3740·"/Provide the parametrized type for this generic.(šÏ³Öşÿÿÿÿ8Ÿ§ìÙ1
+w
+java:S2293†"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ä“®8¡§ìÙ1
+|
+java:S2293‰"YReplace the type specification in this constructor call with the diamond operator ("<>").(æğ÷²ıÿÿÿÿ8¡§ìÙ1
+w
+java:S2293‹"YReplace the type specification in this constructor call with the diamond operator ("<>").(Çş¿º8¡§ìÙ1
+m
+java:S1192“"PDefine a constant instead of duplicating this literal "expectedBinList" 3 times.(‰‘ØJ8£§ìÙ1
+k
+java:S1192’"ODefine a constant instead of duplicating this literal "scannedBinList" 3 times.(®Ÿüùÿÿÿÿ
+k
+java:S1192‘"ODefine a constant instead of duplicating this literal "adapterBinList" 3 times.(¬á£Şüÿÿÿÿ
+M
+java:S1066ú"/Merge this if statement with the enclosing one.(ŒÁü½8¤§ìÙ1
+M
+java:S1066á"/Merge this if statement with the enclosing one.(É—Ÿ¢8¤§ìÙ1
+R
+java:S1066°"/Merge this if statement with the enclosing one.(ë¡±€şÿÿÿÿ8¥§ìÙ1
+K
+java:S1604Ù"(Make this anonymous inner class a lambda(Êœüûÿÿÿÿ8¦§ìÙ1
+F
+java:S1604Ó"(Make this anonymous inner class a lambda(ÀËÜ•8¦§ìÙ1
+n
+java:S1301¡"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ8§§ìÙ1
+M
+java:S5411Œ"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ8¬§ìÙ1
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(•··Ôşÿÿÿÿ
+w	java:S116m"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŒÖÉ8÷ªìÙ1
+C
+java:S1659f"&Declare "measRepo" on a separate line.(¦éó”8€«ìÙ1
+E
+java:S1659o"#Declare "tvLot" on a separate line.(®Ü² úÿÿÿÿ8«ìÙ1
+?
+java:S1659z"$Declare "binEPC" on a separate line.(™îÖêÿÿÿÿÿ
+^
+java:S1659{"CDeclare "waterT" and all following declarations on a separate line.(˜ŞÏµıÿÿÿÿ
+F
+java:S1659|"$Declare "ivBack" on a separate line.(Ë°¡âùÿÿÿÿ8‚«ìÙ1
+
+java:S1450s"]Remove the "adapterBinList" field and declare it as a local variable in the relevant methods.(ß¼—úÿÿÿÿ8ƒ«ìÙ1
+y
+java:S1450l"\Remove the "concatAdapter" field and declare it as a local variable in the relevant methods.(š¯€¥8ƒ«ìÙ1
+}
+java:S1450y"[Remove the "ibShowValues" field and declare it as a local variable in the relevant methods.(’ÁÇşÿÿÿÿ8„«ìÙ1
+X
+java:S1874h"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8Œ«ìÙ1
+u
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 30 to the 15 allowed.(¨Œşÿÿÿÿ8«ìÙ1
+Y
+java:S1874±"6Remove this use of "ProgressDialog"; it is deprecated.(ëù¬¢úÿÿÿÿ8ÙıëÙ1
+V
+java:S1874²"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿8“«ìÙ1
+T
+java:S1874²"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿8”«ìÙ1
+S
+java:S1874²"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿8”«ìÙ1
+\
+java:S1155Í">Use isEmpty() to check whether the collection is empty or not.(Å¨Úø8™«ìÙ1
+–
+java:S5803©"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç8²ÈìÙ1
+U
+java:S1874º"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ8³ÈìÙ1
+t
+java:S3457â"Q%n should be used in place of \n to produce the platform-specific line separator.(ˆÎİıÿÿÿÿ8¶ÈìÙ1
+^	java:S125ë"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ8¶ÈìÙ1
+\
+java:S1117´"9Rename "data" which hides the field declared at line 118.(îÔ¦êøÿÿÿÿ8ºÈìÙ1
+Q
+java:S1905Ø".Remove this unnecessary cast to "AlertDialog".(İÆÆ„ùÿÿÿÿ8¾ÈìÙ1
+r
+java:S3252Ø"OUse static access with "android.content.DialogInterface" for "BUTTON_POSITIVE".(İÆÆ„ùÿÿÿÿ8¾ÈìÙ1
+9
+java:S3626í"Remove this redundant jump.(ûÁİ…8¿ÈìÙ1
+Y	java:S125ˆ"<This block of commented-out lines of code should be removed.(Š“Ç8ÁÈìÙ1
+u
+java:S3776 "RRefactor this method to reduce its Cognitive Complexity from 67 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ8ÃÈìÙ1
+[
+java:S1854¤"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿÿ8ÃÈìÙ1
+D	java:S131¡""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ8ÄÈìÙ1
+L
+java:S1481¤")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ8ÄÈìÙ1
+T
+java:S1751º"6Remove this "return" statement or make it conditional.(ûÁİ…8ÆÈìÙ1
+T
+java:S1751Ù"6Remove this "return" statement or make it conditional.(ûÁİ…8ÇÈìÙ1
+G
+java:S3398¼"$Move this method into "ScanHandler".(ŒÅÑùÿÿÿÿ8ÍÈìÙ1
+K
+java:S1068{")Remove this unused "fishT" private field.(˜ŞÏµıÿÿÿÿ8ÍÈìÙ1
+L
+java:S1068{"*Remove this unused "waterT" private field.(˜ŞÏµıÿÿÿÿ8ÍÈìÙ1
+L
+java:S1068{"*Remove this unused "fishT2" private field.(˜ŞÏµıÿÿÿÿ8ÍÈìÙ1
+K
+java:S1068˜"-Remove this unused "mActivity" private field.(‚¸Ú8ÍÈìÙ1
+Z
+java:S1144 "<Remove this unused private "convertEPCsToBinDetails" method.(ã£ÇÕ8ÎÈìÙ1

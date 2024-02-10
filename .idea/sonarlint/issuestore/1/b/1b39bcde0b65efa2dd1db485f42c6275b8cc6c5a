@@ -1,0 +1,15 @@
+
+
+java:S1186x"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ôŒùb8ÈÌÈÙ1
+s
+java:S1450%"VRemove the "tvTitle" field and declare it as a local variable in the relevant methods.(Æ¶‡8ÈÌÈÙ1
+F
+java:S1481."+Remove this unused "siteId" local variable.(ï‘±Šúÿÿÿÿ
+P
+java:S1481/".Remove this unused "clusterId" local variable.(ì©—şÿÿÿÿ8ÌÌÈÙ1
+l
+java:S3252C"OUse static access with "android.widget.AbsListView" for "CHOICE_MODE_MULTIPLE".(íÖş›8ÍÌÈÙ1
+D
+java:S1125H"'Remove the unnecessary boolean literal.(Ä„üö8ÎÌÈÙ1
+H
+java:S1068%"+Remove this unused "tvTitle" private field.(Æ¶‡8ÔÌÈÙ1

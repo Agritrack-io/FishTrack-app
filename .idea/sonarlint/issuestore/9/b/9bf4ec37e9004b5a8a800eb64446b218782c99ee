@@ -1,0 +1,19 @@
+
+f	java:S116"RRename this field "_Bitmap" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ê«±
+g	java:S116"RRename this field "_Canvas" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Æ¬ü
+j	java:S116"PRename this field "_Path" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Åª·Âıÿÿÿÿ
+l	java:S116"WRename this field "_BitmapPaint" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(–ªË
+f	java:S116"QRename this field "_paint" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ş›ÔÒ
+c	java:S116"NRename this field "_mX" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(´ÿôì
+c	java:S116"NRename this field "_mY" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(äíªê
+m	java:S116"YRename this field "TouchTolerance" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨ÀR
+r	java:S116"XRename this field "LineThickness" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÌÒÚÆúÿÿÿÿ
+6
+java:S1170"!Make this final field static too.(¨ÀR
+<
+java:S1170"!Make this final field static too.(ÌÒÚÆúÿÿÿÿ
+c	java:S1009"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(€ï§°
+c	java:S100@"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¸…³÷
+h	java:S100M"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÎŞı”ûÿÿÿÿ
+7	java:S131^""Add a default case to this switch.(º¤ùØ
+h	java:S100p"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ßÏ‡îøÿÿÿÿ

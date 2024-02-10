@@ -1,0 +1,5 @@
+
+Q
+java:S2696"6Make the enclosing method "static" or remove this set.(ห่ม๙ÿÿÿÿ
+R
+java:S1612"7Replace this lambda with method reference 'Enum::name'.(ห่ม๙ÿÿÿÿ

@@ -1,0 +1,24 @@
+
+f
+java:S1104
+"PMake rfid a static final constant or non-public and provide accessors if needed.(ÂÞÒ„
+f
+java:S1104"PMake cage a static final constant or non-public and provide accessors if needed.(™é˜Ý
+n
+java:S1104"SMake species a static final constant or non-public and provide accessors if needed.(õÝó“ÿÿÿÿÿ
+v
+java:S1104"[Make fishing_request a static final constant or non-public and provide accessors if needed.(¤”Ï÷ùÿÿÿÿ
+j
+java:S1104"OMake lot a static final constant or non-public and provide accessors if needed.(ÜôÚôþÿÿÿÿ
+n
+java:S1104"XMake total_weight a static final constant or non-public and provide accessors if needed.(»Ë×ƒ
+k
+java:S1104"PMake farm a static final constant or non-public and provide accessors if needed.(Á®Ú¦ûÿÿÿÿ
+r
+java:S1104"WMake last_update a static final constant or non-public and provide accessors if needed.(íà­Ùûÿÿÿÿ
+p
+java:S1104"UMake inited_at a static final constant or non-public and provide accessors if needed.(ïŒÒÄüÿÿÿÿ
+t	java:S116"ZRename this field "fishing_request" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤”Ï÷ùÿÿÿÿ
+l	java:S116"WRename this field "total_weight" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(»Ë×ƒ
+p	java:S116"VRename this field "last_update" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(íà­Ùûÿÿÿÿ
+n	java:S116"TRename this field "inited_at" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ïŒÒÄüÿÿÿÿ

@@ -1,0 +1,42 @@
+
+s
+java:S1104
+"QMake txKey a static final constant or non-public and provide accessors if needed.(®şßşÿÿÿÿ8ú×Ù1
+r
+java:S1104"UMake assetType a static final constant or non-public and provide accessors if needed.(öÌ¹¦8ú×Ù1
+|
+java:S1104"ZMake consumableType a static final constant or non-public and provide accessors if needed.(öÓêıÿÿÿÿ8ú×Ù1
+w
+java:S1104"\Make incomingItemType a static final constant or non-public and provide accessors if needed.(Ûô½·øÿÿÿÿ
+„
+java:S1104"bMake selectedToggleButtonTo a static final constant or non-public and provide accessors if needed.(Ûô½·øÿÿÿÿ8ú×Ù1
+†
+java:S1104"dMake selectedToggleButtonFrom a static final constant or non-public and provide accessors if needed.(Ûô½·øÿÿÿÿ8û×Ù1
+w
+java:S1104"\Make outgoingItemType a static final constant or non-public and provide accessors if needed.(®¸Å¶úÿÿÿÿ
+o
+java:S1104"TMake fromSite a static final constant or non-public and provide accessors if needed.(´¯ïøÿÿÿÿÿ
+m
+java:S1104"RMake toSite a static final constant or non-public and provide accessors if needed.(ÈˆÁİúÿÿÿÿ
+p
+java:S1104"UMake fromAsset a static final constant or non-public and provide accessors if needed.(Åï£Šøÿÿÿÿ
+h
+java:S1104"SMake toAsset a static final constant or non-public and provide accessors if needed.(‹ÅÆV
+f
+java:S1104"PMake site a static final constant or non-public and provide accessors if needed.(âû¡¦
+s
+java:S1104"XMake assetTypePos a static final constant or non-public and provide accessors if needed.(šô¨óüÿÿÿÿ
+l
+java:S1104"QMake items a static final constant or non-public and provide accessors if needed.(Ã¼¤ùÿÿÿÿ
+z
+java:S1104"XMake barcodeItems a static final constant or non-public and provide accessors if needed.(°«ñüÿÿÿÿ8û×Ù1
+l
+java:S1104"QMake state a static final constant or non-public and provide accessors if needed.(ï†üÚûÿÿÿÿ
+p
+java:S1104"UMake longitude a static final constant or non-public and provide accessors if needed.(ŠÜ®ùÿÿÿÿ
+o
+java:S1104"TMake latitude a static final constant or non-public and provide accessors if needed.(éı¾Ùúÿÿÿÿ
+z
+java:S1104"XMake internalItem a static final constant or non-public and provide accessors if needed.(ŠÜ¯Ÿÿÿÿÿÿ8û×Ù1
+u
+java:S1659"SDeclare "selectedToggleButtonTo" and all following declarations on a separate line.(Ûô½·øÿÿÿÿ8ı×Ù1

@@ -1,0 +1,16 @@
+
+s	java:S135"YReduce the total number of break and continue statements in this loop to use at most one.(˜ïˆžÿÿÿÿÿ
+’
+java:S1845="wRename method "Wait" to prevent any misunderstanding/clash with method "wait" defined in superclass "java.lang.Object".(§ˆüüÿÿÿÿÿ
+U
+java:S1118	":Add a private constructor to hide the implicit public one.(ªºƒîúÿÿÿÿ
+h	java:S100="NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(§ˆüüÿÿÿÿÿ
+t
+java:S2142@"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(ãµ¡³
+=
+java:S1905?"'Remove this unnecessary cast to "long".(þÏœ’
+>	java:S108@")Either remove or fill this block of code.(ãµ¡³
+h	java:S100D"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(£‘‚ðýÿÿÿÿ
+R
+java:S1874E"7Remove this use of "toggleSoftInput"; it is deprecated.(öÜÊ‚þÿÿÿÿ
+c	java:S100H"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ý°ƒô

@@ -1,0 +1,20 @@
+
+m	java:S117<"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(éµÅÙ8úûÀÙ1
+m
+java:S1301j"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ8úûÀÙ1
+G
+java:S1659#"+Declare "tvCageBarcode" on a separate line.(¨Ùê8šüÀÙ1
+E
+java:S1659$"#Declare "btnOk" on a separate line.(éŞŸ’ıÿÿÿÿ8šüÀÙ1
+N
+java:S16025",Remove useless curly braces around statement(şçşıÿÿÿÿ8üÀÙ1
+]	java:S1257"<This block of commented-out lines of code should be removed.(Ö«Ö©şÿÿÿÿ8üÀÙ1
+o	java:S100\"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨à÷¢úÿÿÿÿ8¤üÀÙ1
+t
+java:S3776i"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ8¥üÀÙ1
+C	java:S131j""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ8¦üÀÙ1
+š
+java:S5803p"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(Ş”´êøÿÿÿÿ8¦üÀÙ1
+]	java:S125"<This block of commented-out lines of code should be removed.(ßûŒ×üÿÿÿÿ8§üÀÙ1
+O
+java:S1068b"-Remove this unused "mActivity" private field.(‚ƒòÒøÿÿÿÿ8§üÀÙ1

@@ -1,0 +1,68 @@
+package io.agritrack.kefalonia.data.model.common;
+
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+
+import java.util.Locale;
+import java.util.UUID;
+
+@Entity(tableName = "employee", indices = {@Index("supervisor"), @Index(value = {"last_name", "first_name"})})
+public class Employee {
+
+    public Employee() {
+        this.id = UUID.randomUUID();
+    }
+
+    @PrimaryKey
+    @NonNull
+    public UUID id;
+
+    @ColumnInfo(name = "hierarchy_order")
+    public Short order;
+
+    @ColumnInfo(name = "email")
+    public String email;
+
+    @ColumnInfo(name = "first_name")
+    public String firstName;
+
+    @ColumnInfo(name = "last_name")
+    public String lastName;
+
+    @ColumnInfo(name = "phone")
+    public String phone;
+
+    @ColumnInfo(name = "enabled")
+    public Boolean enabled;
+
+    @ColumnInfo(name = "registered_at")
+    public Long registeredAt;
+
+    @ColumnInfo(name = "role_description")
+    public String roleDescription;
+
+    @ColumnInfo(name = "supervisor")
+    public Long supervisor;
+
+    @ColumnInfo(name = "site")
+    public String site;
+
+    @ColumnInfo(name = "user")
+    public Long user;
+
+   /* @ManyToOne
+    @JoinColumn(name = "site_id", foreignKey = @ForeignKey(name="FK_Employee_Site"))
+    public Site site;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="FK_Employee_User"))
+    public User user;*/
+
+    public String fullName() {
+        return this.firstName.substring(0,1).toUpperCase() + this.firstName.substring(1).toLowerCase()
+                + " " + this.lastName.substring(0,1).toUpperCase() + this.lastName.substring(1).toLowerCase();
+    }
+}

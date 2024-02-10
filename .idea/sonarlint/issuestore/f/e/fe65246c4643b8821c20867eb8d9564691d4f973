@@ -1,0 +1,23 @@
+
+E
+java:S3740@"/Provide the parametrized type for this generic.(Õµ”ò
+E
+java:S3740@"/Provide the parametrized type for this generic.(Õµ”ò
+>
+java:S1604c"(Make this anonymous inner class a lambda(³ÃÂ§
+D
+java:S1604ƒ"(Make this anonymous inner class a lambda(º©±­ûÿÿÿÿ
+D
+java:S1604‹"(Make this anonymous inner class a lambda(¡îüäýÿÿÿÿ
+^
+java:S1659$"CDeclare "ivBack" and all following declarations on a separate line.( ±¦Îúÿÿÿÿ
+œ
+java:S1186X"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(½Ä³ïþÿÿÿÿ
+—
+java:S1186]"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ž¦›Í
+a
+java:S1874}"FRemove this use of "SYSTEM_UI_FLAG_HIDE_NAVIGATION"; it is deprecated.(Š¢î®ûÿÿÿÿ
+b
+java:S1874}"GRemove this use of "SYSTEM_UI_FLAG_IMMERSIVE_STICKY"; it is deprecated.(Š¢î®ûÿÿÿÿ
+X
+java:S1874~"=Remove this use of "setSystemUiVisibility"; it is deprecated.(ü†Ý©øÿÿÿÿ

@@ -1,0 +1,58 @@
+
+|
+java:S1319("fThe type of "values" should be an interface such as "List" rather than the implementation "ArrayList".(¨ê‡
+C
+java:S1604n"(Make this anonymous inner class a lambda(ğ›Ù¿ıÿÿÿÿ
+D
+java:S1604€"(Make this anonymous inner class a lambda(èîµØùÿÿÿÿ
+?
+java:S1604–"(Make this anonymous inner class a lambda(£ÛâŒ
+D
+java:S1604¨"(Make this anonymous inner class a lambda(âö·ôüÿÿÿÿ
+f
+java:S1104×"OMake epc a static final constant or non-public and provide accessors if needed.(›Ÿ®²
+n
+java:S1104Ø"RMake weight a static final constant or non-public and provide accessors if needed.(úü¤Îùÿÿÿÿ
+n
+java:S1104Ù"WMake temperature a static final constant or non-public and provide accessors if needed.(¬æÊı
+p
+java:S1450""ZRemove the "selectedPos" field and declare it as a local variable in the relevant methods.(ğ´à
+h
+java:S3776]"RRefactor this method to reduce its Cognitive Complexity from 58 to the 15 allowed.(Æ¾ğÄ
+P
+java:S1874_":Remove this use of "getAdapterPosition"; it is deprecated.(šò§Ó
+P
+java:S1874b":Remove this use of "getAdapterPosition"; it is deprecated.(œ£„š
+P
+java:S1874r":Remove this use of "getAdapterPosition"; it is deprecated.(Éçß¾
+“
+java:S5803s"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ì¼‰‡ıÿÿÿÿ
+Q
+java:S1874†":Remove this use of "getAdapterPosition"; it is deprecated.(Éçß¾
+V
+java:S1874š":Remove this use of "getAdapterPosition"; it is deprecated.(â§«øÿÿÿÿ
+V
+java:S1874®":Remove this use of "getAdapterPosition"; it is deprecated.(â§«øÿÿÿÿ
+R	java:S125¾"<This block of commented-out lines of code should be removed.(á…ÿ
+c
+java:S3252Ã"LUse static access with "android.content.Context" for "INPUT_METHOD_SERVICE".(ˆ¤ø
+]
+java:S1659ó"FDeclare "tvItemSNo" and all following declarations on a separate line.(Î¨ÚÊ
+B
+java:S1659ô"&Declare "etWeight" on a separate line.(¯§æùıÿÿÿÿ
+F
+java:S1659õ"/Declare "constraintLayout3" on a separate line.(µ–Š¬
+R	java:S125û"<This block of commented-out lines of code should be removed.(úî×Ù
+W	java:S125ı"<This block of commented-out lines of code should be removed.(Ü³ªÔüÿÿÿÿ
+W	java:S125Œ"<This block of commented-out lines of code should be removed.(º£úøÿÿÿÿ
+V
+java:S1874“":Remove this use of "getAdapterPosition"; it is deprecated.(îù¾ùÿÿÿÿ
+W	java:S125•"<This block of commented-out lines of code should be removed.(ù³ß’şÿÿÿÿ
+R	java:S125"<This block of commented-out lines of code should be removed.(ŸÚˆ§
+R	java:S125¨"<This block of commented-out lines of code should be removed.(óÑĞ
+E
+java:S1068""/Remove this unused "selectedPos" private field.(ğ´à
+M
+java:S1068#"7Remove this unused "previousSelectedPos" private field.(ø„ı…
+D
+java:S1068ó"-Remove this unused "tvItemSNo" private field.(Î¨ÚÊ

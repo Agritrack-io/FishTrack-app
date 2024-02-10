@@ -1,0 +1,60 @@
+
+Q
+java:S3740`"/Provide the parametrized type for this generic.(ñÒ»Õıÿÿÿÿ8Ú¢Ù1
+Q
+java:S3740`"/Provide the parametrized type for this generic.(ñÒ»Õıÿÿÿÿ8Ú¢Ù1
+|
+java:S1488:"`Immediately return this expression instead of assigning it to the temporary variable "fragment".(«‡ûl8Û¢Ù1
+l
+java:S1104""OMake TAG a static final constant or non-public and provide accessors if needed.(¨á®8Ü¢Ù1
+F
+java:S1444"")Make this "public static TAG" field final(¨á®8Ü¢Ù1
+k
+java:S3008""NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨á®8û¢Ù1
+c
+java:S1659*"FDeclare "btnRT0012" and all following declarations on a separate line.(©˜Ê8ÿ¢Ù1
+n
+java:S1450*"XRemove the "btnDelCfg" field and declare it as a local variable in the relevant methods.(©˜Ê
+{
+java:S1450*"^Remove the "btnImportRT0012" field and declare it as a local variable in the relevant methods.(©˜Ê8€£Ù1
+u
+java:S1450*"XRemove the "btnRT0012" field and declare it as a local variable in the relevant methods.(©˜Ê8€£Ù1
+|
+java:S1450*"_Remove the "btnSiteSelection" field and declare it as a local variable in the relevant methods.(©˜Ê8£Ù1
+v
+java:S1450*"YRemove the "btnTruncDB" field and declare it as a local variable in the relevant methods.(©˜Ê8£Ù1
+o
+java:S1450)"YRemove the "spProducts" field and declare it as a local variable in the relevant methods.(Í«Í¦
+~
+java:S1450+"\Remove the "tbEnvironment" field and declare it as a local variable in the relevant methods.(ßÂĞıÿÿÿÿ8£Ù1
+t
+java:S1612#"WReplace this lambda with method reference 'AppOptionsFragment.this::gotoSiteSelection'.(Šƒª8Š£Ù1
+m
+java:S1612$"PReplace this lambda with method reference 'AppOptionsFragment.this::gotoRT0012'.(±Ûªî8‹£Ù1
+x
+java:S1612%"VReplace this lambda with method reference 'AppOptionsFragment.this::gotoImportRT0012'.(ë¡¶Êúÿÿÿÿ8Œ£Ù1
+n
+java:S1612&"LReplace this lambda with method reference 'AppOptionsFragment.this::delCfg'.(Ô°ôòùÿÿÿÿ8Œ£Ù1
+s
+java:S1612'"QReplace this lambda with method reference 'AppOptionsFragment.this::trunLocalDB'.(«”‘„úÿÿÿÿ8Œ£Ù1
+E
+java:S1185?"(Remove this method to simply inherit it.(ßìê¯8£Ù1
+x
+java:S3923X"[Remove this conditional structure or edit its code blocks so that they're not all the same.(üœ¹Â8£Ù1
+]	java:S125h"<This block of commented-out lines of code should be removed.(ş•Üùÿÿÿÿ8£Ù1
+š
+java:S5803i"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(³“ùúúÿÿÿÿ8£Ù1
+¤
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(‡ÿÉùûÿÿÿÿ8£Ù1
+n
+java:S3457v"Q%n should be used in place of \n to produce the platform-specific line separator.(•§ƒ”8’£Ù1
+E
+java:S1172‘"(Remove this unused method parameter "v".(öŠÌ8“£Ù1
+F
+java:S1172˜"(Remove this unused method parameter "v".(¶ªÉ8˜£Ù1
+F
+java:S1172Ÿ"(Remove this unused method parameter "v".(”¼©ø8™£Ù1
+F
+java:S1172¦"(Remove this unused method parameter "v".(‚ÿö—8š£Ù1
+K
+java:S1172²"(Remove this unused method parameter "v".(Š›ÖÍıÿÿÿÿ8›£Ù1

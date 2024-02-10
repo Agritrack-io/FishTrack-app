@@ -1,0 +1,34 @@
+
+|
+java:S1319'"fThe type of "values" should be an interface such as "List" rather than the implementation "ArrayList".(œ”Ã—
+>
+java:S1604k"(Make this anonymous inner class a lambda(¢–ì
+i
+java:S1104¢"RMake weight a static final constant or non-public and provide accessors if needed.(äïƒ½
+M
+java:S2589|"7Remove this expression which always evaluates to "true"(¶”ƒ
+P
+java:S1874^":Remove this use of "getAdapterPosition"; it is deprecated.(šò§Ó
+U
+java:S1874a":Remove this use of "getAdapterPosition"; it is deprecated.(Çôì›ûÿÿÿÿ
+d
+java:S1858d"I"weight" is already a string, there's no need to call "toString()" on it.(¢º†êıÿÿÿÿ
+P
+java:S1874i":Remove this use of "getAdapterPosition"; it is deprecated.(Î×Ãè
+˜
+java:S1186„"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(«û³±
+
+java:S1186‡"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Íñø»úÿÿÿÿ
+V
+java:S1874Œ":Remove this use of "getAdapterPosition"; it is deprecated.(À’«úÿÿÿÿ
+W	java:S125¸"<This block of commented-out lines of code should be removed.(ÿŞëúÿÿÿÿ
+V
+java:S1874¿":Remove this use of "getAdapterPosition"; it is deprecated.(îù¾ùÿÿÿÿ
+V
+java:S1874Á":Remove this use of "getAdapterPosition"; it is deprecated.(Òã”úÿÿÿÿ
+V
+java:S1874Ë":Remove this use of "getAdapterPosition"; it is deprecated.(–¸•Üüÿÿÿÿ
+A
+java:S1068"+Remove this unused "context" private field.(¨îÑÙ
+M
+java:S1068#"7Remove this unused "previousSelectedPos" private field.(ø„ı…

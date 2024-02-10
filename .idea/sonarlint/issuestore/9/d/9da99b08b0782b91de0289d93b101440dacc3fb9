@@ -1,0 +1,39 @@
+
+h	java:S112¯"FDefine and throw a dedicated exception instead of using a generic one.(‹®™şÿÿÿÿ8¦ËÜÙ1
+F
+java:S3740¥"/Provide the parametrized type for this generic.(ÅÍƒŠ
+M
+java:S3740¦"/Provide the parametrized type for this generic.(ò›ï8§ËÜÙ1
+f
+java:S1659D"DDeclare "btnInit" and all following declarations on a separate line.(ó®œôşÿÿÿÿ8‰ÌÜÙ1
+y
+java:S1450L"WRemove the "initedAt" field and declare it as a local variable in the relevant methods.(ÊæÚúÿÿÿÿ8ŠÌÜÙ1
+š
+java:S5803U"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(‘‰Ìçÿÿÿÿÿ8“ÌÜÙ1
+N
+java:S1172"+Remove this unused method parameter "view".(¸§¶Üúÿÿÿÿ8«ÌÜÙ1
+u
+java:S3776Æ"RRefactor this method to reduce its Cognitive Complexity from 61 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ8±ÌÜÙ1
+O
+java:S1602õ",Remove useless curly braces around statement(‡ş¡ûÿÿÿÿ8¶ÌÜÙ1
+O
+java:S1602ú",Remove useless curly braces around statement(‡ş¡ûÿÿÿÿ8¶ÌÜÙ1
+O
+java:S1602—",Remove useless curly braces around statement(‡ş¡ûÿÿÿÿ8·ÌÜÙ1
+O
+java:S1602œ",Remove useless curly braces around statement(‡ş¡ûÿÿÿÿ8¸ÌÜÙ1
+S
+java:S2696±"6Make the enclosing method "static" or remove this set.(–îÚc8¹ÌÜÙ1
+O
+java:S1602¿",Remove useless curly braces around statement(‡ş¡ûÿÿÿÿ8¹ÌÜÙ1
+Y	java:S125Î"<This block of commented-out lines of code should be removed.(’´¿8ºÌÜÙ1
+O
+java:S1602ä",Remove useless curly braces around statement(‡ş¡ûÿÿÿÿ8¼ÌÜÙ1
+J
+java:S3398î",Move this method into "CAENCommandsHandler".(ÁØ‚†8¼ÌÜÙ1
+J
+java:S3398ˆ",Move this method into "CAENCommandsHandler".(ÉıüÆ8¼ÌÜÙ1
+J
+java:S3398¥",Move this method into "CAENCommandsHandler".(ÅÍƒŠ8¼ÌÜÙ1
+N
+java:S1068L",Remove this unused "initedAt" private field.(ÊæÚúÿÿÿÿ8¼ÌÜÙ1
