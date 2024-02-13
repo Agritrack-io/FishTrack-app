@@ -609,8 +609,6 @@ r
 Bapp/src/main/java/io/agritrack/kefalonia/api/config/ConfigAPI.java,9\7\97220461e52814454d7e8d5bf33ed6086705f483
 A
 gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
-@
-app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 N
 RFIDlibrary/consumer-rules.pro,4\a\4afb0f55a6886c6e197738d7935a22d722f9425a
 F
@@ -657,3 +655,23 @@ y
 Iapp/src/main/java/io/agritrack/kefalonia/ui/tools/caen/ILoggerDialog.java,9\b\9bddd02119a98d2dc3d2c45169e36238e22326a3
 p
 @app/src/main/java/io/agritrack/kefalonia/data/model/BinInfo.java,8\6\8691bd67eb3efea4caa84dbe200ba57f76d241ef
+Ö
+Uapp/src/main/java/io/agritrack/kefalonia/fish/ui/binTurnover/BinTurnoverActivity.java,e\d\ed137bff6ffae4b7af614d74115620fa1ef23167
+~
+Napp/src/main/java/io/agritrack/kefalonia/fish/ui/fishing/ISummaryActivity.java,4\d\4d541339537de6be7d2ff37d1b0d993f3425fb39
+w
+Gapp/src/main/java/io/agritrack/kefalonia/ui/adapter/BinLoadAdapter.java,5\a\5abe72d828dadd8b3891c8bdcd50e36c624656eb
+Å
+Qapp/src/main/java/io/agritrack/kefalonia/fish/ui/fishing/FishingBinsActivity.java,0\f\0fadb9c506817f59f57c18ef64bfc148edc6ea57
+Ö
+Uapp/src/main/java/io/agritrack/kefalonia/fish/ui/fishing/FishingFillBinsActivity.java,9\6\96a0c3b7437ba44295f84319037a61644f608b28
+Ä
+Papp/src/main/java/io/agritrack/kefalonia/ui/tools/caen/LoggerDialogFragment.java,9\d\9da99b08b0782b91de0289d93b101440dacc3fb9
+v
+Fapp/src/main/java/io/agritrack/kefalonia/caen/api/BX6100Commander.java,6\f\6f2d529020ace77caa8e1d5104e37adfea790d0b
+|
+Lapp/src/main/java/io/agritrack/kefalonia/caen/api/AbstractCAENCommander.java,c\a\cab22a70caf3dc8b6d17b5eb3c379485689d30f2
+x
+Happ/src/main/java/io/agritrack/kefalonia/caen/api/CAENLoggerService.java,a\0\a0269f010bdb758bb644918f143c18bdccd7a32e
+p
+@app/src/main/java/io/agritrack/kefalonia/caen/api/ICAEN_API.java,5\6\568d799e01a19ea40d9b8c9b49fecef4e66004b4

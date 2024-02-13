@@ -1,0 +1,38 @@
+
+d
+java:S1192ë"HDefine a constant instead of duplicating this literal "%s (%s)" 4 times.(¶Î´­úÿÿÿÿ
+g
+java:S16593"LDeclare "tvUsedBinsCount" and all following declarations on a separate line.(ççøÿÿÿÿ
+^
+java:S1659="CDeclare "ivInfo" and all following declarations on a separate line.(±ôòäüÿÿÿÿ
+s
+java:S1450<"XRemove the "epochFrom" field and declare it as a local variable in the relevant methods.(­˜Å‡ûÿÿÿÿ
+y
+java:S1450="^Remove the "ivCheckLastTemp" field and declare it as a local variable in the relevant methods.(±ôòäüÿÿÿÿ
+u
+java:S1450H"ZRemove the "pbBluetooth" field and declare it as a local variable in the relevant methods.(Ê§ò¡şÿÿÿÿ
+W	java:S125Œ"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+?
+java:S1185œ"(Remove this method to simply inherit it.(ÍÙ÷¢
+
+java:S5803©"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç
+R
+java:S1117"6Rename "db" which hides the field declared at line 66.(Çã¬úÿÿÿÿ
+m
+java:S3457¨"Q%n should be used in place of \n to produce the platform-specific line separator.(ãÆ‰Úıÿÿÿÿ
+D	java:S108¬")Either remove or fill this block of code.(—¡®ıÿÿÿÿ
+D	java:S108µ")Either remove or fill this block of code.(­¡İîûÿÿÿÿ
+Q
+java:S10687"<Remove this unused "intentForFillBinActivity" private field.(‘Ôİ}
+K
+java:S10688"0Remove this unused "mCatchWeight" private field.(å’®‡şÿÿÿÿ
+D
+java:S10689".Remove this unused "currentBin" private field.(İµëÎ
+E
+java:S1068:"/Remove this unused "weightOfBin" private field.(—‰İ
+O
+java:S1068E"4Remove this unused "bluetoothAdapter" private field.(Ùâæûÿÿÿÿ
+N
+java:S1068F"3Remove this unused "bluetoothDevice" private field.(Áˆ“øÿÿÿÿ
+C
+java:S1068I"-Remove this unused "currState" private field.(â©¸Í

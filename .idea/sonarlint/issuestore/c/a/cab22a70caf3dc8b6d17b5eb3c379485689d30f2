@@ -1,0 +1,68 @@
+
+a	java:S112¥"FDefine and throw a dedicated exception instead of using a generic one.(ê™Êâüÿÿÿÿ
+a	java:S112°"FDefine and throw a dedicated exception instead of using a generic one.(ê™Êâüÿÿÿÿ
+b
+java:S1192¿"FDefine a constant instead of duplicating this literal "%s.%s" 4 times.(Â­Ô×þÿÿÿÿ
+f	java:S117|"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(É÷”ï
+f	java:S117‰"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(À›Æ|
+l	java:S117Ç"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹ÎúÓþÿÿÿÿ
+q
+java:S1488»"ZImmediately return this expression instead of assigning it to the temporary variable "rs".(‘ÎÁÎ
+q
+java:S1488ê"ZImmediately return this expression instead of assigning it to the temporary variable "rs".(¢ž–ý
+q
+java:S1488ö"ZImmediately return this expression instead of assigning it to the temporary variable "rs".(¢ž–ý
+k	java:S116-"VRename this field "TagToString" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±äÝú
+t	java:S116."ZRename this field "TagInfoToString" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆ«þëùÿÿÿÿ
+m
+java:S3008,"WRename this field "LoggerIsOpen" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤¦ÿ®
+Q	java:S125+"<This block of commented-out lines of code should be removed.(žª¤ð
+`
+java:S1124;"EReorder the modifiers to comply with the Java Language Specification.(ë££ýÿÿÿÿ
+[
+java:S1124="EReorder the modifiers to comply with the Java Language Specification.(Œö„ã
+[
+java:S1124?"EReorder the modifiers to comply with the Java Language Specification.(›¸™£
+`
+java:S1124A"EReorder the modifiers to comply with the Java Language Specification.(Ô»·”úÿÿÿÿ
+`
+java:S1124C"EReorder the modifiers to comply with the Java Language Specification.(¨ûÝòúÿÿÿÿ
+[
+java:S1124E"EReorder the modifiers to comply with the Java Language Specification.(å‚£ˆ
+`
+java:S1124G"EReorder the modifiers to comply with the Java Language Specification.(»²°ëøÿÿÿÿ
+`
+java:S1124I"EReorder the modifiers to comply with the Java Language Specification.(Ðåž¥üÿÿÿÿ
+[
+java:S1124K"EReorder the modifiers to comply with the Java Language Specification.(öüáÎ
+[
+java:S1124M"EReorder the modifiers to comply with the Java Language Specification.(Îâ„Ã
+`
+java:S1124O"EReorder the modifiers to comply with the Java Language Specification.(Ø“…Ðþÿÿÿÿ
+`
+java:S1124Q"EReorder the modifiers to comply with the Java Language Specification.(Íæ†¡ÿÿÿÿÿ
+`
+java:S1124S"EReorder the modifiers to comply with the Java Language Specification.(’Ââ¹øÿÿÿÿ
+[
+java:S1124U"EReorder the modifiers to comply with the Java Language Specification.(‚íÕú
+[
+java:S1124W"EReorder the modifiers to comply with the Java Language Specification.(Ì¿º½
+`
+java:S1124Y"EReorder the modifiers to comply with the Java Language Specification.(ªæÏºûÿÿÿÿ
+u
+java:S2142…"^Either re-interrupt this method or rethrow the "InterruptedException" that can be caught here.(ä ¹€
+?	java:S108…")Either remove or fill this block of code.(ä ¹€
+R	java:S125¢"<This block of commented-out lines of code should be removed.(Ïƒ÷É
+R	java:S125 "<This block of commented-out lines of code should be removed.(ÅïÛ
+>
+java:S1905ä"'Remove this unnecessary cast to "long".(»ÈÒü
+M
+java:S2696–"6Make the enclosing method "static" or remove this set.(¢ú™Æ
+i	java:S100¡"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(„ÿÐþÿÿÿÿÿ
+N
+java:S1135¢"2Complete the task associated to this TODO comment.(á”ñ×ùÿÿÿÿ
+i	java:S100¬"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(çÚ£ûúÿÿÿÿ
+N
+java:S1135­"2Complete the task associated to this TODO comment.(á”ñ×ùÿÿÿÿ
+W
+java:S1144·";Remove this unused private "parseDataWithTimestamp" method.(•®èµüÿÿÿÿ

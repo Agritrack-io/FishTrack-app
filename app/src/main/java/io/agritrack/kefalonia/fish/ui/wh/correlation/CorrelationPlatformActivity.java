@@ -21,12 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
 
@@ -34,9 +29,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.api.APIServiceGenerator;
@@ -46,15 +38,12 @@ import io.agritrack.kefalonia.common.Filters;
 import io.agritrack.kefalonia.data.db.MobileDB;
 import io.agritrack.kefalonia.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.kefalonia.data.model.tx.CorrelationTransaction;
-import io.agritrack.kefalonia.data.model.wh.Asset;
 import io.agritrack.kefalonia.dialog.SupportDialog;
 import io.agritrack.kefalonia.dialog.YesNoDialogFragment;
 import io.agritrack.kefalonia.fish.state.GlobalState;
-import io.agritrack.kefalonia.fish.ui.bo.GenericListModel;
 import io.agritrack.kefalonia.rfid.SingleShotScanner;
 import io.agritrack.kefalonia.rfid.X9KeyReceiver;
 import io.agritrack.kefalonia.ui.LocationAwareActivity;
-import io.agritrack.kefalonia.ui.adapter.FilterableAdapter;
 import io.agritrack.kefalonia.ui.service.LocalPreferences;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
