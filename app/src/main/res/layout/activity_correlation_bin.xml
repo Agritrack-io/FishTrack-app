@@ -144,7 +144,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="@string/choose_net"
+            android:text="@string/choose_bin"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
     </RelativeLayout>
