@@ -147,7 +147,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        spAssetType.setSelection(2);
+        spAssetType.setSelection(1);
 
         svSearchAsset.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override

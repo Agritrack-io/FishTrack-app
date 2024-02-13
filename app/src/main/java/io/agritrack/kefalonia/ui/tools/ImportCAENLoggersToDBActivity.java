@@ -52,7 +52,7 @@ import io.agritrack.kefalonia.sound.SoundUtil;
 import io.agritrack.kefalonia.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.kefalonia.ui.login.LoginActivity;
 import io.agritrack.kefalonia.ui.service.LocalPreferences;
-import io.agritrack.rfid.ScanInventoryThread;
+import io.agritrack.kefalonia.rfid.ScanInventoryThread;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

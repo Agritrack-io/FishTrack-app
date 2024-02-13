@@ -55,7 +55,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import io.agritrack.api.sync.EncodingSchemeCallBack;
-import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.AgritrackProducts;
 import io.agritrack.kefalonia.FishTrackApplication;
 import io.agritrack.kefalonia.R;

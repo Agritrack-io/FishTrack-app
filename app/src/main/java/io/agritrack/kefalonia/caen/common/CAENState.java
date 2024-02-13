@@ -13,7 +13,7 @@ import io.agritrack.kefalonia.ui.tools.caen.ILoggerDialog;
 public class CAENState implements Serializable {
 
     private static final String TAG = "CAENState";
-    private final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     // keeps the OP result, to decide whether to proceed to next step or not.
     public String path = "";
     public Boolean canProceed = true;
@@ -36,6 +36,7 @@ public class CAENState implements Serializable {
     public List<String[]> samples = null;
     private String loggerEPC = null;
     private String assetEPC = null;
+    private Long pickedAt;
     private String productionLane = null;
     //--------------------------------------
     //-- 1: True, 0: False, null: Failure --
@@ -254,6 +255,14 @@ public class CAENState implements Serializable {
 
     public void setAssetEPC(String assetEPC) {
         this.assetEPC = assetEPC;
+    }
+
+    public Long getPickedAt() {
+        return pickedAt;
+    }
+
+    public void setPickedAt(Long pickedAt) {
+        this.pickedAt = pickedAt;
     }
 
     public String getProductionLane() {

@@ -117,13 +117,13 @@ public class EncodingUtils {
     public static String parseTimestamp(byte[] b) {
         int l = ToInt(b);
         Date dt = new Date(l*1000l);
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         return format.format(dt);
     }
 
     public static String createTimestamp(long beginTS) {
         Date dt = new Date(beginTS);
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         return format.format(dt);
     }
 }

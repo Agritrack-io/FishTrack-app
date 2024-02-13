@@ -26,7 +26,7 @@ import java.math.RoundingMode;
 import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
 
-import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.api.APIServiceGenerator;
 import io.agritrack.kefalonia.api.tx.TransactionApi;

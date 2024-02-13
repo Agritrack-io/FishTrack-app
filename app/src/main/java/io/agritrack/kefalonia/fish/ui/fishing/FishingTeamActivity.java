@@ -42,7 +42,6 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.common.Filters;
 import io.agritrack.kefalonia.data.db.MobileDB;
@@ -53,6 +52,7 @@ import io.agritrack.kefalonia.dialog.InfoDialog;
 import io.agritrack.kefalonia.dialog.SupportDialog;
 import io.agritrack.kefalonia.dialog.YesNoDialogFragment;
 import io.agritrack.kefalonia.fish.state.GlobalState;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.fish.ui.bo.GenericListModel;
 import io.agritrack.kefalonia.rfid.SingleShotScanner;
 import io.agritrack.kefalonia.rfid.X9KeyReceiver;

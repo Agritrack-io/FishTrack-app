@@ -1,0 +1,58 @@
+
+m
+java:S1192À"VDefine a constant instead of duplicating this literal "%s, %s, %s, %s kg, %s" 3 times.(é½ó
+e
+java:S1192¾"IDefine a constant instead of duplicating this literal "%s:%s:%s" 3 times.(æñûÉşÿÿÿÿ
+K
+java:S1066©"/Merge this if statement with the enclosing one.(¿ûîôıÿÿÿÿ
+?
+java:S1604™"(Make this anonymous inner class a lambda(¶ò”Ò
+D
+java:S1604õ"(Make this anonymous inner class a lambda(Êœüûÿÿÿÿ
+?
+java:S1604ï"(Make this anonymous inner class a lambda(ÀËÜ•
+B
+java:S1659C",Declare "ibSplitRequest" on a separate line.(­íïÑ
+s
+java:S1450C"]Remove the "ibSelectReason" field and declare it as a local variable in the relevant methods.(­íïÑ
+n
+java:S1450E"XRemove the "ivSupport" field and declare it as a local variable in the relevant methods.(ÄÖ¬
+p
+java:S1450I"URemove the "member" field and declare it as a local variable in the relevant methods.(ïËì«ûÿÿÿÿ
+v
+java:S1450B"[Remove the "tgChooseDate" field and declare it as a local variable in the relevant methods.(õÅôÙûÿÿÿÿ
+f
+java:S1450H"PRemove the "v" field and declare it as a local variable in the relevant methods.(íÜäñ
+h
+java:S3252\"MUse static access with "android.widget.AbsListView" for "CHOICE_MODE_SINGLE".(¢Ì¥ùÿÿÿÿ
+
+java:S5803}"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç
+@
+java:S1905Ä")Remove this unnecessary cast to "double".(€ìº
+E
+java:S1905É")Remove this unnecessary cast to "double".(¥ıæŠúÿÿÿÿ
+J
+java:S1905ô".Remove this unnecessary cast to "AlertDialog".(İÆÆ„ùÿÿÿÿ
+k
+java:S3252ô"OUse static access with "android.content.DialogInterface" for "BUTTON_POSITIVE".(İÆÆ„ùÿÿÿÿ
+2
+java:S3626"Remove this redundant jump.(ûÁİ…
+\
+java:S1854 "@Remove this useless assignment to local variable "previousDate".(ÕáÑİùÿÿÿÿ
+X
+java:S1854"ARemove this useless assignment to local variable "yesterdayDate".(Àøœ‡
+Q
+java:S1854œ";Remove this useless assignment to local variable "nowDate".(é‹“(
+B
+java:S1481œ",Remove this unused "nowDate" local variable.(é‹“(
+I
+java:S1481"2Remove this unused "yesterdayDate" local variable.(Àøœ‡
+M
+java:S1481 "1Remove this unused "previousDate" local variable.(ÕáÑİùÿÿÿÿ
+h
+java:S3776«"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(ˆÅO
+R	java:S125ì"<This block of commented-out lines of code should be removed.(‡µâğ
+A
+java:S3457ª"%String contains no format specifiers.(şàı·şÿÿÿÿ
+?
+java:S1185²"(Remove this method to simply inherit it.(ÍÙ÷¢

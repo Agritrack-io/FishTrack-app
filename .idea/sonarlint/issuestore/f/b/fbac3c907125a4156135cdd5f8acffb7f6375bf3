@@ -1,0 +1,42 @@
+
+?
+java:S1604–"(Make this anonymous inner class a lambda(æ¶ßù
+|
+java:S1488Ä"fImmediately return this expression instead of assigning it to the temporary variable "authentication".(îÿ‰
+F
+java:S5411"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
+R
+java:S2589k"7Remove this expression which always evaluates to "true"(Ãíİ¤ûÿÿÿÿ
+f
+java:S16596"KDeclare "tvDispatchNote" and all following declarations on a separate line.(Á§øÿÿÿÿ
+^
+java:S16598"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
+x
+java:S14506"]Remove the "tvPackagingLot" field and declare it as a local variable in the relevant methods.(Á§øÿÿÿÿ
+Q
+java:S18745"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+Q
+java:S1874W"6Remove this use of "ProgressDialog"; it is deprecated.(…òæÒşÿÿÿÿ
+N
+java:S1874X"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+L
+java:S1874X"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+K
+java:S1874X"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+—
+java:S1186}"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(«û³±
+
+java:S1186€"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(Íñø»úÿÿÿÿ
+1
+java:S3626p"Remove this redundant jump.(ûÁİ…
+˜
+java:S1186˜"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¡é††
+
+java:S5803±"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(Ê¼à
+R	java:S125¹"<This block of commented-out lines of code should be removed.(şÈ…¶
+W	java:S125¿"<This block of commented-out lines of code should be removed.(Í—‹Üüÿÿÿÿ
+N
+java:S1874Ì"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ
+T	java:S106ê"9Replace this use of System.out or System.err by a logger.(Ç‹•şÿÿÿÿ
+C
+java:S3398è"'Move this method into "SyncTxCallBack".( ÉÏŠøÿÿÿÿ

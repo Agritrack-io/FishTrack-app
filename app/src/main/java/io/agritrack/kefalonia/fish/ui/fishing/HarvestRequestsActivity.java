@@ -42,7 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.data.db.MobileDB;
 import io.agritrack.kefalonia.data.model.FishingRequest;

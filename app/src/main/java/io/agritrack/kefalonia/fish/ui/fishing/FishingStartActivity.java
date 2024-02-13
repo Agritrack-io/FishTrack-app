@@ -19,7 +19,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
 
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.data.db.MobileDB;
 import io.agritrack.kefalonia.data.model.tx.FishingTransaction;
@@ -28,6 +27,7 @@ import io.agritrack.kefalonia.dialog.SupportDialog;
 import io.agritrack.kefalonia.dialog.YesNoDialogFragment;
 import io.agritrack.kefalonia.fish.state.FishingRecord;
 import io.agritrack.kefalonia.fish.state.GlobalState;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.ui.service.LocalPreferences;
 
 public class FishingStartActivity extends AppCompatActivity {

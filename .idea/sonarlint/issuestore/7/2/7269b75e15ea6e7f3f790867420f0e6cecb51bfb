@@ -1,0 +1,28 @@
+
+_
+java:S1192Ë"HDefine a constant instead of duplicating this literal "Bearer " 4 times.(µ“÷¨
+E
+java:S5411|"*Use the primitive boolean expression here.(õÏ†îøÿÿÿÿ
+<
+java:S1659A"&Declare "measRepo" on a separate line.(¦éó”
+f
+java:S1659E"KDeclare "tvPackagingLot" and all following declarations on a separate line.(¡éÎ¬ùÿÿÿÿ
+^
+java:S1659G"CDeclare "ivNext" and all following declarations on a separate line.(ºÈ±§ıÿÿÿÿ
+Q
+java:S1874D"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+Q
+java:S1874i"6Remove this use of "ProgressDialog"; it is deprecated.(’•‚üøÿÿÿÿ
+N
+java:S1874j"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+L
+java:S1874j"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+K
+java:S1874j"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+”
+java:S5803­"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(Ô»¹Ìÿÿÿÿÿ
+N
+java:S1874ã"2Remove this use of "setMessage"; it is deprecated.(¡ú…šıÿÿÿÿ
+N	java:S106•"9Replace this use of System.out or System.err by a logger.(ñŠø
+C
+java:S3398“"'Move this method into "SyncTxCallBack".(ÿªÒ’ùÿÿÿÿ

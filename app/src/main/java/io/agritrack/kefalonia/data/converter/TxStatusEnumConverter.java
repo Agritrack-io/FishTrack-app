@@ -4,7 +4,7 @@ import androidx.room.TypeConverter;
 
 import com.google.android.gms.common.util.Strings;
 
-import io.agritrack.enums.TxStatus;
+import io.agritrack.kefalonia.enums.TxStatus;
 
 public class TxStatusEnumConverter {
     @TypeConverter

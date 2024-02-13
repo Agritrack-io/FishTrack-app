@@ -41,11 +41,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import io.agritrack.api.sync.RfidBatchByRfidBarcode;
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.api.APIServiceGenerator;
 import io.agritrack.kefalonia.api.query.EnquiryApi;
+import io.agritrack.kefalonia.api.sync.RfidBatchByRfidBarcode;
 import io.agritrack.kefalonia.common.Filters;
 import io.agritrack.kefalonia.data.db.MobileDB;
 import io.agritrack.kefalonia.data.model.BinInfo;

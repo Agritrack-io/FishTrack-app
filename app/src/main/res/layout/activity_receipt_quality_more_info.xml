@@ -101,7 +101,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <io.agritrack.ui.custom.ToggleGroup
+            <io.agritrack.kefalonia.ui.custom.ToggleGroup
                 android:id="@+id/tgBinCondition"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
@@ -151,7 +151,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
                     android:textOff="@string/bad_condition"
                     android:textOn="@string/bad_condition"
                     android:textSize="@dimen/text_view_font_size_medium" />
-            </io.agritrack.ui.custom.ToggleGroup>
+            </io.agritrack.kefalonia.ui.custom.ToggleGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -190,7 +190,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <io.agritrack.ui.custom.ToggleGroup
+            <io.agritrack.kefalonia.ui.custom.ToggleGroup
                 android:id="@+id/tgIceCondition"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
@@ -240,7 +240,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfoActivity">
                     android:textOff="@string/bad_condition"
                     android:textOn="@string/bad_condition"
                     android:textSize="@dimen/text_view_font_size_medium" />
-            </io.agritrack.ui.custom.ToggleGroup>
+            </io.agritrack.kefalonia.ui.custom.ToggleGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

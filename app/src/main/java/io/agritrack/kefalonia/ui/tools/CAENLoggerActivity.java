@@ -51,7 +51,7 @@ import io.agritrack.kefalonia.ui.login.LoginActivity;
 import io.agritrack.kefalonia.ui.tools.caen.ILoggerDialog;
 import io.agritrack.kefalonia.ui.tools.caen.LoggerDialogFragment;
 import io.agritrack.kefalonia.ui.tools.caen.ReadLoggerDialogDecorator;
-import io.agritrack.rfid.SingleShotScanner;
+import io.agritrack.kefalonia.rfid.SingleShotScanner;
 
 public class CAENLoggerActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.

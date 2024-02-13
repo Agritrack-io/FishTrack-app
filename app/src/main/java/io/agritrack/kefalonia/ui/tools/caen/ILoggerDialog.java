@@ -12,6 +12,7 @@ public interface ILoggerDialog {
     String LOGGER_EPC = "LoggerEPC";
     String ASSET_EPC = "AssetEPC";
     String INITED_AT = "InitializedAt";
+    String PICKED_AT = "PickedAt";
     String PROD_LANE = "ProductionLane";
 
     // show the decorated Dialog.

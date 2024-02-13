@@ -186,9 +186,6 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
         } else {
             holder.etBinTemperature.setText("");
         }
-
-//        holder.itemView.setBackgroundColor(selectedPos == holder.getAdapterPosition() ? Color.GRAY : R.color.agri_blue);
-//        holder.tvItemSNo.setText(position + 1 + ".");
     }
 
     public void hideKeyboard(View view) {
@@ -240,7 +237,7 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final TextView tvRfid, tvItemSNo, tvKg, tvCelsius; //tvBinWeightLabel, tvAddTemp,
+        private final TextView tvRfid, tvItemSNo, tvKg, tvCelsius;
         private final EditText etBinTemperature, etWeight;
         private final ConstraintLayout constraintLayout2, constraintLayout3;
 
@@ -248,9 +245,7 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
             super(itemView);
             tvRfid = itemView.findViewById(R.id.tvRfid);
             tvItemSNo = itemView.findViewById(R.id.tvRecyclerItemSNo);
-//            tvAddTemp = itemView.findViewById(R.id.tvAddTemp);
             etWeight = itemView.findViewById(R.id.etBinWeight);
-//            tvBinWeightLabel = itemView.findViewById(R.id.tvBinWeightLabel);
             etBinTemperature = itemView.findViewById(R.id.etBinTemperature);
             tvKg = itemView.findViewById(R.id.tvKg);
             tvCelsius = itemView.findViewById(R.id.tvCelsius);
@@ -265,7 +260,6 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(etBinTemperature, InputMethodManager.SHOW_IMPLICIT);
             });
-//            tvAddTemp.setOnClickListener(this);
         }
 
         @Override
@@ -274,30 +268,9 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
             // in that case, getAdapterPosition() will return RecyclerView.NO_POSITION
             if (getAdapterPosition() == RecyclerView.NO_POSITION) return;
 
-//            if (selectedPos == getAdapterPosition()) {
-//                selectedPos = RecyclerView.NO_POSITION;
-//                selectedValue = null;
-//                selectedLabel = null;
-//                notifyDataSetChanged();
-//                return;
-//            }
-
-            // Updating old as well as new positions
-//            notifyItemChanged(selectedPos);
-//            selectedPos = getAdapterPosition();
-//            selectedValue = mList.get(selectedPos).epc;
-//            selectedLabel = selectedValue.length()>10? selectedValue.substring(selectedValue.length()-10) : selectedValue;
-//            notifyItemChanged(selectedPos);
-
             etWeight.requestFocus();
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(etWeight, InputMethodManager.SHOW_IMPLICIT);
-
-//            BinLoadDialog binDialog = new BinLoadDialog(context, selectedLabel);
-//            binDialog.showDialog();
-
-
-            // Do your another stuff for your onClick
         }
     }
 }

@@ -1,0 +1,50 @@
+
+t
+java:S2293h"YReplace the type specification in this constructor call with the diamond operator ("<>").(öù‹­üÿÿÿÿ
+d
+java:S1192Ë"HDefine a constant instead of duplicating this literal "Bearer " 7 times.(Œº¥µûÿÿÿÿ
+C
+java:S1604t"(Make this anonymous inner class a lambda(ÿÓšËÿÿÿÿÿ
+t	java:S115J"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(•¸¢Âùÿÿÿÿ
+t	java:S115J"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(•¸¢Âùÿÿÿÿ
+t	java:S115J"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(•¸¢Âùÿÿÿÿ
+t	java:S115J"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(•¸¢Âùÿÿÿÿ
+t	java:S115J"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(•¸¢Âùÿÿÿÿ
+t	java:S115J"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(•¸¢Âùÿÿÿÿ
+d
+java:S1659J"IDeclare "Outgoing_Idx" and all following declarations on a separate line.(•¸¢Âùÿÿÿÿ
+B
+java:S1659M"'Declare "ivRefresh" on a separate line.(®Ññ¬úÿÿÿÿ
+s
+java:S1450M"XRemove the "ivRefresh" field and declare it as a local variable in the relevant methods.(®Ññ¬úÿÿÿÿ
+s
+java:S1450M"XRemove the "ivSupport" field and declare it as a local variable in the relevant methods.(®Ññ¬úÿÿÿÿ
+Q
+java:S1874P"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ
+>	java:S108b")Either remove or fill this block of code.(ğ›¤ê
+R
+java:S1874™"6Remove this use of "ProgressDialog"; it is deprecated.(Ñêáûÿÿÿÿ
+O
+java:S1874š"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿
+M
+java:S1874š"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿
+L
+java:S1874š"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿
+I
+java:S1874£"2Remove this use of "setMessage"; it is deprecated.(ßôÁ®
+?	java:S108Ï")Either remove or fill this block of code.(Úîø›
+T
+java:S1854Ú"8Remove this useless assignment to local variable "epcs".(ÙìÀÆÿÿÿÿÿ
+Q
+java:S1854Û":Remove this useless assignment to local variable "prefix".(’“ï¡
+E
+java:S1481Ú")Remove this unused "epcs" local variable.(ÙìÀÆÿÿÿÿÿ
+B
+java:S1481Û"+Remove this unused "prefix" local variable.(’“ï¡
+?	java:S108â")Either remove or fill this block of code.(Úîø›
+W	java:S125ş"<This block of commented-out lines of code should be removed.(õÀ®éüÿÿÿÿ
+?	java:S108")Either remove or fill this block of code.(Úîø›
+?	java:S108¯")Either remove or fill this block of code.(”ı¾
+?	java:S108±")Either remove or fill this block of code.(Úîø›
+P
+java:S1144Ô"9Remove this unused private "setCurrentEpcsDevice" method.(Û±”

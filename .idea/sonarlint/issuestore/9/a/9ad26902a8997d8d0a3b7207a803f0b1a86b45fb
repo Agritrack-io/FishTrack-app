@@ -1,0 +1,5 @@
+
+U
+java:S1118":Add a private constructor to hide the implicit public one.(õÆ®¢ùÿÿÿÿ
+“
+java:S5803"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(éª²Œøÿÿÿÿ

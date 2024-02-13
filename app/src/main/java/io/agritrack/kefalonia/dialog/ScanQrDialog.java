@@ -13,8 +13,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 
 public class ScanQrDialog implements AdapterView.OnItemClickListener {
     private final Activity activity;

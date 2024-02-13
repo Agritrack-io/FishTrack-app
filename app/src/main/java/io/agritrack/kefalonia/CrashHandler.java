@@ -17,7 +17,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.ui.service.LocalPreferences;
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {

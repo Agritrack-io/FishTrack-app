@@ -1,0 +1,39 @@
+
+f
+java:S1192r"PDefine a constant instead of duplicating this literal "FillBinActivity" 3 times.(Œ••î
+b
+java:S1192p"LDefine a constant instead of duplicating this literal "BinActivity" 3 times.(òˆÑ‘
+k
+java:S1192t"PDefine a constant instead of duplicating this literal "BinInitActivity" 3 times.(—œ€şÿÿÿÿ
+C
+java:S1604<"(Make this anonymous inner class a lambda(¯Ö¹ıÿÿÿÿ
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ø”µÅ
+s	java:S116d"^Rename this field "singleShot_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÏÌ‡È
+@
+java:S16597"*Declare "tvCurrentBin" on a separate line.(¡ş«’
+Q
+java:S3252B";Use static access with "android.view.View" for "INVISIBLE".(ÕŒ…ù
+D
+java:S1940C")Use the opposite operator (">=") instead.(ùìªÿÿÿÿÿ
+V	java:S125L"<This block of commented-out lines of code should be removed.(•Ìø—üÿÿÿÿ
+Q
+java:S3252Q";Use static access with "android.view.View" for "INVISIBLE".(ÕŒ…ù
+W	java:S125§"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+T
+java:S1854ó"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿÿ
+=	java:S131ğ""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+E
+java:S1481ó")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ
+”
+java:S5803õ"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(Ş”´êøÿÿÿÿ
+P
+java:S3252û"9Use static access with "android.view.View" for "VISIBLE".(…Ø´³
+R
+java:S3252€";Use static access with "android.view.View" for "INVISIBLE".(ÕŒ…ù
+R
+java:S3252„";Use static access with "android.view.View" for "INVISIBLE".(ÕŒ…ù
+X
+java:S3457"AFormat specifiers should be used instead of string concatenation.(ûÜ¥Ø
+W	java:S125’"<This block of commented-out lines of code should be removed.(¶¦¹Ùúÿÿÿÿ
+I
+java:S1068è"-Remove this unused "mActivity" private field.(ı…··şÿÿÿÿ

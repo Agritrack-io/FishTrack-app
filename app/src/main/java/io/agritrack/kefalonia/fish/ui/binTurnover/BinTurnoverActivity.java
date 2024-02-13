@@ -53,7 +53,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.agritrack.data.repo.MeasurementRepository;
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.api.APIServiceGenerator;
 import io.agritrack.kefalonia.api.sync.SyncApi;
@@ -73,6 +72,7 @@ import io.agritrack.kefalonia.data.repo.TemperatureDataRepository;
 import io.agritrack.kefalonia.dialog.SupportDialog;
 import io.agritrack.kefalonia.fish.state.GlobalState;
 import io.agritrack.kefalonia.fish.state.LoggerDataRecord;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.rfid.SingleShotScanner;
 import io.agritrack.kefalonia.rfid.X9KeyReceiver;
 import io.agritrack.kefalonia.sound.SoundUtil;
@@ -519,7 +519,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
 
             String productionLane = "1"; //spProductionLine.getSelectedItem().toString();
             if (tmpBin != null && tmpBin.initedAt != null) {
-                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt);
+                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt, tmpBin.pickedAt);
                 loggerDlg.setStateObserver(stateResult);
                 SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(loggerDlg);
                 sortLoggerDialogDecorator.show(fm);

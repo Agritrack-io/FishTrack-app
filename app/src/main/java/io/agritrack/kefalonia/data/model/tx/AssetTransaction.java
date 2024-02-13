@@ -8,7 +8,7 @@ import androidx.room.TypeConverters;
 import java.util.List;
 import java.util.Map;
 
-import io.agritrack.data.converter.StringMapConverter;
+import io.agritrack.kefalonia.data.converter.StringMapConverter;
 
 @Entity(tableName = "asset_transaction")
 public class AssetTransaction {

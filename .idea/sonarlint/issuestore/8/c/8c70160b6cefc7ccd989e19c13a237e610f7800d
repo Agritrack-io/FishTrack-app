@@ -30,36 +30,36 @@ java:S1104""VMake lastSample a static final constant or non-public and provide 
 n
 java:S1104$"SMake samples a static final constant or non-public and provide accessors if needed.(ÄÉ§üÿÿÿÿ
 F
-java:S5411ª"*Use the primitive boolean expression here.(ª¡Îîúÿÿÿÿ
+java:S5411«"*Use the primitive boolean expression here.(ª¡Îîúÿÿÿÿ
 F
-java:S5411²"*Use the primitive boolean expression here.(ŠàµÈûÿÿÿÿ
+java:S5411³"*Use the primitive boolean expression here.(ŠàµÈûÿÿÿÿ
 w
-java:S4144D"\Update this method so that its implementation is not identical to "forHighPower" on line 61.(„Š®ùÿÿÿÿ
+java:S4144E"\Update this method so that its implementation is not identical to "forHighPower" on line 62.(„Š®ùÿÿÿÿ
 }
-java:S4144R"bUpdate this method so that its implementation is not identical to "forHighSensitivity" on line 75.(¥à—Íúÿÿÿÿ
+java:S4144S"bUpdate this method so that its implementation is not identical to "forHighSensitivity" on line 76.(¥à—Íúÿÿÿÿ
 w
-java:S14501"\Remove the "opWriteBinOne" field and declare it as a local variable in the relevant methods.(Ë¢Û½úÿÿÿÿ
+java:S14502"\Remove the "opWriteBinOne" field and declare it as a local variable in the relevant methods.(Ë¢Û½úÿÿÿÿ
 x
-java:S14500"]Remove the "opWriteBinZero" field and declare it as a local variable in the relevant methods.(¾¡–üÿÿÿÿ
+java:S14501"]Remove the "opWriteBinZero" field and declare it as a local variable in the relevant methods.(¾¡–üÿÿÿÿ
 z
-java:S1450/"_Remove the "opWriteCurrentTS" field and declare it as a local variable in the relevant methods.(•ê¤ıøÿÿÿÿ
+java:S14500"_Remove the "opWriteCurrentTS" field and declare it as a local variable in the relevant methods.(•ê¤ıøÿÿÿÿ
 y
-java:S14502"^Remove the "opWriteInterval" field and declare it as a local variable in the relevant methods.(–›Çëûÿÿÿÿ
+java:S14503"^Remove the "opWriteInterval" field and declare it as a local variable in the relevant methods.(–›Çëûÿÿÿÿ
 ?
 java:S1948$"$Make "samples" private or transient.(ÄÉ§üÿÿÿÿ
 
-java:S5803c"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(©¤Ğ¬
+java:S5803d"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(©¤Ğ¬
 =
 java:S1068"'Remove this unused "TAG" private field.(”Ó½·
 E
-java:S1068-"/Remove this unused "opHighPower" private field.(¾ÑÈ
+java:S1068."/Remove this unused "opHighPower" private field.(¾ÑÈ
 K
-java:S1068."5Remove this unused "opHighSensitivity" private field.(£î¾î
+java:S1068/"5Remove this unused "opHighSensitivity" private field.(£î¾î
 O
-java:S1068/"4Remove this unused "opWriteCurrentTS" private field.(•ê¤ıøÿÿÿÿ
+java:S10680"4Remove this unused "opWriteCurrentTS" private field.(•ê¤ıøÿÿÿÿ
 M
-java:S10680"2Remove this unused "opWriteBinZero" private field.(¾¡–üÿÿÿÿ
+java:S10681"2Remove this unused "opWriteBinZero" private field.(¾¡–üÿÿÿÿ
 L
-java:S10681"1Remove this unused "opWriteBinOne" private field.(Ë¢Û½úÿÿÿÿ
+java:S10682"1Remove this unused "opWriteBinOne" private field.(Ë¢Û½úÿÿÿÿ
 N
-java:S10682"3Remove this unused "opWriteInterval" private field.(–›Çëûÿÿÿÿ
+java:S10683"3Remove this unused "opWriteInterval" private field.(–›Çëûÿÿÿÿ

@@ -101,7 +101,7 @@ tools:context=".hotel.ui.outgoing.HotelOutgoingStartActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <io.agritrack.ui.custom.ToggleGroup
+            <io.agritrack.kefalonia.ui.custom.ToggleGroup
                 android:id="@+id/tgOutgoingSource"
                 android:layout_width="180dp"
                 android:layout_height="70dp"
@@ -128,7 +128,7 @@ tools:context=".hotel.ui.outgoing.HotelOutgoingStartActivity">
                     android:textOn="@string/menu_title_warehouse"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
-            </io.agritrack.ui.custom.ToggleGroup>
+            </io.agritrack.kefalonia.ui.custom.ToggleGroup>
 
             <TextView
                 android:id="@+id/tvOutgoingFrom"
@@ -190,7 +190,7 @@ tools:context=".hotel.ui.outgoing.HotelOutgoingStartActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <io.agritrack.ui.custom.ToggleGroup
+            <io.agritrack.kefalonia.ui.custom.ToggleGroup
                 android:id="@+id/tgOutgoingDestination"
                 android:orientation="horizontal"
                 android:layout_width="180dp"
@@ -219,7 +219,7 @@ tools:context=".hotel.ui.outgoing.HotelOutgoingStartActivity">
                     android:textOn="@string/laundry"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
-            </io.agritrack.ui.custom.ToggleGroup>
+            </io.agritrack.kefalonia.ui.custom.ToggleGroup>
 
             <TextView
                 android:id="@+id/tvOutgoingTo"

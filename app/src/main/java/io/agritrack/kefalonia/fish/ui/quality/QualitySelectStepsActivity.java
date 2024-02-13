@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.data.db.MobileDB;
 import io.agritrack.kefalonia.data.model.common.Measurement;

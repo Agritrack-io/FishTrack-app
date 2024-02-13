@@ -18,7 +18,10 @@ r
 java:S1104"WMake last_update a static final constant or non-public and provide accessors if needed.(íà­Ùûÿÿÿÿ
 p
 java:S1104"UMake inited_at a static final constant or non-public and provide accessors if needed.(ïŒÒÄüÿÿÿÿ
+r
+java:S1104"UMake picked_at a static final constant or non-public and provide accessors if needed.(ÖÁÚÀ8ãÇÈçÙ1
 t	java:S116"ZRename this field "fishing_request" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤”Ï÷ùÿÿÿÿ
 l	java:S116"WRename this field "total_weight" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(»Ë×ƒ
 p	java:S116"VRename this field "last_update" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(íà­Ùûÿÿÿÿ
 n	java:S116"TRename this field "inited_at" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ïŒÒÄüÿÿÿÿ
+p	java:S116"TRename this field "picked_at" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÖÁÚÀ8ôÇÈçÙ1

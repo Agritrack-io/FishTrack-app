@@ -25,7 +25,6 @@ import androidx.fragment.app.FragmentManager;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
-import io.agritrack.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.api.APIServiceGenerator;
 import io.agritrack.kefalonia.api.tx.TransactionApi;
@@ -38,6 +37,7 @@ import io.agritrack.kefalonia.dialog.SelectReasonOfFishingWeightDeviationDialog;
 import io.agritrack.kefalonia.dialog.SupportDialog;
 import io.agritrack.kefalonia.dialog.YesNoDialogFragment;
 import io.agritrack.kefalonia.fish.state.GlobalState;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.ui.LocationAwareActivity;
 import io.agritrack.kefalonia.ui.service.AuthenticationService;
 import io.agritrack.kefalonia.ui.service.LocalPreferences;

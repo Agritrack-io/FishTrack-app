@@ -127,6 +127,8 @@ public interface ICAEN_API {
     /* This function returns first 'samplesCnt' temperature measurements having an interval of 'intervalSeconds' seconds, starting at 'startTSmSecQ' epoch time */
     List<String[]> ReadSamples(int samplesCnt, int intervalSeconds, long startTSmSec) throws Exception;
 
+    /* This function returns first 'samplesCnt' temperature measurements having an interval of 'intervalSeconds' seconds, starting at 'startTSmSecQ' epoch time */
+    List<String[]> ReadSamples(int samplesCnt, int intervalSeconds, long startTSmSec, Long pickedAt) throws Exception;
 
     void CloseReader();
 

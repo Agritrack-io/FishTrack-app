@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.agritrack.fish.ui.bo.BinWeightRecord;
+import io.agritrack.kefalonia.fish.ui.bo.BinWeightRecord;
 
 public class BinRecordConverter {
     @TypeConverter

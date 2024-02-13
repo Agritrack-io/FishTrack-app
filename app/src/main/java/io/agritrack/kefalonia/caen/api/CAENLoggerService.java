@@ -41,6 +41,7 @@ public class CAENLoggerService {
     private final ExecutorService cmdPool;
     private final Handler mHandler;
     private final ICAEN_API cmd;
+    private final Long pickedAt;
     private Boolean sendMessagesToHandler = Boolean.FALSE;
 
     public CAENLoggerService(ICAEN_API logger, Handler mScanHandler, Boolean sendMessages) {
@@ -52,6 +53,14 @@ public class CAENLoggerService {
         cmdPool = Executors.newCachedThreadPool();
         mHandler = mScanHandler;
         cmd = logger;
+        this.pickedAt = 0L;
+    }
+
+    public CAENLoggerService(ICAEN_API logger, Handler mScanHandler, Long pickedAt) {
+        cmdPool = Executors.newCachedThreadPool();
+        mHandler = mScanHandler;
+        cmd = logger;
+        this.pickedAt = pickedAt;
     }
 
     public void setEPCFilter(String EPC) {
@@ -263,7 +272,7 @@ public class CAENLoggerService {
             // read the stored Temperature measurements,
             CompletableFuture<CAENState> future = null;
             if (stateInterval != null && stateTS != null) {
-                future = this.execReadSamples(samplesCount, stateInterval.getInterval(), stateTS.getInitTS(), new CAENState(), actnPool);
+                future = this.execReadSamples(samplesCount, stateInterval.getPickedAt(), stateInterval.getInterval(), stateTS.getInitTS(), new CAENState(), actnPool);
             } else if (stateInterval != null && stateTS == null) {
                 future = this.execReadSamples(samplesCount, stateInterval.getInterval(), new CAENState(), actnPool);
             } else if (stateInterval == null && stateTS == null) {
@@ -286,6 +295,7 @@ public class CAENLoggerService {
             final ExecutorService actnPool = Executors.newFixedThreadPool(1);
 
             CAENState status = execReadControlRegister(new CAENState(), actnPool).get();
+            status.setPickedAt(this.pickedAt);
 
             if (Boolean.FALSE.equals(forceRead) && (status.ctrlReg == null || status.ctrlReg.equalsIgnoreCase("N/A") || status.ctrlReg.endsWith("000"))) {
                 System.out.println("doReadMeasurements()-->" + status);
@@ -308,7 +318,7 @@ public class CAENLoggerService {
             // read the stored Temperature measurements,
             CompletableFuture<CAENState> future = null;
             if (stateInterval != null && initTS != null) {
-                future = this.execReadSamples(samplesCount, stateInterval, initTS, _state, actnPool);
+                future = this.execReadSamples(samplesCount, pickedAt, stateInterval, initTS, _state, actnPool);
             } else if (stateInterval != null && initTS == null) {
                 future = this.execReadSamples(samplesCount, stateInterval, _state, actnPool);
             } else if (stateInterval == null && initTS == null) {
@@ -665,14 +675,18 @@ public class CAENLoggerService {
 
     // the following args may also be used:: int samplesCnt, int intervalSeconds, long startTSmSec
     private CompletableFuture<CAENState> execReadSamples(Integer samplesCnt, CAENState previousState, ExecutorService threadPool) {
-        return execReadSamples(samplesCnt, null, null, previousState, threadPool);
+        return execReadSamples(samplesCnt, null, null, null, previousState, threadPool);
     }
 
     private CompletableFuture<CAENState> execReadSamples(Integer samplesCnt, Integer intervalSeconds, CAENState previousState, ExecutorService threadPool) {
-        return execReadSamples(samplesCnt, intervalSeconds, null, previousState, threadPool);
+        return execReadSamples(samplesCnt, null, intervalSeconds, null, previousState, threadPool);
     }
 
-    private CompletableFuture<CAENState> execReadSamples(Integer samplesCnt, Integer intervalSeconds, Long startTSmSec, CAENState previousState, ExecutorService threadPool) {
+    private CompletableFuture<CAENState> execReadSamples(Integer samplesCnt, Long pickedAt, Integer intervalSeconds, CAENState previousState, ExecutorService threadPool) {
+        return execReadSamples(samplesCnt, pickedAt, intervalSeconds, null, previousState, threadPool);
+    }
+
+    private CompletableFuture<CAENState> execReadSamples(Integer samplesCnt, Long pickedAt, Integer intervalSeconds, Long startTSmSec, CAENState previousState, ExecutorService threadPool) {
         CompletableFuture<CAENState> _future = CompletableFuture.completedFuture(previousState);
         try {
             if (!canProceed(previousState)) {
@@ -700,7 +714,7 @@ public class CAENLoggerService {
             } else {
                 _future = CompletableFuture.supplyAsync(() -> {
                     try {
-                        previousState.forSamples(cmd.ReadSamples(samplesCnt, intervalSeconds, startTSmSec));
+                        previousState.forSamples(cmd.ReadSamples(samplesCnt, intervalSeconds, startTSmSec, pickedAt));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

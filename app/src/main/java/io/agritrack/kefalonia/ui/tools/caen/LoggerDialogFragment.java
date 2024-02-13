@@ -72,6 +72,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     private String assetEPC;
     private String currentLoggerEPC = null;
     private String productionLane;
+    private Long pickedAt;
     private static Long initTS;
     private Long initedAt;
     private TimeAnimator mAnimator;
@@ -233,13 +234,14 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         return frag;
     }
 
-    public static ILoggerDialog newInstance(String loggerEPC, String assetEPC, String productionLane, Long initializedAt) {
+    public static ILoggerDialog newInstance(String loggerEPC, String assetEPC, String productionLane, Long initializedAt, Long pickedAt) {
         LoggerDialogFragment frag = new LoggerDialogFragment();
         Bundle args = new Bundle();
         args.putString(LOGGER_EPC, loggerEPC);
         args.putString(ASSET_EPC, assetEPC);
         args.putString(PROD_LANE, productionLane);
         args.putLong(INITED_AT, initializedAt);
+        args.putLong(PICKED_AT, pickedAt);
         frag.setArguments(args);
 
         return frag;
@@ -298,6 +300,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             this.assetEPC = getArguments().getString(ASSET_EPC);
             this.initedAt = getArguments().getLong(INITED_AT);
             this.productionLane = getArguments().getString(PROD_LANE);
+            this.pickedAt = getArguments().getLong(PICKED_AT);
 
             // show/hide buttons according to Visibility Bit values.
             applyButtonsVisibility();
@@ -312,7 +315,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 
         // instantiate Reader Module
         this.cmd = RFIDModuleFactory.getInstance();
-        this.loggerSvc = new CAENLoggerService(this.cmd, this.mScanHandler);
+        this.loggerSvc = new CAENLoggerService(this.cmd, this.mScanHandler, this.pickedAt);
 
         // Press First Button
         if ((ReadOp & this.buttonVisibilityBits) == ReadOp) {
@@ -472,8 +475,12 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                             state.setAssetEPC(assetEPC);
                             state.setProductionLane(productionLane);
 
+                            //For kefalonia project we need temperatures only after filling bins at fishing tx, not from initializing them.
+                            //So the valuesRead attribute must be recalculated from total sample.
+                            final short valuesRead2 = (short) state.getSamples().stream().count();
+
                             mActivity.runOnUiThread(() -> {
-                                btnRead.setText(getString(R.string.read_number_measurements, valuesRead));
+                                btnRead.setText(getString(R.string.read_number_measurements, valuesRead2));
                                 btnRead.setOnClickListener(null);
 
                                 if (stateResult != null) {

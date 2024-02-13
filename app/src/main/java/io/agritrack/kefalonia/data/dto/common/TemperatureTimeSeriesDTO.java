@@ -19,7 +19,7 @@ public class TemperatureTimeSeriesDTO {
     public Double fish_temp1;
     public Double fish_temp2;
     public Double water_temp;
-    public List<TemperatureDataDTO> values;
+    public List<TemperatureDataDTO> measurements;
 
     public static TemperatureTimeSeriesDTO convert(TemperatureTimeSeries measurement) {
         TemperatureTimeSeriesDTO temperatureTimeSeriesDTO = new TemperatureTimeSeriesDTO();
@@ -33,7 +33,7 @@ public class TemperatureTimeSeriesDTO {
         temperatureTimeSeriesDTO.fish_temp1 = measurement.measurement.fishTemp;
         temperatureTimeSeriesDTO.fish_temp2 = measurement.measurement.fish2Temp;
         temperatureTimeSeriesDTO.water_temp = measurement.measurement.waterTemp;
-        temperatureTimeSeriesDTO.values = measurement.data.stream().map(x -> new TemperatureDataDTO(x.timestamp, x.value)).collect(Collectors.toList());
+        temperatureTimeSeriesDTO.measurements = measurement.data.stream().map(x -> new TemperatureDataDTO(x.timestamp, x.value)).collect(Collectors.toList());
 
         return temperatureTimeSeriesDTO;
     }

@@ -27,7 +27,7 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 
-import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.caen.api.CAENLoggerService;
 import io.agritrack.kefalonia.caen.api.ICAEN_API;

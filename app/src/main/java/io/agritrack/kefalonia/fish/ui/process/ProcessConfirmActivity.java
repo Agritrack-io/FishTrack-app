@@ -26,7 +26,7 @@ import com.google.android.gms.common.util.Strings;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
-import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.api.APIServiceGenerator;
 import io.agritrack.kefalonia.api.tx.TransactionApi;

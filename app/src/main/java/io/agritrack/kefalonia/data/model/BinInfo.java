@@ -37,6 +37,9 @@ public class BinInfo {
     @ColumnInfo(name = "inited_at")
     public Long initedAt;
 
+    @ColumnInfo(name = "picked_at")
+    public Long pickedAt;
+
     @ColumnInfo(name = "sorted")
     public boolean sorted;
 }

@@ -59,9 +59,9 @@ F	java:S108¼")Either remove or fill this block of code.(”ı¾8Î—ßÙ1
 F	java:S108Ä")Either remove or fill this block of code.(”ı¾8Ï—ßÙ1
 Y	java:S125È"<This block of commented-out lines of code should be removed.(ş­€€8Ï—ßÙ1
 J
-java:S3398»",Move this method into "CAENCommandsHandler".(ÅÍƒŠ8à—ßÙ1
-J
 java:S3398",Move this method into "CAENCommandsHandler".(ïîô¥8à—ßÙ1
+J
+java:S3398»",Move this method into "CAENCommandsHandler".(ÅÍƒŠ8à—ßÙ1
 O
 java:S1068P"-Remove this unused "valuesCnt" private field.(¥¢’àùÿÿÿÿ8á—ßÙ1
 K

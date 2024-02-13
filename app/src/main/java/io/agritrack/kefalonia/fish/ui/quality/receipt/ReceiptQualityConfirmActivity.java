@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.agritrack.data.repo.MeasurementRepository;
-import io.agritrack.fish.ui.FishHomeActivity;
+import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.api.APIServiceGenerator;
 import io.agritrack.kefalonia.api.tx.TransactionApi;
