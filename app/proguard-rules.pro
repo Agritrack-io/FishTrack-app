@@ -19,20 +19,21 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--mergeinterfacesaggressively
--overloadaggressively
--keepclassmembers class io.agritrack.kefalonia.data.dto.** {
-    public protected private <fields>;
-}
--keepclassmembers class cn.pda.serialport.SerialPort{
-   private <fields>;
-}
--keep class io.agritrack.kefalonia.ui.login.api.** { *; }
--keep class io.agritrack.kefalonia.api.config.** { *; }
--keep class io.agritrack.kefalonia.api.login.** { *; }
--keep class io.agritrack.kefalonia.api.query.** { *; }
--keep class io.agritrack.kefalonia.api.sync.** { *; }
--keep class io.agritrack.kefalonia.api.tx.** { *; }
--keep class io.agritrack.kefalonia.api.upload.** { *; }
+
+#-mergeinterfacesaggressively
+#-overloadaggressively
+#-keepclassmembers class io.agritrack.kefalonia.data.dto.** {
+#    public protected private <fields>;
+#}
+#-keepclassmembers class cn.pda.serialport.SerialPort{
+#   private <fields>;
+#}
+# -keep class io.agritrack.kefalonia.ui.login.api.** { *; }
+# -keep class io.agritrack.kefalonia.api.config.** { *; }
+# -keep class io.agritrack.kefalonia.api.login.** { *; }
+# -keep class io.agritrack.kefalonia.api.query.** { *; }
+# -keep class io.agritrack.kefalonia.api.sync.** { *; }
+# -keep class io.agritrack.kefalonia.api.tx.** { *; }
+# -keep class io.agritrack.kefalonia.api.upload.** { *; }
 #Keep SQLCypher classes
--keep class net.sqlcipher.** { *; }
+# -keep class net.sqlcipher.** { *; }

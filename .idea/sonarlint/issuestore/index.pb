@@ -1,12 +1,8 @@
 
 X
 (RFIDlibrary/src/main/AndroidManifest.xml,f\a\fa4072fbed3c49eb4eac8860bb1536e144a7cf2a
-<
-build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 X
 (gradle/wrapper/gradle-wrapper.properties,f\b\fbe448ebfc3eb2d4e308f6b8b043666f5b57235e
-N
-RFIDlibrary/proguard-rules.pro,a\0\a0a49459eb9b800333f7390bca1f135541d92ee7
 o
 ?app/src/main/java/io/agritrack/kefalonia/api/login/AuthApi.java,f\f\ffabf07d71c2fea397b2fd4414cb9112c2d40a2b
 r
@@ -589,16 +585,12 @@ v
 Fapp/src/main/java/io/agritrack/kefalonia/ui/LocationAwareActivity.java,8\0\807699e0ec25c8df414b52e32d9842806625e7f0
 q
 Aapp/src/main/java/io/agritrack/kefalonia/ui/TemplateActivity.java,2\f\2f4607467cc5c08ef0796a962946076e723651f0
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 w
 Gapp/src/main/java/io/agritrack/kefalonia/settings/SettingsActivity.java,f\e\fe65246c4643b8821c20867eb8d9564691d4f973
 z
 Japp/src/main/java/io/agritrack/kefalonia/ui/viewmodel/ConfigViewModel.java,5\a\5a45c0ba62def97ca47ba64ec26b1198fe2ebba4
 ˆ
 Xapp/src/main/java/io/agritrack/kefalonia/settings/adapter/IConfigPersistenceAdapter.java,c\a\cabb538ff1610b7558e74da9749c0b10fb1802d9
-H
-RFIDlibrary/build.gradle,0\d\0d32ad866bf4e8c9f54cbc5e881240f8ed6b740f
 ?
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
 r
@@ -607,8 +599,6 @@ A
 gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
 N
 RFIDlibrary/consumer-rules.pro,4\a\4afb0f55a6886c6e197738d7935a22d722f9425a
-F
-app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
 ƒ
 Sapp/src/main/java/io/agritrack/kefalonia/settings/adapter/ConfigWebPersistence.java,0\d\0d8ee72eb2083a98348ea248e31a0a4441ad0b76
 …

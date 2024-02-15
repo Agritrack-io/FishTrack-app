@@ -16,8 +16,8 @@ android {
         applicationId "io.agritrack.kefalonia"
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode 3
-        versionName "3.1"
+        versionCode 4
+        versionName "4.1"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -50,8 +50,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
