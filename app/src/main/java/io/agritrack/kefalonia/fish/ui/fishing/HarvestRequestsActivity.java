@@ -420,10 +420,10 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (this.harvestRQcnt == 0) {
-            sb.append("No Harvest Requests available. \nPlz contact Harvest Dept.");
+            sb.append(R.string.no_harvest);
         } else if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(recFishing.speciesName)) {
-                sb.append(String.format("Please Select a Harvest Request to proceed", ""));
+                sb.append((R.string.select_harvest);
             }
         }
 

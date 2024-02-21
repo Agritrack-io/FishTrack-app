@@ -235,7 +235,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
         stateResult.observe(this, rs -> {
             // handle Successful operation from Logger.
             if (rs == null || !rs.canProceed) {
-                CToast(getApplicationContext(), render("Operation Failed!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.operation_failed), Toast.LENGTH_LONG);
                 return;
             }
             // handle READ and INIT events...
@@ -295,7 +295,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
             stopScanner();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
             } else {
                 moveToNextScreen();
             }
@@ -351,7 +351,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (binEPC == null) {
-                sb.append(String.format("\n%s is missing", "'Bin to turnover'"));
+                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.bin_turnover));
             }
         }
         return sb.toString();
