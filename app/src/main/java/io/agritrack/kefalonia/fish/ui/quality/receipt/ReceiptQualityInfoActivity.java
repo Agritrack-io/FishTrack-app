@@ -192,7 +192,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), ReceiptQualityMoreInfoActivity.class);
                 startActivity(i);
@@ -327,19 +327,20 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.pLot)) {
-                sb.append(String.format("\n%s is missing", "'LOT'"));
+                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.lot));
             }
 
             if (GlobalState.recQuality.minFishTemp == null) {
-                sb.append(String.format("\n%s is missing", "'Fish min temperature'"));
+                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.fish_min_temp));
+
             }
 
             if (GlobalState.recQuality.meanFishTemp == null) {
-                sb.append(String.format("\n%s is missing", "'Fish average temperature'"));
+                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.fish_avg_temp));
             }
 
             if (GlobalState.recQuality.maxFishTemp == null) {
-                sb.append(String.format("\n%s is missing", "'Fish max temperature'"));
+                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.fish_max_temp));
             }
         }
 

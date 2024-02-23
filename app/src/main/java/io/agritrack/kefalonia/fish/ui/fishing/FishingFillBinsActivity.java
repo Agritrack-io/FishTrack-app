@@ -167,7 +167,7 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), FishingConfirmActivity.class);
                 startActivity(i);
@@ -293,7 +293,7 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recFishing.totalBinsUsed == null) {
-                sb.append(String.format("\n%s is missing", "'Harvest bins'"));
+                sb.append(String.format("\n%s" + R.string.invalid_inputs, "'Harvest bins'"));
             }
             recFishing.binWeightRecord.getBinsData().stream().filter(item -> item.weight != null)
                     .forEach(item -> {

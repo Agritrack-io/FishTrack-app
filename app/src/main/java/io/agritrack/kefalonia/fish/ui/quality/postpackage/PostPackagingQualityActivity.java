@@ -195,7 +195,7 @@ public class PostPackagingQualityActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), PostPackagingQualityConfirmActivity.class);
                 startActivity(i);
@@ -284,19 +284,20 @@ public class PostPackagingQualityActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recQuality.pLot == null || recQuality.boxSn == null) {
-                sb.append(String.format("\n%s is missing", "'Scan'"));
+                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.scan));
+
             }
 
             if (recQuality.etT1 == null) {
-                sb.append(String.format("\n%s is missing", "'T1 temperature'"));
+                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.t1_temp));
             }
 
             if (recQuality.etT2 == null) {
-                sb.append(String.format("\n%s is missing", "'T2 temperature'"));
+                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.t2_temp));
             }
 
             if (recQuality.etT3 == null) {
-                sb.append(String.format("\n%s is missing", "'T3 temperature'"));
+                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.t3_temp));
             }
         }
 

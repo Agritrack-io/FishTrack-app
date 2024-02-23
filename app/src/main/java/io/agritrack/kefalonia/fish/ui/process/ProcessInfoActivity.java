@@ -60,7 +60,7 @@ public class ProcessInfoActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), ProcessConfirmActivity.class);
                 startActivity(i);
@@ -109,7 +109,9 @@ public class ProcessInfoActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recProcessing.dispatchNote)) {
-                sb.append(String.format("\n%s is missing", "'Dispatch note'"));
+                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.dispatch_note_error));
+
+
             }
         }
 

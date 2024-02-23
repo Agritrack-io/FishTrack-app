@@ -795,5 +795,24 @@
     <string name="station_incoming">Ονόματα Εισόδων Σταθμού</string>
     <string name="source_site">Τοποθεσία</string>
     <string name="target_site">Προορισμός</string>
+    <string name="delete_item">Παρακαλώ επιλέξτε ένα πεδίο για διαγραφή</string>
+    <string name="operation_failed">Η διαδικασία απέτυχε</string>
+    <string name="is_missing">είναι άδειο</string>
+    <string name="field">Το πεδίο</string>
+    <string name="loggers">"Καταγραφικό θερμοκρασίας"</string>
+    <string name="bin_turnover">"Βούτα για ανατροπή"</string>
+    <string name="no_location">Δεν βρέθηκε τοποθεσία απότο GPS!</string>
+    <string name="previous_coordinates">Οι προηγουύμενες συντεταγμένες θα χρησιμοποιηθούν.</string>
+    <string name="try_again">Παρακαλώ δοκιμάστε ξανά.</string>
+    <string name="no_harvest">Δεν υπάρχει διαθέσιμη εντολή αλίευσης. Παρακαλώ επικοινωνήστε με το τμήμα αλιεύσεων.</string>
+    <string name="select_harvest">Παρακαλώ επιλέξτε εντολή αλίευης για να προχωρήσετε</string>
+    <string name="subsite">"Υπόχωρος"</string>
+    <string name="team_members">"Ομάδα αλίευσης"</string>
+    <string name="cage_tag">"Ετικέτα Κλωβού"</string>
+    <string name="dispatch_note_error">"Δελτίο αποστολής"</string>
+    <string name="scan">"Σκανάρισμα"</string>
+    <string name="t1_temp">"Θερμοκρασία Τ1"</string>
+    <string name="t2_temp">"Θερμοκρασία Τ2"</string>
+    <string name="t3_temp">"Θερμοκρασία Τ3"</string>
 
 </resources>

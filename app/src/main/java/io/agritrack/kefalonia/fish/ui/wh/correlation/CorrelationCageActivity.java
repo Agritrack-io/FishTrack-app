@@ -196,7 +196,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
             GlobalState.recWHCorrelation.code = adapterAssets.getSelectedValue();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
                 return;
             }
             if (mLastLocation != null) {

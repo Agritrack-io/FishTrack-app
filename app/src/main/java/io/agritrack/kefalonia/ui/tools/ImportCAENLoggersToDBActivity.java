@@ -143,13 +143,13 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
                 });
 
                 confirmSiteSelectionDlg.onReject(bundle -> {
-                    CToast(getApplicationContext(), render("Plz select a Item to delete!!"), Toast.LENGTH_LONG);
+                    CToast(getApplicationContext(), render(R.string.delete_item), Toast.LENGTH_LONG);
                 });
 
                 FragmentManager fm = getSupportFragmentManager();
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
-                CToast(getApplicationContext(), render("Item list is empty!!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.empty_list), Toast.LENGTH_LONG);
             }
         });
 
@@ -203,7 +203,7 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
             GlobalState.assetData.vendor = etVendor.getText().toString();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
                 return;
             }
             updateState();
@@ -301,7 +301,7 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (GlobalState.assetData.loggers == null || GlobalState.assetData.loggers.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Loggers'"));
+                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.loggers));
             }
         }
         return sb.toString();

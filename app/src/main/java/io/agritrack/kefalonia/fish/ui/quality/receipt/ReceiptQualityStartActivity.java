@@ -157,7 +157,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render("Plz select a Bin to delete!!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.delete_item), Toast.LENGTH_LONG);
             }
         });
 
@@ -172,7 +172,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         stateResult.observe(this, rs -> {
             // handle Successful operation from Logger.
             if (rs == null || !rs.canProceed) {
-                CToast(getApplicationContext(), render("Operation Failed!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.operation_failed), Toast.LENGTH_LONG);
                 return;
             }
             // handle READ and INIT events...
@@ -216,7 +216,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), ReceiptQualityTemperatureProfilesActivity.class);
 //                Intent i = new Intent(getApplicationContext(), ReceiptQualityInfoActivity.class);
