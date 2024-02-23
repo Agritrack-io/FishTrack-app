@@ -42,6 +42,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.caen.common.CAENState;
@@ -53,11 +54,14 @@ import io.agritrack.kefalonia.dialog.SupportDialog;
 import io.agritrack.kefalonia.dialog.YesNoDialogFragment;
 import io.agritrack.kefalonia.fish.state.FishingRecord;
 import io.agritrack.kefalonia.fish.state.GlobalState;
+import io.agritrack.kefalonia.fish.ui.bo.BinWeightRecord;
 import io.agritrack.kefalonia.fish.ui.bo.LoggerReading;
 import io.agritrack.kefalonia.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.kefalonia.rfid.ScanInventoryThread;
 import io.agritrack.kefalonia.rfid.X9KeyReceiver;
 import io.agritrack.kefalonia.sound.SoundUtil;
+import io.agritrack.kefalonia.ui.adapter.BinLoadAdapter;
+import io.agritrack.kefalonia.ui.adapter.BinRecyclerAdapter;
 import io.agritrack.kefalonia.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.kefalonia.ui.service.LocalPreferences;
 
@@ -73,7 +77,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     protected BroadcastReceiver keyReceiver;
     private ScanInventoryThread scanner_runnable;
     private MobileDB db;
-    private TemplateRecyclerAdapter adapterBins;
+    private BinRecyclerAdapter adapterBins;
     private RecyclerView rvBins;
     private TextView tvBinsCount;
     private Button btnScanBin;
@@ -118,7 +122,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         rvBins.setLayoutManager(layoutManager);
         rvBins.setItemAnimator(new DefaultItemAnimator());
         rvBins.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(), true);
+        adapterBins = new BinRecyclerAdapter(this, new ArrayList<>(), true);
         rvBins.setAdapter(adapterBins);
         rvBins.setNestedScrollingEnabled(false);
 
@@ -152,7 +156,7 @@ public class FishingBinsActivity extends AppCompatActivity {
                         scannedBinEPCs.remove(barcode);
                         recFishing.binWeightRecord.getBins().remove(barcode);
                         adapterBins.notifyDataSetChanged();
-                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount() -1));
                         adapterBins.clearSelectedValue();
                         recFishing.availBins = new LinkedList<>(adapterBins.getValues());
                         GlobalState.commitFishing(db, Boolean.FALSE);
@@ -336,9 +340,15 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     private void updateState() {
-        recFishing.availBins = new LinkedList<>(adapterBins.getValues());
-        for (String bin : recFishing.availBins) {
-            recFishing.binWeightRecord.addRecord(bin, 0, null, null, null);
+        if (!recFishing.binWeightRecord.isEmpty()) {
+            for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBinsData()) {
+                recFishing.binWeightRecord.addRecord(bin.binEPC, bin.weight, bin.temp, bin.init, bin.from, bin.to);
+            }
+        } else {
+            recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+            for (String bin : recFishing.availBins) {
+                recFishing.binWeightRecord.addRecord(bin, 500, null, null, null);
+            }
         }
         GlobalState.commitFishing(db, Boolean.FALSE);
     }
@@ -397,7 +407,7 @@ public class FishingBinsActivity extends AppCompatActivity {
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     if (epcList != null && !epcList.isEmpty()) {
                         epcList.stream().forEach(x -> adapterBins.addUniqueItem(x.toString()));
-                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount() - 1));
                         adapterBins.notifyDataSetChanged();
                         recFishing.availBins = new LinkedList<>(adapterBins.getValues());
                         GlobalState.commitFishing(db, Boolean.FALSE);

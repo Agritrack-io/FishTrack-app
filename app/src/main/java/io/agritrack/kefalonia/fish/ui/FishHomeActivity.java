@@ -42,6 +42,7 @@ import io.agritrack.kefalonia.FishTrackApplication;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.api.APIServiceGenerator;
 import io.agritrack.kefalonia.api.sync.PendindQualityMeasurementsTxCallBack;
+import io.agritrack.kefalonia.api.sync.PendingBinInfoTxCallBack;
 import io.agritrack.kefalonia.api.sync.PendingCorrelationTxCallBack;
 import io.agritrack.kefalonia.api.sync.PendingFishingTxCallBack;
 import io.agritrack.kefalonia.api.sync.PendingProcessTxCallBack;
@@ -79,6 +80,7 @@ import io.agritrack.kefalonia.data.dto.tx.FishingTxDTO;
 import io.agritrack.kefalonia.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.kefalonia.data.dto.tx.QualityTxDTO;
 import io.agritrack.kefalonia.data.dto.wh.AssetDTO;
+import io.agritrack.kefalonia.data.model.BinInfo;
 import io.agritrack.kefalonia.data.model.common.TemperatureTimeSeries;
 import io.agritrack.kefalonia.data.model.tx.CorrelationTransaction;
 import io.agritrack.kefalonia.data.model.tx.FishingTransaction;
@@ -314,6 +316,13 @@ public class FishHomeActivity extends AppCompatActivity {
             TransactionApi pendingTxSvc = APIServiceGenerator.createAPI(TransactionApi.class);
             String token = LocalPreferences.getToken();
 
+            // select all pending binInfos TXs
+            List<BinInfo> binInfoTXs = db.binInfoDAO().getAll();
+            if (!binInfoTXs.isEmpty()) {
+                Call<List<BinInfoDTO>> binInfoTxAsyncCall = pendingTxSvc.syncBinInfoTx(BinInfoDTO.convert(binInfoTXs), "Bearer " + token);
+                binInfoTxAsyncCall.enqueue(new PendingBinInfoTxCallBack(this.syncResult));
+            }
+
             // select all pending fishing TXs
             List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAllCompleted();
             if (!fishingTXs.isEmpty()) {
@@ -480,7 +489,7 @@ public class FishHomeActivity extends AppCompatActivity {
     }
 
     private void assignPrivilegesToRoles() {
-        Privileges.put(InitBins_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(InitBins_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
 //        Privileges.put(Test_Temp_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Receiving_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});

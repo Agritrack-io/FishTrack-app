@@ -55,6 +55,8 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import io.agritrack.api.sync.EncodingSchemeCallBack;
+import io.agritrack.kefalonia.api.sync.PendingBinInfoTxCallBack;
+import io.agritrack.kefalonia.data.model.BinInfo;
 import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.AgritrackProducts;
 import io.agritrack.kefalonia.FishTrackApplication;
@@ -604,6 +606,13 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         try {
             TransactionApi pendingTxSvc = APIServiceGenerator.createAPI(TransactionApi.class);
             String token = LocalPreferences.getToken();
+
+            // select all pending binInfos TXs
+            List<BinInfo> binInfoTXs = db.binInfoDAO().getAll();
+            if (!binInfoTXs.isEmpty()) {
+                Call<List<BinInfoDTO>> binInfoTxAsyncCall = pendingTxSvc.syncBinInfoTx(BinInfoDTO.convert(binInfoTXs), "Bearer " + token);
+                binInfoTxAsyncCall.enqueue(new PendingBinInfoTxCallBack(this.syncResult));
+            }
 
             // select all pending fishing TXs
             List<FishingTransaction> fishingTXs = db.fishingTransactionDAO().getAllCompleted();

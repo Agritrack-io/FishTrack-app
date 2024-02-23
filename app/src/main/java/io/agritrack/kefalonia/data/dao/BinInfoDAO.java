@@ -37,7 +37,7 @@ public interface BinInfoDAO {
     void delete(BinInfo bin);
 
     @Query("DELETE from bin_info")
-    void deleteAll();
+    int deleteAll();
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(BinInfo bin);
