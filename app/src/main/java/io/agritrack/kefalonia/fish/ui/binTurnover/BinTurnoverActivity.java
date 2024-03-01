@@ -235,7 +235,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
         stateResult.observe(this, rs -> {
             // handle Successful operation from Logger.
             if (rs == null || !rs.canProceed) {
-                CToast(getApplicationContext(), render("Operation Failed!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.operation_failed), Toast.LENGTH_LONG);
                 return;
             }
             // handle READ and INIT events...
@@ -253,6 +253,10 @@ public class BinTurnoverActivity extends AppCompatActivity {
                         GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
                         fillTemperatureProfileAdapter();
                         ivBack.setVisibility(View.INVISIBLE);
+                    } else {
+                        recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), System.currentTimeMillis(), null);
+                        GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
+                        fillTemperatureProfileAdapter();
                     }
                 }
             }
@@ -435,6 +439,8 @@ public class BinTurnoverActivity extends AppCompatActivity {
         if (values != null) {
             Map<String, LoggerDataRecord.TemperatureModel> data = recLoggerData.data;
             tempProfileAdapter.fill(data, tmpBin);
+        } else {
+            tempProfileAdapter.fill(tmpBin);
         }
 
         adapterBins.removeItem(tmpBin.rfid);

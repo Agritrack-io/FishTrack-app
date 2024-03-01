@@ -183,7 +183,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render("Plz select a Bin to delete!!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(getString(R.string.delete_item)), Toast.LENGTH_LONG);
             }
         });
 
@@ -390,7 +390,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
     private void updateState() {
 //        GlobalState.initProcessingRecord();
 
-//        recProcessing.availBins = adapterBins.getValues();
+        recProcessing.availBins = adapterBins.getValues();
     }
 
     private String validate() {

@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 import io.agritrack.kefalonia.R;
+import io.agritrack.kefalonia.data.db.MobileDB;
+import io.agritrack.kefalonia.data.model.wh.Asset;
 
 public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecyclerAdapter.MyViewHolder> {
     private List<String> mList;
@@ -89,6 +91,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         mList.sort(Comparator.comparing(o -> o.substring(o.length() - 10)));
         String epc = mList.get(position);
+
         if (epc != null) {
             String tag = isEPC ? epc.substring(epc.length() - 10) : epc;
             holder.itemView.setSelected(selectedPos == position);
@@ -116,6 +119,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
 
             tvItemName = itemView.findViewById(R.id.tvRecyclerItem);
             tvItemSNo = itemView.findViewById(R.id.tvRecyclerItemSNo);
+
             itemView.setOnClickListener(this);
         }
 

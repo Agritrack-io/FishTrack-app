@@ -802,5 +802,25 @@
     <string name="station_incoming">Incoming Station Names</string>
     <string name="source_site">Source site</string>
     <string name="target_site">Target site</string>
+    <string name="delete_item">Please select an item to delete</string>
+    <string name="operation_failed">Operation Failed!</string>
+    <string name="is_missing">is missing</string>
+    <string name="field">field</string>
+    <string name="smell">smell</string>
+    <string name="loggers">"Data Logger"</string>
+    <string name="bin_turnover">"Bin to Turnover"</string>
+    <string name="no_location">No location returned by GPS!</string>
+    <string name="previous_coordinates">The previous coordinates will be used.</string>
+    <string name="try_again">Please try again.</string>
+    <string name="no_harvest">No Harvest request available. Please contact Harvest Department.</string>
+    <string name="select_harvest">Please Select a Harvest Request to proceed</string>
+    <string name="subsite">"Subsite"</string>
+    <string name="team_members">"Team members"</string>
+    <string name="cage_tag">"Cage tag"</string>
+    <string name="dispatch_note_error">"Dispatch Note"</string>
+    <string name="scan">"Scan"</string>
+    <string name="t1_temp">"Temperature Τ1"</string>
+    <string name="t2_temp">"Temperature Τ2"</string>
+    <string name="t3_temp">"Temperature Τ3"</string>
 
 </resources>

@@ -130,7 +130,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render("Plz select a Bin to delete!!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.delete_item), Toast.LENGTH_LONG);
             }
         });
 
@@ -171,7 +171,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), PackageQualityTemperatureProfilesActivity.class);
                 startActivity(i);
@@ -209,7 +209,8 @@ public class PackageQualityStartActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (GlobalState.recQuality.qualityBins == null || GlobalState.recQuality.qualityBins.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Received bins'"));
+                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.received_bins));
+
             }
         }
         return sb.toString();

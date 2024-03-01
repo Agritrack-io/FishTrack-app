@@ -42,6 +42,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.caen.common.CAENState;
@@ -53,11 +54,13 @@ import io.agritrack.kefalonia.dialog.SupportDialog;
 import io.agritrack.kefalonia.dialog.YesNoDialogFragment;
 import io.agritrack.kefalonia.fish.state.FishingRecord;
 import io.agritrack.kefalonia.fish.state.GlobalState;
+import io.agritrack.kefalonia.fish.ui.bo.BinWeightRecord;
 import io.agritrack.kefalonia.fish.ui.bo.LoggerReading;
 import io.agritrack.kefalonia.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.kefalonia.rfid.ScanInventoryThread;
 import io.agritrack.kefalonia.rfid.X9KeyReceiver;
 import io.agritrack.kefalonia.sound.SoundUtil;
+import io.agritrack.kefalonia.ui.adapter.BinLoadAdapter;
 import io.agritrack.kefalonia.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.kefalonia.ui.service.LocalPreferences;
 
@@ -169,7 +172,7 @@ public class FishingBinsActivity extends AppCompatActivity {
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render("Plz select a Bin to delete!!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.delete_item), Toast.LENGTH_LONG);
             }
         });
 
@@ -212,7 +215,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         loggerStateObserver.observe(this, rs -> {
             // handle Successful operation from Logger.
             if (rs == null || !rs.canProceed) {
-                CToast(getApplicationContext(), render("Operation Failed!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(getString(R.string.operation_failed)), Toast.LENGTH_LONG);
                 return;
             }
             // handle READ and INIT events...
@@ -266,7 +269,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), FishingFillBinsActivity.class);
                 startActivity(i);
@@ -307,7 +310,7 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Type bin BARCODE");
+        builder.setTitle(R.string.type_code_of_bin);
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -347,7 +350,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recFishing.availBins == null || recFishing.availBins.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Bins for usage'"));
+                sb.append(String.format(getString(R.string.field) +"\n%s" + getString(R.string.is_missing), getString(R.string.bins_to_use)));
             }
         }
         return sb.toString();

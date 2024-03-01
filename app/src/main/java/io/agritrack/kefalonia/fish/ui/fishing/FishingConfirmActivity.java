@@ -124,12 +124,12 @@ public class FishingConfirmActivity extends LocationAwareActivity {
                 final String pin = editable.toString().trim();
 
                 if (pin.isEmpty()) {
-                    CToast(FishingConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
+                    CToast(FishingConfirmActivity.this, render(getString(R.string.missing_pin)), Toast.LENGTH_LONG);
                 } else if (editable != null && editable.length() == 4) {
                     // invoke login
                     boolean userIsValid = isAuthenticated(username, pin);
                     if (!userIsValid) {
-                        CToast(FishingConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
+                        CToast(FishingConfirmActivity.this, render(getString(R.string.invalid_password)), Toast.LENGTH_LONG);
                         return;
                     } else if (mLastLocation != null) {
                         recFishing.longitude = mLastLocation.getLongitude();

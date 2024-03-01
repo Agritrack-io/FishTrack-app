@@ -111,8 +111,8 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
                         CToast(ProcessConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
                         return;
                     } else if (mLastLocation != null) {
-                        recFishing.longitude = mLastLocation.getLongitude();
-                        recFishing.latitude = mLastLocation.getLatitude();
+                        recProcessing.longitude = mLastLocation.getLongitude();
+                        recProcessing.latitude = mLastLocation.getLatitude();
                         proceedWithoutLocation = true;
                         moveToNextScreen();
                     } else if (!proceedWithoutLocation) {

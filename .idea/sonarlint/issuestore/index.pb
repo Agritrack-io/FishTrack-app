@@ -27,8 +27,6 @@ Rapp/src/main/java/io/agritrack/kefalonia/api/sync/PackagingLotEnquiryCallBack.j
 Mapp/src/main/java/io/agritrack/kefalonia/api/sync/PendingAssetTxCallBack.java,4\b\4b8bf00bb0f6324df9f8bde252ec5e5891555ef2
 É
 Sapp/src/main/java/io/agritrack/kefalonia/api/sync/PendingCorrelationTxCallBack.java,9\5\955b17da68336346b12fdb99dc2ced6c471e40be
-
-Oapp/src/main/java/io/agritrack/kefalonia/api/sync/PendingFishingTxCallBack.java,c\2\c27c6f5a8b8aa2ad0fc5a63c7ffffdd01e5df39b
 É
 Sapp/src/main/java/io/agritrack/kefalonia/api/sync/PendingPostQualityTxCallBack.java,d\7\d727c446a85aa4fea15a8d4099e09fc1e9cf378b
 
@@ -135,8 +133,6 @@ x
 Happ/src/main/java/io/agritrack/kefalonia/data/dao/tx/AssetTxItemDAO.java,f\f\ff7ddb18b97b29fa93f30f151cca2ede9f07d41b
 É
 Sapp/src/main/java/io/agritrack/kefalonia/data/dao/tx/CorrelationTransactionDAO.java,7\e\7ebf34dc0f93c53ce65c57db640f3ce983729d95
-
-Oapp/src/main/java/io/agritrack/kefalonia/data/dao/tx/FishingTransactionDAO.java,3\8\38cc80514d3897f4315b8218308394ce3e480af5
 ä
 Zapp/src/main/java/io/agritrack/kefalonia/data/dao/tx/PostPackageQualityTransactionDAO.java,4\b\4b3be95e663f2d7df87f4f0d531e8985042fdf94
 
@@ -159,8 +155,6 @@ x
 Happ/src/main/java/io/agritrack/kefalonia/data/dao/EncodingSchemeDAO.java,3\6\36a9a3ca57c74283c809c33c883402af48df18fb
 {
 Kapp/src/main/java/io/agritrack/kefalonia/data/dao/FishingHarvestBinDAO.java,b\8\b8a2845e4d3b31bcc683fe38e4f58db3bab95f08
-x
-Happ/src/main/java/io/agritrack/kefalonia/data/dao/FishingRequestDAO.java,9\6\968fb3ba7faba2fd9dd265b77439b0cdd06a4259
 n
 >app/src/main/java/io/agritrack/kefalonia/data/dao/FlotDAO.java,c\0\c0c46656ff83dbda32b7222f16823205467cf243
 u
@@ -205,8 +199,6 @@ v
 Fapp/src/main/java/io/agritrack/kefalonia/caen/api/BX6200Commander.java,7\2\72503049a9b48d66b6f6de5da45a85ecdae962a1
 u
 Eapp/src/main/java/io/agritrack/kefalonia/caen/api/CAEN_CONSTANTS.java,1\6\16d89437e15354075e247b80e8d39e3025048084
-x
-Happ/src/main/java/io/agritrack/kefalonia/caen/api/RFIDModuleFactory.java,b\f\bf3118403ad2686e25b055f19f7c6440b805af60
 v
 Fapp/src/main/java/io/agritrack/kefalonia/caen/common/INTERFACEMEM.java,4\7\47ee8f8b95f783421a6ed1d1852fa57074de26bb
 o
@@ -215,8 +207,6 @@ x
 Happ/src/main/java/io/agritrack/kefalonia/barcode/BarcodeScanService.java,3\2\32de8d2e8ba964f1afb8bd6a0ac62d015edda0c0
 u
 Eapp/src/main/java/io/agritrack/kefalonia/api/upload/UploadingApi.java,4\a\4acc618252954a28a44f51fa2777158dc2bcf2bc
-s
-Capp/src/main/java/io/agritrack/kefalonia/api/tx/TransactionApi.java,6\f\6fda08e6baba253c64a1d211a8a4fa6b43167603
 x
 Happ/src/main/java/io/agritrack/kefalonia/api/sync/SyncUsersCallBack.java,d\a\da985a28f32963f2f549a21ebb26e7d6d82329b2
 |
@@ -252,10 +242,6 @@ Dapp/src/main/java/io/agritrack/kefalonia/data/type/ConfigDevice.java,8\6\86b3d
 t
 Dapp/src/main/java/io/agritrack/kefalonia/data/type/EpcPerDevice.java,a\d\adacb7273f0c261e3da2fc42d35c2476bfd4fe6b
 }
-Mapp/src/main/java/io/agritrack/kefalonia/ui/adapter/BinWeightCageAdapter.java,1\a\1a514298bc610875081fbd6d828c13017e60fe9f
-z
-Japp/src/main/java/io/agritrack/kefalonia/ui/adapter/FilterableAdapter.java,0\f\0fa841bf7cb20ecdfb6c121c149504785325fff2
-}
 Mapp/src/main/java/io/agritrack/kefalonia/ui/adapter/InventoryMenuAdapter.java,d\c\dc9b906d57d8d3cf5b53d45f49a201bb697d7840
 }
 Mapp/src/main/java/io/agritrack/kefalonia/ui/adapter/IOnItemClickListener.java,2\f\2fb02c67c87ba98126d67e12ca05f6cac388aa44
@@ -265,14 +251,8 @@ z
 Japp/src/main/java/io/agritrack/kefalonia/ui/adapter/OptionGridAdapter.java,9\5\95c2f12255db7e5fa1bbdba5169560e20d5177af
 Ç
 Rapp/src/main/java/io/agritrack/kefalonia/ui/adapter/RecyclerItemClickListener.java,f\d\fdd33b72da733be18caade0153bc62626cf460e9
-Ç
-Rapp/src/main/java/io/agritrack/kefalonia/ui/adapter/TemperatureProfileAdapter.java,d\b\db56572767c0154548fdd83bbddcd25287a44a81
-Ä
-Papp/src/main/java/io/agritrack/kefalonia/ui/adapter/TemplateRecyclerAdapter.java,c\1\c1a3de368a94e20bc9d90f0b3d194141afa6afec
 |
 Lapp/src/main/java/io/agritrack/kefalonia/ui/adapter/TransportBinAdapter.java,a\a\aa4a24bae713965543e95b3db577a8eedd19a50a
-x
-Happ/src/main/java/io/agritrack/kefalonia/ui/adapter/TreelikeAdapter.java,4\3\43b22f42a74daa76986cf8c48bdb039c7a5f876c
 y
 Iapp/src/main/java/io/agritrack/kefalonia/ui/adapter/ViewPagerAdapter.java,a\3\a3b56ddcbffb5630c9833301b1d81720cc6c0329
 ~
@@ -299,8 +279,11 @@ r
 Bapp/src/main/java/io/agritrack/kefalonia/ui/login/LoginResult.java,f\7\f7177ddfc30fd7cdd91c9ac48838c5e1fbc0ab83
 y
 Iapp/src/main/java/io/agritrack/kefalonia/ui/state/ForgotYourPinState.java,c\1\c10bdf580d5f8e9cca4939ffe8c70d4b57839396
+<<<<<<< HEAD
 Å
 Qapp/src/main/java/io/agritrack/kefalonia/ui/tools/caen/LoggerDialogDecorator.java,1\c\1cc5661bf5b390b0b121f20159874ce0d8db275c
+=======
+>>>>>>> 008af008cc53067b145ab0a0084b94eb64a19a99
 Ü
 Vapp/src/main/java/io/agritrack/kefalonia/ui/tools/caen/ResetLoggerDialogDecorator.java,4\0\40f026ede051fa047fff8ea0bacd90277cca6d2e
 }
@@ -351,8 +334,6 @@ l
 <app/src/main/java/io/agritrack/kefalonia/rfid/RFIDUtils.java,e\2\e2da29218d30ed6db62e8ef3523a8edb3011649c
 u
 Eapp/src/main/java/io/agritrack/kefalonia/rfid/ScanFilterRunnable.java,e\0\e0243483f263eefd3a325c4e88983509b16dab82
-v
-Fapp/src/main/java/io/agritrack/kefalonia/rfid/ScanInventoryThread.java,d\6\d62ab93d4e2b3ea2d537fe49cfe73d2bac9e7a29
 p
 @app/src/main/java/io/agritrack/kefalonia/rfid/X9KeyReceiver.java,d\3\d30b8e817c3d4c188ddc8cd83ace6efb23f53400
 m
@@ -392,8 +373,6 @@ Fapp/src/main/java/io/agritrack/kefalonia/fish/state/HarvestRecord.java,4\6\46a
 z
 Japp/src/main/java/io/agritrack/kefalonia/fish/state/InventoryWHRecord.java,5\e\5e783e97a766d3b2972751e80e760a0118fba432
 y
-Iapp/src/main/java/io/agritrack/kefalonia/fish/state/LoggerDataRecord.java,9\3\93e2695cc002c767224deda1a72407d6e93379bb
-y
 Iapp/src/main/java/io/agritrack/kefalonia/fish/state/ProcessingRecord.java,6\1\610b39a0795cb263a4b29448a291767c58fd0013
 v
 Fapp/src/main/java/io/agritrack/kefalonia/fish/state/QualityRecord.java,2\e\2e2638d7be115087f3775c2c5396ca7126189e26
@@ -409,8 +388,6 @@ s
 Capp/src/main/java/io/agritrack/kefalonia/fish/state/WHTxRecord.java,0\e\0ee93f3533c6f5a614a3ffbd0c2fe31c61e3f39d
 ~
 Napp/src/main/java/io/agritrack/kefalonia/data/model/tx/FishingTransaction.java,c\2\c25ec0bdc163e9c0da435323c794980c1421b256
-v
-Fapp/src/main/java/io/agritrack/kefalonia/fish/state/FishingRecord.java,6\6\66ddc3437829e03fac61f607a3183f859bcd57ca
 â
 Yapp/src/main/java/io/agritrack/kefalonia/data/model/tx/PostPackageQualityTransaction.java,f\f\ff996ea70ff8846db4e999c6138187aef48dce7a
 ~
@@ -459,12 +436,15 @@ x
 Happ/src/main/java/io/agritrack/kefalonia/data/model/common/Supplier.java,c\6\c6b1a2a6d8dee3a2dc8ba208225229cec6f6550f
 Ö
 Uapp/src/main/java/io/agritrack/kefalonia/data/model/common/TemperatureTimeSeries.java,3\c\3cd0bd7196f07f2b7b5979da9364e8686af891e0
+<<<<<<< HEAD
 t
 Dapp/src/main/java/io/agritrack/kefalonia/fish/ui/bo/BinLoadsMap.java,2\4\245cad3ade3f9b79aed6d0e1f15cc81cf8c98947
 }
 Mapp/src/main/java/io/agritrack/kefalonia/fish/ui/bo/BinTemperatureRecord.java,3\2\329bdf0c4e90c6ac739ff0922450bf2834e39af5
 x
 Happ/src/main/java/io/agritrack/kefalonia/fish/ui/bo/BinWeightRecord.java,c\3\c397ef2d1c3dbf7a20fc59f1924c6b27bdc71a4a
+=======
+>>>>>>> 008af008cc53067b145ab0a0084b94eb64a19a99
 y
 Iapp/src/main/java/io/agritrack/kefalonia/fish/ui/bo/GenericListModel.java,4\a\4aaa0f4fa9d361bea3dcad9ac0ef3993444b5962
 v
@@ -525,8 +505,11 @@ q
 Aapp/src/main/java/io/agritrack/kefalonia/dialog/ScanQrDialog.java,a\d\ad30704729209f53dae5a2fb1dcd4d00a7f2d3d4
 Ç
 Rapp/src/main/java/io/agritrack/kefalonia/fish/ui/fishing/FishingStartActivity.java,f\5\f51a3c3402b5f91cc60557c488ebe061ec830b62
+<<<<<<< HEAD
 Å
 Qapp/src/main/java/io/agritrack/kefalonia/fish/ui/process/ProcessInfoActivity.java,5\4\54f588ce301ce430c880e89729ce62c7d7027e06
+=======
+>>>>>>> 008af008cc53067b145ab0a0084b94eb64a19a99
 à
 Xapp/src/main/java/io/agritrack/kefalonia/fish/ui/quality/QualitySelectStepsActivity.java,c\0\c072905303b21b26a02c70f96f30f05302f8320b
 ì
@@ -541,8 +524,6 @@ mapp/src/main/java/io/agritrack/kefalonia/fish/ui/quality/postpackage/PostPackag
 eapp/src/main/java/io/agritrack/kefalonia/fish/ui/quality/packaging/PackageQualityConfirmActivity.java,6\3\63ff46480d059fc1d55c0c3d35b8b698cca59f59
 å
 \app/src/main/java/io/agritrack/kefalonia/fish/ui/testBinTemperature/TestBinTempActivity.java,b\7\b7ff74c479716aab8cca5b4d305dbc35901b4262
-t
-Dapp/src/main/java/io/agritrack/kefalonia/fish/ui/WhMenuActivity.java,1\0\10418546a764e7c08a268663a2859b528aa3f201
 á
 Wapp/src/main/java/io/agritrack/kefalonia/fish/ui/wh/outgoing/OutgoingStartActivity.java,9\a\9a4c7ac84d46e59ef47d1d5fab165d636a6e66b4
 y
@@ -561,72 +542,44 @@ z
 Japp/src/main/java/io/agritrack/kefalonia/ui/viewmodel/ConfigViewModel.java,5\a\5a45c0ba62def97ca47ba64ec26b1198fe2ebba4
 à
 Xapp/src/main/java/io/agritrack/kefalonia/settings/adapter/IConfigPersistenceAdapter.java,c\a\cabb538ff1610b7558e74da9749c0b10fb1802d9
-?
-settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
 r
 Bapp/src/main/java/io/agritrack/kefalonia/api/config/ConfigAPI.java,9\7\97220461e52814454d7e8d5bf33ed6086705f483
-A
-gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
-N
-RFIDlibrary/consumer-rules.pro,4\a\4afb0f55a6886c6e197738d7935a22d722f9425a
-É
-Sapp/src/main/java/io/agritrack/kefalonia/settings/adapter/ConfigWebPersistence.java,0\d\0d8ee72eb2083a98348ea248e31a0a4441ad0b76
-Ö
-Uapp/src/main/java/io/agritrack/kefalonia/fish/ui/fishing/HarvestRequestsActivity.java,4\e\4eddfb89bc620b83311a830d984943666f4be4b8
-Ñ
-Tapp/src/main/java/io/agritrack/kefalonia/fish/ui/fishing/FishingConfirmActivity.java,6\8\68bb5e9c969f0a60a74f5a2f26cfd66ae5d32283
-Å
-Qapp/src/main/java/io/agritrack/kefalonia/fish/ui/fishing/FishingTeamActivity.java,3\2\320483c727180ae310d8719baba8f1038393e9da
 Ö
 Uapp/src/main/java/io/agritrack/kefalonia/ui/tools/caen/SortLoggerDialogDecorator.java,b\b\bb757173d2fc8ac3da9e4169aeb41e00711b1f85
 
 Oapp/src/main/java/io/agritrack/kefalonia/data/model/common/TemperatureData.java,0\7\07cadb0bdc4d1abeae6e48a1dedbbc0f96cd4c40
+<<<<<<< HEAD
 Å
 Qapp/src/main/java/io/agritrack/kefalonia/fish/ui/process/ProcessBinsActivity.java,8\d\8d82ad1c529e2ca63f0491692b14a4ab7cb8b688
+=======
+>>>>>>> 008af008cc53067b145ab0a0084b94eb64a19a99
 Ä
 Papp/src/main/java/io/agritrack/kefalonia/data/dto/common/TemperatureDataDTO.java,2\7\27862893c575e3844829e419a2698495ff2e8a38
-n
->app/src/main/java/io/agritrack/kefalonia/api/sync/SyncApi.java,e\b\ebe9c311ce3311d8b7ad560da78a7e51b874b8bd
-Ü
-Vapp/src/main/java/io/agritrack/kefalonia/data/dto/common/TemperatureTimeSeriesDTO.java,d\d\dd06d417c75cc9edc97846167d7220f8106aa274
-n
->app/src/main/java/io/agritrack/kefalonia/data/db/MobileDB.java,7\5\759b68cada0dbe332ce0202332061ebeee4558ed
 q
 Aapp/src/main/java/io/agritrack/kefalonia/data/dto/BinInfoDTO.java,8\b\8bffe2d61ca37203b0cb0d75016c63147a0c57d5
 r
 Bapp/src/main/java/io/agritrack/kefalonia/api/sync/SyncBinInfo.java,b\b\bb45b43dbd39ff8a4d3598cdef4813fd08d5b496
-q
-Aapp/src/main/java/io/agritrack/kefalonia/data/dao/BinInfoDAO.java,3\f\3f0bca2b5e740d99a8e90dec3bb06c1cd34a26d5
 s
 Capp/src/main/java/io/agritrack/kefalonia/caen/common/CAENState.java,8\c\8c70160b6cefc7ccd989e19c13a237e610f7800d
 t
 Dapp/src/main/java/io/agritrack/kefalonia/caen/api/EncodingUtils.java,6\5\654db5a9435ac5823ca99d2bd0a9c5b42c172def
+<<<<<<< HEAD
 Ö
 Uapp/src/main/java/io/agritrack/kefalonia/ui/tools/caen/ReadLoggerDialogDecorator.java,0\0\001ebe337a60f25441bc1bb2d807ae33d1cf2ebc
 p
 @app/src/main/java/io/agritrack/kefalonia/data/model/BinInfo.java,8\6\8691bd67eb3efea4caa84dbe200ba57f76d241ef
+=======
+y
+Iapp/src/main/java/io/agritrack/kefalonia/ui/tools/caen/ILoggerDialog.java,9\b\9bddd02119a98d2dc3d2c45169e36238e22326a3
+>>>>>>> 008af008cc53067b145ab0a0084b94eb64a19a99
 ~
 Napp/src/main/java/io/agritrack/kefalonia/fish/ui/fishing/ISummaryActivity.java,4\d\4d541339537de6be7d2ff37d1b0d993f3425fb39
-w
-Gapp/src/main/java/io/agritrack/kefalonia/ui/adapter/BinLoadAdapter.java,5\a\5abe72d828dadd8b3891c8bdcd50e36c624656eb
-Å
-Qapp/src/main/java/io/agritrack/kefalonia/fish/ui/fishing/FishingBinsActivity.java,0\f\0fadb9c506817f59f57c18ef64bfc148edc6ea57
-Ö
-Uapp/src/main/java/io/agritrack/kefalonia/fish/ui/fishing/FishingFillBinsActivity.java,9\6\96a0c3b7437ba44295f84319037a61644f608b28
-Ä
-Papp/src/main/java/io/agritrack/kefalonia/ui/tools/caen/LoggerDialogFragment.java,9\d\9da99b08b0782b91de0289d93b101440dacc3fb9
 v
 Fapp/src/main/java/io/agritrack/kefalonia/caen/api/BX6100Commander.java,6\f\6f2d529020ace77caa8e1d5104e37adfea790d0b
 |
 Lapp/src/main/java/io/agritrack/kefalonia/caen/api/AbstractCAENCommander.java,c\a\cab22a70caf3dc8b6d17b5eb3c379485689d30f2
-x
-Happ/src/main/java/io/agritrack/kefalonia/caen/api/CAENLoggerService.java,a\0\a0269f010bdb758bb644918f143c18bdccd7a32e
-p
-@app/src/main/java/io/agritrack/kefalonia/caen/api/ICAEN_API.java,5\6\568d799e01a19ea40d9b8c9b49fecef4e66004b4
 ~
 Napp/src/main/java/io/agritrack/kefalonia/fish/ui/wh/InternalAssetActivity.java,2\c\2cac14bb37a25c126a15a4a4bdd5018ecc78c61d
-â
-Yapp/src/main/java/io/agritrack/kefalonia/fish/ui/wh/inventory/InventoryAssetActivity.java,4\6\46ce3269a0b0ee4ecb8d309a2fec3aa093f1b181
 å
 \app/src/main/java/io/agritrack/kefalonia/fish/ui/wh/correlation/CorrelationCageActivity.java,3\e\3e38c1d75ab86d95980457756f1501ef9f273da5
 ã
@@ -637,8 +590,19 @@ _app/src/main/java/io/agritrack/kefalonia/fish/ui/wh/correlation/CorrelationCage
 `app/src/main/java/io/agritrack/kefalonia/fish/ui/wh/correlation/CorrelationPlatformActivity.java,a\3\a360beffe17d4cf6ce929485e1809402d85e2582
 à
 Xapp/src/main/java/io/agritrack/kefalonia/fish/ui/wh/correlation/CorrelationActivity.java,9\8\98ea2fcd6a272e2b2a97033446f4fd10c4573037
+n
+>app/src/main/java/io/agritrack/kefalonia/api/sync/SyncApi.java,e\b\ebe9c311ce3311d8b7ad560da78a7e51b874b8bd
+x
+Happ/src/main/java/io/agritrack/kefalonia/data/dao/FishingRequestDAO.java,9\6\968fb3ba7faba2fd9dd265b77439b0cdd06a4259
+N
+RFIDlibrary/proguard-rules.pro,a\0\a0a49459eb9b800333f7390bca1f135541d92ee7
+N
+RFIDlibrary/consumer-rules.pro,4\a\4afb0f55a6886c6e197738d7935a22d722f9425a
+F
+app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
 ~
 Napp/src/main/java/io/agritrack/kefalonia/fish/ui/wh/search/SearchActivity.java,5\f\5f1ddb98b1ab656f548324e2d0dc27238a36614b
+<<<<<<< HEAD
 Ö
 Uapp/src/main/java/io/agritrack/kefalonia/fish/ui/binTurnover/BinTurnoverActivity.java,e\d\ed137bff6ffae4b7af614d74115620fa1ef23167
 
@@ -673,3 +637,19 @@ v
 Fapp/src/main/java/io/agritrack/epctagcoder/parse/SGTIN/ParseSGTIN.java,b\2\b2b87f4f836b0ac6f30dfeb74abe64f87eda2f9f
 Ö
 Uapp/src/test/java/io/agritrack/epctagcoder/parse/SGTIN/TestParseSGTINWithRfidTag.java,d\2\d24134e78c4ef6fefeccccfa2ba0814bc53c5043
+=======
+z
+Japp/src/main/java/io/agritrack/kefalonia/ui/adapter/FilterableAdapter.java,0\f\0fa841bf7cb20ecdfb6c121c149504785325fff2
+s
+Capp/src/main/java/io/agritrack/kefalonia/api/tx/TransactionApi.java,6\f\6fda08e6baba253c64a1d211a8a4fa6b43167603
+q
+Aapp/src/main/java/io/agritrack/kefalonia/data/dao/BinInfoDAO.java,3\f\3f0bca2b5e740d99a8e90dec3bb06c1cd34a26d5
+
+Oapp/src/main/java/io/agritrack/kefalonia/api/sync/PendingBinInfoTxCallBack.java,e\8\e8027388c2cf81458a5b602aec6ebf3d48d01a03
+
+Oapp/src/main/java/io/agritrack/kefalonia/api/sync/PendingFishingTxCallBack.java,c\2\c27c6f5a8b8aa2ad0fc5a63c7ffffdd01e5df39b
+v
+Fapp/src/main/java/io/agritrack/kefalonia/fish/state/FishingRecord.java,6\6\66ddc3437829e03fac61f607a3183f859bcd57ca
+A
+gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
+>>>>>>> 008af008cc53067b145ab0a0084b94eb64a19a99
