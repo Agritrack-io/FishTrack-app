@@ -11,10 +11,6 @@ F
 java:S1604"(Make this anonymous inner class a lambda(—¿Ç“8ƒÃÊÙ1
 n
 java:S1301Ç"KReplace this "switch" statement by "if" statements to increase readability.(×ö³–úÿÿÿÿ8„ÃÊÙ1
-Z
-java:S2589½"7Remove this expression which always evaluates to "true"(Ãíİ¤ûÿÿÿÿ8»—ÍÙ1
-g
-java:S2583í"DChange this condition so that it does not always evaluate to "false"(âıâûÿÿÿÿ8Ë—ÍÙ1
 D
 java:S1659‡"(Declare "etPassword" on a separate line.(¤ô¶ûûÿÿÿÿ
 t

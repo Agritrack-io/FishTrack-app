@@ -27,16 +27,6 @@ o
 java:S1450)"YRemove the "spProducts" field and declare it as a local variable in the relevant methods.(Í«Í¦
 ~
 java:S1450+"\Remove the "tbEnvironment" field and declare it as a local variable in the relevant methods.(ßÂĞıÿÿÿÿ8£Ù1
-t
-java:S1612#"WReplace this lambda with method reference 'AppOptionsFragment.this::gotoSiteSelection'.(Šƒª8Š£Ù1
-m
-java:S1612$"PReplace this lambda with method reference 'AppOptionsFragment.this::gotoRT0012'.(±Ûªî8‹£Ù1
-x
-java:S1612%"VReplace this lambda with method reference 'AppOptionsFragment.this::gotoImportRT0012'.(ë¡¶Êúÿÿÿÿ8Œ£Ù1
-n
-java:S1612&"LReplace this lambda with method reference 'AppOptionsFragment.this::delCfg'.(Ô°ôòùÿÿÿÿ8Œ£Ù1
-s
-java:S1612'"QReplace this lambda with method reference 'AppOptionsFragment.this::trunLocalDB'.(«”‘„úÿÿÿÿ8Œ£Ù1
 E
 java:S1185?"(Remove this method to simply inherit it.(ßìê¯8£Ù1
 x
@@ -45,7 +35,7 @@ java:S3923X"[Remove this conditional structure or edit its code blocks so that 
 š
 java:S5803i"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(³“ùúúÿÿÿÿ8£Ù1
 ¤
-java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(‡ÿÉùûÿÿÿÿ8£Ù1
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¹Æº×şÿÿÿÿ8£Ù1
 n
 java:S3457v"Q%n should be used in place of \n to produce the platform-specific line separator.(•§ƒ”8’£Ù1
 E

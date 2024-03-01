@@ -241,12 +241,6 @@
             android:name=".fish.ui.FishHomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.login.ForgotYourPinActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.login.ForgotYourPinResultActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".settings.SettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

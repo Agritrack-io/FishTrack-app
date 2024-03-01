@@ -44,6 +44,7 @@ public class LoggerReadFishDialogFragment extends DialogFragment implements Time
     private Button btnReset, btnRead;
     private TextView tvTitle;
     private TaskRunner taskRunner;
+
     protected final View.OnClickListener resetBtnListener = v -> {
 
         btnReset.setBackgroundResource(R.drawable.button_background);
@@ -69,7 +70,9 @@ public class LoggerReadFishDialogFragment extends DialogFragment implements Time
             }
         });
     };
+
     private List<Double> values = null;
+
     private final View.OnClickListener readBtnListener = v -> {
 
         btnRead.setBackgroundResource(R.drawable.button_background);
