@@ -551,8 +551,6 @@ Uapp/src/main/java/io/agritrack/kefalonia/ui/tools/caen/SortLoggerDialogDecorato
 Oapp/src/main/java/io/agritrack/kefalonia/data/model/common/TemperatureData.java,0\7\07cadb0bdc4d1abeae6e48a1dedbbc0f96cd4c40
 €
 Papp/src/main/java/io/agritrack/kefalonia/data/dto/common/TemperatureDataDTO.java,2\7\27862893c575e3844829e419a2698495ff2e8a38
-†
-Vapp/src/main/java/io/agritrack/kefalonia/data/dto/common/TemperatureTimeSeriesDTO.java,d\d\dd06d417c75cc9edc97846167d7220f8106aa274
 q
 Aapp/src/main/java/io/agritrack/kefalonia/data/dto/BinInfoDTO.java,8\b\8bffe2d61ca37203b0cb0d75016c63147a0c57d5
 r

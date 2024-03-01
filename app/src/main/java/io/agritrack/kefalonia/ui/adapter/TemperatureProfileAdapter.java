@@ -123,6 +123,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
                 holder.tvFish.setText(fishT != null ? String.valueOf(fishT) : "");
                 holder.tvWater.setText(waterT != null ? String.valueOf(waterT) : "");
                 holder.tvFish2.setText(fishT2 != null ? String.valueOf(fishT2) : "");
+                recLoggerData.addDataSetForBin(key, fishT, waterT, fishT2);
             }
         }
 
