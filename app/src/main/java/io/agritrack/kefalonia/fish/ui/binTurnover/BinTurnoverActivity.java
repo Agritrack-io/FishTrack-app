@@ -253,6 +253,10 @@ public class BinTurnoverActivity extends AppCompatActivity {
                         GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
                         fillTemperatureProfileAdapter();
                         ivBack.setVisibility(View.INVISIBLE);
+                    } else {
+                        recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), System.currentTimeMillis(), null);
+                        GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
+                        fillTemperatureProfileAdapter();
                     }
                 }
             }
@@ -295,7 +299,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
             stopScanner();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
                 moveToNextScreen();
             }
@@ -351,7 +355,7 @@ public class BinTurnoverActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (binEPC == null) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.bin_turnover));
+                sb.append(String.format("\n%s is missing", "'Bin to turnover'"));
             }
         }
         return sb.toString();
@@ -435,6 +439,8 @@ public class BinTurnoverActivity extends AppCompatActivity {
         if (values != null) {
             Map<String, LoggerDataRecord.TemperatureModel> data = recLoggerData.data;
             tempProfileAdapter.fill(data, tmpBin);
+        } else {
+            tempProfileAdapter.fill(tmpBin);
         }
 
         adapterBins.removeItem(tmpBin.rfid);

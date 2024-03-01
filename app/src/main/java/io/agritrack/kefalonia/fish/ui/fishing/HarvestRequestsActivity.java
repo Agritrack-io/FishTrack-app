@@ -250,12 +250,12 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
                         String login = LocalPreferences.getLoggedInUser("").trim();
 
                         if (Strings.isEmptyOrWhitespace(supervisor.getText().toString())) {
-                            CToast(getAppContext(), render(R.string.fill_all_fields), Toast.LENGTH_LONG);
+                            CToast(getAppContext(), render(getString(R.string.fill_all_fields)), Toast.LENGTH_LONG);
                             return;
                         }
 
                         if (Strings.isEmptyOrWhitespace(insertedPin)) {
-                            CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG);
+                            CToast(getAppContext(), render(getString(R.string.missing_pin)), Toast.LENGTH_LONG);
                             return;
                         }
 
@@ -268,7 +268,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
                             duplicate(harvestRq);
                             getTodayHarvestReq();
                         } else {
-                            CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
+                            CToast(getAppContext(), render(getString(R.string.invalid_password)), Toast.LENGTH_LONG);
                             return;
                         }
                     }
@@ -420,10 +420,10 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (this.harvestRQcnt == 0) {
-            sb.append(R.string.no_harvest);
+            sb.append(getString(R.string.no_harvest));
         } else if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(recFishing.speciesName)) {
-                sb.append((R.string.select_harvest);
+                sb.append(getString(R.string.select_harvest));
             }
         }
 

@@ -1,8 +1,0 @@
-
-{	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(«©½¿üÿÿÿÿ8°‹ˆÙ1
-š
-java:S5803("xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(¾­Ìúÿÿÿÿ8¶‹ˆÙ1
-L
-java:S1172D"*Remove this unused method parameter "url".(ØÎ¶¸ÿÿÿÿÿ8¹‹ˆÙ1
-G
-java:S1172\"*Remove this unused method parameter "url".(âÍ8º‹ˆÙ1

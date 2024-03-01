@@ -46,7 +46,7 @@ public class BinWeightRecord {
     }
 
     public class BinRecord {
-        public Integer weight = new Integer(500);
+        public final Integer weight;
         public final String binEPC;
         public Double temp;
         public final Long from;

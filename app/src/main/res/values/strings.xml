@@ -806,6 +806,7 @@
     <string name="operation_failed">Operation Failed!</string>
     <string name="is_missing">is missing</string>
     <string name="field">field</string>
+    <string name="smell">smell</string>
     <string name="loggers">"Data Logger"</string>
     <string name="bin_turnover">"Bin to Turnover"</string>
     <string name="no_location">No location returned by GPS!</string>

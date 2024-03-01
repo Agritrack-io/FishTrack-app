@@ -184,7 +184,7 @@ public class InitBinsActivity extends AppCompatActivity {
                 confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render(R.string.delete_item), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render("Plz select a Bin to delete!!"), Toast.LENGTH_LONG);
             }
         });
 
@@ -227,7 +227,7 @@ public class InitBinsActivity extends AppCompatActivity {
         loggerStateObserver.observe(this, rs -> {
             // handle Successful operation from Logger.
             if (rs == null || !rs.canProceed) {
-                CToast(getApplicationContext(), render(R.string.operation_failed), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render("Operation Failed!"), Toast.LENGTH_LONG);
                 return;
             }
             // handle READ and INIT events...
@@ -279,7 +279,7 @@ public class InitBinsActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
                 startActivity(i);
@@ -320,7 +320,7 @@ public class InitBinsActivity extends AppCompatActivity {
 
     private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.type_code_of_bin);
+        builder.setTitle("Type bin BARCODE");
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -380,7 +380,7 @@ public class InitBinsActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recFishing.availBins == null || recFishing.availBins.isEmpty()) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.bins_to_use));
+                sb.append(String.format("\n%s is missing", "'Bins for usage'"));
             }
         }
         return sb.toString();

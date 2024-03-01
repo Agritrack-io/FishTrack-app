@@ -24,6 +24,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +81,8 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         double _highT = 0.0d, _avgT = 0.0d, _lowT = 0.0d;
         String key = listOfEPCs.get(position);
-        LoggerDataRecord.TemperatureModel model = mapOfData.get(key);
+
+        LoggerDataRecord.TemperatureModel model = mapOfData!=null ? mapOfData.get(key) : null;
 
         if (model != null) {
             long measurementsCount = model.values.stream().filter(y -> !"N/A".equalsIgnoreCase(y[1])).count();
@@ -114,28 +116,38 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
                 holder.tvAvg.setText("N/A");
                 holder.tvLow.setText("N/A");
             }
+        } else {
+            if (mLayoutInflater.getContext() instanceof BinTurnoverActivity) {
+                holder.tvCageCode.setText(cageCode);
+                holder.tvWeight.setText(String.valueOf(weight));
+                holder.tvFish.setText(fishT != null ? String.valueOf(fishT) : "");
+                holder.tvWater.setText(waterT != null ? String.valueOf(waterT) : "");
+                holder.tvFish2.setText(fishT2 != null ? String.valueOf(fishT2) : "");
+            }
         }
 
         holder.infoLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String key = listOfEPCs.get(holder.getAdapterPosition());
-                LoggerDataRecord.TemperatureModel model = mapOfData.get(key);
+                LoggerDataRecord.TemperatureModel model = mapOfData!=null ? mapOfData.get(key) : null;
 
-                List<String[]> values = model.values;
+                List<String[]> values = model != null ? model.values : null;
 
                 AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(context);
                 dlgBuilder.setTitle("Logger Data");
 
                 final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.agri_list_item_12dp);
 
-                int idx = 1;
-                for (String[] value : values) {
-                    arrayAdapter.add(String.format("%04d. [%s] --> %s", idx++, value[0], value[1]));
+                if (values != null) {
+                    int idx = 1;
+                    for (String[] value : values) {
+                        arrayAdapter.add(String.format("%04d. [%s] --> %s", idx++, value[0], value[1]));
+                    }
+                    dlgBuilder.setAdapter(arrayAdapter, null);
+                    dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
+                    dlgBuilder.create().show();
                 }
-                dlgBuilder.setAdapter(arrayAdapter, null);
-                dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
-                dlgBuilder.create().show();
             }
         });
 
@@ -197,6 +209,15 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
     public synchronized void fill(Map<String, LoggerDataRecord.TemperatureModel> data, BinInfo tmpBin) {
         this.listOfEPCs = new ArrayList<>(data.keySet());
         this.mapOfData = data;
+        this.cageCode = tmpBin.cage;
+        this.weight = tmpBin.totalWeight;
+        notifyDataSetChanged();
+    }
+
+    public synchronized void fill(BinInfo tmpBin) {
+        ArrayList<String> tt = new ArrayList<>();
+        tt.add(tmpBin.rfid);
+        this.listOfEPCs = tt;
         this.cageCode = tmpBin.cage;
         this.weight = tmpBin.totalWeight;
         notifyDataSetChanged();

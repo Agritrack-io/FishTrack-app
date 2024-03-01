@@ -227,7 +227,7 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
                 startActivity(i);
@@ -313,11 +313,11 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recFishing.fishingTeam == null || recFishing.fishingTeam.isEmpty()) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.team_members));
+                sb.append(String.format(getString(R.string.field) +"\n%s" + getString(R.string.is_missing), getString(R.string.team_members)));
             }
 
             if (Strings.isEmptyOrWhitespace(recFishing.cageRFID)) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.cage_tag));
+                sb.append(String.format(getString(R.string.field) +"\n%s" + getString(R.string.is_missing), getString(R.string.cage_tag)));
             }
         }
 

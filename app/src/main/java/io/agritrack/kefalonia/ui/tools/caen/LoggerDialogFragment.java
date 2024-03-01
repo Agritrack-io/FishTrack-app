@@ -495,9 +495,15 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                             btnRead.setText(getString(R.string.idle_logger_with_data) + " [" +state.samplesCnt +"]");
                             currentLoggerEPC = loggerEPC;
                         } else if ("00000".equalsIgnoreCase(state.ctrlReg)) {
+                            state.setLoggerEPC(loggerEPC);
+                            state.setAssetEPC(assetEPC);
+                            state.setProductionLane(productionLane);
                             currentLoggerEPC = null;
                             btnRead.setText(R.string.idle_logger);
                             btnRead.setOnClickListener(null);
+                            if (stateResult != null) {
+                                stateResult.setValue(state);
+                            }
                             // after Reset, initialize the logger and start logging...
                             btnReset.setOnClickListener(resetBtnListener);
                             btnReset.setText(R.string.starting_logger);
