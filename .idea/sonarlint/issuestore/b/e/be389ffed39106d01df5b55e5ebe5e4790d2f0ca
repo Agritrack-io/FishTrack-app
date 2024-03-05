@@ -1,0 +1,69 @@
+
+|
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ÿˆèùÿÿÿÿ8ıŸ”Éß1
+d
+java:S1192ì"MDefine a constant instead of duplicating this literal "ROLE_FISHING" 4 times.(æıø™
+f
+java:S1192ì"ODefine a constant instead of duplicating this literal "ROLE_PACKAGING" 5 times.(æıø™
+b
+java:S1192ì"KDefine a constant instead of duplicating this literal "ROLE_ADMIN" 7 times.(æıø™
+g
+java:S1192ì"PDefine a constant instead of duplicating this literal "ROLE_SUPER_USER" 7 times.(æıø™
+g
+java:S1192Â"IDefine a constant instead of duplicating this literal "Bearer " 20 times.(èçŸ­8‡ ”Éß1
+K
+java:S1604Æ"(Make this anonymous inner class a lambda(Ìáìÿÿÿÿÿ8‘ ”Éß1
+{	java:S115q"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(È“Ä®ÿÿÿÿÿ8ù²”Éß1
+{	java:S115q"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(È“Ä®ÿÿÿÿÿ8ù²”Éß1
+{	java:S115q"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(È“Ä®ÿÿÿÿÿ8ú²”Éß1
+{	java:S115q"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(È“Ä®ÿÿÿÿÿ8ú²”Éß1
+{	java:S115q"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(È“Ä®ÿÿÿÿÿ8ú²”Éß1
+{	java:S115q"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(È“Ä®ÿÿÿÿÿ8û²”Éß1
+{	java:S115q"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(È“Ä®ÿÿÿÿÿ8û²”Éß1
+j
+java:S1659q"HDeclare "Fishing_Idx" and all following declarations on a separate line.(È“Ä®ÿÿÿÿÿ8³”Éß1
+I
+java:S1659u"'Declare "ivRefresh" on a separate line.(®Ññ¬úÿÿÿÿ8³”Éß1
+z
+java:S1450u"XRemove the "ivRefresh" field and declare it as a local variable in the relevant methods.(®Ññ¬úÿÿÿÿ8£³”Éß1
+z
+java:S1450u"XRemove the "ivSupport" field and declare it as a local variable in the relevant methods.(®Ññ¬úÿÿÿÿ8¥³”Éß1
+y
+java:S1450v"\Remove the "tvOfflineWork" field and declare it as a local variable in the relevant methods.(ÇË¬·8©³”Éß1
+X
+java:S1874w"6Remove this use of "ProgressDialog"; it is deprecated.(·á…Çùÿÿÿÿ8Ê³”Éß1
+t
+java:S3776~"RRefactor this method to reduce its Cognitive Complexity from 28 to the 15 allowed.(¨Œşÿÿÿÿ8Í³”Éß1
+^	java:S125•"<This block of commented-out lines of code should be removed.( ’ºûÿÿÿÿ8Û³”Éß1
+Y	java:S125›"<This block of commented-out lines of code should be removed.(‡“Ä°8ß³”Éß1
+Y	java:S125¡"<This block of commented-out lines of code should be removed.(áß£Ù8á³”Éß1
+^	java:S125§"<This block of commented-out lines of code should be removed.(’ëîşÿÿÿÿ8ä³”Éß1
+T
+java:S1874°"6Remove this use of "ProgressDialog"; it is deprecated.(ë±……8ç³”Éß1
+V
+java:S1874±"8Remove this use of "setProgressStyle"; it is deprecated.(¥È„¿8è³”Éß1
+T
+java:S1874±"6Remove this use of "ProgressDialog"; it is deprecated.(¥È„¿8é³”Éß1
+S
+java:S1874±"5Remove this use of "STYLE_SPINNER"; it is deprecated.(¥È„¿8é³”Éß1
+P
+java:S1874º"2Remove this use of "setMessage"; it is deprecated.(ßôÁ®8ï³”Éß1
+›
+java:S5803×"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ç¾øÿÿÿÿ8´”Éß1
+X	java:S125ó"<This block of commented-out lines of code should be removed.(äŸÜh8’´”Éß1
+^	java:S125ÿ"<This block of commented-out lines of code should be removed.(í”„×şÿÿÿÿ8“´”Éß1
+^	java:S125ˆ"<This block of commented-out lines of code should be removed.(Ğ‹Ÿ½üÿÿÿÿ8•´”Éß1
+O
+java:S1905Ÿ",Remove this unnecessary cast to "ImageView".(ÈÊœ¢ÿÿÿÿÿ8´”Éß1
+O
+java:S1905£",Remove this unnecessary cast to "ImageView".(ø§‘¿ùÿÿÿÿ8¡´”Éß1
+u
+java:S3776º"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(ŸÀ…÷ıÿÿÿÿ8«´”Éß1
+F	java:S108ƒ")Either remove or fill this block of code.(”ı¾8Ê´”Éß1
+F	java:S108…")Either remove or fill this block of code.(Úîø›8Ê´”Éß1
+^	java:S125É"<This block of commented-out lines of code should be removed.(õÀ®éüÿÿÿÿ8ô´”Éß1
+F	java:S108Ù")Either remove or fill this block of code.(Úîø›8ù´”Éß1
+P
+java:S1874â"2Remove this use of "setMessage"; it is deprecated.(´¯8û´”Éß1
+R	java:S125î"<This block of commented-out lines of code should be removed.(ÄĞœ×
+W	java:S125ô"<This block of commented-out lines of code should be removed.(îÎĞ‚üÿÿÿÿ

@@ -1,0 +1,14 @@
+
+i
+java:S3973,"GUse indentation to denote the code conditionally executed by this "if".(ÆÜçæüÿÿÿÿ8¦•Ù1
+i
+java:S39731"GUse indentation to denote the code conditionally executed by this "if".(ÆÜçæüÿÿÿÿ8¦•Ù1
+i
+java:S2259v"GA "NullPointerException" could be thrown; "uhfReader" is nullable here.(Âç™ßùÿÿÿÿ8Õ•Ù1
+w	java:S116"VRename this field "RFID_FILTER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Úé•ñøÿÿÿÿ8Õ•Ù1
+o	java:S100+"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÈÜ½³øÿÿÿÿ8Ú•Ù1
+j	java:S1000"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¯Ù‡À8Û•Ù1
+o
+java:S3776Q"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(“–ış8İ•Ù1
+]	java:S125`"<This block of commented-out lines of code should be removed.(º©Ü¦úÿÿÿÿ8Ş•Ù1
+X	java:S125b"<This block of commented-out lines of code should be removed.(‹ìŒá8Ş•Ù1

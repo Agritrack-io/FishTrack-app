@@ -1,0 +1,47 @@
+
+K
+java:S1066Ê"/Merge this if statement with the enclosing one.(·é‘ÿÿÿÿÿ
+?
+java:S1604Ò"(Make this anonymous inner class a lambda(Õä
+D
+java:S1604Ú"(Make this anonymous inner class a lambda(çÄİöøÿÿÿÿ
+D
+java:S1604ø"(Make this anonymous inner class a lambda(Êœüûÿÿÿÿ
+?
+java:S1604ò"(Make this anonymous inner class a lambda(ÀËÜ•
+g
+java:S1301¾"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
+S
+java:S2589¯"7Remove this expression which always evaluates to "true"(¬Ìòşÿÿÿÿ
+p	java:S116A"[Rename this field "scanner_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ê¼“Ğ
+?
+java:S1659K")Declare "scannedCage" on a separate line.(œ·š¬
+:
+java:S1659O"$Declare "ivInfo" on a separate line.(£óä
+B
+java:S1602v",Remove useless curly braces around statement(Øë…˜
+k
+java:S3252‹"OUse static access with "android.widget.AbsListView" for "CHOICE_MODE_MULTIPLE".(üñô–şÿÿÿÿ
+C
+java:S1602Ÿ",Remove useless curly braces around statement(“³¸Ò
+W	java:S125Ë"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+
+java:S5803å"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±İ“Ç
+I
+java:S1135ª"2Complete the task associated to this TODO comment.(™Ú˜Ÿ
+N
+java:S1135¯"2Complete the task associated to this TODO comment.(Ü§Ò¼üÿÿÿÿ
+J
+java:S1905÷".Remove this unnecessary cast to "AlertDialog".(İÆÆ„ùÿÿÿÿ
+k
+java:S3252÷"OUse static access with "android.content.DialogInterface" for "BUTTON_POSITIVE".(İÆÆ„ùÿÿÿÿ
+R	java:S125"<This block of commented-out lines of code should be removed.(Å“İÃ
+W	java:S125¤"<This block of commented-out lines of code should be removed.(²³…ûÿÿÿÿ
+T
+java:S1854Á"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿÿ
+=	java:S131¾""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+E
+java:S1481Á")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ
+W	java:S125Ø"<This block of commented-out lines of code should be removed.(©ûòöüÿÿÿÿ
+I
+java:S1068¶"-Remove this unused "mActivity" private field.(Îıóµúÿÿÿÿ

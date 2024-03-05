@@ -1,0 +1,9 @@
+
+Q
+java:S1066o"/Merge this if statement with the enclosing one.(Ò¨Ûõÿÿÿÿÿ8î‡Œ«ß1
+;
+java:S1659"%Declare "swSmell" on a separate line.(üë¢
+Ž
+java:S5803>"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(±Ý“Ç
+n
+java:S3457p"Q%n should be used in place of \n to produce the platform-specific line separator.(µ•Œô8ÉÝ¿Îß1

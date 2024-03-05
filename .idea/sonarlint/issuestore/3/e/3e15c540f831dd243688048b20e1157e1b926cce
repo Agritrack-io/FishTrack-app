@@ -1,0 +1,47 @@
+
+F
+java:S1066ë"/Merge this if statement with the enclosing one.(Î‡†
+K
+java:S1066ş"/Merge this if statement with the enclosing one.(½åğìúÿÿÿÿ
+?
+java:S1604Ì"(Make this anonymous inner class a lambda(Õä
+D
+java:S1604Ö"(Make this anonymous inner class a lambda(çÄİöøÿÿÿÿ
+g
+java:S1301©"KReplace this "switch" statement by "if" statements to increase readability.(ıŞ³‹ùÿÿÿÿ
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(é‹‘âûÿÿÿÿ
+s	java:S116Z"^Rename this field "singleShot_runnable" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÏÌ‡È
+E
+java:S1659^"*Declare "tvSelectBins" on a separate line.(‹©Ú¶ıÿÿÿÿ
+>
+java:S1659c")Declare "ivDeleteBin" on a separate line.(‡á§
+^
+java:S1659e"CDeclare "binEPC" and all following declarations on a separate line.(¹œêßıÿÿÿÿ
+H
+java:S1659f"-Declare "ivCheckLastTemp" on a separate line.(ê±òøıÿÿÿÿ
+r
+java:S1450`"\Remove the "loggerReading" field and declare it as a local variable in the relevant methods.(†¤
+m
+java:S3776l"RRefactor this method to reduce its Cognitive Complexity from 26 to the 15 allowed.(¨Œşÿÿÿÿ
+
+java:S5803"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(ˆüˆ­
+B
+java:S1602¿",Remove useless curly braces around statement(…¼½p
+W	java:S125ş"<This block of commented-out lines of code should be removed.(â© Üøÿÿÿÿ
+I
+java:S1135Ğ"2Complete the task associated to this TODO comment.(°ªêî
+t
+java:S3457ÿ"Q%n should be used in place of \n to produce the platform-specific line separator.(†ªÄ¶øÿÿÿÿ8È¶»Îß1
+O	java:S106—"9Replace this use of System.out or System.err by a logger.(–¤‹–
+n
+java:S3776¨"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(ñ‰ÿÜıÿÿÿÿ
+T
+java:S1854¬"8Remove this useless assignment to local variable "rssi".(‘µÉ–ûÿÿÿÿ
+=	java:S131©""Add a default case to this switch.(ıŞ³‹ùÿÿÿÿ
+E
+java:S1481¬")Remove this unused "rssi" local variable.(‘µÉ–ûÿÿÿÿ
+W	java:S125Ò"<This block of commented-out lines of code should be removed.(¶¦¹Ùúÿÿÿÿ
+C
+java:S3398•"'Move this method into "SyncTxCallBack".(å˜êùÿÿÿÿ
+D
+java:S1068¡"-Remove this unused "mActivity" private field.(¾ç†ù
