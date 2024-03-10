@@ -1,9 +1,0 @@
-
-r
-java:S1104"WMake bins_loaded a static final constant or non-public and provide accessors if needed.(„ßð“ûÿÿÿÿ
-l
-java:S1104"QMake photo a static final constant or non-public and provide accessors if needed.(äÏÈ†úÿÿÿÿ
-p	java:S116"VRename this field "bins_loaded" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(„ßð“ûÿÿÿÿ
-D
-java:S1172".Remove this unused method parameter "quality".(ðÕ³´
-V	java:S125"<This block of commented-out lines of code should be removed.(‚Ú›Ûúÿÿÿÿ

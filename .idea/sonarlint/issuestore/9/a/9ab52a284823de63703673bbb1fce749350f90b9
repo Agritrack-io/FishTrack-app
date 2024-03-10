@@ -1,15 +1,0 @@
-
-E
-java:S1066"/Merge this if statement with the enclosing one.(æÖí 
-E
-java:S1066I"/Merge this if statement with the enclosing one.(æÖí 
-P
-java:S1118":Add a private constructor to hide the implicit public one.(¶õÈŞ
-N
-java:S1874"3Remove this use of "getDeviceId"; it is deprecated.(ø«ªÈúÿÿÿÿ
-N
-java:S1874!"3Remove this use of "getDeviceId"; it is deprecated.(ö£¬°øÿÿÿÿ
-D
-java:S1874=".Remove this use of "SERIAL"; it is deprecated.(÷ËòÜ
-D
-java:S1874X".Remove this use of "SERIAL"; it is deprecated.(÷ËòÜ

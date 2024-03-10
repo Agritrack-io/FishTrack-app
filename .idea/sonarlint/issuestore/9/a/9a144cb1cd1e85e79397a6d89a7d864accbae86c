@@ -1,7 +1,0 @@
-
-‚
-java:S1488"`Immediately return this expression instead of assigning it to the temporary variable "binsInfo".(”åùçÿÿÿÿÿ8’É®ŸÙ1
-\
-java:S1118":Add a private constructor to hide the implicit public one.(úÚƒ×úÿÿÿÿ8 É®ŸÙ1
-š
-java:S5803"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(éª²Œøÿÿÿÿ8¡É®ŸÙ1

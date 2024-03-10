@@ -1,10 +1,0 @@
-
-Z	java:S112T"FDefine and throw a dedicated exception instead of using a generic one.(ƒ©Š
-[	java:S112,"FDefine and throw a dedicated exception instead of using a generic one.(íËÏÎ
-P
-java:S1118":Add a private constructor to hide the implicit public one.(Íùâû
-Q	java:S125""<This block of commented-out lines of code should be removed.(ü‰ˆ·
-’
-java:S55278"wEnable server hostname verification on this SSL/TLS connection, by setting "mail.smtp.ssl.checkserveridentity" to true.(÷òæÓûÿÿÿÿ
-S	java:S106M"9Replace this use of System.out or System.err by a logger.(éËö–øÿÿÿÿ
-Ksecrets:S6290("2Make sure this AWS Access Key ID is not disclosed.(êÉÔá

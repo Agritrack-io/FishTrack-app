@@ -1,34 +1,0 @@
-
-i
-java:S1104"NMake id a static final constant or non-public and provide accessors if needed.(ê“àşùÿÿÿÿ
-e
-java:S1104	"PMake code a static final constant or non-public and provide accessors if needed.(€Î‡6
-k
-java:S1104
-"UMake site_type a static final constant or non-public and provide accessors if needed.(’œéı
-f
-java:S1104"PMake name a static final constant or non-public and provide accessors if needed.( şÍ¾
-r
-java:S1104"WMake description a static final constant or non-public and provide accessors if needed.(¹ÿ†ğÿÿÿÿÿ
-o
-java:S1104"TMake site_lvl a static final constant or non-public and provide accessors if needed.(âóÊ‚üÿÿÿÿ
-g
-java:S1104"RMake active a static final constant or non-public and provide accessors if needed.(‡°ğJ
-f
-java:S1104"PMake lvl1 a static final constant or non-public and provide accessors if needed.(øşÚ™
-k
-java:S1104"PMake lvl2 a static final constant or non-public and provide accessors if needed.(‹¦Ğ”ıÿÿÿÿ
-k
-java:S1104"PMake lvl3 a static final constant or non-public and provide accessors if needed.(Ë­€âÿÿÿÿÿ
-k
-java:S1104"PMake lvl4 a static final constant or non-public and provide accessors if needed.(Ñ“Éşüÿÿÿÿ
-i
-java:S1104"SMake country a static final constant or non-public and provide accessors if needed.(Ø¬
-m
-java:S1104"RMake region a static final constant or non-public and provide accessors if needed.(º¯¤“ÿÿÿÿÿ
-w
-java:S1104"\Make customer_site_id a static final constant or non-public and provide accessors if needed.(À«ÿÿÿÿÿ
-i	java:S116
-"TRename this field "site_type" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’œéı
-m	java:S116"SRename this field "site_lvl" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(âóÊ‚üÿÿÿÿ
-u	java:S116"[Rename this field "customer_site_id" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(À«ÿÿÿÿÿ

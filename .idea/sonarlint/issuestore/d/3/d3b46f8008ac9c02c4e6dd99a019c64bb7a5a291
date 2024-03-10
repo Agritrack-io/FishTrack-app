@@ -1,20 +1,0 @@
-
-l
-java:S1104"QMake txKey a static final constant or non-public and provide accessors if needed.(®şßşÿÿÿÿ
-k
-java:S1104"UMake assetType a static final constant or non-public and provide accessors if needed.(öÌ¹¦
-k
-java:S1104"UMake assetRFID a static final constant or non-public and provide accessors if needed.(ŠòàÌ
-k
-java:S1104"UMake assetCode a static final constant or non-public and provide accessors if needed.(¸êÑá
-k
-java:S1104"PMake rfid a static final constant or non-public and provide accessors if needed.(Ïâ“–ûÿÿÿÿ
-k
-java:S1104	"PMake type a static final constant or non-public and provide accessors if needed.(ÙşÓ¼ûÿÿÿÿ
-f
-java:S1104
-"PMake code a static final constant or non-public and provide accessors if needed.(íèˆ
-p
-java:S1104"UMake longitude a static final constant or non-public and provide accessors if needed.(ŠÜ®ùÿÿÿÿ
-o
-java:S1104"TMake latitude a static final constant or non-public and provide accessors if needed.(éı¾Ùúÿÿÿÿ

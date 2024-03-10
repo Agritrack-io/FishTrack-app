@@ -1,14 +1,0 @@
-
-y
-java:S1104"^Make referencePointTemp a static final constant or non-public and provide accessors if needed.(Äï¿¼ûÿÿÿÿ
-j
-java:S1104"TMake cageTemp a static final constant or non-public and provide accessors if needed.(“ÆÂÒ
-f
-java:S1104"PMake site a static final constant or non-public and provide accessors if needed.(âû¡¦
-p
-java:S1104	"UMake longitude a static final constant or non-public and provide accessors if needed.(ŠÜ®ùÿÿÿÿ
-o
-java:S1104
-"TMake latitude a static final constant or non-public and provide accessors if needed.(éı¾Ùúÿÿÿÿ
-l
-java:S1104"QMake txKey a static final constant or non-public and provide accessors if needed.(®şßşÿÿÿÿ

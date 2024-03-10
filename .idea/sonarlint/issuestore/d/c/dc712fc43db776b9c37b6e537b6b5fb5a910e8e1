@@ -1,7 +1,0 @@
-
-r
-java:S3008"WRename this field "_readTimeout" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ö¼»Òùÿÿÿÿ
-r
-java:S3008"WRename this field "_sendTimeout" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¼Þ©áüÿÿÿÿ
-U
-java:S1118":Add a private constructor to hide the implicit public one.(óºï÷ýÿÿÿÿ

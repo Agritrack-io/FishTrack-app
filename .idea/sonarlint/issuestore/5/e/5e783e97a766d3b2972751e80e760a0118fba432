@@ -1,24 +1,0 @@
-
-l
-java:S1104	"QMake txKey a static final constant or non-public and provide accessors if needed.(®şßşÿÿÿÿ
-m
-java:S1104
-"XMake selectedSite a static final constant or non-public and provide accessors if needed.(ÏÈ¢U
-k
-java:S1104"UMake assetType a static final constant or non-public and provide accessors if needed.(öÌ¹¦
-u
-java:S1104"ZMake consumableType a static final constant or non-public and provide accessors if needed.(öÓêıÿÿÿÿ
-i
-java:S1104"SMake subSite a static final constant or non-public and provide accessors if needed.(ÕÒ¨’
-l
-java:S1104"QMake items a static final constant or non-public and provide accessors if needed.(Ã¼¤ùÿÿÿÿ
-s
-java:S1104"XMake barcodeItems a static final constant or non-public and provide accessors if needed.(°«ñüÿÿÿÿ
-f
-java:S1104"PMake site a static final constant or non-public and provide accessors if needed.(âû¡¦
-p
-java:S1104"UMake longitude a static final constant or non-public and provide accessors if needed.(ŠÜ®ùÿÿÿÿ
-o
-java:S1104"TMake latitude a static final constant or non-public and provide accessors if needed.(éı¾Ùúÿÿÿÿ
-q
-java:S1104"VMake subSitePos a static final constant or non-public and provide accessors if needed.(™ü¨¾ıÿÿÿÿ

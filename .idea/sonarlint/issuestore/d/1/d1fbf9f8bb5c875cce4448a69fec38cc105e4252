@@ -1,7 +1,0 @@
-
-J
-java:S3740"/Provide the parametrized type for this generic.(‚žçÍøÿÿÿÿ
-P
-java:S1118":Add a private constructor to hide the implicit public one.(µù×¨
-“
-java:S5803"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(éª²Œøÿÿÿÿ

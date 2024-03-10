@@ -1,27 +1,0 @@
-
-d
-java:S1104	"NMake id a static final constant or non-public and provide accessors if needed.(€÷ëÚ
-p
-java:S1104
-"UMake full_name a static final constant or non-public and provide accessors if needed.(ÑÈÜıÿÿÿÿ
-l
-java:S1104"QMake email a static final constant or non-public and provide accessors if needed.(¾Æ†Ëıÿÿÿÿ
-g
-java:S1104"QMake phone a static final constant or non-public and provide accessors if needed.(«ç”¤
-p
-java:S1104"UMake user_name a static final constant or non-public and provide accessors if needed.(®ÑëÏüÿÿÿÿ
-e
-java:S1104"OMake pin a static final constant or non-public and provide accessors if needed.(¢Ğ¯Ä
-z
-java:S1104"_Make registration_tstamp a static final constant or non-public and provide accessors if needed.(¶¯Ïşÿÿÿÿ
-s
-java:S1104"]Make last_login_tstamp a static final constant or non-public and provide accessors if needed.(ŞóĞÁ
-g
-java:S1104"RMake active a static final constant or non-public and provide accessors if needed.(‡°ğJ
-g
-java:S1104"QMake roles a static final constant or non-public and provide accessors if needed.(»˜şš
-n	java:S116
-"TRename this field "full_name" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÑÈÜıÿÿÿÿ
-n	java:S116"TRename this field "user_name" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(®ÑëÏüÿÿÿÿ
-x	java:S116"^Rename this field "registration_tstamp" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¶¯Ïşÿÿÿÿ
-q	java:S116"\Rename this field "last_login_tstamp" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŞóĞÁ

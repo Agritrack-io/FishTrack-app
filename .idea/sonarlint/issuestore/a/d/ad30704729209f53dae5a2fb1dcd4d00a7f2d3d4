@@ -1,9 +1,0 @@
-
-–
-java:S1186C"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ôŒùb
-l
-java:S1450"VRemove the "tvTitle" field and declare it as a local variable in the relevant methods.(Æ¶‡
-7
-java:S1116"Remove this empty statement.(Åñ­õşÿÿÿÿ
-A
-java:S1068"+Remove this unused "tvTitle" private field.(Æ¶‡

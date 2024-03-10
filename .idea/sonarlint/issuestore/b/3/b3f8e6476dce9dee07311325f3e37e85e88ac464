@@ -1,8 +1,0 @@
-
-U
-java:S1118":Add a private constructor to hide the implicit public one.(„ßüÒùÿÿÿÿ
-Q	java:S125""<This block of commented-out lines of code should be removed.(‡±ÓÃ
-O
-java:S18745"9Remove this use of "getConnectionInfo"; it is deprecated.(µ§„û
-m
-java:S32526"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(§¬ç­

@@ -1,36 +1,0 @@
-
-p
-java:S1104"NMake id a static final constant or non-public and provide accessors if needed.(ê“àşùÿÿÿÿ8Ğµ®ïØ1
-l
-java:S1104"VMake asset_type a static final constant or non-public and provide accessors if needed.(¦…ÍË
-r
-java:S1104"WMake source_site a static final constant or non-public and provide accessors if needed.(µ˜É×ùÿÿÿÿ
-r
-java:S1104"WMake target_site a static final constant or non-public and provide accessors if needed.(¨ú™ÿÿÿÿÿ
-n
-java:S1104"XMake source_asset a static final constant or non-public and provide accessors if needed.(ëÿ†
-s
-java:S1104"XMake target_asset a static final constant or non-public and provide accessors if needed.(—×êîşÿÿÿÿ
-l
-java:S1104"VMake rfid_items a static final constant or non-public and provide accessors if needed.(Ÿ­ÚŸ
-g
-java:S1104"QMake state a static final constant or non-public and provide accessors if needed.(…‰¶ò
-f
-java:S1104"PMake site a static final constant or non-public and provide accessors if needed.(âû¡¦
-k
-java:S1104"PMake user a static final constant or non-public and provide accessors if needed.(¾Êïûùÿÿÿÿ
-l
-java:S1104"VMake created_at a static final constant or non-public and provide accessors if needed.(ãÊï†
-p
-java:S1104"UMake longitude a static final constant or non-public and provide accessors if needed.(ŠÜ®ùÿÿÿÿ
-o
-java:S1104"TMake latitude a static final constant or non-public and provide accessors if needed.(éı¾Ùúÿÿÿÿ
-q	java:S116"URename this field "asset_type" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¦…ÍË8Úµ®ïØ1
-p	java:S116"VRename this field "source_site" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(µ˜É×ùÿÿÿÿ
-p	java:S116"VRename this field "target_site" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨ú™ÿÿÿÿÿ
-l	java:S116"WRename this field "source_asset" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ëÿ†
-q	java:S116"WRename this field "target_asset" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(—×êîşÿÿÿÿ
-j	java:S116"URename this field "rfid_items" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ÿ­ÚŸ
-q	java:S116"URename this field "created_at" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ãÊï†8Ûµ®ïØ1
-X	java:S125"<This block of commented-out lines of code should be removed.(õşÜ8ßµ®ïØ1
-]	java:S125"<This block of commented-out lines of code should be removed.(–œº‡ÿÿÿÿÿ8àµ®ïØ1

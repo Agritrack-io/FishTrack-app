@@ -1,8 +1,0 @@
-
-]
-java:S1659"GDeclare "tvCageName" and all following declarations on a separate line.(ªöÀÆ
-G
-java:S1602 ",Remove useless curly braces around statement(şçşıÿÿÿÿ
-V	java:S125""<This block of commented-out lines of code should be removed.(Ö«Ö©şÿÿÿÿ
-“
-java:S5803)"xRemove this usage of "Strings", it is annotated with @VisibleForTesting and should not be accessed from production code.(íğ¾»øÿÿÿÿ
