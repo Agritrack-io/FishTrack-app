@@ -816,4 +816,6 @@
     <string name="t2_temp">"Θερμοκρασία Τ2"</string>
     <string name="t3_temp">"Θερμοκρασία Τ3"</string>
 
+    <string name="select_bin_to_delete">Επιλέξτε μια βούτα!!</string>
+    <string name="init_in_progress">Αρχικοποίηση σε εξέλιξη. Παρακαλώ περιμένετε!</string>
 </resources>

@@ -823,4 +823,7 @@
     <string name="t2_temp">"Temperature Τ2"</string>
     <string name="t3_temp">"Temperature Τ3"</string>
 
+    <string name="select_bin_to_delete">Plz select a Bin to delete!!</string>
+    <string name="init_in_progress">Initialization in progress. Plz wait!</string>
+
 </resources>

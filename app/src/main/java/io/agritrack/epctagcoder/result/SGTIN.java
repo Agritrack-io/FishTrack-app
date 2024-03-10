@@ -1,5 +1,7 @@
 package io.agritrack.epctagcoder.result;
 
+import static io.agritrack.epctagcoder.parse.SGTIN.ParseSGTIN.Builder;
+
 public class SGTIN extends Base {
     private String extensionDigit;
     private String itemReference;
@@ -40,6 +42,10 @@ public class SGTIN extends Base {
 
     public void setCheckDigit(String checkDigit) {
         this.checkDigit = checkDigit;
+    }
+
+    public String getDecodedBarcode() {
+        return String.format("(01) %s %s %s %s (21) %s", getExtensionDigit(), getCompanyPrefix(), getItemReference(), getCheckDigit(), getSerial());
     }
 
     @Override

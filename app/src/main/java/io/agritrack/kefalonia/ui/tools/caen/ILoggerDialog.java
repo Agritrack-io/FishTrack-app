@@ -7,8 +7,6 @@ import io.agritrack.kefalonia.caen.common.CAENState;
 
 public interface ILoggerDialog {
     String TAG = "CAENLoggerDialogFragment";
-
-    ;
     String LOGGER_EPC = "LoggerEPC";
     String ASSET_EPC = "AssetEPC";
     String INITED_AT = "InitializedAt";

@@ -1,5 +1,6 @@
 package io.agritrack.kefalonia.ui.tools;
 
+import static io.agritrack.epctagcoder.parse.SGTIN.ParseSGTIN.Builder;
 import static io.agritrack.kefalonia.FishTrackApplication.IsDemo;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.CmdDisableLogging;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.CmdEnableLogging;
@@ -42,6 +43,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import io.agritrack.epctagcoder.exception.EPCParseException;
+import io.agritrack.epctagcoder.result.SGTIN;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.caen.api.CAENLoggerService;
 import io.agritrack.kefalonia.caen.api.ICAEN_API;
@@ -57,14 +60,16 @@ public class CAENLoggerActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final CAENCommandsHandler mScanHandler = new CAENCommandsHandler(this);
     private final SimpleDateFormat dtParser = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-    private TextView tvFWRevision, tvHWRevision, tvTimeBIN, tvDateTime, tvLastSampleValue, tvCurrentEPC, tvMemory, tvBattery;
+    private TextView tvFWRevision, tvHWRevision, tvTimeBIN, tvDateTime, tvLastSampleValue, tvCurrentEPC, tvLoggerBarcode, tvMemory, tvBattery;
     private EditText etInterval;
     private ProgressBar progressBar;
+
     protected final View.OnClickListener btnScanEPCListener = v -> {
         // Show ProgressBar and clear EPC text view.
         runOnUiThread(() -> {
             progressBar.setVisibility(View.VISIBLE);
             tvCurrentEPC.setText("");
+            tvLoggerBarcode.setText("");
         });
 
         // -------------------------------------
@@ -73,12 +78,14 @@ public class CAENLoggerActivity extends AppCompatActivity {
         singleShot_runnable.startReading();
         mScanHandler.post(singleShot_runnable);
     };
+
     private Button btnSamplesCnt, btnControlReg, btnScanEPC;
     private LoadingButton btnStopLogging, btnReset, btnInit, btnRead, btnDialog;
     private ICAEN_API cmd;
     private CAENLoggerService loggerSvc;
     private short valuesCnt;
     private String loggerEpc;
+
     protected final View.OnClickListener btnInitListener = v -> {
         new Thread(() -> {
             // -------------------------------------
@@ -236,6 +243,7 @@ public class CAENLoggerActivity extends AppCompatActivity {
     private void assignCtrlVars() {
         progressBar = findViewById(R.id.progressBar);
         tvCurrentEPC = findViewById(R.id.tvCurrentEPC);
+        tvLoggerBarcode = findViewById(R.id.tvLoggerBarcode);
         btnRead = (LoadingButton) findViewById(R.id.btnRead);
         btnReset = (LoadingButton) findViewById(R.id.btnReset);
         btnInit = (LoadingButton) findViewById(R.id.btnInit);
@@ -373,6 +381,13 @@ public class CAENLoggerActivity extends AppCompatActivity {
                                 btnDialog.setEnabled(true);
                                 // -------------------------------------
                                 tvCurrentEPC.setText(loggerEpc);
+
+                                try {
+                                    String barcode = Builder().withRFIDTag(loggerEpc).build().getSGTIN().getDecodedBarcode();
+                                    tvLoggerBarcode.setText(barcode);
+                                } catch (EPCParseException e) {
+                                    e.printStackTrace();
+                                }
                             });
 
                             // sets Logger filter to closest EPC.

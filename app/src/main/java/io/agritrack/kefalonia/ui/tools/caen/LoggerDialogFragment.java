@@ -18,6 +18,7 @@ import android.animation.TimeAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -60,8 +61,10 @@ import io.agritrack.kefalonia.sound.SoundUtil;
  * different Logger Dialogs creation at runtime.
  */
 public class LoggerDialogFragment extends DialogFragment implements TimeAnimator.TimeListener, ILoggerDialog {
+    private static Long initTS;
     // Single Thread
     ExecutorService executorService = Executors.newSingleThreadExecutor();
+    boolean toExit = false;
     // Local handler that receives the RFID scanner results.
     private Handler mScanHandler;
     private Context mContext;
@@ -73,15 +76,13 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     private String currentLoggerEPC = null;
     private String productionLane;
     private Long pickedAt;
-    private static Long initTS;
     private Long initedAt;
     private TimeAnimator mAnimator;
     private int mCurrentLevel = 0;
     private ClipDrawable mClipDrawable;
     private CAENLoggerService loggerSvc;
     private ICAEN_API cmd;
-    boolean toExit = false;
-
+    //##############################################################
     protected final View.OnClickListener validBtnListener = v -> {
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
             btnValidate.setBackgroundResource(R.drawable.button_background);
@@ -150,7 +151,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                     if (this != null && this.getActivity() != null) {
                         this.getActivity().runOnUiThread(() -> setCancelable(false));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(false));
-                        this.loggerSvc.doReadMeasurements(currentLoggerEPC!=null);
+                        this.loggerSvc.doReadMeasurements(currentLoggerEPC != null);
                         this.getActivity().runOnUiThread(() -> setCancelable(true));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(true));
                     }
@@ -165,8 +166,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     //-------
     private MutableLiveData<CAENState> stateResult;
     //##############################################################
-    private short samplingInterval = DefaultInterval;
-    //##############################################################
+    private final short samplingInterval = DefaultInterval;
     protected final View.OnClickListener initBtnListener = v -> {
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
             btnInit.setBackgroundResource(R.drawable.button_background);
@@ -203,48 +203,48 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     }
 
     public static ILoggerDialog newInstance(String loggerEPC, String assetEPC) {
-        LoggerDialogFragment frag = new LoggerDialogFragment();
+        LoggerDialogFragment loggerDlgFragment = new LoggerDialogFragment();
         Bundle args = new Bundle();
         args.putString(LOGGER_EPC, loggerEPC);
         args.putString(ASSET_EPC, assetEPC);
-        frag.setArguments(args);
+        loggerDlgFragment.setArguments(args);
 
-        return frag;
+        return loggerDlgFragment;
     }
 
     public static ILoggerDialog newInstance(String loggerEPC, String assetEPC, Long initedAt) {
-        LoggerDialogFragment frag = new LoggerDialogFragment();
+        LoggerDialogFragment loggerDlgFragment = new LoggerDialogFragment();
         Bundle args = new Bundle();
         args.putString(LOGGER_EPC, loggerEPC);
         args.putString(ASSET_EPC, assetEPC);
         args.putLong(INITED_AT, initedAt);
-        frag.setArguments(args);
+        loggerDlgFragment.setArguments(args);
 
-        return frag;
+        return loggerDlgFragment;
     }
 
     public static ILoggerDialog newInstance(String loggerEPC, String assetEPC, String productionLane) {
-        LoggerDialogFragment frag = new LoggerDialogFragment();
+        LoggerDialogFragment loggerDlgFragment = new LoggerDialogFragment();
         Bundle args = new Bundle();
         args.putString(LOGGER_EPC, loggerEPC);
         args.putString(ASSET_EPC, assetEPC);
         args.putString(PROD_LANE, productionLane);
-        frag.setArguments(args);
+        loggerDlgFragment.setArguments(args);
 
-        return frag;
+        return loggerDlgFragment;
     }
 
     public static ILoggerDialog newInstance(String loggerEPC, String assetEPC, String productionLane, Long initializedAt, Long pickedAt) {
-        LoggerDialogFragment frag = new LoggerDialogFragment();
+        LoggerDialogFragment loggerDlgFragment = new LoggerDialogFragment();
         Bundle args = new Bundle();
         args.putString(LOGGER_EPC, loggerEPC);
         args.putString(ASSET_EPC, assetEPC);
         args.putString(PROD_LANE, productionLane);
         args.putLong(INITED_AT, initializedAt);
         args.putLong(PICKED_AT, pickedAt);
-        frag.setArguments(args);
+        loggerDlgFragment.setArguments(args);
 
-        return frag;
+        return loggerDlgFragment;
     }
 
     @Override
@@ -305,7 +305,9 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             // show/hide buttons according to Visibility Bit values.
             applyButtonsVisibility();
 
-            tvCurrentLoggerEPC.setText(assetEPC.substring(assetEPC.length()-10));
+            if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+                tvCurrentLoggerEPC.setText(loggerEPC.substring(loggerEPC.length() - 10));
+            }
         }
     }
 
@@ -336,13 +338,19 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 
     @Override
     public void onDestroy() {
-        loggerSvc.shutdownExecutorService();
+        super.onDestroy();
 
-        executorService.shutdown();
+        loggerSvc.shutdownExecutorService();
         if (!executorService.isShutdown()) {
             executorService.shutdownNow();
         }
-        super.onDestroy();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        Activity activity = getActivity();
+        if (activity instanceof IDialogCloseListener)
+            ((IDialogCloseListener) activity).handleDialogClose(dialog);
     }
 
     // ------------------------
@@ -491,8 +499,8 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                             // assign listener to reset button
                             btnReset.setOnClickListener(resetBtnListener);
                             btnReset.callOnClick();
-                        } else if ("00000".equalsIgnoreCase(state.ctrlReg) && state.samplesCnt>0 && currentLoggerEPC==null) {
-                            btnRead.setText(getString(R.string.idle_logger_with_data) + " [" +state.samplesCnt +"]");
+                        } else if ("00000".equalsIgnoreCase(state.ctrlReg) && state.samplesCnt > 0 && currentLoggerEPC == null) {
+                            btnRead.setText(getString(R.string.idle_logger_with_data) + " [" + state.samplesCnt + "]");
                             currentLoggerEPC = loggerEPC;
                         } else if ("00000".equalsIgnoreCase(state.ctrlReg)) {
                             state.setLoggerEPC(loggerEPC);

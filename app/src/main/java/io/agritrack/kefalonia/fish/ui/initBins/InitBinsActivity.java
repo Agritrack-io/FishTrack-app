@@ -70,6 +70,7 @@ import io.agritrack.kefalonia.rfid.X9KeyReceiver;
 import io.agritrack.kefalonia.sound.SoundUtil;
 import io.agritrack.kefalonia.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.kefalonia.ui.service.LocalPreferences;
+import io.agritrack.kefalonia.ui.tools.caen.IDialogCloseListener;
 import io.agritrack.kefalonia.ui.tools.caen.ILoggerDialog;
 import io.agritrack.kefalonia.ui.tools.caen.InitLoggerDialogDecorator;
 import io.agritrack.kefalonia.ui.tools.caen.LoggerDialogFragment;
@@ -77,26 +78,31 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class InitBinsActivity extends AppCompatActivity {
+public class InitBinsActivity extends AppCompatActivity implements IDialogCloseListener {
+    // REST API to interact with the backend
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
 
+    // State POJO that keeps everything related to CAEN logger.
     private final MutableLiveData<CAENState> loggerStateObserver = new MutableLiveData<>();
 
+    // variable to hold the dialog. Only 1 instance of ILoggerDialog may be active...
+    private ILoggerDialog loggerDlg = null;
 
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     private SingleShotScanner singleShot_runnable;
     private MobileDB db;
-    private TemplateRecyclerAdapter adapterBins;
+    private TemplateRecyclerAdapter rcAdapterBins;
     private RecyclerView rvBins;
     private TextView tvBinsCount, tvSelectBins;
     private Button btnScanBin;
-    private LoggerReading loggerReading;
+    //private LoggerReading loggerReading;
     private GetTempDataDialog tempLoggerDialog;
     private boolean intentForBinActivity = false;
-    private ImageButton ivAddBin, ivDeleteBin;
+    private ImageButton ivDeleteBin;
     private Set<String> scannedBinEPCs;
     private String binBarcode = "", binEPC, loggerEPC;
     private ImageView ivSupport, ivCheckLastTemp;
@@ -134,8 +140,8 @@ public class InitBinsActivity extends AppCompatActivity {
         rvBins.setLayoutManager(layoutManager);
         rvBins.setItemAnimator(new DefaultItemAnimator());
         rvBins.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(), true);
-        rvBins.setAdapter(adapterBins);
+        rcAdapterBins = new TemplateRecyclerAdapter(this, new ArrayList<>(), true);
+        rvBins.setAdapter(rcAdapterBins);
         rvBins.setNestedScrollingEnabled(false);
 
         if (!intentForBinActivity && CollectionUtils.isEmpty(recFishing.availBins)) {
@@ -154,42 +160,39 @@ public class InitBinsActivity extends AppCompatActivity {
 
         ivDeleteBin.setOnClickListener(view -> {
 
-            if (!Strings.isEmptyOrWhitespace(adapterBins.getSelectedValue())) {
+            if (!Strings.isEmptyOrWhitespace(rcAdapterBins.getSelectedValue())) {
                 // instantiate Site selection confirm dialog
-                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
-                confirmSiteSelectionDlg.args().putString("selectedBarcode", adapterBins.getSelectedValue());
-                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + adapterBins.getSelectedLabel());
+                YesNoDialogFragment confirmLoggerBinSelectionDlg = YesNoDialogFragment.instance();
+                confirmLoggerBinSelectionDlg.args().putString("selectedBarcode", rcAdapterBins.getSelectedValue());
+                confirmLoggerBinSelectionDlg.setMessage(getText(R.string.delete_selected_item) + rcAdapterBins.getSelectedLabel());
 
-                confirmSiteSelectionDlg.onConfirm(bundle -> {
+                confirmLoggerBinSelectionDlg.onConfirm(bundle -> {
                     String barcode = bundle.getString("selectedBarcode");
                     if (barcode != null) {
-                        adapterBins.removeItem(barcode);
+                        rcAdapterBins.removeItem(barcode);
                         scannedBinEPCs.remove(barcode);
                         recFishing.binWeightRecord.getBins().remove(barcode);
-                        adapterBins.notifyDataSetChanged();
-                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-                        adapterBins.clearSelectedValue();
-                        recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+                        rcAdapterBins.notifyDataSetChanged();
+                        tvBinsCount.setText(String.valueOf(rcAdapterBins.getItemCount()));
+                        rcAdapterBins.clearSelectedValue();
+                        recFishing.availBins = new LinkedList<>(rcAdapterBins.getValues());
+
+                        // TODO:: add component in GlobalState for Bins Initialization, should not use the Fishing state.
                         GlobalState.commitFishing(db, Boolean.FALSE);
                     }
-
                 });
 
-                confirmSiteSelectionDlg.onReject(bundle -> {
-                    adapterBins.clearSelectedValue();
-                    adapterBins.notifyDataSetChanged();
+                confirmLoggerBinSelectionDlg.onReject(bundle -> {
+                    rcAdapterBins.clearSelectedValue();
+                    rcAdapterBins.notifyDataSetChanged();
                 });
 
                 FragmentManager fm = getSupportFragmentManager();
-                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+                confirmLoggerBinSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
             } else {
                 // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render("Plz select a Bin to delete!!"), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(R.string.select_bin_to_delete), Toast.LENGTH_LONG);
             }
-        });
-
-        ivAddBin.setOnClickListener(view -> {
-            showAddDialog();
         });
 
         ivCheckLastTemp.setOnClickListener(view -> {
@@ -210,16 +213,18 @@ public class InitBinsActivity extends AppCompatActivity {
             infoDialog.showDialog();
         });
 
-        loggerReading = new ViewModelProvider(this).get(LoggerReading.class);
-        loggerReading.getReading().observe(this, reading -> {
-            Double temp = (Double) reading.get("LastValue");
-            Long ts = (Long) reading.get("timestamp");
 
-            recFishing.binTemperatureRecord.addRecord(binEPC, ts, temp);
-
-            tempLoggerDialog = new GetTempDataDialog(InitBinsActivity.this, temp, binEPC);
-            tempLoggerDialog.showDialog();
-        });
+        // ????????????????????????????
+//        loggerReading = new ViewModelProvider(this).get(LoggerReading.class);
+//        loggerReading.getReading().observe(this, reading -> {
+//            Double temp = (Double) reading.get("LastValue");
+//            Long ts = (Long) reading.get("timestamp");
+//
+//            recFishing.binTemperatureRecord.addRecord(binEPC, ts, temp);
+//
+//            tempLoggerDialog = new GetTempDataDialog(InitBinsActivity.this, temp, binEPC);
+//            tempLoggerDialog.showDialog();
+//        });
 
         //-----------------------------------------------------
         // observe for state object obtained by LoggerDialog...
@@ -246,6 +251,16 @@ public class InitBinsActivity extends AppCompatActivity {
 
         // create Footer
         configFooter();
+    }
+
+    // Logger Dialog is dismissed.
+    // release the singleton that points to the dialog.
+    @Override
+    public void handleDialogClose(DialogInterface dialog) {
+        if(dialog != null) {
+            dialog.dismiss();
+        }
+        this.loggerDlg = null;
     }
 
     @Override
@@ -301,7 +316,6 @@ public class InitBinsActivity extends AppCompatActivity {
         tvSelectBins = findViewById(R.id.tvSelectBins);
         ivDeleteBin = findViewById(R.id.ivDeleteBin1);
         ivCheckLastTemp = findViewById(R.id.ivCheckLastTemp);
-        ivAddBin = findViewById(R.id.ivAddBin);
         ivSupport = findViewById(R.id.ivSupport);
         ivInfo = findViewById(R.id.ivInfo);
         tvSelectBins.setVisibility(View.INVISIBLE);
@@ -311,48 +325,18 @@ public class InitBinsActivity extends AppCompatActivity {
         FishingRecord hvst = recFishing;
 
         if (hvst.availBins != null) {
-            adapterBins.setValues(new LinkedList<>(hvst.availBins));
-            adapterBins.notifyDataSetChanged();
+            rcAdapterBins.setValues(new LinkedList<>(hvst.availBins));
+            rcAdapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             tvBinsCount.setText(String.valueOf(hvst.availBins.size()));
         }
-    }
-
-    private void showAddDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Type bin BARCODE");
-
-        // Set up the input
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                binBarcode = input.getText().toString();
-                //TODO:: Encode properly the bin barcode value, add prefix
-                adapterBins.addUniqueItem(binBarcode);
-                adapterBins.notifyDataSetChanged();
-                tvBinsCount.setText(String.valueOf(adapterBins.getValues().size()));
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.show();
     }
 
     private boolean updateState() {
         try {
             String token = LocalPreferences.getToken();
 
-            recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+            recFishing.availBins = new LinkedList<>(rcAdapterBins.getValues());
 
             // persist Fishing Record data to local DB.
             List<BinInfo> tx = GlobalState.commitBinInfoTx(db);
@@ -387,6 +371,10 @@ public class InitBinsActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
+        if(this.loggerDlg != null) {
+            CToast(getApplicationContext(), render(R.string.init_in_progress), Toast.LENGTH_SHORT);
+            return;
+        }
         tvSelectBins.setVisibility(View.VISIBLE);
         singleShot_runnable = new SingleShotScanner(mScanHandler);
         singleShot_runnable.setFilter(Filters.RFID_LOGGER);
@@ -435,9 +423,10 @@ public class InitBinsActivity extends AppCompatActivity {
                                 binEPC = bin.rfid;
                                 scannedBinEPCs.add(binEPC);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
-                                adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
-                                adapterBins.notifyDataSetChanged();
-                                recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+                                // TODO: clean up this mess...
+                                rcAdapterBins.setValues(new ArrayList<>(scannedBinEPCs));
+                                rcAdapterBins.notifyDataSetChanged();
+                                recFishing.availBins = new LinkedList<>(rcAdapterBins.getValues());
                                 GlobalState.commitFishing(db, Boolean.FALSE);
 
                                 // ------------------------------------------
@@ -445,7 +434,7 @@ public class InitBinsActivity extends AppCompatActivity {
                                 if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
                                     FragmentManager fm = getSupportFragmentManager();
 
-                                    ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
+                                    loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
                                     loggerDlg.setStateObserver(loggerStateObserver);
                                     InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
                                     initLoggerDecorator.show(fm);

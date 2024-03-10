@@ -69,7 +69,7 @@ public class CAENState implements Serializable {
     public CAENState forLowPower(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.opHighPower = Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 1 : 0;
+        this.opHighPower = Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 0 : 1;
         return this;
     }
 
@@ -83,7 +83,8 @@ public class CAENState implements Serializable {
     public CAENState forLowSensitivity(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
-        this.opHighSensitivity = Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 1 : 0;
+        // the opHighSensitivity is inverse of LowSensitivity..
+        this.opHighSensitivity = Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 0 : 1;
         return this;
     }
 
