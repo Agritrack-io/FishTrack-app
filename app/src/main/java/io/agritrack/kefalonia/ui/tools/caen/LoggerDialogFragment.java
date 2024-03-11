@@ -241,7 +241,10 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         args.putString(ASSET_EPC, assetEPC);
         args.putString(PROD_LANE, productionLane);
         args.putLong(INITED_AT, initializedAt);
-        args.putLong(PICKED_AT, pickedAt);
+        // args.putLong() does not accept null values.
+        if (pickedAt != null) {
+            args.putLong(PICKED_AT, pickedAt);
+        }
         loggerDlgFragment.setArguments(args);
 
         return loggerDlgFragment;

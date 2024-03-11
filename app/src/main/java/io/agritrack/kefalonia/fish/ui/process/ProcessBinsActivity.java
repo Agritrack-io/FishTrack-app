@@ -26,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -64,13 +63,14 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
     private final MutableLiveData<List<String>> enquiryResult = new MutableLiveData<>();
     private final MutableLiveData<Set<String>> scanResult = new MutableLiveData<>();
+
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
+
     // Local handler that receives the RFID scanner results.
     private ScanHandler mScanHandler = new ScanHandler(this);
     private SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     private ScanInventoryThread scanner_inv = new ScanInventoryThread(mScanHandler);
-    //private ScanInventoryThread scanner_runnable;
 
     private MobileDB db;
     private BinWeightCageAdapter adapterBins;
@@ -80,26 +80,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
     private TextView tvSelectBins;
 
     private ImageButton ivAddBin, ivDeleteBin;
-    private String selectedBarcode;
-    private ConstraintLayout selectedItem;
-    /*// Instantiate a clickListener to be passed to adapterBins.
-    // It will be used to set the selectedBarcode var to the selected item barcode.
-    private final View.OnClickListener itemsClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ConstraintLayout view = (ConstraintLayout) v;
-            TextView tvRecyclerItem = view.findViewById(R.id.tvRecyclerItem);
-            selectedBarcode = tvRecyclerItem.getText().toString();
 
-            if (selectedItem != null) {
-                selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-            }
-
-            v.setSelected(true);
-            view.setBackgroundColor(Color.GRAY);
-            selectedItem = view;
-        }
-    };*/
     private String binBarcode;
     private ImageView ivSupport;
     private Button scanButton;
@@ -155,7 +136,6 @@ public class ProcessBinsActivity extends AppCompatActivity {
         scanButton.setOnClickListener(this::onClick);
 
         ivDeleteBin.setOnClickListener(view -> {
-            clearSelectedItem();
 
             if (!Strings.isEmptyOrWhitespace(adapterBins.getSelectedValue())) {
                 // instantiate Site selection confirm dialog
@@ -169,7 +149,6 @@ public class ProcessBinsActivity extends AppCompatActivity {
                         adapterBins.removeItem(barcode);
                         adapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-                        selectedBarcode = null;
                         adapterBins.clearSelectedValue();
                     }
                 });
@@ -198,8 +177,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
         enquiryResult.observe(this, response -> {
             if (response == null || response.isEmpty()) {
-                while (attemptsToGetEpcList < 3) {
-                    attemptsToGetEpcList++;
+                while (attemptsToGetEpcList++ < 3) {
                     CToast(getApplicationContext(), render(getString(R.string.no_epc_list_returned)), Toast.LENGTH_LONG);
                     return;
                 }
@@ -210,8 +188,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
                 return;
             }
             if (response.get(0).equalsIgnoreCase(getString(R.string.change_position_to_find_network_coverage_and_scan_again))) {
-                while (attemptsToGetEpcList < 3) {
-                    attemptsToGetEpcList++;
+                while (attemptsToGetEpcList++ < 3) {
                     CToast(getApplicationContext(), render(response.get(0)), Toast.LENGTH_LONG);
                     return;
                 }
@@ -246,12 +223,6 @@ public class ProcessBinsActivity extends AppCompatActivity {
         //unregister the receiver
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
-    }
-
-    private void clearSelectedItem() {
-        if (selectedItem != null) {
-            selectedItem.setBackground(getResources().getDrawable(R.drawable.list_item_bottom, null));
-        }
     }
 
     private void assignCtrlVars() {
@@ -347,8 +318,6 @@ public class ProcessBinsActivity extends AppCompatActivity {
             // sync RFID batch for this rfidBarcode
             Call<List<String>> enquiryEpcsByEpcAsyncCall = enquiryService.getFishingEpcsBatch(epc, "Bearer " + token);
             enquiryEpcsByEpcAsyncCall.enqueue(new RfidBatchByRfidBarcode(this.enquiryResult));
-
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -403,20 +372,20 @@ public class ProcessBinsActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-    private BinWeightCageAdapter.BinDetails loadBinInfo(String epc) {
-        //Add code to retrieve bin info from local DB
-        BinInfo tmpBin = db.binInfoDAO().getByRFId(epc);
+    private BinWeightCageAdapter.BinDetails loadBinInfo(String rfid) {
+        // Use 'rfid' to retrieve bin info from local DB
+        BinInfo tmpBin = db.binInfoDAO().getByRFId(rfid);
         if (tmpBin != null) {
-            return new BinWeightCageAdapter.BinDetails(epc, tmpBin.totalWeight, tmpBin.cage);
+            return new BinWeightCageAdapter.BinDetails(rfid, tmpBin.totalWeight, tmpBin.cage);
         } else {
-            return new BinWeightCageAdapter.BinDetails(epc);
+            return new BinWeightCageAdapter.BinDetails(rfid);
         }
     }
 
-    private List<BinWeightCageAdapter.BinDetails> convertEPCsToBinDetails(Set<String> epcs) {
+    private List<BinWeightCageAdapter.BinDetails> convertEPCsToBinDetails(Set<String> rfids) {
         List<BinWeightCageAdapter.BinDetails> result = new ArrayList<>();
-        for (String epc : epcs) {
-            result.add(new BinWeightCageAdapter.BinDetails(epc));
+        for (String rfid : rfids) {
+            result.add(new BinWeightCageAdapter.BinDetails(rfid));
         }
         return result;
     }

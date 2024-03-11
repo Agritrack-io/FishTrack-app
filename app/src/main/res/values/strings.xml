@@ -825,5 +825,6 @@
 
     <string name="select_bin_to_delete">Plz select a Bin to delete!!</string>
     <string name="init_in_progress">Initialization in progress. Plz wait!</string>
+    <string name="support_title">Contact Support</string>
 
 </resources>

@@ -80,6 +80,7 @@ import io.agritrack.kefalonia.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.kefalonia.ui.adapter.TemperatureProfileAdapter;
 import io.agritrack.kefalonia.ui.service.AuthenticationService;
 import io.agritrack.kefalonia.ui.service.LocalPreferences;
+import io.agritrack.kefalonia.ui.tools.caen.IDialogCloseListener;
 import io.agritrack.kefalonia.ui.tools.caen.ILoggerDialog;
 import io.agritrack.kefalonia.ui.tools.caen.LoggerDialogFragment;
 import io.agritrack.kefalonia.ui.tools.caen.SortLoggerDialogDecorator;
@@ -87,7 +88,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BinTurnoverActivity extends AppCompatActivity {
+public class BinTurnoverActivity extends AppCompatActivity implements IDialogCloseListener {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
@@ -96,6 +97,10 @@ public class BinTurnoverActivity extends AppCompatActivity {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
+
+    // variable to hold the dialog. Only 1 instance of ILoggerDialog may be active...
+    private ILoggerDialog loggerDlg = null;
+
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
@@ -115,7 +120,6 @@ public class BinTurnoverActivity extends AppCompatActivity {
     private List<String> adapterBinList;
     private int attemptsToGetEpcList = 0;
     private int attemptsToScanBinOutOfLot = 0;
-    private LoggerDataRecord.TemperatureModel data;
     private long retrievedAt;
     private Spinner spProductionLine;
     private ImageButton ibShowValues;
@@ -361,6 +365,16 @@ public class BinTurnoverActivity extends AppCompatActivity {
         return sb.toString();
     }
 
+    // Logger Dialog is dismissed.
+    // release the singleton that points to the dialog.
+    @Override
+    public void handleDialogClose(DialogInterface dialog) {
+        if(dialog != null) {
+            dialog.dismiss();
+        }
+        this.loggerDlg = null;
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -386,6 +400,11 @@ public class BinTurnoverActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
+        if(this.loggerDlg != null) {
+            CToast(getApplicationContext(), render(R.string.init_in_progress), Toast.LENGTH_SHORT);
+            return;
+        }
+
         if (adapterBins.getItemCount() < 1 && IsOnline && !scanAllBins) {
             scanner_runnable = new SingleShotScanner(mScanHandler);
             scanner_runnable.setFilter(Filters.RFID_BIN);
@@ -415,14 +434,6 @@ public class BinTurnoverActivity extends AppCompatActivity {
         } else {
             return new BinWeightCageAdapter.BinDetails(epc);
         }
-    }
-
-    private List<BinWeightCageAdapter.BinDetails> convertEPCsToBinDetails(List<String> epcs) {
-        List<BinWeightCageAdapter.BinDetails> result = new ArrayList<>();
-        for (String epc : epcs) {
-            result.add(new BinWeightCageAdapter.BinDetails(epc));
-        }
-        return result;
     }
 
     private List<String> convertBinDetailsToEPCs(List<BinWeightCageAdapter.BinDetails> epcs) {
@@ -470,37 +481,33 @@ public class BinTurnoverActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .create();
 
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+        dialog.setOnShowListener(dialogInterface -> {
 
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
+            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(new View.OnClickListener() {
 
-                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String insertedPin = pin.getText().toString().trim();
+                    String login = LocalPreferences.getLoggedInUser("").trim();
 
-                    @Override
-                    public void onClick(View view) {
-                        String insertedPin = pin.getText().toString().trim();
-                        String login = LocalPreferences.getLoggedInUser("").trim();
-
-                        if (Strings.isEmptyOrWhitespace(insertedPin)) {
-                            CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG);
-                            return;
-                        }
-
-                        // use typed-in PIN to compare credentials with those stored in the Local DB.
-                        AuthenticationService authSvc = new AuthenticationService();
-                        boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
-                        if (authentication) {
-                            triggerDataLoggerDialog();
-                            dialog.dismiss();
-                        } else {
-                            CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
-                            return;
-                        }
+                    if (Strings.isEmptyOrWhitespace(insertedPin)) {
+                        CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG);
+                        return;
                     }
-                });
-            }
+
+                    // use typed-in PIN to compare credentials with those stored in the Local DB.
+                    AuthenticationService authSvc = new AuthenticationService();
+                    boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
+                    if (authentication) {
+                        triggerDataLoggerDialog();
+                        dialog.dismiss();
+                    } else {
+                        CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
+                        return;
+                    }
+                }
+            });
         });
         dialog.show();
     }
@@ -525,14 +532,14 @@ public class BinTurnoverActivity extends AppCompatActivity {
 
             String productionLane = "1"; //spProductionLine.getSelectedItem().toString();
             if (tmpBin != null && tmpBin.initedAt != null) {
-                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt, tmpBin.pickedAt);
-                loggerDlg.setStateObserver(stateResult);
-                SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(loggerDlg);
+                this.loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt, tmpBin.pickedAt);
+                this.loggerDlg.setStateObserver(stateResult);
+                SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(this.loggerDlg);
                 sortLoggerDialogDecorator.show(fm);
             } else {
-                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane);
-                loggerDlg.setStateObserver(stateResult);
-                SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(loggerDlg);
+                this.loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane);
+                this.loggerDlg.setStateObserver(stateResult);
+                SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(this.loggerDlg);
                 sortLoggerDialogDecorator.show(fm);
             }
         }
@@ -643,7 +650,6 @@ public class BinTurnoverActivity extends AppCompatActivity {
 
             if (rs != null || IsDemo) {
                 // reset existing Temperature values in stateRecord.
-
                 recLoggerData.clearData();
                 tempDataRepo.removeAll(db);
                 db.measurementsDAO().deleteAll();
