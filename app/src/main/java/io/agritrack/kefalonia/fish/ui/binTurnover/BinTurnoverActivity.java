@@ -401,7 +401,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
 
     protected void onClick(View view) {
         if(this.loggerDlg != null) {
-            CToast(getApplicationContext(), render(R.string.init_in_progress), Toast.LENGTH_SHORT);
+            CToast(getApplicationContext(), render(R.string.temp_downloading_in_progress), Toast.LENGTH_SHORT);
             return;
         }
 
