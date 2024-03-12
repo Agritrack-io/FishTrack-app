@@ -82,6 +82,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     private ClipDrawable mClipDrawable;
     private CAENLoggerService loggerSvc;
     private ICAEN_API cmd;
+
     //##############################################################
     protected final View.OnClickListener validBtnListener = v -> {
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
@@ -109,6 +110,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             CToast(getActivity(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
         }
     };
+
     protected final View.OnClickListener resetBtnListener = v -> {
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
             btnReset.setBackgroundResource(R.drawable.button_background);
@@ -135,6 +137,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             CToast(getActivity(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
         }
     };
+
     private final View.OnClickListener readBtnListener = v -> {
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
             btnRead.setBackgroundResource(R.drawable.button_background);
@@ -143,6 +146,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 
             // pass selected EPC as RFID filter
             cmd.setFilterEPC(loggerEPC);
+            currentLoggerEPC = loggerEPC != null ? loggerEPC : currentLoggerEPC;
             //invoke read() method of CAENLoggerService.
             setCancelable(false);
             v.setEnabled(false);
@@ -162,6 +166,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             CToast(getActivity(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
         }
     };
+
     //##############################################################
     //-------
     private MutableLiveData<CAENState> stateResult;

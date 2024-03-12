@@ -484,28 +484,24 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         dialog.setOnShowListener(dialogInterface -> {
 
             Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-            button.setOnClickListener(new View.OnClickListener() {
+            button.setOnClickListener(view -> {
+                String insertedPin = pin.getText().toString().trim();
+                String login = LocalPreferences.getLoggedInUser("").trim();
 
-                @Override
-                public void onClick(View view) {
-                    String insertedPin = pin.getText().toString().trim();
-                    String login = LocalPreferences.getLoggedInUser("").trim();
+                if (Strings.isEmptyOrWhitespace(insertedPin)) {
+                    CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG);
+                    return;
+                }
 
-                    if (Strings.isEmptyOrWhitespace(insertedPin)) {
-                        CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG);
-                        return;
-                    }
-
-                    // use typed-in PIN to compare credentials with those stored in the Local DB.
-                    AuthenticationService authSvc = new AuthenticationService();
-                    boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
-                    if (authentication) {
-                        triggerDataLoggerDialog();
-                        dialog.dismiss();
-                    } else {
-                        CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
-                        return;
-                    }
+                // use typed-in PIN to compare credentials with those stored in the Local DB.
+                AuthenticationService authSvc = new AuthenticationService();
+                boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
+                if (authentication) {
+                    triggerDataLoggerDialog();
+                    dialog.dismiss();
+                } else {
+                    CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
+                    return;
                 }
             });
         });
@@ -533,15 +529,13 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
             String productionLane = "1"; //spProductionLine.getSelectedItem().toString();
             if (tmpBin != null && tmpBin.initedAt != null) {
                 this.loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt, tmpBin.pickedAt);
-                this.loggerDlg.setStateObserver(stateResult);
-                SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(this.loggerDlg);
-                sortLoggerDialogDecorator.show(fm);
             } else {
                 this.loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane);
-                this.loggerDlg.setStateObserver(stateResult);
-                SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(this.loggerDlg);
-                sortLoggerDialogDecorator.show(fm);
             }
+            this.loggerDlg.setStateObserver(stateResult);
+            SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(this.loggerDlg);
+            sortLoggerDialogDecorator.show(fm);
+
         }
     }
 
