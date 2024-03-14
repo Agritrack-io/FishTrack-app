@@ -510,7 +510,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                         } else if ("00000".equalsIgnoreCase(state.ctrlReg) && state.samplesCnt > 0 && currentLoggerEPC == null) {
                             btnRead.setText(getString(R.string.idle_logger_with_data) + " [" + state.samplesCnt + "]");
                             currentLoggerEPC = loggerEPC;
-                        } else if ("00000".equalsIgnoreCase(state.ctrlReg)) {
+                        } else if ((state.ctrlReg == null && state.samplesCnt > 0) || "00000".equalsIgnoreCase(state.ctrlReg)) {
                             state.setLoggerEPC(loggerEPC);
                             state.setAssetEPC(assetEPC);
                             state.setProductionLane(productionLane);

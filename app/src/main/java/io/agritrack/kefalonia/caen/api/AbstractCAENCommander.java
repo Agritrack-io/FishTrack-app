@@ -599,7 +599,12 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
             short t = ToShort(new byte[]{data[byteIdx], data[byteIdx + 1]});
             Double temp = parseTemperatureNumeric(t);
             long ts = beginTSmSec + (sampleIdx * intervalSeconds * 1000L);
+
+            // Note: on some extreme cases, there are no measurements after the pickedAt time.
+            //       this caused the android app to show "invalid state"...
             if (pickedAt != null && ts<pickedAt) {
+                // filter out measurements taken before fishing started.
+                // currently specific to Kefalonia...
                 continue;
             }
             if (temp != null && temp >= -10 && temp < 40 && round(temp, 2) != 0.03 && round(temp, 2) != -0.03) {
@@ -608,6 +613,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
                 measurements.add(new String[]{createTimestamp(ts), "N/A"});
             }
         }
+
         return measurements;
     }
 }
