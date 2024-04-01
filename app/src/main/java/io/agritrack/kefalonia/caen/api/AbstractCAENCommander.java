@@ -591,26 +591,26 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
         return measurements;
     }
 
-    private List<String[]> parseDataWithoutTimestamp(Long pickedAt, long beginTSmSec, int intervalSeconds, byte[] data) {
+    private List<String[]> parseDataWithoutTimestamp(Long fishingTS, long beginTSmSec, int intervalSeconds, byte[] data) {
         List<String[]> measurements = new LinkedList<>();
         for (int sampleIdx = 0; sampleIdx < data.length / 2; sampleIdx++) {
 
             int byteIdx = sampleIdx * 2;
             short t = ToShort(new byte[]{data[byteIdx], data[byteIdx + 1]});
             Double temp = parseTemperatureNumeric(t);
-            long ts = beginTSmSec + (sampleIdx * intervalSeconds * 1000L);
+            long currTemperatureTS = beginTSmSec + (sampleIdx * intervalSeconds * 1000L);
 
             // Note: on some extreme cases, there are no measurements after the pickedAt time.
             //       this caused the android app to show "invalid state"...
-            if (pickedAt != null && ts<pickedAt) {
+            if (fishingTS != null && (fishingTS - currTemperatureTS > 30 * 60 * 1000)) {
                 // filter out measurements taken before fishing started.
                 // currently specific to Kefalonia...
                 continue;
             }
             if (temp != null && temp >= -10 && temp < 40 && round(temp, 2) != 0.03 && round(temp, 2) != -0.03) {
-                measurements.add(new String[]{createTimestamp(ts), String.format("%.2f", parseTemperatureNumeric(t))});
+                measurements.add(new String[]{createTimestamp(currTemperatureTS), String.format("%.2f", parseTemperatureNumeric(t))});
             } else {
-                measurements.add(new String[]{createTimestamp(ts), "N/A"});
+                measurements.add(new String[]{createTimestamp(currTemperatureTS), "N/A"});
             }
         }
 
