@@ -94,7 +94,7 @@ import io.agritrack.kefalonia.fish.ui.binTurnover.BinTurnoverActivity;
 import io.agritrack.kefalonia.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.kefalonia.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.kefalonia.fish.ui.fishing.HarvestRequestsActivity;
-import io.agritrack.kefalonia.fish.ui.initBins.InitBinsActivity;
+import io.agritrack.kefalonia.fish.ui.process.initBins.InitBinsActivity;
 import io.agritrack.kefalonia.fish.ui.process.ProcessBinsActivity;
 import io.agritrack.kefalonia.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.kefalonia.ui.adapter.HomeMenuAdapter;

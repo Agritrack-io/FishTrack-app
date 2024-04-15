@@ -177,12 +177,13 @@ public class ProcessBinsActivity extends AppCompatActivity {
 
         enquiryResult.observe(this, response -> {
             if (response == null || response.isEmpty()) {
-                while (attemptsToGetEpcList++ < 3) {
-                    CToast(getApplicationContext(), render(getString(R.string.no_epc_list_returned)), Toast.LENGTH_LONG);
-                    return;
-                }
-                attemptsToGetEpcList = 0;
-                CToast(getApplicationContext(), render(getString(R.string.scan_all_bins)), Toast.LENGTH_LONG);
+//                while (attemptsToGetEpcList++ < 3) {
+//                    CToast(getApplicationContext(), render(getString(R.string.no_epc_list_returned)), Toast.LENGTH_LONG);
+//                    return;
+//                }
+//                attemptsToGetEpcList = 0;
+
+                CToast(getApplicationContext(), render(getString(R.string.no_epc_list_continue)), Toast.LENGTH_LONG);
                 scanButton.setText(R.string.scan_all_bins);
                 scanAllBins = true;
                 return;
