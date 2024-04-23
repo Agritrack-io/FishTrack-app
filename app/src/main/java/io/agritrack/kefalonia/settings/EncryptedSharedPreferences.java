@@ -10,9 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.agritrack.kefalonia.data.dto.AgricenseDTO;
-import io.agritrack.kefalonia.data.dto.DbConfigDTO;
 import io.agritrack.kefalonia.data.dto.EncodingSchemeDTO;
-import io.agritrack.kefalonia.data.dto.ListenerConfigDTO;
 import io.agritrack.kefalonia.data.dto.StationConfigDTO;
 
 public class EncryptedSharedPreferences {
@@ -84,16 +82,10 @@ public class EncryptedSharedPreferences {
         settingsMap.put("backendUrl", appSettings.backendUrl);
         settingsMap.put("licenseKey", appSettings.licenseKey);
         savePreference(settingsMap);
-        settingsMap = oMapper.convertValue(appSettings.dbCfg, Map.class);
-        savePreference(settingsMap);
         settingsMap = oMapper.convertValue(appSettings.encodingScheme, Map.class);
         savePreference(settingsMap);
         settingsMap = new HashMap<>();
         settingsMap.put("centralSite", appSettings.stationCfg.centralSite);
-        settingsMap.put("incoming", appSettings.stationCfg.incoming.toString().replace("[", "").replace("]", ""));
-        settingsMap.put("outgoing", appSettings.stationCfg.outgoing.toString().replace("[", "").replace("]", ""));
-        savePreference(settingsMap);
-        settingsMap = oMapper.convertValue(appSettings.listenerCfg, Map.class);
         savePreference(settingsMap);
         return true;
     }
@@ -105,15 +97,6 @@ public class EncryptedSharedPreferences {
         result.backendUrl = loadPreference("backendUrl");
         result.licenseKey = loadPreference("licenseKey");
 
-        // host port login pwd dbase driver
-        result.dbCfg = new DbConfigDTO();
-        result.dbCfg.host = loadPreference("host");
-        result.dbCfg.port = loadNumberPreference("port");
-        result.dbCfg.login = loadPreference("login");
-        result.dbCfg.pwd = loadPreference("pwd");
-        result.dbCfg.dbase = loadPreference("dbase");
-        result.dbCfg.driver = loadPreference("driver");
-
         //tagPrefix tagLength
         result.encodingScheme = new EncodingSchemeDTO();
         result.encodingScheme.tagPrefix = loadPreference("tagPrefix");
@@ -122,12 +105,6 @@ public class EncryptedSharedPreferences {
         // StationConfigDTO ListenerConfigDTO
         result.stationCfg = new StationConfigDTO();
         result.stationCfg.centralSite = loadPreference("centralSite");
-        result.stationCfg.incoming = Arrays.asList(loadPreference("incoming").split(","));
-        result.stationCfg.outgoing = Arrays.asList(loadPreference("outgoing").split(","));
-
-        result.listenerCfg = new ListenerConfigDTO();
-        result.listenerCfg.serverIP = loadPreference("serverIP");
-        result.listenerCfg.serverPort = loadNumberPreference("serverPort");
 
         return result;
     }

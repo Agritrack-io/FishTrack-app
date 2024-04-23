@@ -42,7 +42,6 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.caen.common.CAENState;
@@ -54,13 +53,11 @@ import io.agritrack.kefalonia.dialog.SupportDialog;
 import io.agritrack.kefalonia.dialog.YesNoDialogFragment;
 import io.agritrack.kefalonia.fish.state.FishingRecord;
 import io.agritrack.kefalonia.fish.state.GlobalState;
-import io.agritrack.kefalonia.fish.ui.bo.BinWeightRecord;
 import io.agritrack.kefalonia.fish.ui.bo.LoggerReading;
 import io.agritrack.kefalonia.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.kefalonia.rfid.ScanInventoryThread;
 import io.agritrack.kefalonia.rfid.X9KeyReceiver;
 import io.agritrack.kefalonia.sound.SoundUtil;
-import io.agritrack.kefalonia.ui.adapter.BinLoadAdapter;
 import io.agritrack.kefalonia.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.kefalonia.ui.service.LocalPreferences;
 

@@ -4,7 +4,6 @@ import static io.agritrack.kefalonia.FishTrackApplication.IsDemo;
 import static io.agritrack.kefalonia.FishTrackApplication.IsOnline;
 import static io.agritrack.kefalonia.FishTrackApplication.getAppContext;
 import static io.agritrack.kefalonia.common.LargeString.render;
-import static io.agritrack.kefalonia.fish.state.GlobalState.recFishing;
 import static io.agritrack.kefalonia.fish.state.GlobalState.recProcessing;
 import static io.agritrack.kefalonia.ui.custom.CustomToast.CToast;
 

@@ -1,13 +1,6 @@
 package io.agritrack.kefalonia.ui.tools.caen.fsm;
 
 import static io.agritrack.kefalonia.common.LargeString.render;
-import static io.agritrack.kefalonia.ui.custom.CustomToast.CToast;
-
-import android.widget.Toast;
-
-import com.google.android.gms.common.util.Strings;
-
-import io.agritrack.kefalonia.R;
 
 public enum LoggerState {
     IDLE {

@@ -3,7 +3,6 @@ package io.agritrack.kefalonia.settings.adapter;
 import android.content.Context;
 import android.os.Environment;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,13 +13,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
 
-import io.agritrack.kefalonia.common.utilities.ConnectionStringUtils;
 import io.agritrack.kefalonia.data.dto.AgricenseDTO;
 import io.agritrack.kefalonia.data.dto.EncodingSchemeDTO;
-import io.agritrack.kefalonia.data.dto.ListenerConfigDTO;
 import io.agritrack.kefalonia.data.dto.StationConfigDTO;
 import io.agritrack.kefalonia.settings.ApplicationSettings;
 import io.agritrack.kefalonia.settings.EncryptedSharedPreferences;
@@ -43,8 +39,6 @@ public class ConfigFilePersistence implements IConfigPersistenceAdapter<Agricens
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
 
             JSONObject settings = new JSONObject();
-            settings.put("connectionString", appSettings.getConnectionString());
-            settings.put("listenerIP", String.format("%s:%s", appSettings.getListenerIP(), appSettings.getListenerPort()));
             settings.put("serverIP", appSettings.backendUrl);
             settings.put("tagStart", appSettings.getTagPrefix());
             settings.put("terminalId", appSettings.terminalId);
@@ -62,14 +56,7 @@ public class ConfigFilePersistence implements IConfigPersistenceAdapter<Agricens
 
             JSONObject settings = new JSONObject();
             settings.put("centralSite", appSettings.getCentralSite());
-            JSONArray incomingSites = new JSONArray();
-            appSettings.getIncoming().stream().forEach(is -> incomingSites.put(is.trim()));
-            settings.put("incoming", incomingSites);
             settings.put("licenseString", appSettings.licenseKey);
-            JSONArray outgoingSites = new JSONArray();
-            appSettings.getOutgoing().stream().forEach(os -> outgoingSites.put(os.trim()));
-            settings.put("outgoing", outgoingSites);
-
 
             writer.write(settings.toString().replace("\\", ""));
         } catch (IOException | JSONException e) {
@@ -98,27 +85,14 @@ public class ConfigFilePersistence implements IConfigPersistenceAdapter<Agricens
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
-            String json = new String(buffer, "UTF-8");
+            String json = new String(buffer, StandardCharsets.UTF_8);
             JSONObject settings = new JSONObject(json);
-
-            String connectionString = settings.getString("connectionString");
-            configParamDto.dbCfg = ConnectionStringUtils.tokenizeDbConnectionString(connectionString);
 
             configParamDto.encodingScheme = new EncodingSchemeDTO();
             configParamDto.encodingScheme.tagPrefix = settings.getString("tagStart");
             try {
                 configParamDto.encodingScheme.tagLength = Integer.parseInt(settings.getString("varLength"));
             } catch (Exception e) {
-            }
-
-            configParamDto.listenerCfg = new ListenerConfigDTO();
-            String[] listenerIpWithPort = settings.getString("listenerIP").split(":");
-            configParamDto.listenerCfg.serverIP = listenerIpWithPort[0];
-            if (listenerIpWithPort.length > 1) {
-                try {
-                    configParamDto.listenerCfg.serverPort = Long.parseLong(listenerIpWithPort[1]);
-                } catch (Exception e) {
-                }
             }
 
             // LICENSE
@@ -128,25 +102,13 @@ public class ConfigFilePersistence implements IConfigPersistenceAdapter<Agricens
             buffer = new byte[size];
             is.read(buffer);
             is.close();
-            json = new String(buffer, "UTF-8");
+            json = new String(buffer, StandardCharsets.UTF_8);
             settings = new JSONObject(json);
 
             configParamDto.licenseKey = settings.getString("licenseString");
 
             configParamDto.stationCfg = new StationConfigDTO();
             configParamDto.stationCfg.centralSite = settings.getString("centralSite");
-
-            List<String> incomingSites = new ArrayList<>();
-            JSONArray incomingSitesObject = settings.getJSONArray("incoming");
-            for (int i = 0; i < incomingSitesObject.length(); i++)
-                incomingSites.add(incomingSitesObject.getString(i).trim());
-            configParamDto.stationCfg.incoming = incomingSites;
-
-            List<String> outgoingSites = new ArrayList<>();
-            JSONArray outgoingSitesObject = settings.getJSONArray("outgoing");
-            for (int i = 0; i < outgoingSitesObject.length(); i++)
-                outgoingSites.add(outgoingSitesObject.getString(i).trim());
-            configParamDto.stationCfg.outgoing = outgoingSites;
 
             return configParamDto;
 

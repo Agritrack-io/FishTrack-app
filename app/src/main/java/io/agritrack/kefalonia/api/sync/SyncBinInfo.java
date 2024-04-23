@@ -13,8 +13,6 @@ import java.util.List;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.data.db.MobileDB;
 import io.agritrack.kefalonia.data.dto.BinInfoDTO;
-import io.agritrack.kefalonia.ui.custom.CustomToast;
-import io.agritrack.kefalonia.ui.login.api.SiteInfoRS;
 import retrofit2.Call;
 import retrofit2.Response;
 

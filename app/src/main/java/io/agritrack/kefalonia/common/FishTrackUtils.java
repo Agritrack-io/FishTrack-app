@@ -1,7 +1,5 @@
 package io.agritrack.kefalonia.common;
 
-import static io.agritrack.kefalonia.common.Constants.Greek_Locale;
-
 import android.annotation.SuppressLint;
 
 import java.time.LocalDateTime;
@@ -29,7 +27,7 @@ public class FishTrackUtils {
 
     @SuppressLint("NewApi")
     public static LocalDateTime LotToDate(String lot) {
-        WeekFields weekFields = WeekFields.of(Greek_Locale);
+        WeekFields weekFields = WeekFields.of(Constants.Greek_Locale);
         String week = lot.substring(0, 2);
         String day = Character.toString(lot.charAt(2));
         Long longWeek = Long.valueOf(week);

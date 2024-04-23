@@ -199,6 +199,14 @@ public class ProcessBinsActivity extends AppCompatActivity {
                 scanAllBins = true;
                 return;
             }
+            if (response.size() == 1) {
+                if(response.get(0).equalsIgnoreCase("RECEIVED")) {
+                    for (int i = 0; i < 2; i++) {
+                        CToast(getApplicationContext(), getString(R.string.all_bins_received), Toast.LENGTH_LONG);
+                    }
+                    return;
+                }
+            }
             response.stream().forEach(x -> adapterBins.addExpectedItem(loadBinInfo(x)));
             adapterBins.notifyDataSetChanged();
             tvSelectBins.setText(R.string.expected_bins);

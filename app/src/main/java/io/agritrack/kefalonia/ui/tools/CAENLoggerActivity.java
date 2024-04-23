@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Locale;
 
 import io.agritrack.epctagcoder.exception.EPCParseException;
-import io.agritrack.epctagcoder.result.SGTIN;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.caen.api.CAENLoggerService;
 import io.agritrack.kefalonia.caen.api.ICAEN_API;

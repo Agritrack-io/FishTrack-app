@@ -507,7 +507,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                             // assign listener to reset button
                             btnReset.setOnClickListener(resetBtnListener);
                             btnReset.callOnClick();
-                        } else if ("00000".equalsIgnoreCase(state.ctrlReg)  && state.samplesCnt != null && state.samplesCnt > 0 && currentLoggerEPC == null) {
+                        } else if ("00000".equalsIgnoreCase(state.ctrlReg) && state.samplesCnt != null && state.samplesCnt > 0 && currentLoggerEPC == null) {
                             btnRead.setText(getString(R.string.idle_logger_with_data) + " [" + state.samplesCnt + "]");
                             currentLoggerEPC = loggerEPC;
                         } else if ((state.ctrlReg == null && state.samplesCnt != null && state.samplesCnt > 0) || "00000".equalsIgnoreCase(state.ctrlReg)) {

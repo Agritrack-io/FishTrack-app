@@ -8,9 +8,4 @@ public class StationConfigDTO {
     @SerializedName("central-site")
     public String centralSite;
 
-    @SerializedName("incoming")
-    public List<String> incoming;
-
-    @SerializedName("outgoing")
-    public List<String> outgoing;
 }

@@ -451,22 +451,25 @@ public class FishHomeActivity extends AppCompatActivity {
             File file = new File(FishHomeActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "agriLogs");
             File[] files = file.listFiles();
 
-            for (File f : files) {
-                String strFileName = f.getName();
-                //Upload file using okhttp post
-                //File jsonFile = new File(FishHomeActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), strFileName);
+            if (files != null) {
+                for (File f : files) {
+                    String strFileName = f.getName();
+                    //Upload file using okhttp post
+                    //File jsonFile = new File(FishHomeActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), strFileName);
 
-                // create RequestBody instance from file
-                RequestBody requestFile = RequestBody.create(f, MediaType.parse("text/plain"));
+                    // create RequestBody instance from file
+                    RequestBody requestFile = RequestBody.create(f, MediaType.parse("text/plain"));
 
-                // MultipartBody.Part is used to send also the actual file name
-                MultipartBody.Part filePart = MultipartBody.Part.createFormData("crashLog", strFileName, requestFile);
+                    // MultipartBody.Part is used to send also the actual file name
+                    MultipartBody.Part filePart = MultipartBody.Part.createFormData("crashLog", strFileName, requestFile);
 
-                Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadCrashLog(filePart, "Bearer " + token);
-                uploadJsonFileAsyncCall.enqueue(new FishHomeActivity.CrashFileUploadCallBack());
+                    Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadCrashLog(filePart, "Bearer " + token);
+                    uploadJsonFileAsyncCall.enqueue(new FishHomeActivity.CrashFileUploadCallBack());
 
-                //Delete the uploaded file crash folder
+                    //Delete the uploaded file crash folder
+                }
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -23,7 +23,6 @@ import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.api.APIServiceGenerator;
 import io.agritrack.kefalonia.common.DeviceUtils;
 import io.agritrack.kefalonia.databinding.ActivitySettingsBinding;
-import io.agritrack.kefalonia.fragment.ApplicationSettingsFragment;
 import io.agritrack.kefalonia.fragment.LicenseSettingsFragment;
 import io.agritrack.kefalonia.ui.adapter.ViewPagerAdapter;
 import io.agritrack.kefalonia.ui.login.LoginActivity;
@@ -67,7 +66,6 @@ public class SettingsActivity extends AppCompatActivity {
         // #4. configure custom ViewPagerAdapter
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
         viewPagerAdapter.addFragment(new LicenseSettingsFragment(appSettingsViewModel));
-        viewPagerAdapter.addFragment(new ApplicationSettingsFragment(appSettingsViewModel));
 
         // #5. configure ViewPager2 & TabLayout
         vpFragmentContainer.setAdapter(viewPagerAdapter);

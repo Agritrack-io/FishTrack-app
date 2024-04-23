@@ -18,9 +18,7 @@ import io.agritrack.kefalonia.BR;
 import io.agritrack.kefalonia.common.DeviceUtils;
 import io.agritrack.kefalonia.common.utilities.WifiUtils;
 import io.agritrack.kefalonia.data.dto.AgricenseDTO;
-import io.agritrack.kefalonia.data.dto.DbConfigDTO;
 import io.agritrack.kefalonia.data.dto.EncodingSchemeDTO;
-import io.agritrack.kefalonia.data.dto.ListenerConfigDTO;
 import io.agritrack.kefalonia.data.dto.StationConfigDTO;
 import io.agritrack.kefalonia.settings.EncryptedSharedPreferences;
 import io.agritrack.kefalonia.settings.adapter.ConfigPersistenceFactory;
@@ -29,31 +27,8 @@ import io.agritrack.kefalonia.settings.adapter.IConfigPersistenceAdapter;
 public class ConfigViewModel extends BaseObservable {
 
     private final Context context;
-    // Database connection
-    @Bindable
-    private String dbDriver = "";
-    @Bindable
-    private String dbServerIP = "";
-    @Bindable
-    private String dbPort = "";
-    @Bindable
-    private String dbName = "";
-    @Bindable
-    private String dbUser = "";
-    @Bindable
-    private String dbPassword = "";
-    // Listener Service
-    @Bindable
-    private String listenerIP;
-    @Bindable
-    private String listenerPort;
-    // Station Details
     @Bindable
     private String station;
-    @Bindable
-    private String stationEntrance;
-    @Bindable
-    private String stationExit;
     // License
     @Bindable
     private String currentLicense;
@@ -89,24 +64,9 @@ public class ConfigViewModel extends BaseObservable {
 
             if (configParamDTO != null) {
 
-                // Db connection
-                if (configParamDTO.dbCfg != null) {
-                    dbDriver = configParamDTO.dbCfg.driver;
-                    dbServerIP = configParamDTO.dbCfg.host;
-                    dbPort = configParamDTO.dbCfg.port.toString();
-                    dbName = configParamDTO.dbCfg.dbase;
-                    dbUser = configParamDTO.dbCfg.login;
-                    dbPassword = configParamDTO.dbCfg.pwd;
-                }
-
-                // Listener Service
-                listenerIP = configParamDTO.getListenerIP();
-                listenerPort = configParamDTO.getListenerPort();
 
                 // Station Details
                 station = configParamDTO.getCentralSite();
-                stationEntrance = configParamDTO.getIncoming().toString().replace("[", "").replace("]", "");
-                stationExit = configParamDTO.getOutgoing().toString().replace("[", "").replace("]", "");
 
                 // License
                 currentLicense = configParamDTO.licenseKey;
@@ -180,78 +140,6 @@ public class ConfigViewModel extends BaseObservable {
         notifyChange();
     }
 
-    public String getDbDriver() {
-        return dbDriver;
-    }
-
-    public void setDbDriver(String dbDriver) {
-        this.dbDriver = dbDriver;
-        notifyPropertyChanged(BR.dbDriver);
-    }
-
-    public String getDbServerIP() {
-        return dbServerIP;
-    }
-
-    public void setDbServerIP(String dbServerIP) {
-        this.dbServerIP = dbServerIP;
-        notifyPropertyChanged(BR.dbServerIP);
-    }
-
-    public String getDbPort() {
-        return dbPort;
-    }
-
-    public void setDbPort(String dbPort) {
-        this.dbPort = dbPort;
-        notifyPropertyChanged(BR.dbPort);
-    }
-
-    public String getDbName() {
-        return dbName;
-    }
-
-    public void setDbName(String dbName) {
-        this.dbName = dbName;
-        notifyPropertyChanged(BR.dbName);
-    }
-
-    public String getDbUser() {
-        return dbUser;
-    }
-
-    public void setDbUser(String dbUser) {
-        this.dbUser = dbUser;
-        notifyPropertyChanged(BR.dbUser);
-    }
-
-    public String getDbPassword() {
-        return dbPassword;
-    }
-
-    public void setDbPassword(String dbPassword) {
-        this.dbPassword = dbPassword;
-        notifyPropertyChanged(BR.dbPassword);
-    }
-
-    public String getListenerIP() {
-        return listenerIP;
-    }
-
-    public void setListenerIP(String listenerIP) {
-        this.listenerIP = listenerIP;
-        notifyPropertyChanged(BR.listenerIP);
-    }
-
-    public String getListenerPort() {
-        return listenerPort;
-    }
-
-    public void setListenerPort(String listenerPort) {
-        this.listenerPort = listenerPort;
-        notifyPropertyChanged(BR.listenerPort);
-    }
-
     public String getStation() {
         return station;
     }
@@ -259,24 +147,6 @@ public class ConfigViewModel extends BaseObservable {
     public void setStation(String station) {
         this.station = station;
         notifyPropertyChanged(BR.station);
-    }
-
-    public String getStationEntrance() {
-        return stationEntrance;
-    }
-
-    public void setStationEntrance(String stationEntrance) {
-        this.stationEntrance = stationEntrance;
-        notifyPropertyChanged(BR.stationEntrance);
-    }
-
-    public String getStationExit() {
-        return stationExit;
-    }
-
-    public void setStationExit(String stationExit) {
-        this.stationExit = stationExit;
-        notifyPropertyChanged(BR.stationExit);
     }
 
     public String getCurrentLicense() {
@@ -326,30 +196,10 @@ public class ConfigViewModel extends BaseObservable {
     private AgricenseDTO convertToDTO() {
         AgricenseDTO configParamDTO = new AgricenseDTO();
 
-        // Database connection
-        configParamDTO.dbCfg = new DbConfigDTO();
-        configParamDTO.dbCfg.dbase = dbName;
-        configParamDTO.dbCfg.driver = dbDriver;
-        configParamDTO.dbCfg.host = dbServerIP;
-        if (!dbPort.isEmpty()) {
-            configParamDTO.dbCfg.port = Long.parseLong(dbPort);
-        }
-        configParamDTO.dbCfg.login = dbUser;
-        configParamDTO.dbCfg.pwd = dbPassword;
-
-        // Listener Service
-        configParamDTO.listenerCfg = new ListenerConfigDTO();
-        configParamDTO.listenerCfg.serverIP = listenerIP;
-        if (!listenerPort.isEmpty()) {
-            configParamDTO.listenerCfg.serverPort = Long.parseLong(listenerPort);
-        }
 
         // Station Details
         configParamDTO.stationCfg = new StationConfigDTO();
         configParamDTO.stationCfg.centralSite = station;
-        configParamDTO.stationCfg.incoming = Arrays.stream(stationEntrance.split(",")).map(String::trim).filter(s -> s.length() > 0).collect(Collectors.toList());
-        configParamDTO.stationCfg.outgoing = Arrays.stream(stationExit.split(",")).map(String::trim).filter(s -> s.length() > 0).collect(Collectors.toList());
-
         // License
         configParamDTO.licenseKey = currentLicense;
 

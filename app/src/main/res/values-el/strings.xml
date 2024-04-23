@@ -778,7 +778,7 @@
 
     <string name="invalid_license">Μη έγκυρη άδεια. \nΠαρακαλώ επικοινωνήστε με τον διαχειριστή.</string>
     <string name="type_pin_for_accessing_settings">Πληκτρολογήστε το PIN για να μεταβείτε στις Ρυθμίσεις</string>
-    <string name="current_station">Σταθμός</string>
+    <string name="current_installation">Εγκατάσταση</string>
     <string name="database_name">Όνομα βάσης</string>
     <string name="example_uuid4">d44877e2-4c97-4d74-94ac-b2ceee0a2f92</string>
     <string name="database_configuration">Ρυθμίσεις βάσης</string>
@@ -788,7 +788,7 @@
     <string name="current_license_key">Τρέχον κλειδί</string>
     <string name="tag_prefix">Πρόθεμα</string>
     <string name="epc_length">Μήκος EPC</string>
-    <string name="example_station">Chalandri</string>
+    <string name="example_installation">Agritrack HQ</string>
     <string name="encoding_scheme">Κωδικοποίηση ετικετών</string>
     <string name="password">Κωδικός</string>
     <string name="driver">Οδηγός</string>
@@ -820,4 +820,5 @@
     <string name="init_in_progress">Αρχικοποίηση σε εξέλιξη. Παρακαλώ περιμένετε!</string>
     <string name="support_title">Υποστήριξη</string>
     <string name="temp_downloading_in_progress">Κατεβαίνουν θερμοκρασίες. Παρακαλώ περιμένετε!</string>
+    <string name="all_bins_received">Όλες οι βούτες για αυτή την αλίευση έχουν παραληφθεί. Παρακαλώ προχωρήστε στην Ανατροπη Βουτών!</string>
 </resources>
