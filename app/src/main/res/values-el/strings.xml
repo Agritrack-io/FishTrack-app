@@ -202,7 +202,7 @@
     <string name="change_position_to_find_network_coverage_and_scan_again">Παρακαλώ αναζητήστε κάλυψη δικτύου και σκανάρετε τη βούτα ξανά!</string>
     <string name="title_date_lot_dispatch_note">ΗΜΕΡΟΜΗΝΙΑ / LOT / ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ</string>
     <string name="receipt_header">#\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Βούτα \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Κλωβός \u00A0\u00A0\u00A0\u00A0 Kg</string>
-
+    <string name="no_epc_list_continue">Δεν βρέθηκε λίστα βουτών παρακαλώ προχωρήστε με τη παραλαβή</string>
     <string name="title_quality_receipt">ΠΟΙΟΤΙΚΟΣ ΕΛΕΓΧΟΣ/PP-DOC-01</string>
     <string name="title_quality">ΠΟΙΟΤΙΚΟΣ ΕΛΕΓΧΟΣ</string>
     <string name="title_quality_package">ΠΟΙΟΤΙΚΟΣ ΕΛΕΓΧΟΣ/PP-DOC-02</string>

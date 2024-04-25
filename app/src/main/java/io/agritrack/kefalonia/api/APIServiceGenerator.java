@@ -1,7 +1,5 @@
 package io.agritrack.kefalonia.api;
 
-import androidx.databinding.Bindable;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -16,7 +14,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APIServiceGenerator {
 
     private static final String AGRISENSE_URL = "http://agrisense.agritrack.info:5100";
+
 //    private static final String BASE_URL = "http://3.123.142.122:5000"; //dev
+//    private static final String BASE_URL = "http://192.168.150.190:5000"; //localRIgas
     private static final String BASE_URL = "http://fish-kefalonia-be.eu-central-1.elasticbeanstalk.com"; //production
 
     private static final Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
@@ -67,7 +67,7 @@ public class APIServiceGenerator {
         return retrofit.create(serviceClass);
     }
 
-    public static String getBaseUrl(){
+    public static String getBaseUrl() {
         return BASE_URL;
     }
 }

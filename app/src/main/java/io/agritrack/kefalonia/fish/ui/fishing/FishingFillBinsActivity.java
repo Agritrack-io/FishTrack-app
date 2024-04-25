@@ -293,7 +293,7 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recFishing.totalBinsUsed == null) {
-                sb.append(String.format("\n%s" + getString(R.string.invalid_inputs), "'Harvest bins'"));
+                sb.append(String.format("\n %s" + getString(R.string.invalid_inputs), "'Harvest bins'"));
             }
             recFishing.binWeightRecord.getBinsData().stream().filter(item -> item.weight != null)
                     .forEach(item -> {

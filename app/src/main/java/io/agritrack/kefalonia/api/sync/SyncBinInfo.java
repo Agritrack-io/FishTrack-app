@@ -1,6 +1,10 @@
 package io.agritrack.kefalonia.api.sync;
 
 import static io.agritrack.kefalonia.FishTrackApplication.getAppContext;
+import static io.agritrack.kefalonia.common.LargeString.render;
+import static io.agritrack.kefalonia.ui.custom.CustomToast.CToast;
+
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -9,6 +13,8 @@ import java.util.List;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.data.db.MobileDB;
 import io.agritrack.kefalonia.data.dto.BinInfoDTO;
+import io.agritrack.kefalonia.ui.custom.CustomToast;
+import io.agritrack.kefalonia.ui.login.api.SiteInfoRS;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -36,4 +42,11 @@ public class SyncBinInfo extends BaseSyncCallBack<List<BinInfoDTO>> {
             syncResult.setValue(getAppContext().getString(R.string.no_cage_details_found_alert));
         }
     }
+    @Override
+    public void onFailure(Call<List<BinInfoDTO>> call, Throwable t) {
+        System.out.println(t);
+
+        CToast(getAppContext(), render("Please Check WIFI connection.."), Toast.LENGTH_LONG);
+    }
+
 }

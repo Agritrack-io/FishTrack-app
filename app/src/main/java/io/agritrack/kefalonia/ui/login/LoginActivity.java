@@ -311,7 +311,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                         i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // disables back button...
                         startActivity(i);
                         finish();
-                    } else if ("root".equals(username) && "8888".equals(pin)) {
+                    } else if ("root".equals(username) && "9999".equals(pin)) {
                         FragmentManager fm = getSupportFragmentManager();
                         AppOptionsFragment optionsDlg = AppOptionsFragment.newInstance();
                         optionsDlg.show(fm, AppOptionsFragment.TAG);
