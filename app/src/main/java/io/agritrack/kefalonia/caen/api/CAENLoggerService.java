@@ -87,7 +87,7 @@ public class CAENLoggerService {
             future = this.execReadControlRegister(_state, actnPool);
             _state = future.get();
 
-            if (_state.ctrlReg.endsWith("1")) {
+            if (_state.ctrlReg != null && _state.ctrlReg.endsWith("1")) {
                 future = this.park4Second(_state, actnPool);
                 _state = future.get();
                 future = this.execReadControlRegister(_state, actnPool);

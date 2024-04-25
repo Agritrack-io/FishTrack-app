@@ -514,6 +514,8 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         }
         adapterBins.addUniqueItem(loadBinInfo(binEPC));
         adapterBins.markReceived(scannedBinEPCs);
+//        if (keyReceiver != null)
+//            unregisterReceiver(keyReceiver);
 
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
             tmpBin = db.binInfoDAO().getByRFId(binEPC);
@@ -537,6 +539,11 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
             sortLoggerDialogDecorator.show(fm);
 
         }
+//
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction("android.rfid.FUN_KEY");
+//        registerReceiver(keyReceiver,filter);
+
     }
 
     private class ScanHandler extends Handler {

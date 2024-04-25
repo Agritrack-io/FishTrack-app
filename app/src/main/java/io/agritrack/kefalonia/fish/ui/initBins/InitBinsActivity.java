@@ -1,4 +1,4 @@
-package io.agritrack.kefalonia.fish.ui.process.initBins;
+package io.agritrack.kefalonia.fish.ui.initBins;
 
 import static io.agritrack.kefalonia.FishTrackApplication.IsDemo;
 import static io.agritrack.kefalonia.FishTrackApplication.IsOnline;
@@ -116,7 +116,7 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
         }
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
-        keyReceiver = new X9KeyReceiver(this::onClick);
+        //keyReceiver = new X9KeyReceiver(this::onClick);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
@@ -262,6 +262,13 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
     protected void onStart() {
         super.onStart();
         // Listen for Fn key press/release;
+        registerKeyReceiver();
+    }
+
+    public void registerKeyReceiver() {
+        if (keyReceiver == null){
+            keyReceiver = new X9KeyReceiver(this::onClick);
+        }
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.rfid.FUN_KEY");
         this.registerReceiver(keyReceiver, filter);
@@ -278,8 +285,9 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
         super.onStop();
         this.stopScanner();
         //unregister the receiver
-        if (keyReceiver != null)
+        if (keyReceiver != null) {
             unregisterReceiver(keyReceiver);
+        }
     }
 
     protected void configFooter() {
@@ -427,6 +435,10 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
                                 // ------------------------------------------
                                 //--- New implementation of Logger Dialog ---
                                 if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+                                    if (keyReceiver != null) {
+                                        unregisterReceiver(keyReceiver);
+                                        keyReceiver = null;
+                                    }
                                     FragmentManager fm = getSupportFragmentManager();
 
                                     loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
@@ -434,6 +446,11 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
                                     InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
                                     initLoggerDecorator.show(fm);
                                 }
+//                                if (keyReceiver == null){
+//                                    IntentFilter filter = new IntentFilter();
+//                                    filter.addAction("android.rfid.FUN_KEY");
+//                                    registerReceiver(keyReceiver,filter);
+//                                }
                             } else if (!IsDemo) {
                                 CToast(getApplicationContext(), render(R.string.no_logger_found_linked_to_bin), Toast.LENGTH_SHORT);
                             }

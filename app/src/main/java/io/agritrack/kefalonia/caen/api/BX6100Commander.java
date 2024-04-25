@@ -27,6 +27,7 @@ import com.google.android.gms.common.util.Strings;
 import com.handheld.uhfr.UHFRManager;
 import com.uhf.api.cls.Reader;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -253,6 +254,9 @@ public class BX6100Commander extends AbstractCAENCommander {
     @Override
     public List<RFIDTag> inventoryByTimer() {
         List<Reader.TAGINFO> inventory = this.mUhfRManager.tagInventoryByTimer((short) 500);
+        if (inventory == null) {
+            return Collections.emptyList();
+        }
         return inventory.stream().map(x -> new RFIDTag(TagInfoToString.apply(x), x.RSSI)).collect(Collectors.toList());
     }
 

@@ -39,7 +39,7 @@ import io.agritrack.kefalonia.data.model.wh.Asset;
 import io.agritrack.kefalonia.dialog.SupportDialog;
 import io.agritrack.kefalonia.fish.ui.fishing.FishingBinsActivity;
 import io.agritrack.kefalonia.fish.ui.fishing.FishingFillBinsActivity;
-import io.agritrack.kefalonia.fish.ui.process.initBins.InitBinsActivity;
+import io.agritrack.kefalonia.fish.ui.initBins.InitBinsActivity;
 import io.agritrack.kefalonia.rfid.SingleShotScanner;
 import io.agritrack.kefalonia.rfid.X9KeyReceiver;
 import io.agritrack.kefalonia.sound.SoundUtil;

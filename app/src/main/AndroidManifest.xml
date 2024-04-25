@@ -170,7 +170,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fish.ui.process.initBins.InitBinsActivity"
+            android:name=".fish.ui.initBins.InitBinsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

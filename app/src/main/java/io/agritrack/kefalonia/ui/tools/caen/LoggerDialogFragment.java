@@ -17,8 +17,10 @@ import static io.agritrack.kefalonia.ui.tools.caen.LoggerDialogDecorator.ValidOp
 import android.animation.TimeAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -34,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -50,6 +53,8 @@ import io.agritrack.kefalonia.caen.api.CAENLoggerService;
 import io.agritrack.kefalonia.caen.api.ICAEN_API;
 import io.agritrack.kefalonia.caen.api.RFIDModuleFactory;
 import io.agritrack.kefalonia.caen.common.CAENState;
+import io.agritrack.kefalonia.fish.ui.initBins.InitBinsActivity;
+import io.agritrack.kefalonia.rfid.X9KeyReceiver;
 import io.agritrack.kefalonia.sound.SoundUtil;
 
 /**
@@ -82,6 +87,38 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     private ClipDrawable mClipDrawable;
     private CAENLoggerService loggerSvc;
     private ICAEN_API cmd;
+    protected BroadcastReceiver keyReceiver = null;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //getDialog().setCanceledOnTouchOutside(true);
+//        keyReceiver = new X9KeyReceiver(this::onClick);
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction("android.rfid.FUN_KEY");
+//        this.registerReceiver(keyReceiver, filter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        getDialog().setCanceledOnTouchOutside(true);
+    }
+
+    @Override
+    public void onCancel(@NonNull DialogInterface dialog) {
+        super.onCancel(dialog);
+       // ((InitBinsActivity)getActivity()).registerKeyReceiver();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ((InitBinsActivity)getActivity()).registerKeyReceiver();
+//        if (keyReceiver != null){
+//            getActivity().unregisterReceiver(keyReceiver);
+//        }
+    }
 
     //##############################################################
     protected final View.OnClickListener validBtnListener = v -> {
@@ -94,16 +131,17 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             cmd.setFilterEPC(loggerEPC);
             //invoke reset() method of CAENLoggerService.
             setCancelable(false);
-            v.setEnabled(false);
+            //v.setEnabled(false);
             if (!executorService.isShutdown()) {
                 executorService.execute(() -> {
-                    if (this != null && this.getActivity() != null) {
+                    if (this != null && this.getActivity() != null && v != null) {
                         this.getActivity().runOnUiThread(() -> setCancelable(false));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(false));
-                        this.loggerSvc.doValidation();
+                        //this.loggerSvc.doValidation();
                         this.getActivity().runOnUiThread(() -> setCancelable(true));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(true));
                     }
+                    this.loggerSvc.doValidation();
                 });
             }
         } else {
@@ -123,13 +161,14 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 
             if (!executorService.isShutdown()) {
                 executorService.execute(() -> {
-                    if (this != null && this.getActivity() != null) {
+                    if (this != null && this.getActivity() != null && v != null) {
                         this.getActivity().runOnUiThread(() -> setCancelable(false));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(false));
-                        this.loggerSvc.doResetLogger();
+//                        this.loggerSvc.doResetLogger();
                         this.getActivity().runOnUiThread(() -> setCancelable(true));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(true));
                     }
+                    this.loggerSvc.doResetLogger();
                 });
             }
 
@@ -152,13 +191,14 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             v.setEnabled(false);
             if (!executorService.isShutdown()) {
                 executorService.execute(() -> {
-                    if (this != null && this.getActivity() != null) {
+                    if (this != null && this.getActivity() != null && v != null) {
                         this.getActivity().runOnUiThread(() -> setCancelable(false));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(false));
-                        this.loggerSvc.doReadMeasurements(currentLoggerEPC != null);
+                        //this.loggerSvc.doReadMeasurements(currentLoggerEPC != null);
                         this.getActivity().runOnUiThread(() -> setCancelable(true));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(true));
                     }
+                    this.loggerSvc.doReadMeasurements(currentLoggerEPC != null);
                 });
             }
 
@@ -182,16 +222,18 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
             cmd.setFilterEPC(loggerEPC);
             //invoke reset() method of CAENLoggerService.
             setCancelable(false);
-            v.setEnabled(false);
+            //v.setEnabled(false);
             if (!executorService.isShutdown()) {
                 executorService.execute(() -> {
-                    if (this != null && this.getActivity() != null) {
+                    if (this != null && this.getActivity() != null && v != null) {
                         this.getActivity().runOnUiThread(() -> setCancelable(false));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(false));
-                        this.loggerSvc.doEnableLogger(samplingInterval);
+                        //this.loggerSvc.doEnableLogger(samplingInterval);
                         this.getActivity().runOnUiThread(() -> setCancelable(true));
                         this.getActivity().runOnUiThread(() -> v.setEnabled(true));
                     }
+                    this.loggerSvc.doEnableLogger(samplingInterval);
+
                 });
             }
         } else {
@@ -205,6 +247,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
         // Empty constructor is required for DialogFragment
         // Make sure not to add arguments to the constructor
         // Use `newInstance` instead as shown below
+        //getDialog().setCanceledOnTouchOutside(true);
     }
 
     public static ILoggerDialog newInstance(String loggerEPC, String assetEPC) {
@@ -301,6 +344,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // instantiate local handler to manipulate button animation effects.
+        getDialog().setCanceledOnTouchOutside(true);
         this.mScanHandler = new CAENCommandsHandler();
 
         if (getArguments() != null) {
@@ -557,6 +601,10 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                             });
                             // after Reset, initialize the logger and start logging...
                             if (isButtonVisible(InitOp)) {
+                                if (keyReceiver != null){
+                                    getActivity().unregisterReceiver(keyReceiver);
+                                    keyReceiver = null;
+                                }
                                 btnInit.setOnClickListener(initBtnListener);
                                 btnInit.callOnClick();
                             }
@@ -564,11 +612,23 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                             mActivity.runOnUiThread(() -> {
                                 btnReset.setText(R.string.error_resetting_logger);
                             });
+                            if (keyReceiver ==null) {
+                                keyReceiver = new X9KeyReceiver(resetBtnListener);
+                                IntentFilter filter = new IntentFilter();
+                                filter.addAction("android.rfid.FUN_KEY");
+                                getActivity().registerReceiver(keyReceiver, filter);
+                            }
                         }
                     } else {
                         mActivity.runOnUiThread(() -> {
                             btnReset.setText(R.string.failed_logger_press_again);
                         });
+                        if (keyReceiver ==null) {
+                            keyReceiver = new X9KeyReceiver(resetBtnListener);
+                            IntentFilter filter = new IntentFilter();
+                            filter.addAction("android.rfid.FUN_KEY");
+                            getActivity().registerReceiver(keyReceiver, filter);
+                        }
                     }
                     break;
                 case InitSΤΑΤΕ:
@@ -593,17 +653,34 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                                 stateResult.setValue(state);
                             }
 
+                            if (keyReceiver != null){
+                                getActivity().unregisterReceiver(keyReceiver);
+                                keyReceiver = null;
+                            }
+
                             btnInit.setText(R.string.started_logging);
                             btnInit.setOnClickListener(null);
                             btnValidate.setOnClickListener(validBtnListener);
                             btnValidate.callOnClick();
                         } else {
                             btnInit.setText(R.string.error_initializing_logger);
+                            if (keyReceiver ==null) {
+                                keyReceiver = new X9KeyReceiver(initBtnListener);
+                                IntentFilter filter = new IntentFilter();
+                                filter.addAction("android.rfid.FUN_KEY");
+                                getActivity().registerReceiver(keyReceiver, filter);
+                            }
                         }
                     } else {
                         mActivity.runOnUiThread(() -> {
                             btnInit.setText(R.string.failed_logger_press_again);
                         });
+                        if (keyReceiver ==null) {
+                            keyReceiver = new X9KeyReceiver(initBtnListener);
+                            IntentFilter filter = new IntentFilter();
+                            filter.addAction("android.rfid.FUN_KEY");
+                            getActivity().registerReceiver(keyReceiver, filter);
+                        }
                     }
                     break;
                 case ValidSΤΑΤΕ:
@@ -627,20 +704,38 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                             if (stateResult != null) {
                                 stateResult.setValue(state);
                             }
+                            if (keyReceiver != null){
+                                getActivity().unregisterReceiver(keyReceiver);
+                                keyReceiver = null;
+                            }
 
                             btnValidate.setText(R.string.validated);
                             btnValidate.setOnClickListener(null);
+
                             dismiss();
                         } else {
-                            btnReset.setText(R.string.error_validating_logger);
-                            btnReset.setOnClickListener(resetBtnListener);
-                            btnValidate.setOnClickListener(null);
+//                            btnReset.setText(R.string.error_validating_logger);
+//                            btnReset.setOnClickListener(validBtnListener);
+                            btnValidate.setOnClickListener(validBtnListener);
+                            //btnValidate.setOnClickListener(null);
                             btnValidate.setText(R.string.not_validated);
+                            if (keyReceiver ==null) {
+                                keyReceiver = new X9KeyReceiver(validBtnListener);
+                                IntentFilter filter = new IntentFilter();
+                                filter.addAction("android.rfid.FUN_KEY");
+                                getActivity().registerReceiver(keyReceiver, filter);
+                            }
                         }
                     } else {
                         mActivity.runOnUiThread(() -> {
                             btnValidate.setText(R.string.failed_logger_press_again);
                         });
+                        if (keyReceiver ==null) {
+                            keyReceiver = new X9KeyReceiver(validBtnListener);
+                            IntentFilter filter = new IntentFilter();
+                            filter.addAction("android.rfid.FUN_KEY");
+                            getActivity().registerReceiver(keyReceiver, filter);
+                        }
                     }
                     break;
                 default:
