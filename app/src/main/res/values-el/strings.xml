@@ -821,4 +821,5 @@
     <string name="support_title">Υποστήριξη</string>
     <string name="temp_downloading_in_progress">Κατεβαίνουν θερμοκρασίες. Παρακαλώ περιμένετε!</string>
     <string name="all_bins_received">Όλες οι βούτες για αυτή την αλίευση έχουν παραληφθεί. Παρακαλώ προχωρήστε στην Ανατροπη Βουτών!</string>
+    <string name="sync_and_check_if_correct_bin">Η βούτα \%1$s\ δε βρέθηκε. Παρακαλώ συγχρονίστε και ελέγξτε ότι είναι η σωστή βούτα για ανατροπή!</string>
 </resources>

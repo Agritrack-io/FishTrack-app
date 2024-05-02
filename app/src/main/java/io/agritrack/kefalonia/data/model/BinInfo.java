@@ -40,6 +40,12 @@ public class BinInfo {
     @ColumnInfo(name = "picked_at")
     public Long pickedAt;
 
+    @ColumnInfo(name = "delivered_at")
+    public Long deliveredAt;
+
     @ColumnInfo(name = "sorted")
     public boolean sorted;
+
+    @ColumnInfo(name = "is_init")
+    public Boolean isInit = false;
 }

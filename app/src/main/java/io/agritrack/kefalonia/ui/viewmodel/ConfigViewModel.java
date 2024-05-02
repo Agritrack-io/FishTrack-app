@@ -76,7 +76,7 @@ public class ConfigViewModel extends BaseObservable {
                 varLength = configParamDTO.getTagLength() != null ? String.valueOf(configParamDTO.getTagLength()) : null;
 
                 // Terminal ID
-                serverIP = configParamDTO.backendUrl;
+                serverIP = configParamDTO.agrisenseUrl;
                 terminalId = configParamDTO.terminalId;
                 deviceSN = DeviceUtils.getSerialNumber(context);
                 if (TextUtils.isEmpty(deviceSN)) {

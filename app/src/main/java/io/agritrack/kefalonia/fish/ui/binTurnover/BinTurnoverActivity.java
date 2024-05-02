@@ -102,7 +102,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
     private ILoggerDialog loggerDlg = null;
 
     // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
+    protected BroadcastReceiver keyReceiver = null;
     private MobileDB db;
     private IFishTrackRepository tempDataRepo, measRepo;
     private BinInfoRepository binInfoRepo;
@@ -158,7 +158,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         syncBinsByPlantAsyncCall.enqueue(new SyncBinInfo(this.syncResult));
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
-        keyReceiver = new X9KeyReceiver(this::onClick);
+        //keyReceiver = new X9KeyReceiver(this::onClick);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderBinOverturn);
@@ -373,15 +373,22 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
             dialog.dismiss();
         }
         this.loggerDlg = null;
+        registerKeyReceiver();
+    }
+    public void registerKeyReceiver() {
+        if (keyReceiver == null){
+            keyReceiver = new X9KeyReceiver(this::onClick);
+        }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         // Listen for Fn key press/release;
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.rfid.FUN_KEY");
-        this.registerReceiver(keyReceiver, filter);
+        registerKeyReceiver();
     }
 
     @Override
@@ -389,8 +396,10 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         super.onStop();
         this.stopScanner();
         //unregister the receiver
-        if (keyReceiver != null)
+        if (keyReceiver != null) {
             unregisterReceiver(keyReceiver);
+            keyReceiver = null;
+        }
     }
 
     @Override
@@ -508,6 +517,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         dialog.show();
     }
 
+    @SuppressLint("StringFormatMatches")
     private void triggerDataLoggerDialog() {
         if (!scannedBinEPCs.contains(binEPC)) {
             scannedBinEPCs.add(binEPC);
@@ -518,7 +528,13 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
 //            unregisterReceiver(keyReceiver);
 
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
+
             tmpBin = db.binInfoDAO().getByRFId(binEPC);
+
+            if (tmpBin == null) {
+                CToast(getApplicationContext(), getString(R.string.sync_and_check_if_correct_bin, binEPC.substring(binEPC.length()-4)), Toast.LENGTH_LONG);
+                return;
+            }
             if (tmpBin.sorted) {
                 CToast(getApplicationContext(), render(R.string.already_scannned_bin), Toast.LENGTH_LONG);
                 return;
@@ -527,7 +543,10 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
             // ------------------------------------------
             //--- New implementation of Logger Dialog ---
             FragmentManager fm = getSupportFragmentManager();
-
+            if (keyReceiver != null) {
+                unregisterReceiver(keyReceiver);
+                keyReceiver = null;
+            }
             String productionLane = "1"; //spProductionLine.getSelectedItem().toString();
             if (tmpBin != null && tmpBin.initedAt != null) {
                 this.loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt, tmpBin.pickedAt);
@@ -649,7 +668,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
             List<TemperatureTimeSeriesDTO> rs = response.body();
             ivBack.setVisibility(View.VISIBLE);
 
-            if (rs != null || IsDemo) {
+            if (rs != null || !IsDemo) {
                 // reset existing Temperature values in stateRecord.
                 recLoggerData.clearData();
                 tempDataRepo.removeAll(db);

@@ -12,6 +12,7 @@ import androidx.room.Update;
 import java.util.List;
 import java.util.UUID;
 
+import io.agritrack.kefalonia.data.model.BinInfo;
 import io.agritrack.kefalonia.data.model.common.Measurement;
 import io.agritrack.kefalonia.data.model.common.TemperatureTimeSeries;
 
@@ -21,6 +22,10 @@ public interface MeasurementsDAO {
     @Transaction
     @Query("SELECT * from measurements")
     List<TemperatureTimeSeries> getAll();
+
+    @Transaction
+    @Query("SELECT * from measurements where is_init")
+    List<TemperatureTimeSeries> getPendingMeasurements();
 
     @Transaction
     @Query("SELECT * from measurements where id=:measurementsId LIMIT 1")

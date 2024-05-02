@@ -18,6 +18,9 @@ public interface ProcessingTransactionDAO {
     @Query("SELECT * from process_transaction")
     List<ProcessingTransaction> getAll();
 
+    @Query("SELECT * from process_transaction where is_init")
+    List<ProcessingTransaction> getPendingProcessTx();
+
     @Query("SELECT * from process_transaction where id=:processingTxId LIMIT 1")
     ProcessingTransaction getById(UUID processingTxId);
 

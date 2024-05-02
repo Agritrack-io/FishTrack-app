@@ -41,4 +41,7 @@ public class Measurement {
 
     @ColumnInfo(name = "water_temp")
     public Double waterTemp;
+
+    @ColumnInfo(name = "is_init")
+    public Boolean isInit = false;
 }

@@ -20,6 +20,9 @@ public interface BinInfoDAO {
     @Query("SELECT * from bin_info where bin_rfid=:rfId LIMIT 1")
     BinInfo getByRFId(String rfId);
 
+    @Query("SELECT * from bin_info where is_init")
+    List<BinInfo> getPendingBins();
+
     @Query("UPDATE bin_info set sorted = 1 where bin_rfid=:rfId")
     void updateBinInfoSetSorted(String rfId);
 
@@ -41,4 +44,6 @@ public interface BinInfoDAO {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(BinInfo bin);
+
+
 }

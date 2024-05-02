@@ -35,11 +35,11 @@ public class ConfigWebPersistence implements IConfigPersistenceAdapter<Agricense
     public void saveConfig(AgricenseDTO appSettings) throws Exception {
 
         // save to web rest api?
-        EditText etBackendURL = ((Activity) this.context).findViewById(R.id.etBackendURL);
+        EditText etAgrisenseURL = ((Activity) this.context).findViewById(R.id.etAgrisenseURL);
 
-        if (etBackendURL != null && etBackendURL.getText() != null && !Strings.isEmptyOrWhitespace(etBackendURL.getText().toString())) {
+        if (etAgrisenseURL != null && etAgrisenseURL.getText() != null && !Strings.isEmptyOrWhitespace(etAgrisenseURL.getText().toString())) {
             ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.submit(() -> postConfiguration(etBackendURL.getText().toString(), appSettings)).get();
+            executorService.submit(() -> postConfiguration(etAgrisenseURL.getText().toString(), appSettings)).get();
         }
 
         // Save to encrypted prefs
@@ -52,8 +52,8 @@ public class ConfigWebPersistence implements IConfigPersistenceAdapter<Agricense
 
     @Override
     public AgricenseDTO loadConfig() throws Exception {
-        String etBackendURL = ((Activity) this.context).findViewById(R.id.etBackendURL) != null
-                ? ((EditText) ((Activity) this.context).findViewById(R.id.etBackendURL)).getText().toString()
+        String etBackendURL = ((Activity) this.context).findViewById(R.id.etAgrisenseURL) != null
+                ? ((EditText) ((Activity) this.context).findViewById(R.id.etAgrisenseURL)).getText().toString()
                 : APIServiceGenerator.getAgrisenseUrl();
 
         if (etBackendURL != null && !Strings.isEmptyOrWhitespace(etBackendURL)) {

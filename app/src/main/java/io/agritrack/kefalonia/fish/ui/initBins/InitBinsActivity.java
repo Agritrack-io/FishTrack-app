@@ -87,7 +87,7 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
     private ILoggerDialog loggerDlg = null;
 
     // listens to trigger button clicks.
-    protected BroadcastReceiver keyReceiver;
+    protected BroadcastReceiver keyReceiver = null;
     private SingleShotScanner singleShot_runnable;
     private MobileDB db;
     private TemplateRecyclerAdapter rcAdapterBins;
@@ -256,6 +256,7 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
             dialog.dismiss();
         }
         this.loggerDlg = null;
+        registerKeyReceiver();
     }
 
     @Override
@@ -446,11 +447,7 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
                                     InitLoggerDialogDecorator initLoggerDecorator = new InitLoggerDialogDecorator(loggerDlg);
                                     initLoggerDecorator.show(fm);
                                 }
-//                                if (keyReceiver == null){
-//                                    IntentFilter filter = new IntentFilter();
-//                                    filter.addAction("android.rfid.FUN_KEY");
-//                                    registerReceiver(keyReceiver,filter);
-//                                }
+
                             } else if (!IsDemo) {
                                 CToast(getApplicationContext(), render(R.string.no_logger_found_linked_to_bin), Toast.LENGTH_SHORT);
                             }

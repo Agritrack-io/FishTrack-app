@@ -39,7 +39,7 @@ public class ConfigFilePersistence implements IConfigPersistenceAdapter<Agricens
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
 
             JSONObject settings = new JSONObject();
-            settings.put("serverIP", appSettings.backendUrl);
+            settings.put("serverIP", appSettings.agrisenseUrl);
             settings.put("tagStart", appSettings.getTagPrefix());
             settings.put("terminalId", appSettings.terminalId);
             settings.put("varLength", appSettings.getTagLength());

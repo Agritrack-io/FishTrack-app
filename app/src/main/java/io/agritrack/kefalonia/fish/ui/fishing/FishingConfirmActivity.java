@@ -264,7 +264,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         public void onResponse(Call<FishingTxDTO> call, Response<FishingTxDTO> response) {
             if (response.isSuccessful() || IsDemo) {
                 deleteTx();
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_fishing_tx_update_failure), Toast.LENGTH_LONG));

@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -14,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 
@@ -22,6 +25,7 @@ import com.google.android.material.tabs.TabLayout;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.api.APIServiceGenerator;
 import io.agritrack.kefalonia.common.DeviceUtils;
+import io.agritrack.kefalonia.data.model.BackendURLViewModel;
 import io.agritrack.kefalonia.databinding.ActivitySettingsBinding;
 import io.agritrack.kefalonia.fragment.LicenseSettingsFragment;
 import io.agritrack.kefalonia.ui.adapter.ViewPagerAdapter;
@@ -33,7 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
     private static final int REQUEST_READ_PHONE_STATE = 777;
     private Spinner spConfigSource;
     private ImageView ivSave, ivBack, ivRefreshSettings;
-    private EditText etBackendURL;
+    private EditText etAgrisenseURL, etBackendURL;
     private TabLayout tabLayout;
     private ViewPager2 vpFragmentContainer;
     private ConfigViewModel appSettingsViewModel;
@@ -49,7 +53,9 @@ public class SettingsActivity extends AppCompatActivity {
         assignCtrlVars();
 
         // show the current backend URL.
-        etBackendURL.setText(APIServiceGenerator.getAgrisenseUrl());
+        etAgrisenseURL.setText(APIServiceGenerator.getAgrisenseUrl());
+        etBackendURL.setText(APIServiceGenerator.getBaseUrl());
+
 
         // #2. create viewModel and bind it to the layout
         appSettingsViewModel = new ConfigViewModel(this);
@@ -141,6 +147,10 @@ public class SettingsActivity extends AppCompatActivity {
                 // Try to save changes and return to main menu if successful
                 if (appSettingsViewModel.saveConfig()) {
                     // go back to main menu
+                    String AgriUrl = etAgrisenseURL.getText().toString();
+                    String beUrl = etBackendURL.getText().toString();
+                    APIServiceGenerator.setAgrisenseUrl(AgriUrl); // Update the static variable
+                    APIServiceGenerator.setBaseUrl(beUrl);
                     Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(i);
                 }
@@ -149,7 +159,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
-        this.etBackendURL = findViewById(R.id.etBackendURL);
+        this.etAgrisenseURL = findViewById(R.id.etAgrisenseURL);
+        this.etBackendURL = findViewById(R.id.etBackendURL2);
         this.spConfigSource = findViewById(R.id.spConfigSource);
         this.tabLayout = findViewById(R.id.tabLayout);
         this.vpFragmentContainer = findViewById(R.id.viewPager2);

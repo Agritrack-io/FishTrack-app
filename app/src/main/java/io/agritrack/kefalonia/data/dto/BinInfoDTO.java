@@ -14,9 +14,11 @@ public class BinInfoDTO {
     public String lot;
     public Double total_weight;
     public String farm;
+    public String site;
     public Long last_update;
     public Long inited_at;
     public Long picked_at;
+    public Long delivered_at;
 
     public static BinInfo convert(BinInfoDTO binInfoDTO) {
         BinInfo binInfo = new BinInfo();
@@ -37,6 +39,11 @@ public class BinInfoDTO {
             binInfo.pickedAt = binInfoDTO.picked_at * 1000L;
         } else {
             binInfo.pickedAt = binInfoDTO.picked_at;
+        }
+        if (binInfoDTO.delivered_at != null && String.valueOf(binInfoDTO.delivered_at).length() == 10) {
+            binInfo.deliveredAt = binInfoDTO.delivered_at * 1000L;
+        } else {
+            binInfo.deliveredAt = binInfoDTO.delivered_at;
         }
 
         return binInfo;
@@ -61,6 +68,11 @@ public class BinInfoDTO {
             binInfoDTO.picked_at = binInfo.pickedAt * 1000L;
         } else {
             binInfoDTO.picked_at = binInfo.pickedAt;
+        }
+        if (binInfo.deliveredAt != null && String.valueOf(binInfo.deliveredAt).length() == 10) {
+            binInfoDTO.delivered_at = binInfo.deliveredAt * 1000L;
+        } else {
+            binInfoDTO.delivered_at = binInfo.deliveredAt;
         }
 
         return binInfoDTO;

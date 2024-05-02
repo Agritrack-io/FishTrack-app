@@ -38,6 +38,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import io.agritrack.api.sync.EncodingSchemeCallBack;
+import io.agritrack.kefalonia.BuildConfig;
 import io.agritrack.kefalonia.FishTrackApplication;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.api.APIServiceGenerator;
@@ -115,7 +116,7 @@ public class FishHomeActivity extends AppCompatActivity {
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
     private ImageView ivSupport, ivRefresh;
-    private TextView tvOfflineWork;
+    private TextView tvOfflineWork, tvVersionLabel;
     private ProgressDialog progressDialog;
     private SupportDialog supportDialog;
     private MobileDB db;
@@ -134,6 +135,8 @@ public class FishHomeActivity extends AppCompatActivity {
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderHome);
+        tvVersionLabel = findViewById(R.id.tvVersionLabel);
+        tvVersionLabel.setText("v 1." + BuildConfig.VERSION_CODE);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get an instance of local DB
@@ -317,7 +320,7 @@ public class FishHomeActivity extends AppCompatActivity {
             String token = LocalPreferences.getToken();
 
             // select all pending binInfos TXs
-            List<BinInfo> binInfoTXs = db.binInfoDAO().getAll();
+            List<BinInfo> binInfoTXs = db.binInfoDAO().getPendingBins();
             if (!binInfoTXs.isEmpty()) {
                 Call<List<BinInfoDTO>> binInfoTxAsyncCall = pendingTxSvc.syncBinInfoTx(BinInfoDTO.convert(binInfoTXs), "Bearer " + token);
                 binInfoTxAsyncCall.enqueue(new PendingBinInfoTxCallBack(this.syncResult));
@@ -333,7 +336,7 @@ public class FishHomeActivity extends AppCompatActivity {
             }
 
             // select all pending receipt TXs
-            List<ProcessingTransaction> processTXs = db.processingTransactionDAO().getAll();
+            List<ProcessingTransaction> processTXs = db.processingTransactionDAO().getPendingProcessTx();
             if (!processTXs.isEmpty()) {
                 for (ProcessingTransaction processTX : processTXs) {
                     Call<ProcessingTxDTO> processTxAsyncCall = pendingTxSvc.syncProcessingTx(ProcessingTxDTO.convert(processTX), "Bearer " + token);
@@ -352,7 +355,7 @@ public class FishHomeActivity extends AppCompatActivity {
 
             // select all pending post quality TXs
             List<TemperatureTimeSeriesDTO> temperatureTimeSeriesDTOs = new ArrayList<>();
-            for (TemperatureTimeSeries ts : db.measurementsDAO().getAll()) {
+            for (TemperatureTimeSeries ts : db.measurementsDAO().getPendingMeasurements()) {
                 temperatureTimeSeriesDTOs.add(TemperatureTimeSeriesDTO.convert(ts));
             }
 

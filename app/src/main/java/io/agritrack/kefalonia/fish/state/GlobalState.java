@@ -160,6 +160,7 @@ public class GlobalState {
                     BinInfo txBinInfo = new BinInfo();
                     txBinInfo.rfid = bin.binEPC;
                     txBinInfo.initedAt = bin.init;
+                    txBinInfo.isInit = true;
                     binInfos.add(txBinInfo);
                     db.binInfoDAO().insert(txBinInfo);
                 }
@@ -284,6 +285,7 @@ public class GlobalState {
             txProcess.site = LocalPreferences.getCurrentSiteName();
             txProcess.longitude = recProcessing.longitude;
             txProcess.latitude = recProcessing.latitude;
+            txProcess.isInit = true;
             txProcess.calcHash();
 
             // search DB for records having the same hashCode
@@ -419,6 +421,7 @@ public class GlobalState {
                 measurement.fishTemp = model.fishT;
                 measurement.fish2Temp = model.fishT2;
                 measurement.waterTemp = model.waterT;
+                measurement.isInit = true;
 
                 db.measurementsDAO().insert(measurement);
                 UUID measurementId = measurement.id;

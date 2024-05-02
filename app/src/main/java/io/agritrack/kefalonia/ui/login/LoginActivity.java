@@ -608,7 +608,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             String token = LocalPreferences.getToken();
 
             // select all pending binInfos TXs
-            List<BinInfo> binInfoTXs = db.binInfoDAO().getAll();
+            List<BinInfo> binInfoTXs = db.binInfoDAO().getPendingBins();
             if (!binInfoTXs.isEmpty()) {
                 Call<List<BinInfoDTO>> binInfoTxAsyncCall = pendingTxSvc.syncBinInfoTx(BinInfoDTO.convert(binInfoTXs), "Bearer " + token);
                 binInfoTxAsyncCall.enqueue(new PendingBinInfoTxCallBack(this.syncResult));
@@ -624,7 +624,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             }
 
             // select all pending receipt TXs
-            List<ProcessingTransaction> processTXs = db.processingTransactionDAO().getAll();
+            List<ProcessingTransaction> processTXs = db.processingTransactionDAO().getPendingProcessTx();
             if (!processTXs.isEmpty()) {
                 for (ProcessingTransaction processTX : processTXs) {
                     Call<ProcessingTxDTO> processTxAsyncCall = pendingTxSvc.syncProcessingTx(ProcessingTxDTO.convert(processTX), "Bearer " + token);
@@ -643,7 +643,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
 
             // select all pending post quality TXs
             List<TemperatureTimeSeriesDTO> temperatureTimeSeriesDTOs = new ArrayList<>();
-            for (TemperatureTimeSeries ts : db.measurementsDAO().getAll()) {
+            for (TemperatureTimeSeries ts : db.measurementsDAO().getPendingMeasurements()) {
                 temperatureTimeSeriesDTOs.add(TemperatureTimeSeriesDTO.convert(ts));
             }
 

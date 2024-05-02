@@ -79,7 +79,7 @@ public class EncryptedSharedPreferences {
         ObjectMapper oMapper = new ObjectMapper();
         Map<String, Object> settingsMap = new HashMap<>();
         settingsMap.put("terminalId", appSettings.terminalId);
-        settingsMap.put("backendUrl", appSettings.backendUrl);
+        settingsMap.put("agrisenseUrl", appSettings.agrisenseUrl);
         settingsMap.put("licenseKey", appSettings.licenseKey);
         savePreference(settingsMap);
         settingsMap = oMapper.convertValue(appSettings.encodingScheme, Map.class);
@@ -94,7 +94,7 @@ public class EncryptedSharedPreferences {
 
         AgricenseDTO result = new AgricenseDTO();
         result.terminalId = loadPreference("terminalId");
-        result.backendUrl = loadPreference("backendUrl");
+        result.agrisenseUrl = loadPreference("agrisenseUrl");
         result.licenseKey = loadPreference("licenseKey");
 
         //tagPrefix tagLength

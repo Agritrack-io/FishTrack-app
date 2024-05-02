@@ -15,14 +15,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIServiceGenerator {
 
-    private static final String AGRISENSE_URL = "http://agrisense.agritrack.info:5100";
-    //private static final String BASE_URL = "http://3.123.142.122:5000"; //dev
-    private static final String BASE_URL = "http://192.168.150.190:5000"; //localRIgas
+    private static String AGRISENSE_URL = "http://agrisense.agritrack.info:5100";
+    //private static String BASE_URL = "http://3.123.142.122:5000"; //dev
+    private static String BASE_URL = "http://192.168.150.190:5000"; //localRIgas
     //private static final String BASE_URL = "http://fish-kefalonia-be.eu-central-1.elasticbeanstalk.com"; //production
 
-    private static final Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
+    private static Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
     private static Retrofit retrofit = retrofitBuilder.build();
-    private static final Retrofit.Builder retrofitAgrisenseBuilder = new Retrofit.Builder().baseUrl(AGRISENSE_URL).addConverterFactory(GsonConverterFactory.create());
+    private static Retrofit.Builder retrofitAgrisenseBuilder = new Retrofit.Builder().baseUrl(AGRISENSE_URL).addConverterFactory(GsonConverterFactory.create());
     private static Retrofit retrofitAgrisense = retrofitAgrisenseBuilder.build();
     private static final OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
             .connectTimeout(20, TimeUnit.SECONDS)
@@ -70,5 +70,18 @@ public class APIServiceGenerator {
 
     public static String getBaseUrl(){
         return BASE_URL;
+    }
+
+    public static void setAgrisenseUrl(String agriUrl) {
+        AGRISENSE_URL = agriUrl;
+        retrofitAgrisenseBuilder = new Retrofit.Builder().baseUrl(AGRISENSE_URL).addConverterFactory(GsonConverterFactory.create());
+        retrofitAgrisense = retrofitAgrisenseBuilder.build();
+        //retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
+    }
+
+    public static void setBaseUrl(String beUrl) {
+        BASE_URL = beUrl;
+        retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
+        retrofit = retrofitBuilder.build();
     }
 }

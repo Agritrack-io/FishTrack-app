@@ -72,6 +72,9 @@ public class ProcessingTransaction {
     @ColumnInfo(name = "hash_code")
     public Integer hashCode;
 
+    @ColumnInfo(name = "is_init")
+    public boolean isInit = false;
+
     public void calcHash() {
         try {
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");

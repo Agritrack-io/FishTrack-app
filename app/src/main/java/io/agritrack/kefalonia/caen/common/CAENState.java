@@ -218,6 +218,7 @@ public class CAENState implements Serializable {
         try {
             if (!Strings.isEmptyOrWhitespace(this.initDateTime) && this.initDateTime.indexOf("1970") < 0) {
                 epoch = df.parse(this.initDateTime).getTime();
+                System.out.println("getInit returned correctly");
             }
 
         } catch (ParseException e) {

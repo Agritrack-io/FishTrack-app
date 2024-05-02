@@ -10,8 +10,8 @@ public class AgricenseDTO {
     @SerializedName("terminal-id")
     public String terminalId;
 
-    @SerializedName("backend-url")
-    public String backendUrl;
+    @SerializedName("agrisense-url")
+    public String agrisenseUrl;
 
     @SerializedName("license-key")
     public String licenseKey;

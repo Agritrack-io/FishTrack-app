@@ -145,6 +145,23 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
+        <TextView
+            android:id="@+id/tvVersionLabel"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:maxWidth="100dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="2dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="2dp"
+            android:text=""
+            android:textColor="@color/agri_blue"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageButton
             android:id="@+id/ivBackToLogin"
             android:layout_width="50dp"

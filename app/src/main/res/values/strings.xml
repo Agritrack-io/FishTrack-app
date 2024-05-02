@@ -826,5 +826,6 @@
     <string name="support_title">Contact Support</string>
     <string name="temp_downloading_in_progress">Temperatures downloading in progress. Plz wait!</string>
     <string name="all_bins_received">All bins for this harvest have been received already. Please move on to Bin Turnover!</string>
+    <string name="sync_and_check_if_correct_bin">Bin \%1$s\ not found: Please sync and check if this is the correct bin for turnover!</string>
 
 </resources>
