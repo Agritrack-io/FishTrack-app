@@ -120,26 +120,14 @@ public class CAENLoggerService {
             // read Init time stamp
             future.thenCompose(x -> execReadInitDatetime(x, actnPool));
 
-            // enable logger
+            // read CTRL register
             future.thenCompose(x -> execReadControlRegister(x, actnPool));
 
             // temporary...
             CAENState _state = future.join();
             System.out.println("doValidation()-->" + _state);
 
-           /* Calendar c = new GregorianCalendar();
-            c.set(Calendar.HOUR_OF_DAY, 0); //anything 0 - 23
-            c.set(Calendar.MINUTE, 0);
-            c.set(Calendar.SECOND, 0);
-            Date d1 = c.getTime();
-            long newDate = d1.getTime();
-
-            if(_state.ctrlReg != null && !_state.ctrlReg.endsWith("100") || _state.getInitTS().compareTo(newDate)<0  || _state.timeBin!=0) {
-
-            }*/
-
             mHandler.sendMessage(createMessage(ValidSΤΑΤΕ, _state));
-
         } catch (Exception e) {
             e.printStackTrace();
         }

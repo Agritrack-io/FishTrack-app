@@ -1,7 +1,5 @@
 package io.agritrack.kefalonia.api;
 
-import androidx.databinding.Bindable;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -68,7 +66,7 @@ public class APIServiceGenerator {
         return retrofit.create(serviceClass);
     }
 
-    public static String getBaseUrl(){
+    public static String getBaseUrl() {
         return BASE_URL;
     }
 
