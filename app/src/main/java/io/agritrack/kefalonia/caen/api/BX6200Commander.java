@@ -18,6 +18,7 @@ import com.android.hdhe.uhf.reader.UhfReader;
 import com.android.hdhe.uhf.readerInterface.TagModel;
 import com.uhf.api.cls.Reader;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -189,6 +190,9 @@ public class BX6200Commander extends AbstractCAENCommander {
     @Override
     public List<RFIDTag> inventoryRealTime() {
         List<TagModel> inventory = this.uhfReader.inventoryRealTime();
+        if (inventory == null) {
+            return Collections.emptyList();
+        }
         return inventory.stream().map(x -> new RFIDTag(TagToString.apply(x), x.getmRssi())).collect(Collectors.toList());
     }
 
