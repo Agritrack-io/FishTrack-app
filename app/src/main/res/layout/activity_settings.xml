@@ -228,7 +228,7 @@
                 android:layout_weight="3"/>
 
             <EditText
-                android:id="@+id/etBackendURL2"
+                android:id="@+id/etBackendURL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"

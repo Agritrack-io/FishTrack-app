@@ -160,7 +160,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void assignCtrlVars() {
         this.etAgrisenseURL = findViewById(R.id.etAgrisenseURL);
-        this.etBackendURL = findViewById(R.id.etBackendURL2);
+        this.etBackendURL = findViewById(R.id.etBackendURL);
         this.spConfigSource = findViewById(R.id.spConfigSource);
         this.tabLayout = findViewById(R.id.tabLayout);
         this.vpFragmentContainer = findViewById(R.id.viewPager2);

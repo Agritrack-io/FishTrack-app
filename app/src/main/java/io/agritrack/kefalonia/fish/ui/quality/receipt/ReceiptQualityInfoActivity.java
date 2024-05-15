@@ -236,7 +236,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
 
         long measurementsCount = recLoggerData.data.values().stream()
                 .flatMap(x -> x.values.stream())
-                .filter(y -> !"N/A".equalsIgnoreCase(y[1])).count();
+                .filter(y -> !"N/A".equalsIgnoreCase(y.getSample())).count();
 
         if (measurementsCount > 0) {
             if (recLoggerData.lowT != null) {

@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.data.model.BinInfo;
+import io.agritrack.kefalonia.data.model.TempSample;
 import io.agritrack.kefalonia.dialog.DataListener;
 import io.agritrack.kefalonia.dialog.SetTempDataDialog;
 import io.agritrack.kefalonia.fish.state.LoggerDataRecord;
@@ -56,7 +57,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
         this.context = ctx;
         this.listOfEPCs = new ArrayList<>(data.keySet());
 
-        DoubleSummaryStatistics stats = data.values().stream().flatMap(y -> y.values.stream()).mapToDouble(x -> Double.valueOf(x[1])).summaryStatistics();
+        DoubleSummaryStatistics stats = data.values().stream().flatMap(y -> y.values.stream().filter(z -> z.isAfterFishing())).mapToDouble(x -> Double.valueOf(x.getSample())).summaryStatistics();
         this.highT = stats.getMax();
         this.lowT = stats.getMin();
         this.avgT = stats.getAverage();
@@ -85,10 +86,10 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
         LoggerDataRecord.TemperatureModel model = mapOfData!=null ? mapOfData.get(key) : null;
 
         if (model != null) {
-            long measurementsCount = model.values.stream().filter(y -> !"N/A".equalsIgnoreCase(y[1])).count();
+            long measurementsCount = model.values.stream().filter(y -> !"N/A".equalsIgnoreCase(y.getSample())).count();
 
             if (measurementsCount > 0) {
-                DoubleSummaryStatistics stats = model.values.stream().filter(y -> !"N/A".equalsIgnoreCase(y[1])).mapToDouble(x -> Double.valueOf(x[1].replace(',', '.'))).summaryStatistics();
+                DoubleSummaryStatistics stats = model.values.stream().filter(y -> !"N/A".equalsIgnoreCase(y.getSample()) && y.isAfterFishing()).mapToDouble(x -> Double.valueOf(x.getSample().replace(',', '.'))).summaryStatistics();
 
                 _highT = stats.getMax();
                 _lowT = stats.getMin();
@@ -102,7 +103,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
                     holder.tvFish.setText(fishT != null ? String.valueOf(fishT) : "");
                     holder.tvWater.setText(waterT != null ? String.valueOf(waterT) : "");
                     holder.tvFish2.setText(fishT2 != null ? String.valueOf(fishT2) : "");
-                    List<String[]> values = recLoggerData.getValues(key);
+                    List<TempSample> values = recLoggerData.getValues(key);
 
                     if (values != null) {
                         recLoggerData.addDataSetForBin(key, fishT, waterT, fishT2);
@@ -133,7 +134,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
                 String key = listOfEPCs.get(holder.getAdapterPosition());
                 LoggerDataRecord.TemperatureModel model = mapOfData!=null ? mapOfData.get(key) : null;
 
-                List<String[]> values = model != null ? model.values : null;
+                List<TempSample> values = model != null ? model.values : null;
 
                 AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(context);
                 dlgBuilder.setTitle("Logger Data");
@@ -142,8 +143,8 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
 
                 if (values != null) {
                     int idx = 1;
-                    for (String[] value : values) {
-                        arrayAdapter.add(String.format("%04d. [%s] --> %s", idx++, value[0], value[1]));
+                    for (TempSample value : values) {
+                        arrayAdapter.add(String.format("%04d. [%s] --> %s", idx++, value.getTimeStamp(), value.getSample()));
                     }
                     dlgBuilder.setAdapter(arrayAdapter, null);
                     dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
@@ -291,9 +292,9 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             temperatureChart.setPinchZoom(false);
         }
 
-        public void setMeasurements(String key, List<String[]> measurements) {
+        public void setMeasurements(String key, List<TempSample> measurements) {
             AtomicInteger idx = new AtomicInteger();
-            ArrayList<Entry> values = (ArrayList<Entry>) measurements.stream().map(x -> new Entry(idx.incrementAndGet(), !x[1].equalsIgnoreCase("N/A") ? Float.valueOf(x[1].replace(',', '.')) : Float.NaN)).collect(Collectors.toList());
+            ArrayList<Entry> values = (ArrayList<Entry>) measurements.stream().map(x -> new Entry(idx.incrementAndGet(), !x.getSample().equalsIgnoreCase("N/A") ? Float.valueOf(x.getSample().replace(',', '.')) : Float.NaN)).collect(Collectors.toList());
 
             set1 = new LineDataSet(values, key);
             set1.setDrawCircles(false);

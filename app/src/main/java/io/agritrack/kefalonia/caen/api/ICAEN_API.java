@@ -6,10 +6,11 @@ import java.util.List;
 
 import cn.pda.serialport.Tools;
 import io.agritrack.kefalonia.caen.pojo.RFIDTag;
+import io.agritrack.kefalonia.data.model.TempSample;
 
 public interface ICAEN_API {
 
-    Short DefaultInterval = (short) 30;//1800; //(900); //(1800); //(3600);
+    Short DefaultInterval = (short) 1800; //(900); //(1800); //(3600);
     Short SampleBatchSize = 50;
     byte[] accessPassword = Tools.HexString2Bytes("00000000");
 
@@ -116,19 +117,19 @@ public interface ICAEN_API {
     String[] ReadSamplesInfo();
 
     /* This function returns first 'samplesCnt' temperature measurements having an interval of 'DefaultInterval' seconds, starting at 'initedAt' epoch time */
-    List<String[]> ReadSamplesWithInitTime(int samplesCnt, long initedAt) throws Exception;
+    List<TempSample> ReadSamplesWithInitTime(int samplesCnt, long initedAt) throws Exception;
 
     /* This function returns first 'samplesCnt' temperature measurements */
-    List<String[]> ReadSamples(int samplesCnt) throws Exception;
+    List<TempSample> ReadSamples(int samplesCnt) throws Exception;
 
     /* This function returns first 'samplesCnt' temperature measurements having an interval of 'intervalSeconds' seconds */
-    List<String[]> ReadSamples(int samplesCnt, int intervalSeconds) throws Exception;
+    List<TempSample> ReadSamples(int samplesCnt, int intervalSeconds) throws Exception;
 
     /* This function returns first 'samplesCnt' temperature measurements having an interval of 'intervalSeconds' seconds, starting at 'startTSmSecQ' epoch time */
-    List<String[]> ReadSamples(int samplesCnt, int intervalSeconds, long startTSmSec) throws Exception;
+    List<TempSample> ReadSamples(int samplesCnt, int intervalSeconds, long startTSmSec) throws Exception;
 
     /* This function returns first 'samplesCnt' temperature measurements having an interval of 'intervalSeconds' seconds, starting at 'startTSmSecQ' epoch time */
-    List<String[]> ReadSamples(int samplesCnt, int intervalSeconds, long startTSmSec, Long pickedAt) throws Exception;
+    List<TempSample> ReadSamples(int samplesCnt, int intervalSeconds, long startTSmSec, Long pickedAt) throws Exception;
 
     void CloseReader();
 

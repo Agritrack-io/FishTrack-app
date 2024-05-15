@@ -87,12 +87,22 @@ public class CAENLoggerService {
             future = this.execReadControlRegister(_state, actnPool);
             _state = future.get();
 
-            if (_state.ctrlReg != null && _state.ctrlReg.endsWith("1")) {
-                future = this.park4Second(_state, actnPool);
+            int i = 0;
+
+            while(_state.ctrlReg != null && _state.ctrlReg.endsWith("1") && i < 2) {
+                future =  this.park4Second(_state, actnPool);
                 _state = future.get();
                 future = this.execReadControlRegister(_state, actnPool);
                 _state = future.get();
+                i++;
             }
+
+//            if (_state.ctrlReg != null && _state.ctrlReg.endsWith("1")) {
+//                future = this.park4Second(_state, actnPool);
+//                _state = future.get();
+//                future = this.execReadControlRegister(_state, actnPool);
+//                _state = future.get();
+//            }
 
             // temporary...
             //CAENState _state = future.join();
@@ -738,7 +748,11 @@ public class CAENLoggerService {
     private CompletableFuture<CAENState> park4Second(CAENState previousState, ExecutorService threadPool) {
         try {
             CompletableFuture.supplyAsync(() -> {
-                LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(4L));
+                try {
+                    Thread.sleep(4*1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 return null;
             }, threadPool).get();
         } catch (ExecutionException | InterruptedException e) {

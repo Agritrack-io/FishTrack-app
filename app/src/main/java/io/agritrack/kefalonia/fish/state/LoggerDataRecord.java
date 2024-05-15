@@ -4,17 +4,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.agritrack.kefalonia.data.model.TempSample;
+
 public class LoggerDataRecord {
 
     public Map<String, TemperatureModel> data = new HashMap<>();
     public Map<String, Long> loggerInitData = new HashMap<>();
     public Double highT, lowT, avgT;
 
-    public void addDataSet(String loggerEPC, String assetEPC, Long retrievedAt, List<String[]> values) {
+    public void addDataSet(String loggerEPC, String assetEPC, Long retrievedAt, List<TempSample> values) {
         this.data.put(assetEPC, new TemperatureModel(loggerEPC, assetEPC, retrievedAt, values));
     }
 
-    public void addDataSet(String loggerEPC, String assetEPC, String productionLane, Long retrievedAt, List<String[]> values) {
+    public void addDataSet(String loggerEPC, String assetEPC, String productionLane, Long retrievedAt, List<TempSample> values) {
         this.data.put(assetEPC, new TemperatureModel(loggerEPC, assetEPC, productionLane, retrievedAt, values));
     }
 
@@ -26,8 +28,8 @@ public class LoggerDataRecord {
         this.loggerInitData.put(assetEPC, initedAt);
     }
 
-    public List<String[]> getValues(String epc) {
-        List<String[]> result = null;
+    public List<TempSample> getValues(String epc) {
+        List<TempSample> result = null;
         if (data != null) {
             TemperatureModel valuesforEPC = data.get(epc);
             if (valuesforEPC != null) {
@@ -69,16 +71,16 @@ public class LoggerDataRecord {
         public String productionLane;
         public Double fishT, waterT, fishT2;
         public Long retrievedAt;
-        public List<String[]> values;
+        public List<TempSample> values;
 
-        public TemperatureModel(String loggerEPC, String assetEPC, Long retrievedAt, List<String[]> measurements) {
+        public TemperatureModel(String loggerEPC, String assetEPC, Long retrievedAt, List<TempSample> measurements) {
             this.loggerEPC = loggerEPC;
             this.assetEPC = assetEPC;
             this.retrievedAt = retrievedAt;
             this.values = measurements;
         }
 
-        public TemperatureModel(String loggerEPC, String assetEPC, String productionLane, Long retrievedAt, List<String[]> measurements) {
+        public TemperatureModel(String loggerEPC, String assetEPC, String productionLane, Long retrievedAt, List<TempSample> measurements) {
             this.loggerEPC = loggerEPC;
             this.assetEPC = assetEPC;
             this.productionLane = productionLane;
@@ -86,7 +88,7 @@ public class LoggerDataRecord {
             this.values = measurements;
         }
 
-        public TemperatureModel(String loggerEPC, String assetEPC, String productionLane, Long retrievedAt, List<String[]> measurements, Double fishT, Double waterT, Double fishT2) {
+        public TemperatureModel(String loggerEPC, String assetEPC, String productionLane, Long retrievedAt, List<TempSample> measurements, Double fishT, Double waterT, Double fishT2) {
             this.loggerEPC = loggerEPC;
             this.assetEPC = assetEPC;
             this.productionLane = productionLane;

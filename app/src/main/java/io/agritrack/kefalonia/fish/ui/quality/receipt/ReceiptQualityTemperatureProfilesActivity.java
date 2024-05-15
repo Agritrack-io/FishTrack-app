@@ -116,8 +116,8 @@ public class ReceiptQualityTemperatureProfilesActivity extends AppCompatActivity
         if (recLoggerData.data != null && recLoggerData.data.size() > 0) {
             DoubleSummaryStatistics stats = recLoggerData.data.values().stream()
                     .flatMap(x -> x.values.stream())
-                    .filter(y -> !"N/A".equalsIgnoreCase(y[1]))
-                    .mapToDouble(x -> Double.valueOf(x[1].replace(',', '.')))
+                    .filter(y -> !"N/A".equalsIgnoreCase(y.getSample()))
+                    .mapToDouble(x -> Double.valueOf(x.getSample().replace(',', '.')))
                     .summaryStatistics();
 
             recLoggerData.highT = stats.getMax();

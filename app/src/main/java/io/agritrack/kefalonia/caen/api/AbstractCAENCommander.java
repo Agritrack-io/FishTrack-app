@@ -38,6 +38,7 @@ import java.util.function.Function;
 
 import cn.pda.serialport.Tools;
 import io.agritrack.kefalonia.caen.pojo.RFIDTag;
+import io.agritrack.kefalonia.data.model.TempSample;
 
 public abstract class AbstractCAENCommander implements ICAEN_API {
     private static final short WORDS_PER_MEASUREMENT = (short) 1; //(short)3;
@@ -470,30 +471,30 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     }
 
     @Override
-    public List<String[]> ReadSamplesWithInitTime(int samplesCnt, long initedAt) throws Exception {
+    public List<TempSample> ReadSamplesWithInitTime(int samplesCnt, long initedAt) throws Exception {
         return ReadSamples(samplesCnt, DefaultInterval, initedAt);
     }
 
     @Override
-    public List<String[]> ReadSamples(int samplesCnt) throws Exception {
+    public List<TempSample> ReadSamples(int samplesCnt) throws Exception {
         return ReadSamples(samplesCnt, DefaultInterval);
     }
 
     @Override
-    public List<String[]> ReadSamples(int samplesCnt, int intervalSeconds) throws Exception {
+    public List<TempSample> ReadSamples(int samplesCnt, int intervalSeconds) throws Exception {
         long startTSmSec = (long) (System.currentTimeMillis() - (samplesCnt * intervalSeconds * 1000L));
         return ReadSamples(samplesCnt, intervalSeconds, startTSmSec);
     }
 
     @Override
-    public List<String[]> ReadSamples(int samplesCnt, int intervalSeconds, long startTSmSec) throws Exception {
+    public List<TempSample> ReadSamples(int samplesCnt, int intervalSeconds, long startTSmSec) throws Exception {
         if (samplesCnt <= SampleBatchSize) {
             return ReadSamplesBatch(startTSmSec, intervalSeconds, SHORT_ZERO, samplesCnt);
         } else {
-            List<String[]> result = new LinkedList<>();
+            List<TempSample> result = new LinkedList<>();
             for (short batchStart = 0; batchStart < samplesCnt; batchStart += SampleBatchSize) {
                 short batchSize = (samplesCnt - batchStart) >= SampleBatchSize ? SampleBatchSize : (short) (samplesCnt % SampleBatchSize);
-                List<String[]> batch = ReadSamplesBatch(startTSmSec + (batchStart * intervalSeconds * 1000), intervalSeconds, (short) (batchStart * WORDS_PER_MEASUREMENT), batchSize);
+                List<TempSample> batch = ReadSamplesBatch(startTSmSec + (batchStart * intervalSeconds * 1000), intervalSeconds, (short) (batchStart * WORDS_PER_MEASUREMENT), batchSize);
                 result.addAll(batch);
             }
             return result;
@@ -501,14 +502,14 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     }
 
     @Override
-    public List<String[]> ReadSamples(int samplesCnt, int intervalSeconds, long startTSmSec, Long pickedAt) throws Exception {
+    public List<TempSample> ReadSamples(int samplesCnt, int intervalSeconds, long startTSmSec, Long pickedAt) throws Exception {
         if (samplesCnt <= SampleBatchSize) {
             return ReadSamplesBatch(pickedAt, startTSmSec, intervalSeconds, SHORT_ZERO, samplesCnt);
         } else {
-            List<String[]> result = new LinkedList<>();
+            List<TempSample> result = new LinkedList<>();
             for (short batchStart = 0; batchStart < samplesCnt; batchStart += SampleBatchSize) {
                 short batchSize = (samplesCnt - batchStart) >= SampleBatchSize ? SampleBatchSize : (short) (samplesCnt % SampleBatchSize);
-                List<String[]> batch = ReadSamplesBatch(pickedAt, startTSmSec + (batchStart * intervalSeconds * 1000), intervalSeconds, (short) (batchStart * WORDS_PER_MEASUREMENT), batchSize);
+                List<TempSample> batch = ReadSamplesBatch(pickedAt, startTSmSec + (batchStart * intervalSeconds * 1000), intervalSeconds, (short) (batchStart * WORDS_PER_MEASUREMENT), batchSize);
                 result.addAll(batch);
             }
             return result;
@@ -542,7 +543,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     //###################################################
     //###  Private methods for Read / Write commands  ###
     //###################################################
-    private List<String[]> ReadSamplesBatch(long beginTSmSec, int intervalSeconds, short start, int samplesCnt) throws Exception {
+    private List<TempSample> ReadSamplesBatch(long beginTSmSec, int intervalSeconds, short start, int samplesCnt) throws Exception {
         //TODO: surround with try..catch to return null when ReadRegisters(..) fails....
         byte[] reply = ReadRegisters((short) (ADDR_LOGS + start), (short) (samplesCnt * WORDS_PER_MEASUREMENT));
         if (reply != null && reply.length > 0 && reply[0] == REPLY_NACK)
@@ -553,7 +554,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
         return parseDataWithoutTimestamp(beginTSmSec, intervalSeconds, reply);
     }
 
-    private List<String[]> ReadSamplesBatch(Long pickedAt, long beginTSmSec, int intervalSeconds, short start, int samplesCnt) throws Exception {
+    private List<TempSample> ReadSamplesBatch(Long pickedAt, long beginTSmSec, int intervalSeconds, short start, int samplesCnt) throws Exception {
         //TODO: surround with try..catch to return null when ReadRegisters(..) fails....
         byte[] reply = ReadRegisters((short) (ADDR_LOGS + start), (short) (samplesCnt * WORDS_PER_MEASUREMENT));
         if (reply != null && reply.length > 0 && reply[0] == REPLY_NACK)
@@ -564,35 +565,35 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
         return parseDataWithoutTimestamp(pickedAt, beginTSmSec, intervalSeconds, reply);
     }
 
-    private List<String[]> parseDataWithTimestamp(byte[] data) {
-        List<String[]> measurements = new LinkedList<>();
+    private List<TempSample> parseDataWithTimestamp(byte[] data) {
+        List<TempSample> measurements = new LinkedList<>();
 
         for (int i = 0; i < data.length - 5; i += 6) {
             short t = ToShort(new byte[]{data[i], data[i + 1]});
             byte[] bytes = new byte[]{data[i + 4], data[i + 5], data[i + 2], data[i + WORDS_PER_MEASUREMENT]};
-            measurements.add(new String[]{parseTimestamp(bytes), String.format("%.2f", parseTemperatureNumeric(t))});  //"%.2f\u2103"
+            measurements.add(new TempSample(parseTimestamp(bytes), String.format("%.2f", parseTemperatureNumeric(t))));  //"%.2f\u2103"
         }
         return measurements;
     }
 
-    private List<String[]> parseDataWithoutTimestamp(long beginTSmSec, int intervalSeconds, byte[] data) {
-        List<String[]> measurements = new LinkedList<>();
+    private List<TempSample> parseDataWithoutTimestamp(long beginTSmSec, int intervalSeconds, byte[] data) {
+        List<TempSample> measurements = new LinkedList<>();
         for (int sampleIdx = 0; sampleIdx < data.length / 2; sampleIdx++) {
 
             int byteIdx = sampleIdx * 2;
             short t = ToShort(new byte[]{data[byteIdx], data[byteIdx + 1]});
             Double temp = parseTemperatureNumeric(t);
             if (temp != null && temp >= -10 && temp < 40 && round(temp, 2) != 0.03 && round(temp, 2) != -0.03) {
-                measurements.add(new String[]{createTimestamp(beginTSmSec + (sampleIdx * intervalSeconds * 1000L)), String.format("%.2f", parseTemperatureNumeric(t))});
+                measurements.add(new TempSample(createTimestamp(beginTSmSec + (sampleIdx * intervalSeconds * 1000L)), String.format("%.2f", parseTemperatureNumeric(t))));
             } else {
-                measurements.add(new String[]{createTimestamp(beginTSmSec + (sampleIdx * intervalSeconds * 1000L)), "N/A"});
+                measurements.add(new TempSample(createTimestamp(beginTSmSec + (sampleIdx * intervalSeconds * 1000L)), "N/A"));
             }
         }
         return measurements;
     }
 
-    private List<String[]> parseDataWithoutTimestamp(Long fishingTS, long beginTSmSec, int intervalSeconds, byte[] data) {
-        List<String[]> measurements = new LinkedList<>();
+    private List<TempSample> parseDataWithoutTimestamp(Long fishingTS, long beginTSmSec, int intervalSeconds, byte[] data) {
+        List<TempSample> measurements = new LinkedList<>();
         for (int sampleIdx = 0; sampleIdx < data.length / 2; sampleIdx++) {
 
             int byteIdx = sampleIdx * 2;
@@ -607,10 +608,18 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
                 // currently specific to Kefalonia...
                 continue;
             }
-            if (temp != null && temp >= -10 && temp < 40 && round(temp, 2) != 0.03 && round(temp, 2) != -0.03) {
-                measurements.add(new String[]{createTimestamp(currTemperatureTS), String.format("%.2f", parseTemperatureNumeric(t))});
+            boolean isAfterFishing;
+            if (fishingTS > currTemperatureTS) {
+                isAfterFishing = false;
             } else {
-                measurements.add(new String[]{createTimestamp(currTemperatureTS), "N/A"});
+                isAfterFishing = true;
+            }
+            if (temp != null && temp >= -10 && temp < 40 && round(temp, 2) != 0.03 && round(temp, 2) != -0.03) {
+                //measurements.add(new String[]{createTimestamp(currTemperatureTS), String.format("%.2f", parseTemperatureNumeric(t))})
+                    measurements.add(new TempSample(createTimestamp(currTemperatureTS), String.format("%.2f", parseTemperatureNumeric(t)), isAfterFishing));
+            } else {
+                //measurements.add(new String[]{createTimestamp(currTemperatureTS), "N/A"});
+                measurements.add(new TempSample(createTimestamp(currTemperatureTS), "N/A", isAfterFishing));
             }
         }
 

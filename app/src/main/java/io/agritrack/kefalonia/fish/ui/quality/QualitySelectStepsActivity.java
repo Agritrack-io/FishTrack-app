@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.agritrack.kefalonia.data.model.TempSample;
 import io.agritrack.kefalonia.fish.ui.FishHomeActivity;
 import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.data.db.MobileDB;
@@ -105,7 +106,7 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
                                 for (TemperatureTimeSeries ts : existingMeasurements) {
                                     Measurement m = ts.measurement;
                                     List<TemperatureData> _temperatureData = ts.data;
-                                    List<String[]> _dat = new ArrayList<>();
+                                    List<TempSample> _dat = new ArrayList<>();
                                     for (TemperatureData _temperatureD : _temperatureData) {
                                         _dat.add(_temperatureD.rawData());
                                     }

@@ -112,7 +112,7 @@ public class PackageQualityTemperatureProfilesActivity extends AppCompatActivity
         if (recLoggerData.data != null && recLoggerData.data.size() > 0) {
             DoubleSummaryStatistics stats = recLoggerData.data.values().stream()
                     .flatMap(x -> x.values.stream())
-                    .mapToDouble(x -> Double.valueOf(x[1].replace(',', '.')))
+                    .mapToDouble(x -> Double.valueOf(x.getSample().replace(',', '.')))
                     .summaryStatistics();
 
             recLoggerData.highT = stats.getMax();

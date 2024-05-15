@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import io.agritrack.kefalonia.data.model.TempSample;
 import io.agritrack.kefalonia.ui.tools.caen.ILoggerDialog;
 
 public class CAENState implements Serializable {
@@ -33,7 +34,7 @@ public class CAENState implements Serializable {
     //------------------------------
     public Double lastSample = null;
     //------------------------------
-    public List<String[]> samples = null;
+    public List<TempSample> samples = null;
     private String loggerEPC = null;
     private String assetEPC = null;
     private Long pickedAt;
@@ -132,7 +133,7 @@ public class CAENState implements Serializable {
     }
 
     public CAENState forSamples(Object val) {
-        List<String[]> rs = (List<String[]>) val;
+        List<TempSample> rs = (List<TempSample>) val;
         this.canProceed = rs != null;
         this.samples = rs;
         return this;
@@ -239,7 +240,7 @@ public class CAENState implements Serializable {
         return samplesCnt;
     }
 
-    public List<String[]> getSamples() {
+    public List<TempSample> getSamples() {
         return samples;
     }
 

@@ -9,6 +9,8 @@ import com.google.android.gms.common.util.Strings;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
+import io.agritrack.kefalonia.data.model.TempSample;
+
 @Entity(tableName = "temperature_data")
 public class TemperatureData {
 
@@ -39,8 +41,8 @@ public class TemperatureData {
         this.value = !Strings.isEmptyOrWhitespace(val) && !"N/A".equalsIgnoreCase(val) ? Double.valueOf(val.replace(',', '.')) : Double.NaN;
     }
 
-    public String[] rawData(){
+    public TempSample rawData(){
         String _val = this.value!=null ? this.value.toString() : "N/A";
-        return new String[]{this.timestamp, _val};
+        return new TempSample(this.timestamp, _val);
     }
 }

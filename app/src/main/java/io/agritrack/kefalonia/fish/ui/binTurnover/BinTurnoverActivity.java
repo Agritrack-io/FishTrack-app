@@ -64,6 +64,7 @@ import io.agritrack.kefalonia.data.db.MobileDB;
 import io.agritrack.kefalonia.data.dto.BinInfoDTO;
 import io.agritrack.kefalonia.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.kefalonia.data.model.BinInfo;
+import io.agritrack.kefalonia.data.model.TempSample;
 import io.agritrack.kefalonia.data.model.common.TemperatureTimeSeries;
 import io.agritrack.kefalonia.data.model.wh.Asset;
 import io.agritrack.kefalonia.data.repo.BinInfoRepository;
@@ -454,7 +455,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
     }
 
     public void fillTemperatureProfileAdapter() {
-        List<String[]> values = recLoggerData.getValues(binEPC);
+        List<TempSample> values = recLoggerData.getValues(binEPC);
 
         if (values != null) {
             Map<String, LoggerDataRecord.TemperatureModel> data = recLoggerData.data;
