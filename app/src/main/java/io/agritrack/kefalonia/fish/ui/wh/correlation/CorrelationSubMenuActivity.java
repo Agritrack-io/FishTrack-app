@@ -65,8 +65,8 @@ public class CorrelationSubMenuActivity extends AppCompatActivity {
                 break;
             case 1:
                 tvTitleToolbar.setText(getString(R.string.title_program_menu, getString(R.string.of_net)));
-                menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), CorrelationNetActivity.class, R.drawable.net));
-                clazz = CorrelationNetActivity.class;
+                menuItemsList.add(new MenuItem(getString(R.string.menu_title_correlation), ZebraCorrelationNetActivity.class, R.drawable.net));
+                clazz = ZebraCorrelationNetActivity.class;
                 break;
             case 2:
                 tvTitleToolbar.setText(getString(R.string.title_program_menu, getString(R.string.of_bin)));

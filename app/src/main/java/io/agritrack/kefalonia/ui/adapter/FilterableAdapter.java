@@ -31,11 +31,30 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
     private ArrayList<GenericListModel> arrayListFiltered;
     private int selectedPos = RecyclerView.NO_POSITION;
     private String selectedValue = null;
+    private IEditText listener;
+    private OnItemClickListener mListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(boolean isCorrelated);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
+    }
 
     public FilterableAdapter(Context context, ArrayList<GenericListModel> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
         this.arrayListFiltered = arrayList;
+        //selectedValue = null;
+    }
+
+    public FilterableAdapter(Context context, ArrayList<GenericListModel> arrayList, IEditText listener) {
+        this.context = context;
+        this.arrayList = arrayList;
+        this.arrayListFiltered = arrayList;
+        this.listener = listener;
+        //selectedValue = null;
     }
 
     public String getSelectedValue() {
@@ -63,29 +82,31 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
             viewHolder.code.setText(Html.fromHtml("<b>" + "<font color='#16325c'>"
                             + getAppContext().getResources().getString(R.string.code) + "</font>" + "</b>",
                     HtmlCompat.FROM_HTML_MODE_LEGACY));
-            viewHolder.netEye.setText(Html.fromHtml("<b>" + "<font color='#16325c'>"
-                            + getAppContext().getResources().getString(R.string.eye) + "</font>" + "</b>",
-                    HtmlCompat.FROM_HTML_MODE_LEGACY));
-            viewHolder.perimeter.setText(Html.fromHtml("<b>" + "<font color='#16325c'>"
-                            + getAppContext().getResources().getString(R.string.perimeter) + "</font>" + "</b>",
-                    HtmlCompat.FROM_HTML_MODE_LEGACY));
+//            viewHolder.netEye.setText(Html.fromHtml("<b>" + "<font color='#16325c'>"
+//                            + getAppContext().getResources().getString(R.string.eye) + "</font>" + "</b>",
+//                    HtmlCompat.FROM_HTML_MODE_LEGACY));
+//            viewHolder.perimeter.setText(Html.fromHtml("<b>" + "<font color='#16325c'>"
+//                            + getAppContext().getResources().getString(R.string.perimeter) + "</font>" + "</b>",
+//                    HtmlCompat.FROM_HTML_MODE_LEGACY));
         } else if (position > 0 && position <= getItemCount() - 1) {
             position = position - 1;
             viewHolder.rfid.setText(arrayListFiltered.get(position).getRfid());
             viewHolder.code.setText(!Strings.isEmptyOrWhitespace(arrayListFiltered.get(position).getCode()) ? arrayListFiltered.get(position).getCode() : arrayListFiltered.get(position).getLabel());
-            viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
-            viewHolder.netEye.setText(arrayListFiltered.get(position).getNetEyeGirth() != null ? String.valueOf(arrayListFiltered.get(position).getNetEyeGirth()) : "");
-            viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
-            viewHolder.perimeter.setText(arrayListFiltered.get(position).getPerimeter() != null ? String.valueOf(arrayListFiltered.get(position).getPerimeter()) : "");
+//            viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
+//            viewHolder.netEye.setText(arrayListFiltered.get(position).getNetEyeGirth() != null ? String.valueOf(arrayListFiltered.get(position).getNetEyeGirth()) : "");
+//            viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
+//            viewHolder.perimeter.setText(arrayListFiltered.get(position).getPerimeter() != null ? String.valueOf(arrayListFiltered.get(position).getPerimeter()) : "");
 
             viewHolder.itemView.setSelected(selectedPos == position + 1);
 
             viewHolder.itemView.setBackgroundColor(selectedPos == position + 1 ? Color.GRAY : Color.TRANSPARENT);
         }
         if (arrayListFiltered.size() > 0) {
-            viewHolder.rfid.setVisibility(!Strings.isEmptyOrWhitespace(arrayListFiltered.get(position).getRfid()) ? View.VISIBLE : View.GONE);
-            viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
-            viewHolder.perimeter.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
+
+            viewHolder.code.setTextColor(!Strings.isEmptyOrWhitespace(arrayListFiltered.get(position).getRfid()) ? Color.RED : Color.BLACK);
+            viewHolder.rfid.setVisibility(View.GONE);
+//            viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
+//            viewHolder.perimeter.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -137,14 +158,14 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
     }
 
     public class viewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView rfid, code, netEye, perimeter;
+        TextView rfid, code;//, netEye, perimeter;
 
         public viewHolder(View itemView) {
             super(itemView);
             rfid = (TextView) itemView.findViewById(R.id.tvRfid);
             code = (TextView) itemView.findViewById(R.id.tvCode);
-            netEye = (TextView) itemView.findViewById(R.id.tvNetEye);
-            perimeter = (TextView) itemView.findViewById(R.id.tvPerimeter);
+//            netEye = (TextView) itemView.findViewById(R.id.tvNetEye);
+//            perimeter = (TextView) itemView.findViewById(R.id.tvPerimeter);
             itemView.setOnClickListener(this);
         }
 
@@ -152,11 +173,20 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
         public void onClick(View v) {
             // Below line is just like a safety check, because sometimes holder could be null,
             // in that case, getAdapterPosition() will return RecyclerView.NO_POSITION
+            boolean isCorrelated;
+            if (this.rfid.getText().toString() == null || this.rfid.getText().toString().isEmpty()) {
+                isCorrelated = false;
+            }else{
+                isCorrelated = true;
+            }
             if (getAdapterPosition() == RecyclerView.NO_POSITION) return;
 
             if (selectedPos == getAdapterPosition()) {
                 selectedPos = RecyclerView.NO_POSITION;
                 selectedValue = null;
+                if (mListener != null) {
+                    mListener.onItemClick(false);
+                }
                 notifyDataSetChanged();
                 return;
             }
@@ -164,16 +194,22 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
             // Updating old as well as new positions
             notifyItemChanged(selectedPos);
             selectedPos = getAdapterPosition();
-            selectedValue = !Strings.isEmptyOrWhitespace(this.rfid.getText().toString()) ? this.rfid.getText().toString() : this.code.getText().toString();
+            selectedValue = !Strings.isEmptyOrWhitespace(this.code.getText().toString()) ? this.code.getText().toString() : "";
             notifyItemChanged(selectedPos);
+            if (listener != null) {
+                listener.addToEditText(selectedValue);
+            }
 
             // Check if no view has focus:
             if (itemView != null) {
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(itemView.getWindowToken(), 0);
             }
-
+            if (mListener != null) {
+                mListener.onItemClick(isCorrelated);
+            }
             // Do your another stuff for your onClick
+
         }
     }
 }

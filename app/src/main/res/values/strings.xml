@@ -827,5 +827,27 @@
     <string name="temp_downloading_in_progress">Temperatures downloading in progress. Plz wait!</string>
     <string name="all_bins_received">All bins for this harvest have been received already. Please move on to Bin Turnover!</string>
     <string name="sync_and_check_if_correct_bin">Bin \%1$s\ not found: Please sync and check if this is the correct bin for turnover!</string>
+    <string name="is_missingg">\n\%1$s\ is missing</string>
+    <string name="cage_code">Cage code</string>
+    <string name="cage_rfid">Cage RFID</string>
+    <string name="net_code">Net code</string>
+    <string name="net_rfid">Net RFID</string>
 
+    <string name="inventory_assets">Inventory assets</string>
+    <string name="rfid_already_assigned_to_other_asset">This tag \%1$s\ has been assigned to net \%2$s\. Do yoy want to proceed?</string>
+
+    <string name="example_station_entrance" translatable="false">Chalandri Station</string>
+    <string name="example_station_exit" translatable="false">Chalandri Station Exit</string>
+
+    <string name="filter_for_uncorrlated">Filter for uncorrelated</string>
+    <string name="all_nets">All nets  </string>
+    <string name="uncorrelated_nets">Uncorrelated only  </string>
+    <string name="proceed">Are you sure you want to proceed with uncorrelation?</string>
+    <string name="proceed_with_uncorrelation">Are you sure you want to uncorrelate net \%1$s\ from label \%2$s\?</string>
+    <string name="uncorrelate">Uncorrelate</string>
+    <string name="proceed_with_replacement">This net already has RFID correlated. Are you sure you want to replace?</string>
+    <string name="net_already_assigned_to_other_rfid">Net \%1$s\ has been assigned to label \%2$s\. Do you want to proceed?</string>
+    <string name="ask_to_sync_nets">Do you want to sync the nets as well? The process might take several minutes.</string>
+    <string name="sync_failed">Sync failed</string>
+    <string name="empty_list_nets">List is empty! No nets to correlate.</string>
 </resources>

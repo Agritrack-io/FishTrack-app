@@ -98,6 +98,8 @@ import io.agritrack.kefalonia.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.kefalonia.fish.ui.initBins.InitBinsActivity;
 import io.agritrack.kefalonia.fish.ui.process.ProcessBinsActivity;
 import io.agritrack.kefalonia.fish.ui.testBinTemperature.TestBinTempActivity;
+import io.agritrack.kefalonia.fish.ui.transport.TransportBinsActivity;
+import io.agritrack.kefalonia.fish.ui.transport.TransportInfoActivity;
 import io.agritrack.kefalonia.ui.adapter.HomeMenuAdapter;
 import io.agritrack.kefalonia.ui.adapter.MenuItem;
 import io.agritrack.kefalonia.ui.login.LoginActivity;
@@ -161,9 +163,9 @@ public class FishHomeActivity extends AppCompatActivity {
         if (roleCanAccessMenu(userRoles, Bin_Overturn_Idx)) {
             menuItemsSet.add(new MenuItem(Bin_Overturn_Idx, getString(R.string.menu_title_bin_overturn), BinTurnoverActivity.class, R.drawable.bin_turnover));
         }
-//        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
-//            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
-//        }
+        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
+            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
+        }
         if (roleCanAccessMenu(userRoles, Warehouse_Idx)) {
             menuItemsSet.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
         }
@@ -246,10 +248,10 @@ public class FishHomeActivity extends AppCompatActivity {
 //                        i = new Intent(appCtx, TestBinTempActivity.class);
 //                        i.putExtra("BinActivity", false);
 //                        break;
-//                    case Transport_Idx:
-//                        GlobalState.initTransportationRecord();
-//                        i = new Intent(appCtx, TransportBinsActivity.class);
-//                        break;
+                    case Transport_Idx:
+                        GlobalState.initTransportationRecord();
+                        i = new Intent(appCtx, TransportBinsActivity.class);
+                        break;
                     case Receiving_Idx:
                         GlobalState.initProcessingRecord();
                         i = new Intent(appCtx, ProcessBinsActivity.class);

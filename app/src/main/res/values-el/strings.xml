@@ -822,4 +822,24 @@
     <string name="temp_downloading_in_progress">Κατεβαίνουν θερμοκρασίες. Παρακαλώ περιμένετε!</string>
     <string name="all_bins_received">Όλες οι βούτες για αυτή την αλίευση έχουν παραληφθεί. Παρακαλώ προχωρήστε στην Ανατροπη Βουτών!</string>
     <string name="sync_and_check_if_correct_bin">Η βούτα \%1$s\ δε βρέθηκε. Παρακαλώ συγχρονίστε και ελέγξτε ότι είναι η σωστή βούτα για ανατροπή!</string>
+    <string name="cage_rfid">RFID κλωβού</string>
+    <string name="net_code">Κωδικός διχτυού</string>
+    <string name="net_rfid">RFID διχτυού</string>
+    <string name="is_missingg">\n\%1$s\ is missing</string>
+    <string name="inventory_assets">Απογραμμένα πάγια</string>
+    <string name="rfid_already_assigned_to_other_asset">Αυτή η ετικέτα \%1$s\ έχει συσχετιστεί ήδη με το δίχτυ \%2$s\. Θέλετε να συνεχίσετε?</string>
+
+    <string name="filter_for_uncorrlated">Φιλτράρετε για απρογραμμάτιστα</string>
+    <string name="all_nets">Όλα τα δίχτυα  </string>
+    <string name="uncorrelated_nets">Μόνο απρογραμμάτιστα  </string>
+    <string name="proceed">Are you sure you want to proceed with uncorrelation?</string>
+    <string name="proceed_with_uncorrelation">Είστε σίγουροι ότι θέλετε να αποσυσχετίσετε το δίχτυ \%1$s\ από την ετικέτα \%2$s\?</string>
+    <string name="uncorrelate">Αποσυσχέτιση</string>
+    <string name="proceed_with_replacement">This net already has RFID correlated. Are you sure you want to replace?</string>
+    <string name="net_already_assigned_to_other_rfid">Το δίχτυ \%1$s\ έχει συσχετιστεί ήδη με την ετικέτα \%2$s\. Θέλετε να συνεχίσετε?</string>
+    <string name="ask_to_sync_nets">Θέλετε να συγχρονίσετε και τα δίχτυα? Η διαδικασία μπορεί να διαρκέσει για λίγα λεπτά.</string>
+    <string name="sync_failed">Αποτυχία συγχρονισμού</string>
+    <string name="cage_code">Cage code</string>
+    <string name="empty_list_nets">Η λίστα είναι άδεια! Δεν υπάρχουν δίχτυα για συσχετισμό.</string>
+
 </resources>

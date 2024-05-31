@@ -5,6 +5,7 @@ import java.util.Map;
 
 import io.agritrack.kefalonia.data.dto.BinInfoDTO;
 import io.agritrack.kefalonia.data.dto.common.IotLoggerDTO;
+import io.agritrack.kefalonia.data.dto.common.MediaDTO;
 import io.agritrack.kefalonia.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.kefalonia.data.dto.tx.AssetTxDTO;
 import io.agritrack.kefalonia.data.dto.tx.CorrelationTxDTO;
@@ -12,6 +13,7 @@ import io.agritrack.kefalonia.data.dto.tx.FishingTxDTO;
 import io.agritrack.kefalonia.data.dto.tx.PostPackageQualityTxDTO;
 import io.agritrack.kefalonia.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.kefalonia.data.dto.tx.QualityTxDTO;
+import io.agritrack.kefalonia.data.dto.tx.TransportTxDTO;
 import io.agritrack.kefalonia.data.dto.wh.RFIDInventoryDTO;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -32,6 +34,14 @@ public interface TransactionApi {
     Call<FishingTxDTO> syncFishingTx(@Body FishingTxDTO fishingTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/transport")
+    Call<TransportTxDTO> syncTransportTx(@Body TransportTxDTO transportTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/transport/signature")
+    Call<MediaDTO> syncTransportTxDriverSignature(@Body MediaDTO transportTxDriverSig, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/receipt")
     Call<ProcessingTxDTO> syncProcessingTx(@Body ProcessingTxDTO processTx, @Header("Authorization") String token);
 
@@ -44,7 +54,7 @@ public interface TransactionApi {
     Call<PostPackageQualityTxDTO> syncPostPackageQualityTx(@Body PostPackageQualityTxDTO postQualityTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/logger/temp")
+    @POST("/fish/logger/temp")
     Call<List<TemperatureTimeSeriesDTO>> syncMeasurements(@Body List<TemperatureTimeSeriesDTO> measurements, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
@@ -56,15 +66,15 @@ public interface TransactionApi {
     Call<CorrelationTxDTO> syncLoggerCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/wh/fish/correlate")
+    @POST("/asset/correlate")
     Call<ResponseBody> syncAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/wh/fish/asset/inter-correlate")
+    @POST("/asset/inter-correlate")
     Call<ResponseBody> syncAssetWithAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/wh/fish/inventory")
+    @POST("/inventory/wh")
     Call<RFIDInventoryDTO> syncRFIDInventoryTx(@Body RFIDInventoryDTO rFIDInventory, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
@@ -73,5 +83,6 @@ public interface TransactionApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @PUT("/bin-ledger/update-init-ts")
-    Call<Map<String, Long>> syncLoggerInitTs(@Body Map<String, Long> initTs, @Header("Authorization") String token);
+    Call<Map<String,Long>> syncLoggerInitTs(@Body Map<String, Long> initTs, @Header("Authorization") String token);
 }
+

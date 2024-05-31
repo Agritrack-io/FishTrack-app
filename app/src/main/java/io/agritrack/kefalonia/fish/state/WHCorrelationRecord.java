@@ -12,4 +12,7 @@ public class WHCorrelationRecord {
     public Double longitude;
     public Double latitude;
 
+    public String prev_code;
+
 }
+
