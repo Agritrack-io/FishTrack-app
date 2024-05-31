@@ -376,6 +376,9 @@ public class CorrelationBinActivity extends LocationAwareActivity {
                                 if (epc.indexOf(Filters.RFID_BIN) > -1) {
                                     GlobalState.recWHCorrelation.assetRFID = epc;
                                     tvCorrBinBarcode.setText(label);
+
+
+
                                 } else if (epc.indexOf(Filters.RFID_LOGGER) > -1) {
                                     GlobalState.recWHCorrelation.rfid = epc;
                                     tvCorrTempLoggerBarcode.setText(label);

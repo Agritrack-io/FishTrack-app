@@ -77,7 +77,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ZebraCorrelationNetActivity extends LocationAwareActivity implements FilterableAdapter.OnItemClickListener {
+public class ZebraCorrelationCageActivity extends LocationAwareActivity implements FilterableAdapter.OnItemClickListener {
 
     private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     private static final int BLUETOOTH_PERMISSION_REQUEST_CODE = 100;
@@ -91,8 +91,8 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
     private MobileDB db;
     private Button btnScanAssetTag, btnUncorr;
     private SearchView svSearchAsset;
-    private RecyclerView rvNets;
-    private TextView tvCorrNetBarcode;
+    private RecyclerView rvCages;
+    private TextView tvCorrCageBarcode;
     private FilterableAdapter adapterAssets;
     private ProgressDialog progressDialog;
     private YesNoDialogFragment confirmGPSSelectionDlg, confirmUncorrelateDialog, confirmRfidReplacement;
@@ -100,23 +100,23 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
     private Boolean scanner_running = null;
-    private String epcStr, label, netCode;
+    private String epcStr, label, cageCode;
     private SwitchCompat correlatedFilter;
-    private List<Asset> netsList, uncorrNetsList;
+    private List<Asset> CagesList, uncorrCagesList;
 
-    private YesNoDialogFragment confirmNetRfidDlg;
+    private YesNoDialogFragment confirmCageRfidDlg;
 
     @SuppressLint("StringFormatMatches")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_zebra_correlation_net);
+        setContentView(R.layout.activity_zebra_correlation_cage);
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderNetCorrelation);
+        TextView tvHeader = findViewById(R.id.tvHeaderCageCorrelation);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
@@ -129,10 +129,10 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
         //confirmRfidReplacement.setMessage(getText(R.string.proceed_with_replacement));
         confirmRfidReplacement.onConfirm(bundle -> {
             GlobalState.recWHCorrelation.rfid = epcStr;
-            runOnUiThread(() -> tvCorrNetBarcode.setText(label));
+            runOnUiThread(() -> tvCorrCageBarcode.setText(label));
         });
         confirmRfidReplacement.onReject(bundle -> {
-            runOnUiThread(() -> tvCorrNetBarcode.setText(""));
+            runOnUiThread(() -> tvCorrCageBarcode.setText(""));
         });
 
 
@@ -140,7 +140,7 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
         confirmUncorrelateDialog.setMessage(getText(R.string.proceed_with_uncorrelation));
         confirmUncorrelateDialog.onConfirm(bundle -> {
             //proceedWithoutLocation = true;
-            uncorrelateNet();
+            uncorrelateCage();
         });
         confirmUncorrelateDialog.onReject(bundle -> {
 //            mLastLocation = findLocation();
@@ -159,31 +159,31 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
             proceedWithoutLocation = false;
         });
 
-        confirmNetRfidDlg = YesNoDialogFragment.instance();
-        confirmNetRfidDlg.onConfirm(bundle -> {
+        confirmCageRfidDlg = YesNoDialogFragment.instance();
+        confirmCageRfidDlg.onConfirm(bundle -> {
             showConfirmDialog();
         });
-        confirmNetRfidDlg.onReject(bundle -> {
-            runOnUiThread(() -> tvCorrNetBarcode.setText(""));
+        confirmCageRfidDlg.onReject(bundle -> {
+            runOnUiThread(() -> tvCorrCageBarcode.setText(""));
         });
 
         // instantiate ProgressDialog and set style.
-        progressDialog = new ProgressDialog(ZebraCorrelationNetActivity.this);
+        progressDialog = new ProgressDialog(ZebraCorrelationCageActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
-        updateNetsList();
+        updateCagesList();
 
-        this.rvNets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        loadNetsFromLocalDB(netsList);
+        this.rvCages.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        loadCagesFromLocalDB(CagesList);
 
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
 
         ivSupport.setOnClickListener(view -> {
-            supportDialog = new SupportDialog(ZebraCorrelationNetActivity.this);
+            supportDialog = new SupportDialog(ZebraCorrelationCageActivity.this);
             supportDialog.showDialog();
         });
 
@@ -208,13 +208,13 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
                     // Perform actions for when the switch is on
                     System.out.println("Switch is ON");
                     correlatedFilter.setText(getResources().getString(R.string.uncorrelated_nets));
-                    loadNetsFromLocalDB(uncorrNetsList);
+                    loadCagesFromLocalDB(uncorrCagesList);
                     // For example: start a service, enable a feature, etc.
                 } else {
                     // Perform actions for when the switch is off
-                    correlatedFilter.setText(getResources().getString(R.string.all_nets));
+                    correlatedFilter.setText(getResources().getString(R.string.all_cages));
                     System.out.println("Switch is OFF");
-                    loadNetsFromLocalDB(netsList);
+                    loadCagesFromLocalDB(CagesList);
                     // For example: stop a service, disable a feature, etc.
                 }
             }
@@ -223,26 +223,26 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
         configFooter();
     }
 
-    private void updateNetsList() {
-        netsList = db.assetDAO().getAssetsForType(Constants.ftNet.toUpperCase(Locale.ROOT));
+    private void updateCagesList() {
+        CagesList = db.assetDAO().getAssetsForType(Constants.ftCage.toUpperCase(Locale.ROOT));
 
-        uncorrNetsList = netsList.stream().filter(x -> (x.rfid == null || x.rfid.isEmpty())).collect(Collectors.toList());
+        uncorrCagesList = CagesList.stream().filter(x -> (x.rfid == null || x.rfid.isEmpty())).collect(Collectors.toList());
     }
 
-    private void uncorrelateNet() {
-        recWHCorrelation.type = Constants.ftNet;
+    private void uncorrelateCage() {
+        recWHCorrelation.type = Constants.ftCage;
         if (adapterAssets != null) {
             recWHCorrelation.code = adapterAssets.getSelectedValue();
         }
         recWHCorrelation.rfid = null;
 
         CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
-        Asset currNet = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
-        if (currNet != null) {
-            currNet.rfid = null;
-            currNet.rfidBarcode = null;
-            currNet.barcode = null;
-            db.assetDAO().update(currNet);
+        Asset currCage = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
+        if (currCage != null) {
+            currCage.rfid = null;
+            currCage.rfidBarcode = null;
+            currCage.barcode = null;
+            db.assetDAO().update(currCage);
         }
 
         String token = LocalPreferences.getToken();
@@ -295,19 +295,19 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
                         if (pin.equalsIgnoreCase(userPin)) {
                             input.getShowSoftInputOnFocus();
                             GlobalState.recWHCorrelation.rfid = epcStr;
-                            recWHCorrelation.prev_code = netCode;
-                            runOnUiThread(() -> tvCorrNetBarcode.setText(label));
+                            recWHCorrelation.prev_code = cageCode;
+                            runOnUiThread(() -> tvCorrCageBarcode.setText(label));
                             wantToCloseDialog = true;
                         } else {
                             dialog.setTitle(getString(R.string.invalid_password));
-                            runOnUiThread(() -> tvCorrNetBarcode.setText(""));
+                            runOnUiThread(() -> tvCorrCageBarcode.setText(""));
                             wantToCloseDialog = false;
                         }
                         //Do stuff, possibly set wantToCloseDialog to true then...
                         if (wantToCloseDialog) {
                             dialog.dismiss();
                         } else {
-                            runOnUiThread(() -> tvCorrNetBarcode.setText(""));
+                            runOnUiThread(() -> tvCorrCageBarcode.setText(""));
                         }
 
                         input.setText("");
@@ -379,11 +379,11 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
                         new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT},
                         BLUETOOTH_PERMISSION_REQUEST_CODE);
             } else {
-               // rfidHandler.onCreate(this);
+                // rfidHandler.onCreate(this);
             }
 
         } else {
-           // rfidHandler.onCreate(this);
+            // rfidHandler.onCreate(this);
         }
         //rfidHandler.onResume();
         super.onResume();
@@ -402,13 +402,13 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
 
             if (proceed) {
                 // move to next activity.
-                Intent i = new Intent(getApplicationContext(), ZebraCorrelationNetActivity.class);
+                Intent i = new Intent(getApplicationContext(), ZebraCorrelationCageActivity.class);
                 startActivity(i);
             }
         }
     }
 
-    private void loadNetsFromLocalDB(List<Asset> assetsList) {
+    private void loadCagesFromLocalDB(List<Asset> assetsList) {
         // load assets for current Site and filter by asset type (if selected).
         //this.rvNets.setAdapter(null);
 
@@ -419,7 +419,7 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
             adapterAssets.getFilter().filter(svSearchAsset.getQuery());
             adapterAssets.setOnItemClickListener(this);
             adapterAssets.notifyDataSetChanged();
-            this.rvNets.setAdapter(adapterAssets);
+            this.rvCages.setAdapter(adapterAssets);
         }
     }
 
@@ -434,7 +434,7 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
 
         ivNext.setOnClickListener(view -> {
             stopScanner();
-            recWHCorrelation.type = Constants.ftNet;
+            recWHCorrelation.type = Constants.ftCage;
             if (adapterAssets != null) {
                 recWHCorrelation.code = adapterAssets.getSelectedValue();
             }
@@ -460,16 +460,16 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
     private void assignCtrlVars() {
         btnUncorr = findViewById(R.id.btnUncorrelate);
         svSearchAsset = findViewById(R.id.svSearchAsset);
-        rvNets = findViewById(R.id.rvNets);
-        tvCorrNetBarcode = findViewById(R.id.tvCorrNetBarcode);
+        rvCages = findViewById(R.id.rvCages);
+        tvCorrCageBarcode = findViewById(R.id.tvCorrCageBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);
         ivSupport = findViewById(R.id.ivSupport);
         correlatedFilter = findViewById(R.id.correlatedFilter);
 
-        rvNets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        rvNets.setItemAnimator(new DefaultItemAnimator());
+        rvCages.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rvCages.setItemAnimator(new DefaultItemAnimator());
 
         svSearchAsset.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -507,17 +507,17 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
 
             //Check if in the local DB asset with same rfid exists and set rfid to null
-            Asset currNet = db.assetDAO().getAssetByEpc(GlobalState.recWHCorrelation.rfid);
-            if (currNet != null) {
-                currNet.rfid = null;
-                currNet.rfidBarcode = null;
-                currNet.barcode = null;
-                db.assetDAO().update(currNet);
+            Asset currCage = db.assetDAO().getAssetByEpc(GlobalState.recWHCorrelation.rfid);
+            if (currCage != null) {
+                currCage.rfid = null;
+                currCage.rfidBarcode = null;
+                currCage.barcode = null;
+                db.assetDAO().update(currCage);
             }
 
-            Asset net = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
-            net.rfid = GlobalState.recWHCorrelation.rfid;
-            db.assetDAO().update(net);
+            Asset cage = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
+            cage.rfid = GlobalState.recWHCorrelation.rfid;
+            db.assetDAO().update(cage);
 
             // sync WH Correlation Tx
             List<CorrelationTxDTO> dtos = new ArrayList<>();
@@ -543,11 +543,11 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(recWHCorrelation.code)) {
-                sb.append(String.format(getResources().getString(R.string.is_missingg, getString(R.string.net_code))));
+                sb.append(String.format(getResources().getString(R.string.is_missingg, getString(R.string.cage_code))));
             }
 
             if (Strings.isEmptyOrWhitespace(recWHCorrelation.rfid)) {
-                sb.append(String.format(getResources().getString(R.string.is_missingg, getString(R.string.net_rfid))));
+                sb.append(String.format(getResources().getString(R.string.is_missingg, getString(R.string.cage_rfid))));
             }
         }
         return sb.toString();
@@ -568,18 +568,18 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
 
     protected void onClick(View view) {
         if (adapterAssets == null) {
-            runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.empty_list_nets), Toast.LENGTH_LONG));
+            runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.empty_list_cages), Toast.LENGTH_LONG));
             return;
         }
         // Check if device model is BX6100, else is Zebra
         if (LocalPreferences.getDeviceModel() != null && LocalPreferences.getDeviceModel().equals("BX6100")) {
-            tvCorrNetBarcode.setText("");
-            scanner_runnable.setFilter(Filters.RFID_NET);
+            tvCorrCageBarcode.setText("");
+            scanner_runnable.setFilter(Filters.RFID_CAGE);
             scanner_runnable.startReading();
             mScanHandler.postDelayed(scanner_runnable, 0);
         } else if (LocalPreferences.getDeviceModel() != null && LocalPreferences.getDeviceModel().equals("BX6200")) {
-            tvCorrNetBarcode.setText("");
-            scanner_runnable.setFilter(Filters.RFID_NET);
+            tvCorrCageBarcode.setText("");
+            scanner_runnable.setFilter(Filters.RFID_CAGE);
             scanner_runnable.startReading();
             mScanHandler.postDelayed(scanner_runnable, 0);
         } else {
@@ -589,7 +589,7 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
             }
 
             //rfidHandler.inventoryByTimer();
-            runOnUiThread(() -> tvCorrNetBarcode.setText(""));
+            runOnUiThread(() -> tvCorrCageBarcode.setText(""));
         }
     }
 
@@ -644,9 +644,9 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
 
     // ###################################################
     private class ScanHandler extends Handler {
-        private final WeakReference<ZebraCorrelationNetActivity> mActivity;
+        private final WeakReference<ZebraCorrelationCageActivity> mActivity;
 
-        public ScanHandler(ZebraCorrelationNetActivity activity) {
+        public ScanHandler(ZebraCorrelationCageActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -660,30 +660,30 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
                             if (adapterAssets.getSelectedValue() != null) {
                                 label = epcStr.length() > 15 ? epcStr.substring(14) : epcStr;
-                                Asset net = db.assetDAO().getAssetByEpc(epcStr);
-                                if (net == null) {
-                                    net = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
-                                    if (net.rfid != null) {
-                                        String code = net.code;
-                                        String rfid = net.rfid.length() > 15 ? net.rfid.substring(14) : net.rfid;
+                                Asset cage = db.assetDAO().getAssetByEpc(epcStr);
+                                if (cage == null) {
+                                    cage = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
+                                    if (cage.rfid != null) {
+                                        String code = cage.code;
+                                        String rfid = cage.rfid.length() > 15 ? cage.rfid.substring(14) : cage.rfid;
                                         runOnUiThread(() -> {
                                             FragmentManager fm = getSupportFragmentManager();
-                                            confirmRfidReplacement.setMessage(String.format(getResources().getString(R.string.net_already_assigned_to_other_rfid), code, rfid));
+                                            confirmRfidReplacement.setMessage(String.format(getResources().getString(R.string.cage_already_assigned_to_other_rfid), code, rfid));
                                             confirmRfidReplacement.showNow(fm, getString(R.string.confirm_selection));
                                         });
 
                                     }else {
                                         GlobalState.recWHCorrelation.rfid = epcStr;
-                                        runOnUiThread(() -> tvCorrNetBarcode.setText(label));
+                                        runOnUiThread(() -> tvCorrCageBarcode.setText(label));
                                         break;
                                     }
 
                                 } else {
-                                    netCode = net.code;
+                                    cageCode = cage.code;
                                     runOnUiThread(() -> {
                                         FragmentManager fm = getSupportFragmentManager();
-                                        confirmNetRfidDlg.setMessage(String.format(getResources().getString(R.string.rfid_already_assigned_to_other_asset), label, netCode));
-                                        confirmNetRfidDlg.showNow(fm, getString(R.string.confirm_selection));
+                                        confirmCageRfidDlg.setMessage(String.format(getResources().getString(R.string.rfid_already_assigned_to_other_cage), label, cageCode));
+                                        confirmCageRfidDlg.showNow(fm, getString(R.string.confirm_selection));
                                     });
                                 }
                             } else {
@@ -709,17 +709,17 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
 
             if (response.isSuccessful()) {
                 deleteCorrelationTx();
-                updateNetsList();
+                updateCagesList();
                 if(btnUncorr.isClickable()) {
                     btnUncorr.setVisibility(View.GONE);
                 }
                 if(correlatedFilter.isChecked()) {
-                    loadNetsFromLocalDB(uncorrNetsList);
+                    loadCagesFromLocalDB(uncorrCagesList);
                 }else {
-                    loadNetsFromLocalDB(netsList);
+                    loadCagesFromLocalDB(CagesList);
                 }
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
-                tvCorrNetBarcode.setText("");
+                tvCorrCageBarcode.setText("");
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_CorrelationTx_update_failure), Toast.LENGTH_LONG));

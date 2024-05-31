@@ -54,7 +54,7 @@ public interface TransactionApi {
     Call<PostPackageQualityTxDTO> syncPostPackageQualityTx(@Body PostPackageQualityTxDTO postQualityTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/fish/logger/temp")
+    @POST("/logger/temp")
     Call<List<TemperatureTimeSeriesDTO>> syncMeasurements(@Body List<TemperatureTimeSeriesDTO> measurements, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
@@ -66,15 +66,15 @@ public interface TransactionApi {
     Call<CorrelationTxDTO> syncLoggerCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/asset/correlate")
+    @POST("/wh/fish/correlate")
     Call<ResponseBody> syncAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/asset/inter-correlate")
+    @POST("/wh/fish/inventory")
     Call<ResponseBody> syncAssetWithAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/inventory/wh")
+    @POST("/wh/fish/inventory")
     Call<RFIDInventoryDTO> syncRFIDInventoryTx(@Body RFIDInventoryDTO rFIDInventory, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")

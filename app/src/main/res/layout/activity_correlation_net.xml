@@ -46,14 +46,14 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
         android:text="@string/title_correlate_net"
         android:textColor="@color/yellow"
         android:textSize="@dimen/title_font_size"
-        app:layout_constraintBottom_toTopOf="@+id/tvHeaderNetCorrelation"
+        app:layout_constraintBottom_toTopOf="@+id/tvHeaderCageCorrelation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingPrefix" />
 
     <TextView
-        android:id="@+id/tvHeaderNetCorrelation"
+        android:id="@+id/tvHeaderCageCorrelation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

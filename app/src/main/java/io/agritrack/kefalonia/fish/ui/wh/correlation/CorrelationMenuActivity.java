@@ -16,6 +16,7 @@ import io.agritrack.kefalonia.R;
 import io.agritrack.kefalonia.dialog.SupportDialog;
 import io.agritrack.kefalonia.fish.ui.WhMenuActivity;
 import io.agritrack.kefalonia.ui.adapter.IOnItemClickListener;
+import io.agritrack.kefalonia.ui.adapter.MenuItem;
 import io.agritrack.kefalonia.ui.adapter.OptionGridAdapter;
 import io.agritrack.kefalonia.ui.service.LocalPreferences;
 import lombok.Data;
@@ -42,10 +43,30 @@ public class CorrelationMenuActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position, Option element) {
                 final Context appCtx = getApplicationContext();
-                Intent i = new Intent(appCtx, CorrelationSubMenuActivity.class);
+//                Intent i = new Intent(appCtx, CorrelationSubMenuActivity.class);
+                Intent i;
+                //i.putExtra("id", position);
+                //startActivity(i);
 
-                i.putExtra("id", position);
-                startActivity(i);
+                switch (position) {
+                    case 0:
+                         i = new Intent(appCtx, ZebraCorrelationCageActivity.class);
+                        startActivity(i);;
+                        break;
+                    case 1:
+                         i = new Intent(appCtx, ZebraCorrelationNetActivity.class);
+                        startActivity(i);;
+                        break;
+                    case 2:
+                         i = new Intent(appCtx, CorrelationBinActivity.class);
+                        startActivity(i);;
+                        break;
+                    case 3:
+                        i = new Intent(appCtx, CorrelationCageNetActivity.class);
+                        startActivity(i);;
+                        break;
+                    default:
+                }
             }
         };
 

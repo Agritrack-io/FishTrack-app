@@ -112,7 +112,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
         // get an instance of local DB
         db = MobileDB.getInstance(getAppContext());
 
-        loadCagesFromLocalDB(Constants.ftCage);
+        loadCagesFromLocalDB(Constants.ftNet);
 
         // RFID scanning functionality
         btnScanAssetTag.setOnClickListener(this::onClick);
@@ -192,7 +192,7 @@ public class CorrelationCageActivity extends LocationAwareActivity {
 
         ivNext.setOnClickListener(view -> {
             stopScanner();
-            GlobalState.recWHCorrelation.type = Constants.ftCage;
+            GlobalState.recWHCorrelation.type = Constants.ftNet;
             GlobalState.recWHCorrelation.code = adapterAssets.getSelectedValue();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {

@@ -86,7 +86,7 @@ public class CorrelationNetActivity extends LocationAwareActivity {
         keyReceiver = new X9KeyReceiver(this::onClick);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderNetCorrelation);
+        TextView tvHeader = findViewById(R.id.tvHeaderCageCorrelation);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls

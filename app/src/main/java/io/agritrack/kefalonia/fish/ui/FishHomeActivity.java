@@ -37,7 +37,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+//import io.agritrack.BuildConfig;
 import io.agritrack.api.sync.EncodingSchemeCallBack;
+//import io.agritrack.kefalonia.BuildConfig;
 import io.agritrack.kefalonia.BuildConfig;
 import io.agritrack.kefalonia.FishTrackApplication;
 import io.agritrack.kefalonia.R;
@@ -97,6 +99,7 @@ import io.agritrack.kefalonia.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.kefalonia.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.kefalonia.fish.ui.initBins.InitBinsActivity;
 import io.agritrack.kefalonia.fish.ui.process.ProcessBinsActivity;
+import io.agritrack.kefalonia.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.kefalonia.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.kefalonia.fish.ui.transport.TransportBinsActivity;
 import io.agritrack.kefalonia.fish.ui.transport.TransportInfoActivity;
@@ -157,9 +160,9 @@ public class FishHomeActivity extends AppCompatActivity {
         if (roleCanAccessMenu(userRoles, Receiving_Idx)) {
             menuItemsSet.add(new MenuItem(Receiving_Idx, getString(R.string.menu_title_fish_receiving), ProcessBinsActivity.class, R.drawable.processing));
         }
-//        if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
-//            menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), QualitySelectStepsActivity.class, R.drawable.quality));
-//        }
+        if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
+            menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), QualitySelectStepsActivity.class, R.drawable.quality));
+        }
         if (roleCanAccessMenu(userRoles, Bin_Overturn_Idx)) {
             menuItemsSet.add(new MenuItem(Bin_Overturn_Idx, getString(R.string.menu_title_bin_overturn), BinTurnoverActivity.class, R.drawable.bin_turnover));
         }
@@ -256,9 +259,9 @@ public class FishHomeActivity extends AppCompatActivity {
                         GlobalState.initProcessingRecord();
                         i = new Intent(appCtx, ProcessBinsActivity.class);
                         break;
-//                    case Packaging_Quality_Idx:
-//                        i = new Intent(appCtx, QualitySelectStepsActivity.class);
-//                        break;
+                    case Packaging_Quality_Idx:
+                        i = new Intent(appCtx, QualitySelectStepsActivity.class);
+                        break;
                     case Bin_Overturn_Idx:
                         i = new Intent(appCtx, BinTurnoverActivity.class);
                         break;

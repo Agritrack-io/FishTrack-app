@@ -19,7 +19,7 @@ public interface AssetDAO {
     @Query("SELECT * from asset")
     List<Asset> getAll();
 
-    @Query("SELECT * from asset where upper(asset_type)=:assetType and rfid is null")
+    @Query("SELECT * from asset where upper(asset_type)=:assetType")
     List<Asset> getAssetsForType(String assetType);
 
     @Query("SELECT * from asset where upper(asset_type)=:assetType and rfid is not null")

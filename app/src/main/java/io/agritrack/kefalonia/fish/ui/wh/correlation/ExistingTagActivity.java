@@ -129,7 +129,7 @@ public class ExistingTagActivity extends LocationAwareActivity {
         switch (assetType) {
             case 0:
                 filter = Filters.RFID_CAGE;
-                loadAssetsFromLocalDB(Constants.ftCage);
+                loadAssetsFromLocalDB(Constants.ftNet);
                 break;
             case 1:
                 filter = Filters.RFID_NET;

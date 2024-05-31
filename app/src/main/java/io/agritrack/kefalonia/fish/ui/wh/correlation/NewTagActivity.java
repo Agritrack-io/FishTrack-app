@@ -127,7 +127,7 @@ public class NewTagActivity extends LocationAwareActivity {
         switch (assetType) {
             case 0:
                 filter = Filters.RFID_CAGE;
-                selectedAssetType = Constants.ftCage;
+                selectedAssetType = Constants.ftNet;
                 index = 2;
                 lastEpcPerAsset = LocalPreferences.getCurrentEpcList().get(2).getEpc();
                 noOfTags = 4;

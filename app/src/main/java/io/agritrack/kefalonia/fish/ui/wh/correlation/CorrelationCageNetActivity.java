@@ -166,7 +166,7 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
 
         ivNext.setOnClickListener(view -> {
             stopScanner();
-            GlobalState.recWHCorrelation.assetType = Constants.ftCage;
+            GlobalState.recWHCorrelation.assetType = Constants.ftNet;
             //GlobalState.recWHCorrelation.assetRFID = tvCorrCageBarcode.getText() != null ? tvCorrCageBarcode.getText().toString() : null;
             GlobalState.recWHCorrelation.type = Constants.ftNet;
             //GlobalState.recWHCorrelation.rfid = tvCorrNetBarcode.getText() != null ? tvCorrNetBarcode.getText().toString() : null;

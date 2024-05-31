@@ -74,6 +74,14 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".fish.ui.wh.correlation.ZebraCorrelationNetActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.wh.correlation.ZebraCorrelationCageActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".fish.ui.wh.correlation.CorrelationPlatformActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -233,6 +241,21 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.fishing.FishingStartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.transport.TransportBinsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.transport.TransportBinsSecurityClipsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.transport.TransportDriverConfirmActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.transport.TransportInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.transport.TransportSupervisorConfirmActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.TemplateActivity"
