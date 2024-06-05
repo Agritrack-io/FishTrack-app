@@ -860,5 +860,5 @@
     <string name="please_scan">Please scan for assets</string>
     <string name="select_to_copy_to_clipboard">Please select an asset to copy</string>
     <string name="copy_to_clipboard">Label \%1$s\ is copied to clipboard</string>
-    <string name="rfid_input">Επικόλληση Rfid</string>
+    <string name="rfid_input">Paste rfid or enter asset code</string>
 </resources>
