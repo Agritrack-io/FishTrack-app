@@ -837,6 +837,7 @@
     <string name="rfid_already_assigned_to_other_asset">This tag \%1$s\ has been assigned to net \%2$s\. Do yoy want to proceed?</string>
     <string name="rfid_already_assigned_to_other_net">This tag \%1$s\ has been assigned to net \%2$s\. Do yoy want to proceed?</string>
     <string name="rfid_already_assigned_to_other_cage">This tag \%1$s\ has been assigned to cage \%2$s\. Do yoy want to proceed?</string>
+    <string name="rfid_already_assigned_to_other_bin">This tag \%1$s\ has been assigned to bin \%2$s\. Do yoy want to proceed?</string>
 
     <string name="example_station_entrance" translatable="false">Chalandri Station</string>
     <string name="example_station_exit" translatable="false">Chalandri Station Exit</string>
@@ -855,4 +856,9 @@
     <string name="empty_list_nets">List is empty! No nets to correlate.</string>
     <string name="all_cages">All cages</string>
     <string name="empty_list_cages">List is empty! No cages to correlate</string>
+    <string name="bin_already_assigned_to_other_rfid">Bin \%1$s\ has been assigned to label \%2$s\. Do you want to proceed?</string>
+    <string name="please_scan">Please scan for assets</string>
+    <string name="select_to_copy_to_clipboard">Please select an asset to copy</string>
+    <string name="copy_to_clipboard">Label \%1$s\ is copied to clipboard</string>
+    <string name="rfid_input">Επικόλληση Rfid</string>
 </resources>

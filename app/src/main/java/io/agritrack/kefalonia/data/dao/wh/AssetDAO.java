@@ -40,6 +40,9 @@ public interface AssetDAO {
     @Query("SELECT * from asset where rfid=:epcStr LIMIT 1")
     Asset getAssetByEpc(String epcStr);
 
+    @Query("SELECT * from asset where logger_epc=:loggerEpc LIMIT 1")
+    Asset getAssetByLoggerEpc(String loggerEpc);
+
     @Query("SELECT * from asset where logger_epc LIKE '%' || :loggerEPC || '%' LIMIT 1")
     Asset getByLoggerEPC(String loggerEPC);
 

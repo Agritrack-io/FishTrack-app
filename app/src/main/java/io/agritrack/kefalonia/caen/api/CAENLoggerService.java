@@ -79,7 +79,7 @@ public class CAENLoggerService {
             CAENState _state = future.get();
 
             // wait for reset to complete
-            future = this.park4Second(_state, actnPool);
+            this.park4Second();
             _state = future.get();
             //future.thenCompose(x -> park3Second(x, actnPool));
 
@@ -90,7 +90,7 @@ public class CAENLoggerService {
             int i = 0;
 
             while(_state.ctrlReg != null && _state.ctrlReg.endsWith("1") && i < 2) {
-                future =  this.park4Second(_state, actnPool);
+                this.park4Second();
                 _state = future.get();
                 future = this.execReadControlRegister(_state, actnPool);
                 _state = future.get();
@@ -169,7 +169,7 @@ public class CAENLoggerService {
             _state = future.get();
 
             if (_state.ctrlReg != null && !_state.ctrlReg.endsWith("100")) {
-                future = this.park4Second(_state, actnPool);
+                this.park4Second();
                 _state = future.get();
                 future = this.execReadControlRegister(_state, actnPool);
                 _state = future.get();
@@ -733,21 +733,21 @@ public class CAENLoggerService {
 
 
     // sleep for 4.0 second before resume flow.
-    private CompletableFuture<CAENState> park4Second(CAENState previousState, ExecutorService threadPool) {
+    private void park4Second() {
         try {
-            CompletableFuture.supplyAsync(() -> {
-                try {
+//            CompletableFuture.supplyAsync(() -> {
+//                try {
                     Thread.sleep(4*1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }, threadPool).get();
-        } catch (ExecutionException | InterruptedException e) {
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                return null;
+//            }, threadPool).get();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return CompletableFuture.completedFuture(previousState);
+        //return CompletableFuture.completedFuture(previousState);
     }
 
     //

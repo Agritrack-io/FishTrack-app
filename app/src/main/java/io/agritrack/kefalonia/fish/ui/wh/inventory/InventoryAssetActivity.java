@@ -6,14 +6,19 @@ import static io.agritrack.kefalonia.common.LargeString.render;
 import static io.agritrack.kefalonia.fish.state.GlobalState.recWHInventory;
 import static io.agritrack.kefalonia.ui.custom.CustomToast.CToast;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -80,11 +85,11 @@ public class InventoryAssetActivity extends LocationAwareActivity {
     private TreelikeAdapter adapterInventoryItems;
     private String selectedAssetType = AssetType.ALL;
     private String activeFilter = null;
-    private ImageButton ivAddItem, ivDeleteItem;
+    private ImageButton ivCopyItem, ivDeleteItem;
     private Button scanButton;
     private Integer selectedParent, selectedChild;
     private ConstraintLayout selectedItem;
-    private String selectedBarcode;
+    private String selectedBarcode, selectedRfid;
 
     private ProgressDialog progressDialog;
 
@@ -117,6 +122,7 @@ public class InventoryAssetActivity extends LocationAwareActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
 
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
         List<Site> sites = db.siteDAO().getCurrentSiteSubSites(LocalPreferences.getCurrentSiteLevel3());
@@ -197,6 +203,7 @@ public class InventoryAssetActivity extends LocationAwareActivity {
                 if (groupPosition == selectedParent && childPosition == selectedChild && (taps[0] % 2) == 0) {
                     clearSelectedItem();
                     selectedBarcode = null;
+                    selectedRfid = null;
                     taps[0]++;
                     v.setSelected(false);
                     return false;
@@ -205,8 +212,9 @@ public class InventoryAssetActivity extends LocationAwareActivity {
 
                 ConstraintLayout view = (ConstraintLayout) v;
                 TextView tvSiteName = v.findViewById(R.id.tvCode);
+                TextView tvRfid = v.findViewById(R.id.tvRfid);
                 selectedBarcode = tvSiteName.getText().toString();
-
+                selectedRfid = tvRfid.getText().toString();
                 clearSelectedItem();
 
                 v.setSelected(true);
@@ -219,6 +227,8 @@ public class InventoryAssetActivity extends LocationAwareActivity {
                 return true;
             }
         });
+        ivCopyItem.setOnClickListener(v -> copyItem());
+
 
         // onClick button event handling...
         ivDeleteItem.setOnClickListener(view -> {
@@ -282,6 +292,27 @@ public class InventoryAssetActivity extends LocationAwareActivity {
 
         configFooter();
     }
+    @SuppressLint("StringFormatMatches")
+    private void copyItem() {
+        if (adapterInventoryItems != null) {
+            if (adapterInventoryItems.getGroupCount() > 0) {
+                if (selectedRfid != null) {
+                    if (!TextUtils.isEmpty(selectedRfid)) {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("copiedPlate", selectedRfid);
+                        clipboard.setPrimaryClip(clip);
+                        CToast(getApplicationContext(), render(getString(R.string.copy_to_clipboard, selectedRfid)), Toast.LENGTH_LONG);
+                    }
+                } else {
+                    CToast(getApplicationContext(), render(getString(R.string.select_to_copy_to_clipboard)), Toast.LENGTH_LONG);
+                }
+            } else {
+                CToast(getApplicationContext(), render(R.string.please_scan), Toast.LENGTH_LONG);
+            }
+        }else{
+            CToast(getApplicationContext(), render(R.string.please_scan), Toast.LENGTH_LONG);
+        }
+    }
 
     private void moveToNextScreen() {
         if (proceedWithoutLocation) {
@@ -337,6 +368,7 @@ public class InventoryAssetActivity extends LocationAwareActivity {
         tvItemsCnt = findViewById(R.id.tvItemsCnt);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToWhMenu);
+        ivCopyItem = findViewById(R.id.ivCopyItem);
     }
 
     protected void configFooter() {
@@ -376,6 +408,7 @@ public class InventoryAssetActivity extends LocationAwareActivity {
             startActivity(i);
         });
     }
+
 
     private boolean updateState() {
         recWHInventory.selectedSite = LocalPreferences.getCurrentSiteName();

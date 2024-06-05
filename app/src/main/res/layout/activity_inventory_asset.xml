@@ -348,6 +348,18 @@ tools:context=".fish.ui.wh.inventory.InventoryAssetActivity">
                 app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems"
                 app:srcCompat="@drawable/ic_delete" />
 
+            <ImageButton
+                android:id="@+id/ivCopyItem"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/transparent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivDeleteItem"
+                app:srcCompat="@drawable/ic_outline_content_copy_24"
+                tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </RelativeLayout>

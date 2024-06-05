@@ -830,6 +830,7 @@
     <string name="rfid_already_assigned_to_other_asset">Αυτή η ετικέτα \%1$s\ έχει συσχετιστεί ήδη με το δίχτυ \%2$s\. Θέλετε να συνεχίσετε?</string>
     <string name="rfid_already_assigned_to_other_net">Αυτή η ετικέτα \%1$s\ έχει συσχετιστεί ήδη με το δίχτυ \%2$s\. Θέλετε να συνεχίσετε?</string>
     <string name="rfid_already_assigned_to_other_cage">Αυτή η ετικέτα \%1$s\ έχει συσχετιστεί ήδη με τον κλωβό \%2$s\. Θέλετε να συνεχίσετε?</string>
+    <string name="rfid_already_assigned_to_other_bin">Αυτή η ετικέτα \%1$s\ έχει συσχετιστεί ήδη με τη βούτα \%2$s\. Θέλετε να συνεχίσετε?</string>
 
     <string name="filter_for_uncorrlated">Φιλτράρετε για απρογραμμάτιστα</string>
     <string name="all_nets">Όλα τα δίχτυα  </string>
@@ -846,5 +847,10 @@
     <string name="empty_list_nets">Η λίστα είναι άδεια! Δεν υπάρχουν δίχτυα για συσχετισμό.</string>
     <string name="all_cages">All cages</string>
     <string name="empty_list_cages">List is empty! No cages to correlate</string>
+    <string name="bin_already_assigned_to_other_rfid">Η βούτα \%1$s\ έχει συσχετιστεί ήδη με την ετικέτα \%2$s\. Θέλετε να συνεχίσετε?</string>
+    <string name="please_scan">Please scan for assets</string>
+    <string name="select_to_copy_to_clipboard">Please select an asset to copy</string>
+    <string name="copy_to_clipboard">Label \%1$s\ is copied to clipboard</string>
+    <string name="rfid_input">Barcode</string>
 
 </resources>

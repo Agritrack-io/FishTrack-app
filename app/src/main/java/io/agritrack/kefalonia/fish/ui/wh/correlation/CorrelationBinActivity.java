@@ -6,15 +6,20 @@ import static io.agritrack.kefalonia.common.LargeString.render;
 import static io.agritrack.kefalonia.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.kefalonia.ui.custom.CustomToast.CToast;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -42,6 +47,7 @@ import io.agritrack.kefalonia.api.APIServiceGenerator;
 import io.agritrack.kefalonia.api.tx.TransactionApi;
 import io.agritrack.kefalonia.common.Constants;
 import io.agritrack.kefalonia.common.Filters;
+import io.agritrack.kefalonia.crypto.Crypto;
 import io.agritrack.kefalonia.data.db.MobileDB;
 import io.agritrack.kefalonia.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.kefalonia.data.model.tx.CorrelationTransaction;
@@ -73,10 +79,12 @@ public class CorrelationBinActivity extends LocationAwareActivity {
     private SearchView svSearchAsset;
     private RecyclerView rvBins;
     private ProgressDialog progressDialog;
-    private YesNoDialogFragment confirmGPSSelectionDlg;
+    private YesNoDialogFragment confirmGPSSelectionDlg, confirmBinRfidDlg, confirmRfidReplacement;;
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
+    private String epcStr, label, binCode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +102,25 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         assignCtrlVars();
 
         svSearchAsset.setIconifiedByDefault(false);
+
+        confirmRfidReplacement = YesNoDialogFragment.instance(); //dialog in the case where a specific net is already corr
+        //confirmRfidReplacement.setMessage(getText(R.string.proceed_with_replacement));
+        confirmRfidReplacement.onConfirm(bundle -> {
+            GlobalState.recWHCorrelation.assetRFID = epcStr;
+            runOnUiThread(() -> tvCorrBinBarcode.setText(label));
+        });
+        confirmRfidReplacement.onReject(bundle -> {
+            runOnUiThread(() -> tvCorrBinBarcode.setText(""));
+        });
+
+
+        confirmBinRfidDlg = YesNoDialogFragment.instance();
+        confirmBinRfidDlg.onConfirm(bundle -> {
+            showConfirmDialog();
+        });
+        confirmBinRfidDlg.onReject(bundle -> {
+            runOnUiThread(() -> tvCorrBinBarcode.setText(""));
+        });
 
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
@@ -124,6 +151,68 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         });
 
         configFooter();
+    }
+
+    @SuppressLint("StringFormatMatches")
+    private void showConfirmDialog() {
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(input)
+                .setTitle(getString(R.string.confirm_with_pin))
+                .setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        boolean wantToCloseDialog;
+                        String pin = input.getText().toString();
+                        String userPin = null;
+                        try {
+                            userPin = Crypto.decodeAndDecrypt(db.userDAO().getByUsername(LocalPreferences.getLoggedInUser(null)).pin);
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+
+                        if (pin.equalsIgnoreCase(userPin)) {
+                            input.getShowSoftInputOnFocus();
+                            recWHCorrelation.assetRFID = epcStr;
+                            runOnUiThread(() -> tvCorrBinBarcode.setText(label));
+                            wantToCloseDialog = true;
+                        } else {
+                            dialog.setTitle(getString(R.string.invalid_password));
+                            runOnUiThread(() -> tvCorrBinBarcode.setText(""));
+                            wantToCloseDialog = false;
+                        }
+                        //Do stuff, possibly set wantToCloseDialog to true then...
+                        if (wantToCloseDialog) {
+                            dialog.dismiss();
+                        } else {
+                            runOnUiThread(() -> tvCorrBinBarcode.setText(""));
+                        }
+
+                        input.setText("");
+
+                        /*//Dismiss once everything is OK.
+                        dialog.dismiss();*/
+                    }
+                });
+            }
+        });
+        dialog.show();
+        dialog.setCanceledOnTouchOutside(false);
     }
 
     private void moveToNextScreen() {
@@ -190,8 +279,8 @@ public class CorrelationBinActivity extends LocationAwareActivity {
     protected void configFooter() {
         ivBack.setOnClickListener(view -> {
             stopScanner();
-            Intent i = new Intent(getApplicationContext(), CorrelationSubMenuActivity.class);
-            i.putExtra("id", 2);
+            Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
+            //i.putExtra("id", 2);
             startActivity(i);
         });
 
@@ -262,8 +351,19 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
 
+            Asset oldBinRfid = db.assetDAO().getAssetByEpc(recWHCorrelation.assetRFID);
+            if (oldBinRfid != null) {
+                oldBinRfid.rfid = null;
+                db.assetDAO().update(oldBinRfid);
+            }
+            Asset oldBinLogger = db.assetDAO().getAssetByLoggerEpc(recWHCorrelation.rfid);
+            if (oldBinLogger != null) {
+                oldBinLogger.rfid = null;
+                db.assetDAO().update(oldBinLogger);
+            }
             Asset bin = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
             bin.rfid = recWHCorrelation.assetRFID;
+            bin.loggerEPC = recWHCorrelation.rfid;
             db.assetDAO().update(bin);
 
             // sync WH Correlation Tx
@@ -363,6 +463,7 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             mActivity = new WeakReference<>(activity);
         }
 
+        @SuppressLint("StringFormatMatches")
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -372,13 +473,39 @@ public class CorrelationBinActivity extends LocationAwareActivity {
                         if (!CollectionUtils.isEmpty(tags)) {
                             for (CharSequence tag : tags) {
                                 String epc = tag.toString();
-                                String label = epc.length() > 15 ? epc.substring(14) : epc;
+                                epcStr = epc;
+                                label = epc.length() > 15 ? epc.substring(14) : epc;
+
                                 if (epc.indexOf(Filters.RFID_BIN) > -1) {
-                                    GlobalState.recWHCorrelation.assetRFID = epc;
-                                    tvCorrBinBarcode.setText(label);
+                                   // label = epc.length() > 15 ? epc.substring(14) : epc;
 
+                                    if (adapterAssets.getSelectedValue() != null) {
+                                        Asset bin = db.assetDAO().getAssetByEpc(epc);
+                                        if (bin == null) {
+                                            bin = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
+                                            if (bin.rfid != null) {
+                                                String code = bin.code;
+                                                FragmentManager fm = getSupportFragmentManager();
+                                                confirmRfidReplacement.setMessage(String.format(getResources().getString(R.string.bin_already_assigned_to_other_rfid), code, label));
+                                                confirmRfidReplacement.showNow(fm, getString(R.string.confirm_selection));
+                                                return;
 
+                                            }else {
+                                                recWHCorrelation.assetRFID = epcStr;
+                                                runOnUiThread(() -> tvCorrBinBarcode.setText(label));
+                                                break;
+                                            }
 
+                                        } else {
+                                            binCode = bin.code;
+                                                FragmentManager fm = getSupportFragmentManager();
+                                                confirmBinRfidDlg.setMessage(String.format(getResources().getString(R.string.rfid_already_assigned_to_other_bin), label, binCode));
+                                                confirmBinRfidDlg.showNow(fm, getString(R.string.confirm_selection));
+                                                return;
+                                        }
+                                    } else {
+                                        CToast(getApplicationContext(), render(R.string.select_asset), Toast.LENGTH_LONG);
+                                    }
                                 } else if (epc.indexOf(Filters.RFID_LOGGER) > -1) {
                                     GlobalState.recWHCorrelation.rfid = epc;
                                     tvCorrTempLoggerBarcode.setText(label);

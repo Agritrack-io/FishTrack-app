@@ -1,18 +1,26 @@
 package io.agritrack.kefalonia.fish.ui.wh.search;
 
+import static android.content.ClipDescription.MIMETYPE_TEXT_PLAIN;
 import static io.agritrack.kefalonia.FishTrackApplication.getAppContext;
 import static io.agritrack.kefalonia.common.LargeString.render;
 import static io.agritrack.kefalonia.ui.custom.CustomToast.CToast;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputFilter;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -20,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -27,7 +36,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -59,13 +72,17 @@ import io.agritrack.kefalonia.ui.service.LocalPreferences;
 public class SearchActivity extends AppCompatActivity {
     private static final EncodingSchemeService schemeSvc = EncodingSchemeService.getInstance();
     private static final ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+    private static final int BLUETOOTH_PERMISSION_REQUEST_CODE = 100;
+    private final String epcPrefix = "BE0019A0000";
+    // BX6100 handler
     private final ScanHandler mScanHandler = new ScanHandler(this);
     private final ICAEN_API uhfReader = RFIDModuleFactory.getInstance();
     // **************************************************************
     private final Runnable search_runnable = new SearchRunnable();
-    private final String epcPrefix = "BE0019A0000";
-    // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
+    // Zebra handler
+    //SearchHandler rfidHandler;
+    private MutableLiveData<String> liveData;
     private ProgressBar pbProximity;
     private MobileDB db;
     private FilterableAdapter adapterAssets;
@@ -80,6 +97,7 @@ public class SearchActivity extends AppCompatActivity {
     private String selectedAssetType, code;
     private ProgressBar searchProgressBar;
     private boolean isScanning = false;
+    private ImageButton ivPasteItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,8 +165,6 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        spAssetType.setSelection(1);
-
         svSearchAsset.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -172,12 +188,9 @@ public class SearchActivity extends AppCompatActivity {
 
         etAssetBarcode.setOnClickListener(v -> {
             if (adapterAssets != null && adapterAssets.getSelectedValue() != null) {
-                adapterAssets.clearSelectedValue();
+                runOnUiThread(() -> adapterAssets.clearSelectedValue());
             }
         });
-
-        // instantiate Local Handler that will process the scanning stream.
-        //mScanHandler = new ScanHandler(this);
 
         // link trigger/scan button to ClickListener
         btnSearchAsset.setOnClickListener(this::onClick);
@@ -186,8 +199,94 @@ public class SearchActivity extends AppCompatActivity {
             supportDialog = new SupportDialog(SearchActivity.this);
             supportDialog.showDialog();
         });
+        ivPasteItem.setOnClickListener(view -> pastePlate());
 
         configFooter();
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == BLUETOOTH_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //rfidHandler.onCreate(this);
+            } else {
+                Toast.makeText(this, "Bluetooth Permissions not granted", Toast.LENGTH_SHORT).show();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        // If it does contain data, decide if you can handle the data.
+        if (!clipboard.hasPrimaryClip() || !clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN)) {
+            return;
+        }
+
+        ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0); // get position 0 of the clipboard (last copied item)
+        if (item.getText() == null || TextUtils.isEmpty(item.getText().toString())) {
+            return;
+        }
+
+        ivPasteItem.setVisibility(View.VISIBLE);
+        etAssetBarcode.setHint(R.string.rfid_input);
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Listen for Fn key press/release;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.rfid.FUN_KEY");
+        this.registerReceiver(keyReceiver, filter);
+        if (uhfReader != null)
+            this.uhfReader.HighPowerLevel();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //unregister the receiver
+        if (keyReceiver != null)
+            unregisterReceiver(keyReceiver);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //rfidHandler.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        // RFID Handler
+        //rfidHandler = new SearchHandler();
+
+        //Scanner Initializations
+        //Handling Runtime BT permissions for Android 12 and higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.BLUETOOTH_CONNECT)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT},
+                        BLUETOOTH_PERMISSION_REQUEST_CODE);
+            } else {
+                //rfidHandler.onCreate(this);
+            }
+
+        } else {
+            //rfidHandler.onCreate(this);
+        }
+        //rfidHandler.onResume();
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //rfidHandler.onDestroy();
     }
 
     private void loadAssetsByTypeFromLocalDB(String assetType) {
@@ -197,7 +296,9 @@ public class SearchActivity extends AppCompatActivity {
         List<Asset> assetsList = db.assetDAO().getAssetsByTypeForSearch(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
 //            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid.substring(x.rfid.length()-10))).collect(Collectors.toList());
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid.substring(x.rfid.length() - 10), x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
+            List<GenericListModel> selectedAssets = assetsList.stream()
+                    .map(x -> new GenericListModel(x.id, x.rfid.substring(x.rfid.length() - 10), x.code, x.netEyeGirth, x.perimeter))
+                    .collect(Collectors.toList());
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
@@ -217,39 +318,13 @@ public class SearchActivity extends AppCompatActivity {
             startActivity(i);
         });
     }
+    private void pastePlate() {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        String pasteData = clipboard.getPrimaryClip().getItemAt(0).getText().toString();
+        etAssetBarcode.setHint(R.string.rfid_input);
+        etAssetBarcode.setText(pasteData);
 
-   /* private void loadCagesFromLocalDB() {
-        // load assets for current Site and filter by asset type (if selected).
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftCage);
-        if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid)).collect(Collectors.toList());
-            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
-            adapterAssets.getFilter().filter("");
-            this.rvAssets.setAdapter(adapterAssets);
-        }
     }
-
-    private void loadNetsFromLocalDB() {
-        // load assets for current Site and filter by asset type (if selected).
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftNet); //getAssetsForType(selectedAssetType);
-        if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
-            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
-            adapterAssets.getFilter().filter("");
-            this.rvAssets.setAdapter(adapterAssets);
-        }
-    }
-
-    private void loadBinsFromLocalDB() {
-        // load assets for current Site and filter by asset type (if selected).
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(Constants.ftBin); //getAssetsForType(selectedAssetType);
-        if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid)).collect(Collectors.toList()); // .toArray(GenericListModel[]::new);
-            adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets, itemsClickListener);
-            adapterAssets.getFilter().filter("");
-            this.rvAssets.setAdapter(adapterAssets);
-        }
-    }*/
 
     private void assignCtrlVars() {
         spAssetType = findViewById(R.id.spAssetType);
@@ -264,6 +339,7 @@ public class SearchActivity extends AppCompatActivity {
         searchProgressBar = findViewById(R.id.searchProgressBar);
         rvAssets.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvAssets.setItemAnimator(new DefaultItemAnimator());
+        ivPasteItem = findViewById(R.id.ivPasteItem);
 
         if (adapterAssets == null) {
             svSearchAsset.setVisibility(View.GONE);
@@ -287,7 +363,9 @@ public class SearchActivity extends AppCompatActivity {
                     }
                     etAssetBarcode.setText("");
                 }
-                adapterAssets.getFilter().filter(newText);
+                if (adapterAssets != null) {
+                    adapterAssets.getFilter().filter(newText);
+                }
                 return false;
             }
         });
@@ -295,29 +373,6 @@ public class SearchActivity extends AppCompatActivity {
             pbProximity.setProgress(0);
             tvProximity.setText(null);
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Listen for Fn key press/release;
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.rfid.FUN_KEY");
-        this.registerReceiver(keyReceiver, filter);
-        this.uhfReader.HighPowerLevel();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     protected void onClick(View view) {
@@ -330,15 +385,12 @@ public class SearchActivity extends AppCompatActivity {
         if (adapterAssets != null) {
             if (adapterAssets.getSelectedValue() != null) {
                 selectedBarcode = adapterAssets.getSelectedValue();
-//                String[] selectedCodes = selectedBarcode.split("/");
-//                String selectedCode = selectedCodes[0];
-//                Asset selectedAsset = db.assetDAO().getByCode(selectedCode);
                 etAssetBarcode.setText(selectedBarcode);
             }
         }
         if (!Strings.isEmptyOrWhitespace(etAssetBarcode.getText().toString())) {
             if (adapterAssets != null && adapterAssets.getSelectedValue() != null) {
-                adapterAssets.clearSelectedValue();
+                runOnUiThread(() -> adapterAssets.clearSelectedValue());
             }
             selectedBarcode = etAssetBarcode.getText().toString();
         }
@@ -347,23 +399,97 @@ public class SearchActivity extends AppCompatActivity {
             return;
         }
 
-        if (!isScanning) {
-            isScanning = true;
-            btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
-            btnSearchAsset.setText(R.string.stop_search);
-            uhfReader.setFilterEPC(epcPrefix + code.substring(0, 3) + selectedBarcode);
-            uhfReader.startSearching();
-            mScanHandler.postDelayed(search_runnable, 0);
+        // Check if device model is BX6100, else is Zebra
+        if (LocalPreferences.getDeviceModel() != null && LocalPreferences.getDeviceModel().equals("BX6100")) {
+            if (!isScanning) {
+                isScanning = true;
+                btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                btnSearchAsset.setText(R.string.stop_search);
+                pbProximity.setProgress(0);
+                tvProximity.setText(R.string.proximity);
+                //uhfReader.setFilterEPC(epcPrefix + code.substring(0, 3) + selectedBarcode);
+                Asset searchAsset = db.assetDAO().getByCode(selectedBarcode);
+                if (searchAsset != null){
+                    uhfReader.setFilterEPC(db.assetDAO().getByCode(selectedBarcode).rfid);
+                } else {
+                    uhfReader.setFilterEPC(epcPrefix + "141" + selectedBarcode);
+                }
+                uhfReader.startSearching();
+                mScanHandler.postDelayed(search_runnable, 0);
+            } else {
+                isScanning = false;
+                btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+                btnSearchAsset.setText(R.string.title_search);
+                pbProximity.setProgress(0);
+                tvProximity.setText(R.string.proximity);
+                uhfReader.stopSearching();
+                mScanHandler.removeCallbacks(search_runnable);
+            }
         } else {
-            isScanning = false;
-            btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-            btnSearchAsset.setText(R.string.title_search);
-            pbProximity.setProgress(0);
-            tvProximity.setText(R.string.proximity);
-            uhfReader.stopSearching();
-            mScanHandler.removeCallbacks(search_runnable);
+            if (!isScanning) {
+                isScanning = true;
+                btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
+                btnSearchAsset.setText(R.string.stop_search);
+                //rfidHandler.setFilterEPC(epcPrefix + code.substring(0, 3) + selectedBarcode);
+                //rfidHandler.performSearching();
+            } else {
+                isScanning = false;
+                //rfidHandler.stopSearching();
+                btnSearchAsset.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+                btnSearchAsset.setText(R.string.title_search);
+                runOnUiThread(() -> {
+                    pbProximity.setProgress(0);
+                    tvProximity.setText(R.string.proximity);
+                });
+            }
         }
     }
+
+//    @Override
+//    public void handleTagsdata(TagData[] tagData) {
+//        int rssi_from_tag = 0;
+//        if (tagData != null) {
+//            short distance = tagData[0].LocationInfo.getRelativeDistance();
+//            rssi_from_tag = normalize(distance);
+//        }
+//
+//        int rssi_norm = normalize(rssi_from_tag);
+//
+//        if (rssi_norm > 5 && rssi_norm < 95) {
+//            runOnUiThread(() -> {
+//                this.tvProximity.setText(String.valueOf(rssi_norm));
+//                this.pbProximity.setProgress(rssi_norm);
+//            });
+//        } else if (rssi_norm >= 95) {
+//            runOnUiThread(() -> {
+//                this.tvProximity.setText(">= 95%");
+//                this.pbProximity.setProgress(100);
+//            });
+//        } else {
+//            runOnUiThread(() -> {
+//                this.tvProximity.setText("<= 5%");
+//                this.pbProximity.setProgress(0);
+//            });
+//        }
+//    }
+
+    private int normalize(double rssi) {
+        final double MAX_RSSI = 80d;
+        final double MIN_RSSI = 0;
+        rssi = rssi > MAX_RSSI ? MAX_RSSI : rssi;
+        rssi = rssi < MIN_RSSI ? MIN_RSSI : rssi;
+        return (int) (Math.abs(rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI) * 100);
+    }
+
+//    @Override
+//    public void handleTriggerPress(boolean pressed) {
+//        btnSearchAsset.callOnClick();
+//    }
+//
+//    @Override
+//    public void addToEditText(String selectedValue) {
+//        etAssetBarcode.setText(selectedValue);
+//    }
 
     // ###################################################
     private static class ScanHandler extends Handler {
@@ -441,5 +567,4 @@ public class SearchActivity extends AppCompatActivity {
             mScanHandler.post(search_runnable);
         }
     }
-
 }
