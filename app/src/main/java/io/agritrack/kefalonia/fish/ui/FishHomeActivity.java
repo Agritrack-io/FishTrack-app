@@ -148,13 +148,13 @@ public class FishHomeActivity extends AppCompatActivity {
         db = MobileDB.getInstance(getAppContext());
 
         Set<MenuItem> menuItemsSet = new LinkedHashSet<MenuItem>();
-//        if (roleCanAccessMenu(userRoles, InitBins_Idx)) {
-//            menuItemsSet.add(new MenuItem(InitBins_Idx, getString(R.string.menu_title_init_bins), TestBinTempActivity.class, R.drawable.test_bin_temp));
-//        }
+        if (roleCanAccessMenu(userRoles, InitBins_Idx)) {
+            menuItemsSet.add(new MenuItem(InitBins_Idx, getString(R.string.menu_title_init_bins), TestBinTempActivity.class, R.drawable.test_bin_temp));
+        }
 //        if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
 //            menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
 //        }
-//        if (roleCanAccessMenu(userRoles, Test_Temp_Idx)) {
+//        if (roleCanAccessMenu(suserRoles, Test_Temp_Idx)) {
 //            menuItemsSet.add(new MenuItem(Test_Temp_Idx, getString(R.string.menu_title_test_temp), TestBinTempActivity.class, R.drawable.test_bin_temp));
 //        }
 //        if (roleCanAccessMenu(userRoles, Receiving_Idx)) {
@@ -163,9 +163,9 @@ public class FishHomeActivity extends AppCompatActivity {
 //        if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
 //            menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), QualitySelectStepsActivity.class, R.drawable.quality));
 //        }
-//        if (roleCanAccessMenu(userRoles, Bin_Overturn_Idx)) {
-//            menuItemsSet.add(new MenuItem(Bin_Overturn_Idx, getString(R.string.menu_title_bin_overturn), BinTurnoverActivity.class, R.drawable.bin_turnover));
-//        }
+        if (roleCanAccessMenu(userRoles, Bin_Overturn_Idx)) {
+            menuItemsSet.add(new MenuItem(Bin_Overturn_Idx, getString(R.string.menu_title_bin_overturn), BinTurnoverActivity.class, R.drawable.bin_turnover));
+        }
 //        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
 //            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
 //        }
@@ -210,10 +210,10 @@ public class FishHomeActivity extends AppCompatActivity {
                 MenuItem mi = (MenuItem) gvMainMenu.getItemAtPosition(position);
 
                 switch (mi.getLoc()) {
-//                    case InitBins_Idx:
-//                        GlobalState.initFishingRecord();
-//                        i = new Intent(appCtx, InitBinsActivity.class);
-//                        break;
+                    case InitBins_Idx:
+                        GlobalState.initFishingRecord();
+                        i = new Intent(appCtx, InitBinsActivity.class);
+                        break;
 //                    case Fishing_Idx:
 //                        FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
 //                        FishingRecord fishingRecord;
@@ -262,9 +262,9 @@ public class FishHomeActivity extends AppCompatActivity {
 //                    case Packaging_Quality_Idx:
 //                        i = new Intent(appCtx, QualitySelectStepsActivity.class);
 //                        break;
-//                    case Bin_Overturn_Idx:
-//                        i = new Intent(appCtx, BinTurnoverActivity.class);
-//                        break;
+                    case Bin_Overturn_Idx:
+                        i = new Intent(appCtx, BinTurnoverActivity.class);
+                        break;
                     case Warehouse_Idx:
                         i = new Intent(appCtx, WhMenuActivity.class);
                         break;

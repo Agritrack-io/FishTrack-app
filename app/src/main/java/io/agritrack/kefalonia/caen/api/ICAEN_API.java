@@ -10,7 +10,7 @@ import io.agritrack.kefalonia.data.model.TempSample;
 
 public interface ICAEN_API {
 
-    Short DefaultInterval = (short) 1800; //(900); //(1800); //(3600);
+    Short DefaultInterval = (short) 30;//1800; //(900); //(1800); //(3600);
     Short SampleBatchSize = 50;
     byte[] accessPassword = Tools.HexString2Bytes("00000000");
 
@@ -48,6 +48,19 @@ public interface ICAEN_API {
 
     /* This function sets the sampling interval. */
     Reader.READER_ERR WriteInterval(Short interval);
+
+    /* This function sets the upper limit for the temprature of bin 0. */
+    Reader.READER_ERR writeHLimitZERO();
+
+
+    /* This function sets the counter of the bin on. */
+    Reader.READER_ERR writeBinEnableCounter();
+
+    /* This function sets the counter of the bin on. */
+    public Reader.READER_ERR writeBinEnaSampleStore();
+
+
+    public Reader.READER_ERR writeBinEnaTimeStore();
 
     /* This function starts Logging. */
     Reader.READER_ERR EnableLogging();
@@ -152,4 +165,5 @@ public interface ICAEN_API {
     List<RFIDTag> search();
 
     boolean stopSearching();
+
 }

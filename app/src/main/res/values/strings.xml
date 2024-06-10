@@ -381,7 +381,7 @@
     <string name="search_details">Search details</string>
     <string name="choose_asset_type">Asset type</string>
     <string name="search_and_select_barcode">Search and select barcode</string>
-    <string name="type_barcode">Or type barcode of asset</string>
+    <string name="choose_barcode">Select an asset</string>
     <string name="proximity">Proximity</string>
 
     <string name="title_maintenance">MAINTENANCE</string>
@@ -860,5 +860,5 @@
     <string name="please_scan">Please scan for assets</string>
     <string name="select_to_copy_to_clipboard">Please select an asset to copy</string>
     <string name="copy_to_clipboard">Label \%1$s\ is copied to clipboard</string>
-    <string name="rfid_input">Paste rfid or enter asset code</string>
+    <string name="paste_label">Paste Label</string>
 </resources>

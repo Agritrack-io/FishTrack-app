@@ -1,5 +1,9 @@
 package io.agritrack.kefalonia.caen.api;
 
+import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.ADDR_BIN_ENABLE_COUNTER;
+import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.ADDR_BIN_ENA_SAMPLE_STORE;
+import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.ADDR_BIN_ENA_TIME_STORE;
+import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.ADDR_BIN_HLIMIT_0;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.ADDR_CONTROL;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.ADDR_FW_REVISION;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.ADDR_HW_REVISION;
@@ -16,6 +20,7 @@ import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.ADDR_TIME_BIN;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.REPLY_NACK;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.SHORT_FOUR;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.SHORT_ONE;
+import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.SHORT_SEVENTY;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.SHORT_SIX;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.SHORT_THREE;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.SHORT_TWO;
@@ -180,6 +185,48 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
         return null;
     }
 
+    @Override
+    public Reader.READER_ERR writeHLimitZERO() {
+        try {
+            return WriteRegisters(ADDR_BIN_HLIMIT_0, SHORT_SEVENTY);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Reader.READER_ERR writeBinEnableCounter() {
+        try {
+            return WriteRegisters(ADDR_BIN_ENABLE_COUNTER, SHORT_ONE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Reader.READER_ERR writeBinEnaSampleStore() {
+        try {
+            return WriteRegisters(ADDR_BIN_ENA_SAMPLE_STORE, SHORT_ONE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+
+    @Override
+    public Reader.READER_ERR writeBinEnaTimeStore() {
+        try {
+            return WriteRegisters(ADDR_BIN_ENA_TIME_STORE, SHORT_ZERO);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+
     /* This function sets the current epoch timestamp */
     @Override
     public Reader.READER_ERR WriteCurrentDatetime() {
@@ -231,8 +278,11 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     @Override
     public Reader.READER_ERR HighSensitivity() {
         try {
-            Short bits = 0x10; //Short bits = 0x14; //Short.valueOf("0010", 16); // High sensitivity and KEEP LOGGING!!!!
-            Reader.READER_ERR rs = WriteRegisters(ADDR_CONTROL, bits);
+            //Short bits = 0x10; //Short bits = 0x14; //Short.valueOf("0010", 16); // High sensitivity and KEEP LOGGING!!!!
+            byte[] address = ReadRegisters(ADDR_CONTROL, SHORT_ONE);
+            Short currState = EncodingUtils.ToShort(address);
+            currState = (short) (currState | (1 << 4));
+            Reader.READER_ERR rs = WriteRegisters(ADDR_CONTROL, currState);
             return rs;
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -48,6 +48,8 @@ public class CAENState implements Serializable {
     private Integer opHighSensitivity = null;
     private Integer opWriteCurrentTS = null;
     private Integer opWriteBinZero = null;
+    private Integer opWriteHLimitZERO = null;
+    private Integer opWriteBinEnableCounter = null;
     private Integer opWriteBinOne = null;
     private Integer opWriteInterval = null;
 
@@ -207,6 +209,34 @@ public class CAENState implements Serializable {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
         this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
         this.opWriteInterval = !Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 0 : 1;
+        return this;
+    }
+
+    public CAENState writeHLimitZERO(Object val) {
+        Reader.READER_ERR rs = (Reader.READER_ERR) val;
+        this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opWriteHLimitZERO = !Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 0 : 1;
+        return this;
+    }
+
+    public CAENState writeBinEnableCounter(Object val) {
+        Reader.READER_ERR rs = (Reader.READER_ERR) val;
+        this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opWriteBinEnableCounter = !Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 0 : 1;
+        return this;
+    }
+
+    public CAENState writeBinEnaSampleStore(Object val) {
+        Reader.READER_ERR rs = (Reader.READER_ERR) val;
+        this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opWriteBinEnableCounter = !Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 0 : 1;
+        return this;
+    }
+
+    public CAENState writeBinEnaTimeStore(Object val) {
+        Reader.READER_ERR rs = (Reader.READER_ERR) val;
+        this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.opWriteBinEnableCounter = !Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 0 : 1;
         return this;
     }
 

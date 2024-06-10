@@ -29,6 +29,12 @@ public class CAEN_CONSTANTS {
     public final static short ADDR_HW_REVISION = (short) 0x0009;
     public final static short ADDR_STATUS = (short) 0x0051;
 
+
+    public final static short ADDR_BIN_HLIMIT_0 = (short) 0x0013;
+    public final static short ADDR_BIN_ENABLE_COUNTER = (short) 0x0010;
+    public final static short ADDR_BIN_ENA_SAMPLE_STORE = (short) 0x0011;
+    public final static short ADDR_BIN_ENA_TIME_STORE = (short) 0x0012;
+
     public final static short MAXBYTESIZEDATA = 200 * 2;
     public final static byte CMD_READ = 0x12;
     public final static byte CMD_WRITE = 0x13;
@@ -45,6 +51,7 @@ public class CAEN_CONSTANTS {
     public final static short SHORT_THREE = (short) 0x0003;
     public final static short SHORT_FOUR = (short) 0x0004;
     public final static short SHORT_SIX = (short) 0x0006;
+    public final static short SHORT_SEVENTY = (short) 0x8C0;
 
 
     public final static int ReadFWRevision = 1000;
@@ -68,6 +75,11 @@ public class CAEN_CONSTANTS {
     public final static int WriteTimeBINOne = 1101;
     public final static int WriteTimeStamp = 1102;
     public final static int WriteInterval = 1103;
+    public final static int WriteHLimitBINZero = 1104;
+    public final static int WriteBinEnableCounter = 1104;
+    public final static int WriteBinEnaSampleStore = 1105;
+    public final static int WriteBinEnaTimeStore = 1106;
+
 
     public final static int CmdSTOP = 10012;
     public final static int CmdRESET = 10013;

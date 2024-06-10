@@ -17,6 +17,10 @@ import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.ReadSΤΑΤΕ;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.ReadTimeBIN;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.ResetSΤΑΤΕ;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.ValidSΤΑΤΕ;
+import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.WriteBinEnaSampleStore;
+import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.WriteBinEnaTimeStore;
+import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.WriteBinEnableCounter;
+import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.WriteHLimitBINZero;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.WriteInterval;
 import static io.agritrack.kefalonia.caen.api.CAEN_CONSTANTS.WriteTimeBINZero;
 
@@ -29,6 +33,7 @@ import com.uhf.api.cls.Reader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -151,6 +156,15 @@ public class CAENLoggerService {
             // set time Bin to 0, (disable timestamps)
             CompletableFuture<CAENState> future = this.execWriteTimeBINZero(new CAENState(), actnPool);
 
+
+            future.thenCompose(x -> execWriteHLimitZERO(x, actnPool));
+
+            future.thenCompose(x -> execWriteBinEnableCounter(x, actnPool));
+
+            future.thenCompose(x -> execWriteBinEnaSampleStore(x, actnPool));
+
+            future.thenCompose(x -> execWriteBinEnaTimeStore(x, actnPool));
+
             // set time interval to given value
             future.thenCompose(x -> execWriteInterval(samplingInterval, x, actnPool));
 
@@ -193,6 +207,82 @@ public class CAENLoggerService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private CompletableFuture<CAENState> execWriteHLimitZERO(CAENState previousState, ExecutorService actnPool) {
+        CompletableFuture<CAENState> _future = CompletableFuture.completedFuture(previousState);
+        try {
+            if (!canProceed(previousState)) {
+                return _future;
+            }
+
+            _future = CompletableFuture.supplyAsync(() -> previousState.writeHLimitZERO(cmd.writeHLimitZERO()), actnPool);
+            CAENState _state = _future.exceptionally(x -> null).get();
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(WriteHLimitBINZero, _state.interval));
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return _future;
+    }
+
+    private CompletableFuture<CAENState> execWriteBinEnableCounter(CAENState previousState, ExecutorService actnPool) {
+        CompletableFuture<CAENState> _future = CompletableFuture.completedFuture(previousState);
+        try {
+            if (!canProceed(previousState)) {
+                return _future;
+            }
+
+            _future = CompletableFuture.supplyAsync(() -> previousState.writeBinEnableCounter(cmd.writeBinEnableCounter()), actnPool);
+            CAENState _state = _future.exceptionally(x -> null).get();
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(WriteBinEnableCounter, _state.interval));
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return _future;
+    }
+
+    private CompletableFuture<CAENState> execWriteBinEnaSampleStore(CAENState previousState, ExecutorService actnPool) {
+        CompletableFuture<CAENState> _future = CompletableFuture.completedFuture(previousState);
+        try {
+            if (!canProceed(previousState)) {
+                return _future;
+            }
+
+            _future = CompletableFuture.supplyAsync(() -> previousState.writeBinEnaSampleStore(cmd.writeBinEnaSampleStore()), actnPool);
+            CAENState _state = _future.exceptionally(x -> null).get();
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(WriteBinEnaSampleStore, _state.interval));
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return _future;
+    }
+
+    private CompletableFuture<CAENState> execWriteBinEnaTimeStore(CAENState previousState, ExecutorService actnPool) {
+        CompletableFuture<CAENState> _future = CompletableFuture.completedFuture(previousState);
+        try {
+            if (!canProceed(previousState)) {
+                return _future;
+            }
+
+            _future = CompletableFuture.supplyAsync(() -> previousState.writeBinEnaTimeStore(cmd.writeBinEnaTimeStore()), actnPool);
+            CAENState _state = _future.exceptionally(x -> null).get();
+
+            if (sendMessagesToHandler) {
+                mHandler.sendMessage(createMessage(WriteBinEnaTimeStore, _state.interval));
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return _future;
     }
 
     public void doReadFullLoggerState() {
@@ -306,6 +396,7 @@ public class CAENLoggerService {
             CompletableFuture<CAENState> _future = this.execReadInterval(new CAENState(), actnPool);
             _future.thenCompose(x -> execDisableLogging(x, actnPool));
             _future.thenCompose(x -> execReadInitDatetime(x, actnPool));
+            _future.thenCompose(x -> enableHighSensitivity(x, actnPool));
             _future.thenCompose(x -> execReadSamplesCount(x, actnPool));
             CAENState _state = _future.join();
 
@@ -453,6 +544,7 @@ public class CAENLoggerService {
             }
 
             _future = CompletableFuture.supplyAsync(() -> previousState.writeTimeBinZERO(cmd.WriteTimeBinZERO()), threadPool);
+
             CAENState _state = _future.exceptionally(x -> null).get();
 
             if (sendMessagesToHandler) {

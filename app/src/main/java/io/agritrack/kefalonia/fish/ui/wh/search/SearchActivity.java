@@ -19,7 +19,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -87,7 +85,7 @@ public class SearchActivity extends AppCompatActivity {
     private MobileDB db;
     private FilterableAdapter adapterAssets;
     private Spinner spAssetType;
-    private EditText etAssetBarcode;
+    private TextView etAssetBarcode;
     private SearchView svSearchAsset;
     private TextView tvProximity, tvHeaders;
     private ImageView ivSupport;
@@ -231,7 +229,11 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         ivPasteItem.setVisibility(View.VISIBLE);
-        etAssetBarcode.setHint(R.string.rfid_input);
+        etAssetBarcode.setHint(R.string.paste_label);
+//        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)etAssetBarcode.getLayoutParams();
+//        params.setMargins(0, 0, 10, 0);
+//        etAssetBarcode.setLayoutParams(params);
+
     }
     @Override
     protected void onStart() {
@@ -321,7 +323,7 @@ public class SearchActivity extends AppCompatActivity {
     private void pastePlate() {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         String pasteData = clipboard.getPrimaryClip().getItemAt(0).getText().toString();
-        etAssetBarcode.setHint(R.string.rfid_input);
+        etAssetBarcode.setHint(R.string.paste_label);
         etAssetBarcode.setText(pasteData);
 
     }
