@@ -175,7 +175,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <io.agritrack.kefalonia.ui.custom.ToggleGroup
+            <io.agritrack.philosofish.ui.custom.ToggleGroup
                 android:id="@+id/tgInternalSource"
                 android:layout_width="300dp"
                 android:layout_height="70dp"
@@ -214,7 +214,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
                     android:textOn="@string/cage"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
-            </io.agritrack.kefalonia.ui.custom.ToggleGroup>
+            </io.agritrack.philosofish.ui.custom.ToggleGroup>
 
             <TextView
                 android:id="@+id/tvAssetEPCFrom"
@@ -297,7 +297,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <io.agritrack.kefalonia.ui.custom.ToggleGroup
+            <io.agritrack.philosofish.ui.custom.ToggleGroup
                 android:id="@+id/tgInternalDestination"
                 android:layout_width="300dp"
                 android:layout_height="70dp"
@@ -337,7 +337,7 @@ tools:context=".fish.ui.wh.InternalAssetActivity">
                     android:textSize="@dimen/text_view_font_size_medium" />
 
 
-            </io.agritrack.kefalonia.ui.custom.ToggleGroup>
+            </io.agritrack.philosofish.ui.custom.ToggleGroup>
 
             <TextView
                 android:id="@+id/tvAssetEPCTo"

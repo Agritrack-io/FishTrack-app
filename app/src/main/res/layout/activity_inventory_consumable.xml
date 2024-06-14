@@ -100,7 +100,7 @@ tools:context=".fish.ui.wh.inventory.InventoryConsumableActivity">
             android:orientation="horizontal"
             android:padding="1dp">
 
-            <io.agritrack.kefalonia.ui.custom.ToggleGroup
+            <io.agritrack.philosofish.ui.custom.ToggleGroup
                 android:id="@+id/tgChooseConsumableType"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
@@ -152,7 +152,7 @@ tools:context=".fish.ui.wh.inventory.InventoryConsumableActivity">
                     android:textOn="@string/antibiotic"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
-            </io.agritrack.kefalonia.ui.custom.ToggleGroup>
+            </io.agritrack.philosofish.ui.custom.ToggleGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

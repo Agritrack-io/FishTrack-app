@@ -101,7 +101,7 @@ tools:context=".hotel.ui.inventory.HotelInventoryAssetActivity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <io.agritrack.kefalonia.ui.custom.ToggleGroup
+            <io.agritrack.philosofish.ui.custom.ToggleGroup
                 android:id="@+id/tgChooseAssetType"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
@@ -154,7 +154,7 @@ tools:context=".hotel.ui.inventory.HotelInventoryAssetActivity">
                     android:textOn="PAINTING"
                     android:textSize="@dimen/text_view_font_size_medium" />
 
-            </io.agritrack.kefalonia.ui.custom.ToggleGroup>
+            </io.agritrack.philosofish.ui.custom.ToggleGroup>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

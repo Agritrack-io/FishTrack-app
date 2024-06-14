@@ -6,7 +6,7 @@
     <data>
         <variable
             name="appSettings"
-            type="io.agritrack.kefalonia.ui.viewmodel.ConfigViewModel" />
+            type="io.agritrack.philosofish.ui.viewmodel.ConfigViewModel" />
     </data>
 
     <LinearLayout

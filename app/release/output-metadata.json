@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "io.agritrack.kefalonia",
+  "applicationId": "io.agritrack.philosofish",
   "variantName": "release",
   "elements": [
     {
@@ -13,7 +13,7 @@
       "attributes": [],
       "versionCode": 15,
       "versionName": "1.15",
-      "outputFile": "agritrack-kefalonia.apk"
+      "outputFile": "agritrack-philosofish.apk"
     }
   ],
   "elementType": "File"

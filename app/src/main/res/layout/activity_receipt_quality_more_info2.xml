@@ -101,7 +101,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
             android:orientation="vertical"
             android:padding="1dp">
 
-            <io.agritrack.kefalonia.ui.custom.ToggleGroup
+            <io.agritrack.philosofish.ui.custom.ToggleGroup
                 android:id="@+id/tgSmellCondition"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
@@ -167,7 +167,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
                     android:textOff="@string/heavy_stinky"
                     android:textOn="@string/heavy_stinky"
                     android:textSize="@dimen/text_view_font_size_small" />
-            </io.agritrack.kefalonia.ui.custom.ToggleGroup>
+            </io.agritrack.philosofish.ui.custom.ToggleGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

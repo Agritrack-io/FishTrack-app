@@ -102,7 +102,7 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <io.agritrack.kefalonia.ui.custom.ToggleGroup
+                <io.agritrack.philosofish.ui.custom.ToggleGroup
                     android:id="@+id/tgOutgoingItemType"
                     android:layout_width="300dp"
                     android:layout_height="70dp"
@@ -145,7 +145,7 @@
                         android:textSize="@dimen/text_view_font_size_medium"
                         android:visibility="gone" />
 
-                </io.agritrack.kefalonia.ui.custom.ToggleGroup>
+                </io.agritrack.philosofish.ui.custom.ToggleGroup>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -183,7 +183,7 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <io.agritrack.kefalonia.ui.custom.ToggleGroup
+                <io.agritrack.philosofish.ui.custom.ToggleGroup
                     android:id="@+id/tgOutgoingDestination"
                     android:layout_width="300dp"
                     android:layout_height="70dp"
@@ -240,7 +240,7 @@
                         android:visibility="gone" />
 
 
-                </io.agritrack.kefalonia.ui.custom.ToggleGroup>
+                </io.agritrack.philosofish.ui.custom.ToggleGroup>
 
                 <TextView
                     android:id="@+id/tvOutgoingTo"
@@ -302,7 +302,7 @@
                 android:orientation="vertical"
                 android:padding="1dp">
 
-                <io.agritrack.kefalonia.ui.custom.ToggleGroup
+                <io.agritrack.philosofish.ui.custom.ToggleGroup
                     android:id="@+id/tgOutgoingSource"
                     android:layout_width="300dp"
                     android:layout_height="70dp"
@@ -343,7 +343,7 @@
                         android:textSize="@dimen/text_view_font_size_medium"
                         android:visibility="gone" />
 
-                </io.agritrack.kefalonia.ui.custom.ToggleGroup>
+                </io.agritrack.philosofish.ui.custom.ToggleGroup>
 
                 <TextView
                     android:id="@+id/tvOutgoingFrom"

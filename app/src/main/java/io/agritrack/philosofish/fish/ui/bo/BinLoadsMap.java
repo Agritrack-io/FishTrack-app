@@ -1,0 +1,96 @@
+package io.agritrack.philosofish.fish.ui.bo;
+
+import com.google.android.gms.common.util.CollectionUtils;
+import com.google.android.gms.common.util.Strings;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class BinLoadsMap {
+    private final Map<String, List<String>> loads = new HashMap<>();
+
+    public BinLoadsMap() {
+    }
+
+    public void addLoad(String bin, String load) {
+        // Bug fix, due to load = "null"!!
+        if ("null".equalsIgnoreCase(load) || Strings.isEmptyOrWhitespace(load) || "".equalsIgnoreCase(load)) {
+            if (loads.get(bin) != null) {
+                loads.get(bin).clear();
+            }
+            return;
+        }
+
+        List<String> loadsforBin = loads.get(bin);
+
+        if (loadsforBin == null) {
+            loadsforBin = new ArrayList<>();
+        } else {
+            loadsforBin.clear();
+        }
+
+        loadsforBin.add(load);
+        loads.put(bin, loadsforBin);
+    }
+
+    public List<String> getLoads(String bin) {
+        List<String> curLoads = loads.get(bin);
+        if (curLoads != null) {
+            while (curLoads.contains("0")) {
+                curLoads.remove("0");
+            }
+            if (curLoads == null) {
+                curLoads = new ArrayList<>();
+                loads.put(bin, curLoads);
+            }
+        }
+
+        return curLoads;
+    }
+
+    public boolean hasLoads() {
+        return this.loads == null || !this.loads.isEmpty();
+    }
+
+    public String loadsCnt() {
+        int cnt = 0;
+        if (loads != null) {
+            for (String key : loads.keySet()) {
+                List<String> loadsPerEPC = loads.get(key);
+                if (!CollectionUtils.isEmpty(loadsPerEPC)) {
+                    List<String> ll = loadsPerEPC.stream().filter(l -> !"0".equals(l)).collect(Collectors.toList());
+                    if (ll.size() > 0) {
+                        cnt++;
+                    }
+                }
+            }
+        }
+        return String.valueOf(cnt);
+    }
+
+    public Integer weightOf(String bin) {
+        if (Strings.isEmptyOrWhitespace(bin) || !loads.containsKey(bin)) {
+            return 0;
+        }
+
+        Integer total = 0;
+        for (String w : loads.get(bin)) {
+            if ("null".equalsIgnoreCase(w)) {
+                continue;
+            }
+            total += !Strings.isEmptyOrWhitespace(w) ? Integer.valueOf(w) : 0;
+        }
+        return total;
+    }
+
+    public Integer totalWeight() {
+        Integer total = 0;
+        for (String bin : loads.keySet()) {
+            total += weightOf(bin);
+        }
+        return total;
+    }
+}

@@ -22,18 +22,18 @@
 
 #-mergeinterfacesaggressively
 #-overloadaggressively
-#-keepclassmembers class io.agritrack.kefalonia.data.dto.** {
+#-keepclassmembers class io.agritrack.philosofish.data.dto.** {
 #    public protected private <fields>;
 #}
 #-keepclassmembers class cn.pda.serialport.SerialPort{
 #   private <fields>;
 #}
-# -keep class io.agritrack.kefalonia.ui.login.api.** { *; }
-# -keep class io.agritrack.kefalonia.api.config.** { *; }
-# -keep class io.agritrack.kefalonia.api.login.** { *; }
-# -keep class io.agritrack.kefalonia.api.query.** { *; }
-# -keep class io.agritrack.kefalonia.api.sync.** { *; }
-# -keep class io.agritrack.kefalonia.api.tx.** { *; }
-# -keep class io.agritrack.kefalonia.api.upload.** { *; }
+# -keep class io.agritrack.philosofish.ui.login.api.** { *; }
+# -keep class io.agritrack.philosofish.api.config.** { *; }
+# -keep class io.agritrack.philosofish.api.login.** { *; }
+# -keep class io.agritrack.philosofish.api.query.** { *; }
+# -keep class io.agritrack.philosofish.api.sync.** { *; }
+# -keep class io.agritrack.philosofish.api.tx.** { *; }
+# -keep class io.agritrack.philosofish.api.upload.** { *; }
 #Keep SQLCypher classes
 # -keep class net.sqlcipher.** { *; }
