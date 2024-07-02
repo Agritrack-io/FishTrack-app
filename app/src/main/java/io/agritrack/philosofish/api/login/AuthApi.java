@@ -17,14 +17,14 @@ import retrofit2.http.QueryMap;
 public interface AuthApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/auth/login")
+    @POST("/philosofish/auth/login")
     Call<AuthInfoRS> login(@Body LoginRQ rq);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/auth/coords")
+    @GET("/philosofish/auth/coords")
     Call<List<SiteInfoRS>> getSites(@QueryMap Map<String, Object> params);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/auth/refresh-access-token")
+    @GET("/philosofish/auth/refresh-access-token")
     Call<AuthInfoRS> refreshJWT(@Header("Authorization") String token);
 }

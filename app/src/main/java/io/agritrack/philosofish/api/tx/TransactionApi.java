@@ -26,63 +26,63 @@ import retrofit2.http.PUT;
 public interface TransactionApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/bin-init")
+    @POST("/philosofish/bin-init")
     Call<List<BinInfoDTO>> syncBinInfoTx(@Body List<BinInfoDTO> binInfoTxs, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/fishing")
+    @POST("/philosofish/fishing")
     Call<FishingTxDTO> syncFishingTx(@Body FishingTxDTO fishingTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/transport")
+    @POST("/philosofish/transport")
     Call<TransportTxDTO> syncTransportTx(@Body TransportTxDTO transportTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/transport/signature")
+    @POST("/philosofish/transport/signature")
     Call<MediaDTO> syncTransportTxDriverSignature(@Body MediaDTO transportTxDriverSig, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/receipt")
+    @POST("/philosofish/receipt")
     Call<ProcessingTxDTO> syncProcessingTx(@Body ProcessingTxDTO processTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/quality/pp1/quality")
+    @POST("/philosofish/quality/pp1/quality")
     Call<QualityTxDTO> syncQualityTx(@Body QualityTxDTO qualityTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/quality/postpackage")
+    @POST("/philosofish/quality/postpackage")
     Call<PostPackageQualityTxDTO> syncPostPackageQualityTx(@Body PostPackageQualityTxDTO postQualityTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/logger/temp")
+    @POST("/philosofish/logger/temp")
     Call<List<TemperatureTimeSeriesDTO>> syncMeasurements(@Body List<TemperatureTimeSeriesDTO> measurements, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/asset/tx")
+    @POST("/philosofish/asset/tx")
     Call<AssetTxDTO> syncRFIDIOTx(@Body AssetTxDTO assetTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/asset/logger/correlate")
+    @POST("/philosofish/asset/logger/correlate")
     Call<CorrelationTxDTO> syncLoggerCorrelationTx(@Body CorrelationTxDTO correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/wh/fish/correlate")
+    @POST("/philosofish/wh/fish/correlate")
     Call<ResponseBody> syncAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/wh/fish/asset/inter-correlate")
+    @POST("/philosofish/wh/fish/asset/inter-correlate")
     Call<ResponseBody> syncAssetWithAssetCorrelationTx(@Body List<CorrelationTxDTO> correlationTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/wh/fish/inventory")
+    @POST("/philosofish/wh/fish/inventory")
     Call<RFIDInventoryDTO> syncRFIDInventoryTx(@Body RFIDInventoryDTO rFIDInventory, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/loggers/import")
+    @POST("/philosofish/loggers/import")
     Call<List<IotLoggerDTO>> syncIotLoggers(@Body List<IotLoggerDTO> iotLoggers, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @PUT("/bin-ledger/update-init-ts")
+    @PUT("/philosofish/bin-ledger/update-init-ts")
     Call<Map<String,Long>> syncLoggerInitTs(@Body Map<String, Long> initTs, @Header("Authorization") String token);
 }
 

@@ -15,7 +15,8 @@ public class APIServiceGenerator {
 
     private static String AGRISENSE_URL = "http://agrisense.agritrack.info:5100";
     //private static String BASE_URL = "http://3.123.142.122:5000"; //dev
-    private static String BASE_URL = "http://192.168.1.187:5000"; //localRIgas
+    private static String BASE_URL = "https://aqua-be.agritrack.org"; //dev
+    //private static String BASE_URL = "http://192.168.150.191:5000"; //localRIgas
     //private static String BASE_URL = "http://fish-kefalonia-be.eu-central-1.elasticbeanstalk.com"; //production
 
     private static Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
@@ -23,6 +24,8 @@ public class APIServiceGenerator {
     private static Retrofit.Builder retrofitAgrisenseBuilder = new Retrofit.Builder().baseUrl(AGRISENSE_URL).addConverterFactory(GsonConverterFactory.create());
     private static Retrofit retrofitAgrisense = retrofitAgrisenseBuilder.build();
     private static final OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
+            .followRedirects(true)
+            .followSslRedirects(true)
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS);

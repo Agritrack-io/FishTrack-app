@@ -324,23 +324,25 @@ public class CorrelationCageNetActivity extends LocationAwareActivity {
                                 String epc = tag.toString();
                                 String label = epc.length() > 15 ? epc.substring(14) : epc;
                                 if (epc.indexOf(Filters.RFID_CAGE) > -1) {
-                                    GlobalState.recWHCorrelation.assetRFID = epc;
-                                    tvCorrCageBarcode.setText(label);
                                     Asset cage = db.assetDAO().getAssetByEpc(epc);
                                     if (cage == null) {
                                         CToast(getApplicationContext(), render(R.string.correlate_cage), Toast.LENGTH_LONG);
+                                    } else {
+                                        tvCageCode.setText(cage.code);
+                                        GlobalState.recWHCorrelation.assetCode = cage.code;
+                                        GlobalState.recWHCorrelation.assetRFID = epc;
+                                        tvCorrCageBarcode.setText(label);
                                     }
-                                    tvCageCode.setText(cage.code);
-                                    recWHCorrelation.assetCode = cage.code;
                                 } else if (epc.indexOf(Filters.RFID_NET) > -1) {
-                                    GlobalState.recWHCorrelation.rfid = epc;
-                                    tvCorrNetBarcode.setText(label);
                                     Asset net = db.assetDAO().getAssetByEpc(epc);
                                     if (net == null) {
                                         CToast(getApplicationContext(), render(R.string.correlate_net), Toast.LENGTH_LONG);
+                                    } else {
+                                        tvNetCode.setText(net.code);
+                                        GlobalState.recWHCorrelation.code = net.code;
+                                        GlobalState.recWHCorrelation.rfid = epc;
+                                        tvCorrNetBarcode.setText(label);
                                     }
-                                    tvNetCode.setText(net.code);
-                                    recWHCorrelation.code = net.code;
                                 }
                             }
                         }

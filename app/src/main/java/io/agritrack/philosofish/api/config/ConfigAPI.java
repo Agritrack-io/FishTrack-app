@@ -20,7 +20,7 @@ public interface ConfigAPI {
                                         @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("/config")
+    @POST("philosofish/config")
     Call<AgricenseDTO> postConfiguration(@Body AgricenseDTO configParams,
                                          @Header("Authorization") String token);
 }

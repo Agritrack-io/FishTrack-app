@@ -10,11 +10,11 @@ import retrofit2.http.Part;
 
 public interface UploadingApi {
 
-    @POST("quality/pp1/photo")
+    @POST("/philosofish/quality/pp1/photo")
     @Multipart
     Call<ResponseBody> uploadPhoto(@Part MultipartBody.Part file, @Header("Authorization") String token);
 
-    @POST("logs/crash/upload")
+    @POST("/philosofish/logs/crash/upload")
     @Multipart
     Call<ResponseBody> uploadCrashLog(@Part MultipartBody.Part file, @Header("Authorization") String token);
 }
