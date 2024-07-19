@@ -72,6 +72,7 @@ public class PostPackagingQualityConfirmActivity extends LocationAwareActivity {
         // get  references of the controls
         assignCtrlVars();
 
+        //in case the gps coordinates cannot be taken from the device
         confirmGPSSelectionDlg = YesNoDialogFragment.instance();
         confirmGPSSelectionDlg.setMessage(getText(R.string.procced_without_location));
         confirmGPSSelectionDlg.onConfirm(bundle -> {
@@ -119,6 +120,7 @@ public class PostPackagingQualityConfirmActivity extends LocationAwareActivity {
                     CToast(PostPackagingQualityConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
                     return;
                 }
+                //checks if pin inserted by the user was the correct one
                 boolean userIsValid = isAuthenticated();
                 if (!userIsValid) {
                     CToast(PostPackagingQualityConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
@@ -233,6 +235,7 @@ public class PostPackagingQualityConfirmActivity extends LocationAwareActivity {
         public void onResponse(Call<PostPackageQualityTxDTO> call, Response<PostPackageQualityTxDTO> response) {
 
             if (response.isSuccessful() || IsDemo) {
+                //the transaction was created and saved locally, but since it was synced with the database, it should be deleted and not resent again
                 deletePostQualityTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {

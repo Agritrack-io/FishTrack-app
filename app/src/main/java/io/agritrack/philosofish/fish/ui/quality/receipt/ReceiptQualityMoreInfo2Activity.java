@@ -67,7 +67,7 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), ReceiptQualityMoreInfo3Activity.class);
                 startActivity(i);
@@ -186,7 +186,7 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.smellCondition)) {
                 sb.append(String.format("\n%s is missing", "'Smell condition'"));
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.smell));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.smell)));
 
             }
 

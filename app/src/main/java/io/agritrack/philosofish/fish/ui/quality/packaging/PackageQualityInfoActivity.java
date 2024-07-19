@@ -207,7 +207,7 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), PackageQualityConfirmActivity.class);
                 startActivity(i);
@@ -303,16 +303,16 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (GlobalState.recQuality.minFishTemp == null) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.fish_min_temp));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.fish_min_temp)));
 
             }
 
             if (GlobalState.recQuality.meanFishTemp == null) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.fish_avg_temp));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.fish_avg_temp)));
             }
 
             if (GlobalState.recQuality.maxFishTemp == null) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.fish_max_temp));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.fish_max_temp)));
             }
         }
 

@@ -301,7 +301,7 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (GlobalState.assetData.loggers == null || GlobalState.assetData.loggers.isEmpty()) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.loggers));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.loggers)));
             }
         }
         return sb.toString();

@@ -229,7 +229,6 @@ public class GlobalState {
         try {
             TransportTransaction txTransport = new TransportTransaction();
 
-//            txTransport.id = recTransport.txKey;
             txTransport.destination = recTransport.packagingSite;
             txTransport.driverName = recTransport.driverName;
             txTransport.driverPhone = recTransport.driverPhone;

@@ -114,7 +114,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
             } else if (selectedOutgoingItemType == Constants.ftAsset) {
                 Intent i = new Intent(getApplicationContext(), OutgoingAssetActivity.class);
                 startActivity(i);
@@ -235,12 +235,12 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
 //            }
 
             if (Strings.isEmptyOrWhitespace(recWHOutgoing.toSite)) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.target_site));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.target_site)));
 
             }
 
             if (Strings.isEmptyOrWhitespace(recWHOutgoing.fromSite)) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.source_site));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.source_site)));
             }
         }
 

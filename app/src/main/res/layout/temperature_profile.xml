@@ -30,10 +30,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/infoLayout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tempChart" />
+            app:layout_constraintTop_toBottomOf="@+id/tempChartIn" />
 
         <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/tempChart"
+            android:id="@+id/tempChartIn"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_gravity="center_vertical"
@@ -55,7 +55,7 @@
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tempChart"
+            app:layout_constraintStart_toEndOf="@id/tempChartIn"
             app:layout_constraintTop_toTopOf="parent">
 
 

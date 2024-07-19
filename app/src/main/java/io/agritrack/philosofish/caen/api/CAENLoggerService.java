@@ -71,17 +71,32 @@ public class CAENLoggerService {
         }
     }
 
+    /*method that has a sequence of commands to safely and successfully reset the logger
+     *each 'exec*' method is used to read from or write to registers of the caen data logger
+     *
+     */
     public void doResetLogger() {
         try {
             // instantiate the thread pool required by CompletableFuture instances following...
             final ExecutorService actnPool = Executors.newSingleThreadExecutor();
 
+
+            ///BX6100Commander reader = new BX6100Commander();
+            //.LowPowerLevel();
+
             // begin by Resetting logger (it simultaneously stops Logging too).
             CompletableFuture<CAENState> future = execReset(new CAENState(), actnPool);
-            CAENState _state = future.get();
 
             // wait for reset to complete
-            this.park4Second();
+            this.park2Second();
+
+            CAENState _state = future.get();
+
+            //send reset command again if first time didnt work and tag returned 'NACK'
+            if (!canProceed(_state)) {
+                future = execReset(new CAENState(), actnPool);
+                this.park2Second();
+            }
             _state = future.get();
             //future.thenCompose(x -> park3Second(x, actnPool));
 
@@ -91,9 +106,9 @@ public class CAENLoggerService {
 
             int i = 0;
 
+            //check if ctrlReg is '00000', if not, wait for 2 seconds and read again
             while(_state.ctrlReg != null && _state.ctrlReg.endsWith("1") && i < 2) {
-                this.park4Second();
-                _state = future.get();
+                this.park2Second();
                 future = this.execReadControlRegister(_state, actnPool);
                 _state = future.get();
                 i++;
@@ -112,8 +127,10 @@ public class CAENLoggerService {
 
             if (sendMessagesToHandler) {
                 mHandler.sendMessage(createMessage(ResetSΤΑΤΕ, _state.getOpReset()));
+                //reader.HighPowerLevel();
             } else {
                 mHandler.sendMessage(createMessage(ResetSΤΑΤΕ, _state));
+                // reader.HighPowerLevel();
             }
 
         } catch (Exception e) {
@@ -121,6 +138,10 @@ public class CAENLoggerService {
         }
     }
 
+    /*method that has a sequence of commands to make sure loggger was initialised properly
+     *each 'exec*' method is used to read from or write to registers of the caen data logger
+     *
+     */
     public void doValidation() {
         try {
             // instantiate the thread pool required by CompletableFuture instances following...
@@ -154,6 +175,7 @@ public class CAENLoggerService {
             CompletableFuture<CAENState> future = this.execWriteTimeBINZero(new CAENState(), actnPool);
 
 
+            //future.thenCompose(x -> enableHighSensitivity(x,actnPool));
             future.thenCompose(x -> execWriteHLimitZERO(x, actnPool));
 
             future.thenCompose(x -> execWriteBinEnableCounter(x, actnPool));
@@ -180,7 +202,7 @@ public class CAENLoggerService {
             _state = future.get();
 
             if (_state.ctrlReg != null && !_state.ctrlReg.endsWith("100")) {
-                this.park4Second();
+                this.park2Second();
                 _state = future.get();
                 future = this.execReadControlRegister(_state, actnPool);
                 _state = future.get();
@@ -379,10 +401,13 @@ public class CAENLoggerService {
             // instantiate the thread pool required by CompletableFuture instances following...
             final ExecutorService actnPool = Executors.newFixedThreadPool(1);
 
+//           B X6100Commander reader = new BX6100Commander();
+//            reader.LowPowerLevel();
+
             CAENState status = execReadControlRegister(new CAENState(), actnPool).get();
             status.setPickedAt(this.pickedAt);
 
-            if (Boolean.FALSE.equals(forceRead) && (status.ctrlReg == null || status.ctrlReg.equalsIgnoreCase("N/A") || status.ctrlReg.endsWith("000"))) {
+            if (Boolean.FALSE.equals(forceRead) && (status.ctrlReg == null || status.ctrlReg.equalsIgnoreCase("N/A"))) {
                 System.out.println("doReadMeasurements()-->" + status);
                 status = execReadSamplesCount(status, actnPool).get();
                 mHandler.sendMessage(createMessage(ReadSΤΑΤΕ, status));
@@ -391,9 +416,9 @@ public class CAENLoggerService {
 
             // read current Interval between measurements,
             CompletableFuture<CAENState> _future = this.execReadInterval(new CAENState(), actnPool);
+            _future.thenCompose(x -> enableHighSensitivity(x, actnPool));
             _future.thenCompose(x -> execDisableLogging(x, actnPool));
             _future.thenCompose(x -> execReadInitDatetime(x, actnPool));
-            _future.thenCompose(x -> enableHighSensitivity(x, actnPool));
             _future.thenCompose(x -> execReadSamplesCount(x, actnPool));
             CAENState _state = _future.join();
 
@@ -414,6 +439,7 @@ public class CAENLoggerService {
             if (future != null) {
                 // temporary...
                 CAENState result = future.join();
+//                reader.HighPowerLevel();
                 System.out.println("doReadMeasurements()-->" + result);
                 mHandler.sendMessage(createMessage(ReadSΤΑΤΕ, _state));
             }
@@ -822,11 +848,11 @@ public class CAENLoggerService {
 
 
     // sleep for 4.0 second before resume flow.
-    private void park4Second() {
+    private void park2Second() {
         try {
 //            CompletableFuture.supplyAsync(() -> {
 //                try {
-                    Thread.sleep(4*1000);
+            Thread.sleep(2*1000);
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
@@ -875,3 +901,5 @@ public class CAENLoggerService {
         return state != null && state.canProceed;
     }
 }
+
+

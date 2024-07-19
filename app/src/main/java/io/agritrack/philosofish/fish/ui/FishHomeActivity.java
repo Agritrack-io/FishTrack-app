@@ -21,6 +21,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.common.util.Strings;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -47,6 +49,7 @@ import io.agritrack.philosofish.api.sync.PendingBinInfoTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingCorrelationTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingFishingTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingProcessTxCallBack;
+import io.agritrack.philosofish.api.sync.PendingQualityTxCallBack;
 import io.agritrack.philosofish.api.sync.SyncApi;
 import io.agritrack.philosofish.api.sync.SyncAssetsCallBack;
 import io.agritrack.philosofish.api.sync.SyncBinInfo;
@@ -78,13 +81,28 @@ import io.agritrack.philosofish.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.philosofish.data.dto.tx.CorrelationTxDTO;
 import io.agritrack.philosofish.data.dto.tx.FishingTxDTO;
 import io.agritrack.philosofish.data.dto.tx.ProcessingTxDTO;
+import io.agritrack.philosofish.data.dto.tx.QualityTxDTO;
 import io.agritrack.philosofish.data.dto.wh.AssetDTO;
 import io.agritrack.philosofish.data.model.BinInfo;
 import io.agritrack.philosofish.data.model.common.TemperatureTimeSeries;
 import io.agritrack.philosofish.data.model.tx.CorrelationTransaction;
 import io.agritrack.philosofish.data.model.tx.FishingTransaction;
 import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
+import io.agritrack.philosofish.data.model.tx.QualityTransaction;
 import io.agritrack.philosofish.dialog.SupportDialog;
+import io.agritrack.philosofish.enums.TxStatus;
+import io.agritrack.philosofish.fish.state.FishingRecord;
+import io.agritrack.philosofish.fish.state.GlobalState;
+import io.agritrack.philosofish.fish.ui.binTurnover.BinTurnoverActivity;
+import io.agritrack.philosofish.fish.ui.fishing.FishingStartActivity;
+import io.agritrack.philosofish.fish.ui.fishing.FishingTeamActivity;
+import io.agritrack.philosofish.fish.ui.fishing.HarvestRequestsActivity;
+import io.agritrack.philosofish.fish.ui.initBins.InitBinsActivity;
+import io.agritrack.philosofish.fish.ui.process.ProcessBinsActivity;
+import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
+import io.agritrack.philosofish.fish.ui.testBinTemperature.TestBinTempActivity;
+import io.agritrack.philosofish.fish.ui.transport.TransportBinsActivity;
+import io.agritrack.philosofish.fish.ui.transport.TransportInfoActivity;
 import io.agritrack.philosofish.ui.adapter.HomeMenuAdapter;
 import io.agritrack.philosofish.ui.adapter.MenuItem;
 import io.agritrack.philosofish.ui.login.LoginActivity;
@@ -98,7 +116,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FishHomeActivity extends AppCompatActivity {
-    private static final int InitBins_Idx = 0, Fishing_Idx = 1, Transport_Idx = 2, Receiving_Idx = 3, Packaging_Quality_Idx = 4, Bin_Overturn_Idx = 5, Warehouse_Idx = 6; /*Maintenance_Idx = 5,*/
+    private static final int InitBins_Idx = 0, Fishing_Idx = 1,Test_Temp_Idx = 2, Transport_Idx = 3, Receiving_Idx = 4, Packaging_Quality_Idx = 5, Bin_Overturn_Idx = 6, Warehouse_Idx = 7; /*Maintenance_Idx = 5,*/
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
@@ -130,27 +148,27 @@ public class FishHomeActivity extends AppCompatActivity {
         db = MobileDB.getInstance(getAppContext());
 
         Set<MenuItem> menuItemsSet = new LinkedHashSet<MenuItem>();
-//        if (roleCanAccessMenu(userRoles, InitBins_Idx)) {
-//            menuItemsSet.add(new MenuItem(InitBins_Idx, getString(R.string.menu_title_init_bins), TestBinTempActivity.class, R.drawable.test_bin_temp));
-//        }
-//        if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
-//            menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
-//        }
-//        if (roleCanAccessMenu(suserRoles, Test_Temp_Idx)) {
-//            menuItemsSet.add(new MenuItem(Test_Temp_Idx, getString(R.string.menu_title_test_temp), TestBinTempActivity.class, R.drawable.test_bin_temp));
-//        }
-//        if (roleCanAccessMenu(userRoles, Receiving_Idx)) {
-//            menuItemsSet.add(new MenuItem(Receiving_Idx, getString(R.string.menu_title_fish_receiving), ProcessBinsActivity.class, R.drawable.processing));
-//        }
-//        if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
-//            menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), QualitySelectStepsActivity.class, R.drawable.quality));
-//        }
-//        if (roleCanAccessMenu(userRoles, Bin_Overturn_Idx)) {
-//            menuItemsSet.add(new MenuItem(Bin_Overturn_Idx, getString(R.string.menu_title_bin_overturn), BinTurnoverActivity.class, R.drawable.bin_turnover));
-//        }
-//        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
-//            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
-//        }
+        if (roleCanAccessMenu(userRoles, InitBins_Idx)) {
+            menuItemsSet.add(new MenuItem(InitBins_Idx, getString(R.string.menu_title_init_bins), TestBinTempActivity.class, R.drawable.test_bin_temp));
+        }
+        if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
+            menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
+        }
+        if (roleCanAccessMenu(userRoles, Test_Temp_Idx)) {
+            menuItemsSet.add(new MenuItem(Test_Temp_Idx, getString(R.string.menu_title_test_temp), TestBinTempActivity.class, R.drawable.test_bin_temp));
+        }
+        if (roleCanAccessMenu(userRoles, Receiving_Idx)) {
+            menuItemsSet.add(new MenuItem(Receiving_Idx, getString(R.string.menu_title_fish_receiving), ProcessBinsActivity.class, R.drawable.processing));
+        }
+        if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
+            menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), QualitySelectStepsActivity.class, R.drawable.quality));
+        }
+        if (roleCanAccessMenu(userRoles, Bin_Overturn_Idx)) {
+            menuItemsSet.add(new MenuItem(Bin_Overturn_Idx, getString(R.string.menu_title_bin_overturn), BinTurnoverActivity.class, R.drawable.bin_turnover));
+        }
+        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
+            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
+        }
         if (roleCanAccessMenu(userRoles, Warehouse_Idx)) {
             menuItemsSet.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
         }
@@ -192,61 +210,61 @@ public class FishHomeActivity extends AppCompatActivity {
                 MenuItem mi = (MenuItem) gvMainMenu.getItemAtPosition(position);
 
                 switch (mi.getLoc()) {
-//                    case InitBins_Idx:
-//                        GlobalState.initFishingRecord();
-//                        i = new Intent(appCtx, InitBinsActivity.class);
-//                        break;
-//                    case Fishing_Idx:
-//                        FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
-//                        FishingRecord fishingRecord;
-//
-//                        // default Next Activity is FishingTeam...
-//                        i = new Intent(appCtx, FishingTeamActivity.class);
-//                        if (openTx != null && !Strings.isEmptyOrWhitespace(openTx.fishingRq)) {
-//                            // there is a FishingTx in progress
-//                            fishingRecord = FishingRecord.convert(openTx);
-//                            GlobalState.recFishing = fishingRecord;
-//                        } else if (openTx != null && openTx.outOfSystemFishing) {
-//                            // there is a out of system FishingTx in progress
-//                            i = new Intent(appCtx, FishingTeamActivity.class);
-//
-//                            fishingRecord = FishingRecord.convert(openTx);
-//                            GlobalState.recFishing = fishingRecord;
-//                        } else {
-//                            // instantiate a new Fishing Record.
-//                            fishingRecord = GlobalState.initFishingRecord();
-//
-//                            // NO FishingTx in progress
-//                            if (openTx == null) {
-//                                openTx = new FishingTransaction();
-//                                openTx.txStatus = TxStatus.PENDING;
-//                                db.fishingTransactionDAO().insert(openTx);
-//                                fishingRecord.txKey = openTx.id;
-//                            } else {
-//                                fishingRecord.txKey = openTx.id;
-//                            }
-//
-//                            i = new Intent(appCtx, HarvestRequestsActivity.class);
-//                        }
-//                        break;
-//                    case Test_Temp_Idx:
-//                        i = new Intent(appCtx, TestBinTempActivity.class);
-//                        i.putExtra("BinActivity", false);
-//                        break;
-//                    case Transport_Idx:
-//                        GlobalState.initTransportationRecord();
-//                        i = new Intent(appCtx, TransportBinsActivity.class);
-//                        break;
-//                    case Receiving_Idx:
-//                        GlobalState.initProcessingRecord();
-//                        i = new Intent(appCtx, ProcessBinsActivity.class);
-//                        break;
-//                    case Packaging_Quality_Idx:
-//                        i = new Intent(appCtx, QualitySelectStepsActivity.class);
-//                        break;
-//                    case Bin_Overturn_Idx:
-//                        i = new Intent(appCtx, BinTurnoverActivity.class);
-//                        break;
+                    case InitBins_Idx:
+                        GlobalState.initFishingRecord();
+                        i = new Intent(appCtx, InitBinsActivity.class);
+                        break;
+                    case Fishing_Idx:
+                        FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
+                        FishingRecord fishingRecord;
+
+                        // default Next Activity is FishingTeam...
+                        i = new Intent(appCtx, FishingTeamActivity.class);
+                        if (openTx != null && !Strings.isEmptyOrWhitespace(openTx.fishingRq)) {
+                            // there is a FishingTx in progress
+                            fishingRecord = FishingRecord.convert(openTx);
+                            GlobalState.recFishing = fishingRecord;
+                        } else if (openTx != null && openTx.outOfSystemFishing) {
+                            // there is a out of system FishingTx in progress
+                            i = new Intent(appCtx, FishingTeamActivity.class);
+
+                            fishingRecord = FishingRecord.convert(openTx);
+                            GlobalState.recFishing = fishingRecord;
+                        } else {
+                            // instantiate a new Fishing Record.
+                            fishingRecord = GlobalState.initFishingRecord();
+
+                            // NO FishingTx in progress
+                            if (openTx == null) {
+                                openTx = new FishingTransaction();
+                                openTx.txStatus = TxStatus.PENDING;
+                                db.fishingTransactionDAO().insert(openTx);
+                                fishingRecord.txKey = openTx.id;
+                            } else {
+                                fishingRecord.txKey = openTx.id;
+                            }
+
+                            i = new Intent(appCtx, HarvestRequestsActivity.class);
+                        }
+                        break;
+                    case Test_Temp_Idx:
+                        i = new Intent(appCtx, TestBinTempActivity.class);
+                        i.putExtra("BinActivity", false);
+                        break;
+                    case Transport_Idx:
+                        GlobalState.initTransportationRecord();
+                        i = new Intent(appCtx, TransportBinsActivity.class);
+                        break;
+                    case Receiving_Idx:
+                        GlobalState.initProcessingRecord();
+                        i = new Intent(appCtx, ProcessBinsActivity.class);
+                        break;
+                    case Packaging_Quality_Idx:
+                        i = new Intent(appCtx, QualitySelectStepsActivity.class);
+                        break;
+                    case Bin_Overturn_Idx:
+                        i = new Intent(appCtx, BinTurnoverActivity.class);
+                        break;
                     case Warehouse_Idx:
                         i = new Intent(appCtx, WhMenuActivity.class);
                         break;
@@ -332,13 +350,13 @@ public class FishHomeActivity extends AppCompatActivity {
             }
 
             // select all pending quality TXs
-//            List<QualityTransaction> qualityTXs = db.qualityTransactionDAO().getAll();
-//            if (!qualityTXs.isEmpty()) {
-//                for (QualityTransaction qualityTX : qualityTXs) {
-//                    Call<QualityTxDTO> qualityTxAsyncCall = pendingTxSvc.syncQualityTx(QualityTxDTO.convert(qualityTX), "Bearer " + token);
-//                    qualityTxAsyncCall.enqueue(new PendingQualityTxCallBack(this.syncResult));
-//                }
-//            }
+            List<QualityTransaction> qualityTXs = db.qualityTransactionDAO().getAll();
+            if (!qualityTXs.isEmpty()) {
+                for (QualityTransaction qualityTX : qualityTXs) {
+                    Call<QualityTxDTO> qualityTxAsyncCall = pendingTxSvc.syncQualityTx(QualityTxDTO.convert(qualityTX), "Bearer " + token);
+                    qualityTxAsyncCall.enqueue(new PendingQualityTxCallBack(this.syncResult));
+                }
+            }
 
             // select all pending post quality TXs
             List<TemperatureTimeSeriesDTO> temperatureTimeSeriesDTOs = new ArrayList<>();
@@ -484,7 +502,7 @@ public class FishHomeActivity extends AppCompatActivity {
     private void assignPrivilegesToRoles() {
         Privileges.put(InitBins_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
-//        Privileges.put(Test_Temp_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Test_Temp_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Receiving_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Packaging_Quality_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Bin_Overturn_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});

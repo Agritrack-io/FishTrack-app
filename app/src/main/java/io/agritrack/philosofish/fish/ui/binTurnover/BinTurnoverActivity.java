@@ -202,6 +202,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(BinTurnoverActivity.this);
 
+
         tempProfileAdapter = new TemperatureProfileAdapter(this);
         tempProfileAdapter.notifyDataSetChanged();
 

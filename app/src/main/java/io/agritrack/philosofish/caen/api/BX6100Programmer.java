@@ -21,13 +21,13 @@ public class BX6100Programmer extends AbstractX9Programmer {
     public BX6100Programmer() {
         mUhfRManager = UHFRManager.getInstance();// Init Uhf module
         if (mUhfRManager != null) {
-            Reader.READER_ERR err = mUhfRManager.setPower(33, 33);//set uhf module power
+            Reader.READER_ERR err = mUhfRManager.setPower(24, 24);//set uhf module power
 
             if (err == Reader.READER_ERR.MT_OK_ERR) {
                 mUhfRManager.setRegion(Reader.Region_Conf.RG_EU3);
                 //Toast.makeText(getAppContext(), "FreRegion:" + Reader.Region_Conf.RG_EU3 + "\n" + "Read Power:" + 33 + "\n" + "Write Power:" + 33, Toast.LENGTH_LONG).show();
             } else {
-                Reader.READER_ERR err1 = mUhfRManager.setPower(30, 30);//set uhf module power
+                Reader.READER_ERR err1 = mUhfRManager.setPower(24, 24);//set uhf module power
                 if (err1 == Reader.READER_ERR.MT_OK_ERR) {
                     mUhfRManager.setRegion(Reader.Region_Conf.RG_EU3);
                     //Toast.makeText(getAppContext(), "FreRegion:" + Reader.Region_Conf.RG_EU3 + "\n" + "Read Power:" + 30 + "\n" + "Write Power:" + 30, Toast.LENGTH_LONG).show();
@@ -42,9 +42,9 @@ public class BX6100Programmer extends AbstractX9Programmer {
 
     public void HighPowerLevel() {
         if (mUhfRManager != null) {
-            Reader.READER_ERR err = mUhfRManager.setPower(33, 33);//set uhf module power
+            Reader.READER_ERR err = mUhfRManager.setPower(24, 24);//set uhf module power
             if (err != Reader.READER_ERR.MT_OK_ERR) {
-                Reader.READER_ERR err1 = mUhfRManager.setPower(30, 30);//set uhf module power
+                Reader.READER_ERR err1 = mUhfRManager.setPower(24, 24);//set uhf module power
                 if (err1 != Reader.READER_ERR.MT_OK_ERR) {
                     Toast.makeText(getAppContext(), "Failed to switch to HIGH Energy mode!!", Toast.LENGTH_LONG);
                 }
@@ -56,9 +56,9 @@ public class BX6100Programmer extends AbstractX9Programmer {
 
     public void LowPowerLevel() {
         if (mUhfRManager != null) {
-            Reader.READER_ERR err = mUhfRManager.setPower(16, 16);//set uhf module power
+            Reader.READER_ERR err = mUhfRManager.setPower(24, 24);//set uhf module power
             if (err != Reader.READER_ERR.MT_OK_ERR) {
-                Reader.READER_ERR err1 = mUhfRManager.setPower(15, 15);//set uhf module power
+                Reader.READER_ERR err1 = mUhfRManager.setPower(24, 24);//set uhf module power
                 if (err1 != Reader.READER_ERR.MT_OK_ERR) {
                     Toast.makeText(getAppContext(), "Failed to switch to HIGH Energy mode!!", Toast.LENGTH_LONG);
                 }
@@ -67,6 +67,7 @@ public class BX6100Programmer extends AbstractX9Programmer {
             Toast.makeText(getAppContext(), "No UHFR manager found!!", Toast.LENGTH_LONG);
         }
     }
+
 
     @Override
     public int[] getPowerLevel() {

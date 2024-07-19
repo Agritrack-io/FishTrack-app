@@ -638,7 +638,7 @@
     <string name="ok">OK</string>
     <string name="lot_restriction">Wrong LOT</string>
     <string name="lot_restriction_message">More than one harvest LOT returned for these totes. Please go back and select totes of a single LOT.</string>
-    <string name="invalid_inputs">Invalid inputs :</string>
+    <string name="invalid_inputs">Invalid inputs: \n</string>
     <string name="laundry">LAUNDRY</string>
     <string name="EncodeScheme_sync_completed">Encoding scheme synchronised successfully!</string>
     <string name="no_EncodeScheme_found_alert">No Encoding Scheme entry was found!</string>
@@ -802,7 +802,7 @@
     <string name="target_site">Target site</string>
     <string name="delete_item">Please select an item to delete</string>
     <string name="operation_failed">Operation Failed!</string>
-    <string name="is_missing">is missing</string>
+    <string name="is_missing"> is missing</string>
     <string name="field">field</string>
     <string name="smell">smell</string>
     <string name="loggers">"Data Logger"</string>

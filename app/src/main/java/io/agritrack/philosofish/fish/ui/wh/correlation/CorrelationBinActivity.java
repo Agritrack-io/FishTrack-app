@@ -220,15 +220,15 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             // Update state and proceed to next
             Boolean proceed = correlate();
 
-            if (proceed) {
-                // move to next activity.
-                Intent i = new Intent(getApplicationContext(), CorrelationBinActivity.class);
-                startActivity(i);
-            }
+//            if (proceed) {
+//                // move to next activity.
+//                Intent i = new Intent(getApplicationContext(), CorrelationBinActivity.class);
+//                startActivity(i);
+//            }
 
-            GlobalState.initWHCorrelationRecord();
-            tvCorrBinBarcode.setText("");
-            tvCorrTempLoggerBarcode.setText("");
+//            GlobalState.initWHCorrelationRecord();
+//            tvCorrBinBarcode.setText("");
+//            tvCorrTempLoggerBarcode.setText("");
         }
     }
 
@@ -292,7 +292,7 @@ public class CorrelationBinActivity extends LocationAwareActivity {
 
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
                 return;
             }
             if (mLastLocation != null) {
@@ -351,20 +351,7 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
 
-            Asset oldBinRfid = db.assetDAO().getAssetByEpc(recWHCorrelation.assetRFID);
-            if (oldBinRfid != null) {
-                oldBinRfid.rfid = null;
-                db.assetDAO().update(oldBinRfid);
-            }
-            Asset oldBinLogger = db.assetDAO().getAssetByLoggerEpc(recWHCorrelation.rfid);
-            if (oldBinLogger != null) {
-                oldBinLogger.rfid = null;
-                db.assetDAO().update(oldBinLogger);
-            }
-            Asset bin = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
-            bin.rfid = recWHCorrelation.assetRFID;
-            bin.loggerEPC = recWHCorrelation.rfid;
-            db.assetDAO().update(bin);
+
 
             // sync WH Correlation Tx
             ArrayList<CorrelationTxDTO> dtos = new ArrayList<>();
@@ -427,6 +414,21 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
             if (response.isSuccessful()) {
+                Asset oldBinRfid = db.assetDAO().getAssetByEpc(recWHCorrelation.assetRFID);
+                if (oldBinRfid != null) {
+                    oldBinRfid.rfid = null;
+                    db.assetDAO().update(oldBinRfid);
+                }
+                Asset oldBinLogger = db.assetDAO().getAssetByLoggerEpc(recWHCorrelation.rfid);
+                if (oldBinLogger != null) {
+                    oldBinLogger.rfid = null;
+                    db.assetDAO().update(oldBinLogger);
+                }
+                Asset bin = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
+                bin.rfid = recWHCorrelation.assetRFID;
+                bin.loggerEPC = recWHCorrelation.rfid;
+                db.assetDAO().update(bin);
+                loadBinsFromLocalDB(Constants.ftBin);
                 deleteCorrelationTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
                 tvCorrBinBarcode.setText("");

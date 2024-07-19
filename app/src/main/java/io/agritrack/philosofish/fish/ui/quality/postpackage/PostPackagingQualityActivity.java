@@ -55,9 +55,9 @@ public class PostPackagingQualityActivity extends AppCompatActivity {
             byte[] data = intent.getByteArrayExtra("data");
             if (data != null) {
                 String barcode = new String(data);
-                if (barcode.length() >= 24) {
-                    String currentLot = barcode.substring(18, 24);
-                    String currentBox = barcode.substring(barcode.length() - 8);
+                if (barcode.length() >= 10) {
+                    String currentLot = barcode.substring(0, 5);
+                    String currentBox = barcode.substring(barcode.length() - 5);
                     Set<String> boxSn = LocalPreferences.getBoxSn();
                     if (!boxSn.contains(currentBox)) {
                         tvCurrentLot.setText(currentLot);
@@ -195,7 +195,7 @@ public class PostPackagingQualityActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), PostPackagingQualityConfirmActivity.class);
                 startActivity(i);
@@ -284,20 +284,20 @@ public class PostPackagingQualityActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recQuality.pLot == null || recQuality.boxSn == null) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.scan));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.scan)));
 
             }
 
             if (recQuality.etT1 == null) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.t1_temp));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.t1_temp)));
             }
 
             if (recQuality.etT2 == null) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.t2_temp));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.t2_temp)));
             }
 
             if (recQuality.etT3 == null) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.t3_temp));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.t3_temp)));
             }
         }
 

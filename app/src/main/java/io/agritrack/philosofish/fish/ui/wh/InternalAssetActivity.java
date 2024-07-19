@@ -210,7 +210,7 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
 
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
                 return;
             }
             recWHInternal.state = WarehouseTxState.Internal;
@@ -299,17 +299,17 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recWHInternal.items == null || recWHInternal.items.isEmpty()) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.asset));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.asset)));
 
             }
 
             if (Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.fromSite) && Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.fromAsset)) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.from));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.from)));
 
             }
 
             if (Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.toSite) && Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.toAsset)) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.to));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.to)));
             }
         }
 

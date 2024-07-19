@@ -347,7 +347,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recFishing.availBins == null || recFishing.availBins.isEmpty()) {
-                sb.append(String.format(getString(R.string.field) +"\n%s" + getString(R.string.is_missing), getString(R.string.bins_to_use)));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.bins_to_use)));
             }
         }
         return sb.toString();

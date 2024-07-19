@@ -277,7 +277,7 @@ public class TransportBinsActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (GlobalState.recTransport.availBins == null || GlobalState.recTransport.availBins.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Bins for transport'"));
+                sb.append(String.format("\n%s is missing \n", "'Bins for transport'"));
             }
         }
         return sb.toString();

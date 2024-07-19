@@ -313,11 +313,11 @@ public class FishingTeamActivity extends AppCompatActivity implements AdapterVie
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recFishing.fishingTeam == null || recFishing.fishingTeam.isEmpty()) {
-                sb.append(String.format(getString(R.string.field) +"\n%s" + getString(R.string.is_missing), getString(R.string.team_members)));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.team_members)));
             }
 
             if (Strings.isEmptyOrWhitespace(recFishing.cageRFID)) {
-                sb.append(String.format(getString(R.string.field) +"\n%s" + getString(R.string.is_missing), getString(R.string.cage_tag)));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.cage_tag)));
             }
         }
 

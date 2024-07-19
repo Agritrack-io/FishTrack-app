@@ -237,13 +237,6 @@ public class ZebraCorrelationCageActivity extends LocationAwareActivity implemen
         recWHCorrelation.rfid = null;
 
         CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
-        Asset currCage = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
-        if (currCage != null) {
-            currCage.rfid = null;
-            currCage.rfidBarcode = null;
-            currCage.barcode = null;
-            db.assetDAO().update(currCage);
-        }
 
         String token = LocalPreferences.getToken();
         // sync WH Correlation Tx
@@ -400,11 +393,11 @@ public class ZebraCorrelationCageActivity extends LocationAwareActivity implemen
             // Update state and proceed to next
             Boolean proceed = correlate();
 
-            if (proceed) {
-                // move to next activity.
-                Intent i = new Intent(getApplicationContext(), ZebraCorrelationCageActivity.class);
-                startActivity(i);
-            }
+//            if (proceed) {
+//                // move to next activity.
+//                Intent i = new Intent(getApplicationContext(), ZebraCorrelationCageActivity.class);
+//                startActivity(i);
+//            }
         }
     }
 
@@ -506,18 +499,7 @@ public class ZebraCorrelationCageActivity extends LocationAwareActivity implemen
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
 
-            //Check if in the local DB asset with same rfid exists and set rfid to null
-            Asset currCage = db.assetDAO().getAssetByEpc(GlobalState.recWHCorrelation.rfid);
-            if (currCage != null) {
-                currCage.rfid = null;
-                currCage.rfidBarcode = null;
-                currCage.barcode = null;
-                db.assetDAO().update(currCage);
-            }
 
-            Asset cage = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
-            cage.rfid = GlobalState.recWHCorrelation.rfid;
-            db.assetDAO().update(cage);
 
             // sync WH Correlation Tx
             List<CorrelationTxDTO> dtos = new ArrayList<>();
@@ -709,10 +691,33 @@ public class ZebraCorrelationCageActivity extends LocationAwareActivity implemen
 
             if (response.isSuccessful()) {
                 deleteCorrelationTx();
-                updateCagesList();
+                if (recWHCorrelation.rfid != null) {
+                    //Check if in the local DB asset with same rfid exists and set rfid to null
+                    Asset currCage = db.assetDAO().getAssetByEpc(GlobalState.recWHCorrelation.rfid);
+                    if (currCage != null) {
+                        currCage.rfid = null;
+                        currCage.rfidBarcode = null;
+                        currCage.barcode = null;
+                        db.assetDAO().update(currCage);
+                    }
+
+                    Asset cage = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
+                    cage.rfid = GlobalState.recWHCorrelation.rfid;
+                    db.assetDAO().update(cage);
+                } else {
+                    Asset currCage = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
+                    if (currCage != null) {
+                        currCage.rfid = null;
+                        currCage.rfidBarcode = null;
+                        currCage.barcode = null;
+                        db.assetDAO().update(currCage);
+                    }
+                }
                 if(btnUncorr.isClickable()) {
                     btnUncorr.setVisibility(View.GONE);
                 }
+                updateCagesList();
+
                 if(correlatedFilter.isChecked()) {
                     loadCagesFromLocalDB(uncorrCagesList);
                 }else {

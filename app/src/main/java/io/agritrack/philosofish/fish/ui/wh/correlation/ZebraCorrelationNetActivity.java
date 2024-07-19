@@ -237,13 +237,8 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
         recWHCorrelation.rfid = null;
 
         CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
-        Asset currNet = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
-        if (currNet != null) {
-            currNet.rfid = null;
-            currNet.rfidBarcode = null;
-            currNet.barcode = null;
-            db.assetDAO().update(currNet);
-        }
+
+
 
         String token = LocalPreferences.getToken();
         // sync WH Correlation Tx
@@ -400,11 +395,11 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
             // Update state and proceed to next
             Boolean proceed = correlate();
 
-            if (proceed) {
-                // move to next activity.
-                Intent i = new Intent(getApplicationContext(), ZebraCorrelationNetActivity.class);
-                startActivity(i);
-            }
+//            if (proceed) {
+//                // move to next activity.
+//                Intent i = new Intent(getApplicationContext(), ZebraCorrelationNetActivity.class);
+//                startActivity(i);
+//            }
         }
     }
 
@@ -506,18 +501,8 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
 
-            //Check if in the local DB asset with same rfid exists and set rfid to null
-            Asset currNet = db.assetDAO().getAssetByEpc(GlobalState.recWHCorrelation.rfid);
-            if (currNet != null) {
-                currNet.rfid = null;
-                currNet.rfidBarcode = null;
-                currNet.barcode = null;
-                db.assetDAO().update(currNet);
-            }
 
-            Asset net = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
-            net.rfid = GlobalState.recWHCorrelation.rfid;
-            db.assetDAO().update(net);
+
 
             // sync WH Correlation Tx
             List<CorrelationTxDTO> dtos = new ArrayList<>();
@@ -709,10 +694,31 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
 
             if (response.isSuccessful()) {
                 deleteCorrelationTx();
-                updateNetsList();
+                if (recWHCorrelation.rfid != null) {
+                    //Check if in the local DB asset with same rfid exists and set rfid to null
+                    Asset currNet = db.assetDAO().getAssetByEpc(GlobalState.recWHCorrelation.rfid);
+                    if (currNet != null) {
+                        currNet.rfid = null;
+                        currNet.rfidBarcode = null;
+                        currNet.barcode = null;
+                        db.assetDAO().update(currNet);
+                    }
+                    Asset net = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
+                    net.rfid = GlobalState.recWHCorrelation.rfid;
+                    db.assetDAO().update(net);
+                } else {
+                    Asset currNet = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
+                    if (currNet != null) {
+                        currNet.rfid = null;
+                        currNet.rfidBarcode = null;
+                        currNet.barcode = null;
+                        db.assetDAO().update(currNet);
+                    }
+                }
                 if(btnUncorr.isClickable()) {
                     btnUncorr.setVisibility(View.GONE);
                 }
+                updateNetsList();
                 if(correlatedFilter.isChecked()) {
                     loadNetsFromLocalDB(uncorrNetsList);
                 }else {

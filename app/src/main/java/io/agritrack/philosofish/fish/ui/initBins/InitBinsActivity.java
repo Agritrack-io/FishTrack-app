@@ -295,11 +295,15 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
         ImageView ivNext = findViewById(R.id.ivToCongs);
         ivNext.setOnClickListener(view -> {
             this.stopScanner();
-            updateState();
+            boolean proceed = false;
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
+                proceed = updateState();
+
+            }
+            if (proceed) {
                 Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
                 startActivity(i);
             }

@@ -167,7 +167,7 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), FishingConfirmActivity.class);
                 startActivity(i);

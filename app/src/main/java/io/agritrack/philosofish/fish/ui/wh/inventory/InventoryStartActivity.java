@@ -86,7 +86,7 @@ public class InventoryStartActivity extends AppCompatActivity {
                         updateState();
                         String vl = validate();
                         if (!Strings.isEmptyOrWhitespace(vl)) {
-                            CToast(getApplicationContext(), render(R.string.invalid_inputs + vl), Toast.LENGTH_LONG);
+                            CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + vl), Toast.LENGTH_LONG);
                         } else {
                             i = new Intent(appCtx, InventoryAssetActivity.class);
                             break;
@@ -139,7 +139,7 @@ public class InventoryStartActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recWHInventory.subSite)) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.subsite));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.subsite)));
 
             }
         }

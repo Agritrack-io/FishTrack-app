@@ -279,10 +279,12 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     public Reader.READER_ERR HighSensitivity() {
         try {
             //Short bits = 0x10; //Short bits = 0x14; //Short.valueOf("0010", 16); // High sensitivity and KEEP LOGGING!!!!
+            Thread.sleep(200);
             byte[] address = ReadRegisters(ADDR_CONTROL, SHORT_ONE);
             Short currState = EncodingUtils.ToShort(address);
-            currState = (short) (currState | (1 << 4));
+            currState = (short) (currState | 16);
             Reader.READER_ERR rs = WriteRegisters(ADDR_CONTROL, currState);
+            Thread.sleep(200);
             return rs;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -335,11 +337,19 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     @Override
     public String ReadControlRegister() {
         try {
-            byte[] ctrlRS = ReadRegisters(ADDR_CONTROL, SHORT_ONE);
-            String binaryText = Integer.toBinaryString(ToShort(ctrlRS));
-            binaryText = binaryText.length() > 5 ? binaryText.substring(0, 5) : binaryText;
-            //if(!"0004".equalsIgnoreCase(hexRS))
-            return String.format("%5s", binaryText).replace(' ', '0');
+            byte[] ctrlRS = null;
+            int i = 0;
+            while (ctrlRS == null && i++ < 4) {
+                ctrlRS = ReadRegisters(ADDR_CONTROL, SHORT_ONE);
+                Thread.sleep(200);
+            }
+            if (ctrlRS != null) { //to check if
+                String binaryText = Integer.toBinaryString(ToShort(ctrlRS));
+                binaryText = binaryText.length() > 5 ? binaryText.substring(0, 5) : binaryText;
+
+                //if(!"0004".equalsIgnoreCase(hexRS))
+                return String.format("%5s", binaryText).replace(' ', '0');
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -409,6 +419,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     @Override
     public String ReadInitDatetime() {
         try {
+            Thread.sleep(200);
             byte[] rs = ReadRegisters(ADDR_INIT_DATE_L, SHORT_TWO);
             if (rs.length == 4) {
                 return parseTimestamp(new byte[]{rs[2], rs[3], rs[0], rs[1]});
@@ -435,7 +446,13 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     @Override
     public Short ReadInterval() {
         try {
+            Thread.sleep(200);
             byte[] rs = ReadRegisters(ADDR_INTERVAL, SHORT_ONE);
+            int i = 0;
+            while (rs == null && i++ < 3) {
+                Thread.sleep(200);
+                rs = ReadRegisters(ADDR_INTERVAL, SHORT_ONE);
+            }
             return ToShort(rs);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -463,6 +480,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
     @Override
     public Short ReadSamplesCount() {
         try {
+            Thread.sleep(200);
             byte[] aa = ReadRegisters(ADDR_SAMPLES_CNT, SHORT_ONE);
             if (aa == null || aa.length == 1) //sometimes returns {9}
                 return -1;
@@ -666,7 +684,7 @@ public abstract class AbstractCAENCommander implements ICAEN_API {
             }
             if (temp != null && temp >= -10 && temp < 40 && round(temp, 2) != 0.03 && round(temp, 2) != -0.03) {
                 //measurements.add(new String[]{createTimestamp(currTemperatureTS), String.format("%.2f", parseTemperatureNumeric(t))})
-                    measurements.add(new TempSample(createTimestamp(currTemperatureTS), String.format("%.2f", parseTemperatureNumeric(t)), isAfterFishing));
+                measurements.add(new TempSample(createTimestamp(currTemperatureTS), String.format("%.2f", parseTemperatureNumeric(t)), isAfterFishing));
             } else {
                 //measurements.add(new String[]{createTimestamp(currTemperatureTS), "N/A"});
                 measurements.add(new TempSample(createTimestamp(currTemperatureTS), "N/A", isAfterFishing));

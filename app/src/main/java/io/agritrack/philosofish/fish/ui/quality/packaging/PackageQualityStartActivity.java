@@ -171,7 +171,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
             updateState();
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render(R.string.invalid_inputs + v), Toast.LENGTH_LONG);
+                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
             } else {
                 Intent i = new Intent(getApplicationContext(), PackageQualityTemperatureProfilesActivity.class);
                 startActivity(i);
@@ -209,7 +209,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (GlobalState.recQuality.qualityBins == null || GlobalState.recQuality.qualityBins.isEmpty()) {
-                sb.append(String.format(R.string.field +"\n%s" + R.string.is_missing, R.string.received_bins));
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.received_bins)));
 
             }
         }

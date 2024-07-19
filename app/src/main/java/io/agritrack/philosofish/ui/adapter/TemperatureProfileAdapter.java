@@ -79,6 +79,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        //temperatureChart = itemView.findViewById(R.id.tempChartIn);
         double _highT = 0.0d, _avgT = 0.0d, _lowT = 0.0d;
         String key = listOfEPCs.get(position);
 
@@ -162,7 +163,6 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             @Override
             public void onClick(View v) {
                 setTempDialog.showDialog();
-
 //                AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(context);
 //                dlgBuilder.setTitle("Logger Data");
 //
@@ -248,12 +248,12 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
                 tvFish = itemView.findViewById(R.id.tvFishT);
                 tvWater = itemView.findViewById(R.id.tvWaterT);
                 tvFish2 = itemView.findViewById(R.id.tvFishT2);
-                infoLayout = itemView.findViewById(R.id.infoLayout);
+//                infoLayout = itemView.findViewById(R.id.infoLayout);
             } else {
                 cardView = itemView.findViewById(R.id.crdlayout);
             }
             temperatureChart = itemView.findViewById(R.id.tempChartIn);
-
+            infoLayout = itemView.findViewById(R.id.infoLayout);
             tvBinEPC = itemView.findViewById(R.id.tvBinEPC);
             tvCageCode = itemView.findViewById(R.id.tvCageCode);
             tvWeight = itemView.findViewById(R.id.tvWeight);

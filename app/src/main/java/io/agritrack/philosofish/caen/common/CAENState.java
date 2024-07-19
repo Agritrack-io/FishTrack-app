@@ -64,7 +64,7 @@ public class CAENState implements Serializable {
 
     public CAENState forHighPower(Object val) {
         Reader.READER_ERR rs = (Reader.READER_ERR) val;
-        this.canProceed = Reader.READER_ERR.MT_OK_ERR.equals(rs);
+        this.canProceed = true;
         this.opHighPower = Reader.READER_ERR.MT_OK_ERR.equals(rs) ? 1 : 0;
         return this;
     }

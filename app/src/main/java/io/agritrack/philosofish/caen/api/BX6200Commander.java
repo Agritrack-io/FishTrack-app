@@ -160,6 +160,7 @@ public class BX6200Commander extends AbstractCAENCommander {
     @Override
     public Reader.READER_ERR Reset() {
         try {
+            Thread.sleep(200);
             Reader.READER_ERR rs = WriteRegisters(ADDR_CONTROL, SHORT_ONE);
             return rs;
         } catch (Exception ex) {

@@ -2,12 +2,13 @@ package io.agritrack.philosofish.data.dto.tx;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import io.agritrack.philosofish.data.model.tx.TransportTransaction;
 
 public class TransportTxDTO {
 
-    public Long id;
+    public UUID id;
     public String transport_head;
     public String packaging_site;
     public Boolean truck_refrigerated;
@@ -27,7 +28,7 @@ public class TransportTxDTO {
 
     public static TransportTxDTO convert(TransportTransaction transport) {
         TransportTxDTO transportTxDto = new TransportTxDTO();
-
+        transportTxDto.id = UUID.randomUUID();
         transportTxDto.transport_head = transport.transportHead;
         transportTxDto.packaging_site = transport.destination;
         transportTxDto.truck_refrigerated = transport.isTruckRefrigerated;

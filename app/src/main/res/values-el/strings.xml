@@ -640,7 +640,7 @@
     <string name="ok">OK</string>
     <string name="lot_restriction">Λανθασμένο LOT</string>
     <string name="lot_restriction_message">Περισσότερα του ενός LOT βρέθηκαν για τα τελάρα που σκανάρατε. Παρακαλώ πηγαίντε πίσω και σκανάρετε τελάρα από ένα LOT.</string>
-    <string name="invalid_inputs">Μη έγκυρα δεδομένα :</string>
+    <string name="invalid_inputs">Μη έγκυρα δεδομένα: \n</string>
     <string name="laundry">LAUNDRY</string>
     <string name="EncodeScheme_sync_completed">Encoding scheme συγχρονίστηκε επιτυχώς!</string>
     <string name="no_EncodeScheme_found_alert">No Encoding Scheme entry was found!</string>
@@ -797,7 +797,7 @@
     <string name="target_site">Προορισμός</string>
     <string name="delete_item">Παρακαλώ επιλέξτε ένα πεδίο για διαγραφή</string>
     <string name="operation_failed">Η διαδικασία απέτυχε</string>
-    <string name="is_missing">είναι άδειο</string>
+    <string name="is_missing"> είναι άδειο</string>
     <string name="field">Το πεδίο</string>
     <string name="smell">Η μυρωδια</string>
     <string name="loggers">"Καταγραφικό θερμοκρασίας"</string>
