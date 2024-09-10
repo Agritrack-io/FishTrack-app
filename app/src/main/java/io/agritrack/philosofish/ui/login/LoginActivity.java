@@ -137,6 +137,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     private EditText etUserName, etPassword;
     private TextView tvInvalidLicense, tvForgotYourPassword, tvLoginWithCred;
     private EncryptedSharedPreferences pref;
+    private int syncLimit;
 
     public static boolean checkAndRequestPermissions(final Activity context) {
         int extStorePermission = ContextCompat.checkSelfPermission(context,
@@ -173,6 +174,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
 
         // get  references of the controls
         assignCtrlVars();
+        syncLimit = 12;
 
         // bind the flags button
         ibLocale = findViewById(R.id.ibLocale);
@@ -278,7 +280,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                     return;
                 }
                 if (response != null) {
-                    if (syncCounter > 6) {
+                    if (syncCounter > syncLimit) {
                         toggleProgress(Boolean.FALSE, R.string.empty);
                     }
                 }

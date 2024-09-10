@@ -404,9 +404,9 @@ public class GlobalState {
                 TemperatureTimeSeries meas = db.measurementsDAO().getByEPC(epc);
                 if (meas != null) {
                     meas.measurement.lot = plot;
-                    meas.measurement.fishTemp = model.fishT;
-                    meas.measurement.fish2Temp = model.fishT2;
-                    meas.measurement.waterTemp = model.waterT;
+                    meas.measurement.surfaceTemp = model.surfaceT;
+                    meas.measurement.bottomTemp = model.bottomT;
+                    meas.measurement.correctiveAction = model.corrAction;
                     db.measurementsDAO().update(meas.measurement);
                     result.add(meas);
                     continue;
@@ -417,9 +417,9 @@ public class GlobalState {
                 measurement.retrievedAt = model.retrievedAt;
                 measurement.productionLane = model.productionLane;
                 measurement.lot = plot;
-                measurement.fishTemp = model.fishT;
-                measurement.fish2Temp = model.fishT2;
-                measurement.waterTemp = model.waterT;
+                measurement.surfaceTemp = model.surfaceT;
+                measurement.bottomTemp = model.bottomT;
+                measurement.correctiveAction = model.corrAction;
                 measurement.isInit = true;
 
                 db.measurementsDAO().insert(measurement);
@@ -456,9 +456,9 @@ public class GlobalState {
             measurement.assetRFID = model.assetEPC;
             measurement.retrievedAt = model.retrievedAt;
             measurement.productionLane = model.productionLane;
-            measurement.fishTemp = model.fishT;
-            measurement.fish2Temp = model.fishT2;
-            measurement.waterTemp = model.waterT;
+            measurement.surfaceTemp = model.surfaceT;
+            measurement.correctiveAction = model.corrAction;
+            measurement.bottomTemp = model.bottomT;
 
             db.measurementsDAO().insert(measurement);
             UUID measurementId = measurement.id;

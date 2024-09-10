@@ -1,5 +1,6 @@
 package io.agritrack.philosofish.fish.ui.quality.receipt;
 
+import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
 import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.dialog.SupportDialog;
+import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.state.LoggerDataRecord;
 import io.agritrack.philosofish.ui.adapter.TemperatureProfileAdapter;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
@@ -79,14 +81,14 @@ public class ReceiptQualityTemperatureProfilesActivity extends AppCompatActivity
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToPackageQualityInfo);
         ivNext.setOnClickListener(view -> {
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Errors : " + v), Toast.LENGTH_LONG);
-            } else {
-                updateState();
+//            String v = validate();
+//            if (!Strings.isEmptyOrWhitespace(v)) {
+//                CToast(getApplicationContext(), render("Errors : " + v), Toast.LENGTH_LONG);
+//            } else {
+//                updateState();
                 Intent i = new Intent(getApplicationContext(), ReceiptQualityInfoActivity.class);
                 startActivity(i);
-            }
+//            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToPackageQualityStart);
@@ -103,11 +105,11 @@ public class ReceiptQualityTemperatureProfilesActivity extends AppCompatActivity
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-       /* if (!IsDemo) {
-            if (GlobalState.recProcessing.availBins == null || GlobalState.recProcessing.availBins.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Received bins'"));
+       if (!IsDemo) {
+            if (recLoggerData == null || recLoggerData.data.isEmpty()) {
+                sb.append(String.format("\n%s is missing", getString(R.string.logger_data)));
             }
-        }*/
+        }
         return sb.toString();
     }
 

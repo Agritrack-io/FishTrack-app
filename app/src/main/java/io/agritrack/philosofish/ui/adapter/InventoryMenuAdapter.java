@@ -52,6 +52,9 @@ public class InventoryMenuAdapter extends ArrayAdapter<MenuItem> {
         public void setMenuItem(MenuItem menuItem) {
             tvMenuCaptionUp.setText(menuItem.getName());
             tvMenuCaptionDown.setText(menuItem.getDescription());
+            if (tvMenuCaptionDown.getText().toString().isEmpty()) {
+                tvMenuCaptionDown.setVisibility(View.GONE);
+            }
         }
     }
 }

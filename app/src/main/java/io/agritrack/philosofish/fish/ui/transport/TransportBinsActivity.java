@@ -34,6 +34,7 @@ import com.google.android.gms.common.util.Strings;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.common.Filters;
@@ -226,7 +227,7 @@ public class TransportBinsActivity extends AppCompatActivity {
         TransportationRecord trns = GlobalState.recTransport;
 
         if (trns.availBins != null) {
-            adapterBins.setValues(new LinkedList<>(trns.availBins));
+            adapterBins.setValues(trns.availBins.stream().map(x -> new TemplateRecyclerAdapter.BinEpc(x)).collect(Collectors.toList()));
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             TextView tvBinsCount = findViewById(R.id.tvBinsCount);
@@ -249,7 +250,7 @@ public class TransportBinsActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 binBarcode = input.getText().toString();
-                adapterBins.addUniqueItem(binBarcode);
+                adapterBins.addUniqueItem(new TemplateRecyclerAdapter.BinEpc(binBarcode));
                 adapterBins.notifyDataSetChanged();
                 tvBinsCount.setText(String.valueOf(adapterBins.getValues().size()));
             }
@@ -268,7 +269,7 @@ public class TransportBinsActivity extends AppCompatActivity {
     private TransportationRecord updateState() {
         TransportationRecord transportationRecord = GlobalState.initTransportationRecord();
 
-        transportationRecord.availBins = new LinkedList<>(adapterBins.getValues());
+        transportationRecord.availBins = adapterBins.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
 
         return transportationRecord;
     }
@@ -305,7 +306,7 @@ public class TransportBinsActivity extends AppCompatActivity {
                 case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     if (epcList != null && !epcList.isEmpty()) {
-                        epcList.stream().forEach(x -> adapterBins.addUniqueItem(x.toString()));
+                        epcList.stream().forEach(x -> adapterBins.addUniqueItem(new TemplateRecyclerAdapter.BinEpc(x.toString())));
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         adapterBins.notifyDataSetChanged();
                     }

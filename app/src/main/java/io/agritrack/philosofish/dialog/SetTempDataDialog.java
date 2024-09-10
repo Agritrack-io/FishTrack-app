@@ -16,31 +16,32 @@ import io.agritrack.philosofish.R;
 
 public class SetTempDataDialog {
     private final Activity activity;
-    private EditText tvFishT, tvWaterT, tvFishT2;
+    private EditText tvFishT, tvWaterT, corrAction;
     private Button btnOk;
     private Dialog dialog;
     private DataListener mDataListener;
-    private Double fishT, waterT, fishT2;
+    private Double fishT, waterT;
+    private String corrAct;
 
-    public SetTempDataDialog(Activity activity, Double fishT, Double waterT, Double fishT2) {
+    public SetTempDataDialog(Activity activity, Double fishT, Double waterT, String  corrActi) {
         this.activity = activity;
         this.fishT = fishT;
         this.waterT = waterT;
-        this.fishT2 = fishT2;
+        this.corrAct = corrActi;
 
         setDialog();
         findViews();
 
         this.tvFishT.setText(fishT == null ? "" : String.valueOf(fishT));
         this.tvWaterT.setText(waterT == null ? "" : String.valueOf(waterT));
-        this.tvFishT2.setText(fishT2 == null ? "" : String.valueOf(fishT2));
+        this.corrAction.setText(corrActi == null ? "" : String.valueOf(corrActi));
 
         btnOk.setOnClickListener(view -> {
             Double fishTP = !Strings.isEmptyOrWhitespace(this.tvFishT.getText().toString()) ? Double.parseDouble(this.tvFishT.getText().toString()) : 0;
             Double waterTP = !Strings.isEmptyOrWhitespace(this.tvWaterT.getText().toString()) ? Double.parseDouble(this.tvWaterT.getText().toString()) : 0;
-            Double fishT2P = !Strings.isEmptyOrWhitespace(this.tvFishT2.getText().toString()) ? Double.parseDouble(this.tvFishT2.getText().toString()) : 0;
+            String corrAct = !Strings.isEmptyOrWhitespace(this.corrAction.getText().toString()) ? (this.corrAction.getText().toString()) : "";
             if (mDataListener != null) {
-                mDataListener.onDataPassed(fishTP, waterTP, fishT2P);
+                mDataListener.onDataPassed(fishTP, waterTP, corrAct);
             }
             dismiss();
         });
@@ -82,10 +83,10 @@ public class SetTempDataDialog {
         btnOk = dialog.findViewById(R.id.btnOk);
         tvFishT = dialog.findViewById(R.id.tvFishT);
         tvWaterT = dialog.findViewById(R.id.tvWaterT);
-        tvFishT2 = dialog.findViewById(R.id.tvFishT2);
+        corrAction = dialog.findViewById(R.id.tvFishT2);
 
         tvFishT.setSelectAllOnFocus(true);
         tvWaterT.setSelectAllOnFocus(true);
-        tvFishT2.setSelectAllOnFocus(true);
+        corrAction.setSelectAllOnFocus(true);
     }
 }

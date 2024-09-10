@@ -37,6 +37,7 @@ import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
@@ -196,7 +197,7 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
                 scanner_runnable.stopReading();
             }
             if (adapterInventoryItems != null) {
-                GlobalState.assetData.loggers = adapterInventoryItems.getValues();
+                GlobalState.assetData.loggers = adapterInventoryItems.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
             }
             GlobalState.assetData.type = etType.getText().toString();
             GlobalState.assetData.model = etModel.getText().toString();
@@ -264,7 +265,7 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 loggerBarcode = input.getText().toString();
-                adapterInventoryItems.addUniqueItem(loggerBarcode);
+                adapterInventoryItems.addUniqueItem(new TemplateRecyclerAdapter.BinEpc(loggerBarcode));
                 tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemCount()));
                 adapterInventoryItems.notifyDataSetChanged();
             }
@@ -331,7 +332,7 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     //clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
-                        epcList.stream().forEach(x -> adapterInventoryItems.addUniqueItem(x.toString()));
+                        epcList.stream().forEach(x -> adapterInventoryItems.addUniqueItem(new TemplateRecyclerAdapter.BinEpc(x.toString())));
                         tvItemsCnt.setText(String.valueOf(adapterInventoryItems.getItemCount()));
                         adapterInventoryItems.notifyDataSetChanged();
                     }

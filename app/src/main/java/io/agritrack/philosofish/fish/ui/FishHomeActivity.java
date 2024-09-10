@@ -126,6 +126,7 @@ public class FishHomeActivity extends AppCompatActivity {
     private SupportDialog supportDialog;
     private MobileDB db;
     private int syncCounter = 1;
+    private int syncLimit;
 
 
     @Override
@@ -137,7 +138,7 @@ public class FishHomeActivity extends AppCompatActivity {
         assignPrivilegesToRoles();
 
         List<String> userRoles = LocalPreferences.getUserRoles();
-
+        syncLimit = 12;
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderHome);
         tvVersionLabel = findViewById(R.id.tvVersionLabel);
@@ -163,12 +164,12 @@ public class FishHomeActivity extends AppCompatActivity {
         if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
             menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), QualitySelectStepsActivity.class, R.drawable.quality));
         }
-        if (roleCanAccessMenu(userRoles, Bin_Overturn_Idx)) {
-            menuItemsSet.add(new MenuItem(Bin_Overturn_Idx, getString(R.string.menu_title_bin_overturn), BinTurnoverActivity.class, R.drawable.bin_turnover));
-        }
-        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
-            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
-        }
+//        if (roleCanAccessMenu(userRoles, Bin_Overturn_Idx)) {
+//            menuItemsSet.add(new MenuItem(Bin_Overturn_Idx, getString(R.string.menu_title_bin_overturn), BinTurnoverActivity.class, R.drawable.bin_turnover));
+//        }
+//        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
+//            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
+//        }
         if (roleCanAccessMenu(userRoles, Warehouse_Idx)) {
             menuItemsSet.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
         }
@@ -186,13 +187,13 @@ public class FishHomeActivity extends AppCompatActivity {
 
         syncResult.observe(this, response -> {
             syncCounter++;
-            if (response == null) {
-                hideProgressDialog();
-                return;
-            }
+//            if (response == null) {
+//                hideProgressDialog();
+//                return;
+//            }
             if (response != null) {
                 progressDialog.setMessage(render(response));
-                if (syncCounter > 6) {
+                if (syncCounter > syncLimit) {
                     hideProgressDialog();
                 }
             }
@@ -303,8 +304,8 @@ public class FishHomeActivity extends AppCompatActivity {
         ivRefresh.setOnClickListener(view -> {
             syncCounter = 1;
             showProgressDialog(getString(R.string.syncing));
-            invokeSyncAll();
             invokeUploadPendingAll();
+            invokeSyncAll();
         });
 
         configHeader();
@@ -500,14 +501,14 @@ public class FishHomeActivity extends AppCompatActivity {
     }
 
     private void assignPrivilegesToRoles() {
-        Privileges.put(InitBins_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(InitBins_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Fishing_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Test_Temp_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Receiving_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Packaging_Quality_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Bin_Overturn_Idx, new String[]{"ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
         Privileges.put(Transport_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
-        Privileges.put(Warehouse_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
+        Privileges.put(Warehouse_Idx, new String[]{"ROLE_FISHING", "ROLE_PACKAGING", "ROLE_SUPER_USER", "ROLE_ADMIN", "ROLE_WAREHOUSE"});
 //        Privileges.put(Maintenance_Idx, new String[]{"ROLE_PACKAGING", "ROLE_FISHING","ROLE_SUPER_USER", "ROLE_ADMIN"});
 //        Privileges.put(SeaTemp_Idx, new String[]{"ROLE_FISHING", "ROLE_SUPER_USER", "ROLE_ADMIN"});
     }

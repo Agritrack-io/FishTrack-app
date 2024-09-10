@@ -230,7 +230,7 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
             for (BinWeightRecord.BinRecord bin : recFishing.binWeightRecord.getBinsData()) {
                 loadsMap.addLoad(bin.binEPC, bin.weight + "");
             }
-            adapterCatches.setValues(recFishing.binWeightRecord.getBinsData().stream().map(x -> new BinLoadAdapter.BinLoadItem(x.binEPC, x.weight, x.temp)).collect(Collectors.toList()));
+            adapterCatches.setValues(recFishing.binWeightRecord.getBinsData().stream().map(x -> new BinLoadAdapter.BinLoadItem(x.binEPC, x.weight)).collect(Collectors.toList()));
             if (recFishing.reqWeight != null) {
                 tvTotalWeightCount.setText(String.format("%s (%s)", loadsMap.totalWeight().toString(), recFishing.reqWeight));
             } else {
@@ -295,16 +295,8 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
             if (recFishing.totalBinsUsed == null) {
                 sb.append(String.format("\n %s" + getString(R.string.invalid_inputs), "'Harvest bins'"));
             }
-            recFishing.binWeightRecord.getBinsData().stream().filter(item -> item.weight != null)
-                    .forEach(item -> {
-                        if (item.temp != null) {
 
-                        } else {
-                            sb.append(String.format("\n" + item.binEPC.substring(item.binEPC.length() - 5) + " has no registered temperature"));
-                        }
-                    });
-
-            recFishing.binWeightRecord.getBinsData().stream().filter(item -> item.temp != null)
+            recFishing.binWeightRecord.getBinsData().stream()
                     .forEach(item -> {
                         if (item.weight != null) {
 

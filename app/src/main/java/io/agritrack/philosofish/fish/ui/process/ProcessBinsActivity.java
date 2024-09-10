@@ -39,6 +39,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
@@ -136,21 +137,21 @@ public class ProcessBinsActivity extends AppCompatActivity {
         scanButton.setOnClickListener(this::onClick);
 
         ivDeleteBin.setOnClickListener(view -> {
-
-            if (!Strings.isEmptyOrWhitespace(adapterBins.getSelectedValue())) {
+            List<BinWeightCageAdapter.BinDetails> selectedBins = adapterBins.getValues().stream().filter(x -> x.isSelected()).collect(Collectors.toList());
+            if (!selectedBins.isEmpty()) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
-                confirmSiteSelectionDlg.args().putString("selectedBarcode", adapterBins.getSelectedValue());
-                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + adapterBins.getSelectedLabel());
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_all_selected_items));
 
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
-                    String barcode = bundle.getString("selectedBarcode");
-                    if (!Strings.isEmptyOrWhitespace(barcode)) {
-                        adapterBins.removeItem(barcode);
-                        adapterBins.notifyDataSetChanged();
-                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-                        adapterBins.clearSelectedValue();
+                    for (BinWeightCageAdapter.BinDetails bin : selectedBins) {
+                        adapterBins.removeItem(bin.epc);
                     }
+
+                    adapterBins.notifyDataSetChanged();
+                    tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+                    adapterBins.clearSelectedValue();
+
                 });
 
                 confirmSiteSelectionDlg.onReject(bundle -> {

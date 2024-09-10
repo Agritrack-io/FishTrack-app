@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.common.Filters;
@@ -279,7 +280,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
                                 binEPC = bin.rfid;
                                 scannedBinEPCs.add(bin.rfid);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
-                                adapterBins.setValues(new ArrayList<>(scannedBinEPCs));
+                                adapterBins.setValues(scannedBinEPCs.stream().map(x -> new TemplateRecyclerAdapter.BinEpc(x)).collect(Collectors.toList()));
                                 adapterBins.notifyDataSetChanged();
 
                                 /*if (!Strings.isEmptyOrWhitespace(loggerEPC)) {

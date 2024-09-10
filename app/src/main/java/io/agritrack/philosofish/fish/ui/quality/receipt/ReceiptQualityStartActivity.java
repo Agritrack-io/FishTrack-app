@@ -66,6 +66,7 @@ import io.agritrack.philosofish.ui.service.LocalPreferences;
 import io.agritrack.philosofish.ui.tools.caen.ILoggerDialog;
 import io.agritrack.philosofish.ui.tools.caen.LoggerDialogFragment;
 import io.agritrack.philosofish.ui.tools.caen.ReadLoggerDialogDecorator;
+import io.agritrack.philosofish.ui.tools.caen.SortLoggerDialogDecorator;
 
 public class ReceiptQualityStartActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
@@ -88,6 +89,8 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     private ImageView ivSupport;
     private Button btnScanBin;
     private SupportDialog supportDialog;
+    // variable to hold the dialog. Only 1 instance of ILoggerDialog may be active...
+    private ILoggerDialog loggerDlg = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,15 +216,15 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         ImageView ivNext = findViewById(R.id.ivToPackageQualityTempProfiles);
         ivNext.setOnClickListener(view -> {
             stopScanner();
-            updateState();
-            String v = validate();
-            if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
-            } else {
+//            updateState();
+//            String v = validate();
+//            if (!Strings.isEmptyOrWhitespace(v)) {
+//                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
+//            } else {
                 Intent i = new Intent(getApplicationContext(), ReceiptQualityTemperatureProfilesActivity.class);
 //                Intent i = new Intent(getApplicationContext(), ReceiptQualityInfoActivity.class);
                 startActivity(i);
-            }
+//            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
@@ -270,9 +273,9 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-//            if (recQuality.qualityBins == null || recQuality.qualityBins.isEmpty()) {
-//                sb.append(String.format("\n%s is missing", "'Received bins'"));
-//            }
+            if (recQuality.qualityBins == null || recQuality.qualityBins.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'Received bins'"));
+            }
         }
         return sb.toString();
     }
@@ -372,17 +375,30 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             FragmentManager fm = getSupportFragmentManager();
 
             BinInfo tmpBin = db.binInfoDAO().getByRFId(binEPC);
-            if (tmpBin != null && tmpBin.initedAt != null) {
-                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, tmpBin.initedAt);
-                loggerDlg.setStateObserver(stateResult);
-                ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
-                readLoggerDecorator.show(fm);
-            } else {
-                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
-                loggerDlg.setStateObserver(stateResult);
-                ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
-                readLoggerDecorator.show(fm);
+//            if (tmpBin != null && tmpBin.initedAt != null) {
+//                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, tmpBin.initedAt);
+//                loggerDlg.setStateObserver(stateResult);
+//                ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
+//                readLoggerDecorator.show(fm);
+//            } else {
+//                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
+//                loggerDlg.setStateObserver(stateResult);
+//                ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
+//                readLoggerDecorator.show(fm);
+//            }
+            if (keyReceiver != null) {
+                unregisterReceiver(keyReceiver);
+                keyReceiver = null;
             }
+            String productionLane = "1"; //spProductionLine.getSelectedItem().toString();
+            if (tmpBin != null && tmpBin.initedAt != null) {
+                this.loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt, tmpBin.pickedAt);
+            } else {
+                this.loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane);
+            }
+            this.loggerDlg.setStateObserver(stateResult);
+            SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(this.loggerDlg);
+            sortLoggerDialogDecorator.show(fm);
         }
         // -------------------------------------
     }

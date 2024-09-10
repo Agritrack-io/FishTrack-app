@@ -46,7 +46,8 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
     private ArrayList<String> listOfEPCs = new ArrayList<>();
     private double highT, avgT, lowT;
     private String cageCode;
-    private Double weight, fishT, waterT, fishT2;
+    private Double weight, surfaceT, bottomT;
+    private String corrAction;
     private Map<String, LoggerDataRecord.TemperatureModel> mapOfData;
     private SetTempDataDialog setTempDialog;
     private DataListener mListener;
@@ -100,13 +101,13 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
                 if (mLayoutInflater.getContext() instanceof BinTurnoverActivity) {
                     holder.tvCageCode.setText(cageCode);
                     holder.tvWeight.setText(String.valueOf(weight));
-                    holder.tvFish.setText(fishT != null ? String.valueOf(fishT) : "");
-                    holder.tvWater.setText(waterT != null ? String.valueOf(waterT) : "");
-                    holder.tvFish2.setText(fishT2 != null ? String.valueOf(fishT2) : "");
+                    holder.tvSurface.setText(surfaceT != null ? String.valueOf(surfaceT) : "");
+                    holder.tvBottom.setText(bottomT != null ? String.valueOf(bottomT) : "");
+                    //holder.tvFish2.setText(fishT2 != null ? String.valueOf(fishT2) : "");
                     List<TempSample> values = recLoggerData.getValues(key);
 
                     if (values != null) {
-                        recLoggerData.addDataSetForBin(key, fishT, waterT, fishT2);
+                        recLoggerData.addDataSetForBin(key, surfaceT, bottomT, corrAction);
                     }
                 }
                 holder.tvHigh.setText(String.format("%.2f\u2103", _highT));
@@ -121,10 +122,10 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             if (mLayoutInflater.getContext() instanceof BinTurnoverActivity) {
                 holder.tvCageCode.setText(cageCode);
                 holder.tvWeight.setText(String.valueOf(weight));
-                holder.tvFish.setText(fishT != null ? String.valueOf(fishT) : "");
-                holder.tvWater.setText(waterT != null ? String.valueOf(waterT) : "");
-                holder.tvFish2.setText(fishT2 != null ? String.valueOf(fishT2) : "");
-                recLoggerData.addDataSetForBin(key, fishT, waterT, fishT2);
+                holder.tvSurface.setText(surfaceT != null ? String.valueOf(surfaceT) : "");
+                holder.tvBottom.setText(bottomT != null ? String.valueOf(bottomT) : "");
+                //holder.tvFish2.setText(fishT2 != null ? String.valueOf(fishT2) : "");
+                recLoggerData.addDataSetForBin(key, surfaceT, bottomT, corrAction);
             }
         }
 
@@ -155,13 +156,14 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
 
         if (context instanceof Activity) {
             Activity activity = (Activity) context;
-            setTempDialog = new SetTempDataDialog(activity, fishT, waterT, fishT2);
+            setTempDialog = new SetTempDataDialog(activity, surfaceT, bottomT, corrAction);
             setTempDialog.setMyDialogListener(this);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String key = listOfEPCs.get(holder.getAdapterPosition());
                 setTempDialog.showDialog();
 //                AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(context);
 //                dlgBuilder.setTitle("Logger Data");
@@ -180,11 +182,11 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
     }
 
     @Override
-    public void onDataPassed(Double fishT, Double waterT, Double fishT2) {
+    public void onDataPassed(Double fishT, Double waterT, String corrAction) {
         // Handle the passed data here
-        this.fishT = fishT;
-        this.waterT = waterT;
-        this.fishT2 = fishT2;
+        this.surfaceT = fishT;
+        this.bottomT = waterT;
+        this.corrAction = corrAction;
         notifyDataSetChanged();
     }
 
@@ -236,18 +238,16 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
         public TextView tvHigh;
         public TextView tvAvg;
         public TextView tvLow;
-        public TextView tvFish;
-        public TextView tvWater;
-        public TextView tvFish2;
+        public TextView tvSurface;
+        public TextView tvBottom;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mContext = itemView.getContext();
             if (this.mContext instanceof BinTurnoverActivity) {
                 cardView = itemView.findViewById(R.id.crdlayoutForTurnover);
-                tvFish = itemView.findViewById(R.id.tvFishT);
-                tvWater = itemView.findViewById(R.id.tvWaterT);
-                tvFish2 = itemView.findViewById(R.id.tvFishT2);
+                tvSurface = itemView.findViewById(R.id.tvFishT);
+                tvBottom = itemView.findViewById(R.id.tvWaterT);
 //                infoLayout = itemView.findViewById(R.id.infoLayout);
             } else {
                 cardView = itemView.findViewById(R.id.crdlayout);

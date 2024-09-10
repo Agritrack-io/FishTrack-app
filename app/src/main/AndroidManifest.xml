@@ -239,6 +239,7 @@
         <activity
             android:name=".fish.ui.fishing.FishingBinsActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".fish.ui.fishing.FishingStartActivity"
             android:screenOrientation="portrait" />

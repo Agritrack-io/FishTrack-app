@@ -83,8 +83,9 @@ tools:context=".fish.ui.quality.QualitySelectStepsActivity">
 
     <RelativeLayout
         android:id="@+id/inventoryALayout"
-        android:layout_width="340dp"
-        android:layout_height="370dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -93,16 +94,17 @@ tools:context=".fish.ui.quality.QualitySelectStepsActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="530dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/shape_rounded_corner_with_shadow"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="20dp"
+            >
 
             <GridView
                 android:id="@+id/gvQualityMenu"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:numColumns="1"
                 android:scrollbars="none"
                 android:stretchMode="columnWidth"
@@ -148,7 +150,7 @@ tools:context=".fish.ui.quality.QualitySelectStepsActivity">
         android:scaleY="0.7"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivToInventory"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToMenu"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/powered_by_agritrack" />
 

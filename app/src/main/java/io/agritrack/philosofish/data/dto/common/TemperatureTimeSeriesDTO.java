@@ -16,9 +16,9 @@ public class TemperatureTimeSeriesDTO {
     public String asset_rfid;
     public Long retrieved_at;
     public Short interval;
-    public Double fish_temp1;
-    public Double fish_temp2;
-    public Double water_temp;
+    public Double surface_temp;
+    public Double bottom_temp;
+    public String corrective_action;
     public List<TemperatureDataDTO> measurements;
 
     public static TemperatureTimeSeriesDTO convert(TemperatureTimeSeries measurement) {
@@ -30,9 +30,9 @@ public class TemperatureTimeSeriesDTO {
         temperatureTimeSeriesDTO.asset_rfid = measurement.measurement.assetRFID;
         temperatureTimeSeriesDTO.production_lane = measurement.measurement.productionLane;
         temperatureTimeSeriesDTO.lot = measurement.measurement.lot;
-        temperatureTimeSeriesDTO.fish_temp1 = measurement.measurement.fishTemp;
-        temperatureTimeSeriesDTO.fish_temp2 = measurement.measurement.fish2Temp;
-        temperatureTimeSeriesDTO.water_temp = measurement.measurement.waterTemp;
+        temperatureTimeSeriesDTO.surface_temp = measurement.measurement.surfaceTemp;
+        temperatureTimeSeriesDTO.bottom_temp = measurement.measurement.bottomTemp;
+        temperatureTimeSeriesDTO.corrective_action = measurement.measurement.correctiveAction;
         temperatureTimeSeriesDTO.measurements = measurement.data.stream().map(x -> new TemperatureDataDTO(x.timestamp, x.value)).collect(Collectors.toList());
 
         return temperatureTimeSeriesDTO;

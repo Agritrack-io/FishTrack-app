@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.ui.adapter.TemplateRecyclerAdapter;
@@ -39,7 +40,7 @@ public class SimpleListDialog {
         rvItems.setLayoutManager(layoutManager);
         rvItems.setItemAnimator(new DefaultItemAnimator());
         rvItems.addItemDecoration(new DividerItemDecoration(this.activity, DividerItemDecoration.VERTICAL));
-        itemsAdapter = new TemplateRecyclerAdapter(this.activity, data, false);
+        itemsAdapter = new TemplateRecyclerAdapter(this.activity, data.stream().map(x-> new TemplateRecyclerAdapter.BinEpc(x)).collect(Collectors.toList()), false);
         rvItems.setAdapter(itemsAdapter);
         rvItems.setNestedScrollingEnabled(false);
 

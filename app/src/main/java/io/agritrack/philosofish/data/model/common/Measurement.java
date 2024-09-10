@@ -33,14 +33,14 @@ public class Measurement {
     @ColumnInfo(name = "lot")
     public String lot;
 
-    @ColumnInfo(name = "fish_temp")
-    public Double fishTemp;
+    @ColumnInfo(name = "surface_temp")
+    public Double surfaceTemp;
 
-    @ColumnInfo(name = "fish2_temp")
-    public Double fish2Temp;
+    @ColumnInfo(name = "bottom_temp")
+    public Double bottomTemp;
 
-    @ColumnInfo(name = "water_temp")
-    public Double waterTemp;
+    @ColumnInfo(name = "correction_action")
+    public String correctiveAction;
 
     @ColumnInfo(name = "is_init")
     public Boolean isInit = false;

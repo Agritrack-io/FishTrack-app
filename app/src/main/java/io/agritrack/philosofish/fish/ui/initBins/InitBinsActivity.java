@@ -42,6 +42,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.R;
@@ -170,7 +171,7 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
                         rcAdapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(rcAdapterBins.getItemCount()));
                         rcAdapterBins.clearSelectedValue();
-                        recFishing.availBins = new LinkedList<>(rcAdapterBins.getValues());
+                        recFishing.availBins = rcAdapterBins.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
 
                         // TODO:: add component in GlobalState for Bins Initialization, should not use the Fishing state.
                         GlobalState.commitFishing(db, Boolean.FALSE);
@@ -333,7 +334,7 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
         FishingRecord hvst = recFishing;
 
         if (hvst.availBins != null) {
-            rcAdapterBins.setValues(new LinkedList<>(hvst.availBins));
+            rcAdapterBins.setValues(hvst.availBins.stream().map(x -> new TemplateRecyclerAdapter.BinEpc(x)).collect(Collectors.toList()));
             rcAdapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             tvBinsCount.setText(String.valueOf(hvst.availBins.size()));
@@ -344,7 +345,7 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
         try {
             String token = LocalPreferences.getToken();
 
-            recFishing.availBins = new LinkedList<>(rcAdapterBins.getValues());
+            recFishing.availBins = rcAdapterBins.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
 
             // persist Fishing Record data to local DB.
             List<BinInfo> tx = GlobalState.commitBinInfoTx(db);
@@ -432,9 +433,9 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
                                 scannedBinEPCs.add(binEPC);
                                 tvBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
                                 // TODO: clean up this mess...
-                                rcAdapterBins.setValues(new ArrayList<>(scannedBinEPCs));
+                                rcAdapterBins.setValues(scannedBinEPCs.stream().map(x -> new TemplateRecyclerAdapter.BinEpc(x)).collect(Collectors.toList()));
                                 rcAdapterBins.notifyDataSetChanged();
-                                recFishing.availBins = new LinkedList<>(rcAdapterBins.getValues());
+                                recFishing.availBins = rcAdapterBins.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
                                 GlobalState.commitFishing(db, Boolean.FALSE);
 
                                 // ------------------------------------------

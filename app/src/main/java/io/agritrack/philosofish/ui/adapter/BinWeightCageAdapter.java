@@ -127,8 +127,15 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
             //holder.itemView.setBackgroundColor(Color.WHITE);
             holder.tvItemName.setTextColor(Color.RED);
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currBin.setSelected(!currBin.isSelected);
+                holder.itemView.setBackgroundColor(currBin.isSelected ? Color.GRAY : Color.TRANSPARENT);
+            }
+        });
 
-        holder.itemView.setBackgroundColor(selectedPos == position ? Color.GRAY : Color.TRANSPARENT);
+//        holder.itemView.setBackgroundColor(selectedPos == position ? Color.GRAY : Color.TRANSPARENT);
         holder.tvItemSNo.setText(position + 1 + ".");
     }
 
@@ -143,6 +150,16 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
         public String cage;
         public int flag = 0; //0: Received, 1: Expected, 2: Not exists
         public boolean isSorted = false;
+        public boolean isSelected = false;
+
+
+        public boolean isSelected() {
+            return isSelected;
+        }
+
+        public void setSelected(boolean selected) {
+            isSelected = selected;
+        }
 
         public BinDetails() {
         }
@@ -169,7 +186,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
         }
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MyViewHolder extends RecyclerView.ViewHolder  {
         private final TextView tvItemName, tvItemSNo, tvCage, tvWeight;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -179,31 +196,8 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
             tvCage = itemView.findViewById(R.id.tvCage);
             tvWeight = itemView.findViewById(R.id.tvWeight);
 
-            itemView.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View v) {
-            // Below line is just like a safety check, because sometimes holder could be null,
-            // in that case, getAdapterPosition() will return RecyclerView.NO_POSITION
-            if (getAdapterPosition() == RecyclerView.NO_POSITION) return;
 
-            if (selectedPos == getAdapterPosition()) {
-                selectedPos = RecyclerView.NO_POSITION;
-                selectedValue = null;
-                selectedLabel = null;
-                notifyDataSetChanged();
-                return;
-            }
-
-            // Updating old as well as new positions
-            notifyItemChanged(selectedPos);
-            selectedPos = getAdapterPosition();
-            selectedValue = mList.get(selectedPos).epc;
-            selectedLabel = selectedValue.length()>10? selectedValue.substring(selectedValue.length()-10) : selectedValue;
-            notifyItemChanged(selectedPos);
-
-            // Do your another stuff for your onClick
-        }
     }
 }

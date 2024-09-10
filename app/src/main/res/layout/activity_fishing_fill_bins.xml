@@ -156,7 +156,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/totalWeight"
-                android:layout_width="320dp"
+                android:layout_width="370dp"
                 android:layout_height="match_parent"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
@@ -289,6 +289,7 @@
                 android:layout_marginStart="7dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="8dp"
+                android:visibility="gone"
                 android:layout_marginBottom="10dp"
                 android:layout_toEndOf="@+id/totalWeight"
                 android:background="@drawable/button_press_effect"

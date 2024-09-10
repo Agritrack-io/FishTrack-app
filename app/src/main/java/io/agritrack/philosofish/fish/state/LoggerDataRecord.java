@@ -20,8 +20,8 @@ public class LoggerDataRecord {
         this.data.put(assetEPC, new TemperatureModel(loggerEPC, assetEPC, productionLane, retrievedAt, values));
     }
 
-    public void addDataSetForBin(String assetEPC, Double fishT, Double waterT, Double fishT2) {
-        this.data.put(assetEPC, new TemperatureModel(getLoggerEPC(assetEPC), assetEPC, "1", getRetrieveAt(assetEPC), getValues(assetEPC), fishT, waterT, fishT2));
+    public void addDataSetForBin(String assetEPC, Double fishT, Double waterT, String corrAction) {
+        this.data.put(assetEPC, new TemperatureModel(getLoggerEPC(assetEPC), assetEPC, "1", getRetrieveAt(assetEPC), getValues(assetEPC), fishT, waterT, corrAction));
     }
 
     public void addInitData(String assetEPC, Long initedAt) {
@@ -69,7 +69,8 @@ public class LoggerDataRecord {
         public String loggerEPC;
         public String assetEPC;
         public String productionLane;
-        public Double fishT, waterT, fishT2;
+        public Double surfaceT, bottomT;
+        public String corrAction;
         public Long retrievedAt;
         public List<TempSample> values;
 
@@ -88,15 +89,15 @@ public class LoggerDataRecord {
             this.values = measurements;
         }
 
-        public TemperatureModel(String loggerEPC, String assetEPC, String productionLane, Long retrievedAt, List<TempSample> measurements, Double fishT, Double waterT, Double fishT2) {
+        public TemperatureModel(String loggerEPC, String assetEPC, String productionLane, Long retrievedAt, List<TempSample> measurements, Double fishT, Double waterT, String corrAction) {
             this.loggerEPC = loggerEPC;
             this.assetEPC = assetEPC;
             this.productionLane = productionLane;
             this.retrievedAt = retrievedAt;
             this.values = measurements;
-            this.fishT = fishT;
-            this.waterT = waterT;
-            this.fishT2 = fishT2;
+            this.surfaceT = fishT;
+            this.bottomT = waterT;
+            this.corrAction = corrAction;
         }
 
 //        @Override

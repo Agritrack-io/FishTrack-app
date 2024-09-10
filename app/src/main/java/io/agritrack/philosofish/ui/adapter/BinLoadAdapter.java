@@ -125,6 +125,7 @@ public class BinLoadAdapter extends RecyclerView.Adapter<BinLoadAdapter.MyViewHo
             }
         });
 
+
         holder.etWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

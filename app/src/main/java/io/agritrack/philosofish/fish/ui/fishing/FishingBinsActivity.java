@@ -41,7 +41,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.caen.common.CAENState;
@@ -58,6 +60,7 @@ import io.agritrack.philosofish.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.philosofish.rfid.ScanInventoryThread;
 import io.agritrack.philosofish.rfid.X9KeyReceiver;
 import io.agritrack.philosofish.sound.SoundUtil;
+import io.agritrack.philosofish.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.philosofish.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
 
@@ -138,25 +141,28 @@ public class FishingBinsActivity extends AppCompatActivity {
         initControlsFromState();
 
         ivDeleteBin.setOnClickListener(view -> {
-
-            if (!Strings.isEmptyOrWhitespace(adapterBins.getSelectedValue())) {
+            List<TemplateRecyclerAdapter.BinEpc> selectedBins = adapterBins.getValues().stream().filter(x -> x.isSelected).collect(Collectors.toList());
+            if (!selectedBins.isEmpty()) {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                 confirmSiteSelectionDlg.args().putString("selectedBarcode", adapterBins.getSelectedValue());
-                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + adapterBins.getSelectedLabel());
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_all_selected_items) + adapterBins.getSelectedLabel());
 
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
-                    String barcode = bundle.getString("selectedBarcode");
-                    if (barcode != null) {
-                        adapterBins.removeItem(barcode);
-                        scannedBinEPCs.remove(barcode);
-                        recFishing.binWeightRecord.getBins().remove(barcode);
-                        adapterBins.notifyDataSetChanged();
-                        tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
-                        adapterBins.clearSelectedValue();
-                        recFishing.availBins = new LinkedList<>(adapterBins.getValues());
-                        GlobalState.commitFishing(db, Boolean.FALSE);
+                    for (TemplateRecyclerAdapter.BinEpc bin : selectedBins) {
+                        adapterBins.removeItem(bin);
+                        recFishing.binWeightRecord.getBins().remove(bin.epc);
+
                     }
+                    adapterBins.notifyDataSetChanged();
+                    tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
+                    adapterBins.clearSelectedValue();
+                    recFishing.availBins = adapterBins.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
+                    GlobalState.commitFishing(db, Boolean.FALSE);
+                    adapterBins.setAllUnselected();
+                    adapterBins.notifyDataSetChanged();
+
+
 
                 });
 
@@ -298,7 +304,7 @@ public class FishingBinsActivity extends AppCompatActivity {
         FishingRecord hvst = recFishing;
 
         if (hvst.availBins != null) {
-            adapterBins.setValues(new LinkedList<>(hvst.availBins));
+            adapterBins.setValues(hvst.availBins.stream().map(x -> new TemplateRecyclerAdapter.BinEpc(x)).collect(Collectors.toList()));
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
             tvBinsCount.setText(String.valueOf(hvst.availBins.size()));
@@ -321,7 +327,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 binBarcode = input.getText().toString();
                 //TODO:: Encode properly the bin barcode value, add prefix
-                adapterBins.addUniqueItem(binBarcode);
+                adapterBins.addUniqueItem(new TemplateRecyclerAdapter.BinEpc(binBarcode));
                 adapterBins.notifyDataSetChanged();
                 tvBinsCount.setText(String.valueOf(adapterBins.getValues().size()));
             }
@@ -336,7 +342,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     private void updateState() {
-        recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+        recFishing.availBins = adapterBins.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
         for (String bin : recFishing.availBins) {
             recFishing.binWeightRecord.addRecord(bin, 0, null, null, null);
         }
@@ -396,10 +402,10 @@ public class FishingBinsActivity extends AppCompatActivity {
                 case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     if (epcList != null && !epcList.isEmpty()) {
-                        epcList.stream().forEach(x -> adapterBins.addUniqueItem(x.toString()));
+                        epcList.stream().forEach(x -> adapterBins.addUniqueItem(new TemplateRecyclerAdapter.BinEpc(x.toString())));
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         adapterBins.notifyDataSetChanged();
-                        recFishing.availBins = new LinkedList<>(adapterBins.getValues());
+                        recFishing.availBins = adapterBins.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
                         GlobalState.commitFishing(db, Boolean.FALSE);
                     }
                     break;

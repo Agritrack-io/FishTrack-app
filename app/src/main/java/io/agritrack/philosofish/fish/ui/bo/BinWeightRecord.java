@@ -48,7 +48,7 @@ public class BinWeightRecord {
     public class BinRecord {
         public final Integer weight;
         public final String binEPC;
-        public Double temp;
+        //public Double temp;
         public final Long from;
         public final Long to;
         public Long init;
@@ -65,7 +65,7 @@ public class BinWeightRecord {
         public BinRecord(String binEPC, Integer weight, Double temp, Long epochInit, Long epochFrom, Long epochTo) {
             this.binEPC = binEPC;
             this.weight = weight;
-            this.temp = temp;
+            //this.temp = temp;
             this.init = epochInit;
             this.from = epochFrom;
             this.to = epochTo;
@@ -73,7 +73,7 @@ public class BinWeightRecord {
 
         @Override
         public String toString() {
-            return String.format("{binEPC:'%s', weight:%4d, temp:%2f, init:%s, from:%s, to:%s}", binEPC, weight, temp, init, from, to);
+            return String.format("{binEPC:'%s', weight:%4d, init:%s, from:%s, to:%s}", binEPC, weight, init, from, to);
         }
     }
 }

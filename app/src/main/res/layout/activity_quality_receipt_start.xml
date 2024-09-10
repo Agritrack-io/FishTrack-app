@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fishingStartActivityLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/agri_semi_green"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@drawable/bg_form_screen"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:fadingEdge="horizontal"
+        android:paddingTop="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivSupport"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_press_effect"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/support" />
+
+        <TextView
+            android:id="@+id/tvTitleToolbar"
+            fontPath="fonts/open_sans_semibold.ttf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
+            android:width="250sp"
+            android:gravity="center|top|fill_vertical"
+            android:text="@string/title_quality_receipt"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/title_font_size"
+            app:layout_constraintBottom_toTopOf="@+id/tvHeaderReceiptQualityInfo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingPrefix" />
+
+        <TextView
+            android:id="@+id/tvHeaderReceiptQualityInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/agri_blue"
+            android:backgroundTintMode="screen"
+            android:gravity="center"
+            android:textColor="@color/agri_semi_green"
+            android:textSize="@dimen/subtitle_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleToolbar"
+            tools:layout_conversion_absoluteHeight="0dp"
+            tools:layout_conversion_absoluteWidth="0dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/formLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/footerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
+
+
+        <RelativeLayout
+            android:id="@+id/moreInfoCLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/processStartCLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <TextView
+                    android:id="@+id/tvLotNumber"
+                    android:layout_width="180dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/lot_number"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvPlantLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/tvLotNumberLabel"
+                    android:layout_width="190dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvPlant"
+                    app:layout_constraintStart_toEndOf="@+id/tvPlantLabel"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvPlantLabel"
+                    android:layout_width="180dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/packaging_plant"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvFishDateLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvLotNumber" />
+
+
+                <TextView
+                    android:id="@+id/tvPlant"
+                    android:layout_width="190dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvFishDate"
+                    app:layout_constraintStart_toEndOf="@+id/tvPlantLabel"
+                    app:layout_constraintTop_toBottomOf="@id/tvLotNumberLabel" />
+
+                <TextView
+                    android:id="@+id/tvFishDateLabel"
+                    android:layout_width="180dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/fishing_date"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSpeciesLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvPlantLabel" />
+
+                <TextView
+                    android:id="@+id/tvFishDate"
+                    android:layout_width="190dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSpecies"
+                    app:layout_constraintStart_toEndOf="@+id/tvFishDateLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvPlant" />
+
+
+                <TextView
+                    android:id="@+id/tvSpeciesLabel"
+                    android:layout_width="180dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/species"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvFarmLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvFishDateLabel"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/tvSpecies"
+                    android:layout_width="190dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvFarm"
+                    app:layout_constraintStart_toEndOf="@+id/tvSpeciesLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvFishDate" />
+
+
+                <TextView
+                    android:id="@+id/tvFarmLabel"
+                    android:layout_width="180dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/farm"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvCageLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSpeciesLabel" />
+
+                <TextView
+                    android:id="@+id/tvFarm"
+                    android:layout_width="190dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvCage"
+                    app:layout_constraintStart_toEndOf="@+id/tvFarmLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSpecies" />
+
+
+                <TextView
+                    android:id="@+id/tvCageLabel"
+                    android:layout_width="180dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/cage"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvArrivalLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvFarmLabel" />
+
+                <TextView
+                    android:id="@+id/tvCage"
+                    android:layout_width="190dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/etArrival"
+                    app:layout_constraintStart_toEndOf="@+id/tvCageLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvFarm" />
+
+
+                <TextView
+                    android:id="@+id/tvArrivalLabel"
+                    android:layout_width="180dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/arrival"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@id/tvStartTime"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCageLabel" />
+
+                <EditText
+                    android:id="@+id/etArrival"
+                    android:layout_width="190dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:ems="10"
+                    android:inputType="datetime"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size_small"
+                    app:layout_constraintBottom_toTopOf="@id/etStartTime"
+                    app:layout_constraintStart_toEndOf="@+id/tvArrivalLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCage" />
+
+
+                <TextView
+                    android:id="@+id/tvStartTime"
+                    android:layout_width="180dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/start"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvArrivalLabel" />
+
+                <EditText
+                    android:id="@+id/etStartTime"
+                    android:layout_width="190dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:ems="10"
+                    android:inputType="datetime"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size_small"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvStartTime"
+                    app:layout_constraintTop_toBottomOf="@+id/etArrival" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_semi_green"
+                android:paddingHorizontal="8dp"
+                android:text="@string/lot_info"
+                android:textColor="@color/label_blue"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/processStartCLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/moreInfoCLayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/scanLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:padding="1dp">
+
+                <TextView
+                    android:id="@+id/scan_instruction"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/agri_semi_green"
+                    android:gravity="center"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/scan_one_bin_from_lot"
+                    android:textColor="@color/label_blue"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/btnScanBin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnScanBin"
+                    android:layout_width="150dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_press_effect"
+                    android:paddingHorizontal="5dp"
+                    android:text="@string/scan_one_bin"
+                    android:textColor="@color/yellow"
+                    android:textSize="@dimen/button_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.333"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/scan_instruction"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:layout_conversion_absoluteHeight="120dp"
+                    tools:layout_conversion_absoluteWidth="0dp" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintStart_toEndOf="@id/scanLayout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:padding="1dp">
+
+                <TextView
+                    android:id="@+id/scan_instructions"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/agri_semi_green"
+                    android:gravity="center"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/security_clip_check"
+                    android:textColor="@color/label_blue"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/swIsActive"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/swIsActive"
+                    android:layout_width="81dp"
+                    android:layout_height="51dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:checked="true"
+                    android:scaleX="1"
+                    android:scaleY="1.1"
+                    android:showText="true"
+                    android:textAlignment="center"
+                    android:textColor="@color/label_blue"
+                    android:textOff="@string/no"
+                    android:textOn="@string/yes"
+                    android:textSize="12dp"
+                    android:theme="@style/SCBSwitch"
+                    android:thumb="@drawable/thumb"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/scan_instructions"
+                    app:showText="true"
+                    app:switchTextAppearance="@style/texton"
+                    app:track="@drawable/track" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/footerLayout"
+        android:layout_width="0dp"
+        android:layout_height="68sp"
+        android:background="@drawable/border_top"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/formLayout">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivToPackageQualityMoreInfo"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToPackageQualityTempProfiles"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/powered_by_agritrack" />
+
+        <ImageView
+            android:id="@+id/ivBackToPackageQualityTempProfiles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
+            android:scaleX="1.5"
+            android:scaleY="1.2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_shortcut_arrow_back" />
+
+        <ImageView
+            android:id="@+id/ivToPackageQualityMoreInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
+            android:scaleX="1.5"
+            android:scaleY="1.2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
