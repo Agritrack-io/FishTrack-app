@@ -1,9 +1,10 @@
 package io.agritrack.philosofish.fish.ui.quality.packaging;
 
 import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
+import static io.agritrack.philosofish.FishTrackApplication.IsOnline;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 import static io.agritrack.philosofish.common.LargeString.render;
-import static io.agritrack.philosofish.fish.state.GlobalState.recQuality;
+import static io.agritrack.philosofish.fish.state.GlobalState.recQualityPackage;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
@@ -23,24 +24,20 @@ import com.google.android.gms.common.util.Strings;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
 
-import io.agritrack.philosofish.fish.ui.FishHomeActivity;
+import io.agritrack.philosofish.data.dto.tx.PackageQualityTxDTO;
+import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
+import io.agritrack.philosofish.data.repo.IFishTrackRepository;
+import io.agritrack.philosofish.fish.state.PackageQualityRecord;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.tx.TransactionApi;
 import io.agritrack.philosofish.api.upload.UploadingApi;
 import io.agritrack.philosofish.common.FileUtils;
 import io.agritrack.philosofish.data.db.MobileDB;
-import io.agritrack.philosofish.data.dto.common.TemperatureTimeSeriesDTO;
-import io.agritrack.philosofish.data.dto.tx.QualityTxDTO;
-import io.agritrack.philosofish.data.model.common.TemperatureTimeSeries;
-import io.agritrack.philosofish.data.model.tx.QualityTransaction;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
-import io.agritrack.philosofish.fish.state.QualityRecord;
 import io.agritrack.philosofish.ui.LocationAwareActivity;
 import io.agritrack.philosofish.ui.service.AuthenticationService;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
@@ -56,10 +53,11 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
     private final UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
+    private IFishTrackRepository tempDataRepo, measRepo;
     private YesNoDialogFragment confirmGPSSelectionDlg;
 
     private ProgressDialog progressDialog;
-    private TextView tvNumberOfBinsCount, tvMinFishTemp, tvMeanFishTemp, tvMaxFishTemp, tvUsername;
+    private TextView tvLot, tvSpecies, tvFreshGrade, tvBestBefore, tvUsername;
     private EditText etPIN;
     private ImageView ivSupport, ivNext, ivBack;
     private boolean proceedWithoutLocation = false;
@@ -68,10 +66,10 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_package_quality_confirm);
+        setContentView(R.layout.activity_quality_package_fresh_confirm);
 
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderPackageQualityConfirm);
+        TextView tvHeader = findViewById(R.id.tvHeaderFreshQualityConfirm);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get an instance of local DB
@@ -113,7 +111,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
 
             if (proceed) {
                 // move to next activity.
-                Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+                Intent i = new Intent(getApplicationContext(), PackageQualityMenuActivity.class);
                 startActivity(i);
             }
         }
@@ -130,8 +128,8 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
                 CToast(PackageQualityConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
                 return;
             } else if (mLastLocation != null) {
-                recQuality.longitude = mLastLocation.getLongitude();
-                recQuality.latitude = mLastLocation.getLatitude();
+             //   recQuality.longitude = mLastLocation.getLongitude();
+               // recQuality.latitude = mLastLocation.getLatitude();
                 proceedWithoutLocation = true;
                 moveToNextScreen();
             } else if (!proceedWithoutLocation) {
@@ -141,16 +139,16 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         });
 
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), PackageQualityInfoActivity.class);
+            Intent i = new Intent(getApplicationContext(), PackageQualityDysmorphias2Activity.class);
             startActivity(i);
         });
     }
 
     private void assignCtrlVars() {
-        tvNumberOfBinsCount = findViewById(R.id.tvNumberOfBinsCount);
-        tvMinFishTemp = findViewById(R.id.tvMinFishTemp);
-        tvMeanFishTemp = findViewById(R.id.tvMeanFishTemp);
-        tvMaxFishTemp = findViewById(R.id.tvMaxFishTemp);
+        tvLot = findViewById(R.id.tvPackagingLot);
+        tvFreshGrade = findViewById(R.id.tvFreshGrade);
+        tvBestBefore = findViewById(R.id.tvBestBefore);
+        tvSpecies = findViewById(R.id.tvSpecies);
         tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
         ivNext = findViewById(R.id.ivToCongs);
@@ -159,25 +157,23 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
     }
 
     private void initControlsFromState() {
-        QualityRecord qltRecord = GlobalState.recQuality;
+        PackageQualityRecord qltRecord = GlobalState.recQualityPackage;
 
-        if (!Strings.isEmptyOrWhitespace(String.valueOf(qltRecord.minFishTemp))) {
-            tvMinFishTemp.setText(String.valueOf(qltRecord.minFishTemp));
+        if (!Strings.isEmptyOrWhitespace(qltRecord.lot)) {
+            tvLot.setText(qltRecord.lot);
         }
 
-        if (!Strings.isEmptyOrWhitespace(String.valueOf(qltRecord.meanFishTemp))) {
-            tvMeanFishTemp.setText(String.valueOf(qltRecord.meanFishTemp));
+        if (!Strings.isEmptyOrWhitespace(qltRecord.species)) {
+            tvSpecies.setText(qltRecord.species);
         }
 
-        if (!Strings.isEmptyOrWhitespace(String.valueOf(qltRecord.maxFishTemp))) {
-            tvMaxFishTemp.setText(String.valueOf(qltRecord.maxFishTemp));
+        if (qltRecord.overallGrade != null && qltRecord.overallGrade >= 0 && qltRecord.overallGrade <= 12) {
+            tvFreshGrade.setText(qltRecord.overallGrade + "/12");
         }
 
-        if (qltRecord.qualityBins != null) {
-            tvNumberOfBinsCount.setText(String.valueOf(qltRecord.qualityBins.size()));
+        if (!Strings.isEmptyOrWhitespace(qltRecord.bestBefore)) {
+            tvBestBefore.setText(qltRecord.bestBefore);
         }
-
-        //tvNumberOfBinsCount.setText(prcRecord.totalBinsUsed != null ? prcRecord.totalBinsUsed.toString() : "N/A");
 
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }
@@ -206,8 +202,6 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
             e.printStackTrace();
             CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
             return false;
-        } finally {
-
         }
     }
 
@@ -217,9 +211,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
 
         // use typed-in PIN to compare credentials with those stored in the Local DB.
         AuthenticationService authSvc = new AuthenticationService();
-        boolean authentication = authSvc.authenticateUser(this.db, login, pin);
-
-        return authentication;
+        return authSvc.authenticateUser(this.db, login, pin);
     }
 
     private boolean updateState() {
@@ -229,29 +221,22 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
             progressDialog.show();
 
             String token = LocalPreferences.getToken();
-            //runOnUiThread(() -> loadingText.setText(R.string.syncing_routes));
 
             syncAllPhotos();
 
             // persist Processing Record data to local DB.
-            QualityTransaction tx = GlobalState.commitQuality(db, Boolean.TRUE);
+           PackageQualityTransaction tx = GlobalState.commitPackageFreshQuality(db, Boolean.TRUE);
 
-            // persist Measurements Record data to local DB.
-            List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db, tx.plot);
-            List<TemperatureTimeSeriesDTO> temperatureTimeSeriesDTOs = new ArrayList<>();
-            for (TemperatureTimeSeries ts : measurements) {
-                temperatureTimeSeriesDTOs.add(TemperatureTimeSeriesDTO.convert(ts));
+            if (IsOnline) {
+                // sync Processing records
+                Call<PackageQualityTxDTO> syncTxAsyncCall = updService.syncPackQualityTx(PackageQualityTxDTO.convertFresh(tx), "Bearer " + token);
+                syncTxAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncTxCallBack());
+            } else {
+                for (int i = 0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             }
 
-            // sync Processing records
-            Call<QualityTxDTO> syncTxAsyncCall = updService.syncQualityTx(QualityTxDTO.convert(tx), "Bearer " + token);
-            syncTxAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncTxCallBack());
-
-            // sync Measurements records
-            if (!temperatureTimeSeriesDTOs.isEmpty()) {
-                Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = updService.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
-                syncMsAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncMsCallBack());
-            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -262,61 +247,49 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         }
     }
 
-    public class SyncTxCallBack implements Callback<QualityTxDTO> {
-        @Override
-        public void onResponse(Call<QualityTxDTO> call, Response<QualityTxDTO> response) {
-            if (response.isSuccessful() || IsDemo) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Tx successfully updated!!!"), Toast.LENGTH_SHORT));
-            } else {
-                // could not update Processing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_processing_tx_update_failure), Toast.LENGTH_LONG));
+    private boolean qualityTxMarkFreshSynced() {
+        try {
+            System.out.println("About to delete quality tx");
+            PackageQualityTransaction delObj = db.packageQualityTransactionDAO().getByLot(recQualityPackage.lot);
+            if (delObj != null) {
+                delObj.isFreshSynced = true;
+                db.packageQualityTransactionDAO().update(delObj);
+                return true;
             }
-        }
-
-        @Override
-        public void onFailure(Call<QualityTxDTO> call, Throwable error) {
-            if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
-            } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
-            } else {
-                if (call.isCanceled()) {
-                    //Call was cancelled by user
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
-                } else {
-                    //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
-                }
-            }
+            return false;
+        } catch (Exception x) {
+            x.printStackTrace();
+            return false;
         }
     }
 
-    public class SyncMsCallBack implements Callback<List<TemperatureTimeSeriesDTO>> {
+    public class SyncTxCallBack implements Callback<PackageQualityTxDTO> {
         @Override
-        public void onResponse(Call<List<TemperatureTimeSeriesDTO>> call, Response<List<TemperatureTimeSeriesDTO>> response) {
-            List<TemperatureTimeSeriesDTO> rs = response.body();
-
-            if (rs != null || IsDemo) {
+        public void onResponse(Call<PackageQualityTxDTO> call, Response<PackageQualityTxDTO> response) {
+            if (response.isSuccessful() || IsDemo) {
+                qualityTxMarkFreshSynced();
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_processing_tx_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_postquality_update_failure), Toast.LENGTH_LONG));
             }
         }
 
         @Override
-        public void onFailure(Call<List<TemperatureTimeSeriesDTO>> call, Throwable error) {
+        public void onFailure(Call<PackageQualityTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+                for (int i = 0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
         }
@@ -328,16 +301,11 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
             try {
                 if (response.isSuccessful()) {
                     String fileName = response.body().string();
-                    boolean res = FileUtils.deletePhotoFile(PackageQualityConfirmActivity.this, fileName);
-                    if (res) {
-                        //runOnUiThread(() -> CToast(getApplicationContext(), render("File " + fileName + " was uploaded successfully!!!"), Toast.LENGTH_LONG));
-                    } else {
-                        //runOnUiThread(() -> CToast(getApplicationContext(), render("Failed to remove file" +fileName+ " from local folder!!!"), Toast.LENGTH_LONG));
-                    }
+                    FileUtils.deletePhotoFile(PackageQualityConfirmActivity.this, fileName);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                runOnUiThread(() -> CToast(getApplicationContext(), render("Error:" + e.getMessage()), Toast.LENGTH_LONG));
+                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + e.getMessage()), Toast.LENGTH_LONG));
             }
         }
 
@@ -346,14 +314,16 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.files_failed_to_sync), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_timeout), Toast.LENGTH_LONG));
+                for (int i = 0; i < 3; i++) {
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                }
             } else {
                 if (call.isCanceled()) {
                     //Call was cancelled by user
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
                 } else {
                     //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
         }

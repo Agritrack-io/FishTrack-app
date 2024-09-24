@@ -5,12 +5,12 @@ public class ReceiptQualityRecord {
     public long txkey;
     public String lot;
     public String cage;
-    public Long fishingDate;
+    public String fishingDate;
     public String fishSpecies;
-    public String farm;
-    public Long arrivalTime;
-    public Long startTime;
-    public boolean binSeal;
+    public String farm, plant;
+    public String arrivalTime;
+    public String startTime;
+    public Boolean binSeal = true;
     public Integer eyeRating;
     public Integer gillRating;
     public Integer fleshRating;
@@ -22,4 +22,7 @@ public class ReceiptQualityRecord {
     public Integer disMouth;
     public Integer disOper;
     public String comments;
+
+    public ReceiptQualityRecord() {
+    }
 }

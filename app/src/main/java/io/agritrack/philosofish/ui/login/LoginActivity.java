@@ -178,6 +178,10 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
 
         // bind the flags button
         ibLocale = findViewById(R.id.ibLocale);
+//        Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+//       // i.putExtra("syncErrors", this.syncResult.toString());
+//        startActivity(i);
+
 
         checkAndRequestPermissions(this);
 

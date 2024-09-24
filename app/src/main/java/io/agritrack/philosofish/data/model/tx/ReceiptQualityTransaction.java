@@ -4,8 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
+
+import io.agritrack.philosofish.data.converter.DateConverter;
+import io.agritrack.philosofish.data.converter.TimeConverter;
 
 @Entity(tableName = "receipt_quality_transaction")
 public class ReceiptQualityTransaction {
@@ -13,19 +20,26 @@ public class ReceiptQualityTransaction {
     public ReceiptQualityTransaction() {
         this.id = UUID.randomUUID();
     }
+//
+//    @PrimaryKey
+//    @NonNull
+//    public UUID id;
 
     @PrimaryKey
     @NonNull
-    public UUID id;
-
     @ColumnInfo(name = "lot")
     public String lot;
+
+    @NonNull
+    @ColumnInfo(name = "id")
+    public UUID id;
 
     @ColumnInfo(name = "cage")
     public String cage;
 
+    @TypeConverters(DateConverter.class)
     @ColumnInfo(name = "fish_date")
-    public Long fishingDate;
+    public Date fishingDate;
 
     @ColumnInfo(name = "species")
     public String species;
@@ -33,14 +47,16 @@ public class ReceiptQualityTransaction {
     @ColumnInfo(name = "farm")
     public String farm;
 
+    @TypeConverters(TimeConverter.class)
     @ColumnInfo(name = "arrival_time")
-    public Long arrivalTime;
+    public Time arrivalTime;
 
+    @TypeConverters(TimeConverter.class)
     @ColumnInfo(name = "start_time")
-    public Long startTime;
+    public Time startTime;
 
     @ColumnInfo(name = "sealed")
-    public boolean sealed;
+    public Boolean sealed;
 
     @ColumnInfo(name = "eye_rating")
     public Integer eyeRating;
@@ -74,4 +90,18 @@ public class ReceiptQualityTransaction {
 
     @ColumnInfo(name = "comments")
     public String comments;
+
+    @ColumnInfo(name = "plant")
+    public String plant;
+
+    @ColumnInfo(name = "user")
+    public String user;
+
+    @ColumnInfo(name = "created_at")
+    public Long createdAt;
+
+    @ColumnInfo(name = "is_synced")
+    public Boolean isSynced = false;
+
+
 }

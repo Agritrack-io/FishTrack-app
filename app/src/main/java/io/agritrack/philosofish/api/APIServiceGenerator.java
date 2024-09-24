@@ -18,7 +18,7 @@ public class APIServiceGenerator {
     // 5000"; //dev
     //private static String BASE_URL = "https://aqua-be.agritrack.org"; //dev
     //private static String BASE_URL = "http://ec2-3-79-156-151.eu-central-1.compute.amazonaws.com:5030";
-    private static String BASE_URL = "http://192.168.150.190:5030"; //localRIgas
+    private static String BASE_URL = "http://192.168.68.109:5030"; //localRIgas
     //private static String BASE_URL = "http://fish-kefalonia-be.eu-central-1.elasticbeanstalk.com"; //production
 
     private static Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());

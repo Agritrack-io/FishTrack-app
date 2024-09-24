@@ -6,13 +6,16 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import io.agritrack.philosofish.data.converter.BinRecordConverter;
-import io.agritrack.philosofish.data.converter.LaundrySampleConverter;
+import io.agritrack.philosofish.data.converter.DateConverter;
+import io.agritrack.philosofish.data.converter.SortingSampleConverter;
 import io.agritrack.philosofish.data.converter.TonneSampleConverter;
-import io.agritrack.philosofish.data.model.common.LaundrySample;
+import io.agritrack.philosofish.data.model.common.SortingSample;
 import io.agritrack.philosofish.data.model.common.TonneSample;
 
 @Entity(tableName = "package_quality_transaction")
@@ -21,25 +24,34 @@ public class PackageQualityTransaction {
     public PackageQualityTransaction() {
         this.id = UUID.randomUUID();
     }
+//
+//    @PrimaryKey
+//    @NonNull
+//    public UUID id;
+
+    @NonNull
+    @ColumnInfo(name = "id")
+    public UUID id;
 
     @PrimaryKey
     @NonNull
-    public UUID id;
-
     @ColumnInfo(name = "lot")
     public String lot;
 
     @ColumnInfo(name = "fresh_grade")
     public Integer freshGrade;
 
+    @ColumnInfo(name = "overall_grade")
+    public Integer overallGrade;
+
     @ColumnInfo(name = "skin_grade")
-    public Integer skingGrade;
+    public Integer skinGrade;
 
     @ColumnInfo(name = "eye_grade")
-    public Integer eye_grade;
+    public Integer eyeGrade;
 
     @ColumnInfo(name = "gill_grade")
-    public Integer gill_grade;
+    public Integer gillGrade;
 
     @ColumnInfo(name = "crooked_mouth")
     public Integer crookedMouth;
@@ -62,8 +74,8 @@ public class PackageQualityTransaction {
     @ColumnInfo(name = "skeletical")
     public Integer skeletical;
 
-    @ColumnInfo(name = "tail")
-    public Integer tail;
+    @ColumnInfo(name = "tail_deformity")
+    public Integer tailDeformity;
 
     @ColumnInfo(name = "tail_deform")
     public Integer tailDeform;
@@ -113,13 +125,51 @@ public class PackageQualityTransaction {
     @ColumnInfo(name = "head_deform")
     public Integer headDeform;
 
-    @TypeConverters(LaundrySampleConverter.class)
-    @ColumnInfo(name = "laundry_samples")
-    public List<LaundrySample> laundrySamples;
+    @TypeConverters(SortingSampleConverter.class)
+    @ColumnInfo(name = "sorting_samples")
+    public List<SortingSample> sortingSamples;
 
     @TypeConverters(TonneSampleConverter.class)
     @ColumnInfo(name = "tonne_samples")
     public List<TonneSample> tonneSamples;
 
+    @ColumnInfo(name = "start_packing")
+    public Boolean startPacking;
+
+
+    @ColumnInfo(name = "change_packing")
+    public Boolean changePacking;
+
+    @ColumnInfo(name = "middle_packing")
+    public Boolean middlePacking;
+
+    @ColumnInfo(name = "end_packing")
+    public Boolean endPacking;
+
+    @ColumnInfo(name = "label_comments")
+    public String labelComments;
+
+    @ColumnInfo(name = "fresh_created_at")
+    public Long freshCreatedAt;
+
+    @ColumnInfo(name = "sample_created_at")
+    public Long sampleCreatedAt;
+
+    @ColumnInfo(name = "label_created_at")
+    public Long labelCreatedAt;
+
+    @ColumnInfo(name = "fresh_sync")
+    public Boolean isFreshSynced = false;
+
+    @ColumnInfo(name = "sample_sync")
+    public Boolean isSampleSynced = false;
+
+    @ColumnInfo(name = "label_sync")
+    public Boolean isLabelSynced = false;
+
+
+    @TypeConverters(DateConverter.class)
+    @ColumnInfo(name = "best_before")
+    public Date bestBefore;
 
 }

@@ -13,6 +13,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -74,6 +75,7 @@ import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.state.LoggerDataRecord;
 import io.agritrack.philosofish.fish.ui.FishHomeActivity;
+import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.philosofish.rfid.SingleShotScanner;
 import io.agritrack.philosofish.rfid.X9KeyReceiver;
 import io.agritrack.philosofish.sound.SoundUtil;
@@ -129,6 +131,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
     private ImageView ivSupport, ivBack;
     private Button btnScanBin;
     private SupportDialog supportDialog;
+    private String callingActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +143,6 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
 
         // instantiate a set to hold expected EPCS.it will be passed to adapter shich feeds the ListView.
         binList = new ArrayList<String>();
-
         adapterBinList = new ArrayList<String>();
 
         tmpBin = new BinInfo();
@@ -150,14 +152,21 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
             adapterBinList = bundle.getStringArrayList("adapterBinList") != null ? getIntent().getStringArrayListExtra("adapterBinList") : adapterBinList;
             scannedBinEPCs = bundle.getStringArrayList("scannedBinList") != null ? getIntent().getStringArrayListExtra("scannedBinList") : scannedBinEPCs;
             binList = bundle.getStringArrayList("expectedBinList") != null ? getIntent().getStringArrayListExtra("expectedBinList") : binList;
+            callingActivity = bundle.getString("calling_activity") != null ? getIntent().getStringExtra("calling_activity") : null;
         }
 
-        SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
-        String token = LocalPreferences.getToken();
-        // sync Bin Info (complete BinLedger)
-        Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getCompleteBinLedger("Bearer " + token);
-        syncBinsByPlantAsyncCall.enqueue(new SyncBinInfo(this.syncResult));
+        if (callingActivity != null && callingActivity.equalsIgnoreCase("BinTurnoverActivity")) {
 
+        } else {
+            SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
+            String token = LocalPreferences.getToken();
+            // sync Bin Info (complete BinLedger)
+
+            ComponentName callActivity = getCallingActivity();
+
+            Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getCompleteBinLedger("Bearer " + token);
+            syncBinsByPlantAsyncCall.enqueue(new SyncBinInfo(this.syncResult));
+        }
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         //keyReceiver = new X9KeyReceiver(this::onClick);
 
@@ -171,7 +180,6 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         this.tempDataRepo = new TemperatureDataRepository();
         this.measRepo = new MeasurementRepository();
         this.binInfoRepo = new BinInfoRepository();
-
         // get  references of the controls
         assignCtrlVars();
 
@@ -212,7 +220,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
             binList.stream().forEach(x -> adapterBins.addExpectedItem(loadBinInfo(x)));
             adapterBins.notifyDataSetChanged();
             adapterBins.markReceived(scannedBinEPCs);
-            btnScanBin.setText(R.string.scan_one_to_one_bins);
+            btnScanBin.setText(R.string.scan_bin);
             scanAllBins = true;
         }
 
@@ -283,6 +291,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
                 i.putStringArrayListExtra("adapterBinList", (ArrayList<String>) convertBinDetailsToEPCs(adapterBins.getValues()));
                 i.putStringArrayListExtra("scannedBinList", (ArrayList<String>) scannedBinEPCs);
                 i.putStringArrayListExtra("expectedBinList", (ArrayList<String>) binList);
+                i.putExtra("calling_activity", "BinTurnoverActivity");
             }
             startActivity(i);
         }
@@ -313,7 +322,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
 
         ivBack.setOnClickListener(view -> {
             stopScanner();
-            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
             startActivity(i);
         });
     }
@@ -327,6 +336,8 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
             String token = LocalPreferences.getToken();
 
             db.binInfoDAO().updateBinInfoSetSorted(binEPC);
+
+            BinInfo bin = db.binInfoDAO().getByRFId(binEPC);
 
             // persist Measurements Record data to local DB.
             List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db, null);
@@ -637,13 +648,13 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
                                     }
                                     attemptsToGetEpcList = 0;
                                     CToast(getApplicationContext(), render(getString(R.string.scan_all_bins)), Toast.LENGTH_LONG);
-                                    btnScanBin.setText(R.string.scan_one_to_one_bins);
+                                    btnScanBin.setText(R.string.scan_bin);
                                     scanAllBins = true;
                                     return;
                                 }
                                 binList.stream().forEach(x -> adapterBins.addExpectedItem(loadBinInfo(x)));
                                 adapterBins.notifyDataSetChanged();
-                                btnScanBin.setText(R.string.scan_one_to_one_bins);
+                                btnScanBin.setText(R.string.scan_bin);
                                 scanAllBins = true;
                                 if (!Strings.isEmptyOrWhitespace(lot)) {
                                     tvLotLabel.setVisibility(View.VISIBLE);
@@ -676,7 +687,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
                 tempDataRepo.removeAll(db);
                 db.measurementsDAO().deleteAll();
                 measRepo.removeAll(db);
-                binInfoRepo.removeOneBin(db, tmpBin);
+               // binInfoRepo.removeOneBin(db, tmpBin);
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!

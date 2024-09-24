@@ -131,7 +131,7 @@ public class PackageQualityMenuActivity extends AppCompatActivity {
 //                            //i = new Intent(appCtx, HarvestRequestsActivity.class);
 //                        }
 
-                        //GlobalState.initQualityRecord();
+                        GlobalState.initPackageQualityRecord();
                         i = new Intent(getAppContext(), PackageQualityFreshnessActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);
@@ -160,14 +160,14 @@ public class PackageQualityMenuActivity extends AppCompatActivity {
                         startActivity(i);
                         break;*/
                     case Second_Step_Idx:
-                        GlobalState.initQualityRecord();
+                        GlobalState.initPackageQualityRecord();
                         i = new Intent(getAppContext(), PackageQualitySamplingActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);
                         break;
 
                     case Third_Step_Idx:
-                        GlobalState.initQualityRecord();
+                        GlobalState.initPackageQualityRecord();
                         i = new Intent(getAppContext(), PackageQualityCheckLabelActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);
@@ -188,7 +188,7 @@ public class PackageQualityMenuActivity extends AppCompatActivity {
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+            Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
             startActivity(i);
         });
     }

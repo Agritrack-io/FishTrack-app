@@ -14,6 +14,7 @@ public class BinInfoDTO {
     public String lot;
     public Double total_weight;
     public String farm;
+    public String packaging_site;
     public String site;
     public Long last_update;
     public Long inited_at;
@@ -29,6 +30,7 @@ public class BinInfoDTO {
         binInfo.species = binInfoDTO.species;
         binInfo.totalWeight = binInfoDTO.total_weight;
         binInfo.farm = binInfoDTO.farm;
+        binInfo.plant = binInfoDTO.packaging_site;
         binInfo.lastUpdate = binInfoDTO.last_update;
         if (binInfoDTO.inited_at != null && String.valueOf(binInfoDTO.inited_at).length() == 10) {
             binInfo.initedAt = binInfoDTO.inited_at * 1000L;
@@ -58,6 +60,7 @@ public class BinInfoDTO {
         binInfoDTO.species = binInfo.species;
         binInfoDTO.total_weight = binInfo.totalWeight;
         binInfoDTO.farm = binInfo.farm;
+        binInfoDTO.packaging_site = binInfo.plant;
         binInfoDTO.last_update = binInfo.lastUpdate;
         if (binInfo.initedAt != null && String.valueOf(binInfo.initedAt).length() == 10) {
             binInfoDTO.inited_at = binInfo.initedAt * 1000L;

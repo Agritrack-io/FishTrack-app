@@ -39,6 +39,9 @@ public interface BinInfoDAO {
     @Delete
     void delete(BinInfo bin);
 
+    @Query("DELETE from bin_info where bin_rfid=:rfid")
+    void deleteByRfid(String rfid);
+
     @Query("DELETE from bin_info")
     int deleteAll();
 

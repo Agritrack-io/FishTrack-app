@@ -399,10 +399,10 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
         }
     }
 
-    private boolean deleteTx() {
+    private boolean deleteTx(BinInfoDTO bin) {
         try {
             System.out.println("About to delete bin info tx");
-            db.binInfoDAO().deleteAll();
+            db.binInfoDAO().deleteByRfid(bin.rfid);
             return true;
         } catch (Exception x) {
             x.printStackTrace();
@@ -477,7 +477,9 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
         @Override
         public void onResponse(Call<List<BinInfoDTO>> call, Response<List<BinInfoDTO>> response) {
             if (response.isSuccessful() || IsDemo) {
-                deleteTx();
+                for (BinInfoDTO bin : response.body()) {
+                    deleteTx(bin);
+                }
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {
                 // could not update Fishing TX on backend!!!

@@ -146,7 +146,7 @@ public class FishingBinsActivity extends AppCompatActivity {
                 // instantiate Site selection confirm dialog
                 YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
                 confirmSiteSelectionDlg.args().putString("selectedBarcode", adapterBins.getSelectedValue());
-                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_all_selected_items) + adapterBins.getSelectedLabel());
+                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_all_selected_items));
 
                 confirmSiteSelectionDlg.onConfirm(bundle -> {
                     for (TemplateRecyclerAdapter.BinEpc bin : selectedBins) {

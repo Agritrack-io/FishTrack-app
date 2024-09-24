@@ -203,7 +203,7 @@
     <string name="title_date_lot_dispatch_note">ΗΜΕΡΟΜΗΝΙΑ / LOT / ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ</string>
     <string name="receipt_header">#\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Βούτα \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Κλωβός \u00A0\u00A0\u00A0\u00A0 Kg</string>
     <string name="no_epc_list_continue">Δεν βρέθηκε λίστα βουτών παρακαλώ προχωρήστε με τη παραλαβή</string>
-    <string name="title_quality_receipt">ΠΟΙΟΤΙΚΟΣ ΕΛΕΓΧΟΣ/PP-DOC-01</string>
+    <string name="title_quality_receipt">ΕΛΕΓΧΟΣ ΠΑΡΑΛΑΒΗΣ</string>
     <string name="title_quality">ΠΟΙΟΤΙΚΟΣ ΕΛΕΓΧΟΣ</string>
     <string name="title_quality_package">ΠΟΙΟΤΙΚΟΣ ΕΛΕΓΧΟΣ/PP-DOC-02</string>
     <string name="choose_quality_type">Επιλέξτε έλεγχο</string>
@@ -269,7 +269,7 @@
     <string name="box_sn">S/N: </string>
     <string name="current_date">Ημερομηνία</string>
     <string name="fish_measurements">Θερμοκρασίες ψαριών</string>
-    <string name="confirm_lot">LOT:</string>
+    <string name="confirm_lot">LOT</string>
     <string name="confirm_overall_evaluation">Συν. αξιολόγηση:</string>
     <string name="confirm_box">S/N:</string>
     <string name="avg_fish_temp_confirm_label">Μέση θερμοκρασία (°C)</string>
@@ -774,7 +774,9 @@
     <string name="water_temp_small">T ν:</string>
     <string name="fish_temp_2_small">T2 ψ:</string>
     <string name="fish_temp">T ψαριού °C:</string>
+    <string name="fish_temp_label">T ψαριού °C</string>
     <string name="water_temp">T νερού °C:</string>
+    <string name="water_temp_label">T νερού °C</string>
     <string name="fish_temp_2">T2 ψαριού °C:</string>
     <string name="insert_temperatures">Παρακαλώ εισάγετε θερμοκρασίες.</string>
 
@@ -855,12 +857,12 @@
     <string name="copy_to_clipboard">Label \%1$s\ is copied to clipboard</string>
     <string name="paste_label">Επικόλληση ετικέτας</string>
     <string name="delete_all_selected_items">Είστε σίγουροι ότι θέλετε να διαγράψετε τις επιλεγμένες βούτες?</string>
-    <string name="logger_data">Logger Data</string>
+    <string name="logger_data">Δεδομένα Logger</string>
     <string name="read_temperatures">Διάβασμα Θερμοκρασιών</string>
     <string name="final_quality_check">Τελικός Ποιοτικός Έλεγχος</string>
     <string name="bin_info">Πληροφορίες βούτας</string>
     <string name="scan_one_bin_from_lot">Για να καταγραφεί το LOT</string>
-    <string name="scan_one_box_from_lot">Σκανάρετε μια συσκευασία από τη σχετική παρτίδα</string>
+    <string name="scan_one_box_from_lot">Για να καταγραφεί το LOT</string>
     <string name="lot_info">Πληροφορίες Παρτίδας</string>
     <string name="species">Είδος ψαριού</string>
     <string name="fishing_date">Ημ/νία αλίευσης</string>
@@ -872,7 +874,7 @@
     <string name="freshness_check">Έλεγχος Φρεσκότητας</string>
     <string name="fail">FAIL</string>
     <string name="gill_evaluation">Αξιολόγηση Βραγχίων</string>
-    <string name="eyes">Κατάσταση Οφθαλμών</string>
+    <string name="eyes">Οφθαλμοί</string>
     <string name="elasticity">Ελαστικότητα Σάρκας</string>
     <string name="skin_color">Χρώμα Δέρματος</string>
     <string name="dysmorphias">Δυσμορφίες</string>
@@ -883,13 +885,13 @@
     <string name="gill_cover">Βραγχιοκάλυμα</string>
     <string name="other">Άλλο:</string>
     <string name="samples">Δείγματα</string>
-    <string name="new_sample">New Sample</string>
-    <string name="choose_action">Choose Action</string>
-    <string name="package_check">Packaging Quality Check</string>
-    <string name="eye_condition">Eyes Condition</string>
-    <string name="gill_condition">Gill Condition</string>
-    <string name="freshness">Freshness</string>
-    <string name="skin_condition">Skin Condition</string>
+    <string name="new_sample">Νέο Δείγμα</string>
+    <string name="choose_action">Επιλέξτε Ενέργεια</string>
+    <string name="package_check">Έλεγχος Συσκευασίας</string>
+    <string name="eye_condition">Κατάσταση Ματιών</string>
+    <string name="gill_condition">Κατάσταση Βραγχίων</string>
+    <string name="freshness">Φρεσκότητα</string>
+    <string name="skin_condition">Κατάσταση Δέρματος</string>
     <string name="freshness_evaluation">Αξιολόγηση Φρεσκότητας</string>
     <string name="sampling" tools:ignore="ExtraTranslation">Δειγματοληψία</string>
     <string name="label_check">Έλεγχος Ετικέτας</string>
@@ -951,6 +953,22 @@
     <string name="sampling_laundry_header">#\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Bin \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Cage \u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 Kg</string>
     <string name="insert_laundry_temperatures">ΕΙΣΑΓΕΤΕ ΘΕΡΜΟΚΡΑΣΙΕΣ ΠΛΥΝΤΗΡΙΟΥ ΔΙΑΛΟΓΗΣ</string>
     <string name="flesh_temp">T σάρκας °C:</string>
+    <string name="no_lot_for_bin">Η βούτα \(%1$s\) δεν ανήκει σε κάποιο LOT. Παρακαλώ σκανάρετε άλλη βούτα.</string>
+    <string name="bin_on_another_lot">Η βούτα \(%1$s\) δεν ανήκει στο υπάρχον LOT \(%1$s\) . Θέλετε να αρχίσετε έλεγχο για άλλο LOT? Οι αλλαγές σας θα αποθηκευτούν.</string>
+    <string name="save_quality_failed">Απέτυχε η αποθήκευση των δεδομένων για τον έλεγχο του LOT \(%1$s\)</string>
+    <string name="save_lot_quality">Θέλετε να αποθηκεύσετε τα δεδομένα για τον έλεγχο του LOT \(%1$s\)?</string>
+    <string name="best_before">Ημ/νία Λήξης</string>
+    <string name="lot_receipt_control_done">Το LOT \(%1$s\) έχει ήδη περάσει από έλεγχο παραλαβής. Παρακαλώ σκανάρετε βούτα από άλλο LOT ή προχωρήστε στον έλεγχο συσκευασίας.</string>
+    <string name="lot_package_control_done">Το LOT \(%1$s\) έχει ήδη περάσει από αξιολόγηση φρεσκότητας. Παρακαλώ σκανάρετε συσκευασία από άλλο LOT ή προχωρήστε σε άλλο έλεγχο.</string>
+    <string name="lot_sample_control_done">Το LOT \(%1$s\) έχει ήδη περάσει από δειγματοληψία. Παρακαλώ σκανάρετε συσκευασία από άλλο LOT ή προχωρήστε σε άλλο έλεγχο.</string>
+    <string name="lot_label_control_done">Το LOT \(%1$s\) έχει ήδη περάσει από έλεγχο ετικέτας. Παρακαλώ σκανάρετε συσκευασία από άλλο LOT ή προχωρήστε σε άλλο έλεγχο.</string>
+    <string name="lot_already_loaded">Ο έλεγχος για το LOT \(%1$s\) είναι ήδη σε εξέλιξη. Δεν χρειάζεται να σκανάρετε ξανά.</string>
+    <string name="box_on_another_lot">Σκανάρατε διαφορετικό LOT. Θέλετε να αρχίσετε έλεγχο για το LOT \(%1$s\) ? Οι αλλαγές σας θα αποθηκευτούν</string>
+    <string name="delete_all_selected_samples">Είστε σίγουροι ότι θέλετε να διαγράψετε τις επιλεγμένες μετρήσεις?</string>
+    <string name="bb_short">BB:</string>
+    <string name="dysmorphias_percentage">Δυσμορφίες (%)</string>
+    <string name="confirm_submission">Είστε σίγουροι ότι ο έλεγχος είναι συμπληρωμένος και έτοιμος για αποστολή?</string>
+    <string name="signature">Υπογραφή</string>
 
 
 </resources>

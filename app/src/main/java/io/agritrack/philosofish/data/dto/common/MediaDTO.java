@@ -4,25 +4,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.agritrack.philosofish.data.model.tx.FinalQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.QualityTransaction;
 import io.agritrack.philosofish.data.model.tx.TransportTransaction;
 
 public class MediaDTO {
 
-    public Set<String> bins_loaded;
+    public String lot;
     public String photo;
 
-    public MediaDTO(List<String> bins, String photo) {
-        this.bins_loaded = new HashSet<>(bins);
+    public MediaDTO(String lot, String photo) {
+        this.lot = lot;
         this.photo = photo;
     }
 
     public static MediaDTO convert(TransportTransaction transport) {
-        return new MediaDTO(transport.loadedBins, transport.driverSignature);
+        return new MediaDTO(transport.destination, transport.driverSignature);
     }
 
-    public static MediaDTO convert(QualityTransaction quality) {
-        return null;
+    public static MediaDTO convert(FinalQualityTransaction quality) {
+        return new MediaDTO(quality.lot, quality.signature);
         //return new MediaDTO(quality.qualityBins, quality.driverSignature);
     }
 }

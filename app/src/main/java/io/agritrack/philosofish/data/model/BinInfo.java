@@ -48,4 +48,8 @@ public class BinInfo {
 
     @ColumnInfo(name = "is_init")
     public Boolean isInit = false;
+
+
+    @ColumnInfo(name = "plant")
+    public String plant;
 }

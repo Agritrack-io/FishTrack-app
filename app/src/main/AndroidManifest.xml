@@ -76,10 +76,12 @@
         <activity
             android:name=".fish.ui.wh.correlation.ZebraCorrelationNetActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.wh.correlation.ZebraCorrelationCageActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.wh.correlation.CorrelationPlatformActivity"
@@ -127,6 +129,42 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".fish.ui.quality.packaging.PackageQualityConfirmActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.quality.packaging.PackageQualityMenuActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.quality.packaging.PackageQualityCheckLabelActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.quality.packaging.PackageQualitySamplingActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.quality.packaging.PackageQualityDysmorphias2Activity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.quality.packaging.PackageQualityDysmorphiasActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.quality.packaging.PackageQualityFreshnessActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.quality.receipt.ReceiptQualityFreshCheckActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.quality.finalCheck.QualityFinalCheckActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fish.ui.quality.finalCheck.QualityFinalCheckConfirmActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

@@ -1,23 +1,27 @@
 package io.agritrack.philosofish.fish.state;
 
+import android.graphics.Bitmap;
+
 import io.agritrack.philosofish.data.model.common.FinalSample;
 
 public class FinalQualityRecord {
 
     public String lot;
-    public String species;
     public Integer exfoRating;
     public Integer paletteRating;
     public Integer boxRating;
-    public boolean cylinrical;
-    public boolean expanded;
-    public boolean soft;
-    public boolean head;
-    public boolean body;
-    public boolean areas;
+    public Boolean cylinrical;
+    public Boolean expanded;
+    public Boolean soft;
+    public Boolean head;
+    public Boolean body;
+    public Boolean areas;
+    public String bestBefore;
+    public Bitmap signature;
+    public byte[] signatureBytes;
 
-    public FinalSample sample1;
-    public FinalSample sample2;
-    public FinalSample sample3;
+    public FinalSample sample1 = new FinalSample();
+    public FinalSample sample2 = new FinalSample();
+    public FinalSample sample3 = new FinalSample();
 
 }

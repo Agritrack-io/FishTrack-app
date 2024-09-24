@@ -4,8 +4,8 @@ import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
 import static io.agritrack.philosofish.FishTrackApplication.IsOnline;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 import static io.agritrack.philosofish.common.LargeString.render;
-import static io.agritrack.philosofish.fish.state.GlobalState.recLoggerData;
 import static io.agritrack.philosofish.fish.state.GlobalState.recQuality;
+import static io.agritrack.philosofish.fish.state.GlobalState.recQualityReceipt;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
@@ -25,28 +25,23 @@ import com.google.android.gms.common.util.Strings;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import io.agritrack.data.repo.MeasurementRepository;
-import io.agritrack.philosofish.fish.ui.FishHomeActivity;
+import io.agritrack.philosofish.data.dto.tx.ReceiptQualityTxDTO;
+import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.tx.TransactionApi;
 import io.agritrack.philosofish.api.upload.UploadingApi;
 import io.agritrack.philosofish.common.FileUtils;
 import io.agritrack.philosofish.data.db.MobileDB;
-import io.agritrack.philosofish.data.dto.common.TemperatureTimeSeriesDTO;
-import io.agritrack.philosofish.data.dto.tx.QualityTxDTO;
-import io.agritrack.philosofish.data.model.common.TemperatureTimeSeries;
-import io.agritrack.philosofish.data.model.tx.QualityTransaction;
 import io.agritrack.philosofish.data.repo.IFishTrackRepository;
 import io.agritrack.philosofish.data.repo.TemperatureDataRepository;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
-import io.agritrack.philosofish.fish.state.QualityRecord;
+import io.agritrack.philosofish.fish.state.ReceiptQualityRecord;
+import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.philosofish.ui.LocationAwareActivity;
 import io.agritrack.philosofish.ui.service.AuthenticationService;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
@@ -66,7 +61,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
     private YesNoDialogFragment confirmGPSSelectionDlg;
 
     private ProgressDialog progressDialog;
-    private TextView tvNumberOfBinsCount, tvPackagingLot, tvEvaluation, tvUsername;
+    private TextView tvLot, tvSpecies, tvStartTime, tvFishDate, tvUsername;
     private EditText etPIN;
     private ImageView ivSupport, ivNext, ivBack;
     private boolean proceedWithoutLocation = false;
@@ -123,7 +118,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
 
             if (proceed) {
                 // move to next activity.
-                Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+                Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
                 startActivity(i);
             }
         }
@@ -151,15 +146,16 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         });
 
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), ReceiptQualityMoreInfo3Activity.class);
+            Intent i = new Intent(getApplicationContext(), ReceiptQualityFreshCheckActivity.class);
             startActivity(i);
         });
     }
 
     private void assignCtrlVars() {
-        tvNumberOfBinsCount = findViewById(R.id.tvNumberOfBinsCount);
-        tvPackagingLot = findViewById(R.id.tvPackagingLot);
-        tvEvaluation = findViewById(R.id.tvEvaluation);
+        tvLot = findViewById(R.id.tvReceiptLot);
+        tvStartTime = findViewById(R.id.tvStartTime);
+        tvFishDate = findViewById(R.id.tvFishDate);
+        tvSpecies = findViewById(R.id.tvSpecies);
         tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
         ivNext = findViewById(R.id.ivToCongs);
@@ -168,18 +164,22 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
     }
 
     private void initControlsFromState() {
-        QualityRecord qltRecord = GlobalState.recQuality;
+        ReceiptQualityRecord qltRecord = GlobalState.recQualityReceipt;
 
-        if (!Strings.isEmptyOrWhitespace(qltRecord.pLot)) {
-            tvPackagingLot.setText(qltRecord.pLot);
+        if (!Strings.isEmptyOrWhitespace(qltRecord.lot)) {
+            tvLot.setText(qltRecord.lot);
         }
 
-        if (qltRecord.qualityBins != null) {
-            tvNumberOfBinsCount.setText(String.valueOf(qltRecord.qualityBins.size()));
+        if (!Strings.isEmptyOrWhitespace(qltRecord.fishSpecies)) {
+            tvSpecies.setText(qltRecord.fishSpecies);
         }
 
-        if (!Strings.isEmptyOrWhitespace(qltRecord.evaluation)) {
-            tvEvaluation.setText(qltRecord.evaluation);
+        if (!Strings.isEmptyOrWhitespace(qltRecord.startTime)) {
+            tvStartTime.setText(qltRecord.startTime);
+        }
+
+        if (!Strings.isEmptyOrWhitespace(qltRecord.fishingDate)) {
+            tvFishDate.setText(qltRecord.fishingDate);
         }
 
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
@@ -232,35 +232,19 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             syncAllPhotos();
 
             // persist Processing Record data to local DB.
-            QualityTransaction tx = GlobalState.commitQuality(db, Boolean.TRUE);
+            ReceiptQualityTransaction tx = GlobalState.commitReceiptQuality(db, Boolean.TRUE);
 
-            // persist Measurements Record data to local DB.
-            List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db, tx.plot);
-            List<TemperatureTimeSeriesDTO> temperatureTimeSeriesDTOs = new ArrayList<>();
-            for (TemperatureTimeSeries ts : measurements) {
-                TemperatureTimeSeriesDTO measurementDTO = TemperatureTimeSeriesDTO.convert(ts);
-                measurementDTO.lot = tx.plot;
-                temperatureTimeSeriesDTOs.add(measurementDTO);
-            }
 
             if (IsOnline) {
                 // sync Processing records
-                Call<QualityTxDTO> syncTxAsyncCall = updService.syncQualityTx(QualityTxDTO.convert(tx), "Bearer " + token);
+                Call<ReceiptQualityTxDTO> syncTxAsyncCall = updService.syncRecQualityTx(ReceiptQualityTxDTO.convert(tx), "Bearer " + token);
                 syncTxAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncTxCallBack());
 
-                // sync Measurements records
-                if (!temperatureTimeSeriesDTOs.isEmpty()) {
-                    Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = updService.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
-                    syncMsAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncMsCallBack());
-                }
             } else {
                 for (int i = 0; i < 3; i++) {
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
                 }
             }
-
-            // update logger initialization timestamps
-            GlobalState.commitBinInitTimes(db);
 
             return true;
         } catch (Exception e) {
@@ -272,12 +256,12 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         }
     }
 
-    private boolean deleteQualityTx() {
+    private boolean qualityTxMarkSynced() {
         try {
             System.out.println("About to delete quality tx");
-            QualityTransaction delObj = new QualityTransaction();
-            delObj.id = recQuality.txKey;
-            db.qualityTransactionDAO().delete(delObj);
+            ReceiptQualityTransaction delObj = db.receiptQualityTransactionDAO().getByLot(recQualityReceipt.lot);
+            delObj.isSynced = true;
+            db.receiptQualityTransactionDAO().update(delObj);
             return true;
         } catch (Exception x) {
             x.printStackTrace();
@@ -285,11 +269,11 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         }
     }
 
-    public class SyncTxCallBack implements Callback<QualityTxDTO> {
+    public class SyncTxCallBack implements Callback<ReceiptQualityTxDTO> {
         @Override
-        public void onResponse(Call<QualityTxDTO> call, Response<QualityTxDTO> response) {
+        public void onResponse(Call<ReceiptQualityTxDTO> call, Response<ReceiptQualityTxDTO> response) {
             if (response.isSuccessful() || IsDemo) {
-                deleteQualityTx();
+                qualityTxMarkSynced();
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
             } else {
                 // could not update Processing TX on backend!!!
@@ -298,80 +282,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         }
 
         @Override
-        public void onFailure(Call<QualityTxDTO> call, Throwable error) {
-            if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
-            } else if (error instanceof IOException) {
-                for (int i = 0; i < 3; i++) {
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
-                }
-            } else {
-                if (call.isCanceled()) {
-                    //Call was cancelled by user
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
-                } else {
-                    //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
-                }
-            }
-        }
-    }
-
-    public class SyncMsCallBack implements Callback<List<TemperatureTimeSeriesDTO>> {
-        @Override
-        public void onResponse(Call<List<TemperatureTimeSeriesDTO>> call, Response<List<TemperatureTimeSeriesDTO>> response) {
-            List<TemperatureTimeSeriesDTO> rs = response.body();
-
-            if (rs != null || IsDemo) {
-                // reset existing Temperature values in stateRecord.
-                recLoggerData.clearData();
-                tempDataRepo.removeAll(db);
-                measRepo.removeAll(db);
-
-                String token = LocalPreferences.getToken();
-
-                //sync
-                Call<Map<String, Long>> syncTsAsyncCall = updService.syncLoggerInitTs(recLoggerData.loggerInitData, "Bearer " + token);
-                syncTsAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncTsCallBack());
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
-            } else {
-                // could not update Processing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_temperatures_tx_update_failure), Toast.LENGTH_LONG));
-            }
-        }
-
-        @Override
-        public void onFailure(Call<List<TemperatureTimeSeriesDTO>> call, Throwable error) {
-            if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
-            } else if (error instanceof IOException) {
-                for (int i = 0; i < 3; i++) {
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
-                }
-            } else {
-                if (call.isCanceled()) {
-                    //Call was cancelled by user
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
-                } else {
-                    //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
-                }
-            }
-        }
-    }
-
-    public class SyncTsCallBack implements Callback<Map<String, Long>> {
-        @Override
-        public void onResponse(Call<Map<String, Long>> call, Response<Map<String, Long>> response) {
-            Map<String, Long> rs = response.body();
-
-            if (rs != null || IsDemo) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
-            }
-        }
-
-        @Override
-        public void onFailure(Call<Map<String, Long>> call, Throwable error) {
+        public void onFailure(Call<ReceiptQualityTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

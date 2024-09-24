@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_semi_green"
-    tools:context=".fish.ui.quality.receipt.ReceiptQualityMoreInfo2Activity">
+    tools:context=".fish.ui.quality.packaging.PackageQualityDysmorphias2Activity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -136,7 +136,7 @@
                     android:textAlignment="center"
                     android:textColorHint="@color/black"
                     android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toTopOf="@+id/etHead"
+                    app:layout_constraintBottom_toTopOf="@+id/etSpots"
                     app:layout_constraintStart_toEndOf="@+id/tvSlightBloodLabel"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -172,7 +172,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tvSlightBloodLabel" />
 
                 <EditText
-                    android:id="@+id/etHead"
+                    android:id="@+id/etSpots"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginStart="8dp"
@@ -186,7 +186,7 @@
                     android:textAlignment="center"
                     android:textColorHint="@color/black"
                     android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toTopOf="@+id/etJaw"
+                    app:layout_constraintBottom_toTopOf="@+id/etHemDiffuse"
                     app:layout_constraintStart_toEndOf="@+id/tvHeadLabel"
                     app:layout_constraintTop_toBottomOf="@id/etSlightBlood" />
 
@@ -200,9 +200,9 @@
                     android:textAlignment="viewStart"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toBottomOf="@+id/etHead"
-                    app:layout_constraintStart_toEndOf="@+id/etHead"
-                    app:layout_constraintTop_toTopOf="@+id/etHead" />
+                    app:layout_constraintBottom_toBottomOf="@+id/etSpots"
+                    app:layout_constraintStart_toEndOf="@+id/etSpots"
+                    app:layout_constraintTop_toTopOf="@+id/etSpots" />
 
                 <TextView
                     android:id="@+id/tvJawLabel"
@@ -221,23 +221,23 @@
                     app:layout_constraintTop_toBottomOf="@id/tvHeadLabel" />
 
                 <EditText
-                    android:id="@+id/etJaw"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
+                    android:id="@+id/etHemDiffuse"
+                    android:layout_width="86dp"
+                    android:layout_height="24dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_rounded_dialog_input"
                     android:ems="4"
-                    android:maxLength="3"
                     android:inputType="number"
+                    android:maxLength="3"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
                     android:textAlignment="center"
                     android:textColorHint="@color/black"
                     android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toTopOf="@+id/etParrot"
+                    app:layout_constraintBottom_toTopOf="@+id/etHemWounds"
                     app:layout_constraintStart_toEndOf="@+id/tvJawLabel"
-                    app:layout_constraintTop_toBottomOf="@id/etHead" />
+                    app:layout_constraintTop_toBottomOf="@id/etSpots" />
 
                 <TextView
                     android:id="@+id/tvJaw"
@@ -249,9 +249,9 @@
                     android:textAlignment="viewStart"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toBottomOf="@+id/etJaw"
-                    app:layout_constraintStart_toEndOf="@+id/etJaw"
-                    app:layout_constraintTop_toTopOf="@+id/etJaw" />
+                    app:layout_constraintBottom_toBottomOf="@+id/etHemDiffuse"
+                    app:layout_constraintStart_toEndOf="@+id/etHemDiffuse"
+                    app:layout_constraintTop_toTopOf="@+id/etHemDiffuse" />
 
                 <TextView
                     android:id="@+id/tvParrotLabel"
@@ -266,13 +266,13 @@
                     android:textAlignment="viewStart"
                     android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toTopOf="@+id/tvOperLabel"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvJawLabel"
                     app:layout_constraintWidth_percent="0.6" />
 
                 <EditText
-                    android:id="@+id/etParrot"
+                    android:id="@+id/etHemWounds"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginStart="8dp"
@@ -287,9 +287,9 @@
                     android:textAlignment="center"
                     android:textColorHint="@color/black"
                     android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toTopOf="@+id/etOper"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvParrotLabel"
-                    app:layout_constraintTop_toBottomOf="@id/etJaw" />
+                    app:layout_constraintTop_toBottomOf="@id/etHemDiffuse" />
 
                 <TextView
                     android:id="@+id/tvParrot"
@@ -301,59 +301,9 @@
                     android:textAlignment="viewStart"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toBottomOf="@+id/etParrot"
-                    app:layout_constraintStart_toEndOf="@+id/etParrot"
-                    app:layout_constraintTop_toTopOf="@+id/etParrot" />
-
-                <TextView
-                    android:id="@+id/tvOperLabel"
-                    android:layout_width="0dp"
-                    app:layout_constraintWidth_percent="0.6"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:ems="10"
-                    android:paddingEnd="10dp"
-                    android:text="@string/operculum"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/label_blue"
-                    android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toTopOf="@+id/tvLordosisLabel"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvParrotLabel" />
-
-                <EditText
-                    android:id="@+id/etOper"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_rounded_dialog_input"
-                    android:ems="4"
-                    android:maxLength="3"
-                    android:inputType="number"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:textAlignment="center"
-                    android:textColorHint="@color/black"
-                    android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toTopOf="@+id/etLordosis"
-                    app:layout_constraintStart_toEndOf="@+id/tvOperLabel"
-                    app:layout_constraintTop_toBottomOf="@id/etParrot" />
-
-                <TextView
-                    android:id="@+id/tvOper"
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:paddingLeft="4dp"
-                    android:text="%"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toBottomOf="@+id/etOper"
-                    app:layout_constraintStart_toEndOf="@+id/etOper"
-                    app:layout_constraintTop_toTopOf="@+id/etOper" />
+                    app:layout_constraintBottom_toBottomOf="@+id/etHemWounds"
+                    app:layout_constraintStart_toEndOf="@+id/etHemWounds"
+                    app:layout_constraintTop_toTopOf="@+id/etHemWounds" />
 
 
 

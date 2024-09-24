@@ -47,9 +47,12 @@ import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.sync.PendindQualityMeasurementsTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingBinInfoTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingCorrelationTxCallBack;
+import io.agritrack.philosofish.api.sync.PendingFinalQualityTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingFishingTxCallBack;
+import io.agritrack.philosofish.api.sync.PendingPackQualityTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingProcessTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingQualityTxCallBack;
+import io.agritrack.philosofish.api.sync.PendingRecQualityTxCallBack;
 import io.agritrack.philosofish.api.sync.SyncApi;
 import io.agritrack.philosofish.api.sync.SyncAssetsCallBack;
 import io.agritrack.philosofish.api.sync.SyncBinInfo;
@@ -79,16 +82,22 @@ import io.agritrack.philosofish.data.dto.common.SpeciesDTO;
 import io.agritrack.philosofish.data.dto.common.SupplierDTO;
 import io.agritrack.philosofish.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.philosofish.data.dto.tx.CorrelationTxDTO;
+import io.agritrack.philosofish.data.dto.tx.FinalQualityTxDTO;
 import io.agritrack.philosofish.data.dto.tx.FishingTxDTO;
+import io.agritrack.philosofish.data.dto.tx.PackageQualityTxDTO;
 import io.agritrack.philosofish.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.philosofish.data.dto.tx.QualityTxDTO;
+import io.agritrack.philosofish.data.dto.tx.ReceiptQualityTxDTO;
 import io.agritrack.philosofish.data.dto.wh.AssetDTO;
 import io.agritrack.philosofish.data.model.BinInfo;
 import io.agritrack.philosofish.data.model.common.TemperatureTimeSeries;
 import io.agritrack.philosofish.data.model.tx.CorrelationTransaction;
+import io.agritrack.philosofish.data.model.tx.FinalQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.FishingTransaction;
+import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
 import io.agritrack.philosofish.data.model.tx.QualityTransaction;
+import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.enums.TxStatus;
 import io.agritrack.philosofish.fish.state.FishingRecord;
@@ -194,6 +203,7 @@ public class FishHomeActivity extends AppCompatActivity {
             if (response != null) {
                 progressDialog.setMessage(render(response));
                 if (syncCounter > syncLimit) {
+                    syncLimit = 12;
                     hideProgressDialog();
                 }
             }
@@ -330,6 +340,7 @@ public class FishHomeActivity extends AppCompatActivity {
             if (!binInfoTXs.isEmpty()) {
                 Call<List<BinInfoDTO>> binInfoTxAsyncCall = pendingTxSvc.syncBinInfoTx(BinInfoDTO.convert(binInfoTXs), "Bearer " + token);
                 binInfoTxAsyncCall.enqueue(new PendingBinInfoTxCallBack(this.syncResult));
+                syncLimit++;
             }
 
             // select all pending fishing TXs
@@ -338,6 +349,7 @@ public class FishHomeActivity extends AppCompatActivity {
                 for (FishingTransaction fishingTX : fishingTXs) {
                     Call<FishingTxDTO> fishingTxAsyncCall = pendingTxSvc.syncFishingTx(FishingTxDTO.convert(fishingTX), "Bearer " + token);
                     fishingTxAsyncCall.enqueue(new PendingFishingTxCallBack(this.syncResult));
+                    syncLimit++;
                 }
             }
 
@@ -347,15 +359,62 @@ public class FishHomeActivity extends AppCompatActivity {
                 for (ProcessingTransaction processTX : processTXs) {
                     Call<ProcessingTxDTO> processTxAsyncCall = pendingTxSvc.syncProcessingTx(ProcessingTxDTO.convert(processTX), "Bearer " + token);
                     processTxAsyncCall.enqueue(new PendingProcessTxCallBack(this.syncResult));
+                    syncLimit++;
+
                 }
             }
 
-            // select all pending quality TXs
-            List<QualityTransaction> qualityTXs = db.qualityTransactionDAO().getAll();
-            if (!qualityTXs.isEmpty()) {
-                for (QualityTransaction qualityTX : qualityTXs) {
-                    Call<QualityTxDTO> qualityTxAsyncCall = pendingTxSvc.syncQualityTx(QualityTxDTO.convert(qualityTX), "Bearer " + token);
-                    qualityTxAsyncCall.enqueue(new PendingQualityTxCallBack(this.syncResult));
+            List<ReceiptQualityTransaction> receiptTXs = db.receiptQualityTransactionDAO().getAll().stream().filter(x -> !x.isSynced && (x.createdAt != null)).collect(Collectors.toList());
+            if (!receiptTXs.isEmpty()) {
+                for (ReceiptQualityTransaction tx : receiptTXs) {
+                    Call<ReceiptQualityTxDTO> recQualityTxAsyncCall = pendingTxSvc.syncRecQualityTx(ReceiptQualityTxDTO.convert(tx), "Bearer " + token);
+                    recQualityTxAsyncCall.enqueue(new PendingRecQualityTxCallBack(this.syncResult));
+                    syncLimit++;
+
+                }
+            }
+
+            List<PackageQualityTransaction> packageFreshTxs = db.packageQualityTransactionDAO().getAll().stream().filter(x -> !x.isFreshSynced && (x.freshCreatedAt != null)).collect(Collectors.toList());
+            if (!packageFreshTxs.isEmpty()) {
+                for (PackageQualityTransaction tx : packageFreshTxs) {
+                    Call<PackageQualityTxDTO> packFreshQualityTxAsyncCall = pendingTxSvc.syncPackQualityTx(PackageQualityTxDTO.convertFresh(tx), "Bearer " + token);
+                    packFreshQualityTxAsyncCall.enqueue(new PendingPackQualityTxCallBack(this.syncResult));
+                    syncLimit++;
+
+
+                }
+            }
+
+            List<PackageQualityTransaction> packageSampleTxs = db.packageQualityTransactionDAO().getAll().stream().filter(x -> !x.isSampleSynced && (x.sampleCreatedAt != null)).collect(Collectors.toList());
+            if (!packageSampleTxs.isEmpty()) {
+                for (PackageQualityTransaction tx : packageSampleTxs) {
+                    Call<PackageQualityTxDTO> packSampleQualityTxAsyncCall = pendingTxSvc.syncPackQualityTx(PackageQualityTxDTO.convertSample(tx), "Bearer " + token);
+                    packSampleQualityTxAsyncCall.enqueue(new PendingPackQualityTxCallBack(this.syncResult));
+                    syncLimit++;
+
+
+                }
+            }
+
+            List<PackageQualityTransaction> packageLabelTxs = db.packageQualityTransactionDAO().getAll().stream().filter(x -> !x.isLabelSynced && (x.labelCreatedAt != null)).collect(Collectors.toList());
+            if (!packageLabelTxs.isEmpty()) {
+                for (PackageQualityTransaction tx : packageLabelTxs) {
+                    Call<PackageQualityTxDTO> packLabelQualityTxAsyncCall = pendingTxSvc.syncPackQualityTx(PackageQualityTxDTO.convertLabel(tx), "Bearer " + token);
+                    packLabelQualityTxAsyncCall.enqueue(new PendingPackQualityTxCallBack(this.syncResult));
+                    syncLimit++;
+
+
+                }
+            }
+
+            List<FinalQualityTransaction> finalQualityTxs = db.finalQualityTransactionDAO().getAll().stream().filter(x -> !x.isSynced && (x.createdAt != null)).collect(Collectors.toList());
+            if (!finalQualityTxs.isEmpty()) {
+                for (FinalQualityTransaction tx : finalQualityTxs) {
+                    Call<FinalQualityTxDTO> finalQualityTxAsyncCall = pendingTxSvc.syncFinalQualityTx(FinalQualityTxDTO.convert(tx), "Bearer " + token);
+                    finalQualityTxAsyncCall.enqueue(new PendingFinalQualityTxCallBack(this.syncResult));
+                    syncLimit++;
+
+
                 }
             }
 
@@ -368,6 +427,8 @@ public class FishHomeActivity extends AppCompatActivity {
             if (!temperatureTimeSeriesDTOs.isEmpty()) {
                 Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = pendingTxSvc.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
                 syncMsAsyncCall.enqueue(new PendindQualityMeasurementsTxCallBack(this.syncResult));
+                syncLimit++;
+
             }
 
             //===================================================================================================
@@ -384,6 +445,8 @@ public class FishHomeActivity extends AppCompatActivity {
 
                     Call<ResponseBody> assetIdentificationAsyncCall = pendingTxSvc.syncAssetCorrelationTx(identificationDTOs, "Bearer " + token);
                     assetIdentificationAsyncCall.enqueue(new PendingCorrelationTxCallBack(this.syncResult));
+                    syncLimit++;
+
                 }
 
                 if (!interCorrelations.isEmpty()) {
@@ -391,6 +454,8 @@ public class FishHomeActivity extends AppCompatActivity {
 
                     Call<ResponseBody> assetInterCorrelationAsyncCall = pendingTxSvc.syncAssetWithAssetCorrelationTx(interCorrelationDTOs, "Bearer " + token);
                     assetInterCorrelationAsyncCall.enqueue(new PendingCorrelationTxCallBack(this.syncResult));
+                    syncLimit++;
+
                 }
             }
         } catch (Exception e) {
@@ -402,6 +467,9 @@ public class FishHomeActivity extends AppCompatActivity {
 
     private void invokeSyncAll() {
         try {
+            db.finalQualityTransactionDAO().deleteThreeDaysOld(System.currentTimeMillis() - 259200000L);
+            db.packageQualityTransactionDAO().deleteThreeDaysOld(System.currentTimeMillis() - 259200000L);
+            db.receiptQualityTransactionDAO().deleteThreeDaysOld(System.currentTimeMillis() - 259200000L);
             SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
             UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
             String token = LocalPreferences.getToken();

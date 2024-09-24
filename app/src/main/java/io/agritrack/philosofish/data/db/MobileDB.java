@@ -13,8 +13,10 @@ import net.sqlcipher.database.SupportFactory;
 import io.agritrack.philosofish.data.converter.ConsumableTypeConverter;
 import io.agritrack.philosofish.data.converter.DateConverter;
 import io.agritrack.philosofish.data.converter.LongListConverter;
+import io.agritrack.philosofish.data.converter.SortingSampleConverter;
 import io.agritrack.philosofish.data.converter.StringListConverter;
 import io.agritrack.philosofish.data.converter.StringSetConverter;
+import io.agritrack.philosofish.data.converter.TimeConverter;
 import io.agritrack.philosofish.data.converter.TxStatusEnumConverter;
 import io.agritrack.philosofish.data.converter.UUIDConverter;
 import io.agritrack.philosofish.data.dao.AppUserDAO;
@@ -33,10 +35,13 @@ import io.agritrack.philosofish.data.dao.iotlogger.TemperatureDataDAO;
 import io.agritrack.philosofish.data.dao.tx.AssetTransactionDAO;
 import io.agritrack.philosofish.data.dao.tx.AssetTxItemDAO;
 import io.agritrack.philosofish.data.dao.tx.CorrelationTransactionDAO;
+import io.agritrack.philosofish.data.dao.tx.FinalQualityTxDAO;
 import io.agritrack.philosofish.data.dao.tx.FishingTransactionDAO;
+import io.agritrack.philosofish.data.dao.tx.PackageQualityTxDAO;
 import io.agritrack.philosofish.data.dao.tx.PostPackageQualityTransactionDAO;
 import io.agritrack.philosofish.data.dao.tx.ProcessingTransactionDAO;
 import io.agritrack.philosofish.data.dao.tx.QualityTransactionDAO;
+import io.agritrack.philosofish.data.dao.tx.ReceiptQualityTxDAO;
 import io.agritrack.philosofish.data.dao.tx.TransportTransactionDAO;
 import io.agritrack.philosofish.data.dao.wh.AssetDAO;
 import io.agritrack.philosofish.data.dao.wh.FoodSkuDAO;
@@ -59,10 +64,13 @@ import io.agritrack.philosofish.data.model.common.TemperatureData;
 import io.agritrack.philosofish.data.model.tx.AssetTransaction;
 import io.agritrack.philosofish.data.model.tx.AssetTxItem;
 import io.agritrack.philosofish.data.model.tx.CorrelationTransaction;
+import io.agritrack.philosofish.data.model.tx.FinalQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.FishingTransaction;
+import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.PostPackageQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
 import io.agritrack.philosofish.data.model.tx.QualityTransaction;
+import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.TransportTransaction;
 import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.data.model.wh.FoodSku;
@@ -72,13 +80,13 @@ import io.agritrack.philosofish.data.model.wh.RFIDInventoryItem;
 @Database(entities = {AppUser.class, Site.class, Asset.class, FoodSku.class, Supplier.class,
         FishingRequest.class, EncodingSchemeEntity.class, CageDetails.class, BinInfo.class,
         Employee.class, Species.class, Reader.class, IotLogger.class, FishingTransaction.class,
-        TransportTransaction.class, ProcessingTransaction.class, QualityTransaction.class,
-        PostPackageQualityTransaction.class, AssetTransaction.class, AssetTxItem.class, CorrelationTransaction.class,
-        RFIDInventory.class, RFIDInventoryItem.class, Customer.class, Measurement.class, TemperatureData.class},
-        version = 8, exportSchema = false)
+        TransportTransaction.class, ProcessingTransaction.class, QualityTransaction.class, ReceiptQualityTransaction.class,
+        PackageQualityTransaction.class, PostPackageQualityTransaction.class, AssetTransaction.class, AssetTxItem.class, CorrelationTransaction.class,
+        RFIDInventory.class, RFIDInventoryItem.class, Customer.class, Measurement.class, TemperatureData.class, FinalQualityTransaction.class},
+        version = 13, exportSchema = false)
 
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class,
-        StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class, UUIDConverter.class})
+        StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class, UUIDConverter.class, SortingSampleConverter.class, TimeConverter.class})
 public abstract class MobileDB extends RoomDatabase {
     private static final Object sLock = new Object();
     private static MobileDB INSTANCE;
@@ -131,6 +139,13 @@ public abstract class MobileDB extends RoomDatabase {
     public abstract ProcessingTransactionDAO processingTransactionDAO();
 
     public abstract QualityTransactionDAO qualityTransactionDAO();
+
+    public abstract ReceiptQualityTxDAO receiptQualityTransactionDAO();
+
+    public abstract PackageQualityTxDAO packageQualityTransactionDAO();
+
+
+    public abstract FinalQualityTxDAO finalQualityTransactionDAO();
 
     public abstract PostPackageQualityTransactionDAO postPackageQualityTransactionDAO();
 

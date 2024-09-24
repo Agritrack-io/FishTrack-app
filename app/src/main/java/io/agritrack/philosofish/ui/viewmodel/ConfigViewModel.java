@@ -9,12 +9,12 @@ import android.widget.Toast;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.agritrack.philosofish.BR;
 import io.agritrack.philosofish.common.DeviceUtils;
 import io.agritrack.philosofish.common.utilities.WifiUtils;
 import io.agritrack.philosofish.data.dto.AgricenseDTO;

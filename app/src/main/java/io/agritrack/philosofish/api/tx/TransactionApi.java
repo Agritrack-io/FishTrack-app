@@ -9,10 +9,13 @@ import io.agritrack.philosofish.data.dto.common.MediaDTO;
 import io.agritrack.philosofish.data.dto.common.TemperatureTimeSeriesDTO;
 import io.agritrack.philosofish.data.dto.tx.AssetTxDTO;
 import io.agritrack.philosofish.data.dto.tx.CorrelationTxDTO;
+import io.agritrack.philosofish.data.dto.tx.FinalQualityTxDTO;
 import io.agritrack.philosofish.data.dto.tx.FishingTxDTO;
+import io.agritrack.philosofish.data.dto.tx.PackageQualityTxDTO;
 import io.agritrack.philosofish.data.dto.tx.PostPackageQualityTxDTO;
 import io.agritrack.philosofish.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.philosofish.data.dto.tx.QualityTxDTO;
+import io.agritrack.philosofish.data.dto.tx.ReceiptQualityTxDTO;
 import io.agritrack.philosofish.data.dto.tx.TransportTxDTO;
 import io.agritrack.philosofish.data.dto.wh.RFIDInventoryDTO;
 import okhttp3.ResponseBody;
@@ -42,12 +45,28 @@ public interface TransactionApi {
     Call<MediaDTO> syncTransportTxDriverSignature(@Body MediaDTO transportTxDriverSig, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/philosofish/quality/signature")
+    Call<MediaDTO> syncQualityTxSignature(@Body MediaDTO qualityTxSig, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/philosofish/receipt")
     Call<ProcessingTxDTO> syncProcessingTx(@Body ProcessingTxDTO processTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/philosofish/quality/pp1/quality")
     Call<QualityTxDTO> syncQualityTx(@Body QualityTxDTO qualityTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/philosofish/quality/receipt")
+    Call<ReceiptQualityTxDTO> syncRecQualityTx(@Body ReceiptQualityTxDTO qualityTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/philosofish/quality/package")
+    Call<PackageQualityTxDTO> syncPackQualityTx(@Body PackageQualityTxDTO qualityTx, @Header("Authorization") String token);
+
+    @Headers("Content-Type: application/json; charset=utf-8")
+    @POST("/philosofish/quality/final")
+    Call<FinalQualityTxDTO> syncFinalQualityTx(@Body FinalQualityTxDTO qualityTx, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/philosofish/quality/postpackage")

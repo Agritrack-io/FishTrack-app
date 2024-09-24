@@ -5,6 +5,8 @@ import static io.agritrack.philosofish.enums.AssetType.ALL;
 import android.util.Base64;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -24,10 +26,13 @@ import io.agritrack.philosofish.data.model.common.TemperatureTimeSeries;
 import io.agritrack.philosofish.data.model.tx.AssetTransaction;
 import io.agritrack.philosofish.data.model.tx.AssetTxItem;
 import io.agritrack.philosofish.data.model.tx.CorrelationTransaction;
+import io.agritrack.philosofish.data.model.tx.FinalQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.FishingTransaction;
+import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.PostPackageQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
 import io.agritrack.philosofish.data.model.tx.QualityTransaction;
+import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.TransportTransaction;
 import io.agritrack.philosofish.data.model.wh.RFIDInventory;
 import io.agritrack.philosofish.data.model.wh.RFIDInventoryItem;
@@ -43,7 +48,11 @@ public class GlobalState {
     public static List<FishingRequest> recFishingRequests = new LinkedList<>();
     public static TransportationRecord recTransport = new TransportationRecord();
     public static ProcessingRecord recProcessing = new ProcessingRecord();
+    public static ReceiptQualityRecord recQualityReceipt = new ReceiptQualityRecord();
+    public static PackageQualityRecord recQualityPackage = new PackageQualityRecord();
+    public static FinalQualityRecord recQualityFinal = new FinalQualityRecord();
     public static QualityRecord recQuality = new QualityRecord();
+
 
     public static WHTxRecord recWHIncoming = new WHTxRecord();
     public static WHTxRecord recWHOutgoing = new WHTxRecord();
@@ -79,6 +88,24 @@ public class GlobalState {
     public static ProcessingRecord initProcessingRecord() {
         recProcessing = new ProcessingRecord();
         return recProcessing;
+    }
+
+    public static ReceiptQualityRecord initReceiptQualityRecord() {
+        recQualityReceipt  = new ReceiptQualityRecord();
+
+        return recQualityReceipt;
+    }
+
+    public static FinalQualityRecord initFinalQualityRecord() {
+        recQualityFinal  = new FinalQualityRecord();
+
+        return recQualityFinal;
+    }
+
+    public static PackageQualityRecord initPackageQualityRecord() {
+        recQualityPackage  = new PackageQualityRecord();
+
+        return recQualityPackage;
     }
 
     public static QualityRecord initQualityRecord() {
@@ -301,6 +328,281 @@ public class GlobalState {
             return txProcess;
         } catch (Exception ex) {
             ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ReceiptQualityTransaction commitReceiptQuality(MobileDB db, Boolean finalCommit) {
+        try {
+            ReceiptQualityTransaction txQuality = db.receiptQualityTransactionDAO().getByLot(recQualityReceipt.lot);
+            if (txQuality == null) {
+                txQuality = new ReceiptQualityTransaction();
+            }
+            DateFormat formatter = new SimpleDateFormat("HH:mm");
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+            txQuality.lot = recQualityReceipt.lot;
+            try {
+                txQuality.arrivalTime = new Time(formatter.parse(recQualityReceipt.arrivalTime).getTime());
+            } catch (Exception e) {
+                txQuality.arrivalTime = null;
+            }
+            try {
+                txQuality.startTime = new Time(formatter.parse(recQualityReceipt.startTime).getTime());
+            } catch (Exception e) {
+                txQuality.startTime = null;
+            }
+            try {
+                txQuality.fishingDate = dateFormat.parse(recQualityReceipt.fishingDate);
+            } catch (Exception e) {
+                txQuality.fishingDate = null;
+            }
+
+            txQuality.user = LocalPreferences.getLoggedInUser("N/A");
+            txQuality.plant = LocalPreferences.getCurrentSiteName();
+            txQuality.farm = recQualityReceipt.farm;
+            txQuality.cage = recQualityReceipt.cage;
+            txQuality.species = recQualityReceipt.fishSpecies;
+            txQuality.sealed = recQualityReceipt.binSeal;
+            txQuality.eyeRating = recQualityReceipt.eyeRating;
+            txQuality.gillRating = recQualityReceipt.gillRating;
+            txQuality.fleshRating = recQualityReceipt.fleshRating;
+            txQuality.skinRating = recQualityReceipt.skinRating;
+            txQuality.disEyes = recQualityReceipt.disEyes;
+            txQuality.disTail = recQualityReceipt.disTail;
+            txQuality.disSkeletal = recQualityReceipt.disSkeletal;
+            txQuality.disBlood = recQualityReceipt.disBlood;
+            txQuality.disMouth = recQualityReceipt.disMouth;
+            txQuality.disOper = recQualityReceipt.disOper;
+            txQuality.comments = recQualityReceipt.comments;
+
+            if (finalCommit) {
+                txQuality.createdAt = System.currentTimeMillis();
+            }
+
+            db.receiptQualityTransactionDAO().insert(txQuality);
+
+            return txQuality;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static PackageQualityTransaction commitPackageSampleQuality(MobileDB db, Boolean finalCommit) {
+        try {
+
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+
+            PackageQualityTransaction txQuality = db.packageQualityTransactionDAO().getByLot(recQualityPackage.lot);
+            if (txQuality == null) {
+                txQuality = new PackageQualityTransaction();
+                txQuality.lot = recQualityPackage.lot;
+                try {
+                    txQuality.bestBefore = dateFormat.parse(recQualityPackage.bestBefore);
+                } catch (Exception e) {
+                    txQuality.bestBefore = null;
+                }
+            }
+
+
+            txQuality.sortingSamples = recQualityPackage.sortingSamples;
+            txQuality.tonneSamples = recQualityPackage.tonneSamples;
+//
+//
+            if (finalCommit && txQuality.labelCreatedAt == null) {
+                txQuality.sampleCreatedAt = System.currentTimeMillis();
+            }
+
+            db.packageQualityTransactionDAO().insert(txQuality);
+
+            return txQuality;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static PackageQualityTransaction commitPackageLabelCheckQuality(MobileDB db, Boolean finalCommit) {
+        try {
+
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+            PackageQualityTransaction txQuality = db.packageQualityTransactionDAO().getByLot(recQualityPackage.lot);
+            if (txQuality == null) {
+                txQuality = new PackageQualityTransaction();
+                txQuality.lot = recQualityPackage.lot;
+                try {
+                    txQuality.bestBefore = dateFormat.parse(recQualityPackage.bestBefore);
+                } catch (Exception e) {
+                    txQuality.bestBefore = null;
+                }
+            }
+
+
+            txQuality.startPacking = recQualityPackage.startPacking;
+            txQuality.changePacking = recQualityPackage.changePacking;
+            txQuality.middlePacking = recQualityPackage.middlePacking;
+            txQuality.endPacking = recQualityPackage.endPacking;
+            txQuality.labelComments = recQualityPackage.labelComments;
+//
+
+            if (finalCommit && txQuality.sampleCreatedAt == null) {
+                txQuality.labelCreatedAt = System.currentTimeMillis();
+            }
+
+            db.packageQualityTransactionDAO().insert(txQuality);
+
+            return txQuality;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static PackageQualityTransaction commitPackageFreshQuality(MobileDB db, Boolean finalCommit) {
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+
+            PackageQualityTransaction txQuality = db.packageQualityTransactionDAO().getByLot(recQualityPackage.lot);
+            if (txQuality == null) {
+                txQuality = new PackageQualityTransaction();
+                txQuality.lot = recQualityPackage.lot;
+                try {
+                    txQuality.bestBefore = dateFormat.parse(recQualityPackage.bestBefore);
+                } catch (Exception e) {
+                    txQuality.bestBefore = null;
+                }
+            }
+
+            txQuality.freshGrade = recQualityPackage.freshGrade;
+            txQuality.overallGrade = recQualityPackage.overallGrade;
+            txQuality.skinGrade = recQualityPackage.skinGrade;
+            txQuality.eyeGrade = recQualityPackage.eyeGrade;
+            txQuality.gillGrade = recQualityPackage.gillGrade;
+            txQuality.crookedMouth = recQualityPackage.crookedMouth;
+            txQuality.lowerJaw = recQualityPackage.lowerJaw;
+            txQuality.jawOver = recQualityPackage.jawOver;
+            txQuality.operculum = recQualityPackage.operculum;
+            txQuality.lordosis = recQualityPackage.lordosis;
+            txQuality.shortening = recQualityPackage.shortening;
+            txQuality.skeletical = recQualityPackage.skeletical;
+            txQuality.tailDeformity = recQualityPackage.tailDeformity;
+            txQuality.tailDeform = recQualityPackage.tailDeform;
+            txQuality.finDeform = recQualityPackage.finDeform;
+            txQuality.woundsDeform = recQualityPackage.woundsDeform;
+            txQuality.hemSlight = recQualityPackage.hemSlight;
+            txQuality.hemDiffuse = recQualityPackage.hemDiffuse;
+            txQuality.hemSpots = recQualityPackage.hemSpots;
+            txQuality.hemWounds = recQualityPackage.hemWounds;
+            txQuality.eyeBlurred = recQualityPackage.eyeBlurred;
+            txQuality.eyeCured = recQualityPackage.eyeCured;
+            txQuality.eyeBlind = recQualityPackage.eyeBlind;
+            txQuality.eyeBleed = recQualityPackage.eyeBleed;
+            txQuality.gillMucus = recQualityPackage.gillMucus;
+            txQuality.gillBloody = recQualityPackage.gillBloody;
+            txQuality.gillBrown = recQualityPackage.gillBrown;
+            txQuality.gillDiscolor = recQualityPackage.gillDiscolor;
+            txQuality.headDeform = recQualityPackage.headDeform;
+//            txQuality.laundrySamples = recQualityPackage.laundrySamples;
+//            txQuality.tonneSamples = recQualityPackage.tonneSamples;
+//            txQuality.changePacking = recQualityPackage.changePacking;
+//            txQuality.middlePacking = recQualityPackage.middlePacking;
+//            txQuality.startPacking = recQualityPackage.startPacking;
+//            txQuality.endPacking = recQualityPackage.endPacking;
+//            txQuality.labelComments = recQualityPackage.labelComments;
+//
+
+            if (finalCommit && txQuality.freshCreatedAt == null) {
+                txQuality.freshCreatedAt = System.currentTimeMillis();
+            }
+
+            db.packageQualityTransactionDAO().insert(txQuality);
+
+            return txQuality;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static FinalQualityTransaction commitFinalQuality(MobileDB db, Boolean finalCommit) {
+        try {
+
+
+            FinalQualityTransaction txQuality = db.finalQualityTransactionDAO().getByLot(recQualityFinal.lot);
+            if (txQuality == null) {
+                txQuality = new FinalQualityTransaction();
+                txQuality.lot = recQualityFinal.lot;
+
+            }
+
+            txQuality.exfoRating = recQualityFinal.exfoRating;
+            txQuality.paletteRating = recQualityFinal.paletteRating;
+            txQuality.boxRating = recQualityFinal.boxRating;
+            txQuality.expanded = recQualityFinal.expanded;
+            txQuality.soft = recQualityFinal.soft;
+            txQuality.cylinrical = recQualityFinal.cylinrical;
+            txQuality.head = recQualityFinal.head;
+            txQuality.body = recQualityFinal.body;
+            txQuality.areas = recQualityFinal.areas;
+
+
+            txQuality.sizeFirst = recQualityFinal.sample1.size;
+            txQuality.boxTypeFirst = recQualityFinal.sample1.boxType;
+            txQuality.labelPiecesFirst = recQualityFinal.sample1.labelPieces;
+            txQuality.countedPiecesFirst = recQualityFinal.sample1.countedPieces;
+            txQuality.underWeightFirst = recQualityFinal.sample1.underWeight;
+            txQuality.overWeightFirst = recQualityFinal.sample1.overWeight;
+            txQuality.netWeightFirst = recQualityFinal.sample1.netWeight;
+            txQuality.iceQuantityFirst = recQualityFinal.sample1.iceQuantity;
+            txQuality.fishTempFirst = recQualityFinal.sample1.fishTemp;
+
+
+            txQuality.sizeSecond = recQualityFinal.sample2.size;
+            txQuality.boxTypeSecond = recQualityFinal.sample2.boxType;
+            txQuality.labelPiecesSecond = recQualityFinal.sample2.labelPieces;
+            txQuality.countedPiecesSecond = recQualityFinal.sample2.countedPieces;
+            txQuality.underWeightSecond = recQualityFinal.sample2.underWeight;
+            txQuality.overWeightSecond = recQualityFinal.sample2.overWeight;
+            txQuality.netWeightSecond = recQualityFinal.sample2.netWeight;
+            txQuality.iceQuantitySecond = recQualityFinal.sample2.iceQuantity;
+            txQuality.fishTempSecond = recQualityFinal.sample2.fishTemp;
+
+            txQuality.sizeThird = recQualityFinal.sample3.size;
+            txQuality.boxTypeThird = recQualityFinal.sample3.boxType;
+            txQuality.labelPiecesThird = recQualityFinal.sample3.labelPieces;
+            txQuality.countedPiecesThird = recQualityFinal.sample3.countedPieces;
+            txQuality.underWeightThird = recQualityFinal.sample3.underWeight;
+            txQuality.overWeightThird = recQualityFinal.sample3.overWeight;
+            txQuality.netWeightThird = recQualityFinal.sample3.netWeight;
+            txQuality.iceQuantityThird = recQualityFinal.sample3.iceQuantity;
+            txQuality.fishTempThird = recQualityFinal.sample3.fishTemp;
+
+            if (recQualityFinal.signatureBytes != null) {
+                txQuality.signature = Base64.encodeToString(recQualityFinal.signatureBytes, Base64.NO_WRAP);
+
+            }
+
+//            txQuality.laundrySamples = recQualityPackage.laundrySamples;
+//            txQuality.tonneSamples = recQualityPackage.tonneSamples;
+//            txQuality.changePacking = recQualityPackage.changePacking;
+//            txQuality.middlePacking = recQualityPackage.middlePacking;
+//            txQuality.startPacking = recQualityPackage.startPacking;
+//            txQuality.endPacking = recQualityPackage.endPacking;
+//            txQuality.labelComments = recQualityPackage.labelComments;
+//
+
+            if (finalCommit && txQuality.createdAt == null) {
+                txQuality.createdAt = System.currentTimeMillis();
+            }
+
+            db.finalQualityTransactionDAO().insert(txQuality);
+
+            return txQuality;
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

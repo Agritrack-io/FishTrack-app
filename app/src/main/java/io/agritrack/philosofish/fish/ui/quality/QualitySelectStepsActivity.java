@@ -77,9 +77,9 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
 
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.read_temperatures), "", BinTurnoverActivity.class));
-        menuItemsList.add(new MenuItem(getString(R.string.quality_first_step_text), "PP-DOC-01", ReceiptQualityStartActivity.class));
+        menuItemsList.add(new MenuItem(getString(R.string.quality_first_step_text), "", ReceiptQualityStartActivity.class));
         //menuItemsList.add(new MenuItem(getString(R.string.quality_second_step_text), "", PackageQualityStartActivity.class));
-        menuItemsList.add(new MenuItem(getString(R.string.quality_third_step_text), "PP-DOC-02", PackageQualityMenuActivity.class));
+        menuItemsList.add(new MenuItem(getString(R.string.quality_third_step_text), "", PackageQualityMenuActivity.class));
         menuItemsList.add(new MenuItem(getString(R.string.final_quality_check), "", QualityFinalCheckActivity.class));
        // menuItemsList.add(new MenuItem(getString(R.string.quality_third_step_text), "PP-DOC-02", PostPackagingQualityActivity.class));
 
@@ -94,74 +94,11 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
                 switch (position) {
                     case First_Step_Idx:
 
-//                        QualityTransaction openTx = db.qualityTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
-//                        QualityRecord qualityRecord;
-//
-//                        binList = new ArrayList<String>();
-//
-//                        // default Next Activity is FishingStart...
-//                        i = new Intent(appCtx, BinTurnoverActivity.class);
-//                        if (openTx != null) {
-//                            // there is a FishingTx in progress
-//                            qualityRecord = QualityRecord.convert(openTx);
-//
-//                            List<TemperatureTimeSeries> existingMeasurements = db.measurementsDAO().getAll();
-//                            if (!existingMeasurements.isEmpty()) {
-//                                qualityRecord.qualityBins = new LinkedList<>();
-//
-//                                for (TemperatureTimeSeries ts : existingMeasurements) {
-//                                    Measurement m = ts.measurement;
-//                                    List<TemperatureData> _temperatureData = ts.data;
-//                                    List<TempSample> _dat = new ArrayList<>();
-//                                    for (TemperatureData _temperatureD : _temperatureData) {
-//                                        _dat.add(_temperatureD.rawData());
-//                                    }
-//                                    recLoggerData.addDataSet(m.loggerRFID, m.assetRFID, m.productionLane, m.retrievedAt, _dat);
-//                                    binList.add(m.assetRFID);
-//                                    //qualityRecord.qualityBins.add(m.assetRFID);
-//                                }
-//                                qualityRecord.qualityBins = convertEPCsToBinDetails(binList);
-//                            }
-//
-//
-//                            GlobalState.recQuality = qualityRecord;
-//                        } else {
-//                            // instantiate a new Fishing Record.
-//                            qualityRecord = GlobalState.initQualityRecord();
-//
-//                            // NO FishingTx in progress
-//                            if (openTx == null) {
-//                                openTx = new QualityTransaction();
-//                                openTx.txStatus = TxStatus.PENDING;
-//                                qualityRecord.txKey = db.qualityTransactionDAO().insert(openTx);
-//                            } else {
-//                                qualityRecord.txKey = openTx.id;
-//                            }
-//
-//                            //i = new Intent(appCtx, HarvestRequestsActivity.class);
-//                        }
-
                         //GlobalState.initQualityRecord();
                         i = new Intent(QualitySelectStepsActivity.this, BinTurnoverActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);
 
-                        //
-                        /*YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
-                        confirmSiteSelectionDlg.setMessage(getText(R.string.quality_select_type));
-
-                        Intent finalI = i;
-                        confirmSiteSelectionDlg.onConfirm(bundle -> {
-                            finalI.putExtra("processing", true);
-                            startActivity(finalI);
-                        });
-                        confirmSiteSelectionDlg.onReject(bundle -> {
-                            finalI.putExtra("processing", false);
-                            startActivity(finalI);
-                        });
-
-                        FragmentManager fm = getSupportFragmentManager();
-                        confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));*/
                         break;
                     /*case Second_Step_Idx:
                         GlobalState.initQualityRecord();
@@ -170,21 +107,20 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
                         startActivity(i);
                         break;*/
                     case Second_Step_Idx:
-                        GlobalState.initQualityRecord();
+                        GlobalState.initReceiptQualityRecord();
                         i = new Intent(QualitySelectStepsActivity.this, ReceiptQualityStartActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);
                         break;
 
                     case Third_Step_Idx:
-                        GlobalState.initQualityRecord();
                         i = new Intent(QualitySelectStepsActivity.this, PackageQualityMenuActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);
                         break;
 
                     case Fourth_Step_Idx:
-                        GlobalState.initQualityRecord();
+                        GlobalState.initFinalQualityRecord();
                         i = new Intent(QualitySelectStepsActivity.this, QualityFinalCheckActivity.class);
                         i.putExtra("id", position);
                         startActivity(i);

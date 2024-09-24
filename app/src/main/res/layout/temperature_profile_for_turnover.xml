@@ -236,7 +236,6 @@
 
             <TextView
                 android:id="@+id/tvWaterT"
-                android:fontPath="fonts/open_sans_extra_bold.ttf"
                 android:fontFamily="sans-serif"
 
                 android:layout_width="0dp"

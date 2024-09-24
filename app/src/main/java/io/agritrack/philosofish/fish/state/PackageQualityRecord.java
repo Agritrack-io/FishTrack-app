@@ -1,27 +1,29 @@
 package io.agritrack.philosofish.fish.state;
 
-import androidx.room.ColumnInfo;
-import androidx.room.PrimaryKey;
-
 import java.util.List;
-import java.util.Set;
 
-import io.agritrack.philosofish.data.model.common.LaundrySample;
+import io.agritrack.philosofish.data.model.common.SortingSample;
 import io.agritrack.philosofish.data.model.common.TonneSample;
 
 public class PackageQualityRecord {
 
-    public Long txkey;
+    public Long createdAt;
 
     public String lot;
 
+    public String species;
+
+    public String bestBefore;
+
     public Integer freshGrade;
 
-    public Integer skingGrade;
+    public Integer skinGrade;
 
-    public Integer eye_grade;
+    public Integer eyeGrade;
 
-    public Integer gill_grade;
+    public Integer gillGrade;
+
+    public Integer overallGrade;
 
     public Integer crookedMouth;
 
@@ -37,7 +39,7 @@ public class PackageQualityRecord {
 
     public Integer skeletical;
 
-    public Integer tail;
+    public Integer tailDeformity;
 
     public Integer tailDeform;
 
@@ -69,9 +71,20 @@ public class PackageQualityRecord {
 
     public Integer gillDiscolor;
 
+
     public Integer headDeform;
 
-    public List<LaundrySample> laundrySamples;
+    public List<SortingSample> sortingSamples;
 
     public List<TonneSample> tonneSamples;
+
+    public Boolean startPacking;
+
+    public Boolean changePacking;
+
+    public Boolean middlePacking;
+
+    public Boolean endPacking;
+
+    public String labelComments;
 }

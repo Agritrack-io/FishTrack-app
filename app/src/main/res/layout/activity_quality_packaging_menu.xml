@@ -36,7 +36,7 @@
         <TextView
             android:id="@+id/tvTitleToolbar"
             fontPath="fonts/open_sans_semibold.ttf"
-            android:layout_width="160dp"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
@@ -95,7 +95,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="530dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
                 android:orientation="vertical"
@@ -112,6 +112,7 @@
                     android:verticalSpacing="14dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.487"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

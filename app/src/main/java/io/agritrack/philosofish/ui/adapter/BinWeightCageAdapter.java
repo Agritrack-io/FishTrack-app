@@ -119,13 +119,13 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
 
         if (currBin.flag == 0) {
             //holder.itemView.setBackgroundColor(Color.WHITE);
-            holder.tvItemName.setTextColor(Color.BLACK);
+            holder.tvItemName.setTextColor(Color.GREEN);
         } else if (currBin.flag == 1) {
             //holder.itemView.setBackgroundColor(Color.WHITE);
-            holder.tvItemName.setTextColor(Color.GREEN);
+            holder.tvItemName.setTextColor(Color.RED);
         } else if (currBin.flag == 2) {
             //holder.itemView.setBackgroundColor(Color.WHITE);
-            holder.tvItemName.setTextColor(Color.RED);
+            holder.tvItemName.setTextColor(Color.BLACK);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

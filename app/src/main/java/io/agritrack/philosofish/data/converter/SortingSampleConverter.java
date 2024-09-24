@@ -10,24 +10,24 @@ import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.agritrack.philosofish.data.model.common.LaundrySample;
+import io.agritrack.philosofish.data.model.common.SortingSample;
 
-public class LaundrySampleConverter {
+public class SortingSampleConverter {
 
     @TypeConverter
-    public static List<LaundrySample> fromString(String value) {
+    public static List<SortingSample> fromString(String value) {
         if (Strings.isEmptyOrWhitespace(value)) {
             return new LinkedList<>();
         }
-        Type laundrySampleType = new TypeToken<List<LaundrySample>>() {
+        Type sortingSampleType = new TypeToken<List<SortingSample>>() {
         }.getType();
-        List<LaundrySample> laundrySample = new Gson().fromJson(value, laundrySampleType);
+        List<SortingSample> sortingSample = new Gson().fromJson(value, sortingSampleType);
 
-        return laundrySample;
+        return sortingSample;
     }
 
     @TypeConverter
-    public static String listToString(List<LaundrySample> list) {
+    public static String listToString(List<SortingSample> list) {
         if (list == null || list.isEmpty()) {
             return null;
         }

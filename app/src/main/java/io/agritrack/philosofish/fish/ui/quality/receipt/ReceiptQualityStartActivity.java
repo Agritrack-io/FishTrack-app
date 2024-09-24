@@ -1,26 +1,22 @@
 package io.agritrack.philosofish.fish.ui.quality.receipt;
 
 import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
-import static io.agritrack.philosofish.FishTrackApplication.IsOnline;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 import static io.agritrack.philosofish.common.LargeString.render;
-import static io.agritrack.philosofish.fish.state.GlobalState.recLoggerData;
-import static io.agritrack.philosofish.fish.state.GlobalState.recQuality;
+import static io.agritrack.philosofish.fish.state.GlobalState.commitReceiptQuality;
+import static io.agritrack.philosofish.fish.state.GlobalState.recQualityReceipt;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
-import static io.agritrack.philosofish.ui.tools.caen.ILoggerDialog.StatesEnum.INIT;
-import static io.agritrack.philosofish.ui.tools.caen.ILoggerDialog.StatesEnum.READ_VALUES;
 
-import android.app.AlertDialog;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Html;
-import android.view.Gravity;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,48 +26,50 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.text.HtmlCompat;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
 
 import io.agritrack.philosofish.R;
+import io.agritrack.philosofish.api.APIServiceGenerator;
+import io.agritrack.philosofish.api.sync.SyncApi;
+import io.agritrack.philosofish.api.sync.SyncBinInfo;
+import io.agritrack.philosofish.api.tx.TransactionApi;
 import io.agritrack.philosofish.caen.common.CAENState;
 import io.agritrack.philosofish.common.Filters;
 import io.agritrack.philosofish.data.db.MobileDB;
+import io.agritrack.philosofish.data.dto.BinInfoDTO;
 import io.agritrack.philosofish.data.model.BinInfo;
-import io.agritrack.philosofish.data.model.wh.Asset;
+import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
-import io.agritrack.philosofish.fish.state.GlobalState;
-import io.agritrack.philosofish.fish.state.QualityRecord;
+import io.agritrack.philosofish.fish.state.ReceiptQualityRecord;
 import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.philosofish.rfid.SingleShotScanner;
 import io.agritrack.philosofish.rfid.X9KeyReceiver;
 import io.agritrack.philosofish.sound.SoundUtil;
 import io.agritrack.philosofish.ui.adapter.BinWeightCageAdapter;
-import io.agritrack.philosofish.ui.service.AuthenticationService;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
 import io.agritrack.philosofish.ui.tools.caen.ILoggerDialog;
-import io.agritrack.philosofish.ui.tools.caen.LoggerDialogFragment;
-import io.agritrack.philosofish.ui.tools.caen.ReadLoggerDialogDecorator;
-import io.agritrack.philosofish.ui.tools.caen.SortLoggerDialogDecorator;
+import retrofit2.Call;
 
 public class ReceiptQualityStartActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
     private final MutableLiveData<CAENState> stateResult = new MutableLiveData<>();
+    private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
+    private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     private boolean scanAllBins = false;
@@ -81,7 +79,9 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     private SingleShotScanner scanner_runnable;
     private MobileDB db;
     private RecyclerView rvBinsForTransport;
-    private TextView tvExpectedBinsCount, tvCheckedBinsCount, tvNumberExpectedBins, tvNumberCheckedBins, tvSelectBins;
+    private EditText tvFarm, tvCage, tvSpecies, tvFishDate, tvPlant, tvLot;
+    private EditText etArrival, etStart;
+    private SwitchCompat swSealed;
     private BinWeightCageAdapter adapterBins;
     private ImageButton ivDeleteBin;
     private List<String> scannedBinEPCs;
@@ -89,19 +89,28 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     private ImageView ivSupport;
     private Button btnScanBin;
     private SupportDialog supportDialog;
+    private String epcStr, epcShort;
     // variable to hold the dialog. Only 1 instance of ILoggerDialog may be active...
     private ILoggerDialog loggerDlg = null;
+    private YesNoDialogFragment confirmNewLotDialog, confirmSaveDataDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_receipt_quality_start);
+        setContentView(R.layout.activity_quality_receipt_start);
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
 
+        SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
+        String token = LocalPreferences.getToken();
+        // sync Bin Info (complete BinLedger)
+        Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getCompleteBinLedger("Bearer " + token);
+        syncBinsByPlantAsyncCall.enqueue(new SyncBinInfo(this.syncResult));
+
         // set Header Info
-        TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityStartActivity);
+        TextView tvHeader = findViewById(R.id.tvHeaderReceiptQualityInfo);
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get an instance of local DB
@@ -113,22 +122,34 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         // initiate raw sound
         SoundUtil.initSoundPool(this);
 
-        tvNumberExpectedBins.setVisibility(View.INVISIBLE);
-        tvNumberCheckedBins.setVisibility(View.INVISIBLE);
+        confirmNewLotDialog= YesNoDialogFragment.instance();
+        confirmNewLotDialog.onConfirm(bundle -> {
+            ReceiptQualityTransaction tx = commitReceiptQuality(db, false);
+            if (tx == null) {
+                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityReceipt.lot),Toast.LENGTH_LONG);
+            }
+            loadLotInfo(epcStr);
+        });
+        confirmNewLotDialog.onReject(bundle -> {
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvBinsForTransport.setLayoutManager(layoutManager);
-        rvBinsForTransport.setItemAnimator(new DefaultItemAnimator());
-        rvBinsForTransport.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapterBins = new BinWeightCageAdapter(this, new ArrayList<BinWeightCageAdapter.BinDetails>());
-        rvBinsForTransport.setAdapter(adapterBins);
-        rvBinsForTransport.setNestedScrollingEnabled(false);
+        });
 
-        // instantiate a set to hold scanned EPCS.it will be passed to adapter shich feeds the ListView.
-        scannedBinEPCs = new ArrayList<String>();
 
-        // instantiate a set to hold expected EPCS.it will be passed to adapter shich feeds the ListView.
-        binList = new ArrayList<String>();
+        confirmSaveDataDialog= YesNoDialogFragment.instance();
+        confirmSaveDataDialog.onConfirm(bundle -> {
+            updateState();
+            ReceiptQualityTransaction tx = commitReceiptQuality(db, false);
+            if (tx == null) {
+                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityReceipt.lot),Toast.LENGTH_LONG);
+            }
+            Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
+            startActivity(i);
+        });
+        confirmSaveDataDialog.onReject(bundle -> {
+            Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
+            startActivity(i);
+        });
+
 
         // =================================
         // RFID scanning functionality
@@ -137,144 +158,179 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
-        ivDeleteBin.setOnClickListener(view -> {
-            if (!Strings.isEmptyOrWhitespace(adapterBins.getSelectedValue())) {
-                // instantiate Site selection confirm dialog
-                YesNoDialogFragment confirmSiteSelectionDlg = YesNoDialogFragment.instance();
-                confirmSiteSelectionDlg.args().putString("selectedBarcode", adapterBins.getSelectedValue());
-                confirmSiteSelectionDlg.setMessage(getText(R.string.delete_selected_item) + adapterBins.getSelectedLabel());
-
-                confirmSiteSelectionDlg.onConfirm(bundle -> {
-                    String barcode = bundle.getString("selectedBarcode");
-                    if (barcode != null) {
-                        adapterBins.removeItem(barcode);
-                        // User can retrieve data from the deleted bin
-                        scannedBinEPCs.remove(barcode);
-                        adapterBins.notifyDataSetChanged();
-                        tvCheckedBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
-                        adapterBins.clearSelectedValue();
-                    }
-                });
-
-                FragmentManager fm = getSupportFragmentManager();
-                confirmSiteSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
-            } else {
-                // <delete> Button was pressed without selecting a Bin first.
-                CToast(getApplicationContext(), render(R.string.delete_item), Toast.LENGTH_LONG);
-            }
-        });
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(ReceiptQualityStartActivity.this);
             supportDialog.showDialog();
         });
 
-        //-----------------------------------------------------
-        // observe for state object obtained by LoggerDialog...
-        //-----------------------------------------------------
-        stateResult.observe(this, rs -> {
-            // handle Successful operation from Logger.
-            if (rs == null || !rs.canProceed) {
-                CToast(getApplicationContext(), render(R.string.operation_failed), Toast.LENGTH_LONG);
-                return;
-            }
-            // handle READ and INIT events...
-            if (rs.canProceed) {
-                if (INIT.equals(rs.state)) {
-                    if (rs.getInitTS() != null) {
-                        recLoggerData.addInitData(rs.getAssetEPC(), rs.getInitTS());
-                    } else {
-                        recLoggerData.addInitData(rs.getAssetEPC(), System.currentTimeMillis() / 1000L);
-                    }
-                } else if (READ_VALUES.equals(rs.state)) {
-                    if (!CollectionUtils.isEmpty(rs.samples)) {
-                        long now = System.currentTimeMillis();
-                        recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), now, rs.samples);
-                        GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
-                    }
-                }
-            }
-        });
-        // ------ Logger Observer -----------------------------
 
         configFooter();
     }
 
     private void assignCtrlVars() {
-        tvSelectBins = findViewById(R.id.tvSelectBins);
+        tvLot = findViewById(R.id.tvLotNumber);
+        tvPlant = findViewById(R.id.tvPlant);
+        tvCage = findViewById(R.id.tvCage);
+        tvFarm = findViewById(R.id.tvFarm);
+        tvSpecies = findViewById(R.id.tvSpecies);
+        tvFishDate = findViewById(R.id.tvFishDate);
+        etStart = findViewById(R.id.etStartTime);
+        swSealed = findViewById(R.id.swIsSealed);
+        etArrival = findViewById(R.id.etArrival);
         btnScanBin = findViewById(R.id.btnScanBin);
-        tvExpectedBinsCount = findViewById(R.id.tvExpectedBinsCount);
-        tvCheckedBinsCount = findViewById(R.id.tvCheckedBinsCount);
-        tvNumberExpectedBins = findViewById(R.id.tvNumberExpectedBins);
-        tvNumberCheckedBins = findViewById(R.id.tvNumberCheckedBins);
         rvBinsForTransport = findViewById(R.id.rvBinsForTransport);
         ivDeleteBin = findViewById(R.id.ivDeleteBin);
         ivSupport = findViewById(R.id.ivSupport);
+
+        tvFishDate.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        etArrival.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        etStart.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+//
+//        // Add TextWatcher to auto-format input
+//        tvFishDate.addTextChangedListener(new TextWatcher() {
+//            private String current = "";
+//            private String ddmmyyyy = "DDMMYYYY";
+//            private Calendar cal = Calendar.getInstance();
+//
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if (!s.toString().equals(current)) {
+//                    String clean = s.toString().replaceAll("[^\\d]", "");
+//                    String cleanC = current.replaceAll("[^\\d]", "");
+//
+//                    int cl = clean.length();
+//                    int sel = cl;
+//                    for (int i = 2; i <= cl && i < 6; i += 2) {
+//                        sel++;
+//                    }
+//                    // Fix for delete and backspace
+//                    if (clean.equals(cleanC)) sel--;
+//
+//                    if (clean.length() < 8) {
+//                        clean = clean + ddmmyyyy.substring(clean.length());
+//                    } else {
+//                        // Ensure the input date is a valid date
+//                        int day = Integer.parseInt(clean.substring(0, 2));
+//                        int mon = Integer.parseInt(clean.substring(2, 4));
+//                        int year = Integer.parseInt(clean.substring(4, 8));
+//
+//                        mon = Math.max(1, Math.min(12, mon));
+//                        cal.set(Calendar.MONTH, mon - 1);
+//                        year = (year < 1900) ? 1900 : (year > 2100) ? 2100 : year;
+//                        cal.set(Calendar.YEAR, year);
+//                        day = Math.min(day, cal.getActualMaximum(Calendar.DATE));
+//                        clean = String.format("%02d%02d%02d", day, mon, year);
+//                    }
+//
+//                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
+//                            clean.substring(2, 4),
+//                            clean.substring(4, 8));
+//
+//                    sel = Math.max(sel, 0);
+//                    current = clean;
+//                    tvFishDate.setText(current);
+//                    tvFishDate.setSelection(Math.min(sel, current.length()));
+//                }
+//            }
+//        });
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToPackageQualityTempProfiles);
+        ImageView ivNext = findViewById(R.id.ivNext);
         ivNext.setOnClickListener(view -> {
             stopScanner();
-//            updateState();
-//            String v = validate();
-//            if (!Strings.isEmptyOrWhitespace(v)) {
-//                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
-//            } else {
-                Intent i = new Intent(getApplicationContext(), ReceiptQualityTemperatureProfilesActivity.class);
-//                Intent i = new Intent(getApplicationContext(), ReceiptQualityInfoActivity.class);
+            updateState();
+            String v = validate();
+            if (!Strings.isEmptyOrWhitespace(v)) {
+                CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
+            } else {
+                Intent i = new Intent(getApplicationContext(), ReceiptQualityFreshCheckActivity.class);
                 startActivity(i);
-//            }
+            }
         });
 
         ImageView ivBack = findViewById(R.id.ivBackToMenu);
         ivBack.setOnClickListener(view -> {
             stopScanner();
-            Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
-            startActivity(i);
+            if (!Strings.isEmptyOrWhitespace(recQualityReceipt.lot)) {
+                FragmentManager fm = getSupportFragmentManager();
+                confirmSaveDataDialog.setMessage(getString(R.string.save_lot_quality, recQualityReceipt.lot));
+                confirmSaveDataDialog.showNow(fm, getString(R.string.confirm_selection));
+            } else {
+                Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
+                startActivity(i);
+            }
+
         });
     }
 
     private void initControlsFromState() {
-        QualityRecord qualityRecord = recQuality;
+        ReceiptQualityRecord qualityRecord = recQualityReceipt;
 
-        if (qualityRecord.expectedBins != null && !(qualityRecord.expectedBins.size() == 0) && qualityRecord.qualityBins != null && !(qualityRecord.qualityBins.size() == 0)) {
-            recQuality.expectedBins.stream().forEach(x -> adapterBins.addExpectedItem(loadBinInfo(x)));
-            adapterBins.notifyDataSetChanged();
-            scannedBinEPCs = qualityRecord.scannedBins;
-            adapterBins.markReceived(convertBinDetailsToEPCs(qualityRecord.qualityBins));
-            tvSelectBins.setText(R.string.qualified_bins);
-            tvNumberExpectedBins.setVisibility(View.VISIBLE);
-            tvNumberCheckedBins.setVisibility(View.VISIBLE);
-            tvExpectedBinsCount.setText(String.valueOf(qualityRecord.expectedBins.size()));
-            btnScanBin.setText(R.string.scan_one_to_one_bins);
-            binList = qualityRecord.expectedBins;
-            scanAllBins = true;
-
-            //Get reference of binsCount textView
-            tvCheckedBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
-        } else if (IsOnline) {
-            tvSelectBins.setText(null);
-            btnScanBin.setText(R.string.scan_one_bin);
-        } else {
-            scanAllBins = true;
-            btnScanBin.setText(R.string.scan_one_to_one_bins);
+        if (recQualityReceipt.lot != null) {
+            tvLot.setText(recQualityReceipt.lot);
         }
+
+        if (recQualityReceipt.cage != null) {
+            tvCage.setText(recQualityReceipt.cage);
+        }
+
+        if (recQualityReceipt.farm != null) {
+            tvFarm.setText(recQualityReceipt.farm);
+        }
+
+        if (recQualityReceipt.arrivalTime != null) {
+            etArrival.setText(recQualityReceipt.arrivalTime.toString());
+        }
+
+        if (recQualityReceipt.startTime != null) {
+            etStart.setText(recQualityReceipt.startTime.toString());
+        }
+
+        if (recQualityReceipt.fishingDate != null) {
+            tvFishDate.setText(recQualityReceipt.fishingDate.toString());
+        }
+
+        if (recQualityReceipt.plant != null) {
+            tvPlant.setText(recQualityReceipt.plant);
+        }
+
+        if (recQualityReceipt.fishSpecies != null) {
+            tvSpecies.setText(recQualityReceipt.fishSpecies);
+        }
+
+        if (recQualityReceipt.binSeal != null) {
+            swSealed.setChecked(recQualityReceipt.binSeal);
+        }
+
     }
 
     private void updateState() {
-        recQuality.qualityBinsCnt = adapterBins.getItemCount();
-        recQuality.retrievedAt = System.currentTimeMillis();
-        recQuality.logger_rfid = loggerEPC;
+        recQualityReceipt.startTime = etStart.getText().toString();
+        recQualityReceipt.arrivalTime = etArrival.getText().toString();
+        recQualityReceipt.binSeal = swSealed.isChecked();
+        recQualityReceipt.lot = tvLot.getText().toString();
+        recQualityReceipt.plant = tvPlant.getText().toString();
+        recQualityReceipt.cage = tvCage.getText().toString();
+        recQualityReceipt.fishSpecies = tvSpecies.getText().toString();
+        recQualityReceipt.farm = tvFarm.getText().toString();
+        recQualityReceipt.fishingDate = tvFishDate.getText().toString();
 
-        GlobalState.commitQuality(db, Boolean.FALSE);
+        //GlobalState.commitQuality(db, Boolean.FALSE);
     }
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
-            if (recQuality.qualityBins == null || recQuality.qualityBins.isEmpty()) {
-                sb.append(String.format("\n%s is missing", "'Received bins'"));
+            if (recQualityReceipt.lot == null || recQualityReceipt.lot.isEmpty()) {
+                sb.append(String.format("\n%s is missing", "'LOT'"));
             }
         }
         return sb.toString();
@@ -309,17 +365,10 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     }
 
     protected void onClick(View view) {
-        if (adapterBins.getItemCount() < 1 && IsOnline && !scanAllBins) {
-            scanner_runnable = new SingleShotScanner(mScanHandler);
-            scanner_runnable.setFilter(Filters.RFID_BIN);
-            scanner_runnable.startReading();
-            mScanHandler.postDelayed(scanner_runnable, 0);
-        } else {
-            scanner_runnable = new SingleShotScanner(mScanHandler);
-            scanner_runnable.setFilter(Filters.RFID_LOGGER);
-            scanner_runnable.startReading();
-            mScanHandler.postDelayed(scanner_runnable, 0);
-        }
+        scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(Filters.RFID_BIN);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
     }
 
     // ###################################################
@@ -330,135 +379,80 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         }
     }
 
-    private BinWeightCageAdapter.BinDetails loadBinInfo(String epc) {
-        //Add code to retrieve bin info from local DB
-        BinInfo tmpBin = db.binInfoDAO().getByRFId(epc);
-        if (tmpBin != null) {
-            return new BinWeightCageAdapter.BinDetails(epc, tmpBin.totalWeight, tmpBin.cage);
-        } else {
-            return new BinWeightCageAdapter.BinDetails(epc);
-        }
-    }
 
-    private List<BinWeightCageAdapter.BinDetails> convertEPCsToBinDetails(List<String> epcs) {
-        List<BinWeightCageAdapter.BinDetails> result = new ArrayList<>();
-        for (String epc : epcs) {
-            result.add(new BinWeightCageAdapter.BinDetails(epc));
-        }
-        return result;
-    }
+    public void loadLotInfo(String epc) {
+        try {
+            if (!Strings.isEmptyOrWhitespace(epc)) {
+                BinInfo binInfo = db.binInfoDAO().getByRFId(epc);
+                if (binInfo == null || binInfo.lot == null || binInfo.lot.isEmpty()) {
+                    CToast(getAppContext(), String.format(getResources().getString(R.string.no_lot_for_bin), epcShort), Toast.LENGTH_LONG);
+                    return;
+                } else {
+                    ReceiptQualityTransaction recTrans = db.receiptQualityTransactionDAO().getByLot(binInfo.lot);
+                    if (recTrans == null) {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    private List<String> convertBinDetailsToEPCs(List<BinWeightCageAdapter.BinDetails> epcs) {
-        List<String> result = new ArrayList<>();
-        for (BinWeightCageAdapter.BinDetails epc : epcs) {
-            result.add(epc.epc);
-        }
-        return result;
-    }
-
-    private void triggerDataLoggerDialog() {
-        if (!scannedBinEPCs.contains(binEPC)) {
-            scannedBinEPCs.add(binEPC);
-        }
-        recQuality.scannedBins = scannedBinEPCs;
-        tvNumberCheckedBins.setVisibility(View.VISIBLE);
-        tvCheckedBinsCount.setText(String.valueOf(scannedBinEPCs.size()));
-        adapterBins.addUniqueItem(loadBinInfo(binEPC));
-        adapterBins.markReceived(scannedBinEPCs);
-        recQuality.qualityBins = convertEPCsToBinDetails(scannedBinEPCs);
-        GlobalState.commitQuality(db, Boolean.FALSE);
-        adapterBins.notifyDataSetChanged();
-
-        // ------------------------------------------
-        //--- New implementation of Logger Dialog ---
-        if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
-            FragmentManager fm = getSupportFragmentManager();
-
-            BinInfo tmpBin = db.binInfoDAO().getByRFId(binEPC);
-//            if (tmpBin != null && tmpBin.initedAt != null) {
-//                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, tmpBin.initedAt);
-//                loggerDlg.setStateObserver(stateResult);
-//                ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
-//                readLoggerDecorator.show(fm);
-//            } else {
-//                ILoggerDialog loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC);
-//                loggerDlg.setStateObserver(stateResult);
-//                ReadLoggerDialogDecorator readLoggerDecorator = new ReadLoggerDialogDecorator(loggerDlg);
-//                readLoggerDecorator.show(fm);
-//            }
-            if (keyReceiver != null) {
-                unregisterReceiver(keyReceiver);
-                keyReceiver = null;
-            }
-            String productionLane = "1"; //spProductionLine.getSelectedItem().toString();
-            if (tmpBin != null && tmpBin.initedAt != null) {
-                this.loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt, tmpBin.pickedAt);
-            } else {
-                this.loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane);
-            }
-            this.loggerDlg.setStateObserver(stateResult);
-            SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(this.loggerDlg);
-            sortLoggerDialogDecorator.show(fm);
-        }
-        // -------------------------------------
-    }
-
-    private void confirmScanBinOutOfLotDialog() {
-        // Get custom login form view.
-        final View confirmFormView = this.getLayoutInflater().inflate(R.layout.confirm_scan_bin_out_of_lot_dlg, null);
-
-        final EditText pin = confirmFormView.findViewById(R.id.etPin);
-
-        TextView title = new TextView(this);
-        // You Can Customise your Title here
-        title.setText(Html.fromHtml("<b>" + getAppContext().getResources().getString(R.string.confirm_scanned_bin_out_of_lot) + "</b>" + "<br>" + getAppContext().getResources().getString(R.string.confirm_with_pin), HtmlCompat.FROM_HTML_MODE_LEGACY));
-        title.setBackgroundColor(Color.WHITE);
-        title.setPadding(10, 10, 10, 10);
-        title.setGravity(Gravity.CENTER);
-        title.setTextColor(Color.BLACK);
-        title.setTextSize(20);
-
-        final AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(confirmFormView)
-                .setCustomTitle(title)
-                .setPositiveButton(android.R.string.ok, null) //Set to null. We override the onclick
-                .setNegativeButton(android.R.string.cancel, null)
-                .setCancelable(true)
-                .create();
-
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-
-                Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        String insertedPin = pin.getText().toString().trim();
-                        String login = LocalPreferences.getLoggedInUser("").trim();
-
-                        if (Strings.isEmptyOrWhitespace(insertedPin)) {
-                            CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG);
-                            return;
+                        recQualityReceipt.lot = binInfo.lot;
+                        recQualityReceipt.cage = binInfo.cage;
+                        recQualityReceipt.fishSpecies = binInfo.species;
+                        recQualityReceipt.farm = binInfo.farm;
+                        recQualityReceipt.plant = binInfo.plant;
+                        if (binInfo.pickedAt != null){
+                            LocalDate date = Instant.ofEpochMilli(binInfo.pickedAt)
+                                    .atZone(ZoneId.systemDefault()) // You can specify your time zone if needed
+                                    .toLocalDate();
+                            recQualityReceipt.fishingDate = date.format(formatter);
                         }
-
-                        // use typed-in PIN to compare credentials with those stored in the Local DB.
-                        AuthenticationService authSvc = new AuthenticationService();
-                        boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
-                        if (authentication) {
-                            triggerDataLoggerDialog();
-                            dialog.dismiss();
-                        } else {
-                            CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
-                            return;
+                        if (binInfo.deliveredAt != null) {
+                            recQualityReceipt.arrivalTime = Instant.ofEpochMilli(binInfo.deliveredAt)
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalTime()
+                                    .format(DateTimeFormatter.ofPattern("HH:mm"));
                         }
+                        recQualityReceipt.startTime = null;
+                    } else if (recTrans.isSynced) {
+                        CToast(getAppContext(),String.format(getResources().getString(R.string.lot_receipt_control_done), binInfo.lot), Toast.LENGTH_LONG );
+                    } else {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        recQualityReceipt.lot = recTrans.lot;
+                        recQualityReceipt.cage = recTrans.cage;
+                        recQualityReceipt.fishSpecies = recTrans.species;
+                        recQualityReceipt.farm = recTrans.farm;
+                        recQualityReceipt.plant = recTrans.plant;
+                        if (recTrans.fishingDate != null) {
+                            LocalDate date = recTrans.fishingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                            recQualityReceipt.fishingDate = date.format(formatter);
+                        }
+                        if (recTrans.arrivalTime != null) {
+                            recQualityReceipt.arrivalTime = recTrans.arrivalTime.toString();
+                        }
+                        if (recTrans.startTime != null) {
+                            recQualityReceipt.startTime = recTrans.startTime.toString();
+                        }
+                        recQualityReceipt.binSeal = recTrans.sealed;
+                        recQualityReceipt.eyeRating = recTrans.eyeRating;
+                        recQualityReceipt.gillRating = recTrans.gillRating;
+                        recQualityReceipt.fleshRating = recTrans.fleshRating;
+                        recQualityReceipt.skinRating = recTrans.skinRating;
+                        recQualityReceipt.disEyes = recTrans.disEyes;
+                        recQualityReceipt.disTail = recTrans.disTail;
+                        recQualityReceipt.disSkeletal = recTrans.disSkeletal;
+                        recQualityReceipt.disBlood = recTrans.disBlood;
+                        recQualityReceipt.disMouth = recTrans.disMouth;
+                        recQualityReceipt.disOper = recTrans.disOper;
+                        recQualityReceipt.comments = recTrans.comments;
+
                     }
-                });
+
+                    initControlsFromState();
+                    return;
+                }
+            } else {
+                CToast(getApplicationContext(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
             }
-        });
-        dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private class ScanHandler extends Handler {
@@ -468,83 +462,35 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             mActivity = new WeakReference<>(activity);
         }
 
+        @SuppressLint("StringFormatMatches")
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    String epcStr = msg.getData().getString("epc");
+                    epcStr = msg.getData().getString("epc");
                     String rssi = msg.getData().getString("rssi");
-                    if (scanAllBins) {
-                        tvSelectBins.setText(R.string.qualified_bins);
-                        try {
-                            if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                                loggerEPC = epcStr;
-
-                                // after bin is identified, initialize the temperatures logger.
-                                Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
-                                if (bin != null) {
-                                    binEPC = bin.rfid;
-                                    if (scannedBinEPCs.contains(binEPC)) {
-                                        CToast(getApplicationContext(), render(R.string.already_scannned_bin), Toast.LENGTH_LONG);
-                                        return;
-                                    }
-                                    if (!binList.contains(binEPC)) {
-                                        while (attemptsToScanBinOutOfLot < 1) {
-                                            attemptsToScanBinOutOfLot++;
-                                            CToast(getApplicationContext(), render(R.string.scanned_bin_out_of_lot), Toast.LENGTH_LONG);
-                                            return;
-                                        }
-                                        confirmScanBinOutOfLotDialog();
-                                        adapterBins.markReceived(Collections.singletonList(binEPC));
-                                        attemptsToScanBinOutOfLot = 0;
-                                        return;
-                                    }
-                                    triggerDataLoggerDialog();
-                                } else if (!IsDemo) {
-                                    CToast(getApplicationContext(), render(R.string.no_logger_found_linked_to_bin), Toast.LENGTH_SHORT);
-                                }
-                            } else {
-                                CToast(getApplicationContext(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
-                            }
-                            this.removeCallbacks(scanner_runnable);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                    epcShort = epcStr.substring(epcStr.length() - 6);
+                    this.removeCallbacks(scanner_runnable);
+                    if (recQualityReceipt.lot == null || recQualityReceipt.lot.isEmpty()) {
+                        loadLotInfo(epcStr);
+                        return;
                     } else {
-                        try {
-                            if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                                List<BinInfo> binInfoList = db.binInfoDAO().getEPCListByRFId(epcStr);
-                                for (BinInfo bin : binInfoList) {
-                                    binList.add(bin.rfid);
-                                    recQuality.pLot = bin.lot;
-                                }
-                                if (binList == null || binList.isEmpty()) {
-                                    while (attemptsToGetEpcList < 3) {
-                                        attemptsToGetEpcList++;
-                                        CToast(getApplicationContext(), render(getString(R.string.no_epc_list_returned)), Toast.LENGTH_LONG);
-                                        return;
-                                    }
-                                    attemptsToGetEpcList = 0;
-                                    CToast(getApplicationContext(), render(getString(R.string.scan_all_bins)), Toast.LENGTH_LONG);
-                                    btnScanBin.setText(R.string.scan_one_to_one_bins);
-                                    scanAllBins = true;
-                                    return;
-                                }
-                                binList.stream().forEach(x -> adapterBins.addExpectedItem(loadBinInfo(x)));
-                                adapterBins.notifyDataSetChanged();
-                                recQuality.expectedBins = binList;
-                                GlobalState.commitQuality(db, Boolean.FALSE);
-                                tvSelectBins.setText(R.string.expected_bins);
-                                tvNumberExpectedBins.setVisibility(View.VISIBLE);
-                                tvExpectedBinsCount.setText(String.valueOf(binList.size()));
-                                btnScanBin.setText(R.string.scan_one_to_one_bins);
-                                scanAllBins = true;
+                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
+                            BinInfo binInfo = db.binInfoDAO().getByRFId(epcStr);
+                            if (binInfo == null || binInfo.lot == null || binInfo.lot.isEmpty()) {
+                                CToast(getAppContext(), String.format(getResources().getString(R.string.no_lot_for_bin), epcShort), Toast.LENGTH_LONG);
+                                return;
+                            } else if (binInfo.lot.equals(recQualityReceipt.lot)) {
+                                CToast(getAppContext(), String.format(getResources().getString(R.string.lot_already_loaded), binInfo.lot), Toast.LENGTH_LONG);
+                                return;
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            FragmentManager fm = getSupportFragmentManager();
+                            confirmNewLotDialog.setMessage(getString(R.string.bin_on_another_lot, epcShort, recQualityReceipt.lot));
+                            confirmNewLotDialog.showNow(fm, getString(R.string.confirm_selection));
+                            return;
                         }
                     }
-                    break;
+
 
                 case 1980:
                     this.removeCallbacks(scanner_runnable);

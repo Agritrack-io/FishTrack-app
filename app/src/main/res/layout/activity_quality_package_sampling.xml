@@ -8,7 +8,7 @@
     android:background="@color/agri_semi_green"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
+    tools:context=".fish.ui.quality.packaging.PackageQualitySamplingActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -49,14 +49,14 @@
             android:textAllCaps="true"
             android:textColor="@color/yellow"
             android:textSize="@dimen/title_font_size"
-            app:layout_constraintBottom_toTopOf="@+id/tvHeaderReceiptQualityInfo"
+            app:layout_constraintBottom_toTopOf="@+id/tvHeaderPackageSampling"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
 
         <TextView
-            android:id="@+id/tvHeaderReceiptQualityInfo"
+            android:id="@+id/tvHeaderPackageSampling"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -120,17 +120,17 @@
                     app:layout_constraintEnd_toStartOf="@id/tvLaundryHeader"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/lvLaundryTemps"
+                    app:layout_constraintBottom_toTopOf="@id/lvSortingTemps"
                     app:srcCompat="@drawable/ic_add_stock_opname" />
 
                 <ImageButton
-                    android:id="@+id/ivDeleteMeasurement"
+                    android:id="@+id/ivDeleteLaundry"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:background="@color/transparent"
                     android:scaleX="2"
                     android:scaleY="2"
-                    app:layout_constraintBottom_toTopOf="@+id/lvLaundryTemps"
+                    app:layout_constraintBottom_toTopOf="@+id/lvSortingTemps"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvLaundryHeader"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -149,13 +149,13 @@
                     android:textColor="@color/agri_blue"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@+id/lvLaundryTemps"
+                    app:layout_constraintBottom_toTopOf="@+id/lvSortingTemps"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/lvLaundryTemps"
+                    android:id="@+id/lvSortingTemps"
                     android:layout_width="0dp"
                     android:layout_height="180dp"
                     android:layout_marginStart="8dp"
@@ -182,7 +182,7 @@
                 android:background="@color/transparent"
                 app:layout_constraintEnd_toStartOf="@id/tvTonnageHeader"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/lvLaundryTemps"
+                app:layout_constraintTop_toBottomOf="@id/lvSortingTemps"
                 app:layout_constraintBottom_toTopOf="@id/lvTempsPer5"
                 app:srcCompat="@drawable/ic_add_stock_opname" />
 
@@ -196,7 +196,7 @@
                     android:scaleY="2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvTonnageHeader"
-                    app:layout_constraintTop_toBottomOf="@id/lvLaundryTemps"
+                    app:layout_constraintTop_toBottomOf="@id/lvSortingTemps"
                     app:srcCompat="@drawable/ic_delete" />
 
                 <TextView
@@ -216,7 +216,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.502"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lvLaundryTemps" />
+                    app:layout_constraintTop_toBottomOf="@id/lvSortingTemps" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/lvTempsPer5"
@@ -255,7 +255,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/scanLayout"
-                android:layout_width="200dp"
+                android:layout_width="160dp"
                 android:layout_height="60dp"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
@@ -291,58 +291,57 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:orientation="vertical"
                 android:layout_marginHorizontal="3dp"
-                app:layout_constraintHorizontal_weight="0.5"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
-                app:layout_constraintStart_toEndOf="@id/scanLayout"
-                app:layout_constraintTop_toTopOf="parent"
+                android:orientation="vertical"
+                android:padding="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:padding="1dp">
+                app:layout_constraintHorizontal_bias="0.142"
+                app:layout_constraintHorizontal_weight="0.5"
+                app:layout_constraintStart_toEndOf="@id/scanLayout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
 
                 <TextView
                     android:id="@+id/lotNumberLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="2dp"
                     android:layout_marginTop="5dp"
                     android:background="@color/agri_semi_green"
-                    android:paddingHorizontal="8dp"
+                    android:paddingHorizontal="5dp"
                     android:text="@string/lot"
                     android:textAlignment="viewStart"
                     android:textColor="@color/label_blue"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/lotNumberLabel"
+                    app:layout_constraintEnd_toStartOf="@id/lotNumber"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.25" />
 
-                <TextView
+                <EditText
                     android:id="@+id/lotNumber"
-                    android:layout_width="wrap_content"
+                    android:layout_width="168dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintVertical_bias="0.25"
                     android:layout_marginTop="5dp"
-                    android:background="@color/agri_semi_green"
-                    android:paddingHorizontal="8dp"
-                    android:textAlignment="viewStart"
+                    android:padding="3dp"
+                    android:textAlignment="center"
                     android:textColor="@color/label_blue"
                     android:textSize="20sp"
-                    android:textStyle="bold"
+                    android:background="@drawable/bg_rounded_dialog_input"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/lotNumberLabel"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.25" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -372,12 +371,12 @@
             android:scaleY="0.7"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
-            app:layout_constraintStart_toEndOf="@+id/ivBackToPackageQualityInfo"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToPackageQualityMenu"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
         <ImageView
-            android:id="@+id/ivBackToPackageQualityInfo"
+            android:id="@+id/ivBackToPackageQualityMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

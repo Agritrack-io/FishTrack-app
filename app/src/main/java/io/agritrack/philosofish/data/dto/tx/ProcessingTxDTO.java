@@ -1,5 +1,9 @@
 package io.agritrack.philosofish.data.dto.tx;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -7,6 +11,8 @@ import java.util.UUID;
 import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
 
 public class ProcessingTxDTO {
+
+    private static final SimpleDateFormat simpleDateTime =  new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
 
     public UUID id;
     public String clean_truck;
@@ -17,7 +23,10 @@ public class ProcessingTxDTO {
     public String flot;
     public String site;
     public String user;
-    public Long occurred_at;
+
+    //@JsonFormat(pattern = "dd/mm/yyyy'T'HH:mm:ss")
+    public String occurred_at;
+
     public Double longitude;
     public Double latitude;
 
@@ -32,7 +41,7 @@ public class ProcessingTxDTO {
         processingTxDto.site = processing.site;
         processingTxDto.bins_received = processing.receivedBins;
         processingTxDto.user = processing.user;
-        processingTxDto.occurred_at = processing.createdAt;
+        processingTxDto.occurred_at = simpleDateTime.format(new Date(processing.createdAt));
         processingTxDto.longitude = processing.longitude;
         processingTxDto.latitude = processing.latitude;
 
