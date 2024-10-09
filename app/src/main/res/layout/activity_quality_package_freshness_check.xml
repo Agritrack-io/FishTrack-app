@@ -669,17 +669,17 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:orientation="vertical"
+                android:layout_height="145dp"
                 android:layout_marginHorizontal="3dp"
-                app:layout_constraintHorizontal_weight="0.6"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
-                app:layout_constraintStart_toEndOf="@+id/scanLayout"
-                app:layout_constraintTop_toTopOf="parent"
+                android:orientation="vertical"
+                android:padding="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:padding="1dp">
+                app:layout_constraintHorizontal_weight="0.5"
+                app:layout_constraintStart_toEndOf="@id/scanLayout"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/lotNumberLabel"
@@ -689,7 +689,6 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:background="@color/agri_semi_green"
-                    android:paddingEnd="8dp"
                     android:text="@string/lot"
                     android:textAlignment="viewStart"
                     android:textColor="@color/label_blue"
@@ -699,63 +698,62 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.15" />
+                    app:layout_constraintVertical_bias="0.10" />
 
                 <EditText
                     android:id="@+id/lotNumber"
-                    android:layout_width="168dp"
+                    android:layout_width="170dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintVertical_bias="0.15"
                     android:background="@drawable/bg_rounded_dialog_input"
                     android:padding="3dp"
                     android:textAlignment="center"
                     android:textColor="@color/label_blue"
+                    android:layout_marginLeft="3dp"
                     android:textSize="20sp"
+                    android:text=""
+                    app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintBottom_toBottomOf="@id/lotNumberLabel"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/lotNumberLabel"
-                    app:layout_constraintTop_toTopOf="@id/lotNumberLabel" />
+                    app:layout_constraintTop_toTopOf="@id/lotNumberLabel"
+                    />
 
                 <TextView
-                    android:id="@+id/tvBBLabel"
+                    android:id="@+id/binNumberLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
                     android:layout_marginTop="5dp"
-                    android:layout_marginStart="5dp"
-                    app:layout_constraintVertical_bias="0.85"
-                    app:layout_constraintHorizontal_bias="0.1"
                     android:background="@color/agri_semi_green"
-                    android:textAlignment="viewStart"
-                    android:paddingHorizontal="8dp"
+                    android:text="ΠΑΡΤΙΔΑ Αλίευσης"
+                    android:textAlignment="center"
                     android:textColor="@color/label_blue"
                     android:textSize="20sp"
-                    android:text="BB: "
+                    android:textAllCaps="true"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintVertical_bias="0.5" />
 
-                <EditText
-                    android:id="@+id/tvBB"
-                    android:layout_width="165dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    app:layout_constraintVertical_bias="0.85"
-                    app:layout_constraintHorizontal_bias="0.1"
-                    android:background="@drawable/bg_rounded_dialog_input"
+                <Spinner
+                    android:id="@+id/spFishLot"
+                    style="@style/spinner_style"
+                    android:layout_width="180dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="5dp"
                     android:padding="3dp"
                     android:textAlignment="center"
-                    android:inputType="date"
-                    android:hint="dd/mm/yyyy"
                     android:textColor="@color/label_blue"
                     android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="@id/tvBBLabel"
+                    android:hint=""
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tvBBLabel"
-                    app:layout_constraintTop_toTopOf="@id/tvBBLabel" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/binNumberLabel"
+                    />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,8 +12,8 @@
 
             </item>
             <item
-                android:width="@dimen/margin30"
-                android:height="@dimen/margin30"
+                android:width="35dp"
+                android:height="35dp"
                 android:gravity="end">
                 <bitmap
                     android:gravity="fill"

@@ -11,9 +11,13 @@ public class PackageQualityRecord {
 
     public String lot;
 
+    public String fishLot;
+
     public String species;
 
     public String bestBefore;
+
+    public Integer disinfectedBins;
 
     public Integer freshGrade;
 

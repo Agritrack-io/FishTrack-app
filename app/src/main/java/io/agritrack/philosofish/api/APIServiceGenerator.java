@@ -80,7 +80,7 @@ public class APIServiceGenerator {
         AGRISENSE_URL = agriUrl;
         retrofitAgrisenseBuilder = new Retrofit.Builder().baseUrl(AGRISENSE_URL).addConverterFactory(GsonConverterFactory.create());
         retrofitAgrisense = retrofitAgrisenseBuilder.build();
-        //retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
+        //retrofitBuilder = new- Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
     }
 
     public static void setBaseUrl(String beUrl) {

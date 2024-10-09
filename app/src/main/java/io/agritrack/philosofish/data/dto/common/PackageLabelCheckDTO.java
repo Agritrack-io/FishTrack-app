@@ -9,7 +9,6 @@ public class PackageLabelCheckDTO {
     @SerializedName("start_packing")
     public Boolean startPacking;
 
-
     @SerializedName("change_packing")
     public Boolean changePacking;
 
@@ -21,5 +20,8 @@ public class PackageLabelCheckDTO {
 
     @SerializedName("label_comments")
     public String labelComments;
+
+    @SerializedName("disinfected_bins")
+    public Integer disinfectedBins;
 
 }

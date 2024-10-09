@@ -5,17 +5,23 @@ import static io.agritrack.philosofish.FishTrackApplication.IsOnline;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.fish.state.GlobalState.recQualityFinal;
+import static io.agritrack.philosofish.fish.state.GlobalState.recQualityPackage;
+import static io.agritrack.philosofish.fish.state.GlobalState.recQualityReceipt;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.util.Strings;
@@ -27,6 +33,7 @@ import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.tx.TransactionApi;
 import io.agritrack.philosofish.api.upload.UploadingApi;
+import io.agritrack.philosofish.common.InputFilterMinMax;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.dto.common.MediaDTO;
 import io.agritrack.philosofish.data.dto.tx.FinalQualityTxDTO;
@@ -43,16 +50,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class QualityFinalCheckConfirmActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
+public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
 
     private final UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
     private YesNoDialogFragment confirmAllOkDlg;
-    private Integer selectedExfoRating, selectedPaletteRating, selectedBoxRating;
-
-    private ToggleGroup tgExfo, tgPalette, tgBox;
-    private CheckBox cbCylindrical, cbExpanded, cbSoft, cbHead, cbBody, cbAreas;
+    private EditText etComments, etNotAccepted;
+    private TextView tvLot, tvFishLot, tvNotAccepted;
+    private SwitchCompat swLotAccepted, swForeignBody;
     private CaptureSignatureView signatureView;
     private ProgressDialog progressDialog;
     private ImageView ivSupport, ivNext, ivBack;
@@ -62,7 +68,7 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity implemen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quality_final_check_confirm);
+        setContentView(R.layout.activity_quality_final_check_second);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFinalConfirm);
@@ -90,6 +96,27 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity implemen
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+        swForeignBody.setOnClickListener(v -> {
+            if (!swForeignBody.isChecked()) {
+                etComments.setVisibility(View.VISIBLE);
+            } else {
+                etComments.setVisibility(View.GONE);
+                recQualityFinal.corrAction = null;
+            }
+        });
+
+        swLotAccepted.setOnClickListener(v -> {
+
+            if (!swLotAccepted.isChecked()) {
+                etNotAccepted.setVisibility(View.VISIBLE);
+                tvNotAccepted.setVisibility(View.VISIBLE);
+            } else {
+                etNotAccepted.setVisibility(View.GONE);
+                tvNotAccepted.setVisibility(View.GONE);
+                recQualityFinal.discardedQty = null;
+            }
+        });
+
 
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(QualityFinalCheckConfirmActivity.this);
@@ -100,7 +127,7 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity implemen
     }
 
     private void moveToNextScreen() {
-            // Update state and proceed to next
+        // Update state and proceed to next
         updateState();
 
         String v = validate();
@@ -175,33 +202,25 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity implemen
 
     protected void configFooter() {
         ivNext.setOnClickListener(v -> {
-                FragmentManager fm = getSupportFragmentManager();
-                confirmAllOkDlg.showNow(fm, getString(R.string.confirm_selection));
+            FragmentManager fm = getSupportFragmentManager();
+            confirmAllOkDlg.showNow(fm, getString(R.string.confirm_selection));
         });
 
         ivBack.setOnClickListener(view -> {
             updateState();
-            Intent i = new Intent(getApplicationContext(), QualityFinalCheckActivity.class);
+            Intent i = new Intent(getApplicationContext(), QualityFinalCheckSecondActivity.class);
             startActivity(i);
         });
     }
 
     private void assignCtrlVars() {
-        tgBox = findViewById(R.id.tgBoxCondition);
-        tgBox.setOnCheckedChangeListener(this);
-
-        tgPalette = findViewById(R.id.tgPaletteCondition);
-        tgPalette.setOnCheckedChangeListener(this);
-
-        tgExfo = findViewById(R.id.tgExfoliation);
-        tgExfo.setOnCheckedChangeListener(this);
-
-        cbAreas = findViewById(R.id.cbAreas);
-        cbBody = findViewById(R.id.cbBody);
-        cbHead = findViewById(R.id.cbHead);
-        cbCylindrical = findViewById(R.id.cbCylindrical);
-        cbExpanded = findViewById(R.id.cbExpanded);
-        cbSoft = findViewById(R.id.cbSoft);
+        tvFishLot = findViewById(R.id.tvFishLot);
+        tvLot = findViewById(R.id.tvPackagingLot);
+        tvNotAccepted = findViewById(R.id.tvNotAcceptedLabel);
+        etNotAccepted = findViewById(R.id.etNotAccepted);
+        etComments = findViewById(R.id.etComments);
+        swLotAccepted = findViewById(R.id.swIsAccepted);
+        swForeignBody = findViewById(R.id.swForeignBody);
         ivSupport = findViewById(R.id.ivSupport);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackFinalCheckStart);
@@ -211,123 +230,51 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity implemen
     private void initControlsFromState() {
         FinalQualityRecord qltRecord = GlobalState.recQualityFinal;
 
-        if (qltRecord.exfoRating != null) {
-            switch (qltRecord.exfoRating) {
-                case 1:
-                    tgExfo.check(R.id.tbHighExfo);
-                    selectedExfoRating = 1;
-                    break;
-                case 2:
-                    tgExfo.check(R.id.tbMidExfo);
-                    selectedExfoRating = 2;
-                    break;
-                case 3:
-                    tgExfo.check(R.id.tbLightExfo);
-                    selectedExfoRating = 3;
-                    break;
-                default:
-                    break;
+        if (!Strings.isEmptyOrWhitespace(recQualityFinal.lot)) {
+            tvLot.setText(recQualityFinal.lot);
+        }
+        if (!Strings.isEmptyOrWhitespace(recQualityFinal.fishLot)) {
+            tvFishLot.setText(recQualityFinal.fishLot);
+        }
+        if (recQualityFinal.lotAccepted != null) {
+            swLotAccepted.setChecked(recQualityFinal.lotAccepted);
+            if (!recQualityFinal.lotAccepted) {
+                etNotAccepted.setVisibility(View.VISIBLE);
+                etNotAccepted.setText(recQualityFinal.discardedQty.toString());
             }
         }
-        if (qltRecord.paletteRating != null) {
-            switch (qltRecord.paletteRating) {
-                case 1:
-                    tgPalette.check(R.id.tbPaletteC);
-                    selectedPaletteRating = 1;
-                    break;
-                case 2:
-                    tgPalette.check(R.id.tbPaletteB);
-                    selectedPaletteRating = 2;
-                    break;
-                case 3:
-                    tgPalette.check(R.id.tbPaletteA);
-                    selectedPaletteRating = 3;
-                    break;
-                default:
-                    break;
+        if (recQualityFinal.foreignBody != null) {
+            swForeignBody.setChecked(recQualityFinal.foreignBody);
+            if (!recQualityFinal.foreignBody) {
+                tvNotAccepted.setVisibility(View.VISIBLE);
+                etComments.setVisibility(View.VISIBLE);
+                etComments.setText(recQualityFinal.corrAction);
             }
         }
-        if (qltRecord.boxRating != null) {
-            switch (qltRecord.boxRating) {
-                case 1:
-                    tgBox.check(R.id.tbBoxC);
-                    selectedBoxRating = 1;
-                    break;
-                case 2:
-                    tgBox.check(R.id.tbBoxB);
-                    selectedBoxRating = 2;
-                    break;
-                case 3:
-                    tgBox.check(R.id.tbBoxA);
-                    selectedBoxRating = 3;
-                    break;
-                default:
-                    break;
-            }
-        }
-        if (qltRecord.areas != null && qltRecord.areas) {
-            cbAreas.setChecked(true);
-        }
-        if (qltRecord.body != null && qltRecord.body) {
-            cbBody.setChecked(true);
-        }
-        if (qltRecord.head != null && qltRecord.head) {
-            cbHead.setChecked(true);
-        }
-        if (qltRecord.cylinrical != null && qltRecord.cylinrical) {
-            cbCylindrical.setChecked(true);
-        }
-        if (qltRecord.expanded != null && qltRecord.expanded) {
-            cbExpanded.setChecked(true);
-        }
-        if (qltRecord.soft != null &&qltRecord.soft) {
-            cbSoft.setChecked(true);
-        }
+
 
     }
 
 
-    private boolean updateState() {
+    private void updateState() {
 
-        recQualityFinal.exfoRating = selectedExfoRating;
-        recQualityFinal.paletteRating = selectedPaletteRating;
-        recQualityFinal.boxRating = selectedBoxRating;
 
-        if(cbSoft.isChecked()) {
-            recQualityFinal.soft = true;
-        } else {
-            recQualityFinal.soft = false;
+        recQualityFinal.foreignBody = swForeignBody.isChecked();
+        recQualityFinal.lotAccepted = swForeignBody.isChecked();
+        recQualityFinal.corrAction = etComments.getText().toString();
+
+        if (!swForeignBody.isChecked() && etComments.getText() != null && !Strings.isEmptyOrWhitespace(etComments.getText().toString())) {
+            recQualityFinal.corrAction = etComments.getText().toString();
         }
-        if(cbBody.isChecked()) {
-            recQualityFinal.body = true;
-        } else {
-            recQualityFinal.body = false;
+        if (!swLotAccepted.isChecked() && etNotAccepted.getText() != null && !Strings.isEmptyOrWhitespace(etNotAccepted.getText().toString())) {
+            recQualityFinal.discardedQty = Double.valueOf(etNotAccepted.getText().toString());
         }
-        if(cbHead.isChecked()) {
-            recQualityFinal.head = true;
-        } else {
-            recQualityFinal.head = false;
-        }
-        if(cbCylindrical.isChecked()) {
-            recQualityFinal.cylinrical = true;
-        } else {
-            recQualityFinal.cylinrical = false;
-        }
-        if(cbExpanded.isChecked()) {
-            recQualityFinal.expanded = true;
-        } else {
-            recQualityFinal.expanded = false;
-        }
-        if(cbAreas.isChecked()) {
-            recQualityFinal.areas = true;
-        } else {
-            recQualityFinal.areas = false;
-        }
+
 
         recQualityFinal.signature = signatureView.getBitmap();
         recQualityFinal.signatureBytes = signatureView.getBytes();
 
-        return true;
+       // return true;
     }
 
     private boolean qualityTxMarkSynced() {
@@ -346,28 +293,7 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity implemen
         }
     }
 
-    @Override
-    public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        if (checkedId == R.id.tbLightExfo) {
-            selectedExfoRating = 3;
-        } else if (checkedId == R.id.tbMidExfo) {
-            selectedExfoRating = 2;
-        } else if (checkedId == R.id.tbHighExfo) {
-            selectedExfoRating = 1;
-        } else if (checkedId == R.id.tbPaletteA) {
-            selectedPaletteRating = 3;
-        }else if (checkedId == R.id.tbPaletteB) {
-            selectedPaletteRating = 2;
-        } else if (checkedId == R.id.tbPaletteC) {
-            selectedPaletteRating = 1;
-        } else if (checkedId == R.id.tbBoxA) {
-            selectedBoxRating = 3;
-        } else if (checkedId == R.id.tbBoxB) {
-            selectedBoxRating = 2;
-        }else if (checkedId == R.id.tbBoxC) {
-            selectedBoxRating = 1;
-        }
-    }
+
 
     public class SyncTxCallBack implements Callback<FinalQualityTxDTO> {
         @Override

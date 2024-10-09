@@ -17,11 +17,23 @@ public class FinalSample {
     @SerializedName("counted_pieces")
     public Integer countedPieces;
 
-    @SerializedName("under_weight")
-    public Integer underWeight;
+    @SerializedName("under_weight_1")
+    public Integer underWeight1;
 
-    @SerializedName("over_weight")
-    public Integer overWeight;
+    @SerializedName("under_weight_2")
+    public Integer underWeight2;
+
+    @SerializedName("under_weight_3")
+    public Integer underWeight3;
+
+    @SerializedName("over_weight_1")
+    public Integer overWeight1;
+
+    @SerializedName("over_weight_2")
+    public Integer overWeight2;
+
+    @SerializedName("over_weight_3")
+    public Integer overWeight3;
 
     @SerializedName("net_weight")
     public Integer netWeight;
@@ -30,7 +42,7 @@ public class FinalSample {
     public Integer iceQuantity;
 
     @SerializedName("fish_temp")
-    public Integer fishTemp;
+    public Double fishTemp;
 
 
 }

@@ -5,16 +5,22 @@ import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.fish.state.GlobalState.commitFinalQuality;
 import static io.agritrack.philosofish.fish.state.GlobalState.recQualityFinal;
+import static io.agritrack.philosofish.fish.state.GlobalState.recQualityPackage;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.text.InputFilter;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,42 +30,61 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.util.Strings;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.barcode.BarcodeScanService;
 import io.agritrack.philosofish.data.db.MobileDB;
+import io.agritrack.philosofish.data.model.BinInfo;
 import io.agritrack.philosofish.data.model.tx.FinalQualityTransaction;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
+import io.agritrack.philosofish.fish.state.FinalQualityRecord;
+import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
+import io.agritrack.philosofish.fish.ui.quality.packaging.PackageQualityCheckLabelActivity;
 import io.agritrack.philosofish.sound.SoundUtil;
+import io.agritrack.philosofish.ui.custom.ToggleGroup;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
 
-public class QualityFinalCheckActivity extends AppCompatActivity {
+public class QualityFinalCheckActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private MobileDB db;
     private ImageView ivSupport;
-    private EditText size1, size2, size3, type1, type2, type3, number1, number2, number3, actual1, actual2, actual3,
-        under1, under2, under3, over1, over2, over3,  net1, net2, net3, ice1, ice2, ice3, temp1, temp2, temp3, tvCurrentLot, tvBestBefore;
+    private EditText  tvCurrentLot;
+    private Spinner spFishLot;
+    private Set<String> fishLotSet;
+    private List<BinInfo> binInfos;
+    private List<String> fishLots = new ArrayList<>();
+    private ArrayAdapter<String> lotListAdapter;
     private SupportDialog supportDialog;
     private boolean scanning = false;
     private YesNoDialogFragment confirmNewLotDialog,  confirmSaveDataDialog;
     private String currentLot, bestBefore;
+    private Integer selectedExfoRating, selectedPaletteRating, selectedBoxRating;
+
+    private ToggleGroup tgExfo, tgPalette, tgBox;
+    private CheckBox cbCylindrical, cbExpanded, cbSoft, cbHead, cbBody, cbAreas;
 
 
     // BroadcastReceiver to receiver scan data
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+    private final BroadcastReceiver receiverFinal = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             byte[] data = intent.getByteArrayExtra("data");
             if (data != null) {
                 String barcode = new String(data);
-                if (!barcode.isEmpty() && barcode.length() >= 10) {
+                if (!barcode.isEmpty() && barcode.length() >= 12) {
                     currentLot = barcode.substring(barcode.length() - 11);
-                    bestBefore = barcode.substring(barcode.length() - 21, barcode.length() - 15);
+                    //bestBefore = barcode.substring(barcode.length() - 21, barcode.length() - 15);
                     if (Strings.isEmptyOrWhitespace(recQualityFinal.lot)) {
                         loadBarcodeInfo(currentLot);
                     } else {
-                        if (barcode.equals(recQualityFinal.lot)) {
+                        if (currentLot.equals(recQualityFinal.lot)) {
                             CToast(getAppContext(), String.format(getResources().getString(R.string.lot_already_loaded), currentLot), Toast.LENGTH_LONG);
                             scanning = false;
                         } else {
@@ -77,17 +102,41 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
 
         FinalQualityTransaction txQuality = db.finalQualityTransactionDAO().getByLot(lot);
 
+
+        binInfos = db.binInfoDAO().getAll();
+
+        fishLotSet = new TreeSet<>(binInfos.stream().filter(x -> x.lot != null).map(x -> x.lot).collect(Collectors.toList()));
+
+        fishLots = new ArrayList<>();
+        fishLots.addAll(fishLotSet);
+
+        lotListAdapter = new ArrayAdapter<>(QualityFinalCheckActivity.this, R.layout.simple_spinner_item, fishLots);
+        spFishLot.setAdapter(lotListAdapter);
+
         if (txQuality == null) {
             tvCurrentLot.setText(lot);
             String labelBB = null;
-            if (Strings.isEmptyOrWhitespace(bestBefore) && bestBefore.length() == 6) {
-                labelBB = bestBefore.substring(4) + "/" + bestBefore.substring(2,4) + "/20" + bestBefore.substring(0,2);
-            }
-            tvBestBefore.setText(labelBB);
-            recQualityFinal.bestBefore = labelBB;
+//            if (Strings.isEmptyOrWhitespace(bestBefore) && bestBefore.length() == 6) {
+//                labelBB = bestBefore.substring(4) + "/" + bestBefore.substring(2,4) + "/20" + bestBefore.substring(0,2);
+//            }
+            // recQualityFinal.bestBefore = labelBB;
+            tvCurrentLot.setText(currentLot);
             recQualityFinal.lot = currentLot;
             scanning = false;
         } else if (!txQuality.isSynced) {
+            if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot))  {
+                int position = lotListAdapter.getPosition(txQuality.fishingLot);
+                if (position != -1) {
+                    spFishLot.setSelection(position);
+                    spFishLot.setClickable(false);
+                } else {
+                    fishLots.add(txQuality.fishingLot);
+                    lotListAdapter.notifyDataSetChanged();
+                    position = lotListAdapter.getPosition(txQuality.fishingLot);
+                    spFishLot.setSelection(position);
+                    spFishLot.setClickable(false);
+                }
+            }
             tvCurrentLot.setText(txQuality.lot);
             //tvBestBefore.setText(txQuality.bestBefore.toString());
             loadStateFromDB(txQuality);
@@ -103,6 +152,8 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
         recQualityFinal.lot = txQuality.lot;
 //        if (txQuality.bestBefore != null) {
 //        }
+        recQualityFinal.fishLot = txQuality.fishingLot;
+
         recQualityFinal.exfoRating = txQuality.exfoRating;
         recQualityFinal.paletteRating = txQuality.paletteRating;
         recQualityFinal.boxRating = txQuality.boxRating;
@@ -118,8 +169,12 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
         recQualityFinal.sample1.boxType = txQuality.boxTypeFirst;
         recQualityFinal.sample1.labelPieces = txQuality.labelPiecesFirst;
         recQualityFinal.sample1.countedPieces = txQuality.countedPiecesFirst;
-        recQualityFinal.sample1.underWeight = txQuality.underWeightFirst;
-        recQualityFinal.sample1.overWeight = txQuality.overWeightFirst;
+        recQualityFinal.sample1.underWeight1 = txQuality.underWeightFirst1;
+        recQualityFinal.sample1.underWeight2 = txQuality.underWeightFirst2;
+        recQualityFinal.sample1.underWeight3 = txQuality.underWeightFirst3;
+        recQualityFinal.sample1.overWeight1 = txQuality.overWeightFirst1;
+        recQualityFinal.sample1.overWeight2 = txQuality.overWeightFirst2;
+        recQualityFinal.sample1.overWeight3 = txQuality.overWeightFirst3;
         recQualityFinal.sample1.netWeight = txQuality.netWeightFirst;
         recQualityFinal.sample1.iceQuantity = txQuality.iceQuantityFirst;
         recQualityFinal.sample1.fishTemp = txQuality.fishTempFirst;
@@ -129,8 +184,12 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
         recQualityFinal.sample2.boxType = txQuality.boxTypeSecond;
         recQualityFinal.sample2.labelPieces = txQuality.labelPiecesSecond;
         recQualityFinal.sample2.countedPieces = txQuality.countedPiecesSecond;
-        recQualityFinal.sample2.underWeight = txQuality.underWeightSecond;
-        recQualityFinal.sample2.overWeight = txQuality.overWeightSecond;
+        recQualityFinal.sample2.underWeight1 = txQuality.underWeightSecond1;
+        recQualityFinal.sample2.underWeight2 = txQuality.underWeightSecond2;
+        recQualityFinal.sample2.underWeight3 = txQuality.underWeightSecond3;
+        recQualityFinal.sample2.overWeight1 = txQuality.overWeightSecond1;
+        recQualityFinal.sample2.overWeight2 = txQuality.overWeightSecond2;
+        recQualityFinal.sample2.overWeight3 = txQuality.overWeightSecond3;
         recQualityFinal.sample2.netWeight = txQuality.netWeightSecond;
         recQualityFinal.sample2.iceQuantity = txQuality.iceQuantitySecond;
         recQualityFinal.sample2.fishTemp = txQuality.fishTempSecond;
@@ -140,11 +199,20 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
         recQualityFinal.sample3.boxType = txQuality.boxTypeThird;
         recQualityFinal.sample3.labelPieces = txQuality.labelPiecesThird;
         recQualityFinal.sample3.countedPieces = txQuality.countedPiecesThird;
-        recQualityFinal.sample3.underWeight = txQuality.underWeightThird;
-        recQualityFinal.sample3.overWeight = txQuality.overWeightThird;
+        recQualityFinal.sample3.underWeight1 = txQuality.underWeightThird1;
+        recQualityFinal.sample3.underWeight2 = txQuality.underWeightThird2;
+        recQualityFinal.sample3.underWeight3 = txQuality.underWeightThird3;
+        recQualityFinal.sample3.overWeight1 = txQuality.overWeightThird1;
+        recQualityFinal.sample3.overWeight2 = txQuality.overWeightThird2;
+        recQualityFinal.sample3.overWeight3 = txQuality.overWeightThird3;
         recQualityFinal.sample3.netWeight = txQuality.netWeightThird;
         recQualityFinal.sample3.iceQuantity = txQuality.iceQuantityThird;
         recQualityFinal.sample3.fishTemp = txQuality.fishTempThird;
+
+        recQualityFinal.foreignBody = txQuality.foreignBody;
+        recQualityFinal.lotAccepted  = txQuality.lotAccepted;
+        recQualityFinal.corrAction = txQuality.corrAction;
+        recQualityFinal.discardedQty = txQuality.discardedQty;
 
         initControlsFromState();
     }
@@ -171,8 +239,36 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
         assignCtrlVars();
 
 
+        binInfos = db.binInfoDAO().getAll();
+
+        fishLotSet = new TreeSet<>(binInfos.stream().filter(x -> x.lot != null).map(x -> x.lot).collect(Collectors.toList()));
+
+        fishLots = new ArrayList<>();
+        fishLots.addAll(fishLotSet);
+
+        lotListAdapter = new ArrayAdapter<>(QualityFinalCheckActivity.this, R.layout.simple_spinner_item, fishLots);
+        spFishLot.setAdapter(lotListAdapter);
+
+        spFishLot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                recQualityFinal.fishLot = parent.getItemAtPosition(position).toString(); //this is your selected item
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Nothing to do
+            }
+        });
+
+
+
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
+
+
+        //Register receiver to receive the result of scan
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.rfid.SCAN");
+        registerReceiver(receiverFinal, filter);
 
         confirmNewLotDialog= YesNoDialogFragment.instance();
         confirmNewLotDialog.onConfirm(bundle -> {
@@ -193,10 +289,17 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
             if (tx == null) {
                 CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityFinal.lot),Toast.LENGTH_LONG);
             }
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverFinal);
+            unregisterReceiver(receiverFinal);
+
             Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
             startActivity(i);
         });
         confirmSaveDataDialog.onReject(bundle -> {
+            unregisterReceiver(receiverFinal);
+
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverFinal);
+
             Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
             startActivity(i);
         });
@@ -228,8 +331,11 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
             } else {
-                    Intent i = new Intent(getApplicationContext(), QualityFinalCheckConfirmActivity.class);
-                    startActivity(i);
+                LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverFinal);
+                unregisterReceiver(receiverFinal);
+
+                Intent i = new Intent(getApplicationContext(), QualityFinalCheckSecondActivity.class);
+                startActivity(i);
 
             }
         });
@@ -243,6 +349,9 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
                 confirmSaveDataDialog.setMessage(getString(R.string.save_lot_quality, recQualityFinal.lot));
                 confirmSaveDataDialog.showNow(fm, getString(R.string.confirm_selection));
             } else {
+                LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverFinal);
+                unregisterReceiver(receiverFinal);
+
                 Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
                 startActivity(i);
             }
@@ -253,130 +362,146 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
         btnScanBox = findViewById(R.id.btnScanBin);
 
         tvCurrentLot = findViewById(R.id.lotNumber);
-        tvBestBefore = findViewById(R.id.etBB);
+        spFishLot = findViewById(R.id.spFishLot);
 
-        size1 = findViewById(R.id.etSize1);
-        type1 = findViewById(R.id.etType1);
-        number1 = findViewById(R.id.etNumber1);
-        actual1 = findViewById(R.id.etActual1);
-        under1 = findViewById(R.id.etUnder1);
-        over1 = findViewById(R.id.etOver1);
-        net1 = findViewById(R.id.etNet1);
-        ice1 = findViewById(R.id.etIce1);
-        temp1 = findViewById(R.id.etTemp1);
-        size2 = findViewById(R.id.etSize2);
-        type2 = findViewById(R.id.etType2);
-        number2 = findViewById(R.id.etNumber2);
-        actual2 = findViewById(R.id.etActual2);
-        under2 = findViewById(R.id.etUnder2);
-        over2 = findViewById(R.id.etOver2);
-        net2 = findViewById(R.id.etNet2);
-        ice2 = findViewById(R.id.etIce2);
-        temp2 = findViewById(R.id.etTemp2);
-        size3 = findViewById(R.id.etSize3);
-        type3 = findViewById(R.id.etType3);
-        number3 = findViewById(R.id.etNumber3);
-        actual3 = findViewById(R.id.etActual3);
-        under3 = findViewById(R.id.etUnder3);
-        over3 = findViewById(R.id.etOver3);
-        net3 = findViewById(R.id.etNet3);
-        ice3 = findViewById(R.id.etIce3);
-        temp3 = findViewById(R.id.etTemp3);
+        tgBox = findViewById(R.id.tgBoxCondition);
+        tgBox.setOnCheckedChangeListener(this);
+
+        tgPalette = findViewById(R.id.tgPaletteCondition);
+        tgPalette.setOnCheckedChangeListener(this);
+
+        tgExfo = findViewById(R.id.tgExfoliation);
+        tgExfo.setOnCheckedChangeListener(this);
+
+        cbAreas = findViewById(R.id.cbAreas);
+        cbBody = findViewById(R.id.cbBody);
+        cbHead = findViewById(R.id.cbHead);
+        cbCylindrical = findViewById(R.id.cbCylindrical);
+        cbExpanded = findViewById(R.id.cbExpanded);
+        cbSoft = findViewById(R.id.cbSoft);
 
         ivSupport = findViewById(R.id.ivSupport);
-
-        tvBestBefore.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
 
     }
 
     private void initControlsFromState() {
 
-        if (!Strings.isEmptyOrWhitespace(recQualityFinal.sample1.size)) {
-            size1.setText(recQualityFinal.sample1.size);
-        }
-        if (recQualityFinal.sample1.boxType != null) {
-            type1.setText(String.valueOf(recQualityFinal.sample1.boxType));
-        }
-        if (recQualityFinal.sample1.labelPieces != null) {
-            number1.setText(String.valueOf(recQualityFinal.sample1.labelPieces));
-        }
-        if (recQualityFinal.sample1.countedPieces != null) {
-            actual1.setText(String.valueOf(recQualityFinal.sample1.countedPieces));
-        }
-        if (recQualityFinal.sample1.underWeight != null) {
-            under1.setText(String.valueOf(recQualityFinal.sample1.underWeight));
-        }
-        if (recQualityFinal.sample1.overWeight != null) {
-            over1.setText(String.valueOf(recQualityFinal.sample1.overWeight));
-        }
-        if (recQualityFinal.sample1.netWeight != null) {
-            net1.setText(String.valueOf(recQualityFinal.sample1.netWeight));
-        }
-        if (recQualityFinal.sample1.iceQuantity != null) {
-            ice1.setText(String.valueOf(recQualityFinal.sample1.iceQuantity));
-        }
-        if (recQualityFinal.sample1.fishTemp != null) {
-            temp1.setText(String.valueOf(recQualityFinal.sample1.fishTemp));
+        if (!Strings.isEmptyOrWhitespace(recQualityFinal.lot)) {
+            tvCurrentLot.setText(recQualityFinal.lot);
         }
 
 
-        if (Strings.isEmptyOrWhitespace(recQualityFinal.sample2.size)) {
-            size2.setText(recQualityFinal.sample2.size);
+        if (!Strings.isEmptyOrWhitespace(recQualityFinal.fishLot)) {
+            int position = lotListAdapter.getPosition(recQualityFinal.fishLot);
+            if (position != -1) {
+                spFishLot.setSelection(position);
+                spFishLot.setClickable(false);
+            } else {
+                fishLots.add(recQualityFinal.fishLot);
+                lotListAdapter.notifyDataSetChanged();
+                position = lotListAdapter.getPosition(recQualityFinal.fishLot);
+                spFishLot.setSelection(position);
+                spFishLot.setClickable(false);
+            }
         }
-        if (recQualityFinal.sample2.boxType != null) {
-            type2.setText(String.valueOf(recQualityFinal.sample2.boxType));
+        FinalQualityRecord qltRecord = GlobalState.recQualityFinal;
+
+        if (qltRecord.exfoRating != null) {
+            switch (qltRecord.exfoRating) {
+                case 1:
+                    tgExfo.check(R.id.tbHighExfo);
+                    selectedExfoRating = 1;
+                    break;
+                case 2:
+                    tgExfo.check(R.id.tbMidExfo);
+                    selectedExfoRating = 2;
+                    break;
+                case 3:
+                    tgExfo.check(R.id.tbLightExfo);
+                    selectedExfoRating = 3;
+                    break;
+                default:
+                    break;
+            }
         }
-        if (recQualityFinal.sample2.labelPieces != null) {
-            number2.setText(String.valueOf(recQualityFinal.sample2.labelPieces));
+        if (qltRecord.paletteRating != null) {
+            switch (qltRecord.paletteRating) {
+                case 1:
+                    tgPalette.check(R.id.tbPaletteC);
+                    selectedPaletteRating = 1;
+                    break;
+                case 2:
+                    tgPalette.check(R.id.tbPaletteB);
+                    selectedPaletteRating = 2;
+                    break;
+                case 3:
+                    tgPalette.check(R.id.tbPaletteA);
+                    selectedPaletteRating = 3;
+                    break;
+                default:
+                    break;
+            }
         }
-        if (recQualityFinal.sample2.countedPieces != null) {
-            actual2.setText(String.valueOf(recQualityFinal.sample2.countedPieces));
+        if (qltRecord.boxRating != null) {
+            switch (qltRecord.boxRating) {
+                case 1:
+                    tgBox.check(R.id.tbBoxC);
+                    selectedBoxRating = 1;
+                    break;
+                case 2:
+                    tgBox.check(R.id.tbBoxB);
+                    selectedBoxRating = 2;
+                    break;
+                case 3:
+                    tgBox.check(R.id.tbBoxA);
+                    selectedBoxRating = 3;
+                    break;
+                default:
+                    break;
+            }
         }
-        if (recQualityFinal.sample2.underWeight != null) {
-            under2.setText(String.valueOf(recQualityFinal.sample2.underWeight));
+        if (qltRecord.areas != null && qltRecord.areas) {
+            cbAreas.setChecked(true);
         }
-        if (recQualityFinal.sample2.overWeight != null) {
-            over2.setText(String.valueOf(recQualityFinal.sample2.overWeight));
+        if (qltRecord.body != null && qltRecord.body) {
+            cbBody.setChecked(true);
         }
-        if (recQualityFinal.sample2.netWeight != null) {
-            net2.setText(String.valueOf(recQualityFinal.sample2.netWeight));
+        if (qltRecord.head != null && qltRecord.head) {
+            cbHead.setChecked(true);
         }
-        if (recQualityFinal.sample2.iceQuantity != null) {
-            ice2.setText(String.valueOf(recQualityFinal.sample2.iceQuantity));
+        if (qltRecord.cylinrical != null && qltRecord.cylinrical) {
+            cbCylindrical.setChecked(true);
         }
-        if (recQualityFinal.sample2.fishTemp != null) {
-            temp2.setText(String.valueOf(recQualityFinal.sample2.fishTemp));
+        if (qltRecord.expanded != null && qltRecord.expanded) {
+            cbExpanded.setChecked(true);
+        }
+        if (qltRecord.soft != null &&qltRecord.soft) {
+            cbSoft.setChecked(true);
         }
 
+    }
 
-        if (Strings.isEmptyOrWhitespace(recQualityFinal.sample3.size)) {
-            size3.setText(recQualityFinal.sample3.size);
+    @Override
+    public void onCheckedChanged(ToggleGroup group, int checkedId) {
+        if (checkedId == R.id.tbLightExfo) {
+            selectedExfoRating = 3;
+        } else if (checkedId == R.id.tbMidExfo) {
+            selectedExfoRating = 2;
+        } else if (checkedId == R.id.tbHighExfo) {
+            selectedExfoRating = 1;
+        } else if (checkedId == R.id.tbPaletteA) {
+            selectedPaletteRating = 3;
+        }else if (checkedId == R.id.tbPaletteB) {
+            selectedPaletteRating = 2;
+        } else if (checkedId == R.id.tbPaletteC) {
+            selectedPaletteRating = 1;
+        } else if (checkedId == R.id.tbBoxA) {
+            selectedBoxRating = 3;
+        } else if (checkedId == R.id.tbBoxB) {
+            selectedBoxRating = 2;
+        }else if (checkedId == R.id.tbBoxC) {
+            selectedBoxRating = 1;
         }
-        if (recQualityFinal.sample3.boxType != null) {
-            type3.setText(String.valueOf(recQualityFinal.sample3.boxType));
-        }
-        if (recQualityFinal.sample3.labelPieces != null) {
-            number3.setText(String.valueOf(recQualityFinal.sample3.labelPieces));
-        }
-        if (recQualityFinal.sample3.countedPieces != null) {
-            actual3.setText(String.valueOf(recQualityFinal.sample3.countedPieces));
-        }
-        if (recQualityFinal.sample3.underWeight != null) {
-            under3.setText(String.valueOf(recQualityFinal.sample3.underWeight));
-        }
-        if (recQualityFinal.sample3.overWeight != null) {
-            over3.setText(String.valueOf(recQualityFinal.sample3.overWeight));
-        }
-        if (recQualityFinal.sample3.netWeight != null) {
-            net3.setText(String.valueOf(recQualityFinal.sample3.netWeight));
-        }
-        if (recQualityFinal.sample3.iceQuantity != null) {
-            ice3.setText(String.valueOf(recQualityFinal.sample3.iceQuantity));
-        }
-        if (recQualityFinal.sample3.fishTemp != null) {
-            temp3.setText(String.valueOf(recQualityFinal.sample3.fishTemp));
-        }
-
     }
 
 
@@ -397,36 +522,43 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
     private void updateState() {
 
         recQualityFinal.lot = Strings.isEmptyOrWhitespace(tvCurrentLot.getText().toString()) ? null : tvCurrentLot.getText().toString();
-        recQualityFinal.sample1.size = Strings.isEmptyOrWhitespace(size1.getText().toString()) ? null : size1.getText().toString();
-        recQualityFinal.sample1.boxType = Strings.isEmptyOrWhitespace(type1.getText().toString()) ? null : Integer.valueOf(type1.getText().toString());
-        recQualityFinal.sample1.labelPieces = Strings.isEmptyOrWhitespace(number1.getText().toString()) ? null : Integer.valueOf(number1.getText().toString());
-        recQualityFinal.sample1.countedPieces = Strings.isEmptyOrWhitespace(actual1.getText().toString()) ? null : Integer.valueOf(actual1.getText().toString());
-        recQualityFinal.sample1.underWeight = Strings.isEmptyOrWhitespace(under1.getText().toString()) ? null : Integer.valueOf(under1.getText().toString());
-        recQualityFinal.sample1.overWeight = Strings.isEmptyOrWhitespace(over1.getText().toString()) ? null : Integer.valueOf(over1.getText().toString());
-        recQualityFinal.sample1.netWeight = Strings.isEmptyOrWhitespace(net1.getText().toString()) ? null : Integer.valueOf(net1.getText().toString());
-        recQualityFinal.sample1.iceQuantity = Strings.isEmptyOrWhitespace(ice1.getText().toString()) ? null : Integer.valueOf(ice1.getText().toString());
-        recQualityFinal.sample1.fishTemp = Strings.isEmptyOrWhitespace(temp1.getText().toString()) ? null : Integer.valueOf(temp1.getText().toString());
 
-        recQualityFinal.sample2.size = Strings.isEmptyOrWhitespace(size2.getText().toString()) ? null : size2.getText().toString();
-        recQualityFinal.sample2.boxType = Strings.isEmptyOrWhitespace(type2.getText().toString()) ? null : Integer.valueOf(type2.getText().toString());
-        recQualityFinal.sample2.labelPieces = Strings.isEmptyOrWhitespace(number2.getText().toString()) ? null : Integer.valueOf(number2.getText().toString());
-        recQualityFinal.sample2.countedPieces = Strings.isEmptyOrWhitespace(actual2.getText().toString()) ? null : Integer.valueOf(actual2.getText().toString());
-        recQualityFinal.sample2.underWeight = Strings.isEmptyOrWhitespace(under2.getText().toString()) ? null : Integer.valueOf(under2.getText().toString());
-        recQualityFinal.sample2.overWeight = Strings.isEmptyOrWhitespace(over2.getText().toString()) ? null : Integer.valueOf(over2.getText().toString());
-        recQualityFinal.sample2.netWeight = Strings.isEmptyOrWhitespace(net2.getText().toString()) ? null : Integer.valueOf(net2.getText().toString());
-        recQualityFinal.sample2.iceQuantity = Strings.isEmptyOrWhitespace(ice2.getText().toString()) ? null : Integer.valueOf(ice2.getText().toString());
-        recQualityFinal.sample2.fishTemp = Strings.isEmptyOrWhitespace(temp2.getText().toString()) ? null : Integer.valueOf(temp2.getText().toString());
+        recQualityFinal.fishLot = spFishLot.getSelectedItem() == null ? null : spFishLot.getSelectedItem().toString();
 
-        recQualityFinal.sample3.size = Strings.isEmptyOrWhitespace(size3.getText().toString()) ? null : size3.getText().toString();
-        recQualityFinal.sample3.boxType = Strings.isEmptyOrWhitespace(type3.getText().toString()) ? null : Integer.valueOf(type3.getText().toString());
-        recQualityFinal.sample3.labelPieces = Strings.isEmptyOrWhitespace(number3.getText().toString()) ? null : Integer.valueOf(number3.getText().toString());
-        recQualityFinal.sample3.countedPieces = Strings.isEmptyOrWhitespace(actual3.getText().toString()) ? null : Integer.valueOf(actual3.getText().toString());
-        recQualityFinal.sample3.underWeight = Strings.isEmptyOrWhitespace(under3.getText().toString()) ? null : Integer.valueOf(under3.getText().toString());
-        recQualityFinal.sample3.overWeight = Strings.isEmptyOrWhitespace(over3.getText().toString()) ? null : Integer.valueOf(over3.getText().toString());
-        recQualityFinal.sample3.netWeight = Strings.isEmptyOrWhitespace(net3.getText().toString()) ? null : Integer.valueOf(net3.getText().toString());
-        recQualityFinal.sample3.iceQuantity = Strings.isEmptyOrWhitespace(ice3.getText().toString()) ? null : Integer.valueOf(ice3.getText().toString());
-        recQualityFinal.sample3.fishTemp = Strings.isEmptyOrWhitespace(temp3.getText().toString()) ? null : Integer.valueOf(temp3.getText().toString());
+        recQualityFinal.exfoRating = selectedExfoRating;
+        recQualityFinal.paletteRating = selectedPaletteRating;
+        recQualityFinal.boxRating = selectedBoxRating;
 
+        if(cbSoft.isChecked()) {
+            recQualityFinal.soft = true;
+        } else {
+            recQualityFinal.soft = false;
+        }
+        if(cbBody.isChecked()) {
+            recQualityFinal.body = true;
+        } else {
+            recQualityFinal.body = false;
+        }
+        if(cbHead.isChecked()) {
+            recQualityFinal.head = true;
+        } else {
+            recQualityFinal.head = false;
+        }
+        if(cbCylindrical.isChecked()) {
+            recQualityFinal.cylinrical = true;
+        } else {
+            recQualityFinal.cylinrical = false;
+        }
+        if(cbExpanded.isChecked()) {
+            recQualityFinal.expanded = true;
+        } else {
+            recQualityFinal.expanded = false;
+        }
+        if(cbAreas.isChecked()) {
+            recQualityFinal.areas = true;
+        } else {
+            recQualityFinal.areas = false;
+        }
 
     }
 
@@ -435,6 +567,10 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(recQualityFinal.lot)) {
                 sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.lot_number)));
+            }
+
+            if (Strings.isEmptyOrWhitespace(recQualityFinal.fishLot)) {
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.lot_fishing)));
             }
         }
 
@@ -469,7 +605,7 @@ public class QualityFinalCheckActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverFinal);
         super.onStop();
     }
 }

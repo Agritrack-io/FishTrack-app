@@ -38,6 +38,9 @@ public class PackageQualityTransaction {
     @ColumnInfo(name = "lot")
     public String lot;
 
+    @ColumnInfo(name = "fish_lot")
+    public String fishingLot;
+
     @ColumnInfo(name = "fresh_grade")
     public Integer freshGrade;
 
@@ -148,6 +151,9 @@ public class PackageQualityTransaction {
 
     @ColumnInfo(name = "label_comments")
     public String labelComments;
+
+    @ColumnInfo(name = "disinfected_bins")
+    public Integer disinfectedBins;
 
     @ColumnInfo(name = "fresh_created_at")
     public Long freshCreatedAt;

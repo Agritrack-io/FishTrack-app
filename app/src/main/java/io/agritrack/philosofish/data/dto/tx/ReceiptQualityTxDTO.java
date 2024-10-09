@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
+import io.agritrack.philosofish.ui.service.LocalPreferences;
 
 public class ReceiptQualityTxDTO {
     private static final SimpleDateFormat simpleDate =  new SimpleDateFormat("dd/MM/yyyy");
@@ -56,7 +57,7 @@ public class ReceiptQualityTxDTO {
         qualityTxDto.dis_mouth = quality.disMouth;
         qualityTxDto.dis_oper = quality.disOper;
         qualityTxDto.dis_tail = quality.disTail;
-        qualityTxDto.plant = quality.plant;
+        qualityTxDto.plant = LocalPreferences.getCurrentSiteName();
         qualityTxDto.dis_skeletal = quality.disSkeletal;
         qualityTxDto.fishing_date = simpleDate.format(quality.fishingDate);
         qualityTxDto.species = quality.species;

@@ -22,6 +22,9 @@ public class PackageQualityTxDTO {
     @SerializedName("lot")
     public String lot;
 
+    @SerializedName("fishing_lot")
+    public String fishingLot;
+
     @SerializedName("fresh_check")
     public PackageFreshCheckDTO freshCheck = new PackageFreshCheckDTO();
 
@@ -98,6 +101,7 @@ public class PackageQualityTxDTO {
     public static PackageQualityTxDTO convertFresh(PackageQualityTransaction qualityTx) {
         PackageQualityTxDTO packageQualityTxDTO = new PackageQualityTxDTO();
         packageQualityTxDTO.lot = qualityTx.lot;
+        packageQualityTxDTO.fishingLot = qualityTx.fishingLot;
         packageQualityTxDTO.id = qualityTx.id;
         packageQualityTxDTO.plant = LocalPreferences.getCurrentSiteName();
         packageQualityTxDTO.freshCheck.freshGrade = qualityTx.freshGrade;
@@ -139,6 +143,7 @@ public class PackageQualityTxDTO {
     public static PackageQualityTxDTO convertSample(PackageQualityTransaction qualityTx) {
         PackageQualityTxDTO packageQualityTxDTO = new PackageQualityTxDTO();
         packageQualityTxDTO.lot = qualityTx.lot;
+        packageQualityTxDTO.fishingLot = qualityTx.fishingLot;
         packageQualityTxDTO.id = qualityTx.id;
         packageQualityTxDTO.plant = LocalPreferences.getCurrentSiteName();
         packageQualityTxDTO.sampling.sortingSamples = qualityTx.sortingSamples;
@@ -153,6 +158,7 @@ public class PackageQualityTxDTO {
     public static PackageQualityTxDTO convertLabel(PackageQualityTransaction qualityTx) {
         PackageQualityTxDTO packageQualityTxDTO = new PackageQualityTxDTO();
         packageQualityTxDTO.lot = qualityTx.lot;
+        packageQualityTxDTO.fishingLot = qualityTx.fishingLot;
         packageQualityTxDTO.id = qualityTx.id;
         packageQualityTxDTO.plant = LocalPreferences.getCurrentSiteName();
         packageQualityTxDTO.labelCheck.startPacking = qualityTx.startPacking;
@@ -160,6 +166,7 @@ public class PackageQualityTxDTO {
         packageQualityTxDTO.labelCheck.changePacking = qualityTx.changePacking;
         packageQualityTxDTO.labelCheck.endPacking = qualityTx.endPacking;
         packageQualityTxDTO.labelCheck.labelComments = qualityTx.labelComments;
+        packageQualityTxDTO.labelCheck.disinfectedBins = qualityTx.disinfectedBins;
         packageQualityTxDTO.label_occurred_at = simpleDateTime.format(new Date(qualityTx.labelCreatedAt));
 
         return packageQualityTxDTO;

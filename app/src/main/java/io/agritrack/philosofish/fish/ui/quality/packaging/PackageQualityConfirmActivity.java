@@ -57,7 +57,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
     private YesNoDialogFragment confirmGPSSelectionDlg;
 
     private ProgressDialog progressDialog;
-    private TextView tvLot, tvSpecies, tvFreshGrade, tvBestBefore, tvUsername;
+    private TextView tvLot, tvSpecies, tvFreshGrade, tvFishingLot, tvUsername;
     private EditText etPIN;
     private ImageView ivSupport, ivNext, ivBack;
     private boolean proceedWithoutLocation = false;
@@ -147,7 +147,7 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
     private void assignCtrlVars() {
         tvLot = findViewById(R.id.tvPackagingLot);
         tvFreshGrade = findViewById(R.id.tvFreshGrade);
-        tvBestBefore = findViewById(R.id.tvBestBefore);
+        tvFishingLot = findViewById(R.id.tvFishingLot);
         tvSpecies = findViewById(R.id.tvSpecies);
         tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
@@ -171,8 +171,8 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
             tvFreshGrade.setText(qltRecord.overallGrade + "/12");
         }
 
-        if (!Strings.isEmptyOrWhitespace(qltRecord.bestBefore)) {
-            tvBestBefore.setText(qltRecord.bestBefore);
+        if (!Strings.isEmptyOrWhitespace(qltRecord.fishLot)) {
+            tvFishingLot.setText(qltRecord.fishLot);
         }
 
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());

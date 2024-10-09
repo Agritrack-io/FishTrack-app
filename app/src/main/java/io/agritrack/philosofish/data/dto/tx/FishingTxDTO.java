@@ -1,5 +1,7 @@
 package io.agritrack.philosofish.data.dto.tx;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -8,6 +10,9 @@ import io.agritrack.philosofish.data.model.tx.FishingTransaction;
 import io.agritrack.philosofish.fish.ui.bo.BinWeightRecord;
 
 public class FishingTxDTO {
+
+    private static final SimpleDateFormat simpleDateTime =  new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
+
     public UUID id;
     public String fishing_request;
     public String platform_rfid;
@@ -26,7 +31,7 @@ public class FishingTxDTO {
     public String packaging_plant;
     public Short parent_itinerary;
     public String reason_deviation;
-    public Long occurred_at;
+    public String occurred_at;
     public Double longitude;
     public Double latitude;
 
@@ -50,7 +55,7 @@ public class FishingTxDTO {
         fishingTxDTO.packaging_plant = fishingTx.packagingPlant;
         fishingTxDTO.parent_itinerary = fishingTx.parentItinSno;
         fishingTxDTO.reason_deviation = fishingTx.reasonOfDeviation;
-        fishingTxDTO.occurred_at = fishingTx.createdAt;
+        fishingTxDTO.occurred_at = simpleDateTime.format(new Date(fishingTx.createdAt));
         fishingTxDTO.longitude = fishingTx.longitude;
         fishingTxDTO.latitude = fishingTx.latitude;
 

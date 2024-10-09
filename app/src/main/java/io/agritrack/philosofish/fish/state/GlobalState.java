@@ -399,6 +399,7 @@ public class GlobalState {
             if (txQuality == null) {
                 txQuality = new PackageQualityTransaction();
                 txQuality.lot = recQualityPackage.lot;
+
                 try {
                     txQuality.bestBefore = dateFormat.parse(recQualityPackage.bestBefore);
                 } catch (Exception e) {
@@ -406,7 +407,7 @@ public class GlobalState {
                 }
             }
 
-
+            txQuality.fishingLot = recQualityPackage.fishLot;
             txQuality.sortingSamples = recQualityPackage.sortingSamples;
             txQuality.tonneSamples = recQualityPackage.tonneSamples;
 //
@@ -439,15 +440,16 @@ public class GlobalState {
                 }
             }
 
-
+            txQuality.fishingLot = recQualityPackage.fishLot;
             txQuality.startPacking = recQualityPackage.startPacking;
             txQuality.changePacking = recQualityPackage.changePacking;
             txQuality.middlePacking = recQualityPackage.middlePacking;
             txQuality.endPacking = recQualityPackage.endPacking;
             txQuality.labelComments = recQualityPackage.labelComments;
+            txQuality.disinfectedBins = recQualityPackage.disinfectedBins;
 //
 
-            if (finalCommit && txQuality.sampleCreatedAt == null) {
+            if (finalCommit && txQuality.labelCreatedAt == null) {
                 txQuality.labelCreatedAt = System.currentTimeMillis();
             }
 
@@ -475,7 +477,7 @@ public class GlobalState {
                     txQuality.bestBefore = null;
                 }
             }
-
+            txQuality.fishingLot = recQualityPackage.fishLot;
             txQuality.freshGrade = recQualityPackage.freshGrade;
             txQuality.overallGrade = recQualityPackage.overallGrade;
             txQuality.skinGrade = recQualityPackage.skinGrade;
@@ -537,6 +539,7 @@ public class GlobalState {
                 txQuality.lot = recQualityFinal.lot;
 
             }
+            txQuality.fishingLot = recQualityFinal.fishLot;
 
             txQuality.exfoRating = recQualityFinal.exfoRating;
             txQuality.paletteRating = recQualityFinal.paletteRating;
@@ -553,8 +556,12 @@ public class GlobalState {
             txQuality.boxTypeFirst = recQualityFinal.sample1.boxType;
             txQuality.labelPiecesFirst = recQualityFinal.sample1.labelPieces;
             txQuality.countedPiecesFirst = recQualityFinal.sample1.countedPieces;
-            txQuality.underWeightFirst = recQualityFinal.sample1.underWeight;
-            txQuality.overWeightFirst = recQualityFinal.sample1.overWeight;
+            txQuality.underWeightFirst1 = recQualityFinal.sample1.underWeight1;
+            txQuality.underWeightFirst2 = recQualityFinal.sample1.underWeight2;
+            txQuality.underWeightFirst3 = recQualityFinal.sample1.underWeight3;
+            txQuality.overWeightFirst1 = recQualityFinal.sample1.overWeight1;
+            txQuality.overWeightFirst2 = recQualityFinal.sample1.overWeight2;
+            txQuality.overWeightFirst3 = recQualityFinal.sample1.overWeight3;
             txQuality.netWeightFirst = recQualityFinal.sample1.netWeight;
             txQuality.iceQuantityFirst = recQualityFinal.sample1.iceQuantity;
             txQuality.fishTempFirst = recQualityFinal.sample1.fishTemp;
@@ -564,8 +571,12 @@ public class GlobalState {
             txQuality.boxTypeSecond = recQualityFinal.sample2.boxType;
             txQuality.labelPiecesSecond = recQualityFinal.sample2.labelPieces;
             txQuality.countedPiecesSecond = recQualityFinal.sample2.countedPieces;
-            txQuality.underWeightSecond = recQualityFinal.sample2.underWeight;
-            txQuality.overWeightSecond = recQualityFinal.sample2.overWeight;
+            txQuality.underWeightSecond1 = recQualityFinal.sample2.underWeight1;
+            txQuality.underWeightSecond2 = recQualityFinal.sample2.underWeight2;
+            txQuality.underWeightSecond3 = recQualityFinal.sample2.underWeight3;
+            txQuality.overWeightSecond1 = recQualityFinal.sample2.overWeight1;
+            txQuality.overWeightSecond2 = recQualityFinal.sample2.overWeight2;
+            txQuality.overWeightSecond3 = recQualityFinal.sample2.overWeight3;
             txQuality.netWeightSecond = recQualityFinal.sample2.netWeight;
             txQuality.iceQuantitySecond = recQualityFinal.sample2.iceQuantity;
             txQuality.fishTempSecond = recQualityFinal.sample2.fishTemp;
@@ -574,8 +585,12 @@ public class GlobalState {
             txQuality.boxTypeThird = recQualityFinal.sample3.boxType;
             txQuality.labelPiecesThird = recQualityFinal.sample3.labelPieces;
             txQuality.countedPiecesThird = recQualityFinal.sample3.countedPieces;
-            txQuality.underWeightThird = recQualityFinal.sample3.underWeight;
-            txQuality.overWeightThird = recQualityFinal.sample3.overWeight;
+            txQuality.underWeightThird1 = recQualityFinal.sample3.underWeight1;
+            txQuality.underWeightThird2 = recQualityFinal.sample3.underWeight2;
+            txQuality.underWeightThird3 = recQualityFinal.sample3.underWeight3;
+            txQuality.overWeightThird1 = recQualityFinal.sample3.overWeight1;
+            txQuality.overWeightThird2 = recQualityFinal.sample3.overWeight2;
+            txQuality.overWeightThird3 = recQualityFinal.sample3.overWeight3;
             txQuality.netWeightThird = recQualityFinal.sample3.netWeight;
             txQuality.iceQuantityThird = recQualityFinal.sample3.iceQuantity;
             txQuality.fishTempThird = recQualityFinal.sample3.fishTemp;
@@ -584,6 +599,11 @@ public class GlobalState {
                 txQuality.signature = Base64.encodeToString(recQualityFinal.signatureBytes, Base64.NO_WRAP);
 
             }
+
+            txQuality.foreignBody = recQualityFinal.foreignBody;
+            txQuality.corrAction = recQualityFinal.corrAction;
+            txQuality.lotAccepted = recQualityFinal.lotAccepted;
+            txQuality.discardedQty = recQualityFinal.discardedQty;
 
 //            txQuality.laundrySamples = recQualityPackage.laundrySamples;
 //            txQuality.tonneSamples = recQualityPackage.tonneSamples;

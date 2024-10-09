@@ -32,6 +32,9 @@ public class FinalQualityTransaction {
     @ColumnInfo(name = "lot")
     public String lot;
 
+    @ColumnInfo(name = "fish_lot")
+    public String fishingLot;
+
     @ColumnInfo(name = "exfo_rating")
     public Integer exfoRating;
 
@@ -71,11 +74,23 @@ public class FinalQualityTransaction {
     @ColumnInfo(name = "counted_pieces_first")
     public Integer countedPiecesFirst;
 
-    @ColumnInfo(name = "under_weight_first")
-    public Integer underWeightFirst;
+    @ColumnInfo(name = "under_weight_first_1")
+    public Integer underWeightFirst1;
 
-    @ColumnInfo(name = "over_weight_first")
-    public Integer overWeightFirst;
+    @ColumnInfo(name = "under_weight_first_2")
+    public Integer underWeightFirst2;
+
+    @ColumnInfo(name = "under_weight_first_3")
+    public Integer underWeightFirst3;
+
+    @ColumnInfo(name = "over_weight_first_1")
+    public Integer overWeightFirst1;
+
+    @ColumnInfo(name = "over_weight_first_2")
+    public Integer overWeightFirst2;
+
+    @ColumnInfo(name = "over_weight_first_3")
+    public Integer overWeightFirst3;
 
     @ColumnInfo(name = "net_weight_first")
     public Integer netWeightFirst;
@@ -84,7 +99,7 @@ public class FinalQualityTransaction {
     public Integer iceQuantityFirst;
 
     @ColumnInfo(name = "fish_temp_first")
-    public Integer fishTempFirst;
+    public Double fishTempFirst;
 
     @ColumnInfo(name = "size_second")
     public String sizeSecond;
@@ -98,11 +113,23 @@ public class FinalQualityTransaction {
     @ColumnInfo(name = "counted_pieces_second")
     public Integer countedPiecesSecond;
 
-    @ColumnInfo(name = "under_weight_second")
-    public Integer underWeightSecond;
+    @ColumnInfo(name = "under_weight_second_1")
+    public Integer underWeightSecond1;
 
-    @ColumnInfo(name = "over_weight_second")
-    public Integer overWeightSecond;
+    @ColumnInfo(name = "under_weight_second_2")
+    public Integer underWeightSecond2;
+
+    @ColumnInfo(name = "under_weight_second_3")
+    public Integer underWeightSecond3;
+
+    @ColumnInfo(name = "over_weight_second_1")
+    public Integer overWeightSecond1;
+
+    @ColumnInfo(name = "over_weight_second_2")
+    public Integer overWeightSecond2;
+
+    @ColumnInfo(name = "over_weight_second_3")
+    public Integer overWeightSecond3;
 
     @ColumnInfo(name = "net_weight_second")
     public Integer netWeightSecond;
@@ -111,7 +138,7 @@ public class FinalQualityTransaction {
     public Integer iceQuantitySecond;
 
     @ColumnInfo(name = "fish_temp_second")
-    public Integer fishTempSecond;
+    public Double fishTempSecond;
 
     @ColumnInfo(name = "size_third")
     public String sizeThird;
@@ -125,11 +152,23 @@ public class FinalQualityTransaction {
     @ColumnInfo(name = "counted_pieces_third")
     public Integer countedPiecesThird;
 
-    @ColumnInfo(name = "under_weight_third")
-    public Integer underWeightThird;
+    @ColumnInfo(name = "under_weight_third_1")
+    public Integer underWeightThird1;
 
-    @ColumnInfo(name = "over_weight_third")
-    public Integer overWeightThird;
+    @ColumnInfo(name = "under_weight_third_2")
+    public Integer underWeightThird2;
+
+    @ColumnInfo(name = "under_weight_third_3")
+    public Integer underWeightThird3;
+
+    @ColumnInfo(name = "over_weight_third_1")
+    public Integer overWeightThird1;
+
+    @ColumnInfo(name = "over_weight_third_2")
+    public Integer overWeightThird2;
+
+    @ColumnInfo(name = "over_weight_third_3")
+    public Integer overWeightThird3;
 
     @ColumnInfo(name = "net_weight_third")
     public Integer netWeightThird;
@@ -138,7 +177,7 @@ public class FinalQualityTransaction {
     public Integer iceQuantityThird;
 
     @ColumnInfo(name = "fish_temp_third")
-    public Integer fishTempThird;
+    public Double fishTempThird;
 
     @ColumnInfo(name = "created_at")
     public Long createdAt;
@@ -148,5 +187,17 @@ public class FinalQualityTransaction {
 
     @ColumnInfo(name = "is_synced")
     public Boolean isSynced = false;
+
+    @ColumnInfo(name = "corrective_action")
+    public String corrAction;
+
+    @ColumnInfo(name = "lot_accepted")
+    public Boolean lotAccepted;
+
+    @ColumnInfo(name = "foreign_body")
+    public Boolean foreignBody;
+
+    @ColumnInfo(name = "discarded_quantity")
+    public Double discardedQty;
 
 }

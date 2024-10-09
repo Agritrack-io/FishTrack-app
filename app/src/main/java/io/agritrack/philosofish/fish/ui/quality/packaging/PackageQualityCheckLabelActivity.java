@@ -12,10 +12,11 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +36,9 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
@@ -42,6 +46,7 @@ import io.agritrack.philosofish.api.tx.TransactionApi;
 import io.agritrack.philosofish.barcode.BarcodeScanService;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.dto.tx.PackageQualityTxDTO;
+import io.agritrack.philosofish.data.model.BinInfo;
 import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
@@ -59,30 +64,35 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
     private ImageView ivSupport;
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private ProgressDialog progressDialog;
-    private EditText tvCurrentLot, tvBestBefore;
+    private EditText tvCurrentLot;
+    private Spinner spFishLot;
+    private Set<String> fishLotSet;
+    private List<BinInfo> binInfos;
+    private List<String> fishLots = new ArrayList<>();
+    private ArrayAdapter<String> lotListAdapter;
     private SupportDialog supportDialog;
     private boolean scanning = false;
     private YesNoDialogFragment confirmNewLotDialog,  confirmSaveDataDialog;
     private String currentLot, bestBefore;
-    private EditText etComments;
+    private EditText etComments, etBins;
     private Spinner spStart, spChange, spMid, spEnd;
 
 
 
     // BroadcastReceiver to receiver scan data
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+    private final BroadcastReceiver receiverLabel = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             byte[] data = intent.getByteArrayExtra("data");
             if (data != null) {
                 String barcode = new String(data);
-                if (!barcode.isEmpty() && barcode.length() >= 10) {
+                if (!barcode.isEmpty() && barcode.length() >= 12) {
                     currentLot = barcode.substring(barcode.length() - 11);
-                    bestBefore = barcode.substring(barcode.length() - 21, barcode.length() - 15);
+                    //bestBefore = barcode.substring(barcode.length() - 21, barcode.length() - 15);
                     if (Strings.isEmptyOrWhitespace(recQualityPackage.lot)) {
                         loadBarcodeInfo(currentLot);
                     } else {
-                        if (barcode.equals(recQualityPackage.lot)) {
+                        if (currentLot.equals(recQualityPackage.lot)) {
                             CToast(getAppContext(), String.format(getResources().getString(R.string.lot_already_loaded), currentLot), Toast.LENGTH_LONG);
                             scanning = false;
                         } else {
@@ -100,19 +110,40 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
 
         PackageQualityTransaction txQuality = db.packageQualityTransactionDAO().getByLot(lot);
 
+        binInfos = db.binInfoDAO().getAll();
+
+        fishLotSet = new TreeSet<>(binInfos.stream().filter(x -> x.lot != null).map(x -> x.lot).collect(Collectors.toList()));
+
+        fishLots = new ArrayList<>();
+        fishLots.addAll(fishLotSet);
+
+        lotListAdapter = new ArrayAdapter<>(PackageQualityCheckLabelActivity.this, R.layout.simple_spinner_item, fishLots);
+        spFishLot.setAdapter(lotListAdapter);
         if (txQuality == null) {
             tvCurrentLot.setText(lot);
             String labelBB = null;
-            if (Strings.isEmptyOrWhitespace(bestBefore) && bestBefore.length() == 6) {
-                labelBB = bestBefore.substring(4) + "/" + bestBefore.substring(2,4) + "/20" + bestBefore.substring(0,2);
-            }
-            tvBestBefore.setText(labelBB);
-            recQualityPackage.bestBefore = labelBB;
+//            if (Strings.isEmptyOrWhitespace(bestBefore) && bestBefore.length() == 6) {
+//                labelBB = bestBefore.substring(4) + "/" + bestBefore.substring(2,4) + "/20" + bestBefore.substring(0,2);
+//            }
+//            recQualityPackage.bestBefore = labelBB;
             recQualityPackage.lot = currentLot;
             scanning = false;
         } else if (!txQuality.isLabelSynced) {
+
+            if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot))  {
+                int position = lotListAdapter.getPosition(txQuality.fishingLot);
+                if (position != -1) {
+                    spFishLot.setSelection(position);
+                    spFishLot.setClickable(false);
+                } else {
+                    fishLots.add(txQuality.fishingLot);
+                    lotListAdapter.notifyDataSetChanged();
+                    position = lotListAdapter.getPosition(txQuality.fishingLot);
+                    spFishLot.setSelection(position);
+                    spFishLot.setClickable(false);
+                }
+            }
             tvCurrentLot.setText(txQuality.lot);
-            tvBestBefore.setText(txQuality.bestBefore.toString());
             loadStatefromDB(txQuality);
             scanning = false;
         } else {
@@ -124,6 +155,7 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
     private void loadStatefromDB(PackageQualityTransaction txQuality) {
 
         recQualityPackage.lot = txQuality.lot;
+        recQualityPackage.fishLot = txQuality.fishingLot;
         if (txQuality.bestBefore != null) {
             recQualityPackage.bestBefore = txQuality.bestBefore.toString();
         }
@@ -132,6 +164,7 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
         recQualityPackage.changePacking = txQuality.changePacking;
         recQualityPackage.endPacking = txQuality.endPacking;
         recQualityPackage.labelComments = txQuality.labelComments;
+        recQualityPackage.disinfectedBins = txQuality.disinfectedBins;
 
         initControlsFromState();
     }
@@ -161,6 +194,27 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
 
         // get  references of the controls
         assignCtrlVars();
+
+
+        binInfos = db.binInfoDAO().getAll();
+
+        fishLotSet = new TreeSet<>(binInfos.stream().filter(x -> x.lot != null).map(x -> x.lot).collect(Collectors.toList()));
+
+        fishLots = new ArrayList<>();
+        fishLots.addAll(fishLotSet);
+
+        lotListAdapter = new ArrayAdapter<>(PackageQualityCheckLabelActivity.this, R.layout.simple_spinner_item, fishLots);
+        spFishLot.setAdapter(lotListAdapter);
+
+        spFishLot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                recQualityPackage.fishLot = parent.getItemAtPosition(position).toString(); //this is your selected item
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Nothing to do
+            }
+        });
 
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
         List<String> packStatus = new ArrayList<>();
@@ -192,6 +246,13 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
+
+        //Register receiver to receive the result of scan
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.rfid.SCAN");
+        registerReceiver(receiverLabel, filter);
+
+
         confirmNewLotDialog= YesNoDialogFragment.instance();
         confirmNewLotDialog.onConfirm(bundle -> {
             PackageQualityTransaction tx = commitPackageLabelCheckQuality(db, false);
@@ -211,10 +272,16 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
             if (tx == null) {
                 CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot),Toast.LENGTH_LONG);
             }
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverLabel);
+            unregisterReceiver(receiverLabel);
+
             Intent i = new Intent(getApplicationContext(), PackageQualityMenuActivity.class);
             startActivity(i);
         });
         confirmSaveDataDialog.onReject(bundle -> {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverLabel);
+            unregisterReceiver(receiverLabel);
+
             Intent i = new Intent(getApplicationContext(), PackageQualityMenuActivity.class);
             startActivity(i);
         });
@@ -277,6 +344,9 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                 }
                 if (proceed) {
+                    LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverLabel);
+                    unregisterReceiver(receiverLabel);
+
                     Intent i = new Intent(getApplicationContext(), PackageQualityMenuActivity.class);
                     startActivity(i);
                 }
@@ -292,6 +362,9 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
                 confirmSaveDataDialog.setMessage(getString(R.string.save_lot_quality, recQualityPackage.lot));
                 confirmSaveDataDialog.showNow(fm, getString(R.string.confirm_selection));
             } else {
+                LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverLabel);
+                unregisterReceiver(receiverLabel);
+
                 Intent i = new Intent(getApplicationContext(), PackageQualityMenuActivity.class);
                 startActivity(i);
             }
@@ -300,9 +373,10 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
 
     private void assignCtrlVars() {
         btnScanBox = findViewById(R.id.btnScanBin);
+        etBins = findViewById(R.id.etBins);
 
         tvCurrentLot = findViewById(R.id.lotNumber);
-        tvBestBefore = findViewById(R.id.tvBB);
+        spFishLot = findViewById(R.id.spFishLot);
 
         spStart = findViewById(R.id.spStartpack);
         spChange = findViewById(R.id.spChangePack);
@@ -312,7 +386,6 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
 
         ivSupport = findViewById(R.id.ivSupport);
 
-        tvBestBefore.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
 
     }
 
@@ -320,6 +393,25 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
 
         if (Strings.isEmptyOrWhitespace(recQualityPackage.labelComments)) {
             etComments.setText(recQualityPackage.labelComments);
+        }
+
+
+        if (!Strings.isEmptyOrWhitespace(recQualityPackage.fishLot)) {
+            int position = lotListAdapter.getPosition(recQualityPackage.fishLot);
+            if (position != -1) {
+                spFishLot.setSelection(position);
+                spFishLot.setClickable(false);
+            } else {
+                fishLots.add(recQualityPackage.fishLot);
+                lotListAdapter.notifyDataSetChanged();
+                position = lotListAdapter.getPosition(recQualityPackage.fishLot);
+                spFishLot.setSelection(position);
+                spFishLot.setClickable(false);
+            }
+        }
+
+        if (recQualityPackage.disinfectedBins != null) {
+            etBins.setText(String.valueOf(recQualityPackage.disinfectedBins));
         }
 
         if (recQualityPackage.startPacking == null) {
@@ -375,7 +467,7 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
 
        // recQualityPackage.lot = tvCurrentLot.getText().toString();
         recQualityPackage.lot = Strings.isEmptyOrWhitespace(tvCurrentLot.getText().toString()) ? null : tvCurrentLot.getText().toString();
-        recQualityPackage.bestBefore = Strings.isEmptyOrWhitespace(tvBestBefore.getText().toString()) ? null : tvBestBefore.getText().toString();
+        recQualityPackage.fishLot = spFishLot.getSelectedItem() == null ? null : spFishLot.getSelectedItem().toString();
         recQualityPackage.labelComments = Strings.isEmptyOrWhitespace(etComments.getText().toString()) ? null : etComments.getText().toString();
 
         switch (spStart.getSelectedItemPosition()) {
@@ -434,9 +526,9 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
                 recQualityPackage.endPacking = null;
         }
 
-
-
-
+        if (etBins.getText() != null && !Strings.isEmptyOrWhitespace(etBins.getText().toString())) {
+            recQualityPackage.disinfectedBins = Integer.valueOf(etBins.getText().toString());
+        }
 
     }
 
@@ -458,6 +550,10 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
                 if (recQualityPackage.endPacking == null) {
                     sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.end_packaging)));
                 }
+            }
+
+            if (Strings.isEmptyOrWhitespace(recQualityPackage.fishLot)) {
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.lot_fishing)));
             }
         }
 
@@ -492,7 +588,7 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverLabel);
         super.onStop();
     }
 

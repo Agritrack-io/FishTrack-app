@@ -227,6 +227,10 @@ public class ReceiptQualityFreshCheckActivity extends AppCompatActivity implemen
         if (recQualityRecord.disSkeletal != null) {
             etSkelet.setText(String.valueOf(recQualityRecord.disSkeletal));
         }
+
+        if (!Strings.isEmptyOrWhitespace(recQualityRecord.comments)) {
+            etComments.setText(recQualityRecord.comments);
+        }
     }
 
     private QualityRecord updateState() {
@@ -259,7 +263,7 @@ public class ReceiptQualityFreshCheckActivity extends AppCompatActivity implemen
         recQualityReceipt.gillRating = selectedGillRating;
         recQualityReceipt.skinRating = selectedSkinRating;
         recQualityReceipt.fleshRating = selectedFleshRating;
-        if (etComments.getText() != null && Strings.isEmptyOrWhitespace(etComments.getText().toString())) {
+        if (etComments.getText() != null && !Strings.isEmptyOrWhitespace(etComments.getText().toString())) {
             recQualityReceipt.comments = etComments.getText().toString();
         }
 

@@ -7,6 +7,7 @@ import io.agritrack.philosofish.data.model.common.FinalSample;
 public class FinalQualityRecord {
 
     public String lot;
+    public String fishLot;
     public Integer exfoRating;
     public Integer paletteRating;
     public Integer boxRating;
@@ -17,6 +18,9 @@ public class FinalQualityRecord {
     public Boolean body;
     public Boolean areas;
     public String bestBefore;
+    public String corrAction;
+    public Boolean lotAccepted, foreignBody;
+    public Double discardedQty;
     public Bitmap signature;
     public byte[] signatureBytes;
 

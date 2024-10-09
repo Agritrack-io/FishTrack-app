@@ -1,93 +1,94 @@
 package io.agritrack.philosofish.data.dto.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 public class PackageFreshCheckDTO {
 
-    @JsonProperty("fresh_grade")
+    @SerializedName("fresh_grade")
     public Integer freshGrade;
 
-    @JsonProperty("skin_grade")
+    @SerializedName("skin_grade")
     public Integer skinGrade;
 
-    @JsonProperty("eye_grade")
+    @SerializedName("eye_grade")
     public Integer eyeGrade;
 
-    @JsonProperty("gill_grade")
+    @SerializedName("gill_grade")
     public Integer gillGrade;
 
-    @JsonProperty("crooked_mouth")
+    @SerializedName("crooked_mouth")
     public Integer crookedMouth;
 
-    @JsonProperty("lower_law")
+    @SerializedName("lower_law")
     public Integer lowerJaw;
 
-    @JsonProperty("jaw_over")
+    @SerializedName("jaw_over")
     public Integer jawOver;
 
-    @JsonProperty("overall_grade")
+    @SerializedName("overall_grade")
     public Integer overallGrade;
 
-    @JsonProperty("operculum")
+    @SerializedName("operculum")
     public Integer operculum;
 
-    @JsonProperty("lordosis")
+    @SerializedName("lordosis")
     public Integer lordosis;
 
-    @JsonProperty("shortening")
+    @SerializedName("shortening")
     public Integer shortening;
 
-    @JsonProperty("skeletical")
+    @SerializedName("skeletical")
     public Integer skeletical;
 
-    @JsonProperty("tail_deformity")
+    @SerializedName("tail_deformity")
     public Integer tailDeformity;
 
-    @JsonProperty("tail_deform")
+    @SerializedName("tail_deform")
     public Integer tailDeform;
 
-    @JsonProperty("fin_deform")
+    @SerializedName("fin_deform")
     public Integer finDeform;
 
-    @JsonProperty("wound_deform")
+    @SerializedName("wound_deform")
     public Integer woundsDeform;
 
-    @JsonProperty("hem_slight")
+    @SerializedName("hem_slight")
     public Integer hemSlight;
 
-    @JsonProperty("hem_spots")
+    @SerializedName("hem_spots")
     public Integer hemSpots;
 
-    @JsonProperty("hem_diffuse")
+    @SerializedName("hem_diffuse")
     public Integer hemDiffuse;
 
-    @JsonProperty("hem_wounds")
+    @SerializedName("hem_wounds")
     public Integer hemWounds;
 
-    @JsonProperty("eye_blurred")
+    @SerializedName("eye_blurred")
     public Integer eyeBlurred;
 
-    @JsonProperty("eye_cured")
+    @SerializedName("eye_cured")
     public Integer eyeCured;
 
-    @JsonProperty("eye_blind")
+    @SerializedName("eye_blind")
     public Integer eyeBlind;
 
-    @JsonProperty("eye_bleed")
+    @SerializedName("eye_bleed")
     public Integer eyeBleed;
 
-    @JsonProperty("gill_mucus")
+    @SerializedName("gill_mucus")
     public Integer gillMucus;
 
-    @JsonProperty("gill_bloody")
+    @SerializedName("gill_bloody")
     public Integer gillBloody;
 
-    @JsonProperty("gill_brown")
+    @SerializedName("gill_brown")
     public Integer gillBrown;
 
-    @JsonProperty("gill_discolor")
+    @SerializedName("gill_discolor")
     public Integer gillDiscolor;
 
-    @JsonProperty("head_deform")
+    @SerializedName("head_deform")
     public Integer headDeform;
 }

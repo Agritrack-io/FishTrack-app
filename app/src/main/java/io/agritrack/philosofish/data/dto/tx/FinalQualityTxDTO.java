@@ -1,5 +1,7 @@
 package io.agritrack.philosofish.data.dto.tx;
 
+import androidx.room.ColumnInfo;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
@@ -19,6 +21,9 @@ public class FinalQualityTxDTO {
 
     @SerializedName("lot")
     public String lot;
+
+    @SerializedName("fishing_lot")
+    public String fishingLot;
 
     @SerializedName("exfo_rating")
     public Integer exfoRating;
@@ -68,10 +73,25 @@ public class FinalQualityTxDTO {
     @JsonProperty
     public String signature;
 
+    @SerializedName("corrective_action")
+    public String corrAction;
+
+    @SerializedName("lot_accepted")
+    public Boolean lotAccepted;
+
+    @SerializedName("foreign_body_absence")
+    public Boolean foreignBody;
+
+    @SerializedName("discarded_quantity")
+    public Double discardedQty;
+
+
+
     public static FinalQualityTxDTO convert(FinalQualityTransaction qualityTx) {
         FinalQualityTxDTO finalQualityTxDTO = new FinalQualityTxDTO();
         finalQualityTxDTO.id = qualityTx.id;
         finalQualityTxDTO.lot = qualityTx.lot;
+        finalQualityTxDTO.fishingLot = qualityTx.fishingLot;
         finalQualityTxDTO.user = LocalPreferences.getLoggedInUser("N/A");
         finalQualityTxDTO.plant = LocalPreferences.getCurrentSiteName();
 
@@ -90,8 +110,12 @@ public class FinalQualityTxDTO {
         finalQualityTxDTO.sample1.boxType = qualityTx.boxTypeFirst;
         finalQualityTxDTO.sample1.labelPieces = qualityTx.labelPiecesFirst;
         finalQualityTxDTO.sample1.countedPieces = qualityTx.countedPiecesFirst;
-        finalQualityTxDTO.sample1.underWeight = qualityTx.underWeightFirst;
-        finalQualityTxDTO.sample1.overWeight = qualityTx.overWeightFirst;
+        finalQualityTxDTO.sample1.underWeight1 = qualityTx.underWeightFirst1;
+        finalQualityTxDTO.sample1.underWeight2 = qualityTx.underWeightFirst2;
+        finalQualityTxDTO.sample1.underWeight3 = qualityTx.underWeightFirst3;
+        finalQualityTxDTO.sample1.overWeight1 = qualityTx.overWeightFirst1;
+        finalQualityTxDTO.sample1.overWeight2 = qualityTx.overWeightFirst2;
+        finalQualityTxDTO.sample1.overWeight3 = qualityTx.overWeightFirst3;
         finalQualityTxDTO.sample1.netWeight = qualityTx.netWeightFirst;
         finalQualityTxDTO.sample1.iceQuantity = qualityTx.iceQuantityFirst;
         finalQualityTxDTO.sample1.fishTemp = qualityTx.fishTempFirst;
@@ -101,8 +125,12 @@ public class FinalQualityTxDTO {
         finalQualityTxDTO.sample2.boxType = qualityTx.boxTypeSecond;
         finalQualityTxDTO.sample2.labelPieces = qualityTx.labelPiecesSecond;
         finalQualityTxDTO.sample2.countedPieces = qualityTx.countedPiecesSecond;
-        finalQualityTxDTO.sample2.underWeight = qualityTx.underWeightSecond;
-        finalQualityTxDTO.sample2.overWeight = qualityTx.overWeightSecond;
+        finalQualityTxDTO.sample2.underWeight1 = qualityTx.underWeightSecond1;
+        finalQualityTxDTO.sample2.underWeight2 = qualityTx.underWeightSecond2;
+        finalQualityTxDTO.sample2.underWeight3 = qualityTx.underWeightSecond3;
+        finalQualityTxDTO.sample2.overWeight1 = qualityTx.overWeightSecond1;
+        finalQualityTxDTO.sample2.overWeight2 = qualityTx.overWeightSecond2;
+        finalQualityTxDTO.sample2.overWeight3 = qualityTx.overWeightSecond3;
         finalQualityTxDTO.sample2.netWeight = qualityTx.netWeightSecond;
         finalQualityTxDTO.sample2.iceQuantity = qualityTx.iceQuantitySecond;
         finalQualityTxDTO.sample2.fishTemp = qualityTx.fishTempSecond;
@@ -112,11 +140,20 @@ public class FinalQualityTxDTO {
         finalQualityTxDTO.sample3.boxType = qualityTx.boxTypeThird;
         finalQualityTxDTO.sample3.labelPieces = qualityTx.labelPiecesThird;
         finalQualityTxDTO.sample3.countedPieces = qualityTx.countedPiecesThird;
-        finalQualityTxDTO.sample3.underWeight = qualityTx.underWeightThird;
-        finalQualityTxDTO.sample3.overWeight = qualityTx.overWeightThird;
+        finalQualityTxDTO.sample3.underWeight1 = qualityTx.underWeightThird1;
+        finalQualityTxDTO.sample3.underWeight2 = qualityTx.underWeightThird2;
+        finalQualityTxDTO.sample3.underWeight3 = qualityTx.underWeightThird3;
+        finalQualityTxDTO.sample3.overWeight1 = qualityTx.overWeightThird1;
+        finalQualityTxDTO.sample3.overWeight2 = qualityTx.overWeightThird2;
+        finalQualityTxDTO.sample3.overWeight3 = qualityTx.overWeightThird3;
         finalQualityTxDTO.sample3.netWeight = qualityTx.netWeightThird;
         finalQualityTxDTO.sample3.iceQuantity = qualityTx.iceQuantityThird;
         finalQualityTxDTO.sample3.fishTemp = qualityTx.fishTempThird;
+
+        finalQualityTxDTO.lotAccepted = qualityTx.lotAccepted;
+        finalQualityTxDTO.discardedQty = qualityTx.discardedQty;
+        finalQualityTxDTO.foreignBody = qualityTx.foreignBody;
+        finalQualityTxDTO.corrAction = qualityTx.corrAction;
 
         finalQualityTxDTO.signature = qualityTx.signature;
 

@@ -12,10 +12,15 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +40,8 @@ import java.net.SocketTimeoutException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
@@ -43,6 +50,7 @@ import io.agritrack.philosofish.api.tx.TransactionApi;
 import io.agritrack.philosofish.barcode.BarcodeScanService;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.dto.tx.PackageQualityTxDTO;
+import io.agritrack.philosofish.data.model.BinInfo;
 import io.agritrack.philosofish.data.model.common.SortingSample;
 import io.agritrack.philosofish.data.model.common.TonneSample;
 import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
@@ -73,6 +81,11 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
     private boolean scanning = false;
     private YesNoDialogFragment confirmNewLotDialog,  confirmSaveDataDialog;
     private String currentLot, bestBefore;
+    private Spinner spFishLot;
+    private Set<String> fishLotSet;
+    private List<BinInfo> binInfos;
+    private List<String> fishLots = new ArrayList<>();
+    private ArrayAdapter<String> lotListAdapter;
     private ImageView ivAddTonnage, ivAddSorting, ivClearSorting, ivClearTonnage;
     private SortingSampleAdapter adapterSorting;
     private TonnageSampleAdapter adapterTonnage;
@@ -82,19 +95,19 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
 
 
     // BroadcastReceiver to receiver scan data
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+    private final BroadcastReceiver receiverSample = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             byte[] data = intent.getByteArrayExtra("data");
             if (data != null) {
                 String barcode = new String(data);
-                if (!barcode.isEmpty() && barcode.length() >= 10) {
+                if (!barcode.isEmpty() && barcode.length() >= 12) {
                     currentLot = barcode.substring(barcode.length() - 11);
-                    bestBefore = barcode.substring(barcode.length() - 21, barcode.length() - 15);
+                    //bestBefore = barcode.substring(barcode.length() - 21, barcode.length() - 15);
                     if (Strings.isEmptyOrWhitespace(recQualityPackage.lot)) {
                         loadBarcodeInfo(currentLot);
                     } else {
-                        if (barcode.equals(recQualityPackage.lot)) {
+                        if (currentLot.equals(recQualityPackage.lot)) {
                             CToast(getAppContext(), String.format(getResources().getString(R.string.lot_already_loaded), currentLot), Toast.LENGTH_LONG);
                             scanning = false;
                         } else {
@@ -112,11 +125,35 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
 
         PackageQualityTransaction txQuality = db.packageQualityTransactionDAO().getByLot(lot);
 
+        binInfos = db.binInfoDAO().getAll();
+
+        fishLotSet = new TreeSet<>(binInfos.stream().filter(x -> x.lot != null).map(x -> x.lot).collect(Collectors.toList()));
+
+        fishLots = new ArrayList<>();
+        fishLots.addAll(fishLotSet);
+
+        lotListAdapter = new ArrayAdapter<>(PackageQualitySamplingActivity.this, R.layout.simple_spinner_item, fishLots);
+        spFishLot.setAdapter(lotListAdapter);
+
         if (txQuality == null) {
             tvCurrentLot.setText(lot);
             recQualityPackage.lot = currentLot;
             scanning = false;
         } else if (!txQuality.isSampleSynced) {
+
+            if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot))  {
+                int position = lotListAdapter.getPosition(txQuality.fishingLot);
+                if (position != -1) {
+                    spFishLot.setSelection(position);
+                    spFishLot.setClickable(false);
+                } else {
+                    fishLots.add(txQuality.fishingLot);
+                    lotListAdapter.notifyDataSetChanged();
+                    position = lotListAdapter.getPosition(txQuality.fishingLot);
+                    spFishLot.setSelection(position);
+                    spFishLot.setClickable(false);
+                }
+            }
             tvCurrentLot.setText(txQuality.lot);
             loadStatefromDB(txQuality);
             scanning = false;
@@ -129,6 +166,7 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
     private void loadStatefromDB(PackageQualityTransaction txQuality) {
 
         recQualityPackage.lot = txQuality.lot;
+        recQualityPackage.fishLot = txQuality.fishingLot;
 
         recQualityPackage.sortingSamples = txQuality.sortingSamples;
         recQualityPackage.tonneSamples = txQuality.tonneSamples;
@@ -162,6 +200,27 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
         assignCtrlVars();
 
 
+        binInfos = db.binInfoDAO().getAll();
+
+        fishLotSet = new TreeSet<>(binInfos.stream().filter(x -> x.lot != null).map(x -> x.lot).collect(Collectors.toList()));
+
+        fishLots = new ArrayList<>();
+        fishLots.addAll(fishLotSet);
+
+        lotListAdapter = new ArrayAdapter<>(PackageQualitySamplingActivity.this, R.layout.simple_spinner_item, fishLots);
+        spFishLot.setAdapter(lotListAdapter);
+
+
+        spFishLot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                recQualityPackage.fishLot = parent.getItemAtPosition(position).toString(); //this is your selected item
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Nothing to do
+            }
+        });
+
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
         rvTonnageSample.setLayoutManager(layoutManager1);
         rvTonnageSample.setItemAnimator(new DefaultItemAnimator());
@@ -185,6 +244,12 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
 
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
+
+
+        //Register receiver to receive the result of scan
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.rfid.SCAN");
+        registerReceiver(receiverSample, filter);
 
         setSortingDialog = new SetSortingSampleDialog(this);
         setSortingDialog.setMyDialogListener(this);
@@ -211,10 +276,16 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
             if (tx == null) {
                 CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot),Toast.LENGTH_LONG);
             }
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverSample);
+            unregisterReceiver(receiverSample);
+
             Intent i = new Intent(getApplicationContext(), PackageQualityMenuActivity.class);
             startActivity(i);
         });
         confirmSaveDataDialog.onReject(bundle -> {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverSample);
+            unregisterReceiver(receiverSample);
+
             Intent i = new Intent(getApplicationContext(), PackageQualityMenuActivity.class);
             startActivity(i);
         });
@@ -341,6 +412,9 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
                     progressDialog.dismiss();
                 }
                 if (proceed) {
+                    LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverSample);
+                    unregisterReceiver(receiverSample);
+
                     Intent i = new Intent(getApplicationContext(), PackageQualityMenuActivity.class);
                     startActivity(i);
                 }
@@ -356,6 +430,9 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
                 confirmSaveDataDialog.setMessage(getString(R.string.save_lot_quality, recQualityPackage.lot));
                 confirmSaveDataDialog.showNow(fm, getString(R.string.confirm_selection));
             } else {
+                LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverSample);
+                unregisterReceiver(receiverSample);
+
                 Intent i = new Intent(getApplicationContext(), PackageQualityMenuActivity.class);
                 startActivity(i);
             }
@@ -366,6 +443,8 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
         btnScanBox = findViewById(R.id.btnScanBin);
 
         tvCurrentLot = findViewById(R.id.lotNumber);
+
+        spFishLot = findViewById(R.id.spFishLot);
 
         ivAddSorting = findViewById(R.id.ibAddLaundry);
 
@@ -382,6 +461,21 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
 
     private void initControlsFromState() {
         PackageQualityRecord packQualityRecord = recQualityPackage;
+
+
+        if (!Strings.isEmptyOrWhitespace(recQualityPackage.fishLot)) {
+            int position = lotListAdapter.getPosition(recQualityPackage.fishLot);
+            if (position != -1) {
+                spFishLot.setSelection(position);
+                spFishLot.setClickable(false);
+            } else {
+                fishLots.add(recQualityPackage.fishLot);
+                lotListAdapter.notifyDataSetChanged();
+                position = lotListAdapter.getPosition(recQualityPackage.fishLot);
+                spFishLot.setSelection(position);
+                spFishLot.setClickable(false);
+            }
+        }
 
         if (packQualityRecord.sortingSamples != null && !packQualityRecord.sortingSamples.isEmpty()) {
             adapterSorting.setValues(packQualityRecord.sortingSamples.stream()
@@ -415,7 +509,8 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
 
     private void updateState() {
 
-        recQualityPackage.lot = Strings.isEmptyOrWhitespace(tvCurrentLot.getText().toString()) ? null : tvCurrentLot.getText().toString();
+        recQualityPackage.lot = tvCurrentLot.getText() == null ? null : tvCurrentLot.getText().toString();
+        recQualityPackage.fishLot = spFishLot.getSelectedItem() == null ? null : spFishLot.getSelectedItem().toString();
         recQualityPackage.sortingSamples = adapterSorting.getValues().stream()
                 .map(x -> new SortingSample(x.timestamp, x.fishTemp, x.waterTemp))
                 .collect(Collectors.toList());
@@ -442,6 +537,10 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
                 if (recQualityPackage.tonneSamples == null || recQualityPackage.tonneSamples.isEmpty()) {
                     sb.append(String.format("\n%s is missing", "'Θερμοκρασίες Ανά 5 Τόνους'"));
                 }
+            }
+
+            if (Strings.isEmptyOrWhitespace(recQualityPackage.fishLot)) {
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.lot_fishing)));
             }
         }
 
@@ -476,7 +575,7 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverSample);
         super.onStop();
     }
 

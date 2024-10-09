@@ -978,4 +978,9 @@
     <string name="dysmorphias_percentage">Δυσμορφίες (%)</string>
     <string name="confirm_submission">Είστε σίγουροι ότι ο έλεγχος είναι συμπληρωμένος και έτοιμος για αποστολή?</string>
     <string name="signature">Υπογραφή</string>
+    <string name="cylindrical">Κυλινδρική</string>
+    <string name="expanded">Διογκωμένη</string>
+    <string name="confirm_lot_packaging">LOT Συσκευασίας</string>
+    <string name="bin_disinfection">Απολύμανση Βουτών</string>
+    <string name="lot_fishing">Παρτίδα Αλίευσης</string>
 </resources>

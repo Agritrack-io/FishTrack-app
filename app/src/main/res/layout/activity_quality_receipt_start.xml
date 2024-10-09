@@ -451,13 +451,13 @@
 
                 <TextView
                     android:id="@+id/scan_instruction"
-                    android:layout_width="200dp"
+                    android:layout_width="170dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="5dp"
                     android:background="@color/agri_semi_green"
                     android:gravity="center"
-                    android:paddingHorizontal="8dp"
+                    android:paddingHorizontal="2dp"
                     android:text="@string/scan_one_bin_from_lot"
                     android:textColor="@color/label_blue"
                     android:textSize="14sp"

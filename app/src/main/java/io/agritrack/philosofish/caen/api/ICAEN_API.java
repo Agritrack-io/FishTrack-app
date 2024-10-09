@@ -10,7 +10,7 @@ import io.agritrack.philosofish.data.model.TempSample;
 
 public interface ICAEN_API {
 
-    Short DefaultInterval = (short) 30;//1800; //(900); //(1800); //(3600);
+    Short DefaultInterval = (short) 900;//1800; //(900); //(1800); //(3600);
     Short SampleBatchSize = 50;
     byte[] accessPassword = Tools.HexString2Bytes("00000000");
 

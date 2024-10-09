@@ -164,6 +164,10 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".fish.ui.quality.finalCheck.QualityFinalCheckSecondActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".fish.ui.quality.finalCheck.QualityFinalCheckConfirmActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
