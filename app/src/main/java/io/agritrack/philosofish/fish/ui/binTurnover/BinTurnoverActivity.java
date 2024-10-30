@@ -128,7 +128,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
     private ImageButton ibShowValues;
     private String loggerEPC, binEPC;
     private String fishT, waterT, fishT2;
-    private ImageView ivSupport, ivBack;
+    private ImageView ivSupport, ivBack, ivNext;
     private Button btnScanBin;
     private SupportDialog supportDialog;
     private String callingActivity;
@@ -267,6 +267,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
                         GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
                         fillTemperatureProfileAdapter();
                         ivBack.setVisibility(View.INVISIBLE);
+                        ivNext.setVisibility(View.VISIBLE);
                     } else {
                         recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), System.currentTimeMillis(), null);
                         GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
@@ -309,7 +310,8 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
     }
 
     protected void configFooter() {
-        ImageView ivNext = findViewById(R.id.ivToCongs);
+        ivNext = findViewById(R.id.ivToCongs);
+        ivNext.setVisibility(View.INVISIBLE);
         ivNext.setOnClickListener(view -> {
             stopScanner();
             String v = validate();
@@ -680,6 +682,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         public void onResponse(Call<List<TemperatureTimeSeriesDTO>> call, Response<List<TemperatureTimeSeriesDTO>> response) {
             List<TemperatureTimeSeriesDTO> rs = response.body();
             ivBack.setVisibility(View.VISIBLE);
+            ivNext.setVisibility(View.INVISIBLE);
 
             if (rs != null || !IsDemo) {
                 // reset existing Temperature values in stateRecord.
@@ -698,6 +701,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         @Override
         public void onFailure(Call<List<TemperatureTimeSeriesDTO>> call, Throwable error) {
             ivBack.setVisibility(View.VISIBLE);
+            ivNext.setVisibility(View.INVISIBLE);
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
             } else if (error instanceof IOException) {

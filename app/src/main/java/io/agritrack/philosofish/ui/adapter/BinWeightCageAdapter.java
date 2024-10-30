@@ -58,11 +58,12 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
             if (curItem.isPresent()) {
                 BinDetails bin = curItem.get();
                 bin.flag = bin.flag!=2 ? 0 : bin.flag;
-            } else {
-                BinDetails bin = new BinDetails(epc);
-                bin.flag = 2;
-                addItem(bin);
             }
+//            else {
+//                BinDetails bin = new BinDetails(epc);
+//                bin.flag = 2;
+//                addItem(bin);
+//            }
         }
     }
 
@@ -166,6 +167,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
 
         public BinDetails(String rfid) {
             this.epc = rfid;
+            this.isSelected = false;
         }
 
         public BinDetails(CharSequence x) {
@@ -176,6 +178,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
             this.epc = epc;
             this.weight = binWeight;
             this.cage = cageCode;
+            this.isSelected = false;
         }
 
         public BinDetails(String epc, Double binWeight, String cageCode, boolean sorted) {
@@ -183,6 +186,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
             this.weight = binWeight;
             this.cage = cageCode;
             this.isSorted = sorted;
+            this.isSelected = false;
         }
     }
 

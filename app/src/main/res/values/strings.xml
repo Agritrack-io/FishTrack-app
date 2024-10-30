@@ -983,4 +983,5 @@
     <string name="confirm_lot_packaging">LOT Συσκευασίας</string>
     <string name="bin_disinfection">Απολύμανση Βουτών</string>
     <string name="lot_fishing">Παρτίδα Αλίευσης</string>
+    <string name="sign_manager">Υπογραφή υπευθύνου</string>
 </resources>

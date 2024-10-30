@@ -260,7 +260,7 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
 
 
         recQualityFinal.foreignBody = swForeignBody.isChecked();
-        recQualityFinal.lotAccepted = swForeignBody.isChecked();
+        recQualityFinal.lotAccepted = swLotAccepted.isChecked();
         recQualityFinal.corrAction = etComments.getText().toString();
 
         if (!swForeignBody.isChecked() && etComments.getText() != null && !Strings.isEmptyOrWhitespace(etComments.getText().toString())) {

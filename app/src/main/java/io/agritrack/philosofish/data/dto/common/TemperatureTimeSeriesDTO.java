@@ -22,7 +22,7 @@ public class TemperatureTimeSeriesDTO {
     @SerializedName("fish_temp1")
     public Double surface_temp;
 
-    @SerializedName("water_temp2")
+    @SerializedName("fish_temp2")
     public Double bottom_temp;
 
     public String corrective_action;
