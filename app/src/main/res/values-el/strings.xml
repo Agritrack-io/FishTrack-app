@@ -842,19 +842,19 @@
     <string name="proceed">Are you sure you want to proceed with uncorrelation?</string>
     <string name="proceed_with_uncorrelation">Είστε σίγουροι ότι θέλετε να αποσυσχετίσετε το δίχτυ \%1$s\ από την ετικέτα \%2$s\?</string>
     <string name="uncorrelate">Αποσυσχέτιση</string>
-    <string name="proceed_with_replacement">This net already has RFID correlated. Are you sure you want to replace?</string>
+    <string name="proceed_with_replacement">Το δίχτυ έχει ήδη ετικέτα συσχετισμένη. Είστε σίγουροι ότι θέλετε να την αντικαταστήσετε?</string>
     <string name="net_already_assigned_to_other_rfid">Το δίχτυ \%1$s\ έχει συσχετιστεί ήδη με την ετικέτα \%2$s\. Θέλετε να συνεχίσετε?</string>
     <string name="cage_already_assigned_to_other_rfid"> κλωβός \%1$s\ έχει συσχετιστεί ήδη με την ετικέτα \%2$s\. Θέλετε να συνεχίσετε?</string>
     <string name="ask_to_sync_nets">Θέλετε να συγχρονίσετε και τα δίχτυα? Η διαδικασία μπορεί να διαρκέσει για λίγα λεπτά.</string>
     <string name="sync_failed">Αποτυχία συγχρονισμού</string>
-    <string name="cage_code">Cage code</string>
+    <string name="cage_code">Κωδικός κλωβού</string>
     <string name="empty_list_nets">Η λίστα είναι άδεια! Δεν υπάρχουν δίχτυα για συσχετισμό.</string>
-    <string name="all_cages">All cages</string>
-    <string name="empty_list_cages">List is empty! No cages to correlate</string>
+    <string name="all_cages">Όλοι οι κλωβοί</string>
+    <string name="empty_list_cages">Η λίστα είναι άδεια! Δεν υπάρχουν κλωβοί για συσχετισμό.</string>
     <string name="bin_already_assigned_to_other_rfid">Η βούτα \%1$s\ έχει συσχετιστεί ήδη με την ετικέτα \%2$s\. Θέλετε να συνεχίσετε?</string>
-    <string name="please_scan">Please scan for assets</string>
-    <string name="select_to_copy_to_clipboard">Please select an asset to copy</string>
-    <string name="copy_to_clipboard">Label \%1$s\ is copied to clipboard</string>
+    <string name="please_scan">Παρακαλώ σκανάρετε για πάγια</string>
+    <string name="select_to_copy_to_clipboard">Παρακαλώ επιλέξτε πάγιο για αντιγραφή</string>
+    <string name="copy_to_clipboard">Η ετικέτα \%1$s\ αντιγράφηκε στο πρόχειρο</string>
     <string name="paste_label">Επικόλληση ετικέτας</string>
     <string name="delete_all_selected_items">Είστε σίγουροι ότι θέλετε να διαγράψετε τις επιλεγμένες βούτες?</string>
     <string name="logger_data">Δεδομένα Logger</string>
@@ -975,6 +975,17 @@
     <string name="bin_disinfection">Απολύμανση Βουτών</string>
     <string name="lot_fishing">Παρτίδα Αλίευσης</string>
     <string name="sign_manager">Υπογραφή υπευθύνου</string>
+    <string name="absence_of_foreign_bodies">Απουσία ξένων σωμάτων</string>
+    <string name="lot_accepted">Η παρτίδα είναι αποδεκτή</string>
+    <string name="non_acceptable_quantity">Μη αποδεκτή ποσότητα: </string>
+    <string name="typical">ΤΥΠΙΚΗ</string>
+    <string name="problematic">ΠΡΟΒΛΗΜΑΤΙΚΗ</string>
+    <string name="correction">ΔΙΟΡΘΩΣΗ</string>
+    <string name="light">ΕΛΑΦΡΙΑ</string>
+    <string name="medium">ΜΕΣΑΙΑ</string>
+    <string name="intense">ΕΝΤΟΝΗ</string>
+    <string name="temp_per_5_tonnes">ΘΕΡΜΟΚΡΑΣΙΑ ΑΝΑ 5 ΤΟΝΟΥΣ</string>
+    <string name="temp_conveyor_belt">ΘΕΡΜΟΚΡΑΣΙΑ ΠΛΥΝΤΗΡΙΟΥ ΔΙΑΛΟΓΗΣ</string>
 
 
 </resources>

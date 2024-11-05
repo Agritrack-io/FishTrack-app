@@ -148,11 +148,12 @@
                                 android:layout_height="30dp"
                                 android:layout_margin="5dp"
                                 android:layout_weight="1"
+                                android:textAllCaps="true"
                                 android:background="@drawable/togglebutton_selector"
                                 android:gravity="center"
                                 android:textColor="@drawable/button_text_color"
-                                android:textOff="ΕΛΑΦΡΙΑ"
-                                android:textOn="ΕΛΑΦΡΙΑ"
+                                android:textOff="@string/light"
+                                android:textOn="@string/light"
                                 android:textSize="20sp" />
 
                             <ToggleButton
@@ -161,11 +162,12 @@
                                 android:layout_height="30dp"
                                 android:layout_margin="5dp"
                                 android:layout_weight="1"
+                                android:textAllCaps="true"
                                 android:background="@drawable/togglebutton_selector"
                                 android:gravity="center"
                                 android:textColor="@drawable/button_text_color"
-                                android:textOff="ΜΕΣΑΙΑ"
-                                android:textOn="ΜΕΣΑΙΑ"
+                                android:textOff="@string/medium"
+                                android:textOn="@string/medium"
                                 android:textSize="@dimen/text_view_font_size_medium" />
 
                             <ToggleButton
@@ -174,11 +176,12 @@
                                 android:layout_height="30dp"
                                 android:layout_margin="5dp"
                                 android:layout_weight="1"
+                                android:textAllCaps="true"
                                 android:background="@drawable/togglebutton_selector"
                                 android:gravity="center"
                                 android:textColor="@drawable/button_text_color"
-                                android:textOff="ΕΝΤΟΝΗ"
-                                android:textOn="ΕΝΤΟΝΗ"
+                                android:textOff="@string/intense"
+                                android:textOn="@string/intense"
                                 android:textSize="@dimen/text_view_font_size_medium" />
 
 
@@ -245,8 +248,8 @@
                                 android:gravity="center"
                                 android:textAllCaps="true"
                                 android:textColor="@drawable/button_text_color"
-                                android:textOff="ΤΥΠΙΚΗ"
-                                android:textOn="ΤΥΠΙΚΗ"
+                                android:textOff="@string/typical"
+                                android:textOn="@string/typical"
                                 android:textSize="18sp" />
 
                             <ToggleButton
@@ -258,8 +261,8 @@
                                 android:background="@drawable/togglebutton_selector"
                                 android:gravity="center"
                                 android:textColor="@drawable/button_text_color"
-                                android:textOff="ΠΡΟΒΛΗΜΑΤΙΚΗ"
-                                android:textOn="ΠΡΟΒΛΗΜΑΤΙΚΗ"
+                                android:textOff="@string/problematic"
+                                android:textOn="@string/problematic"
                                 android:textSize="18sp" />
 
                             <ToggleButton
@@ -271,8 +274,8 @@
                                 android:background="@drawable/togglebutton_selector"
                                 android:gravity="center"
                                 android:textColor="@drawable/button_text_color"
-                                android:textOff="ΔΙΟΡΘΩΣΗ"
-                                android:textOn="ΔΙΟΡΘΩΣΗ"
+                                android:textOff="@string/correction"
+                                android:textOn="@string/correction"
                                 android:textSize="18sp" />
 
 
@@ -339,8 +342,8 @@
                                 android:gravity="center"
                                 android:textAllCaps="true"
                                 android:textColor="@drawable/button_text_color"
-                                android:textOff="ΤΥΠΙΚΗ"
-                                android:textOn="ΤΥΠΙΚΗ"
+                                android:textOff="@string/typical"
+                                android:textOn="@string/typical"
                                 android:textSize="18sp" />
 
                             <ToggleButton
@@ -352,8 +355,8 @@
                                 android:background="@drawable/togglebutton_selector"
                                 android:gravity="center"
                                 android:textColor="@drawable/button_text_color"
-                                android:textOff="ΠΡΟΒΛΗΜΑΤΙΚΗ"
-                                android:textOn="ΠΡΟΒΛΗΜΑΤΙΚΗ"
+                                android:textOff="@string/problematic"
+                                android:textOn="@string/problematic"
                                 android:textSize="18sp" />
 
                             <ToggleButton
@@ -365,8 +368,8 @@
                                 android:background="@drawable/togglebutton_selector"
                                 android:gravity="center"
                                 android:textColor="@drawable/button_text_color"
-                                android:textOff="ΔΙΟΡΘΩΣΗ"
-                                android:textOn="ΔΙΟΡΘΩΣΗ"
+                                android:textOff="@string/correction"
+                                android:textOn="@string/correction"
                                 android:textSize="18sp"/>
 
 
@@ -781,7 +784,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:background="@color/agri_semi_green"
-                    android:text="ΠΑΡΤΙΔΑ Αλίευσης"
+                    android:text="@string/lot_fishing"
                     android:textAlignment="center"
                     android:textColor="@color/label_blue"
                     android:textSize="20sp"

@@ -130,7 +130,7 @@
                     android:id="@+id/tvFishingLotLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Παρτίδα αλίευσης"
+                    android:text="@string/lot_fishing"
                     android:textColor="@color/label_blue"
                     android:textSize="20dp"
                     app:layout_constraintBottom_toTopOf="@+id/tvSpeciesLabel"
