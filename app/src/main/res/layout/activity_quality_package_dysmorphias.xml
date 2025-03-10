@@ -472,6 +472,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tvShortLabel"
                     app:layout_constraintWidth_percent="0.6" />
 
+
                 <EditText
                     android:id="@+id/etSkelet"
                     android:layout_width="wrap_content"
@@ -480,8 +481,8 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_rounded_dialog_input"
                     android:ems="4"
-                    android:maxLength="3"
                     android:inputType="number"
+                    android:maxLength="3"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
                     android:textAlignment="center"
@@ -490,7 +491,6 @@
                     app:layout_constraintBottom_toTopOf="@+id/etTail"
                     app:layout_constraintStart_toEndOf="@+id/tvSkeletLabel"
                     app:layout_constraintTop_toBottomOf="@id/etShort" />
-
 
                 <TextView
                     android:id="@+id/tvTail"
