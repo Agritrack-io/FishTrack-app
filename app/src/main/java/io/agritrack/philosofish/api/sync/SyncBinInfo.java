@@ -45,6 +45,7 @@ public class SyncBinInfo extends BaseSyncCallBack<List<BinInfoDTO>> {
         System.out.println(t);
 
         CToast(getAppContext(), render("Please Check WIFI connection.."), Toast.LENGTH_LONG);
+        syncResult.setValue(null);
     }
 
 }

@@ -51,7 +51,6 @@ import io.agritrack.philosofish.api.sync.PendingFinalQualityTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingFishingTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingPackQualityTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingProcessTxCallBack;
-import io.agritrack.philosofish.api.sync.PendingQualityTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingRecQualityTxCallBack;
 import io.agritrack.philosofish.api.sync.SyncApi;
 import io.agritrack.philosofish.api.sync.SyncAssetsCallBack;
@@ -86,7 +85,6 @@ import io.agritrack.philosofish.data.dto.tx.FinalQualityTxDTO;
 import io.agritrack.philosofish.data.dto.tx.FishingTxDTO;
 import io.agritrack.philosofish.data.dto.tx.PackageQualityTxDTO;
 import io.agritrack.philosofish.data.dto.tx.ProcessingTxDTO;
-import io.agritrack.philosofish.data.dto.tx.QualityTxDTO;
 import io.agritrack.philosofish.data.dto.tx.ReceiptQualityTxDTO;
 import io.agritrack.philosofish.data.dto.wh.AssetDTO;
 import io.agritrack.philosofish.data.model.BinInfo;
@@ -96,7 +94,6 @@ import io.agritrack.philosofish.data.model.tx.FinalQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.FishingTransaction;
 import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
-import io.agritrack.philosofish.data.model.tx.QualityTransaction;
 import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.enums.TxStatus;
@@ -111,7 +108,6 @@ import io.agritrack.philosofish.fish.ui.process.ProcessBinsActivity;
 import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.philosofish.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.philosofish.fish.ui.transport.TransportBinsActivity;
-import io.agritrack.philosofish.fish.ui.transport.TransportInfoActivity;
 import io.agritrack.philosofish.ui.adapter.HomeMenuAdapter;
 import io.agritrack.philosofish.ui.adapter.MenuItem;
 import io.agritrack.philosofish.ui.login.LoginActivity;
@@ -164,24 +160,24 @@ public class FishHomeActivity extends AppCompatActivity {
         if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
             menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
         }
-        if (roleCanAccessMenu(userRoles, Test_Temp_Idx)) {
+        //if (roleCanAccessMenu(userRoles, Test_Temp_Idx)) {
             menuItemsSet.add(new MenuItem(Test_Temp_Idx, getString(R.string.menu_title_test_temp), TestBinTempActivity.class, R.drawable.test_bin_temp));
-        }
+        //}
         if (roleCanAccessMenu(userRoles, Receiving_Idx)) {
             menuItemsSet.add(new MenuItem(Receiving_Idx, getString(R.string.menu_title_fish_receiving), ProcessBinsActivity.class, R.drawable.processing));
         }
-        if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
+        //if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
             menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), QualitySelectStepsActivity.class, R.drawable.quality));
-        }
+        //}
 //        if (roleCanAccessMenu(userRoles, Bin_Overturn_Idx)) {
 //            menuItemsSet.add(new MenuItem(Bin_Overturn_Idx, getString(R.string.menu_title_bin_overturn), BinTurnoverActivity.class, R.drawable.bin_turnover));
 //        }
 //        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
 //            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
 //        }
-        if (roleCanAccessMenu(userRoles, Warehouse_Idx)) {
+       // if (roleCanAccessMenu(userRoles, Warehouse_Idx)) {
             menuItemsSet.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
-        }
+        //}
 //        if (roleCanAccessMenu(userRoles, Maintenance_Idx)) {
 //            menuItemsSet.add(new MenuItem(Maintenance_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
 //        }
@@ -260,7 +256,7 @@ public class FishHomeActivity extends AppCompatActivity {
                         break;
                     case Test_Temp_Idx:
                         i = new Intent(appCtx, TestBinTempActivity.class);
-                        i.putExtra("BinActivity", false);
+                        //i.putExtra("BinActivity", false);
                         break;
                     case Transport_Idx:
                         GlobalState.initTransportationRecord();

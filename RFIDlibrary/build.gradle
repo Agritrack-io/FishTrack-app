@@ -11,6 +11,7 @@ android {
 
         consumerProguardFiles "consumer-rules.pro"
     }
+    namespace 'io.agritrack.RFIDlibrary'
 
     buildTypes {
         release {

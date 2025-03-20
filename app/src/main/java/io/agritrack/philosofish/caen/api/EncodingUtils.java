@@ -126,4 +126,12 @@ public class EncodingUtils {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         return format.format(dt);
     }
+
+    public static Long normalizeEpochTime(Long epochTime) {
+        if (epochTime == null) {
+            return null;
+        }
+        // If epochTime is in milliseconds (13 digits), convert to seconds
+        return (epochTime > 9999999999L) ? (epochTime / 1000) : epochTime;
+    }
 }

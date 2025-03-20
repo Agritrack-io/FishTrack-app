@@ -682,6 +682,8 @@
     <string name="confirm_scanned_bin_out_of_lot">Η βούτα που μόλις σκανάρατε δεν περιλαμβάνεται στο υπάρχον LOT!!! Είστε σίγουρος να κατεβάσετε τις θερμοκρασίες??</string>
     <string name="confirm_with_pin">"Πληκτρολογήστε το PIN σας για επιβεβαίωση!"</string>
     <string name="already_scannned_bin_first_sync_temps">Έχετε ήδη ανακτήσει τις θερμοκρασίες από τη βούτα \%1$s\! Παρακαλώ πρώτα πατήστε το κουμπί συγχρονισμού!</string>
+    <string name="epc_not_correlated_to_bin">Η ετικέτα \%1$s\ δεν είναι συσχετισμένη με κάποια βούτα! Παρακαλώ συσχετίστε ή συγχρονίστε την εφαρμογή από το κεντρικό μενού!</string>
+    <string name="bin_not_correlated_to_logger">Η βούτα \%1$s\ με ετικέτα \%1$s\ δεν έχει συσχετισμένο καταγραφικό! Παρακαλώ συσχετίστε στο μενού του Προγραμματισμού!</string>
     <string name="select_reason">Παρακαλώ επιλέξτε ένα λόγο!</string>
     <string name="not_same_cnt"># διαφ. κωδικών</string>
     <string name="title_program_menu">Προγραμματισμός \%1$s\</string>
@@ -986,6 +988,27 @@
     <string name="intense">ΕΝΤΟΝΗ</string>
     <string name="temp_per_5_tonnes">ΘΕΡΜΟΚΡΑΣΙΑ ΑΝΑ 5 ΤΟΝΟΥΣ</string>
     <string name="temp_conveyor_belt">ΘΕΡΜΟΚΡΑΣΙΑ ΠΛΥΝΤΗΡΙΟΥ ΔΙΑΛΟΓΗΣ</string>
+    <string name="bin_list">Λίστα Βουτών</string>
+    <string name="track_name">KBeacon</string>
+    <string name="BEACON_RSSI_VALUE">RSSI:</string>
+    <string name="BEACON_MAC_ADDRESS">Mac:</string>
+    <string name="BEACON_VOLTAGE">Voltage:</string>
+    <string name="ADV_TYPE_TLM">TLM</string>
+    <string name="BEACON_UUID">UUID:</string>
+    <string name="BEACON_MAJOR">Major:</string>
+    <string name="BEACON_TEMPERATURE">Θερμοκρασία:</string>
+    <string name="BEACON_ACC_POS">Axis:</string>
+    <string name="BEACON_HUM">Humidity:</string>
+    <string name="BEACON_MINOR">Minor:</string>
+    <string name="BEACON_BATTERY">Μπαταρία:</string>
+    <string name="common_error_title">Error</string>
+    <string name="bluetooth_error_need_reboot">Android OS Bluetooth error, please try to reboot bluetooth function(turn off bluetooth and turn on bluetooth). If it still failed, please try to reboot the phone.</string>
+    <string name="BEACON_RSSI_UINT">dBm</string>
+    <string name="Dialog_OK">OK</string>
+    <string name="logger_already_correlated">Το καταγραφικό που σκανάρατε είναι ήδη συσχετισμένο. Παρακαλώ επιλέξτε διαφορετικό καταγραφικό!</string>
+    <string name="tag_loggger_correlation">Συσχέτιση ετικέτας-καταγραφικού</string>
+    <string name="tag">Ετικέτα</string>
+    <string name="scan_logger">Σκανάρετε Καταγραφικό</string>
 
 
 </resources>

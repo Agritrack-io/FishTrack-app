@@ -2,9 +2,7 @@ package io.agritrack.philosofish.data.type;
 
 import java.util.List;
 
-import lombok.Data;
 
-@Data
 public class ConfigDevice {
 
     private String prefix;

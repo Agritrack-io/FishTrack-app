@@ -3,12 +3,16 @@ package io.agritrack.philosofish.fish.ui.binTurnover;
 import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
 import static io.agritrack.philosofish.FishTrackApplication.IsOnline;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
+import static io.agritrack.philosofish.caen.api.EncodingUtils.createTimestamp;
+import static io.agritrack.philosofish.caen.api.EncodingUtils.parseTemperatureNumeric;
 import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.fish.state.GlobalState.recLoggerData;
+import static io.agritrack.philosofish.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 import static io.agritrack.philosofish.ui.tools.caen.ILoggerDialog.StatesEnum.INIT;
 import static io.agritrack.philosofish.ui.tools.caen.ILoggerDialog.StatesEnum.READ_VALUES;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -17,11 +21,14 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
@@ -44,12 +52,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
+import com.kkmcn.kbeaconlib2.KBCfgPackage.KBSensorType;
+import com.kkmcn.kbeaconlib2.KBConnState;
+import com.kkmcn.kbeaconlib2.KBSensorHistoryData.KBRecordBase;
+import com.kkmcn.kbeaconlib2.KBSensorHistoryData.KBRecordDataRsp;
+import com.kkmcn.kbeaconlib2.KBSensorHistoryData.KBRecordHumidity;
+import com.kkmcn.kbeaconlib2.KBSensorHistoryData.KBSensorReadOption;
+import com.kkmcn.kbeaconlib2.KBeacon;
+import com.kkmcn.kbeaconlib2.KBeaconsMgr;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +77,7 @@ import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.sync.SyncApi;
 import io.agritrack.philosofish.api.sync.SyncBinInfo;
 import io.agritrack.philosofish.api.tx.TransactionApi;
+import io.agritrack.philosofish.caen.api.EncodingUtils;
 import io.agritrack.philosofish.caen.common.CAENState;
 import io.agritrack.philosofish.common.Filters;
 import io.agritrack.philosofish.data.db.MobileDB;
@@ -91,7 +110,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BinTurnoverActivity extends AppCompatActivity implements IDialogCloseListener {
+public class BinTurnoverActivity extends AppCompatActivity implements  KBeaconsMgr.KBeaconMgrDelegate, KBeacon.ConnStateDelegate, KBeacon.NotifyDataDelegate {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
@@ -133,10 +152,36 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
     private SupportDialog supportDialog;
     private String callingActivity;
 
+    private long mNextReadReverseIndex = KBRecordDataRsp.INVALID_DATA_RECORD_POS;
+    private int mTotalReverseReadIndex = 0;
+
+    private static final int PERMISSION_COARSE_LOCATION = 22;
+    private static final int PERMISSION_FINE_LOCATION = 23;
+    private static final int PERMISSION_SCAN = 24;
+    private static final int PERMISSION_CONNECT = 25;
+    private final static String TAG = "Beacon.ScanAct";//DeviceScanActivity.class.getSimpleName();
+    private static final String LOG_TAG = "ScanExample";
+    private int mRssiFilterValue = -40;
+    private int mScanFailedContinueNum = 0;
+    private final static int  MAX_ERROR_SCAN_NUMBER = 2;
+    private HashMap<String, KBeacon> mBeaconsDictory;
+    private KBeacon[] mBeaconsArray;
+    private KBeaconsMgr mBeaconsMgr;
+    private KBeacon mBeacon;
+    private boolean isScanning = false;
+    private int findBeaconAttempts = 0;
+
+    private String defaultProdLane = "1";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bin_turnover);
+
+
+        // instantiate ProgressDialog and set style.
+        progressDialog = new ProgressDialog(BinTurnoverActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         // instantiate a set to hold scanned EPCS.it will be passed to adapter shich feeds the ListView.
         scannedBinEPCs = new ArrayList<String>();
@@ -164,11 +209,25 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
 
             ComponentName callActivity = getCallingActivity();
 
+            progressDialog.setMessage(render("Retrieving Data"));
+            progressDialog.show();
+
             Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getCompleteBinLedger("Bearer " + token);
             syncBinsByPlantAsyncCall.enqueue(new SyncBinInfo(this.syncResult));
         }
-        // trigger + Fn keys will have the same effect as if clicking on Scan button
-        //keyReceiver = new X9KeyReceiver(this::onClick);
+        // dont allow user to use the activity without bluetooth required permissions since they wont be able to do anything important
+        checkBluetoothPermitAllowed();
+
+        //initialize data logger manager
+        mBeaconsMgr = KBeaconsMgr.sharedBeaconManager(this);
+        if (mBeaconsMgr == null)
+        {
+            CToast(getAppContext(),"make sure the phone has support ble funtion", Toast.LENGTH_LONG);
+            finish();
+            return;
+        }
+        mBeaconsMgr.delegate =  this;
+        mBeaconsMgr.setScanMode(KBeaconsMgr.SCAN_MODE_LOW_LATENCY);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderBinOverturn);
@@ -186,9 +245,6 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         tvLotLabel.setVisibility(View.INVISIBLE);
         tvLot.setVisibility(View.INVISIBLE);
 
-        // instantiate ProgressDialog and set style.
-        progressDialog = new ProgressDialog(BinTurnoverActivity.this);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         String[] lines = new String[]{"1", "2", "3", "4", "5", "6"};
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
@@ -209,8 +265,6 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         spProductionLine.setAdapter(linesAdapter);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(BinTurnoverActivity.this);
-
-
         tempProfileAdapter = new TemperatureProfileAdapter(this);
         tempProfileAdapter.notifyDataSetChanged();
 
@@ -246,39 +300,85 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         //-----------------------------------------------------
         // observe for state object obtained by LoggerDialog...
         //-----------------------------------------------------
-        stateResult.observe(this, rs -> {
+        syncResult.observe(this, rs -> {
+            progressDialog.dismiss();
             // handle Successful operation from Logger.
-            if (rs == null || !rs.canProceed) {
-                CToast(getApplicationContext(), render(R.string.operation_failed), Toast.LENGTH_LONG);
-                return;
-            }
-            // handle READ and INIT events...
-            if (rs.canProceed) {
-                if (INIT.equals(rs.state)) {
-                    if (rs.getInitTS() != null) {
-                        recLoggerData.addInitData(rs.getAssetEPC(), rs.getInitTS());
-                    } else {
-                        recLoggerData.addInitData(rs.getAssetEPC(), System.currentTimeMillis() / 1000L);
-                    }
-                } else if (READ_VALUES.equals(rs.state)) {
-                    if (!CollectionUtils.isEmpty(rs.samples)) {
-                        retrievedAt = System.currentTimeMillis();
-                        recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), retrievedAt, rs.samples);
-                        GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
-                        fillTemperatureProfileAdapter();
-                        ivBack.setVisibility(View.INVISIBLE);
-                        ivNext.setVisibility(View.VISIBLE);
-                    } else {
-                        recLoggerData.addDataSet(loggerEPC, rs.getAssetEPC(), rs.getProductionLane(), System.currentTimeMillis(), null);
-                        GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), rs.getAssetEPC(), rs.getProductionLane());
-                        fillTemperatureProfileAdapter();
-                    }
-                }
+            if (rs == null ) {
+                //CToast(getAppContext(), "Αποτυχία σύνδεσης, ελέγξτε τη σύνδεσή σας ή επικοινωνήστε με την υποστήριξη", Toast.LENGTH_LONG);
+                finish();
             }
         });
         // ------ Logger Observer -----------------------------
 
         configFooter();
+    }
+
+    private boolean checkBluetoothPermitAllowed() {
+        boolean bHasPermission = true;
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSION_FINE_LOCATION);
+            bHasPermission = false;
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSION_COARSE_LOCATION);
+            bHasPermission = false;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_SCAN},
+                        PERMISSION_SCAN);
+                bHasPermission = false;
+            }
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT},
+                        PERMISSION_CONNECT);
+                bHasPermission = false;
+            }
+        }
+
+        return bHasPermission;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_SCAN){
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια σάρωσης BLE για να προχωρήσει με τη διαδικασία", Toast.LENGTH_LONG);
+                finish();
+            }
+        }
+
+        if (requestCode == PERMISSION_CONNECT){
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια σύνδεσης BLE για να προχωρήσει με τη διαδικασία", Toast.LENGTH_LONG);
+                finish();
+            }
+        }
+
+        if (requestCode == PERMISSION_COARSE_LOCATION){
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια κατά προσέγγιση τοποθεσίας για να προχωρήσει με τη διαδικασία", Toast.LENGTH_LONG);
+                finish();
+            }
+        }
+        if (requestCode == PERMISSION_FINE_LOCATION){
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια ακριβούς τοποθεσίας για να προχωρήσει με τη διαδικασία", Toast.LENGTH_LONG);
+                finish();
+            }
+        }
     }
 
     private void moveToNextScreen() {
@@ -380,16 +480,6 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         return sb.toString();
     }
 
-    // Logger Dialog is dismissed.
-    // release the singleton that points to the dialog.
-    @Override
-    public void handleDialogClose(DialogInterface dialog) {
-        if(dialog != null) {
-            dialog.dismiss();
-        }
-        this.loggerDlg = null;
-        registerKeyReceiver();
-    }
     public void registerKeyReceiver() {
         if (keyReceiver == null){
             keyReceiver = new X9KeyReceiver(this::onClick);
@@ -415,6 +505,11 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
             unregisterReceiver(keyReceiver);
             keyReceiver = null;
         }
+
+        if (mBeacon != null && (mBeacon.getState() == KBConnState.Connected
+                || mBeacon.getState() == KBConnState.Connecting)){
+            mBeacon.disconnect();
+        }
     }
 
     @Override
@@ -424,22 +519,16 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
     }
 
     protected void onClick(View view) {
-        if(this.loggerDlg != null) {
+        if (progressDialog.isShowing()) {
             CToast(getApplicationContext(), render(R.string.temp_downloading_in_progress), Toast.LENGTH_SHORT);
             return;
         }
 
-        if (adapterBins.getItemCount() < 1 && IsOnline && !scanAllBins) {
-            scanner_runnable = new SingleShotScanner(mScanHandler);
-            scanner_runnable.setFilter(Filters.RFID_BIN);
-            scanner_runnable.startReading();
-            mScanHandler.postDelayed(scanner_runnable, 0);
-        } else {
-            scanner_runnable = new SingleShotScanner(mScanHandler);
-            scanner_runnable.setFilter(Filters.RFID_LOGGER);
-            scanner_runnable.startReading();
-            mScanHandler.postDelayed(scanner_runnable, 0);
-        }
+        scanner_runnable = new SingleShotScanner(mScanHandler);
+        scanner_runnable.setFilter(Filters.RFID_BIN);
+        scanner_runnable.startReading();
+        mScanHandler.postDelayed(scanner_runnable, 0);
+
     }
 
     // ###################################################
@@ -539,12 +628,15 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
         }
         adapterBins.addUniqueItem(loadBinInfo(binEPC));
         adapterBins.markReceived(scannedBinEPCs);
-//        if (keyReceiver != null)
-//            unregisterReceiver(keyReceiver);
-
         if (!Strings.isEmptyOrWhitespace(loggerEPC)) {
 
             tmpBin = db.binInfoDAO().getByRFId(binEPC);
+
+            //todo:remove following lines
+            tmpBin = new BinInfo();
+            tmpBin.rfid = binEPC;
+            tmpBin.totalWeight = 50.0;
+            //////////////////////////
 
             if (tmpBin == null) {
                 CToast(getApplicationContext(), getString(R.string.sync_and_check_if_correct_bin, binEPC.substring(binEPC.length()-4)), Toast.LENGTH_LONG);
@@ -555,28 +647,144 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
                 return;
             }
 
-            // ------------------------------------------
-            //--- New implementation of Logger Dialog ---
-            FragmentManager fm = getSupportFragmentManager();
-            if (keyReceiver != null) {
-                unregisterReceiver(keyReceiver);
-                keyReceiver = null;
-            }
-            String productionLane = "1"; //spProductionLine.getSelectedItem().toString();
-            if (tmpBin != null && tmpBin.initedAt != null) {
-                this.loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane, tmpBin.initedAt, tmpBin.pickedAt);
-            } else {
-                this.loggerDlg = LoggerDialogFragment.newInstance(loggerEPC, binEPC, productionLane);
-            }
-            this.loggerDlg.setStateObserver(stateResult);
-            SortLoggerDialogDecorator sortLoggerDialogDecorator = new SortLoggerDialogDecorator(this.loggerDlg);
-            sortLoggerDialogDecorator.show(fm);
+            int nStartScan = mBeaconsMgr.startScanning();
 
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(render("Εύρεση καταγραφικού..."));
+            progressDialog.show();
+            if (nStartScan == 0)
+            {
+                Log.v(TAG, "start scan success");
+            }
+            else if (nStartScan == KBeaconsMgr.SCAN_ERROR_BLE_NOT_ENABLE)
+            {
+                CToast(getAppContext(),"Το Bluetooth δεν είναι ενεργοποιημένο", Toast.LENGTH_LONG);
+            }
+            else if (nStartScan == KBeaconsMgr.SCAN_ERROR_UNKNOWN)
+            {
+                CToast(getAppContext(),"Παρακαλώ επιβεβαιώστε ότι η εφαρμογή έχει πρόσβαση στο Bluetooth", Toast.LENGTH_LONG);
+            }
         }
-//
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction("android.rfid.FUN_KEY");
-//        registerReceiver(keyReceiver,filter);
+    }
+
+    @Override
+    public void onConnStateChange(KBeacon beacon, KBConnState state, int nReason) {
+        if (state == KBConnState.Connected) {
+            Log.v(LOG_TAG, "device has connected");
+
+                mBeacon.readSensorRecord(KBSensorType.HTHumidity,
+                        mNextReadReverseIndex, //read from last pos
+                        KBSensorReadOption.ReverseOrder,  //read direction type
+                        50,   //number of records the app want to read
+                        (bSuccess, dataRsp, error) -> {
+                            if (bSuccess)
+                            {
+                                Long fishingTime = EncodingUtils.normalizeEpochTime(tmpBin.pickedAt);
+                                List<TempSample> samples = new LinkedList<>();
+                                //mNextReadReverseIndex = dataRsp.readDataNextPos;
+                                for (KBRecordBase sensorRecord: dataRsp.readDataRspList)
+                                {
+                                    boolean isAfterFishing;
+                                    KBRecordHumidity record = (KBRecordHumidity)sensorRecord;
+                                    Log.v(LOG_TAG, mTotalReverseReadIndex
+                                            +": utc time:" + record.utcTime
+                                            + ",temperature:" + record.temperature
+                                            + ",humidity:" + record.humidity);
+                                    mTotalReverseReadIndex++;
+
+                                    if (fishingTime == null) {
+                                        isAfterFishing = true;
+                                    } else {
+                                        if (record.utcTime > fishingTime) {
+                                            isAfterFishing = true;
+                                        } else {
+                                            isAfterFishing = false;
+                                        }
+                                    }
+                                    samples.add(new TempSample(createTimestamp(record.utcTime * 1000), String.format("%.2f", record.temperature), isAfterFishing));
+                                }
+                                if (dataRsp.readDataNextPos == KBRecordDataRsp.INVALID_DATA_RECORD_POS)
+                                {
+                                    Log.v(LOG_TAG, "Read data complete");
+                                }
+                                else
+                                {
+                                    Log.v(LOG_TAG, "next read position:" + dataRsp.readDataNextPos);
+                                }
+                                if (!CollectionUtils.isEmpty(samples)) {
+                                    retrievedAt = System.currentTimeMillis();
+                                    recLoggerData.addDataSet(loggerEPC, binEPC, defaultProdLane, retrievedAt, samples);
+                                    GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), binEPC, defaultProdLane);
+                                    fillTemperatureProfileAdapter();
+                                    ivBack.setVisibility(View.INVISIBLE);
+                                    ivNext.setVisibility(View.VISIBLE);
+                                } else {
+                                    recLoggerData.addDataSet(loggerEPC, binEPC, defaultProdLane, System.currentTimeMillis(), null);
+                                    GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), binEPC, defaultProdLane);
+                                    fillTemperatureProfileAdapter();
+                                }
+                            }
+                            progressDialog.dismiss();
+                        });
+        }
+    }
+
+    @Override
+    public void onNotifyDataReceived(KBeacon beacon, int nEventType, byte[] sensorData) {
+
+    }
+
+    @Override
+    public void onBeaconDiscovered(KBeacon[] beacons) {
+        if (beacons == null || beacons.length == 0) {
+            return; // No beacons found, exit early
+        }
+        KBeacon beaconFound = null; // Initialize as null
+
+        for (KBeacon beacon : beacons) {
+            if (beacon.getMac().equals(loggerEPC)) {
+                beaconFound = beacon; // Store the found beacon
+                break; // Exit loop once found
+            }
+        }
+
+        // Check if a beacon was found
+        if (beaconFound == null) {
+            // No matching beacon found
+            findBeaconAttempts++;
+            if (findBeaconAttempts > 5) {
+                findBeaconAttempts = 0;
+                mBeaconsMgr.stopScanning();
+                progressDialog.dismiss();
+                CToast(getAppContext(), "Το καταγραφικό δεν βρέθηκε, βεβαιωθείτε ότι βρίσκεται μέσα στη βούτα",Toast.LENGTH_LONG);
+                return;
+            }
+            return;
+        }
+        findBeaconAttempts = 0;
+        mBeaconsMgr.stopScanning();
+        progressDialog.setMessage(render("Σύνδεση με καταγραφικό"));
+
+        //connect to specific ble sensor
+        mBeacon = mBeaconsMgr.getBeacon(loggerEPC);
+        mBeacon.connect(LocalPreferences.getLoggerPassword(),
+                20 * 1000,
+                this);
+    }
+
+    @Override
+    public void onCentralBleStateChang(int nNewState) {
+
+    }
+
+    @Override
+    public void onScanFailed(int errorCode) {
+        if (mScanFailedContinueNum >= MAX_ERROR_SCAN_NUMBER){
+            CToast(getAppContext(),"Scan encountered error, error time:" + mScanFailedContinueNum, Toast.LENGTH_SHORT);
+            progressDialog.dismiss();
+            mBeaconsMgr.stopScanning();
+        }
+        mScanFailedContinueNum++;
 
     }
 
@@ -597,18 +805,26 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
                     if (scanAllBins) {
                         try {
                             if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                                loggerEPC = epcStr;
-
-                                // after bin is identified, initialize the temperatures logger.
-                                Asset bin = db.assetDAO().getByLoggerEPC(loggerEPC);
-                                if (bin != null) {
-                                    binEPC = bin.rfid;
-
-                                    if (!binEPC.equalsIgnoreCase(epcStr)) {
-                                        if (tempProfileAdapter.getItemCount() > 0) {
-                                            CToast(getApplicationContext(), render(getString(R.string.already_scannned_bin_first_sync_temps, tempProfileAdapter.getEpc().substring(tempProfileAdapter.getEpc().length() - 10))), Toast.LENGTH_LONG);
-                                            return;
-                                        }
+                                if (tempProfileAdapter.getItemCount() > 0) {
+                                    CToast(getApplicationContext(), render(getString(R.string.already_scannned_bin_first_sync_temps, tempProfileAdapter.getEpc().substring(tempProfileAdapter.getEpc().length() - 10))), Toast.LENGTH_LONG);
+                                    return;
+                                }
+                                //loggerEPC = epcStr;
+                                binEPC = epcStr;
+                                //new code here
+                                //#########################
+                                Asset bin = db.assetDAO().getAssetByEpc(binEPC);
+                                bin = new Asset();
+                                bin.rfid = epcStr;
+                                bin.loggerEPC = "BC:57:29:13:FF:CD";
+                                if (bin == null) {
+                                    CToast(getApplicationContext(), render(getString(R.string.epc_not_correlated_to_bin, binEPC.substring(binEPC.length() - 10))), Toast.LENGTH_LONG);
+                                    return;
+                                } else {
+                                    loggerEPC = bin.loggerEPC;
+                                    if (Strings.isEmptyOrWhitespace(bin.loggerEPC)) {
+                                        CToast(getApplicationContext(), render(getString(R.string.bin_not_correlated_to_logger, bin.code ,binEPC.substring(binEPC.length() - 10))), Toast.LENGTH_LONG);
+                                        return;
                                     }
 
                                     if (!binList.contains(binEPC)) {
@@ -623,9 +839,11 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
                                         return;
                                     }
                                     triggerDataLoggerDialog();
-                                } else if (!IsDemo) {
-                                    CToast(getApplicationContext(), render(R.string.no_logger_found_linked_to_bin), Toast.LENGTH_SHORT);
+                                    return;
+
+
                                 }
+                                //########################
                             } else {
                                 CToast(getApplicationContext(), render(R.string.scan_bin_again), Toast.LENGTH_SHORT);
                             }
@@ -638,6 +856,10 @@ public class BinTurnoverActivity extends AppCompatActivity implements IDialogClo
                             if (!Strings.isEmptyOrWhitespace(epcStr)) {
                                 List<BinInfo> binInfoList = db.binInfoDAO().getEPCListByRFId(epcStr);
                                 String lot = null;
+
+                                //todo: comment follwing line, omly used for tesing
+                                binList.add(epcStr);
+                                ///////
                                 for (BinInfo bin : binInfoList) {
                                     binList.add(bin.rfid);
                                     lot = !Strings.isEmptyOrWhitespace(bin.lot) ? bin.lot : lot;

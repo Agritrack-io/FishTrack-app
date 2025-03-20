@@ -680,6 +680,8 @@
     <string name="confirm_scanned_bin_out_of_lot">Bin you just scanned is not included in existing LOT!!! Are you sure to get data??</string>
     <string name="confirm_with_pin">"Please type your PIN to confirm!"</string>
     <string name="already_scannned_bin_first_sync_temps">You have already retrieved temperatures from bin \%1$s\! Please first click on check button!</string>
+    <string name="epc_not_correlated_to_bin">Tag \%1$s\ has not been correlated to a bin! Please correlate or sync  with cloud in the home menu!</string>
+    <string name="bin_not_correlated_to_logger">Bin \%1$s\ with tag \%1$s\ has not been correlated to a temperature logger! Please correlate in the Program Menu!</string>
     <string name="select_reason">Please select a reason!</string>
     <string name="not_same_cnt"># different codes</string>
     <string name="title_program_menu">Program \%1$s\</string>
@@ -995,4 +997,27 @@
     <string name="intense">Intense</string>
     <string name="temp_per_5_tonnes">TEMPERATURE PER 5 TONNES</string>
     <string name="temp_conveyor_belt">TEMPERATURE BEFORE CONVEYOR BELT</string>
+    <string name="bin_list">Λίστα Βουτών</string>
+    <string name="track_name">KBeacon</string>
+    <string name="BEACON_RSSI_VALUE">RSSI:</string>
+    <string name="BEACON_MAC_ADDRESS">Mac:</string>
+    <string name="BEACON_VOLTAGE">Voltage:</string>
+    <string name="ADV_TYPE_TLM">TLM</string>
+    <string name="BEACON_UUID">UUID:</string>
+    <string name="BEACON_MAJOR">Major:</string>
+    <string name="BEACON_TEMPERATURE">Temperature:</string>
+    <string name="BEACON_ACC_POS">Axis:</string>
+    <string name="BEACON_HUM">Humidity:</string>
+    <string name="BEACON_MINOR">Minor:</string>
+    <string name="BEACON_BATTERY">Battery percent:</string>
+    <string name="common_error_title">Error</string>
+    <string name="bluetooth_error_need_reboot">Android OS Bluetooth error, please try to reboot bluetooth function(turn off bluetooth and turn on bluetooth). If it still failed, please try to reboot the phone.</string>
+    <string name="BEACON_RSSI_UINT">dBm</string>
+    <string name="Dialog_OK">OK</string>
+    <string name="logger_already_correlated">Το καταγραφικό που σκανάρατε είναι ήδη συσχετισμένο. Παρακαλώ επιλέξτε διαφορετικό καταγραφικό!</string>
+    <string name="tag_loggger_correlation">Συσχέτιση ετικέτας-καταγραφικού</string>
+    <string name="tag">Ετικέτα</string>
+    <string name="scan_logger">Σκανάρετε Καταγραφικό</string>
+
+
 </resources>

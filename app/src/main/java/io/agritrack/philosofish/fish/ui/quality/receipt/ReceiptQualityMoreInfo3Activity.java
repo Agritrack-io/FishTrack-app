@@ -268,26 +268,16 @@ public class ReceiptQualityMoreInfo3Activity extends AppCompatActivity {
         View radioButton = rgTotalEvaluation.findViewById(radioButtonID);
         int idx = rgTotalEvaluation.indexOfChild(radioButton);
 
-        switch (view.getId()) {
-            case R.id.simpleRadioButton1:
-                if (checked)
-                    evaluation = String.valueOf(idx + 1);
-                break;
-            case R.id.simpleRadioButton2:
-                if (checked)
-                    evaluation = String.valueOf(idx + 1);
-                break;
-            case R.id.simpleRadioButton3:
-                if (checked)
-                    evaluation = String.valueOf(idx + 1);
-                break;
-            case R.id.simpleRadioButton4:
-                if (checked)
-                    evaluation = String.valueOf(idx + 1);
-                break;
-            case R.id.simpleRadioButton5:
-                if (checked)
-                    evaluation = String.valueOf(idx + 1);
+        if (view.getId() == R.id.simpleRadioButton1) {
+            if (checked) evaluation = String.valueOf(idx + 1);
+        } else if (view.getId() == R.id.simpleRadioButton2) {
+            if (checked) evaluation = String.valueOf(idx + 1);
+        } else if (view.getId() == R.id.simpleRadioButton3) {
+            if (checked) evaluation = String.valueOf(idx + 1);
+        } else if (view.getId() == R.id.simpleRadioButton4) {
+            if (checked) evaluation = String.valueOf(idx + 1);
+        } else if (view.getId() == R.id.simpleRadioButton5) {
+            if (checked) evaluation = String.valueOf(idx + 1);
         }
     }
 

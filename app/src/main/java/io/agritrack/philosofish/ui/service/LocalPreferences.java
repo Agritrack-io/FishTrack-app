@@ -47,7 +47,12 @@ public class LocalPreferences {
     public static final String Device_Key = "DeviceModel";
     public static final String Step_Key = "Step";
     public static final String Prefix_Key = "Prefix";
+    public static final String BLE_Password = "BLE_Pasword";
+
+
     public static final String Current_Epc_Key = "CurrentEpcs";
+
+    private final static String DEF_VRY_CODE_NUM = "0000000000000000";
 
     private static final Gson gson = new Gson();
 
@@ -73,6 +78,9 @@ public class LocalPreferences {
         return pref.getString(SelectedSiteName_Key, "N/A");
     }
 
+    public static String getLoggerPassword() {
+        return pref.getString(BLE_Password, "0000000000000000");
+    }
 
     public static UUID getCurrentSiteId() {
         return UUID.fromString(pref.getString(SelectedSiteId_Key, "00000000-0000-0000-0000-000000000000"));

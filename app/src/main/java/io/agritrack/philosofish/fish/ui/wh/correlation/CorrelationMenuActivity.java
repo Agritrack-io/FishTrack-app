@@ -18,7 +18,6 @@ import io.agritrack.philosofish.fish.ui.WhMenuActivity;
 import io.agritrack.philosofish.ui.adapter.IOnItemClickListener;
 import io.agritrack.philosofish.ui.adapter.OptionGridAdapter;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
-import lombok.Data;
 
 public class CorrelationMenuActivity extends AppCompatActivity {
 
@@ -102,7 +101,6 @@ public class CorrelationMenuActivity extends AppCompatActivity {
         });
     }
 
-    @Data
     public class Option implements OptionGridAdapter.IDrawableWithText {
         String name;
         int imageId;

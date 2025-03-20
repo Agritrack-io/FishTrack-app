@@ -171,7 +171,9 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        //todo: uncomment for real case
+        Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+        startActivity(i);
         // get  references of the controls
         assignCtrlVars();
         syncLimit = 12;

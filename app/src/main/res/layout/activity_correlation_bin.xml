@@ -7,6 +7,8 @@ android:layout_height="match_parent"
 android:background="@color/agri_semi_green"
 tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
 
+
+
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/headerLayout"
     android:layout_width="match_parent"
@@ -80,6 +82,20 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
     app:layout_constraintBottom_toTopOf="@+id/footerLayout"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:elevation="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <RelativeLayout
         android:id="@+id/correlateAssetLayout"
@@ -177,7 +193,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:gravity="left"
-                android:text="@string/menu_title_bin"
+                android:text="@string/tag"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
                 app:layout_constraintBottom_toTopOf="@+id/tvCorrBinBarcode"
@@ -242,15 +258,32 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
                 android:layout_height="70dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/button_press_effect"
-                android:text="@string/scan_assets"
+                android:text="@string/scan_tag"
                 android:textColor="@color/yellow"
-                android:textSize="@dimen/button_font_size"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvCorrTempLoggerBarcode" />
+
+            <Button
+                android:id="@+id/btnClearEPCs"
+                android:layout_width="150dp"
+                android:layout_height="70dp"
+                android:background="@drawable/bg_rounded_button"
+                android:enabled="false"
+                android:text="ΕΚΚΑΘΑΡΙΣΗ"
+                android:textColor="@color/dark_grey"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btnScanAssetTag"
+                app:layout_constraintTop_toBottomOf="@id/tvCorrTempLoggerBarcode"
+                tools:layout_conversion_absoluteHeight="120dp"
+                tools:layout_conversion_absoluteWidth="0dp" />
+
+
 
             <ImageButton
                 android:id="@+id/ibSyncNet"
@@ -265,6 +298,8 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvCorrTempLoggerBarcode"
                 app:srcCompat="@drawable/ic_add_stock_opname" />
+
+
 
             <TextView
                 android:id="@+id/tvCounterLabel"
@@ -309,7 +344,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationBinActivity">
             android:layout_marginStart="16dp"
             android:background="@color/agri_semi_green"
             android:paddingHorizontal="8dp"
-            android:text="@string/scan_tag"
+            android:text="@string/tag_loggger_correlation"
             android:textColor="@color/label_blue"
             android:textSize="18sp" />
     </RelativeLayout>

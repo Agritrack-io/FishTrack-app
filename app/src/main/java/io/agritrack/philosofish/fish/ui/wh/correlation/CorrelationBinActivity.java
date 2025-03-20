@@ -6,6 +6,7 @@ import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -13,18 +14,24 @@ import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -33,15 +40,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
+import com.kkmcn.kbeaconlib2.KBCfgPackage.KBCfgBase;
+import com.kkmcn.kbeaconlib2.KBCfgPackage.KBCfgCommon;
+import com.kkmcn.kbeaconlib2.KBConnState;
+import com.kkmcn.kbeaconlib2.KBErrorCode;
+import com.kkmcn.kbeaconlib2.KBException;
+import com.kkmcn.kbeaconlib2.KBeacon;
+import com.kkmcn.kbeaconlib2.KBeaconsMgr;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import common.Assert;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.tx.TransactionApi;
@@ -57,6 +74,7 @@ import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.ui.bo.GenericListModel;
 import io.agritrack.philosofish.rfid.MultipleFilterSingleShotScanner;
+import io.agritrack.philosofish.rfid.SingleShotScanner;
 import io.agritrack.philosofish.rfid.X9KeyReceiver;
 import io.agritrack.philosofish.ui.LocationAwareActivity;
 import io.agritrack.philosofish.ui.adapter.FilterableAdapter;
@@ -66,14 +84,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CorrelationBinActivity extends LocationAwareActivity {
+public class CorrelationBinActivity extends LocationAwareActivity implements KBeaconsMgr.KBeaconMgrDelegate, KBeacon.ConnStateDelegate, KBeacon.NotifyDataDelegate{
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final ScanHandler mScanHandler = new ScanHandler(this);
-    private final MultipleFilterSingleShotScanner scanner_runnable = new MultipleFilterSingleShotScanner(mScanHandler);
+    private final SingleShotScanner scanner_runnable = new SingleShotScanner(mScanHandler);
     protected BroadcastReceiver keyReceiver;
     private MobileDB db;
-    private Button btnScanAssetTag;
+    private Button btnScanAssetTag, btnClearEpcs;
     private TextView tvCorrBinBarcode, tvCorrTempLoggerBarcode;
     private FilterableAdapter adapterAssets;
     private SearchView svSearchAsset;
@@ -83,13 +101,34 @@ public class CorrelationBinActivity extends LocationAwareActivity {
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
-    private String epcStr, label, binCode;
+    private String epcStr, label, binCode, loggerMac;
+
+    private ProgressBar progressBar;
+
+    private Boolean scanBLE = false;
+    private static final int PERMISSION_COARSE_LOCATION = 22;
+    private static final int PERMISSION_FINE_LOCATION = 23;
+    private static final int PERMISSION_SCAN = 24;
+    private static final int PERMISSION_CONNECT = 25;
+    private final static String TAG = "Beacon.ScanAct";//DeviceScanActivity.class.getSimpleName();
+    private static final String LOG_TAG = "ScanExample";
+    private int mRssiFilterValue = -40;
+    private int mScanFailedContinueNum = 0;
+    private final static int  MAX_ERROR_SCAN_NUMBER = 2;
+    private HashMap<String, KBeacon> mBeaconsDictory;
+    private KBeacon[] mBeaconsArray;
+    private KBeaconsMgr mBeaconsMgr;
+    private KBeacon mBeacon;
+
+    private Boolean isScanning = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_correlation_bin);
+
+        scanBLE = false;
 
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
@@ -103,11 +142,22 @@ public class CorrelationBinActivity extends LocationAwareActivity {
 
         svSearchAsset.setIconifiedByDefault(false);
 
+        mBeaconsMgr = KBeaconsMgr.sharedBeaconManager(this);
+        if (mBeaconsMgr == null)
+        {
+            CToast(getAppContext(),"make sure the phone has support ble funtion", Toast.LENGTH_LONG);
+            finish();
+            return;
+        }
+        mBeaconsMgr.delegate =  this;
+        mBeaconsMgr.setScanMode(KBeaconsMgr.SCAN_MODE_LOW_LATENCY);
+
         confirmRfidReplacement = YesNoDialogFragment.instance(); //dialog in the case where a specific net is already corr
         //confirmRfidReplacement.setMessage(getText(R.string.proceed_with_replacement));
         confirmRfidReplacement.onConfirm(bundle -> {
             GlobalState.recWHCorrelation.assetRFID = epcStr;
             runOnUiThread(() -> tvCorrBinBarcode.setText(label));
+            switchToBLEScan();
         });
         confirmRfidReplacement.onReject(bundle -> {
             runOnUiThread(() -> tvCorrBinBarcode.setText(""));
@@ -150,7 +200,22 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             supportDialog.showDialog();
         });
 
+        btnClearEpcs.setOnClickListener(view -> {
+            clearAllScanned();
+        });
+
         configFooter();
+    }
+
+    private void clearAllScanned() {
+        tvCorrBinBarcode.setText(null);
+        tvCorrTempLoggerBarcode.setText(null);
+        btnClearEpcs.setTextColor(Color.DKGRAY);
+        btnClearEpcs.setEnabled(false);
+        recWHCorrelation.assetRFID = null;
+        recWHCorrelation.rfid = null;
+        btnScanAssetTag.setText(getString(R.string.scan_tag));
+        scanBLE = false;
     }
 
     @SuppressLint("StringFormatMatches")
@@ -191,6 +256,7 @@ public class CorrelationBinActivity extends LocationAwareActivity {
                             recWHCorrelation.assetRFID = epcStr;
                             runOnUiThread(() -> tvCorrBinBarcode.setText(label));
                             wantToCloseDialog = true;
+                            switchToBLEScan();
                         } else {
                             dialog.setTitle(getString(R.string.invalid_password));
                             runOnUiThread(() -> tvCorrBinBarcode.setText(""));
@@ -217,18 +283,19 @@ public class CorrelationBinActivity extends LocationAwareActivity {
 
     private void moveToNextScreen() {
         if (proceedWithoutLocation) {
-            // Update state and proceed to next
-            Boolean proceed = correlate();
 
-//            if (proceed) {
-//                // move to next activity.
-//                Intent i = new Intent(getApplicationContext(), CorrelationBinActivity.class);
-//                startActivity(i);
-//            }
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(render("Connecting to Logger..."));
+            progressDialog.show();
+            isScanning = true;
 
-//            GlobalState.initWHCorrelationRecord();
-//            tvCorrBinBarcode.setText("");
-//            tvCorrTempLoggerBarcode.setText("");
+            //connect to specific ble sensor
+            mBeacon = mBeaconsMgr.getBeacon(loggerMac);
+            mBeacon.connect(LocalPreferences.getLoggerPassword(),
+                    20 * 1000,
+                    this);
+
+
         }
     }
 
@@ -237,8 +304,12 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         this.rvBins.setAdapter(null);
         this.rvBins.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
+        Asset testBin = new Asset();
+        testBin.code = "B4";
+        assetsList.add(testBin);
         if (assetsList != null && !assetsList.isEmpty()) {
             List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid, x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
+            //selectedAssets.add(new GenericListModel(UUID.randomUUID(), null, "B4", null, null));
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();
@@ -268,6 +339,11 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         stopScanner();
         if (keyReceiver != null)
             unregisterReceiver(keyReceiver);
+
+        if (mBeacon != null && (mBeacon.getState() == KBConnState.Connected
+                || mBeacon.getState() == KBConnState.Connecting)){
+            mBeacon.disconnect();
+        }
     }
 
     @Override
@@ -308,11 +384,13 @@ public class CorrelationBinActivity extends LocationAwareActivity {
     }
 
     private void assignCtrlVars() {
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         svSearchAsset = findViewById(R.id.svSearchAsset);
         rvBins = findViewById(R.id.rvBins);
         tvCorrBinBarcode = findViewById(R.id.tvCorrBinBarcode);
         tvCorrTempLoggerBarcode = findViewById(R.id.tvCorrTempLoggerBarcode);
         btnScanAssetTag = findViewById(R.id.btnScanAssetTag);
+        btnClearEpcs = findViewById(R.id.btnClearEPCs);
         ivNext = findViewById(R.id.ivToCongs);
         ivBack = findViewById(R.id.ivBackToCorrelationMenu);
         ivSupport = findViewById(R.id.ivSupport);
@@ -342,15 +420,12 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         this.db = MobileDB.getInstance(getAppContext());
 
         try {
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(render("Synchronizing data..."));
-            progressDialog.show();
+
 
             String token = LocalPreferences.getToken();
 
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
-
 
 
             // sync WH Correlation Tx
@@ -365,10 +440,6 @@ public class CorrelationBinActivity extends LocationAwareActivity {
             CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
 
             return false;
-        } finally {
-            progressDialog.dismiss();
-            /*List<CorrelationTransaction> corrTx = db.correlationTransactionDAO().getAll();
-            CToast(this, "Size:" + corrTx.size(), Toast.LENGTH_LONG);*/
         }
     }
 
@@ -376,15 +447,14 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(recWHCorrelation.assetCode)) {
-                sb.append(String.format("\n%s is missing", "'Bin code'"));
+                sb.append(String.format("\n%s είναι άδειο", "'Κωδικός Βούτας'"));
             }
 
             if (Strings.isEmptyOrWhitespace(recWHCorrelation.assetRFID)) {
-                sb.append(String.format("\n%s is missing", "'Bin RFID'"));
+                sb.append(String.format("\n%s είναι άδειο", "'Ετικέτα'"));
             }
-
             if (Strings.isEmptyOrWhitespace(GlobalState.recWHCorrelation.rfid)) {
-                sb.append(String.format("\n%s is missing", "'Logger RFID'"));
+                sb.append(String.format("\n%s είναι άδειο", "'Καταγραφικό'"));
             }
         }
         return sb.toString();
@@ -404,9 +474,214 @@ public class CorrelationBinActivity extends LocationAwareActivity {
     }
 
     protected void onClick(View view) {
-        scanner_runnable.setFilters(Filters.RFID_BIN, Filters.RFID_LOGGER);
-        scanner_runnable.startReading();
-        mScanHandler.postDelayed(scanner_runnable, 0);
+        //if bluetooth is scanning dont allow further clicks, it will cuase faulty behavior
+        if (isScanning) {
+            return;
+        }
+
+        if (!scanBLE) {
+            scanner_runnable.setFilter(Filters.RFID_BIN);
+            scanner_runnable.startReading();
+            mScanHandler.postDelayed(scanner_runnable, 0);
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+            handleStartScan();
+        }
+    }
+
+    private void handleStartScan(){
+
+        isScanning = true;
+
+        mBeaconsMgr.setScanMinRssiFilter(mRssiFilterValue);
+        if (!checkBluetoothPermitAllowed())
+        {
+            return;
+        }
+
+        int nStartScan = mBeaconsMgr.startScanning();
+        if (nStartScan == 0)
+        {
+            Log.v(TAG, "start scan success");
+        }
+        else if (nStartScan == KBeaconsMgr.SCAN_ERROR_BLE_NOT_ENABLE)
+        {
+            CToast(getAppContext(),"Το Bluetooth δεν είναι ενεργοποιημένο", Toast.LENGTH_LONG);
+        }
+        else if (nStartScan == KBeaconsMgr.SCAN_ERROR_UNKNOWN)
+        {
+            CToast(getAppContext(),"Παρακαλώ επιβεβαιώστε ότι η εφαρμογή έχει πρόσβαση στο Bluetooth", Toast.LENGTH_LONG);
+        }
+    }
+
+    private boolean checkBluetoothPermitAllowed() {
+        boolean bHasPermission = true;
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSION_FINE_LOCATION);
+            bHasPermission = false;
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSION_COARSE_LOCATION);
+            bHasPermission = false;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_SCAN},
+                        PERMISSION_SCAN);
+                bHasPermission = false;
+            }
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT},
+                        PERMISSION_CONNECT);
+                bHasPermission = false;
+            }
+        }
+
+        return bHasPermission;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_SCAN){
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια σάρωσης BLE για να ξεκινήσει τη σάρωση BLE", Toast.LENGTH_LONG);
+
+            }
+        }
+
+        if (requestCode == PERMISSION_CONNECT){
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια σύνδεσης BLE για την εύρεση BLE", Toast.LENGTH_LONG);
+
+            }
+        }
+
+        if (requestCode == PERMISSION_COARSE_LOCATION){
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια κατά προσέγγιση τοποθεσίας για να ξεκινήσει τη σάρωση BLE", Toast.LENGTH_LONG);
+            }
+        }
+        if (requestCode == PERMISSION_FINE_LOCATION){
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια ακριβούς τοποθεσίας για να ξεκινήσει τη σάρωση BLE", Toast.LENGTH_LONG);
+            }
+        }
+    }
+
+    public void onBeaconDiscovered(KBeacon[] beacons)
+    {
+
+        if (beacons == null || beacons.length == 0) {
+            return; // No beacons found, exit early
+        }
+
+        KBeacon strongestBeacon = null;
+        int maxRssi = Integer.MIN_VALUE; // Start with the lowest possible RSSI
+
+        for (KBeacon beacon : beacons) {
+            if (beacon != null && beacon.getRssi() > maxRssi) {
+                maxRssi = beacon.getRssi();
+                strongestBeacon = beacon;
+            }
+        }
+
+        // If a valid strongest beacon was found, process it
+        if (strongestBeacon != null) {
+            Log.d("BeaconDiscovery", "Strongest Beacon: " + strongestBeacon.getMac() +
+                    " RSSI: " + maxRssi);
+            tvCorrTempLoggerBarcode.setText(strongestBeacon.getName());
+            recWHCorrelation.rfid = strongestBeacon.getMac();
+            loggerMac = strongestBeacon.getMac();
+            boolean loggerIsCorrelated = db.assetDAO().getAssetByLoggerEpc(strongestBeacon.getMac()) != null;
+            if (loggerIsCorrelated) {
+                CToast(getAppContext(), render(R.string.logger_already_correlated), Toast.LENGTH_LONG);
+            }
+        }
+
+        mBeaconsMgr.stopScanning();
+        progressBar.setVisibility(View.GONE);
+        isScanning = false;
+    }
+
+    public void onCentralBleStateChang(int nNewState)
+    {
+        Log.e(TAG, "centralBleStateChang：" + nNewState);
+    }
+
+    public void onScanFailed(int errorCode)
+    {
+        if (mScanFailedContinueNum >= MAX_ERROR_SCAN_NUMBER){
+            CToast(getAppContext(),"Scan encountered error, error time:" + mScanFailedContinueNum, Toast.LENGTH_SHORT);
+            isScanning = false;
+
+        }
+        mScanFailedContinueNum++;
+    }
+
+    protected void switchToBLEScan() {
+        btnClearEpcs.setTextColor((getColor(R.color.yellow)));
+        btnClearEpcs.setEnabled(true);
+        btnScanAssetTag.setEnabled(true);
+        btnScanAssetTag.setText(getString(R.string.scan_logger));
+        scanBLE = true;
+    }
+
+    @Override
+    public void onConnStateChange(KBeacon beacon, KBConnState state, int nReason) {
+        if (state == KBConnState.Connected) {
+            Log.v(LOG_TAG, "device has connected");
+            //change parameters
+            KBCfgCommon newCommomCfg = new KBCfgCommon();
+
+            //set device name
+            newCommomCfg.setName(tvCorrBinBarcode.getText().toString());
+
+            ArrayList<KBCfgBase> cfgList = new ArrayList<>(1);
+            cfgList.add(newCommomCfg);
+            mBeacon.modifyConfig(cfgList, new KBeacon.ActionCallback() {
+                @Override
+                public void onActionComplete(boolean bConfigSuccess, KBException error) {
+                    if (bConfigSuccess) {
+
+                        Log.e(LOG_TAG, "Logger Successfully Renamed");
+
+                        //toastShow("config data to beacon success");
+                    } else {
+                        if (error.errorCode == KBErrorCode.CfgBusy) {
+                            Log.e(LOG_TAG, "Device was busy, Maybe another configuration is not complete");
+                        } else if (error.errorCode == KBErrorCode.CfgTimeout) {
+                            Log.e(LOG_TAG, "Sending parameters to device timeout");
+
+                        }
+
+                        //toastShow("config failed for error:" + error.errorCode);
+                    }
+
+                    progressDialog.setMessage("Συγχρονισμός Δεδομένων");
+                    isScanning = false;
+                    //CToast(getAppContext(), "Logger Successfully Renamed", Toast.LENGTH_LONG);
+
+                    correlate();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onNotifyDataReceived(KBeacon beacon, int nEventType, byte[] sensorData) {
+
     }
 
     public class SyncTxCallBack implements Callback<ResponseBody> {
@@ -431,12 +706,12 @@ public class CorrelationBinActivity extends LocationAwareActivity {
                 loadBinsFromLocalDB(Constants.ftBin);
                 deleteCorrelationTx();
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
-                tvCorrBinBarcode.setText("");
-                tvCorrTempLoggerBarcode.setText("");
             } else {
                 // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_CorrelationTx_update_failure), Toast.LENGTH_LONG));
             }
+            clearAllScanned();
+            endActivity();
         }
 
         @Override
@@ -454,7 +729,16 @@ public class CorrelationBinActivity extends LocationAwareActivity {
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
+            clearAllScanned();
+            endActivity();
         }
+    }
+
+    private void endActivity() {
+        progressDialog.dismiss();
+        isScanning = false;
+        Intent i = new Intent(getApplicationContext(), CorrelationBinActivity.class);
+        startActivity(i);
     }
 
     // ###################################################
@@ -470,47 +754,44 @@ public class CorrelationBinActivity extends LocationAwareActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    ArrayList<CharSequence> tags = msg.getData().getCharSequenceArrayList("epc");
+                    String tag = msg.getData().getString("epc");
                     try {
-                        if (!CollectionUtils.isEmpty(tags)) {
-                            for (CharSequence tag : tags) {
-                                String epc = tag.toString();
-                                epcStr = epc;
-                                label = epc.length() > 15 ? epc.substring(14) : epc;
+                        if (!Strings.isEmptyOrWhitespace(tag)) {
 
-                                if (epc.indexOf(Filters.RFID_BIN) > -1) {
-                                   // label = epc.length() > 15 ? epc.substring(14) : epc;
+                            String epc = tag.toString();
+                            epcStr = epc;
+                            label = epc.length() > 15 ? epc.substring(16) : epc;
 
-                                    if (adapterAssets.getSelectedValue() != null) {
-                                        Asset bin = db.assetDAO().getAssetByEpc(epc);
-                                        if (bin == null) {
-                                            bin = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
-                                            if (bin.rfid != null) {
-                                                String code = bin.code;
-                                                FragmentManager fm = getSupportFragmentManager();
-                                                confirmRfidReplacement.setMessage(String.format(getResources().getString(R.string.bin_already_assigned_to_other_rfid), code, label));
-                                                confirmRfidReplacement.showNow(fm, getString(R.string.confirm_selection));
-                                                return;
+                            if (epc.contains(Filters.RFID_BIN)) {
+                                // label = epc.length() > 15 ? epc.substring(14) : epc;
 
-                                            }else {
-                                                recWHCorrelation.assetRFID = epcStr;
-                                                runOnUiThread(() -> tvCorrBinBarcode.setText(label));
-                                                break;
-                                            }
+                                if (adapterAssets.getSelectedValue() != null) {
+                                    Asset bin = db.assetDAO().getAssetByEpc(epc);
+                                    if (bin == null) {
+                                        bin = db.assetDAO().getByCode(adapterAssets.getSelectedValue());
+                                        if (bin != null && bin.rfid != null) {
+                                            String code = bin.code;
+                                            FragmentManager fm = getSupportFragmentManager();
+                                            confirmRfidReplacement.setMessage(String.format(getResources().getString(R.string.bin_already_assigned_to_other_rfid), code, label));
+                                            confirmRfidReplacement.showNow(fm, getString(R.string.confirm_selection));
+                                            return;
 
                                         } else {
-                                            binCode = bin.code;
-                                                FragmentManager fm = getSupportFragmentManager();
-                                                confirmBinRfidDlg.setMessage(String.format(getResources().getString(R.string.rfid_already_assigned_to_other_bin), label, binCode));
-                                                confirmBinRfidDlg.showNow(fm, getString(R.string.confirm_selection));
-                                                return;
+                                            recWHCorrelation.assetRFID = epcStr;
+                                            runOnUiThread(() -> tvCorrBinBarcode.setText(label));
+                                            switchToBLEScan();
+                                            break;
                                         }
+
                                     } else {
-                                        CToast(getApplicationContext(), render(R.string.select_asset), Toast.LENGTH_LONG);
+                                        binCode = bin.code;
+                                        FragmentManager fm = getSupportFragmentManager();
+                                        confirmBinRfidDlg.setMessage(String.format(getResources().getString(R.string.rfid_already_assigned_to_other_bin), label, binCode));
+                                        confirmBinRfidDlg.showNow(fm, getString(R.string.confirm_selection));
+                                        return;
                                     }
-                                } else if (epc.indexOf(Filters.RFID_LOGGER) > -1) {
-                                    GlobalState.recWHCorrelation.rfid = epc;
-                                    tvCorrTempLoggerBarcode.setText(label);
+                                } else {
+                                    CToast(getApplicationContext(), render(R.string.select_asset), Toast.LENGTH_LONG);
                                 }
                             }
                         }

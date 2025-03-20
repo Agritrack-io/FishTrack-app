@@ -1,8 +1,6 @@
 package io.agritrack.philosofish.data.type;
 
-import lombok.Data;
 
-@Data
 public class EpcPerDevice {
     private String type;
     private String epc;
