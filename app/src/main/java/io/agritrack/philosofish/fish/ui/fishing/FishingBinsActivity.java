@@ -12,6 +12,7 @@ import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -38,19 +39,29 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.caen.common.CAENState;
+import io.agritrack.philosofish.common.AlphanumericComparator;
+import io.agritrack.philosofish.common.Constants;
 import io.agritrack.philosofish.common.Filters;
 import io.agritrack.philosofish.data.db.MobileDB;
+import io.agritrack.philosofish.data.model.CageDetails;
+import io.agritrack.philosofish.data.model.wh.Asset;
+import io.agritrack.philosofish.dialog.CageListDialog;
 import io.agritrack.philosofish.dialog.GetTempDataDialog;
 import io.agritrack.philosofish.dialog.InfoDialog;
+import io.agritrack.philosofish.dialog.SimpleListDialog;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.FishingRecord;
@@ -71,7 +82,7 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     private final MutableLiveData<CAENState> loggerStateObserver = new MutableLiveData<>();
 
-
+    private final MutableLiveData<String> currentCageSelection = new MutableLiveData<>();
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver;
     private ScanInventoryThread scanner_runnable;
@@ -79,7 +90,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     private TemplateRecyclerAdapter adapterBins;
     private RecyclerView rvBins;
     private TextView tvBinsCount;
-    private Button btnScanBin;
+    private Button btnScanBin, btnChooseCage;
     private LoggerReading loggerReading;
     private GetTempDataDialog tempLoggerDialog;
     private boolean intentForBinActivity = false;
@@ -91,10 +102,12 @@ public class FishingBinsActivity extends AppCompatActivity {
     private InfoDialog infoDialog;
     private ImageView ivInfo;
 
+    private CageListDialog chooseCageDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fishing_bins);
+        setContentView(R.layout.activity_fishing_bins_and_cage);
 
         if (getIntent() != null) {
             Bundle bundle = getIntent().getExtras();
@@ -233,6 +246,42 @@ public class FishingBinsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        List<String> cageCodes = new ArrayList<>();
+        //get all available cages from local database
+        List<Asset> cages = db.assetDAO().getAssetsForType(Constants.ftCage.toUpperCase(Locale.ROOT));
+
+        if (cages != null && !cages.isEmpty()) {
+            //get the cage codes
+            cageCodes = cages.stream().map(cage -> cage.code).collect(Collectors.toList());
+            cageCodes.sort(new AlphanumericComparator());
+        }
+
+        List<String> finalCageCodes = cageCodes;
+        //if choose cage button is selected, show cage list dialog
+        btnChooseCage.setOnClickListener(view -> {
+            chooseCageDialog = new CageListDialog(FishingBinsActivity.this, finalCageCodes, currentCageSelection, R.string.choose_cage);
+            chooseCageDialog.showDialog();
+        });
+
+        //handle cage selection from cage list dialog
+        currentCageSelection.observe(this, response -> {
+            if (response != null) {
+                btnChooseCage.setText(response);
+                recFishing.cageCode = response;
+                chooseCageDialog.dismiss();
+
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.execute(() -> {
+                    //in another thread, set cage rfid of the state to be the rfid matching to the cage code, if it exists
+                    CageDetails cage = db.cageDetailsDAO().getByCode(response);
+                    if (cage != null && !Strings.isEmptyOrWhitespace(cage.cageCode)) {
+                        recFishing.cageRFID = cage.rfid;
+                    }
+                });
+            }
+        });
+
         // ------ Logger Observer -----------------------------
 
         // create Footer
@@ -290,6 +339,7 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     private void assignCtrlVars() {
+        btnChooseCage = findViewById(R.id.btnChooseCage);
         btnScanBin = findViewById(R.id.btnScanBin);
         rvBins = findViewById(R.id.rvBins);
         tvBinsCount = findViewById(R.id.tvBinsCount);
@@ -302,6 +352,10 @@ public class FishingBinsActivity extends AppCompatActivity {
 
     private void initControlsFromState() {
         FishingRecord hvst = recFishing;
+
+        if (hvst.cageCode != null) {
+            btnChooseCage.setText(hvst.cageCode);
+        }
 
         if (hvst.availBins != null) {
             adapterBins.setValues(hvst.availBins.stream().map(x -> new TemplateRecyclerAdapter.BinEpc(x)).collect(Collectors.toList()));
@@ -354,6 +408,10 @@ public class FishingBinsActivity extends AppCompatActivity {
         if (!IsDemo) {
             if (recFishing.availBins == null || recFishing.availBins.isEmpty()) {
                 sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.bins_to_use)));
+            }
+
+            if (recFishing.cageCode == null || recFishing.cageCode.isEmpty()) {
+                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.cage)));
             }
         }
         return sb.toString();

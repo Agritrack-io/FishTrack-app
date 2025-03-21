@@ -305,11 +305,9 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
         this.rvBins.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
         Asset testBin = new Asset();
-        testBin.code = "B4";
         assetsList.add(testBin);
         if (assetsList != null && !assetsList.isEmpty()) {
             List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid, x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
-            //selectedAssets.add(new GenericListModel(UUID.randomUUID(), null, "B4", null, null));
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
             adapterAssets.notifyDataSetChanged();

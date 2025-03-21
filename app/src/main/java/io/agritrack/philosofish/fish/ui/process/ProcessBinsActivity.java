@@ -258,7 +258,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), ProcessInfoActivity.class);
+                Intent i = new Intent(getApplicationContext(), ProcessConfirmActivity.class);
                 startActivity(i);
             }
         });

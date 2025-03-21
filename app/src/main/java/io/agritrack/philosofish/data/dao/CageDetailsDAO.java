@@ -24,6 +24,9 @@ public interface CageDetailsDAO {
     @Query("SELECT * from cage_details where asset_rfid=:rfId LIMIT 1")
     CageDetails getByRFId(String rfId);
 
+    @Query("SELECT * from cage_details where cage_code=:code LIMIT 1")
+    CageDetails getByCode(String code);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(CageDetails... details);
 

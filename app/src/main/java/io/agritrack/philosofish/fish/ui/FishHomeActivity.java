@@ -100,6 +100,7 @@ import io.agritrack.philosofish.enums.TxStatus;
 import io.agritrack.philosofish.fish.state.FishingRecord;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.ui.binTurnover.BinTurnoverActivity;
+import io.agritrack.philosofish.fish.ui.fishing.FishingBinsActivity;
 import io.agritrack.philosofish.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.philosofish.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.philosofish.fish.ui.fishing.HarvestRequestsActivity;
@@ -157,27 +158,27 @@ public class FishHomeActivity extends AppCompatActivity {
         if (roleCanAccessMenu(userRoles, InitBins_Idx)) {
             menuItemsSet.add(new MenuItem(InitBins_Idx, getString(R.string.menu_title_init_bins), TestBinTempActivity.class, R.drawable.test_bin_temp));
         }
-        if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
-            menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), FishingStartActivity.class, R.drawable.fishing));
-        }
-        //if (roleCanAccessMenu(userRoles, Test_Temp_Idx)) {
-            menuItemsSet.add(new MenuItem(Test_Temp_Idx, getString(R.string.menu_title_test_temp), TestBinTempActivity.class, R.drawable.test_bin_temp));
+        //if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
+            menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), HarvestRequestsActivity.class, R.drawable.fishing));
         //}
+        if (roleCanAccessMenu(userRoles, Test_Temp_Idx)) {
+            menuItemsSet.add(new MenuItem(Test_Temp_Idx, getString(R.string.menu_title_test_temp), TestBinTempActivity.class, R.drawable.test_bin_temp));
+        }
         if (roleCanAccessMenu(userRoles, Receiving_Idx)) {
             menuItemsSet.add(new MenuItem(Receiving_Idx, getString(R.string.menu_title_fish_receiving), ProcessBinsActivity.class, R.drawable.processing));
         }
-        //if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
+        if (roleCanAccessMenu(userRoles, Packaging_Quality_Idx)) {
             menuItemsSet.add(new MenuItem(Packaging_Quality_Idx, getString(R.string.menu_title_fish_packaging), QualitySelectStepsActivity.class, R.drawable.quality));
-        //}
+        }
 //        if (roleCanAccessMenu(userRoles, Bin_Overturn_Idx)) {
 //            menuItemsSet.add(new MenuItem(Bin_Overturn_Idx, getString(R.string.menu_title_bin_overturn), BinTurnoverActivity.class, R.drawable.bin_turnover));
 //        }
 //        if (roleCanAccessMenu(userRoles, Transport_Idx)) {
 //            menuItemsSet.add(new MenuItem(Transport_Idx, getString(R.string.menu_title_transport), TransportInfoActivity.class, R.drawable.transport));
 //        }
-       // if (roleCanAccessMenu(userRoles, Warehouse_Idx)) {
+        if (roleCanAccessMenu(userRoles, Warehouse_Idx)) {
             menuItemsSet.add(new MenuItem(Warehouse_Idx, getString(R.string.menu_title_warehouse), WhMenuActivity.class, R.drawable.warehouse));
-        //}
+        }
 //        if (roleCanAccessMenu(userRoles, Maintenance_Idx)) {
 //            menuItemsSet.add(new MenuItem(Maintenance_Idx, getString(R.string.menu_title_maintenance), MaintenanceMenuActivity.class, R.drawable.maintenance));
 //        }
@@ -250,7 +251,6 @@ public class FishHomeActivity extends AppCompatActivity {
                             } else {
                                 fishingRecord.txKey = openTx.id;
                             }
-
                             i = new Intent(appCtx, HarvestRequestsActivity.class);
                         }
                         break;

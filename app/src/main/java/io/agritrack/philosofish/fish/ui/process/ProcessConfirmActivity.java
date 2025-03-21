@@ -50,7 +50,7 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
     private YesNoDialogFragment confirmGPSSelectionDlg;
 
     private ProgressDialog progressDialog;
-    private TextView tvNumberOfBinsCount, tvDispatchNote, tvPackagingLot, tvUsername;
+    private TextView tvNumberOfBinsCount, etDispatchNote, tvPackagingLot, tvUsername;
     private EditText etPIN;
     private ImageView ivSupport, ivNext, ivBack;
     private boolean proceedWithoutLocation = false;
@@ -122,6 +122,22 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+            }
+        });
+
+        etDispatchNote.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable editable) {
+                recProcessing.dispatchNote = editable.toString().trim();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             public void onTextChanged(CharSequence s, int start,
@@ -154,14 +170,14 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
         });
 
         ivBack.setOnClickListener(view -> {
-            Intent i = new Intent(getApplicationContext(), ProcessInfoActivity.class);
+            Intent i = new Intent(getApplicationContext(), ProcessBinsActivity.class);
             startActivity(i);
         });
     }
 
     private void assignCtrlVars() {
         tvNumberOfBinsCount = findViewById(R.id.tvNumberOfBinsCount);
-        tvDispatchNote = findViewById(R.id.tvDispatchNote);
+        etDispatchNote = findViewById(R.id.etDispatchNote);
         tvPackagingLot = findViewById(R.id.tvPackagingLot);
         tvUsername = findViewById(R.id.tvUsername);
         ivSupport = findViewById(R.id.ivSupport);
@@ -174,7 +190,7 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
         ProcessingRecord prcRecord = recProcessing;
 
         if (!Strings.isEmptyOrWhitespace(prcRecord.dispatchNote)) {
-            tvDispatchNote.setText(prcRecord.dispatchNote);
+            etDispatchNote.setText(prcRecord.dispatchNote);
         }
 
         if (prcRecord.availBins != null) {
@@ -204,6 +220,10 @@ public class ProcessConfirmActivity extends LocationAwareActivity {
             progressDialog.show();
 
             String token = LocalPreferences.getToken();
+
+            if (Strings.isEmptyOrWhitespace(etDispatchNote.getText().toString())) {
+                recProcessing.dispatchNote = etDispatchNote.getText().toString();
+            }
 
             // persist Transportation Record data to local DB.
             ProcessingTransaction tx = GlobalState.commitProcessing(db);

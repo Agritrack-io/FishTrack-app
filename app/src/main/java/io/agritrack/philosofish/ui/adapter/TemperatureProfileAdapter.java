@@ -26,6 +26,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -101,7 +102,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
                 if (mLayoutInflater.getContext() instanceof BinTurnoverActivity) {
                     holder.tvCageCode.setText(cageCode);
                     holder.tvWeight.setText(String.valueOf(weight));
-                    holder.tvSurface.setText(surfaceT != null ? String.valueOf(surfaceT) : "");
+                    holder.tvSurface.setText(surfaceT != null ? String.format(Locale.US,"%.1f", surfaceT) : "");
                     holder.tvBottom.setText(bottomT != null ? String.valueOf(bottomT) : "");
                     //holder.tvFish2.setText(fishT2 != null ? String.valueOf(fishT2) : "");
                     List<TempSample> values = recLoggerData.getValues(key);
@@ -122,7 +123,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             if (mLayoutInflater.getContext() instanceof BinTurnoverActivity) {
                 holder.tvCageCode.setText(cageCode);
                 holder.tvWeight.setText(String.valueOf(weight));
-                holder.tvSurface.setText(surfaceT != null ? String.valueOf(surfaceT) : "");
+                holder.tvSurface.setText(surfaceT != null ? String.format(Locale.US,"%.1f", surfaceT) : "");
                 holder.tvBottom.setText(bottomT != null ? String.valueOf(bottomT) : "");
                 //holder.tvFish2.setText(fishT2 != null ? String.valueOf(fishT2) : "");
                 recLoggerData.addDataSetForBin(key, surfaceT, bottomT, corrAction);
@@ -209,9 +210,10 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
         notifyDataSetChanged();
     }
 
-    public synchronized void fill(Map<String, LoggerDataRecord.TemperatureModel> data, BinInfo tmpBin) {
+    public synchronized void fill(Map<String, LoggerDataRecord.TemperatureModel> data, BinInfo tmpBin, Double surfaceTemp) {
         this.listOfEPCs = new ArrayList<>(data.keySet());
         this.mapOfData = data;
+        this.surfaceT = surfaceTemp;
         this.cageCode = tmpBin.cage;
         this.weight = tmpBin.totalWeight;
         notifyDataSetChanged();

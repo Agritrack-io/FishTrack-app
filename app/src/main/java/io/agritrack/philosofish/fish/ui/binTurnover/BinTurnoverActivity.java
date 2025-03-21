@@ -4,13 +4,9 @@ import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
 import static io.agritrack.philosofish.FishTrackApplication.IsOnline;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 import static io.agritrack.philosofish.caen.api.EncodingUtils.createTimestamp;
-import static io.agritrack.philosofish.caen.api.EncodingUtils.parseTemperatureNumeric;
 import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.fish.state.GlobalState.recLoggerData;
-import static io.agritrack.philosofish.fish.state.GlobalState.recWHCorrelation;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
-import static io.agritrack.philosofish.ui.tools.caen.ILoggerDialog.StatesEnum.INIT;
-import static io.agritrack.philosofish.ui.tools.caen.ILoggerDialog.StatesEnum.READ_VALUES;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -18,7 +14,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -44,7 +39,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.text.HtmlCompat;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -52,6 +46,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
+import com.kkmcn.kbeaconlib2.KBAdvPackage.KBAdvPacketSensor;
+import com.kkmcn.kbeaconlib2.KBAdvPackage.KBAdvType;
 import com.kkmcn.kbeaconlib2.KBCfgPackage.KBSensorType;
 import com.kkmcn.kbeaconlib2.KBConnState;
 import com.kkmcn.kbeaconlib2.KBSensorHistoryData.KBRecordBase;
@@ -102,10 +98,7 @@ import io.agritrack.philosofish.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.philosofish.ui.adapter.TemperatureProfileAdapter;
 import io.agritrack.philosofish.ui.service.AuthenticationService;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
-import io.agritrack.philosofish.ui.tools.caen.IDialogCloseListener;
 import io.agritrack.philosofish.ui.tools.caen.ILoggerDialog;
-import io.agritrack.philosofish.ui.tools.caen.LoggerDialogFragment;
-import io.agritrack.philosofish.ui.tools.caen.SortLoggerDialogDecorator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -151,6 +144,8 @@ public class BinTurnoverActivity extends AppCompatActivity implements  KBeaconsM
     private Button btnScanBin;
     private SupportDialog supportDialog;
     private String callingActivity;
+
+    private Double surfaceTemp;
 
     private long mNextReadReverseIndex = KBRecordDataRsp.INVALID_DATA_RECORD_POS;
     private int mTotalReverseReadIndex = 0;
@@ -562,7 +557,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements  KBeaconsM
 
         if (values != null) {
             Map<String, LoggerDataRecord.TemperatureModel> data = recLoggerData.data;
-            tempProfileAdapter.fill(data, tmpBin);
+            tempProfileAdapter.fill(data, tmpBin, surfaceTemp);
         } else {
             tempProfileAdapter.fill(tmpBin);
         }
@@ -632,11 +627,6 @@ public class BinTurnoverActivity extends AppCompatActivity implements  KBeaconsM
 
             tmpBin = db.binInfoDAO().getByRFId(binEPC);
 
-            //todo:remove following lines
-            tmpBin = new BinInfo();
-            tmpBin.rfid = binEPC;
-            tmpBin.totalWeight = 50.0;
-            //////////////////////////
 
             if (tmpBin == null) {
                 CToast(getApplicationContext(), getString(R.string.sync_and_check_if_correct_bin, binEPC.substring(binEPC.length()-4)), Toast.LENGTH_LONG);
@@ -675,7 +665,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements  KBeaconsM
                 mBeacon.readSensorRecord(KBSensorType.HTHumidity,
                         mNextReadReverseIndex, //read from last pos
                         KBSensorReadOption.ReverseOrder,  //read direction type
-                        50,   //number of records the app want to read
+                        100,   //number of records the app want to read
                         (bSuccess, dataRsp, error) -> {
                             if (bSuccess)
                             {
@@ -712,6 +702,8 @@ public class BinTurnoverActivity extends AppCompatActivity implements  KBeaconsM
                                     Log.v(LOG_TAG, "next read position:" + dataRsp.readDataNextPos);
                                 }
                                 if (!CollectionUtils.isEmpty(samples)) {
+                                    //put them in chronological order
+                                    Collections.reverse(samples);
                                     retrievedAt = System.currentTimeMillis();
                                     recLoggerData.addDataSet(loggerEPC, binEPC, defaultProdLane, retrievedAt, samples);
                                     GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), binEPC, defaultProdLane);
@@ -744,6 +736,13 @@ public class BinTurnoverActivity extends AppCompatActivity implements  KBeaconsM
         for (KBeacon beacon : beacons) {
             if (beacon.getMac().equals(loggerEPC)) {
                 beaconFound = beacon; // Store the found beacon
+                //KBSensor info
+                try {
+                    KBAdvPacketSensor kSensor = (KBAdvPacketSensor) beaconFound.getAdvPacketByType(KBAdvType.Sensor);
+                    surfaceTemp = Double.valueOf(kSensor.getTemperature());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
                 break; // Exit loop once found
             }
         }
@@ -814,9 +813,9 @@ public class BinTurnoverActivity extends AppCompatActivity implements  KBeaconsM
                                 //new code here
                                 //#########################
                                 Asset bin = db.assetDAO().getAssetByEpc(binEPC);
-                                bin = new Asset();
-                                bin.rfid = epcStr;
-                                bin.loggerEPC = "BC:57:29:13:FF:CD";
+//                                bin = new Asset();
+//                                bin.rfid = epcStr;
+//                                bin.loggerEPC = "BC:57:29:13:FF:CD";
                                 if (bin == null) {
                                     CToast(getApplicationContext(), render(getString(R.string.epc_not_correlated_to_bin, binEPC.substring(binEPC.length() - 10))), Toast.LENGTH_LONG);
                                     return;
@@ -857,9 +856,6 @@ public class BinTurnoverActivity extends AppCompatActivity implements  KBeaconsM
                                 List<BinInfo> binInfoList = db.binInfoDAO().getEPCListByRFId(epcStr);
                                 String lot = null;
 
-                                //todo: comment follwing line, omly used for tesing
-                                binList.add(epcStr);
-                                ///////
                                 for (BinInfo bin : binInfoList) {
                                     binList.add(bin.rfid);
                                     lot = !Strings.isEmptyOrWhitespace(bin.lot) ? bin.lot : lot;
