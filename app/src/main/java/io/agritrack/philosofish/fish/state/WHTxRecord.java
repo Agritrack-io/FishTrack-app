@@ -3,6 +3,7 @@ package io.agritrack.philosofish.fish.state;
 import java.util.List;
 import java.util.Map;
 
+import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.enums.ConsumableType;
 import io.agritrack.philosofish.enums.WarehouseTxState;
 

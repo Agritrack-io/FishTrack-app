@@ -34,6 +34,7 @@ import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
 import io.agritrack.philosofish.data.model.tx.QualityTransaction;
 import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.TransportTransaction;
+import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.data.model.wh.RFIDInventory;
 import io.agritrack.philosofish.data.model.wh.RFIDInventoryItem;
 import io.agritrack.philosofish.enums.TxStatus;
@@ -934,7 +935,6 @@ public class GlobalState {
             return null;
         }
     }
-
     public static CorrelationTransaction commitWHCorrelation(MobileDB db) {
         try {
             CorrelationTransaction txCorrelation = new CorrelationTransaction();

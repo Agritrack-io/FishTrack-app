@@ -41,8 +41,10 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
@@ -52,6 +54,7 @@ import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.dto.wh.RFIDInventoryDTO;
 import io.agritrack.philosofish.data.dto.wh.RFIDInventoryItemDTO;
 import io.agritrack.philosofish.data.model.Site;
+import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.data.model.wh.RFIDInventory;
 import io.agritrack.philosofish.data.model.wh.RFIDInventoryItem;
 import io.agritrack.philosofish.data.service.EncodingSchemeService;
@@ -292,6 +295,7 @@ public class InventoryAssetActivity extends LocationAwareActivity {
 
         configFooter();
     }
+
     @SuppressLint("StringFormatMatches")
     private void copyItem() {
         if (adapterInventoryItems != null) {
@@ -309,7 +313,7 @@ public class InventoryAssetActivity extends LocationAwareActivity {
             } else {
                 CToast(getApplicationContext(), render(R.string.please_scan), Toast.LENGTH_LONG);
             }
-        }else{
+        } else {
             CToast(getApplicationContext(), render(R.string.please_scan), Toast.LENGTH_LONG);
         }
     }
@@ -378,7 +382,14 @@ public class InventoryAssetActivity extends LocationAwareActivity {
                 scanner_runnable.stopReading();
             }
             if (adapterInventoryItems != null) {
-                recWHInventory.items = adapterInventoryItems.getValues();
+                recWHInventory.items = adapterInventoryItems.getValues().entrySet().stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                e -> e.getValue().stream()
+                                        .map(asset -> asset.rfid)
+                                        .filter(Objects::nonNull)
+                                        .collect(Collectors.toList())
+                        ));
             }
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -529,16 +540,33 @@ public class InventoryAssetActivity extends LocationAwareActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 100:
+                    //this brings back the standard list of 'codes' for the asset ypes we have; i.e. '1410' for bin '1411' fopr net '1412' for cage
                     String[] acceptedCodes = schemeSvc.distinctNamesOnly();
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     clearSelectedItem();
+
                     Map<String, List<String>> values = epcList.stream().filter(f -> ArrayUtils.contains(acceptedCodes, schemeSvc.nameOf(schemeSvc.nativeSchemeCode(f)))).map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
+                    Map<String, List<Asset>> adapterMap = new HashMap<>();
+
+                    for (String key : values.keySet()) {
+                        List<Asset> assetList = new ArrayList<>();
+                        for (String rfid : values.get(key)) {
+                            Asset asset = db.assetDAO().getAssetByEpc(rfid);
+                            if (asset != null) {
+                                assetList.add(asset);
+                            }
+                        }
+                        if (!assetList.isEmpty()) {
+                            adapterMap.put(key, assetList);
+                        }
+                    }
+
 
                     if (adapterInventoryItems == null) {
-                        adapterInventoryItems = new TreelikeAdapter(InventoryAssetActivity.this, values);
+                        adapterInventoryItems = new TreelikeAdapter(InventoryAssetActivity.this, adapterMap);
                         xvInventoryItems.setAdapter(adapterInventoryItems);
                     } else {
-                        adapterInventoryItems.appendItems(values);
+                        adapterInventoryItems.appendItems(adapterMap);
                     }
                     adapterInventoryItems.notifyDataSetChanged();
                     tvGroupsCnt.setText(String.valueOf(adapterInventoryItems.getGroupCount()));

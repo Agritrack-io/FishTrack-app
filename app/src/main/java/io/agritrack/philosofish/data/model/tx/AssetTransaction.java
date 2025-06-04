@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.agritrack.philosofish.data.converter.StringMapConverter;
+import io.agritrack.philosofish.data.model.wh.Asset;
 
 @Entity(tableName = "asset_transaction")
 public class AssetTransaction {

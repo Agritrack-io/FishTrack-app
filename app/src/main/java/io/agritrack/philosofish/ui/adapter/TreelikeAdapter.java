@@ -15,12 +15,14 @@ import androidx.core.text.HtmlCompat;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.data.db.MobileDB;
@@ -33,10 +35,10 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
     private final Context mCtx;
     private MobileDB db;
     // child data in format of: <Type, List of children<Type>>
-    private TreeMap<String, List<String>> mValues = new TreeMap<>();
+    private TreeMap<String, List<Asset>> mValues = new TreeMap<>();
     private List<String> keys;
 
-    public TreelikeAdapter(Context context, Map<String, List<String>> listData) {
+    public TreelikeAdapter(Context context, Map<String, List<Asset>> listData) {
         this.mCtx = context;
         this.mValues.putAll(listData);
         this.keys = new LinkedList<>(this.mValues.keySet());
@@ -70,26 +72,19 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        List<String> children = this.mValues.get(this.keys.get(groupPosition));
+        List<Asset> children = this.mValues.get(this.keys.get(groupPosition));
         if (childPosition == 0) {
             return "";
         } else {
             childPosition = childPosition - 1;
-            String selectedChild = children.get(childPosition);
-            if (selectedChild.length() >= 24) {
-                Asset selectedAsset = db.assetDAO().getAssetByEpc(selectedChild);
-                if (selectedAsset != null) {
-                    return selectedAsset.netEyeGirth != null && selectedAsset.netEyeGirth != 0.0 && selectedAsset.perimeter != null
-                            ? String.format("%s/%s/%.2f/%.2f", selectedAsset.rfid.substring(14), selectedAsset.code, selectedAsset.perimeter, selectedAsset.netEyeGirth)
-                            : ((selectedAsset.netEyeGirth != null && selectedAsset.netEyeGirth == 0.0) && selectedAsset.perimeter != null
-                            ? String.format("%s/%s/%.2f", selectedAsset.rfid.substring(14), selectedAsset.code, selectedAsset.perimeter)
-                            : selectedAsset.rfid.substring(14) + "/" + selectedAsset.code);
-                } else {
-                    return selectedChild.substring(14);
-                }
-            } else {
-                return selectedChild;
-            }
+            Asset selectedChild = children.get(childPosition);
+
+            return selectedChild.netEyeGirth != null && selectedChild.netEyeGirth != 0.0 && selectedChild.perimeter != null
+                    ? String.format("%s/%s/%.2f/%.2f", selectedChild.rfid.substring(14), selectedChild.code, selectedChild.perimeter, selectedChild.netEyeGirth)
+                    : ((selectedChild.netEyeGirth != null && selectedChild.netEyeGirth == 0.0) && selectedChild.perimeter != null
+                    ? String.format("%s/%s/%.2f", selectedChild.rfid.substring(14), selectedChild.code, selectedChild.perimeter)
+                    : selectedChild.rfid.substring(14) + "/" + selectedChild.code);
+
         }
     }
 
@@ -199,11 +194,11 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         return convertView;
     }
 
-    public Map<String, List<String>> getValues() {
+    public Map<String, List<Asset>> getValues() {
         return mValues;
     }
 
-    public void setValues(Map<String, List<String>> items) {
+    public void setValues(Map<String, List<Asset>> items) {
         this.mValues = new TreeMap<>();
         this.mValues.putAll(items);
     }
@@ -217,22 +212,26 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
         return schemeSvc.nameOf(type);
     }
 
-    public void appendItems(Map<String, List<String>> values) {
+    public void appendItems(Map<String, List<Asset>> values) {
         for (String key : values.keySet()) {
-            if (!this.mValues.containsKey((key))) {
-                this.mValues.put(key, values.get(key));
-            } else {
-                Set<String> tmp = new TreeSet<>(this.mValues.get(key));
-                tmp.addAll(values.get(key));
-                this.mValues.put(key, new ArrayList<>(tmp));
+            List<Asset> existingAssets = this.mValues.getOrDefault(key, new ArrayList<>());
+            Map<String, Asset> uniqueAssets = new LinkedHashMap<>();
+
+            for (Asset asset : existingAssets) {
+                uniqueAssets.put(asset.rfid, asset);
             }
+            for (Asset asset : values.get(key)) {
+                uniqueAssets.put(asset.rfid, asset);
+            }
+            this.mValues.put(key, new ArrayList<>(uniqueAssets.values()));
         }
+
         this.keys = new ArrayList<>(this.mValues.keySet());
     }
 
     public void removeItem(int parentPosition, int childPosition) {
         String key = this.keys.get(parentPosition);
-        List<String> children = this.mValues.get(key);
+        List<Asset> children = this.mValues.get(key);
         children.remove(childPosition - 1);
 
         if (getChildrenCount(parentPosition) == 1) {

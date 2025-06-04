@@ -36,8 +36,10 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
@@ -48,6 +50,7 @@ import io.agritrack.philosofish.data.dto.tx.AssetTxDTO;
 import io.agritrack.philosofish.data.dto.tx.AssetTxItemDTO;
 import io.agritrack.philosofish.data.model.tx.AssetTransaction;
 import io.agritrack.philosofish.data.model.tx.AssetTxItem;
+import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.data.service.EncodingSchemeService;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
@@ -334,7 +337,14 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
             }
 
             if (adapterOutgoingItems != null) {
-                recWHOutgoing.items = adapterOutgoingItems.getValues();
+                recWHOutgoing.items = adapterOutgoingItems.getValues().entrySet().stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                e -> e.getValue().stream()
+                                        .map(asset -> asset.rfid)
+                                        .filter(Objects::nonNull)
+                                        .collect(Collectors.toList())
+                        ));
             }
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
@@ -439,10 +449,22 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
             tvOutgoingProcessTo.setText(outgoingWHRecord.toSite);
         }
 
-        if (outgoingWHRecord.items != null) {
-            adapterOutgoingItems.setValues(outgoingWHRecord.items);
-            adapterOutgoingItems.notifyDataSetChanged();
-        }
+            if (outgoingWHRecord.items != null) {
+                Map<String, List<Asset>> adapterMap = new HashMap<>();
+                for (String key : outgoingWHRecord.items.keySet()) {
+                    List<Asset> assetList = new ArrayList<>();
+                    for (String rfid : outgoingWHRecord.items.get(key)) {
+                        Asset asset = db.assetDAO().getAssetByEpc(rfid);
+                        if (asset != null){
+                            assetList.add(asset);
+                        }
+                    }
+                    adapterMap.put(key,assetList);
+                }
+                adapterOutgoingItems.setValues(adapterMap);
+
+                adapterOutgoingItems.notifyDataSetChanged();
+            }
     }
 
     protected void onClick(View view) {
@@ -519,12 +541,25 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
                     clearSelectedItem();
                     if (epcList != null && !epcList.isEmpty()) {
                         Map<String, List<String>> values = epcList.stream().filter(f -> ArrayUtils.contains(acceptedCodes, schemeSvc.nameOf(schemeSvc.nativeSchemeCode(f)))).map(m -> m.toString()).collect(Collectors.groupingBy(g -> schemeSvc.nativeSchemeCode(g), Collectors.toCollection(ArrayList::new)));
+                        Map<String, List<Asset>> adapterMap = new HashMap<>();
+
+                        for (String key : values.keySet()) {
+                            List<Asset> assetList = new ArrayList<>();
+                            for (String rfid : values.get(key)) {
+                                Asset asset = db.assetDAO().getAssetByEpc(rfid);
+                                if (asset != null){
+                                    assetList.add(asset);
+                                }
+                            }
+                            adapterMap.put(key,assetList);
+                        }
+
 
                         if (adapterOutgoingItems == null) {
-                            adapterOutgoingItems = new TreelikeAdapter(mActivity.get(), values);
+                            adapterOutgoingItems = new TreelikeAdapter(mActivity.get(), adapterMap);
                             xvOutgoingAssets.setAdapter(adapterOutgoingItems);
                         } else {
-                            adapterOutgoingItems.appendItems(values);
+                            adapterOutgoingItems.appendItems(adapterMap);
                         }
                         adapterOutgoingItems.notifyDataSetChanged();
                         tvGroupsCnt.setText(String.valueOf(adapterOutgoingItems.getGroupCount()));

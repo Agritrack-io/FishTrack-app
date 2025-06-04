@@ -4,15 +4,13 @@ plugins {
 
 android {
     compileSdkVersion(34)
-    buildToolsVersion "30.0.3"
 
-    dataBinding {
-        enabled = true
-    }
+
     buildFeatures {
+        dataBinding true  // Enable DataBinding (if used)
         viewBinding true
         buildConfig true
-        dataBinding true  // Enable DataBinding (if used)
+
     }
 
     namespace 'io.agritrack.philosofish'
@@ -20,9 +18,9 @@ android {
     defaultConfig {
         applicationId "io.agritrack.philosofish"
         minSdkVersion 26
-        targetSdkVersion 34
-        versionCode 4
-        versionName "1.4.0"
+        targetSdk 34
+        versionCode 3
+        versionName "1.03"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -72,8 +70,8 @@ android {
 
     compileOptions {
         coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     sourceSets {
@@ -94,7 +92,7 @@ dependencies {
 
     //define versions
     def versions_lombok = "1.18.12"
-    def versions_room = "2.3.0"
+    def versions_room = "2.6.1"
     def versions_work = "2.5.0"
     def versions_jwt = "3.4.1"
     def versions_mail = "1.6.2"
