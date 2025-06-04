@@ -158,9 +158,9 @@ public class FishHomeActivity extends AppCompatActivity {
         if (roleCanAccessMenu(userRoles, InitBins_Idx)) {
             menuItemsSet.add(new MenuItem(InitBins_Idx, getString(R.string.menu_title_init_bins), TestBinTempActivity.class, R.drawable.test_bin_temp));
         }
-        //if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
+        if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
             menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), HarvestRequestsActivity.class, R.drawable.fishing));
-        //}
+        }
         if (roleCanAccessMenu(userRoles, Test_Temp_Idx)) {
             menuItemsSet.add(new MenuItem(Test_Temp_Idx, getString(R.string.menu_title_test_temp), TestBinTempActivity.class, R.drawable.test_bin_temp));
         }

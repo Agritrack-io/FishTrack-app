@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
@@ -347,7 +348,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         // Listen for Fn key press/release;
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.rfid.FUN_KEY");
-        this.registerReceiver(keyReceiver, filter);
+        ContextCompat.registerReceiver(this, keyReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override
@@ -468,6 +469,7 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 1:
                     epcStr = msg.getData().getString("epc");
+                    if (epcStr == null) return;
                     String rssi = msg.getData().getString("rssi");
                     epcShort = epcStr.substring(epcStr.length() - 6);
                     this.removeCallbacks(scanner_runnable);

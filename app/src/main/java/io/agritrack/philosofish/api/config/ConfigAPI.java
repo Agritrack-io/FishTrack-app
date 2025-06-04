@@ -13,14 +13,14 @@ import retrofit2.http.Query;
 public interface ConfigAPI {
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @GET("/device/{terminalId}/info")
+    @GET("/agrisense/device/{terminalId}/info")
     Call<AgricenseDTO> getConfiguration(@Path("terminalId") String terminalId,
                                         @Query("serialNo") String serialNo,
                                         @Query("macAddress") String macAddress,
                                         @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=utf-8")
-    @POST("philosofish/config")
+    @POST("/agrisense/config")
     Call<AgricenseDTO> postConfiguration(@Body AgricenseDTO configParams,
                                          @Header("Authorization") String token);
 }

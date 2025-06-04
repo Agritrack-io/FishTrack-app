@@ -254,16 +254,16 @@
 
                             <ToggleButton
                                 android:id="@+id/tbPaletteB"
-                                android:layout_width="050dp"
+                                android:layout_width="040dp"
                                 android:layout_height="30dp"
                                 android:layout_margin="5dp"
-                                android:layout_weight="1"
+                                android:layout_weight="0.8"
                                 android:background="@drawable/togglebutton_selector"
                                 android:gravity="center"
                                 android:textColor="@drawable/button_text_color"
                                 android:textOff="@string/problematic"
                                 android:textOn="@string/problematic"
-                                android:textSize="18sp" />
+                                android:textSize="17sp" />
 
                             <ToggleButton
                                 android:id="@+id/tbPaletteC"
@@ -276,7 +276,7 @@
                                 android:textColor="@drawable/button_text_color"
                                 android:textOff="@string/correction"
                                 android:textOn="@string/correction"
-                                android:textSize="18sp" />
+                                android:textSize="17sp" />
 
 
                         </io.agritrack.philosofish.ui.custom.ToggleGroup>
@@ -348,16 +348,16 @@
 
                             <ToggleButton
                                 android:id="@+id/tbBoxB"
-                                android:layout_width="50dp"
+                                android:layout_width="45dp"
                                 android:layout_height="30dp"
                                 android:layout_margin="5dp"
-                                android:layout_weight="1"
+                                android:layout_weight="0.8"
                                 android:background="@drawable/togglebutton_selector"
                                 android:gravity="center"
                                 android:textColor="@drawable/button_text_color"
                                 android:textOff="@string/problematic"
                                 android:textOn="@string/problematic"
-                                android:textSize="18sp" />
+                                android:textSize="17sp" />
 
                             <ToggleButton
                                 android:id="@+id/tbBoxC"
@@ -370,7 +370,7 @@
                                 android:textColor="@drawable/button_text_color"
                                 android:textOff="@string/correction"
                                 android:textOn="@string/correction"
-                                android:textSize="18sp"/>
+                                android:textSize="17sp"/>
 
 
                         </io.agritrack.philosofish.ui.custom.ToggleGroup>

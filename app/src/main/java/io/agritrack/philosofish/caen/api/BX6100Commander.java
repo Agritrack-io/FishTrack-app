@@ -46,13 +46,13 @@ public class BX6100Commander extends AbstractCAENCommander {
     public BX6100Commander() {
         mUhfRManager = UHFRManager.getInstance();// Init Uhf module
         if (mUhfRManager != null) {
-            Reader.READER_ERR err = mUhfRManager.setPower(24, 24);//set uhf module power
+            Reader.READER_ERR err = mUhfRManager.setPower(33, 33);//set uhf module power
 
             if (err == Reader.READER_ERR.MT_OK_ERR) {
                 mUhfRManager.setRegion(Reader.Region_Conf.RG_EU3);
                 //Toast.makeText(getAppContext(), "FreRegion:" + Reader.Region_Conf.RG_EU3 + "\n" + "Read Power:" + 33 + "\n" + "Write Power:" + 33, Toast.LENGTH_LONG).show();
             } else {
-                Reader.READER_ERR err1 = mUhfRManager.setPower(24, 24);//set uhf module power
+                Reader.READER_ERR err1 = mUhfRManager.setPower(30, 30);//set uhf module power
                 if (err1 == Reader.READER_ERR.MT_OK_ERR) {
                     mUhfRManager.setRegion(Reader.Region_Conf.RG_EU3);
                     //Toast.makeText(getAppContext(), "FreRegion:" + Reader.Region_Conf.RG_EU3 + "\n" + "Read Power:" + 30 + "\n" + "Write Power:" + 30, Toast.LENGTH_LONG).show();
@@ -67,9 +67,9 @@ public class BX6100Commander extends AbstractCAENCommander {
 
     public Reader.READER_ERR HighPowerLevel() {
         if (mUhfRManager != null) {
-            Reader.READER_ERR err = mUhfRManager.setPower(24, 24);//set uhf module power
+            Reader.READER_ERR err = mUhfRManager.setPower(33, 33);//set uhf module power
             if (err != Reader.READER_ERR.MT_OK_ERR) {
-                Reader.READER_ERR err1 = mUhfRManager.setPower(24, 24);//set uhf module power
+                Reader.READER_ERR err1 = mUhfRManager.setPower(30, 30);//set uhf module power
                 if (err1 != Reader.READER_ERR.MT_OK_ERR) {
                     Toast.makeText(getAppContext(), "Failed to switch to HIGH Energy mode!!", Toast.LENGTH_LONG);
                     return Reader.READER_ERR.MT_CMD_FAILED_ERR;

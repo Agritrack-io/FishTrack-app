@@ -871,7 +871,7 @@
     <string name="logger_data">Logger Data</string>
     <string name="read_temperatures">Temperature Reading</string>
     <string name="final_quality_check">Final Quality Control</string>
-    <string name="bin_info">Πληροφορίες βούτας</string>
+    <string name="bin_info">Bin Information</string>
     <string name="scan_one_bin_from_lot">To retrieve LOT</string>
     <string name="scan_one_box_from_lot">To retrieve LOT</string>
     <string name="lot_info">Lot Information</string>

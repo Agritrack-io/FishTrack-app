@@ -63,7 +63,7 @@
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_quality_final_check_confirm);
+//        setContentView(R.layout.activity_quality_final_check_second);
 //
 //        // set Header Info
 //        TextView tvHeader = findViewById(R.id.tvHeaderFinalQuality);

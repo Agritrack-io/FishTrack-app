@@ -213,9 +213,11 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
         btnClearEpcs.setTextColor(Color.DKGRAY);
         btnClearEpcs.setEnabled(false);
         recWHCorrelation.assetRFID = null;
+        progressBar.setVisibility(View.GONE);
         recWHCorrelation.rfid = null;
         btnScanAssetTag.setText(getString(R.string.scan_tag));
         scanBLE = false;
+        isScanning = false;
     }
 
     @SuppressLint("StringFormatMatches")

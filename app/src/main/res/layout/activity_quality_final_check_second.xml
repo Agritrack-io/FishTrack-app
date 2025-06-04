@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/agri_semi_green"
-    tools:context=".fish.ui.quality.finalCheck.QualityFinalCheckConfirmActivity">
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -47,14 +49,14 @@
             android:textAllCaps="true"
             android:textColor="@color/yellow"
             android:textSize="@dimen/title_font_size"
-            app:layout_constraintBottom_toTopOf="@+id/tvHeaderFinalConfirm"
+            app:layout_constraintBottom_toTopOf="@+id/tvHeaderFinalQuality"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingPrefix" />
 
         <TextView
-            android:id="@+id/tvHeaderFinalConfirm"
+            android:id="@+id/tvHeaderFinalQuality"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -72,6 +74,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/formLayout"
         android:layout_width="0dp"
@@ -80,260 +83,857 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
+
 
         <RelativeLayout
-            android:id="@+id/fishConfirmLayout"
+            android:id="@+id/moreInfoDLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toTopOf="@id/fishEnterPinLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/formLayout">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="370dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/shape_rounded_corner_with_shadow"
-                android:orientation="vertical"
-                android:padding="15dp">
-
-
-                <TextView
-                    android:id="@+id/tvPackagingLotLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/confirm_lot_packaging"
-                    android:textColor="@color/label_blue"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toTopOf="@+id/tvEvaluationLabel"
-                    app:layout_constraintEnd_toStartOf="@+id/tvPackagingLot"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tvPackagingLot"
-                    android:layout_width="180dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/border_bottom"
-                    android:textAlignment="viewEnd"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintTop_toTopOf="@+id/tvPackagingLotLabel"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tvPackagingLotLabel"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvPackagingLotLabel" />
-
-                <TextView
-                    android:id="@+id/tvEvaluationLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/lot_fishing"
-                    android:textColor="@color/label_blue"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toTopOf="@id/tvStartTimeLabel"
-                    app:layout_constraintEnd_toStartOf="@+id/tvFishLot"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvPackagingLotLabel" />
-
-                <TextView
-                    android:id="@+id/tvFishLot"
-                    android:layout_width="180dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/border_bottom"
-                    android:textAlignment="viewEnd"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toBottomOf="@id/tvEvaluationLabel"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tvEvaluationLabel"
-                    app:layout_constraintTop_toTopOf="@+id/tvEvaluationLabel" />
-
-
-                <TextView
-                    android:id="@+id/tvStartTimeLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/absence_of_foreign_bodies"
-                    android:textColor="@color/label_blue"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toTopOf="@id/etComments"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvEvaluationLabel" />
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swForeignBody"
-                    android:layout_width="81dp"
-                    android:layout_height="51dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:checked="true"
-                    android:scaleX="1"
-                    android:scaleY="1.1"
-                    android:showText="true"
-                    android:textAlignment="center"
-                    android:textColor="@color/label_blue"
-                    android:textOff="@string/no"
-                    android:textOn="@string/yes"
-                    android:textSize="12dp"
-                    android:theme="@style/SCBSwitch"
-                    android:thumb="@drawable/thumb"
-                    app:layout_constraintBottom_toBottomOf="@id/tvStartTimeLabel"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.504"
-                    app:layout_constraintStart_toEndOf="@id/tvStartTimeLabel"
-                    app:layout_constraintTop_toTopOf="@id/tvStartTimeLabel"
-                    app:showText="true"
-                    app:switchTextAppearance="@style/texton"
-                    app:track="@drawable/track" />
-
-                <EditText
-                    android:id="@+id/etComments"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:gravity="left|top"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="7dp"
-                    android:visibility="gone"
-                    android:background="@drawable/bg_rounded_dialog_input"
-                    android:hint="@string/corrective_action"
-                    android:textAlignment="gravity"
-                    android:textColor="@color/label_blue"
-                    android:textSize="18sp"
-                    app:layout_constraintWidth_percent="0.8"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/tvLotAccepted"
-                    app:layout_constraintTop_toBottomOf="@id/tvStartTimeLabel"/>
-
-                <TextView
-                    android:id="@+id/tvLotAccepted"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/lot_accepted"
-                    android:textColor="@color/label_blue"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toTopOf="@id/tvNotAcceptedLabel"
-                    app:layout_constraintEnd_toStartOf="@+id/swIsAccepted"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/etComments" />
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/swIsAccepted"
-                    android:layout_width="81dp"
-                    android:layout_height="51dp"
-                    android:layout_marginEnd="25dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:checked="true"
-                    android:scaleX="1"
-                    android:scaleY="1.1"
-                    android:showText="true"
-                    android:textAlignment="center"
-                    android:textColor="@color/label_blue"
-                    android:textOff="@string/no"
-                    android:textOn="@string/yes"
-                    android:textSize="12dp"
-                    android:theme="@style/SCBSwitch"
-                    android:thumb="@drawable/thumb"
-                    app:layout_constraintBottom_toBottomOf="@id/tvLotAccepted"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.504"
-                    app:layout_constraintStart_toEndOf="@id/tvLotAccepted"
-                    app:layout_constraintTop_toTopOf="@id/tvLotAccepted"
-                    app:showText="true"
-                    app:switchTextAppearance="@style/texton"
-                    app:track="@drawable/track" />
-
-                <TextView
-                    android:id="@+id/tvNotAcceptedLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:ems="10"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/non_acceptable_quantity"
-                    android:visibility="gone"
-                    android:gravity="center|start"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/label_blue"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvLotAccepted"
-                    app:layout_constraintEnd_toStartOf="@id/etNotAccepted"
-                    app:layout_constraintWidth_percent="0.6" />
-
-                <EditText
-                    android:id="@+id/etNotAccepted"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_rounded_dialog_input"
-                    android:ems="4"
-                    android:inputType="numberDecimal"
-                    android:maxLength="3"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:visibility="gone"
-                    android:textAlignment="center"
-                    android:textColorHint="@color/black"
-                    android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toBottomOf="@id/tvNotAcceptedLabel"
-                    app:layout_constraintStart_toEndOf="@+id/tvNotAcceptedLabel"
-                    app:layout_constraintTop_toTopOf="@id/tvNotAcceptedLabel" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="16dp"
-                android:background="@color/agri_semi_green"
-                android:paddingHorizontal="8dp"
-                android:text="@string/fishing_confirm"
-                android:textColor="@color/label_blue"
-                android:textSize="18sp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/fishEnterPinLayout"
-            android:layout_width="0dp"
-            android:layout_height="160dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fishConfirmLayout">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
                 android:orientation="vertical"
-                android:padding="15dp">
+                android:padding="1dp">
 
-<!--                <io.agritrack.philosofish.ui.custom.CaptureSignatureView-->
-<!--                    android:id="@+id/signatureView"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginStart="32dp"-->
-<!--                    android:layout_marginTop="32dp"-->
-<!--                    android:layout_marginEnd="32dp"-->
-<!--                    android:layout_marginBottom="32dp"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                   />-->
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:foregroundGravity="center_vertical"
+                    android:paddingHorizontal="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0">
+
+                    <GridLayout
+                        android:id="@+id/gdDysmorphia"
+                        android:layout_width="wrap_content"
+                        android:layout_height="520dp"
+                        android:layout_marginVertical="15dp"
+                        android:columnCount="4"
+                        android:rowCount="14"
+                        android:useDefaultMargins="false"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="170dp"
+                            android:layout_row="0"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:textAlignment="center"
+                            android:textColor="@color/label_blue"
+                            android:textSize="16sp" />
+
+                        <TextView
+
+                            android:layout_width="80dp"
+                            android:layout_row="0"
+                            android:layout_rowWeight="1"
+                            android:layout_column="1"
+                            android:layout_gravity="center"
+                            android:layout_marginHorizontal="5dp"
+                            android:text="@string/sample1"
+                            android:textAlignment="center"
+                            android:textColor="@color/label_blue"
+                            android:textSize="18sp" />
+
+
+                        <TextView
+                            android:layout_width="80dp"
+                            android:layout_row="0"
+                            android:layout_rowWeight="1"
+                            android:layout_column="2"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:text="@string/sample2"
+                            android:textAlignment="center"
+                            android:textColor="@color/label_blue"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:layout_width="80dp"
+                            android:layout_row="0"
+                            android:layout_rowWeight="1"
+                            android:layout_column="3"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:text="@string/sample3"
+                            android:textAlignment="center"
+                            android:textColor="@color/label_blue"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:layout_row="1"
+
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_gravity="start"
+
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:text="@string/fish_size"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/etSize1"
+                            android:layout_row="1"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_marginHorizontal="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:digits="1234567890/"
+                            android:hint="0"
+                            android:inputType="date"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etSize2"
+                            android:layout_row="1"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:digits="1234567890/"
+                            android:hint="0"
+                            android:inputType="date"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etSize3"
+                            android:layout_width="68dp"
+                            android:layout_height="wrap_content"
+                            android:layout_row="1"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:digits="1234567890/"
+                            android:hint="0"
+                            android:inputType="date"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <TextView
+                            android:layout_row="2"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_columnWeight="0.4"
+                            android:layout_gravity="start"
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:text="@string/box_type"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="@dimen/text_view_font_size_small" />
+
+                        <EditText
+                            android:id="@+id/etType1"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etType2"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etType3"
+                            android:layout_row="2"
+                            android:layout_rowWeight="1"
+                            android:layout_column="3"
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <TextView
+                            android:layout_row="3"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_columnWeight="0.4"
+                            android:layout_gravity="start"
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:text="@string/fish_pieces"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/etNumber1"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etNumber2"
+                            android:layout_width="67dp"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etNumber3"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <TextView
+                            android:layout_row="4"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_columnWeight="0.4"
+                            android:layout_gravity="start"
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:text="@string/counted_pieces"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/etActual1"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etActual2"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.1"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etActual3"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+
+                        <TextView
+                            android:layout_row="5"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_columnWeight="0.4"
+                            android:layout_gravity="start"
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:text="@string/undersized_weight"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/etUnder11"
+
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etUnder21"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etUnder31"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_row="6"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_columnWeight="0.4"
+                            android:layout_gravity="start"
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/etUnder12"
+
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etUnder22"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etUnder32"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_row="7"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_columnWeight="0.4"
+                            android:layout_gravity="start"
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/etUnder13"
+
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etUnder23"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etUnder33"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <TextView
+                            android:layout_row="8"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_columnWeight="0.4"
+                            android:layout_gravity="start"
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:text="@string/oversized_weight"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/etOver11"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etOver21"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etOver31"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <TextView
+                            android:layout_row="9"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_columnWeight="0.4"
+                            android:layout_gravity="start"
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/etOver12"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etOver22"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etOver32"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <TextView
+                            android:layout_row="10"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_columnWeight="0.4"
+                            android:layout_gravity="start"
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/etOver13"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etOver23"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etOver33"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <TextView
+                            android:layout_row="11"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_columnWeight="0.4"
+                            android:layout_gravity="start"
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:text="@string/net_weight"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:id="@+id/etNet1"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etNet2"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etNet3"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <TextView
+                            android:layout_row="12"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_columnWeight="0.4"
+                            android:layout_gravity="start"
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:text="@string/ice_quantity"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/etIce1"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etIce2"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etIce3"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <TextView
+                            android:layout_row="13"
+                            android:layout_rowWeight="1"
+                            android:layout_column="0"
+                            android:layout_columnWeight="0.4"
+                            android:layout_gravity="start"
+                            android:layout_marginVertical="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="5dp"
+                            android:text="@string/fish_temperature"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/label_blue"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/etTemp1"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="numberDecimal"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etTemp2"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="numberDecimal"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+                        <EditText
+                            android:id="@+id/etTemp3"
+                            android:layout_rowWeight="1"
+
+                            android:layout_columnWeight="0.16"
+                            android:layout_marginVertical="5dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:hint="0"
+                            android:inputType="numberDecimal"
+                            android:padding="3dp"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/text_view_font_size_medium" />
+
+
+                    </GridLayout>
+                </HorizontalScrollView>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -341,14 +941,27 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="0dp"
                 android:background="@color/agri_semi_green"
                 android:paddingHorizontal="8dp"
-                android:text="@string/sign_manager"
+                android:text="@string/final_product_quality"
                 android:textColor="@color/label_blue"
-                android:textSize="18sp" />
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+
+
+
 
         </RelativeLayout>
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footerLayout"
         android:layout_width="0dp"
@@ -360,7 +973,7 @@
         app:layout_constraintTop_toBottomOf="@+id/formLayout">
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -368,13 +981,13 @@
             android:scaleX="0.7"
             android:scaleY="0.7"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
-            app:layout_constraintStart_toEndOf="@+id/ivBackFinalCheckStart"
+            app:layout_constraintEnd_toStartOf="@+id/ivToFinalQualityConfirm"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToQualityMenu"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
 
         <ImageView
-            android:id="@+id/ivBackFinalCheckStart"
+            android:id="@+id/ivBackToQualityMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -388,7 +1001,7 @@
             app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
         <ImageView
-            android:id="@+id/ivToCongs"
+            android:id="@+id/ivToFinalQualityConfirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -399,7 +1012,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_check_blue" />
+            app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

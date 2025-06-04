@@ -5,16 +5,12 @@ import static io.agritrack.philosofish.FishTrackApplication.IsOnline;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.fish.state.GlobalState.recQualityFinal;
-import static io.agritrack.philosofish.fish.state.GlobalState.recQualityPackage;
-import static io.agritrack.philosofish.fish.state.GlobalState.recQualityReceipt;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,7 +29,6 @@ import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.tx.TransactionApi;
 import io.agritrack.philosofish.api.upload.UploadingApi;
-import io.agritrack.philosofish.common.InputFilterMinMax;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.dto.common.MediaDTO;
 import io.agritrack.philosofish.data.dto.tx.FinalQualityTxDTO;
@@ -44,7 +39,6 @@ import io.agritrack.philosofish.fish.state.FinalQualityRecord;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.philosofish.ui.custom.CaptureSignatureView;
-import io.agritrack.philosofish.ui.custom.ToggleGroup;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -68,7 +62,7 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quality_final_check_second);
+        setContentView(R.layout.activity_quality_final_check_confirm);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderFinalConfirm);

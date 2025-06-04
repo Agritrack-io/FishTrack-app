@@ -756,11 +756,11 @@
                 </HorizontalScrollView>
                 <TextView
                     android:id="@+id/tvArrivalLabel"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="54dp"
                     android:layout_marginTop="18dp"
                     android:layout_marginBottom="10dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginHorizontal="8dp"
                     android:text="@string/other"
                     android:textAlignment="viewEnd"
                     android:textColor="@color/label_blue"
@@ -777,6 +777,7 @@
                     android:layout_width="280dp"
                     android:layout_height="75dp"
                     android:layout_marginTop="18dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/bg_rounded_dialog_input"
                     android:inputType="textMultiLine"

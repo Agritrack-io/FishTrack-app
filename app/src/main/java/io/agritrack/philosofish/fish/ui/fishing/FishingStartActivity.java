@@ -103,7 +103,7 @@ public class FishingStartActivity extends AppCompatActivity {
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
             } else {
-                Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
+                Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
                 startActivity(i);
             }
         });

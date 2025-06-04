@@ -333,7 +333,7 @@ public class FishingBinsActivity extends AppCompatActivity {
             if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
-            Intent i = new Intent(getApplicationContext(), FishingTeamActivity.class);
+            Intent i = new Intent(getApplicationContext(), HarvestRequestsActivity.class);
             startActivity(i);
         });
     }
