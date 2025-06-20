@@ -95,6 +95,7 @@ import io.agritrack.philosofish.data.model.tx.FishingTransaction;
 import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
 import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
+import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.enums.TxStatus;
 import io.agritrack.philosofish.fish.state.FishingRecord;

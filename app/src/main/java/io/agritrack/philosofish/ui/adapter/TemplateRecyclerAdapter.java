@@ -28,6 +28,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     private String selectedValue = null;
     private String selectedLabel = null;
 
+
     public TemplateRecyclerAdapter(Context context, List<BinEpc> values) {
         this(context,values,true);
     }
@@ -115,6 +116,8 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
                 public void onClick(View v) {
                     bin.setSelected(!bin.isSelected);
                     holder.itemView.setBackgroundColor(bin.isSelected ? Color.GRAY : Color.TRANSPARENT);
+                    liveItem.setValue(bin.epc);
+
                 }
             });
             holder.tvItemName.setText(tag);

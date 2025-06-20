@@ -81,7 +81,7 @@ public class TreelikeAdapter extends BaseExpandableListAdapter {
 
             return selectedChild.netEyeGirth != null && selectedChild.netEyeGirth != 0.0 && selectedChild.perimeter != null
                     ? String.format("%s/%s/%.2f/%.2f", selectedChild.rfid.substring(14), selectedChild.code, selectedChild.perimeter, selectedChild.netEyeGirth)
-                    : ((selectedChild.netEyeGirth != null && selectedChild.netEyeGirth == 0.0) && selectedChild.perimeter != null
+                    : ((selectedChild.netEyeGirth == null || selectedChild.netEyeGirth == 0.0) && selectedChild.perimeter != null
                     ? String.format("%s/%s/%.2f", selectedChild.rfid.substring(14), selectedChild.code, selectedChild.perimeter)
                     : selectedChild.rfid.substring(14) + "/" + selectedChild.code);
 

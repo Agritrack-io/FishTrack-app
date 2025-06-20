@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.Window;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import androidx.annotation.StringRes;
@@ -20,16 +21,21 @@ import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.ui.adapter.TemplateRecyclerAdapter;
+import io.agritrack.philosofish.ui.login.api.SiteInfoRS;
 
 public class SimpleListDialog {
     private final TemplateRecyclerAdapter itemsAdapter;
     private final Activity activity;
     private TextView tvTitle;
     private RecyclerView rvItems;
+
+    private final MutableLiveData<String> selectedSite;
     private Dialog dialog;
 
     public SimpleListDialog(Activity activity, List<String> data, MutableLiveData<String> liveData, @StringRes int title) {
         this.activity = activity;
+        this.selectedSite = liveData;
+
 
         setDialog();
         findViews();
@@ -48,6 +54,15 @@ public class SimpleListDialog {
 
         // since there Sites available, display them in  a list.
         rvItems.setVisibility(View.VISIBLE);
+
+//        // Set item click callback
+//        itemsAdapter.setOnItemClickListener(new TemplateRecyclerAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(String selectedValue) {
+//                selectedSite.setValue(selectedValue);
+//                dialog.dismiss();
+//            }
+//        });
     }
 
     public void showDialog() {
