@@ -105,6 +105,9 @@ public class IncomingAssetActivity extends LocationAwareActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incoming_asset);
 
+        // get an instance of local DB
+        this.db = MobileDB.getInstance(getAppContext());
+
         // trigger + Fn keys will have the same effect as if clicking on Scan button
         keyReceiver = new X9KeyReceiver(this::onClick);
 
@@ -395,8 +398,7 @@ public class IncomingAssetActivity extends LocationAwareActivity {
     }
 
     private boolean updateState() {
-        // get an instance of local DB
-        this.db = MobileDB.getInstance(getAppContext());
+
 
         try {
             progressDialog.setCancelable(false);

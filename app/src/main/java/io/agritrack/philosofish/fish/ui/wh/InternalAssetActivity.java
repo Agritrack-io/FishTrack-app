@@ -29,6 +29,7 @@ import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -41,8 +42,10 @@ import io.agritrack.philosofish.common.Constants;
 import io.agritrack.philosofish.common.Filters;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.dto.tx.AssetTxDTO;
+import io.agritrack.philosofish.data.dto.tx.AssetTxItemDTO;
 import io.agritrack.philosofish.data.model.Site;
 import io.agritrack.philosofish.data.model.tx.AssetTransaction;
+import io.agritrack.philosofish.data.model.tx.AssetTxItem;
 import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.dialog.SimpleListDialog;
 import io.agritrack.philosofish.dialog.SupportDialog;
@@ -281,8 +284,23 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
             // persist WHIncomingAssetTX Record data to local DB.
             AssetTransaction tx = GlobalState.commitWHRFIDInternal(db);
 
+
+            // convert to dto to send to be
+            AssetTxDTO internalTxDto = AssetTxDTO.convert(tx);
+
+            internalTxDto.rfid_items = new HashMap<>();
+
+            //in the case of internal its always going to be ONE net in the recWHInternal.items map
+            // since we only scan for one net at the top of the activirty
+            //however we have to treat it like a map of any size, that's why we are looping and streaming
+            for (String key : recWHInternal.items.keySet()) {
+                List<String> itemsForKey = recWHInternal.items.get(key);
+                internalTxDto.rfid_items.put(key, itemsForKey.stream().map(AssetTxItemDTO::new).collect(Collectors.toList()));
+            }
+
+
             // sync WH Incoming Tx
-            Call<AssetTxDTO> syncTxAsyncCall = updService.syncRFIDIOTx(AssetTxDTO.convert(tx), "Bearer " + token);
+            Call<AssetTxDTO> syncTxAsyncCall = updService.syncRFIDIOTx(internalTxDto, "Bearer " + token);
             syncTxAsyncCall.enqueue(new InternalAssetActivity.SyncTxCallBack());
 
             return true;
