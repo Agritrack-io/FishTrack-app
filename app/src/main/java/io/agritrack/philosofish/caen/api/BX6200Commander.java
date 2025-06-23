@@ -30,6 +30,7 @@ public class BX6200Commander extends AbstractCAENCommander {
     private final UhfReader uhfReader;
     private byte[] epcBytes;
 
+
     public BX6200Commander() {
         uhfReader = UhfReader.getInstance();
 
@@ -236,6 +237,15 @@ public class BX6200Commander extends AbstractCAENCommander {
 
     @Override
     public Reader.READER_ERR LowPowerLevel() {
+        return Reader.READER_ERR.MT_OK_ERR;
+    }
+
+    @Override
+    public Reader.READER_ERR MedPowerLevel() {
+        return Reader.READER_ERR.MT_OK_ERR;
+    }
+
+    public Reader.READER_ERR MidPowerLevel() {
         return Reader.READER_ERR.MT_OK_ERR;
     }
 

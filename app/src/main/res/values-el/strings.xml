@@ -1011,4 +1011,12 @@
     <string name="scan_logger">Σκανάρετε Καταγραφικό</string>
 
 
+
+    <string name="choose_rfid_level">Επιλέξτε Ένταση RFID</string>
+    <string name="high_power">Θέσατε υψηλή ένταση.</string>
+    <string name="low_power">Θέσατε χαμηλή ένταση.</string>
+    <string name="medium_power">Θέσατε μεσαία ένταση.</string>
+    <string name="low">ΧΑΜΗΛΗ</string>
+    <string name="high">ΥΨΗΛΗ</string>
+    <string name="mid">ΜΕΣΑΙΑ</string>
 </resources>

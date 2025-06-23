@@ -48,7 +48,7 @@
             android:textSize="@dimen/title_font_size"
             app:layout_constraintBottom_toTopOf="@+id/tvHeaderHome"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintHorizontal_bias="0.40"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.578"
@@ -66,6 +66,7 @@
             android:textSize="@dimen/subtitle_font_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTitleToolbar"
             tools:layout_conversion_absoluteHeight="0dp"
@@ -92,6 +93,7 @@
             android:visibility="invisible"
             app:layout_constraintEnd_toStartOf="@+id/ivRefresh"
             app:layout_constraintTop_toTopOf="@+id/tvHeaderHome" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -130,6 +132,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/formLayout">
 
+        <!-- Moved ivPowerLevel here, positioned left of version label -->
+
         <ImageView
             android:id="@+id/ivPoweredByLogo"
             android:layout_width="wrap_content"
@@ -140,10 +144,34 @@
             android:scaleY="0.7"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.306"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/powered_by_agritrack" />
+
+        <ImageView
+            android:id="@+id/ivPowerLevel"
+            android:layout_width="45dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/border_all_footer"
+            app:layout_constraintBottom_toTopOf="@id/tvPowerLevel"
+            app:layout_constraintEnd_toStartOf="@id/tvVersionLabel"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/low_power" />
+
+        <TextView
+            android:id="@+id/tvPowerLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RFID"
+            android:textColor="@color/agri_blue"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toEndOf="@id/ivPowerLevel"
+            app:layout_constraintHorizontal_bias="0.894"
+            app:layout_constraintStart_toStartOf="@id/ivPowerLevel"
+            app:layout_constraintTop_toBottomOf="@id/ivPowerLevel" />
 
         <TextView
             android:id="@+id/tvVersionLabel"

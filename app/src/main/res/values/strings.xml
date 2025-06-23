@@ -1020,4 +1020,15 @@
     <string name="scan_logger">Σκανάρετε Καταγραφικό</string>
 
 
+
+    <string name="choose_rfid_level">Choose RFID Power Level</string>
+    <string name="low_power">You set low read power.</string>
+    <string name="medium_power">You set medium read power.</string>
+    <string name="high_power">You set high read power.</string>
+    <string name="low">LOW</string>
+    <string name="high">MEDIUM</string>
+    <string name="mid">HIGH</string>
+
+
+
 </resources>

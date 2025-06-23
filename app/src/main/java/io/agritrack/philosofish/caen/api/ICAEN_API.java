@@ -80,6 +80,9 @@ public interface ICAEN_API {
     /* This function sets Logger to LOW Read Power mode. */
     Reader.READER_ERR LowPowerLevel();
 
+    Reader.READER_ERR MedPowerLevel();
+
+
     int[] getPowerLevel();
 
     void Wait(long ms);

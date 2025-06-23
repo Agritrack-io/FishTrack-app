@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import cn.pda.serialport.Tools;
 import io.agritrack.philosofish.caen.pojo.RFIDTag;
+import io.agritrack.philosofish.ui.service.LocalPreferences;
 
 public class BX6100Commander extends AbstractCAENCommander {
     private final short timeout = 10000;
@@ -41,6 +42,8 @@ public class BX6100Commander extends AbstractCAENCommander {
     private UHFRManager mUhfRManager;
     private byte[] epcBytes;
     private String tagToSearch;
+
+    private Integer[] currPowerLevel = null;
 
 
     public BX6100Commander() {
@@ -68,8 +71,13 @@ public class BX6100Commander extends AbstractCAENCommander {
     public Reader.READER_ERR HighPowerLevel() {
         if (mUhfRManager != null) {
             Reader.READER_ERR err = mUhfRManager.setPower(33, 33);//set uhf module power
+            this.currPowerLevel = new Integer[] {33,33};
+            LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 33);
             if (err != Reader.READER_ERR.MT_OK_ERR) {
                 Reader.READER_ERR err1 = mUhfRManager.setPower(30, 30);//set uhf module power
+                this.currPowerLevel = new Integer[] {30,30};
+                LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 30);
+
                 if (err1 != Reader.READER_ERR.MT_OK_ERR) {
                     Toast.makeText(getAppContext(), "Failed to switch to HIGH Energy mode!!", Toast.LENGTH_LONG);
                     return Reader.READER_ERR.MT_CMD_FAILED_ERR;
@@ -84,11 +92,42 @@ public class BX6100Commander extends AbstractCAENCommander {
 
     public Reader.READER_ERR LowPowerLevel() {
         if (mUhfRManager != null) {
-            Reader.READER_ERR err = mUhfRManager.setPower(24, 24);//set uhf module power
+            Reader.READER_ERR err = mUhfRManager.setPower(18, 18);//set uhf module power
+            this.currPowerLevel = new Integer[] {18,18};
+            LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 18);
+
             if (err != Reader.READER_ERR.MT_OK_ERR) {
-                Reader.READER_ERR err1 = mUhfRManager.setPower(24, 24);//set uhf module power
+                Reader.READER_ERR err1 = mUhfRManager.setPower(17, 17);//set uhf module power
+                this.currPowerLevel = new Integer[] {17,17};
+                LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 17);
+
                 if (err1 != Reader.READER_ERR.MT_OK_ERR) {
                     Toast.makeText(getAppContext(), "Failed to switch to LOW Energy mode!!", Toast.LENGTH_LONG);
+                    this.currPowerLevel = null;
+                    return Reader.READER_ERR.MT_CMD_FAILED_ERR;
+                }
+            }
+        } else {
+            Toast.makeText(getAppContext(), "No UHFR manager found!!", Toast.LENGTH_LONG);
+            return Reader.READER_ERR.MT_CMD_FAILED_ERR;
+        }
+        return Reader.READER_ERR.MT_OK_ERR;
+    }
+
+    public Reader.READER_ERR MedPowerLevel() {
+        if (mUhfRManager != null) {
+            Reader.READER_ERR err = mUhfRManager.setPower(25, 25);//set uhf module power
+            this.currPowerLevel = new Integer[] {25,25};
+            LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 25);
+
+            if (err != Reader.READER_ERR.MT_OK_ERR) {
+                Reader.READER_ERR err1 = mUhfRManager.setPower(24, 24);//set uhf module power
+                this.currPowerLevel = new Integer[] {24,24};
+                LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 24);
+
+                if (err1 != Reader.READER_ERR.MT_OK_ERR) {
+                    Toast.makeText(getAppContext(), "Failed to switch to LOW Energy mode!!", Toast.LENGTH_LONG);
+                    this.currPowerLevel = null;
                     return Reader.READER_ERR.MT_CMD_FAILED_ERR;
                 }
             }
@@ -103,6 +142,7 @@ public class BX6100Commander extends AbstractCAENCommander {
     public int[] getPowerLevel() {
         return mUhfRManager.getPower();
     }
+
 
     @Override
     public void setFilterEPC(String epc) {

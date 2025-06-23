@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.common.util.Strings;
@@ -66,6 +67,8 @@ import io.agritrack.philosofish.api.sync.SyncSuppliersCallBack;
 import io.agritrack.philosofish.api.sync.SyncUsersCallBack;
 import io.agritrack.philosofish.api.tx.TransactionApi;
 import io.agritrack.philosofish.api.upload.UploadingApi;
+import io.agritrack.philosofish.caen.api.BX6100Commander;
+import io.agritrack.philosofish.caen.api.ICAEN_API;
 import io.agritrack.philosofish.common.FileUtils;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.dto.AppUserDTO;
@@ -96,6 +99,7 @@ import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
 import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.data.model.wh.Asset;
+import io.agritrack.philosofish.dialog.PowerLevelDialog;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.enums.TxStatus;
 import io.agritrack.philosofish.fish.state.FishingRecord;
@@ -135,6 +139,9 @@ public class FishHomeActivity extends AppCompatActivity {
     private int syncCounter = 1;
     private int syncLimit;
 
+    private ImageView ivPowerLevel;
+    private TextView tvPowerLevel;
+    public static ICAEN_API uhfReader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +213,26 @@ public class FishHomeActivity extends AppCompatActivity {
                 }
             }
         });
+
+        tvPowerLevel = findViewById(R.id.tvPowerLevel);
+        ivPowerLevel = findViewById(R.id.ivPowerLevel);
+
+        Integer pr = LocalPreferences.getCurrentPower();
+
+        if (pr < 25) {
+            ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.low_power));
+            tvPowerLevel.setText(R.string.low);
+        } else if (pr < 30) {
+            ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.med_power));
+            tvPowerLevel.setText(R.string.mid);
+        } else {
+            ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.high_power));
+            tvPowerLevel.setText(R.string.high);
+        }
+
+        ivPowerLevel.setOnClickListener(v -> showPowerLevelDialog());
+
+
 
         List<MenuItem> miList = menuItemsSet.stream().sorted(Comparator.comparingInt(MenuItem::getLoc)).collect(Collectors.toList());
         HomeMenuAdapter adapter = new HomeMenuAdapter(this, (ArrayList<MenuItem>) miList);
@@ -316,6 +343,23 @@ public class FishHomeActivity extends AppCompatActivity {
         });
 
         configHeader();
+    }
+
+    protected void onStart() {
+        super.onStart();
+        if (uhfReader == null) {
+            uhfReader = new BX6100Commander();
+            Integer pr = LocalPreferences.getCurrentPower();
+            if (pr < 25) {
+                uhfReader.LowPowerLevel();
+            } else {
+                uhfReader.HighPowerLevel();
+            }
+        }
+    }
+
+    private void showPowerLevelDialog() {
+        new PowerLevelDialog().show(getSupportFragmentManager(), "PowerLevelDialog");
     }
 
     protected void configHeader() {
@@ -618,6 +662,28 @@ public class FishHomeActivity extends AppCompatActivity {
                     runOnUiThread(() -> CToast(getApplicationContext(), render("Network Error :: " + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
+        }
+    }
+    public void onPowerLevelSelected(int powerLevel) {
+        switch (powerLevel) {
+            case 1:
+                CToast(getApplicationContext(), render(R.string.low_power), Toast.LENGTH_LONG);
+                uhfReader.LowPowerLevel();
+                ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.low_power));
+                tvPowerLevel.setText(R.string.low);
+                break;
+            case 2:
+                CToast(getApplicationContext(), render(R.string.medium_power), Toast.LENGTH_LONG);
+                uhfReader.MedPowerLevel();
+                ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.med_power));
+                tvPowerLevel.setText(R.string.mid);
+                break;
+            case 3:
+                CToast(getApplicationContext(), render(R.string.high_power), Toast.LENGTH_LONG);
+                uhfReader.HighPowerLevel();
+                ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.high_power));
+                tvPowerLevel.setText(R.string.high);
+                break;
         }
     }
 }

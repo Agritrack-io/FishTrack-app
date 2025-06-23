@@ -1,0 +1,46 @@
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- RadioGroup ensures only one button is selected at a time -->
+    <RadioGroup
+        android:id="@+id/powerRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Low Power Button -->
+        <RadioButton
+            android:id="@+id/lowPowerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Low (40cm-1m)"
+            android:buttonTint="@color/agri_blue"
+            android:padding="8dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Med Power Button -->
+        <RadioButton
+            android:id="@+id/medPowerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Medium (2-3m)"
+            android:buttonTint="@color/agri_blue"
+            android:padding="8dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- High Power Button -->
+        <RadioButton
+            android:id="@+id/highPowerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="High (5-6m)"
+            android:buttonTint="@color/agri_blue"
+            android:padding="8dp" />
+
+    </RadioGroup>
+</LinearLayout>

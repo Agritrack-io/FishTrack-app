@@ -58,6 +58,9 @@ public class LocalPreferences {
 
     private static SharedPreferences pref;
 
+    public static final String Power_Level_Key = "PowerLevel";
+
+
     static {
         if (pref == null) {
             pref = getAppContext().getSharedPreferences(Pref_Name, Context.MODE_PRIVATE);
@@ -163,6 +166,9 @@ public class LocalPreferences {
         return pref.getStringSet(License_Plates_Key, new HashSet<>());
     }
 
+    public static Integer getCurrentPower() {
+        return pref.getInt(Power_Level_Key, 33);
+    }
     public static void addLicensePlate(String plate) {
         Set<String> platesSet = getLicensePlates();
         platesSet.add(plate);
