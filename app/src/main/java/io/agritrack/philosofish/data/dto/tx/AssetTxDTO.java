@@ -1,5 +1,8 @@
 package io.agritrack.philosofish.data.dto.tx;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -7,6 +10,9 @@ import java.util.UUID;
 import io.agritrack.philosofish.data.model.tx.AssetTransaction;
 
 public class AssetTxDTO {
+
+    @JsonIgnore
+    private static final SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     public UUID id;
     public String asset_type;
@@ -18,7 +24,7 @@ public class AssetTxDTO {
     public String state;
     public String site;
     public String user;
-    public Long created_at;
+    public String created_at;
     public Double longitude;
     public Double latitude;
 
@@ -35,7 +41,7 @@ public class AssetTxDTO {
         assetTxDTO.target_asset = assetTx.toAsset;
         assetTxDTO.site = assetTx.site;
         assetTxDTO.user = assetTx.userId;
-        assetTxDTO.created_at = assetTx.timestamp;
+        assetTxDTO.created_at = sdf1.format(assetTx.timestamp);
         assetTxDTO.longitude = assetTx.longitude;
         assetTxDTO.latitude = assetTx.latitude;
 
