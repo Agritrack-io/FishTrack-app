@@ -18,9 +18,9 @@ public class CustomToast {
         LayoutInflater inflater = LayoutInflater.from(context);
         View layout = inflater.inflate(R.layout.custom_toast_container, null);
 
-        LinearLayout customContainer = (LinearLayout) layout.findViewById(R.id.custom_toast_container);
+        LinearLayout customContainer =  layout.findViewById(R.id.custom_toast_container);
         customContainer.setBackgroundResource(R.drawable.toast_background);
-        TextView text = (TextView) layout.findViewById(R.id.message);
+        TextView text =  layout.findViewById(R.id.message);
         text.setText(msg);
 
         Toast toast = new Toast(context);

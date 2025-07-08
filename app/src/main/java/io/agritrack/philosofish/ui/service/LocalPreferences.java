@@ -135,6 +135,23 @@ public class LocalPreferences {
         return null;
     }
 
+    public static void init(Context context) {
+        if (pref == null) {
+            pref = context.getSharedPreferences(Pref_Name, Context.MODE_PRIVATE);
+        }
+    }
+
+    public static void setCurrentPower(int powerLevel) {
+        if (pref != null) {
+            pref.edit().putInt(Power_Level_Key, powerLevel).apply();
+        }
+    }
+    public static Integer getCurrentPower() {
+        return (pref != null) ? pref.getInt(Power_Level_Key, 33) : 33; // Default to high power
+    }
+
+
+
     public static void setSelectedSite(SiteDTO siteDTO) {
         if (siteDTO != null) {
             Gson gson = new Gson();
@@ -166,9 +183,7 @@ public class LocalPreferences {
         return pref.getStringSet(License_Plates_Key, new HashSet<>());
     }
 
-    public static Integer getCurrentPower() {
-        return pref.getInt(Power_Level_Key, 33);
-    }
+
     public static void addLicensePlate(String plate) {
         Set<String> platesSet = getLicensePlates();
         platesSet.add(plate);

@@ -4,6 +4,7 @@ import static io.agritrack.philosofish.FishTrackApplication.IsOnline;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
+import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 
@@ -126,7 +128,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FishHomeActivity extends AppCompatActivity {
+public class FishHomeActivity extends AppCompatActivity implements PowerLevelDialog.PowerLevelListener {
     private static final int InitBins_Idx = 0, Fishing_Idx = 1,Test_Temp_Idx = 2, Transport_Idx = 3, Receiving_Idx = 4, Packaging_Quality_Idx = 5, Bin_Overturn_Idx = 6, Warehouse_Idx = 7; /*Maintenance_Idx = 5,*/
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
@@ -344,7 +346,42 @@ public class FishHomeActivity extends AppCompatActivity {
 
         configHeader();
     }
+    @Override
+    public void onPowerLevelSelected(int powerLevel) {
+        int saveValue = 33; // default to High
 
+        switch (powerLevel) {
+            case 1:
+                saveValue = 10; // Low
+                CToast(getApplicationContext(), render(R.string.low_power), Toast.LENGTH_SHORT);
+                uhfReader.LowPowerLevel();
+                ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.low_power));
+                tvPowerLevel.setText(R.string.low);
+                break;
+            case 2:
+                saveValue = 26; // Medium
+                CToast(getApplicationContext(), render(R.string.medium_power), Toast.LENGTH_SHORT);
+                uhfReader.MedPowerLevel();
+                ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.med_power));
+                tvPowerLevel.setText(R.string.mid);
+                break;
+            case 3:
+                saveValue = 33; // High
+                CToast(getApplicationContext(), render(R.string.high_power), Toast.LENGTH_SHORT);
+                uhfReader.HighPowerLevel();
+                ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.high_power));
+                tvPowerLevel.setText(R.string.high);
+                break;
+        }
+
+        LocalPreferences.setCurrentPower(saveValue);
+    }
+    private void showPowerLevelDialog() {
+        new PowerLevelDialog().show(getSupportFragmentManager(), "PowerLevelDialog");
+    }
+
+
+    @Override
     protected void onStart() {
         super.onStart();
         if (uhfReader == null) {
@@ -352,14 +389,12 @@ public class FishHomeActivity extends AppCompatActivity {
             Integer pr = LocalPreferences.getCurrentPower();
             if (pr < 25) {
                 uhfReader.LowPowerLevel();
+            } else if (pr < 30) {
+                uhfReader.MedPowerLevel();
             } else {
                 uhfReader.HighPowerLevel();
             }
         }
-    }
-
-    private void showPowerLevelDialog() {
-        new PowerLevelDialog().show(getSupportFragmentManager(), "PowerLevelDialog");
     }
 
     protected void configHeader() {
@@ -664,26 +699,5 @@ public class FishHomeActivity extends AppCompatActivity {
             }
         }
     }
-    public void onPowerLevelSelected(int powerLevel) {
-        switch (powerLevel) {
-            case 1:
-                CToast(getApplicationContext(), render(R.string.low_power), Toast.LENGTH_LONG);
-                uhfReader.LowPowerLevel();
-                ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.low_power));
-                tvPowerLevel.setText(R.string.low);
-                break;
-            case 2:
-                CToast(getApplicationContext(), render(R.string.medium_power), Toast.LENGTH_LONG);
-                uhfReader.MedPowerLevel();
-                ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.med_power));
-                tvPowerLevel.setText(R.string.mid);
-                break;
-            case 3:
-                CToast(getApplicationContext(), render(R.string.high_power), Toast.LENGTH_LONG);
-                uhfReader.HighPowerLevel();
-                ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.high_power));
-                tvPowerLevel.setText(R.string.high);
-                break;
-        }
-    }
+
 }

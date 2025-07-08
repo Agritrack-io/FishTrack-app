@@ -37,7 +37,7 @@ public class ScanInventoryThread implements Runnable {
         }
         mScanHandler = handler;
         // use by default high energy. Explicitly set to Low Energy (after initialization) where required.
-        this.HighEnergy();
+        //this.HighEnergy();
     }
 
     public void LowEnergy() {
@@ -49,6 +49,8 @@ public class ScanInventoryThread implements Runnable {
         if (uhfReader!=null)
         uhfReader.HighPowerLevel();
     }
+
+    
 
     public boolean startReading() {
         if (uhfReader!=null) {

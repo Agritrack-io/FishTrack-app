@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import io.agritrack.philosofish.R;
+import io.agritrack.philosofish.ui.service.LocalPreferences;
 
 
 public class PowerLevelDialog extends DialogFragment {
@@ -59,24 +60,25 @@ public class PowerLevelDialog extends DialogFragment {
             highPowerButton.setChecked(true);
         }
 
-        builder.setPositiveButton("OK", (dialog, which) -> {
+        // Apply immediately when changed
+        powerRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             int selectedPower;
-            if (lowPowerButton.isChecked()) {
-                selectedPower = 1; // Low Power
-            } else if (highPowerButton.isChecked()) {
-                selectedPower = 3; // High Power
+            if (checkedId == R.id.lowPowerButton) {
+                selectedPower = 1;
+            } else if (checkedId == R.id.medPowerButton) {
+                selectedPower = 2;
             } else {
-                selectedPower = 2; // Medium Power
+                selectedPower = 3;
             }
 
             if (listener != null) {
                 listener.onPowerLevelSelected(selectedPower);
             }
+
+            dismiss(); // Close the dialog right after selection
         });
 
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-        return builder.create();
+        return builder.create(); // No OK/Cancel buttons
     }
-
 }
 

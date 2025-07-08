@@ -92,14 +92,14 @@ public class BX6100Commander extends AbstractCAENCommander {
 
     public Reader.READER_ERR LowPowerLevel() {
         if (mUhfRManager != null) {
-            Reader.READER_ERR err = mUhfRManager.setPower(18, 18);//set uhf module power
-            this.currPowerLevel = new Integer[] {18,18};
-            LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 18);
+            Reader.READER_ERR err = mUhfRManager.setPower(13, 13);//set uhf module power
+            this.currPowerLevel = new Integer[] {13,13};
+            LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 13);
 
             if (err != Reader.READER_ERR.MT_OK_ERR) {
-                Reader.READER_ERR err1 = mUhfRManager.setPower(17, 17);//set uhf module power
-                this.currPowerLevel = new Integer[] {17,17};
-                LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 17);
+                Reader.READER_ERR err1 = mUhfRManager.setPower(12, 12);//set uhf module power
+                this.currPowerLevel = new Integer[] {12,12};
+                LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 12);
 
                 if (err1 != Reader.READER_ERR.MT_OK_ERR) {
                     Toast.makeText(getAppContext(), "Failed to switch to LOW Energy mode!!", Toast.LENGTH_LONG);
@@ -116,14 +116,14 @@ public class BX6100Commander extends AbstractCAENCommander {
 
     public Reader.READER_ERR MedPowerLevel() {
         if (mUhfRManager != null) {
-            Reader.READER_ERR err = mUhfRManager.setPower(25, 25);//set uhf module power
-            this.currPowerLevel = new Integer[] {25,25};
-            LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 25);
+            Reader.READER_ERR err = mUhfRManager.setPower(20, 20);//set uhf module power
+            this.currPowerLevel = new Integer[] {20,20};
+            LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 20);
 
             if (err != Reader.READER_ERR.MT_OK_ERR) {
-                Reader.READER_ERR err1 = mUhfRManager.setPower(24, 24);//set uhf module power
-                this.currPowerLevel = new Integer[] {24,24};
-                LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 24);
+                Reader.READER_ERR err1 = mUhfRManager.setPower(19, 19);//set uhf module power
+                this.currPowerLevel = new Integer[] {19,19};
+                LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 19);
 
                 if (err1 != Reader.READER_ERR.MT_OK_ERR) {
                     Toast.makeText(getAppContext(), "Failed to switch to LOW Energy mode!!", Toast.LENGTH_LONG);
