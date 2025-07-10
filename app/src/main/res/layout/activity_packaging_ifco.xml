@@ -83,14 +83,14 @@
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
 <!--        <RelativeLayout
-            android:id="@+id/incomingAssetALayout"
+            android:uid="@+uid/incomingAssetALayout"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toTopOf="@+id/fishMainLayout"
+            app:layout_constraintBottom_toTopOf="@+uid/fishMainLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -104,7 +104,7 @@
                 android:padding="1dp">
 
                 <EditText
-                    android:id="@+id/etTraysQuantity"
+                    android:uid="@+uid/etTraysQuantity"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="50dp"

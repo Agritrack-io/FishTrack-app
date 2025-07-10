@@ -503,10 +503,13 @@ public class InventoryAssetActivity extends LocationAwareActivity {
         @Override
         public void onResponse(Call<RFIDInventoryDTO> call, Response<RFIDInventoryDTO> response) {
             RFIDInventoryDTO rs = response.body();
-            if (rs != null || IsDemo) {
+            if ((rs != null && response.isSuccessful()) || IsDemo) {
+
+                db.rFIDInventoryDAO().deleteById(String.valueOf(rs.uid));
+                db.rFIDInventoryItemDAO().deleteByInventoryId(String.valueOf(rs.uid));
+
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
             } else {
-                // could not update Fishing TX on backend!!!
                 runOnUiThread(() -> CToast(getApplicationContext(), render("Inventory update failure!!!"), Toast.LENGTH_LONG));
             }
         }

@@ -100,7 +100,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationMenuActivity">
             app:layout_constraintTop_toTopOf="parent"/>
 
        <!-- <GridView
-            android:id="@+id/gvCorrelationMenu"
+            android:uid="@+uid/gvCorrelationMenu"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:numColumns="1"

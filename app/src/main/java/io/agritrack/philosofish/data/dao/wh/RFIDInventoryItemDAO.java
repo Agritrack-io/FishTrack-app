@@ -32,4 +32,12 @@ public interface RFIDInventoryItemDAO {
 
     @Update
     void update(RFIDInventoryItem rFIDInventoryItem);
+
+    @Query("SELECT * from rfid_inventory_item where inventory=:inventoryId")
+    List<RFIDInventoryItem> getInventoryItemsByInventory(String inventoryId);
+
+    @Query("DELETE FROM rfid_inventory_item WHERE inventory = :inventoryId")
+    int deleteByInventoryId(String inventoryId);
+
+
 }

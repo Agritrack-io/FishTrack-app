@@ -219,5 +219,5 @@ dependencies {
 
 //    //TODO:: Delete before production
 //    // browse local db
-//    debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
+  //  debugImplementation 'com.github.amitshekhariitbhu.Android-Debug-Database:debug-db:v1.0.7'
 }

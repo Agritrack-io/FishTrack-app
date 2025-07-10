@@ -100,7 +100,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
                 Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                 // Start the activity with camera_intent,
-                // and request pic id
+                // and request pic uid
                 startActivityForResult(camera_intent, pic_id);
             }
         });
@@ -166,7 +166,7 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
     // This method will help to retrieve the image
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        // Match the request 'pic id with requestCode
+        // Match the request 'pic uid with requestCode
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == pic_id) {
             switch (resultCode) {

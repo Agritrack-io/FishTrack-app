@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import io.agritrack.philosofish.data.model.wh.RFIDInventory;
 
@@ -11,6 +12,7 @@ public class RFIDInventoryDTO {
 
     private static final SimpleDateFormat simpleDateTime =  new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
 
+    public String uid;
     public String inventory_type;
     public String site;
     public String user;
@@ -18,10 +20,12 @@ public class RFIDInventoryDTO {
     public Double longitude;
     public Double latitude;
 
+
     public Map<String, List<RFIDInventoryItemDTO>> rfid_items;
 
     public static RFIDInventoryDTO convert(RFIDInventory inventory) {
         RFIDInventoryDTO inventoryDTO = new RFIDInventoryDTO();
+        inventoryDTO.uid = inventory.uid;
         inventoryDTO.inventory_type = inventory.rfidInvType;
         inventoryDTO.site = inventory.site;
         inventoryDTO.user = inventory.user;

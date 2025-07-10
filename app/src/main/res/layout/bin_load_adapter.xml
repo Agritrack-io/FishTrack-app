@@ -64,7 +64,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
 <!--        <TextView-->
-<!--            android:id="@+id/tvBinWeightLabel"-->
+<!--            android:uid="@+uid/tvBinWeightLabel"-->
 <!--            fontPath="fonts/open_sans_extra_bold.ttf"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
@@ -128,7 +128,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
 <!--        <TextView-->
-<!--            android:id="@+id/tvAddTemp"-->
+<!--            android:uid="@+uid/tvAddTemp"-->
 <!--            fontPath="fonts/open_sans_extra_bold.ttf"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->

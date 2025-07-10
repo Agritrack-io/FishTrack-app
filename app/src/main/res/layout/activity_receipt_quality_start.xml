@@ -244,7 +244,7 @@ tools:context=".fish.ui.quality.receipt.ReceiptQualityStartActivity">
                 app:srcCompat="@drawable/ic_delete" />
 
 <!--            <RelativeLayout
-                android:id="@+id/loadingPanel"
+                android:uid="@+uid/loadingPanel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"

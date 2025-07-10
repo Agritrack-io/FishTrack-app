@@ -4,7 +4,6 @@ import static io.agritrack.philosofish.FishTrackApplication.IsOnline;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
-import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 
@@ -40,9 +38,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-//import io.agritrack.BuildConfig;
 import io.agritrack.api.sync.EncodingSchemeCallBack;
-//import io.agritrack.philosofish.BuildConfig;
 import io.agritrack.philosofish.BuildConfig;
 import io.agritrack.philosofish.FishTrackApplication;
 import io.agritrack.philosofish.R;
@@ -55,6 +51,7 @@ import io.agritrack.philosofish.api.sync.PendingFishingTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingPackQualityTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingProcessTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingRecQualityTxCallBack;
+import io.agritrack.philosofish.api.sync.PendingWhInventoriesCallBack;
 import io.agritrack.philosofish.api.sync.SyncApi;
 import io.agritrack.philosofish.api.sync.SyncAssetsCallBack;
 import io.agritrack.philosofish.api.sync.SyncBinInfo;
@@ -92,6 +89,8 @@ import io.agritrack.philosofish.data.dto.tx.PackageQualityTxDTO;
 import io.agritrack.philosofish.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.philosofish.data.dto.tx.ReceiptQualityTxDTO;
 import io.agritrack.philosofish.data.dto.wh.AssetDTO;
+import io.agritrack.philosofish.data.dto.wh.RFIDInventoryDTO;
+import io.agritrack.philosofish.data.dto.wh.RFIDInventoryItemDTO;
 import io.agritrack.philosofish.data.model.BinInfo;
 import io.agritrack.philosofish.data.model.common.TemperatureTimeSeries;
 import io.agritrack.philosofish.data.model.tx.CorrelationTransaction;
@@ -100,15 +99,14 @@ import io.agritrack.philosofish.data.model.tx.FishingTransaction;
 import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
 import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
-import io.agritrack.philosofish.data.model.wh.Asset;
+import io.agritrack.philosofish.data.model.wh.RFIDInventory;
+import io.agritrack.philosofish.data.model.wh.RFIDInventoryItem;
 import io.agritrack.philosofish.dialog.PowerLevelDialog;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.enums.TxStatus;
 import io.agritrack.philosofish.fish.state.FishingRecord;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.ui.binTurnover.BinTurnoverActivity;
-import io.agritrack.philosofish.fish.ui.fishing.FishingBinsActivity;
-import io.agritrack.philosofish.fish.ui.fishing.FishingStartActivity;
 import io.agritrack.philosofish.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.philosofish.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.philosofish.fish.ui.initBins.InitBinsActivity;
@@ -129,7 +127,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FishHomeActivity extends AppCompatActivity implements PowerLevelDialog.PowerLevelListener {
-    private static final int InitBins_Idx = 0, Fishing_Idx = 1,Test_Temp_Idx = 2, Transport_Idx = 3, Receiving_Idx = 4, Packaging_Quality_Idx = 5, Bin_Overturn_Idx = 6, Warehouse_Idx = 7; /*Maintenance_Idx = 5,*/
+    private static final int InitBins_Idx = 0, Fishing_Idx = 1, Test_Temp_Idx = 2, Transport_Idx = 3, Receiving_Idx = 4, Packaging_Quality_Idx = 5, Bin_Overturn_Idx = 6, Warehouse_Idx = 7; /*Maintenance_Idx = 5,*/
     private static final Map<Integer, String[]> Privileges = new HashMap<>();
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
     private GridView gvMainMenu;
@@ -233,7 +231,6 @@ public class FishHomeActivity extends AppCompatActivity implements PowerLevelDia
         }
 
         ivPowerLevel.setOnClickListener(v -> showPowerLevelDialog());
-
 
 
         List<MenuItem> miList = menuItemsSet.stream().sorted(Comparator.comparingInt(MenuItem::getLoc)).collect(Collectors.toList());
@@ -346,6 +343,7 @@ public class FishHomeActivity extends AppCompatActivity implements PowerLevelDia
 
         configHeader();
     }
+
     @Override
     public void onPowerLevelSelected(int powerLevel) {
         int saveValue = 33; // default to High
@@ -376,6 +374,7 @@ public class FishHomeActivity extends AppCompatActivity implements PowerLevelDia
 
         LocalPreferences.setCurrentPower(saveValue);
     }
+
     private void showPowerLevelDialog() {
         new PowerLevelDialog().show(getSupportFragmentManager(), "PowerLevelDialog");
     }
@@ -504,7 +503,23 @@ public class FishHomeActivity extends AppCompatActivity implements PowerLevelDia
                 Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall = pendingTxSvc.syncMeasurements(temperatureTimeSeriesDTOs, "Bearer " + token);
                 syncMsAsyncCall.enqueue(new PendindQualityMeasurementsTxCallBack(this.syncResult));
                 syncLimit++;
+            }
 
+            // Inventory
+            List<RFIDInventoryDTO> rfidInventoryDtos = new ArrayList<>();
+            for (RFIDInventory inventory : db.rFIDInventoryDAO().getAll()) {
+                RFIDInventoryDTO inventoryDto = RFIDInventoryDTO.convert(inventory);
+                List<RFIDInventoryItem> childrenInventoryItems = db.rFIDInventoryItemDAO().getInventoryItemsByInventory(inventory.uid);
+                inventoryDto.rfid_items = childrenInventoryItems.stream().map(x -> new RFIDInventoryItemDTO(x.itemRFID)).collect(Collectors.groupingBy(g -> g.code, Collectors.toCollection(ArrayList::new)));
+                rfidInventoryDtos.add(inventoryDto);
+            }
+
+            if (!rfidInventoryDtos.isEmpty()) {
+                for (RFIDInventoryDTO rfidInventoryDto : rfidInventoryDtos) {
+                    Call<RFIDInventoryDTO> syncRFIDInventory = pendingTxSvc.syncRFIDInventoryTx(rfidInventoryDto, "Bearer " + token);
+                    syncRFIDInventory.enqueue(new PendingWhInventoriesCallBack(this.syncResult));
+                    syncLimit++;
+                }
             }
 
             //===================================================================================================

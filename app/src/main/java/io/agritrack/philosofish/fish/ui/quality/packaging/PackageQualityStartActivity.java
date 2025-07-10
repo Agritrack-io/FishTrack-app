@@ -194,7 +194,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
             adapterBins.setValues(new LinkedList<String>(qualityRecord.qualityBins));
             adapterBins.notifyDataSetChanged();
             //Get reference of binsCount textView
-            TextView tvBinsCount = findViewById(R.id.tvBinsCount);
+            TextView tvBinsCount = findViewById(R.uid.tvBinsCount);
             tvBinsCount.setText(String.valueOf(qualityRecord.qualityBins.size()));
         }*/
     }

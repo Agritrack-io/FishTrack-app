@@ -66,7 +66,7 @@
 //        setContentView(R.layout.activity_quality_final_check_second);
 //
 //        // set Header Info
-//        TextView tvHeader = findViewById(R.id.tvHeaderFinalQuality);
+//        TextView tvHeader = findViewById(R.uid.tvHeaderFinalQuality);
 //        tvHeader.setText(LocalPreferences.HeaderMsg());
 //
 //        // get an instance of local DB
@@ -188,40 +188,40 @@
 //    }
 //
 //    private void assignCtrlVars() {
-//        size1 = findViewById(R.id.etSize1);
-//        type1 = findViewById(R.id.etType1);
-//        number1 = findViewById(R.id.etNumber1);
-//        actual1 = findViewById(R.id.etActual1);
-//        under1 = findViewById(R.id.etUnder11);
-//        over1 = findViewById(R.id.etOver11);
-//        net1 = findViewById(R.id.etNet1);
-//        ice1 = findViewById(R.id.etIce1);
+//        size1 = findViewById(R.uid.etSize1);
+//        type1 = findViewById(R.uid.etType1);
+//        number1 = findViewById(R.uid.etNumber1);
+//        actual1 = findViewById(R.uid.etActual1);
+//        under1 = findViewById(R.uid.etUnder11);
+//        over1 = findViewById(R.uid.etOver11);
+//        net1 = findViewById(R.uid.etNet1);
+//        ice1 = findViewById(R.uid.etIce1);
 //        ice1.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
-//        temp1 = findViewById(R.id.etTemp1);
-//        size2 = findViewById(R.id.etSize2);
-//        type2 = findViewById(R.id.etType2);
-//        number2 = findViewById(R.id.etNumber2);
-//        actual2 = findViewById(R.id.etActual2);
-//        under2 = findViewById(R.id.etUnder12);
-//        over2 = findViewById(R.id.etOver21);
-//        net2 = findViewById(R.id.etNet2);
-//        ice2 = findViewById(R.id.etIce2);
+//        temp1 = findViewById(R.uid.etTemp1);
+//        size2 = findViewById(R.uid.etSize2);
+//        type2 = findViewById(R.uid.etType2);
+//        number2 = findViewById(R.uid.etNumber2);
+//        actual2 = findViewById(R.uid.etActual2);
+//        under2 = findViewById(R.uid.etUnder12);
+//        over2 = findViewById(R.uid.etOver21);
+//        net2 = findViewById(R.uid.etNet2);
+//        ice2 = findViewById(R.uid.etIce2);
 //        ice2.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
-//        temp2 = findViewById(R.id.etTemp2);
-//        size3 = findViewById(R.id.etSize3);
-//        type3 = findViewById(R.id.etType3);
-//        number3 = findViewById(R.id.etNumber3);
-//        actual3 = findViewById(R.id.etActual3);
-//        under3 = findViewById(R.id.etUnder13);
-//        over3 = findViewById(R.id.etOver31);
-//        net3 = findViewById(R.id.etNet3);
-//        ice3 = findViewById(R.id.etIce3);
+//        temp2 = findViewById(R.uid.etTemp2);
+//        size3 = findViewById(R.uid.etSize3);
+//        type3 = findViewById(R.uid.etType3);
+//        number3 = findViewById(R.uid.etNumber3);
+//        actual3 = findViewById(R.uid.etActual3);
+//        under3 = findViewById(R.uid.etUnder13);
+//        over3 = findViewById(R.uid.etOver31);
+//        net3 = findViewById(R.uid.etNet3);
+//        ice3 = findViewById(R.uid.etIce3);
 //        ice3.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
-//        temp3 = findViewById(R.id.etTemp3);
-//        ivSupport = findViewById(R.id.ivSupport);
-//        ivNext = findViewById(R.id.ivToCongs);
-//        ivBack = findViewById(R.id.ivBackFinalCheckStart);
-//        signatureView = findViewById(R.id.signatureView);
+//        temp3 = findViewById(R.uid.etTemp3);
+//        ivSupport = findViewById(R.uid.ivSupport);
+//        ivNext = findViewById(R.uid.ivToCongs);
+//        ivBack = findViewById(R.uid.ivBackFinalCheckStart);
+//        signatureView = findViewById(R.uid.signatureView);
 //    }
 //
 //    private void initControlsFromState() {

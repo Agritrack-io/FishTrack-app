@@ -159,7 +159,7 @@ public class ParseSGTIN {
         sgtin.setExtensionDigit(Integer.toString(extensionDigit.getValue()));
         sgtin.setSerial(serial);
         sgtin.setCheckDigit(Integer.toString(getCheckDigit()));
-        sgtin.setEpcPureIdentityURI(String.format("urn:epc:id:sgtin:%s.%s%s.%s", companyPrefix, extensionDigit.getValue(), itemReference, serial));
+        sgtin.setEpcPureIdentityURI(String.format("urn:epc:uid:sgtin:%s.%s%s.%s", companyPrefix, extensionDigit.getValue(), itemReference, serial));
         sgtin.setEpcTagURI(String.format("urn:epc:tag:sgtin-%s:%s.%s.%s%s.%s", tagSize.getValue(), filterValue.getValue(), companyPrefix, extensionDigit.getValue(), itemReference, serial));
         sgtin.setEpcRawURI(String.format("urn:epc:raw:%s.x%s", tagSize.getValue() + remainder, outputHex));
         sgtin.setBinary(outputBin);

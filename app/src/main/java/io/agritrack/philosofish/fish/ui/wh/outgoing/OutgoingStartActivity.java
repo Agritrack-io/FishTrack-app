@@ -173,7 +173,7 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
 
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {
-        /*if (checkedId == R.id.tbSite) {
+        /*if (checkedId == R.uid.tbSite) {
             siteDialog = new SimpleListDialog(OutgoingStartActivity.this, fillSubSiteData(), fromSiteSelection, R.string.select_subsite);
             siteDialog.showDialog();
             selectedToggleButtonFrom = Constants.ftSite;

@@ -42,7 +42,7 @@ import android.widget.ToggleButton;
  * to uncheck a particular radio button, the radio group can be cleared to
  * remove the checked state.</p>
  *
- * <p>The selection is identified by the unique id of the radio button as defined
+ * <p>The selection is identified by the unique uid of the radio button as defined
  * in the XML layout file.</p>
  *
  * <p><strong>XML Attributes</strong></p>
@@ -57,7 +57,7 @@ import android.widget.ToggleButton;
  * @see RadioButton
  */
 public class ToggleGroup extends LinearLayout {
-    // holds the checked id; the selection is empty by default
+    // holds the checked uid; the selection is empty by default
     private int mCheckedId = -1;
     // tracks children radio buttons checked state
     private CompoundButton.OnCheckedChangeListener mChildOnCheckedChangeListener;
@@ -137,7 +137,7 @@ public class ToggleGroup extends LinearLayout {
      * parameter. Using -1 as the selection identifier clears the selection;
      * such an operation is equivalent to invoking {@link #clearCheck()}.</p>
      *
-     * @param id the unique id of the radio button to select in this group
+     * @param id the unique uid of the radio button to select in this group
      * @see #getCheckedRadioButtonId()
      * @see #clearCheck()
      */
@@ -179,7 +179,7 @@ public class ToggleGroup extends LinearLayout {
      * <p>Returns the identifier of the selected radio button in this group.
      * Upon empty selection, the returned value is -1.</p>
      *
-     * @return the unique id of the selected radio button in this group
+     * @return the unique uid of the selected radio button in this group
      * @see #check(int)
      * @see #clearCheck()
      */
@@ -351,7 +351,7 @@ public class ToggleGroup extends LinearLayout {
         public void onChildViewAdded(View parent, View child) {
             if (parent == ToggleGroup.this && child instanceof ToggleButton) {
                 int id = child.getId();
-                // generates an id if it's missing
+                // generates an uid if it's missing
                 if (id == View.NO_ID) {
                     id = child.hashCode();
                     child.setId(id);

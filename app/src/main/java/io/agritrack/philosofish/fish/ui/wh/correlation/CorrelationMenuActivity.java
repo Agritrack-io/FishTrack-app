@@ -35,7 +35,7 @@ public class CorrelationMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_correlation_menu);
         grid = findViewById(R.id.gridView);
-//        gvCorrelationMenu = findViewById(R.id.gvCorrelationMenu);
+//        gvCorrelationMenu = findViewById(R.uid.gvCorrelationMenu);
 
         onItemClickListener = new IOnItemClickListener<Option>() {
             @Override
@@ -43,7 +43,7 @@ public class CorrelationMenuActivity extends AppCompatActivity {
                 final Context appCtx = getApplicationContext();
 //                Intent i = new Intent(appCtx, CorrelationSubMenuActivity.class);
                 Intent i;
-                //i.putExtra("id", position);
+                //i.putExtra("uid", position);
                 //startActivity(i);
 
                 switch (position) {

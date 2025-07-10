@@ -81,7 +81,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        //temperatureChart = itemView.findViewById(R.id.tempChartIn);
+        //temperatureChart = itemView.findViewById(R.uid.tempChartIn);
         double _highT = 0.0d, _avgT = 0.0d, _lowT = 0.0d;
         String key = listOfEPCs.get(position);
 
@@ -250,7 +250,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
                 cardView = itemView.findViewById(R.id.crdlayoutForTurnover);
                 tvSurface = itemView.findViewById(R.id.tvFishT);
                 tvBottom = itemView.findViewById(R.id.tvWaterT);
-//                infoLayout = itemView.findViewById(R.id.infoLayout);
+//                infoLayout = itemView.findViewById(R.uid.infoLayout);
             } else {
                 cardView = itemView.findViewById(R.id.crdlayout);
             }

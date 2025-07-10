@@ -185,7 +185,7 @@ public class IncomingStartActivity extends AppCompatActivity implements ToggleGr
             recWHIncoming.fromSite = Constants.ftAsset;
             tvIncomingFrom.setText(Constants.ftAsset);
             selectedToggleButtonFrom = Constants.ftAsset;
-        }/* else if (checkedId == R.id.tbSite) {
+        }/* else if (checkedId == R.uid.tbSite) {
             siteDialog = new SimpleListDialog(IncomingStartActivity.this, fillSubSiteData(), toSiteSelection, R.string.select_subsite);
             siteDialog.showDialog();
             selectedToggleButtonTo = Constants.ftSite;

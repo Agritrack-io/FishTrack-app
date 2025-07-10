@@ -138,7 +138,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationCageActivity">
                 app:layout_constraintTop_toBottomOf="@+id/svSearchAsset" />
 
            <!-- <EditText
-                android:id="@+id/etCageBarcode"
+                android:uid="@+uid/etCageBarcode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -158,7 +158,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationCageActivity">
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvCages" />-->
+                app:layout_constraintTop_toBottomOf="@+uid/rvCages" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -247,7 +247,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationCageActivity">
     </RelativeLayout>
 
     <!--<Button
-        android:id="@+id/btnCorrelate"
+        android:uid="@+uid/btnCorrelate"
         android:layout_width="180dp"
         android:layout_height="60dp"
         android:layout_marginStart="16dp"
@@ -261,7 +261,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationCageActivity">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/correlateBLayout" /-->>
+        app:layout_constraintTop_toBottomOf="@+uid/correlateBLayout" /-->>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

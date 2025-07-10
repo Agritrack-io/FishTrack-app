@@ -657,7 +657,9 @@
     <string name="pending_quality_tx_upload_completed">Pending quality tx successfully uploaded!</string>
     <string name="pending_measurement_tx_upload_failure_alert">Failed to upload pending measurement tx!</string>
     <string name="pending_measurement_tx_upload_completed">Pending measurement tx successfully uploaded!</string>
+    <string name="pending_inventories_upload_completed">Pending inventories  successfully uploaded!</string>
     <string name="pending_asset_tx_upload_failure_alert">Failed to upload pending asset tx!</string>
+    <string name="pending_inventories_upload_failure_alert">Failed to upload pending inventories!</string>
     <string name="pending_asset_tx_upload_completed">Pending asset tx successfully uploaded!</string>
     <string name="bt_not_supported">Bluetooth not supported!</string>
     <string name="no_logger_found_linked_to_bin">No IOT Logger was found linked to this BIN!! Please correlate bin!</string>

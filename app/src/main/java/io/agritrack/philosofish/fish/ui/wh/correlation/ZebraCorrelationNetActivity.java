@@ -423,7 +423,7 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
         ivBack.setOnClickListener(view -> {
             stopScanner();
             Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
-            //i.putExtra("id", 1);
+            //i.putExtra("uid", 1);
             startActivity(i);
         });
 

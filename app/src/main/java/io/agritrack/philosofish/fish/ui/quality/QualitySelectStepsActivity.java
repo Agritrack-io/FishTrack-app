@@ -103,7 +103,7 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
                     /*case Second_Step_Idx:
                         GlobalState.initQualityRecord();
                         i = new Intent(QualitySelectStepsActivity.this, PackageQualityStartActivity.class);
-                        i.putExtra("id", position);
+                        i.putExtra("uid", position);
                         startActivity(i);
                         break;*/
                     case Second_Step_Idx:

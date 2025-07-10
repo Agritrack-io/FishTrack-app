@@ -127,19 +127,19 @@ tools:context=".fruit.ui.storage_ready.ReadyStorageConfirmActivity">
                 app:layout_constraintTop_toTopOf="parent" />
 
             <!--<TextView
-                android:id="@+id/tvWeightLabel"
+                android:uid="@+uid/tvWeightLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/weight"
                 android:textColor="@color/label_blue"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvNumberIfcoLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvWeight"
+                app:layout_constraintBottom_toTopOf="@+uid/tvNumberIfcoLabel"
+                app:layout_constraintEnd_toStartOf="@+uid/tvWeight"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvToLabel" />
+                app:layout_constraintTop_toBottomOf="@+uid/tvToLabel" />
 
             <TextView
-                android:id="@+id/tvWeight"
+                android:uid="@+uid/tvWeight"
                 android:layout_width="186dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -147,10 +147,10 @@ tools:context=".fruit.ui.storage_ready.ReadyStorageConfirmActivity">
                 android:textAlignment="viewEnd"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvNumberIfco"
+                app:layout_constraintBottom_toTopOf="@+uid/tvNumberIfco"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvWeightLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvTo" />-->
+                app:layout_constraintStart_toEndOf="@+uid/tvWeightLabel"
+                app:layout_constraintTop_toBottomOf="@+uid/tvTo" />-->
 
             <TextView
                 android:id="@+id/tvNumberIfcoLabel"

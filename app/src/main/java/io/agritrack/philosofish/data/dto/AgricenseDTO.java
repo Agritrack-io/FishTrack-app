@@ -3,7 +3,7 @@ package io.agritrack.philosofish.data.dto;
 import com.google.gson.annotations.SerializedName;
 
 public class AgricenseDTO {
-    @SerializedName("terminal-id")
+    @SerializedName("terminal-uid")
     public String terminalId;
 
     @SerializedName("agrisense-url")

@@ -112,7 +112,7 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
                 camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.parse(photoPath + "/" + fileName));
 
                 // Start the activity with camera_intent,
-                // and request pic id
+                // and request pic uid
                 startActivityForResult(camera_intent, pic_id);
             }
         });
@@ -178,7 +178,7 @@ public class PackageQualityInfoActivity extends AppCompatActivity {
     // This method will help to retrieve the image
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        // Match the request 'pic id with requestCode
+        // Match the request 'pic uid with requestCode
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == pic_id) {
             switch (resultCode) {

@@ -356,7 +356,7 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
         ivBack.setOnClickListener(view -> {
             stopScanner();
             Intent i = new Intent(getApplicationContext(), CorrelationMenuActivity.class);
-            //i.putExtra("id", 2);
+            //i.putExtra("uid", 2);
             startActivity(i);
         });
 

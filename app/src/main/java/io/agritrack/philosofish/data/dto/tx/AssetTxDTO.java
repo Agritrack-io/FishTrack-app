@@ -31,7 +31,7 @@ public class AssetTxDTO {
     public static AssetTxDTO convert(AssetTransaction assetTx) {
 
         AssetTxDTO assetTxDTO = new AssetTxDTO();
-        //assetTxDTO.id = assetTx.id;
+        //assetTxDTO.uid = assetTx.uid;
         assetTxDTO.asset_type = assetTx.assetType;
         assetTxDTO.state = assetTx.state;
 //        assetTxDTO.rfid_items = assetTx.itemRFIDs;

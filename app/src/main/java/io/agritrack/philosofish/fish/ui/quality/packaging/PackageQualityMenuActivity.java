@@ -125,7 +125,7 @@ public class PackageQualityMenuActivity extends AppCompatActivity {
 //                                openTx.txStatus = TxStatus.PENDING;
 //                                qualityRecord.txKey = db.qualityTransactionDAO().insert(openTx);
 //                            } else {
-//                                qualityRecord.txKey = openTx.id;
+//                                qualityRecord.txKey = openTx.uid;
 //                            }
 //
 //                            //i = new Intent(appCtx, HarvestRequestsActivity.class);
@@ -156,7 +156,7 @@ public class PackageQualityMenuActivity extends AppCompatActivity {
                     /*case Second_Step_Idx:
                         GlobalState.initQualityRecord();
                         i = new Intent(QualitySelectStepsActivity.this, PackageQualityStartActivity.class);
-                        i.putExtra("id", position);
+                        i.putExtra("uid", position);
                         startActivity(i);
                         break;*/
                     case Second_Step_Idx:

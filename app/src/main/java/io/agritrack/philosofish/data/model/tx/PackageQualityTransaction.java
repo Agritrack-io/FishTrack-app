@@ -27,7 +27,7 @@ public class PackageQualityTransaction {
 //
 //    @PrimaryKey
 //    @NonNull
-//    public UUID id;
+//    public UUID uid;
 
     @NonNull
     @ColumnInfo(name = "id")

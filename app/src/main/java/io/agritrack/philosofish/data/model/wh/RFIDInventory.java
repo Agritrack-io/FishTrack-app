@@ -1,14 +1,23 @@
 package io.agritrack.philosofish.data.model.wh;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.UUID;
+
 @Entity(tableName = "rfid_inventory")
 public class RFIDInventory {
 
+
+    public RFIDInventory() {
+        this.uid = UUID.randomUUID().toString();
+    }
+
     @PrimaryKey
-    public Long id;
+    @NonNull
+    public String uid;
 
     @ColumnInfo(name = "user_name")
     public String user;

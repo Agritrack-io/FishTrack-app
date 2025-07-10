@@ -297,7 +297,7 @@ public class SearchActivity extends AppCompatActivity {
         this.rvAssets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<Asset> assetsList = db.assetDAO().getAssetsByTypeForSearch(assetType.toUpperCase(Locale.ROOT));
         if (assetsList != null && !assetsList.isEmpty()) {
-//            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid.substring(x.rfid.length()-10))).collect(Collectors.toList());
+//            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.uid, x.rfid.substring(x.rfid.length()-10))).collect(Collectors.toList());
             List<GenericListModel> selectedAssets = assetsList.stream()
                     .map(x -> new GenericListModel(x.id, x.rfid.substring(x.rfid.length() - 10), x.code, x.netEyeGirth, x.perimeter))
                     .collect(Collectors.toList());

@@ -164,8 +164,8 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
             super(itemView);
             rfid = (TextView) itemView.findViewById(R.id.tvRfid);
             code = (TextView) itemView.findViewById(R.id.tvCode);
-//            netEye = (TextView) itemView.findViewById(R.id.tvNetEye);
-//            perimeter = (TextView) itemView.findViewById(R.id.tvPerimeter);
+//            netEye = (TextView) itemView.findViewById(R.uid.tvNetEye);
+//            perimeter = (TextView) itemView.findViewById(R.uid.tvPerimeter);
             itemView.setOnClickListener(this);
         }
 

@@ -133,7 +133,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
     </RelativeLayout>
 
 <!--    <Button
-        android:id="@+id/btnScanAssetTag"
+        android:uid="@+uid/btnScanAssetTag"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:layout_marginStart="24dp"
@@ -144,7 +144,7 @@ tools:context=".fish.ui.wh.correlation.CorrelationNetActivity">
         android:textSize="@dimen/button_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tipAssetLayout" />-->
+        app:layout_constraintTop_toBottomOf="@+uid/tipAssetLayout" />-->
 
     <Button
         android:id="@+id/btnProgramTag"

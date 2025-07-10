@@ -1,6 +1,5 @@
 package io.agritrack.philosofish.data.dao.wh;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -16,26 +15,30 @@ import io.agritrack.philosofish.data.model.wh.RFIDInventory;
 public interface RFIDInventoryDAO {
 
     @Query("SELECT * from rfid_inventory")
-    LiveData<List<RFIDInventory>> getAll();
+    List<RFIDInventory> getAll();
 
-    @Query("SELECT * from rfid_inventory where id=:inventoryId LIMIT 1")
-    RFIDInventory getById(Long inventoryId);
+    @Query("SELECT * from rfid_inventory where uid=:inventoryId LIMIT 1")
+    RFIDInventory getById(String inventoryId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(RFIDInventory... inventorys);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Long[] insertInvTotes(RFIDInventory... inventorys);
+    void insertInvTotes(RFIDInventory... inventorys);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(RFIDInventory inventory);
+    void insert(RFIDInventory inventory);
 
     @Delete
     void delete(RFIDInventory inventory);
 
     @Query("DELETE from rfid_inventory")
-    void deleteAll();
+    int deleteAll();
 
     @Update
     void update(RFIDInventory inventory);
+
+    @Query("DELETE FROM rfid_inventory WHERE uid = :inventoryId")
+    int deleteById(String inventoryId);
+
 }

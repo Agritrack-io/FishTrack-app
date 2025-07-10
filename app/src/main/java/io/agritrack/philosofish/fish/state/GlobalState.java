@@ -299,7 +299,7 @@ public class GlobalState {
         try {
             ProcessingTransaction txProcess = new ProcessingTransaction();
 
-//            txProcess.id = recProcessing.txKey;
+//            txProcess.uid = recProcessing.txKey;
             txProcess.dispatchNote = recProcessing.dispatchNote;
             txProcess.cleanTruck = Boolean.toString(recProcessing.cleanTruck);
             txProcess.smells = Boolean.toString(recProcessing.smellyTruck);
@@ -697,7 +697,7 @@ public class GlobalState {
         try {
             PostPackageQualityTransaction txQuality = new PostPackageQualityTransaction();
 
-            //txQuality.id = recQuality.txKey;
+            //txQuality.uid = recQuality.txKey;
             txQuality.plot = recQuality.pLot;
             txQuality.boxSn = recQuality.boxSn;
             txQuality.tempT1 = recQuality.etT1;
@@ -896,14 +896,13 @@ public class GlobalState {
     public static RFIDInventory commitWHRFIDInventory(MobileDB db) {
         try {
             RFIDInventory txWHRFIDInventory = new RFIDInventory();
+            txWHRFIDInventory.user = LocalPreferences.getLoggedInUser("N/A");
             txWHRFIDInventory.site = recWHInventory.selectedSite;
             txWHRFIDInventory.performedAt = System.currentTimeMillis();
             txWHRFIDInventory.longitude = recWHInventory.longitude;
             txWHRFIDInventory.rfidInvType = "BLIND";
             txWHRFIDInventory.latitude = recWHInventory.latitude;
-            long _id = db.rFIDInventoryDAO().insert(txWHRFIDInventory);
-            txWHRFIDInventory.id = _id;
-            txWHRFIDInventory.user = LocalPreferences.getLoggedInUser("N/A");
+            db.rFIDInventoryDAO().insert(txWHRFIDInventory);
 
             return txWHRFIDInventory;
         } catch (Exception ex) {
@@ -923,7 +922,7 @@ public class GlobalState {
                     RFIDInventoryItem newItem = new RFIDInventoryItem();
                     newItem.assetType = entry.getKey();
                     newItem.itemRFID = epc;
-                    newItem.inventory = inventory.id;
+                    newItem.inventory = inventory.uid;
                     items.add(newItem);
                 }
             }

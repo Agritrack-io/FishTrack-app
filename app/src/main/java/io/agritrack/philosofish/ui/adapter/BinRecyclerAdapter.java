@@ -145,8 +145,8 @@ public class BinRecyclerAdapter extends RecyclerView.Adapter<BinRecyclerAdapter.
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-//            tvItemName = itemView.findViewById(R.id.tvRecyclerItem);
-//            tvItemSNo = itemView.findViewById(R.id.tvRecyclerItemSNo);
+//            tvItemName = itemView.findViewById(R.uid.tvRecyclerItem);
+//            tvItemSNo = itemView.findViewById(R.uid.tvRecyclerItemSNo);
 
             rfid = itemView.findViewById(R.id.tvRfid);
             code = itemView.findViewById(R.id.tvCode);

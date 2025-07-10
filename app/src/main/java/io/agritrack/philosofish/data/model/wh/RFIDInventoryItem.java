@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.UUID;
+
 @Entity(tableName = "rfid_inventory_item")
 public class RFIDInventoryItem {
 
@@ -19,5 +21,5 @@ public class RFIDInventoryItem {
     @ColumnInfo(name = "code")
     public String code;
 
-    public Long inventory;
+    public String inventory;
 }

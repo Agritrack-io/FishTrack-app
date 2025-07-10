@@ -658,6 +658,8 @@
     <string name="pending_quality_tx_upload_completed">Pending quality tx συγχρονίστηκε επιτυχώς!</string>
     <string name="pending_measurement_tx_upload_failure_alert">Αποτυχία συσχρονισμού pending measurement tx!</string>
     <string name="pending_measurement_tx_upload_completed">Pending measurement tx συγχρονίστηκε επιτυχώς!</string>
+    <string name="pending_inventories_upload_completed">Οι εκκρεμείς απογραφές συγχρονίστηκαν επιτυχώς!</string>
+    <string name="pending_inventories_upload_failure_alert">Οι εκκρεμείς απογραφές δεν συγχρονίστηκαν!</string>
     <string name="pending_asset_tx_upload_failure_alert">Αποτυχία συσχρονισμού pending asset tx!</string>
     <string name="pending_asset_tx_upload_completed">Pending asset tx συγχρονίστηκε επιτυχώς!</string>
     <string name="bt_not_supported">Bluetooth not supported!</string>

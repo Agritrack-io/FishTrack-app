@@ -23,7 +23,7 @@ public class ReceiptQualityTransaction {
 //
 //    @PrimaryKey
 //    @NonNull
-//    public UUID id;
+//    public UUID uid;
 
     @PrimaryKey
     @NonNull
