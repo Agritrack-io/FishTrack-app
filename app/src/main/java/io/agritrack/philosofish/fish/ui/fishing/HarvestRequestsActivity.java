@@ -418,6 +418,7 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
     }
 
     private String validate() {
+        if (IsDemo) return "";
         StringBuilder sb = new StringBuilder();
         if (this.harvestRQcnt == 0) {
             sb.append(getString(R.string.no_harvest));

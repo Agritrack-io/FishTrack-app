@@ -303,7 +303,6 @@ public class ProcessBinsActivity extends AppCompatActivity {
                 scanButton.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
                 scanner_inv = new ScanInventoryThread(mScanHandler);
                 scanner_inv.setFilter(Filters.RFID_BIN);
-                scanner_inv.LowEnergy();
                 scanner_inv.startReading();
                 scanButton.setText(R.string.stop_scan);
             } else if (!scanner_inv.isReading()) {

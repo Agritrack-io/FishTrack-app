@@ -245,9 +245,6 @@ public class BX6200Commander extends AbstractCAENCommander {
         return Reader.READER_ERR.MT_OK_ERR;
     }
 
-    public Reader.READER_ERR MidPowerLevel() {
-        return Reader.READER_ERR.MT_OK_ERR;
-    }
 
     @Override
     public int[] getPowerLevel() {
