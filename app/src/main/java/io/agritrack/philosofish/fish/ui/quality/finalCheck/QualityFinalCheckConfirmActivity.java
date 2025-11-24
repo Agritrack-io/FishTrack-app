@@ -10,6 +10,7 @@ import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -57,6 +58,9 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private ImageView ivSupport, ivNext, ivBack;
     private boolean proceedWithoutLocation = false;
+
+    private boolean isSubmitting = false;
+
     private SupportDialog supportDialog;
 
     @Override
@@ -121,66 +125,115 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
     }
 
     private void moveToNextScreen() {
-        // Update state and proceed to next
+
+        if (isSubmitting) return;
+        isSubmitting = true;
+
         updateState();
 
         String v = validate();
         if (!Strings.isEmptyOrWhitespace(v)) {
             CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
-        } else {
-            boolean proceed;
-            try {
-
-                progressDialog.setCancelable(false);
-                progressDialog.setMessage(render("Synchronizing data..."));
-                progressDialog.show();
-
-                String token = LocalPreferences.getToken();
-
-                // persist Processing Record data to local DB.
-                FinalQualityTransaction tx = GlobalState.commitFinalQuality(db, Boolean.TRUE);
-
-                if (IsOnline) {
-
-                    Call<MediaDTO> syncQualitySigAsyncCall = updService.syncQualityTxSignature(MediaDTO.convert(tx), "Bearer " + token);
-                    syncQualitySigAsyncCall.enqueue(new Callback<MediaDTO>() {
-                        @Override
-                        public void onResponse(Call<MediaDTO> call, Response<MediaDTO> response) {
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<MediaDTO> call, Throwable t) {
-
-                        }
-                    });
-
-                    // sync Processing records
-                    Call<FinalQualityTxDTO> syncTxAsyncCall = updService.syncFinalQualityTx(FinalQualityTxDTO.convert(tx), "Bearer " + token);
-                    syncTxAsyncCall.enqueue(new QualityFinalCheckConfirmActivity.SyncTxCallBack());
-                } else {
-                    for (int i = 0; i < 3; i++) {
-                        runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
-                    }
-                }
-
-                proceed = true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
-                proceed = false;
-            } finally {
-                progressDialog.dismiss();
-            }
-            if (proceed) {
-                // move to next activity.
-                Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
-                startActivity(i);
-            }
+            isSubmitting = false;
+            return;
         }
 
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(render("Synchronizing data..."));
+        progressDialog.show();
 
+        String token = LocalPreferences.getToken();
+
+        FinalQualityTransaction tx = GlobalState.commitFinalQuality(db, Boolean.TRUE);
+
+        if (!IsOnline) {
+            runOnUiThread(() -> {
+                CToast(getApplicationContext(),
+                        render(R.string.tx_saved_local_find_network_and_sync),
+                        Toast.LENGTH_LONG);
+            });
+            progressDialog.dismiss();
+            isSubmitting = false;
+            goNext();
+            return;
+        }
+
+        // 1. Submit main Final Quality transaction
+        updService.syncFinalQualityTx(FinalQualityTxDTO.convert(tx), "Bearer " + token)
+                .enqueue(new Callback<FinalQualityTxDTO>() {
+                    @Override
+                    public void onResponse(Call<FinalQualityTxDTO> call, Response<FinalQualityTxDTO> response) {
+                        if (!response.isSuccessful()) {
+                            onFailure(call, new Exception("Final Quality TX failed"));
+                            return;
+                        }
+
+                        qualityTxMarkSynced();
+
+                        // 2. Submit signature AFTER main TX
+                        uploadSignature(tx, token);
+                    }
+
+                    @Override
+                    public void onFailure(Call<FinalQualityTxDTO> call, Throwable t) {
+                        progressDialog.dismiss();
+                        isSubmitting = false;
+
+                        if (t instanceof SocketTimeoutException) {
+                            CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG);
+                        } else if (t instanceof IOException) {
+                            CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG);
+                        } else {
+                            CToast(getApplicationContext(), render("Error: " + t.getLocalizedMessage()), Toast.LENGTH_LONG);
+                        }
+                    }
+                });
     }
+
+
+    private void uploadSignature(FinalQualityTransaction tx, String token) {
+
+        updService.syncQualityTxSignature(MediaDTO.convert(tx), "Bearer " + token)
+                .enqueue(new Callback<MediaDTO>() {
+                    @Override
+                    public void onResponse(Call<MediaDTO> call, Response<MediaDTO> response) {
+                        progressDialog.dismiss();
+                        isSubmitting = false;
+
+                        if (!response.isSuccessful()) {
+                            CToast(getApplicationContext(),
+                                    render(R.string.error_postquality_update_failure),
+                                    Toast.LENGTH_LONG);
+                        } else {
+                            CToast(getApplicationContext(),
+                                    render(R.string.tx_successfully_updated),
+                                    Toast.LENGTH_SHORT);
+                        }
+
+                        goNext();
+                    }
+
+                    @Override
+                    public void onFailure(Call<MediaDTO> call, Throwable t) {
+                        progressDialog.dismiss();
+                        isSubmitting = false;
+
+                        if (t instanceof IOException) {
+                            CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG);
+                        } else {
+                            CToast(getApplicationContext(), render("Error: " + t.getLocalizedMessage()), Toast.LENGTH_LONG);
+                        }
+
+                        goNext();
+                    }
+                });
+    }
+
+    private void goNext() {
+        Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
+        startActivity(i);
+    }
+
 
 
     private String validate() {
@@ -196,9 +249,11 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
 
     protected void configFooter() {
         ivNext.setOnClickListener(v -> {
+            if (isSubmitting) return; // prevent re-entry
             FragmentManager fm = getSupportFragmentManager();
             confirmAllOkDlg.showNow(fm, getString(R.string.confirm_selection));
         });
+
 
         ivBack.setOnClickListener(view -> {
             updateState();

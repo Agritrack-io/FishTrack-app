@@ -291,11 +291,32 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
             progressDialog.show();
             isScanning = true;
 
-            //connect to specific ble sensor
+            // fetch password
+            String pwd = LocalPreferences.getLoggerPassword();
+
+// if password missing → STOP
+            if (pwd == null || pwd.trim().isEmpty()) {
+                progressDialog.dismiss();
+                isScanning = false;
+                CToast(getAppContext(),
+                        "Δεν υπάρχει password για το Logger! Ρύθμισε το πρώτα.",
+                        Toast.LENGTH_LONG);
+                return;
+            }
+
+// fetch beacon
             mBeacon = mBeaconsMgr.getBeacon(loggerMac);
-            mBeacon.connect(LocalPreferences.getLoggerPassword(),
-                    20 * 1000,
-                    this);
+            if (mBeacon == null) {
+                progressDialog.dismiss();
+                isScanning = false;
+                CToast(getAppContext(),
+                        "Δεν βρέθηκε το Logger BLE. Κάνε ξανά scan.",
+                        Toast.LENGTH_LONG);
+                return;
+            }
+
+// connect safely
+            mBeacon.connect(pwd, 20 * 1000, this);
 
 
         }

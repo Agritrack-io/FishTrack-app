@@ -116,7 +116,10 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
                 public void onClick(View v) {
                     bin.setSelected(!bin.isSelected);
                     holder.itemView.setBackgroundColor(bin.isSelected ? Color.GRAY : Color.TRANSPARENT);
-                    liveItem.setValue(bin.epc);
+                    if (liveItem != null) {
+                        liveItem.setValue(bin.epc);
+                    }
+
 
                 }
             });

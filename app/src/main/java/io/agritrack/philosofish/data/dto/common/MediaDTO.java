@@ -1,11 +1,8 @@
 package io.agritrack.philosofish.data.dto.common;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import android.util.Base64;
 
 import io.agritrack.philosofish.data.model.tx.FinalQualityTransaction;
-import io.agritrack.philosofish.data.model.tx.QualityTransaction;
 import io.agritrack.philosofish.data.model.tx.TransportTransaction;
 
 public class MediaDTO {
@@ -18,12 +15,28 @@ public class MediaDTO {
         this.photo = photo;
     }
 
+    // TRANSPORT
     public static MediaDTO convert(TransportTransaction transport) {
-        return new MediaDTO(transport.destination, transport.driverSignature);
+        return new MediaDTO(
+                transport.destination,        // must match backend
+                transport.driverSignature     // already base64
+        );
     }
 
+    // QUALITY — FIXED
     public static MediaDTO convert(FinalQualityTransaction quality) {
-        return new MediaDTO(quality.lot, quality.signature);
-        //return new MediaDTO(quality.qualityBins, quality.driverSignature);
+
+        String base64 = null;
+
+        // always use raw bytes if present
+        if (quality.signatureBytes != null && quality.signatureBytes.length > 0) {
+            base64 = Base64.encodeToString(quality.signatureBytes, Base64.NO_WRAP);
+        }
+
+        return new MediaDTO(
+                quality.fishingLot,   // <-- <-- sending fishingLot here
+                base64                 // raw Base64 PNG
+        );
     }
+
 }

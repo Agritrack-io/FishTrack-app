@@ -14,12 +14,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APIServiceGenerator {
 
     private static String AGRISENSE_URL = "https://aqua-be.agritrack.org";
-    private static String BASE_URL = "https://aqua-be.agritrack.org";
-    // private static String BASE_URL = "http://3.70.20.48:5030";//dev
+    //private static String BASE_URL = "https://aqua-be.agritrack.org";
+   //  private static String BASE_URL = "http://3.70.20.48:5030";//dev
     //private static String BASE_URL = "http://192.168.150.31:5030";//dev
    // private static String BASE_URL = "http://192.168.150.163:5030";//dev
     //private static String BASE_URL = "http://192.168.150.163:5030";//dev george
-    //private static String BASE_URL = "http://192.168.150.31:5030";//dev orfeas mac-mini
+    private static String BASE_URL = "http://192.168.150.65:5030";//dev orfeas office
 
     //private static String BASE_URL = "https://aqua-be.agritrack.org"; //dev
     //private static String BASE_URL = "http://ec2-3-79-156-151.eu-central-1.compute.amazonaws.com:5030";

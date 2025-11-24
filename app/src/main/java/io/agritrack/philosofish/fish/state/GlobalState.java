@@ -596,10 +596,11 @@ public class GlobalState {
             txQuality.iceQuantityThird = recQualityFinal.sample3.iceQuantity;
             txQuality.fishTempThird = recQualityFinal.sample3.fishTemp;
 
-            if (recQualityFinal.signatureBytes != null) {
+            if (recQualityFinal.signatureBytes != null && recQualityFinal.signatureBytes.length > 0) {
+                txQuality.signatureBytes = recQualityFinal.signatureBytes;
                 txQuality.signature = Base64.encodeToString(recQualityFinal.signatureBytes, Base64.NO_WRAP);
-
             }
+
 
             txQuality.foreignBody = recQualityFinal.foreignBody;
             txQuality.corrAction = recQualityFinal.corrAction;

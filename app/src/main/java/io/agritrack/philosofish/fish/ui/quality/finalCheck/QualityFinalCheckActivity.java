@@ -115,13 +115,8 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
 
         if (txQuality == null) {
             tvCurrentLot.setText(lot);
-            String labelBB = null;
-//            if (Strings.isEmptyOrWhitespace(bestBefore) && bestBefore.length() == 6) {
-//                labelBB = bestBefore.substring(4) + "/" + bestBefore.substring(2,4) + "/20" + bestBefore.substring(0,2);
-//            }
-            // recQualityFinal.bestBefore = labelBB;
-            tvCurrentLot.setText(currentLot);
-            recQualityFinal.lot = currentLot;
+            recQualityPackage.lot = lot;   // ✔ saves the harvest lot (backend)
+            // recQualityPackage.fishLot will come from spinner
             scanning = false;
         } else if (!txQuality.isSynced) {
             if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot))  {

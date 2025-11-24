@@ -3,8 +3,11 @@ package io.agritrack.philosofish.data.model.tx;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 import java.util.List;
@@ -34,6 +37,10 @@ public class FinalQualityTransaction {
 
     @ColumnInfo(name = "fish_lot")
     public String fishingLot;
+
+    @ColumnInfo(name = "fishing_request")
+    public String fishingRequest;
+
 
     @ColumnInfo(name = "exfo_rating")
     public Integer exfoRating;
@@ -199,5 +206,9 @@ public class FinalQualityTransaction {
 
     @ColumnInfo(name = "discarded_quantity")
     public Double discardedQty;
+
+    //@Ignore
+    @ColumnInfo(name = "signature_bytes", typeAffinity = ColumnInfo.BLOB)
+    public byte[] signatureBytes;
 
 }

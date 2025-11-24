@@ -56,6 +56,7 @@ import io.agritrack.philosofish.common.AlphanumericComparator;
 import io.agritrack.philosofish.common.Constants;
 import io.agritrack.philosofish.common.Filters;
 import io.agritrack.philosofish.data.db.MobileDB;
+import io.agritrack.philosofish.data.model.BinInfo;
 import io.agritrack.philosofish.data.model.CageDetails;
 import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.dialog.CageListDialog;

@@ -259,8 +259,8 @@ public class WhMenuActivity extends AppCompatActivity {
                 // MultipartBody.Part is used to send also the actual file name
                 MultipartBody.Part filePart = MultipartBody.Part.createFormData("crashLog", strFileName, requestFile);
 
-                Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadCrashLog(filePart, "Bearer " + token);
-                uploadJsonFileAsyncCall.enqueue(new WhMenuActivity.CrashFileUploadCallBack());
+//                Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadCrashLog(filePart, "Bearer " + token);
+//                uploadJsonFileAsyncCall.enqueue(new WhMenuActivity.CrashFileUploadCallBack());
 
                 //Delete the uploaded file crash folder
             }

@@ -39,7 +39,6 @@ import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.model.Site;
 import io.agritrack.philosofish.fish.state.GlobalState;
-import io.agritrack.philosofish.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.philosofish.ui.service.AuthenticationService;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
 
@@ -167,13 +166,16 @@ public class SelectReasonOutOfSystemFishingDialog implements AdapterView.OnItemC
                             recFishing.requesterName = supervisor.getText().toString();
                             recFishing.packagingPlant = plants.getSelectedItem().toString();
                             GlobalState.commitFishing(db, Boolean.FALSE);
-                            Intent i = new Intent(activity, FishingTeamActivity.class);
-                            i.putExtra("reason", (String) (lvReasons.getItemAtPosition(checked)));
+
+                            // Redirect directly to HarvestRequestsActivity instead
+                            Intent i = new Intent(activity, io.agritrack.philosofish.fish.ui.fishing.HarvestRequestsActivity.class);
+                            i.putExtra("reason", (String) lvReasons.getItemAtPosition(checked));
                             activity.startActivity(i);
                         } else {
                             CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
                             return;
                         }
+
                     }
                 });
             }

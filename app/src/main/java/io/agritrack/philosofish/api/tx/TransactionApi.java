@@ -64,9 +64,13 @@ public interface TransactionApi {
     @POST("/philosofish/quality/package")
     Call<PackageQualityTxDTO> syncPackQualityTx(@Body PackageQualityTxDTO qualityTx, @Header("Authorization") String token);
 
-    @Headers("Content-Type: application/json; charset=utf-8")
+    @Headers("Content-Type: application/json")
     @POST("/philosofish/quality/final")
-    Call<FinalQualityTxDTO> syncFinalQualityTx(@Body FinalQualityTxDTO qualityTx, @Header("Authorization") String token);
+    Call<FinalQualityTxDTO> syncFinalQualityTx(
+            @Body FinalQualityTxDTO finalQualityTxDTO,
+            @Header("Authorization") String token
+    );
+
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/philosofish/quality/postpackage")

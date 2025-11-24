@@ -4,6 +4,7 @@ import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
@@ -37,6 +38,13 @@ public class LocalPreferences {
     public static final String Logged_User_Roles_Key = "LoggedUserRoles";
     public static final String Fasting_Days = "FastingDays";
 
+    private static SharedPreferences getPrefs() {
+        return pref;
+    }
+
+
+    private static final String PREF_LAST_PROGRAMMED = "last_programmed";
+
     public static final String Driver_Names_Key = "DriverNames";
     public static final String Driver_Phones_Key = "DriverPhones";
     public static final String License_Plates_Key = "LicensePlates";
@@ -49,6 +57,7 @@ public class LocalPreferences {
     public static final String Prefix_Key = "Prefix";
     public static final String BLE_Password = "BLE_Pasword";
 
+    public static final String SelectedSiteType_Key = "selectedSiteType";
 
     public static final String Current_Epc_Key = "CurrentEpcs";
 
@@ -86,7 +95,7 @@ public class LocalPreferences {
     }
 
     public static UUID getCurrentSiteId() {
-        return UUID.fromString(pref.getString(SelectedSiteId_Key, "00000000-0000-0000-0000-000000000000"));
+        return UUID.fromString(pref.getString(SelectedSiteId_Key, "2b830041-a558-4d42-bc26-6b32526f15a3"));
     }
 
     public static String getCurrentClusterId() {
@@ -112,6 +121,16 @@ public class LocalPreferences {
     public static String getLatitude() {
         return pref.getString(Latitude_Key, null);
     }
+
+
+    public static void saveUserPin(String username, String encryptedPin) {
+        writeValue("user_pin_" + username, encryptedPin);
+    }
+
+    public static String loadUserPin(String username) {
+        return pref.getString("user_pin_" + username, null);
+    }
+
 
     public static Long getLoginTime() {
         return pref.getLong(LoginTime_Key, Long.MIN_VALUE);
@@ -151,13 +170,32 @@ public class LocalPreferences {
     }
 
 
+    public static String getCurrentSiteType() {
+        return pref.getString(SelectedSiteType_Key, null);
+    }
 
     public static void setSelectedSite(SiteDTO siteDTO) {
         if (siteDTO != null) {
             Gson gson = new Gson();
             writeValue(SelectedSite_Key, gson.toJson(siteDTO));
+
+            if (siteDTO.id != null)
+                writeValue(SelectedSiteId_Key, siteDTO.id.toString());
+
+            if (siteDTO.name != null)
+                writeValue(SelectedSiteName_Key, siteDTO.name);
+
+            if (siteDTO.lvl2 != null)
+                writeValue(SelectedCluster_Key, siteDTO.lvl2);
+
+            if (siteDTO.lvl3 != null)
+                writeValue(SelectedSiteLevel_Key, siteDTO.lvl3);
+
+            if (siteDTO.site_type != null)
+                writeValue(SelectedSiteType_Key, siteDTO.site_type.toString());
         }
     }
+
 
     public static Set<String> getDriverNames() {
         return pref.getStringSet(Driver_Names_Key, new HashSet<>());

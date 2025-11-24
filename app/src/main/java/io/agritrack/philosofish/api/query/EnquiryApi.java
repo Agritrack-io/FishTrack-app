@@ -19,10 +19,10 @@ public interface EnquiryApi {
     Call<List<String>> getFishingEpcsBatch(@Path("epc") String epc, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=UTF-8")
-    @GET("/philosofish/readers/{deviceId}/current-epcs")
+    @GET("/philosofish/readers/current-epcs")
     Call<ConfigDevice> getCurrentEpcsByDevice(@Path("deviceId") String deviceId, @Header("Authorization") String token);
 
     @Headers("Content-Type: application/json; charset=UTF-8")
-    @PUT("/philosofish/readers/{deviceId}/current-epcs")
+    @PUT("/philosofish/readers/current-epcs")
     Call<ReaderDTO> setCurrentEpcsByDevice(@Path("deviceId") String deviceId, @Body ConfigDevice cDev, @Header("Authorization") String token);
 }

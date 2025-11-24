@@ -14,7 +14,7 @@ public interface UploadingApi {
     @Multipart
     Call<ResponseBody> uploadPhoto(@Part MultipartBody.Part file, @Header("Authorization") String token);
 
-    @POST("/philosofish/logs/crash/upload")
-    @Multipart
-    Call<ResponseBody> uploadCrashLog(@Part MultipartBody.Part file, @Header("Authorization") String token);
+//    @POST("/philosofish/logs/crash/upload")
+//    @Multipart
+//    Call<ResponseBody> uploadCrashLog(@Part MultipartBody.Part file, @Header("Authorization") String token);
 }

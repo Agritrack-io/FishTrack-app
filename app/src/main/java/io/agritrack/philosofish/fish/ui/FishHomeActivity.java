@@ -107,7 +107,6 @@ import io.agritrack.philosofish.enums.TxStatus;
 import io.agritrack.philosofish.fish.state.FishingRecord;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.ui.binTurnover.BinTurnoverActivity;
-import io.agritrack.philosofish.fish.ui.fishing.FishingTeamActivity;
 import io.agritrack.philosofish.fish.ui.fishing.HarvestRequestsActivity;
 import io.agritrack.philosofish.fish.ui.initBins.InitBinsActivity;
 import io.agritrack.philosofish.fish.ui.process.ProcessBinsActivity;
@@ -163,9 +162,9 @@ public class FishHomeActivity extends AppCompatActivity implements PowerLevelDia
         db = MobileDB.getInstance(getAppContext());
 
         Set<MenuItem> menuItemsSet = new LinkedHashSet<MenuItem>();
-        if (roleCanAccessMenu(userRoles, InitBins_Idx)) {
-            menuItemsSet.add(new MenuItem(InitBins_Idx, getString(R.string.menu_title_init_bins), TestBinTempActivity.class, R.drawable.test_bin_temp));
-        }
+//        if (roleCanAccessMenu(userRoles, InitBins_Idx)) {
+//            menuItemsSet.add(new MenuItem(InitBins_Idx, getString(R.string.menu_title_init_bins), TestBinTempActivity.class, R.drawable.test_bin_temp));
+//        }
         if (roleCanAccessMenu(userRoles, Fishing_Idx)) {
             menuItemsSet.add(new MenuItem(Fishing_Idx, getString(R.string.menu_title_fishing), HarvestRequestsActivity.class, R.drawable.fishing));
         }
@@ -201,18 +200,19 @@ public class FishHomeActivity extends AppCompatActivity implements PowerLevelDia
 
         syncResult.observe(this, response -> {
             syncCounter++;
-//            if (response == null) {
-//                hideProgressDialog();
-//                return;
-//            }
             if (response != null) {
                 progressDialog.setMessage(render(response));
                 if (syncCounter > syncLimit) {
                     syncLimit = 12;
                     hideProgressDialog();
+                    CToast(getApplicationContext(),
+                            render("Sync complete!"),
+                            Toast.LENGTH_SHORT);
                 }
             }
         });
+
+
 
         tvPowerLevel = findViewById(R.id.tvPowerLevel);
         ivPowerLevel = findViewById(R.id.ivPowerLevel);
@@ -253,23 +253,19 @@ public class FishHomeActivity extends AppCompatActivity implements PowerLevelDia
                         FishingTransaction openTx = db.fishingTransactionDAO().getMostRecentOpenTx(LocalPreferences.getLoggedInUser(""));
                         FishingRecord fishingRecord;
 
-                        // default Next Activity is FishingTeam...
-                        i = new Intent(appCtx, FishingTeamActivity.class);
+                        // Always start at HarvestRequestsActivity now
+                        i = new Intent(appCtx, HarvestRequestsActivity.class);
+
                         if (openTx != null && !Strings.isEmptyOrWhitespace(openTx.fishingRq)) {
                             // there is a FishingTx in progress
                             fishingRecord = FishingRecord.convert(openTx);
                             GlobalState.recFishing = fishingRecord;
                         } else if (openTx != null && openTx.outOfSystemFishing) {
-                            // there is a out of system FishingTx in progress
-                            i = new Intent(appCtx, FishingTeamActivity.class);
-
                             fishingRecord = FishingRecord.convert(openTx);
                             GlobalState.recFishing = fishingRecord;
                         } else {
-                            // instantiate a new Fishing Record.
                             fishingRecord = GlobalState.initFishingRecord();
 
-                            // NO FishingTx in progress
                             if (openTx == null) {
                                 openTx = new FishingTransaction();
                                 openTx.txStatus = TxStatus.PENDING;
@@ -278,9 +274,10 @@ public class FishHomeActivity extends AppCompatActivity implements PowerLevelDia
                             } else {
                                 fishingRecord.txKey = openTx.id;
                             }
-                            i = new Intent(appCtx, HarvestRequestsActivity.class);
+                            GlobalState.recFishing = fishingRecord;
                         }
                         break;
+
                     case Test_Temp_Idx:
                         i = new Intent(appCtx, TestBinTempActivity.class);
                         //i.putExtra("BinActivity", false);
@@ -337,8 +334,18 @@ public class FishHomeActivity extends AppCompatActivity implements PowerLevelDia
         ivRefresh.setOnClickListener(view -> {
             syncCounter = 1;
             showProgressDialog(getString(R.string.syncing));
+
             invokeUploadPendingAll();
             invokeSyncAll();
+
+            // Auto-close after 25 seconds
+            new android.os.Handler(android.os.Looper.getMainLooper())
+                    .postDelayed(() -> {
+                        if (progressDialog != null && progressDialog.isShowing()) {
+                            hideProgressDialog();
+
+                        }
+                    }, 15000); // 25 seconds
         });
 
         configHeader();
@@ -579,9 +586,9 @@ public class FishHomeActivity extends AppCompatActivity implements PowerLevelDia
             Call<List<AppUserDTO>> syncUsersAsyncCall = syncService.getUsersBySiteId(siteId, "Bearer " + token);
             syncUsersAsyncCall.enqueue(new SyncUsersCallBack(this.syncResult));
 
-            // sync employees
-            Call<List<EmployeeDTO>> syncEmployeesAsyncCall = syncService.getEmployeesBySiteId(siteId, "Bearer " + token);
-            syncEmployeesAsyncCall.enqueue(new SyncEmployeesCallBack(this.syncResult));
+//            // sync employees
+//            Call<List<EmployeeDTO>> syncEmployeesAsyncCall = syncService.getEmployeesBySiteId(siteId, "Bearer " + token);
+//            syncEmployeesAsyncCall.enqueue(new SyncEmployeesCallBack(this.syncResult));
 
             // sync suppliers
             Call<List<SupplierDTO>> syncSuppliersAsyncCall = syncService.getAllSuppliers("Bearer " + token);
@@ -608,8 +615,8 @@ public class FishHomeActivity extends AppCompatActivity implements PowerLevelDia
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
 
             // sync IOT Loggers
-            Call<List<IotLoggerDTO>> syncIOTLoggersAsyncCall = syncService.getIOTLoggersBySiteId(siteId, "Bearer " + token);
-            syncIOTLoggersAsyncCall.enqueue(new SyncIOTLoggersCallBack(this.syncResult));
+//            Call<List<IotLoggerDTO>> syncIOTLoggersAsyncCall = syncService.getIOTLoggersBySiteId(siteId, "Bearer " + token);
+//            syncIOTLoggersAsyncCall.enqueue(new SyncIOTLoggersCallBack(this.syncResult));
 
             // sync Encoding scheme info
             Call<List<EncodingSchemeDTO>> syncEncodingShemeAsyncCall = syncService.getEncodingScheme("Bearer " + token);
@@ -631,8 +638,8 @@ public class FishHomeActivity extends AppCompatActivity implements PowerLevelDia
                     // MultipartBody.Part is used to send also the actual file name
                     MultipartBody.Part filePart = MultipartBody.Part.createFormData("crashLog", strFileName, requestFile);
 
-                    Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadCrashLog(filePart, "Bearer " + token);
-                    uploadJsonFileAsyncCall.enqueue(new FishHomeActivity.CrashFileUploadCallBack());
+//                    Call<ResponseBody> uploadJsonFileAsyncCall = upldSvc.uploadCrashLog(filePart, "Bearer " + token);
+//                    uploadJsonFileAsyncCall.enqueue(new FishHomeActivity.CrashFileUploadCallBack());
 
                     //Delete the uploaded file crash folder
                 }

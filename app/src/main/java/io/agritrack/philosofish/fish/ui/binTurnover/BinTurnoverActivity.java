@@ -763,12 +763,22 @@ public class BinTurnoverActivity extends AppCompatActivity implements  KBeaconsM
         findBeaconAttempts = 0;
         mBeaconsMgr.stopScanning();
         progressDialog.setMessage(render("Σύνδεση με καταγραφικό"));
+        String pwd = LocalPreferences.getLoggerPassword();
 
-        //connect to specific ble sensor
+        Log.e("PWD_DEBUG", "loggerEPC=" + loggerEPC);
+        Log.e("PWD_DEBUG", "password=" + pwd);
+
+        if (pwd == null || pwd.isEmpty()) {
+            Log.e("PWD_DEBUG", "Password is NULL or empty. Using default 0000000000000000");
+            pwd = "0000000000000000"; // default for all KBeacon loggers
+        }
+
+//connect to specific ble sensor
         mBeacon = mBeaconsMgr.getBeacon(loggerEPC);
-        mBeacon.connect(LocalPreferences.getLoggerPassword(),
+        mBeacon.connect(pwd,
                 20 * 1000,
                 this);
+
     }
 
     @Override

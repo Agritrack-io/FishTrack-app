@@ -1,5 +1,7 @@
 package io.agritrack.philosofish.data.dto.tx;
 
+import android.util.Base64;
+
 import androidx.room.ColumnInfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -154,8 +156,14 @@ public class FinalQualityTxDTO {
         finalQualityTxDTO.discardedQty = qualityTx.discardedQty;
         finalQualityTxDTO.foreignBody = qualityTx.foreignBody;
         finalQualityTxDTO.corrAction = qualityTx.corrAction;
+// Preferred: use raw bytes if available
+        if (qualityTx.signatureBytes != null && qualityTx.signatureBytes.length > 0) {
+            finalQualityTxDTO.signature =
+                    "data:image/png;base64," + Base64.encodeToString(qualityTx.signatureBytes, Base64.NO_WRAP);
+        } else if (qualityTx.signature != null && !qualityTx.signature.isEmpty()) {
+            finalQualityTxDTO.signature = "data:image/png;base64," + qualityTx.signature;
+        }
 
-        finalQualityTxDTO.signature = qualityTx.signature;
 
         finalQualityTxDTO.occurred_at = simpleDateTime.format(new Date(qualityTx.createdAt));
 

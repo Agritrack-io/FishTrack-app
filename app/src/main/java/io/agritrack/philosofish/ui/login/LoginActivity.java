@@ -56,6 +56,7 @@ import java.util.stream.Collectors;
 
 import io.agritrack.api.sync.EncodingSchemeCallBack;
 import io.agritrack.philosofish.api.sync.PendingBinInfoTxCallBack;
+import io.agritrack.philosofish.crypto.Crypto;
 import io.agritrack.philosofish.data.model.BinInfo;
 import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.AgritrackProducts;
@@ -568,8 +569,8 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             syncUsersAsyncCall.enqueue(new SyncUsersCallBack(this.syncResult));
 
             // sync employees
-            Call<List<EmployeeDTO>> syncEmployeesAsyncCall = syncService.getEmployeesBySiteId(siteId, "Bearer " + token);
-            syncEmployeesAsyncCall.enqueue(new SyncEmployeesCallBack(this.syncResult));
+//            Call<List<EmployeeDTO>> syncEmployeesAsyncCall = syncService.getEmployeesBySiteId(siteId, "Bearer " + token);
+//            syncEmployeesAsyncCall.enqueue(new SyncEmployeesCallBack(this.syncResult));
 
             // sync suppliers
             Call<List<SupplierDTO>> syncSuppliersAsyncCall = syncService.getAllSuppliers("Bearer " + token);
@@ -595,7 +596,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.getProduct(), "Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
 
-            // sync IOT Loggers
+             //sync IOT Loggers
             Call<List<IotLoggerDTO>> syncIOTLoggersAsyncCall = syncService.getIOTLoggersBySiteId(siteId, "Bearer " + token);
             syncIOTLoggersAsyncCall.enqueue(new SyncIOTLoggersCallBack(this.syncResult));
 
@@ -834,9 +835,29 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
 
             if (rs != null) {
                 FishTrackApplication.IsOnline = true;
-                runOnUiThread(() -> loginResult.setValue(new LoginResult(new LoggedInUserView(this.userName, rs.getToken(), rs.getRoles()))));
+
+                String typedPin = etPassword.getText().toString().trim();
+                if (!typedPin.isEmpty()) {
+                    String encryptedPin = Crypto.encryptAndEncode(typedPin);
+                    LocalPreferences.saveUserPin(rs.getUsername(), encryptedPin);
+
+                    // === FIX: Persist user in local DB ===
+                    AppUser appUser = new AppUser();
+                    appUser.username = rs.getUsername();
+                    appUser.pin = encryptedPin;
+                    appUser.roles = rs.getRoles();
+                    appUser.active = true;
+
+                    db.userDAO().insert(appUser);
+                }
+
+                runOnUiThread(() -> loginResult.setValue(
+                        new LoginResult(new LoggedInUserView(rs.getUsername(), rs.getToken(), rs.getRoles()))
+                ));
+
                 LocalPreferences.updateLoginTime();
-            } else {
+            }
+            else {
                 // Probably Invalid Credentials
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.login_failed)));
             }
