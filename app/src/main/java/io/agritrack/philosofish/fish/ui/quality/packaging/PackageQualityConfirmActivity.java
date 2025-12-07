@@ -9,6 +9,8 @@ import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -38,6 +40,7 @@ import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
+import io.agritrack.philosofish.fish.state.PackageStepsState;
 import io.agritrack.philosofish.ui.LocationAwareActivity;
 import io.agritrack.philosofish.ui.service.AuthenticationService;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
@@ -106,37 +109,52 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
 
     private void moveToNextScreen() {
         if (proceedWithoutLocation) {
-            // Update state and proceed to next
             Boolean proceed = updateState();
 
             if (proceed) {
-                // move to next activity.
+
+                // Mark packaging freshness step complete (STEP 1)
+                PackageStepsState.completed[0] = true;
+                PackageStepsState.updateParentQualityStep();  // REQUIRED
                 Intent i = new Intent(getApplicationContext(), PackageQualityMenuActivity.class);
                 startActivity(i);
             }
         }
     }
 
+    private boolean hasConnection() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
+
+
+
     protected void configFooter() {
         ivNext.setOnClickListener(v -> {
+
             if (TextUtils.isEmpty(etPIN.getText().toString())) {
-                CToast(PackageQualityConfirmActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
+                CToast(this, render(R.string.missing_pin), Toast.LENGTH_LONG);
                 return;
             }
-            boolean userIsValid = isAuthenticated();
-            if (!userIsValid) {
-                CToast(PackageQualityConfirmActivity.this, render(R.string.invalid_password), Toast.LENGTH_LONG);
+
+            if (!isAuthenticated()) {
+                CToast(this, render(R.string.invalid_password), Toast.LENGTH_LONG);
                 return;
-            } else if (mLastLocation != null) {
-             //   recQuality.longitude = mLastLocation.getLongitude();
-               // recQuality.latitude = mLastLocation.getLatitude();
+            }
+
+            // If GPS exists - continue, no more screens
+            if (mLastLocation != null) {
                 proceedWithoutLocation = true;
                 moveToNextScreen();
-            } else if (!proceedWithoutLocation) {
-                FragmentManager fm = getSupportFragmentManager();
-                confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
+                return;
             }
+
+            // Ask user if no GPS
+            FragmentManager fm = getSupportFragmentManager();
+            confirmGPSSelectionDlg.showNow(fm, getString(R.string.confirm_selection));
         });
+
 
         ivBack.setOnClickListener(view -> {
             Intent i = new Intent(getApplicationContext(), PackageQualityDysmorphias2Activity.class);
@@ -225,9 +243,9 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
             syncAllPhotos();
 
             // persist Processing Record data to local DB.
-           PackageQualityTransaction tx = GlobalState.commitPackageFreshQuality(db, Boolean.TRUE);
+            PackageQualityTransaction tx = GlobalState.commitPackageFreshQuality(db, Boolean.TRUE);
 
-            if (IsOnline) {
+            if (hasConnection()) {
                 // sync Processing records
                 Call<PackageQualityTxDTO> syncTxAsyncCall = updService.syncPackQualityTx(PackageQualityTxDTO.convertFresh(tx), "Bearer " + token);
                 syncTxAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncTxCallBack());

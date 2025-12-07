@@ -45,6 +45,8 @@ import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.FinalQualityRecord;
 import io.agritrack.philosofish.fish.state.GlobalState;
+import io.agritrack.philosofish.fish.state.PackageStepsState;
+import io.agritrack.philosofish.fish.state.QualityStepsState;
 import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.philosofish.fish.ui.quality.packaging.PackageQualityCheckLabelActivity;
 import io.agritrack.philosofish.sound.SoundUtil;
@@ -284,12 +286,16 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
             if (tx == null) {
                 CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityFinal.lot),Toast.LENGTH_LONG);
             }
+
+            QualityStepsState.completed[3] = true; // Final quality COMPLETE green check
+
             LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverFinal);
             unregisterReceiver(receiverFinal);
 
             Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
             startActivity(i);
         });
+
         confirmSaveDataDialog.onReject(bundle -> {
             unregisterReceiver(receiverFinal);
 

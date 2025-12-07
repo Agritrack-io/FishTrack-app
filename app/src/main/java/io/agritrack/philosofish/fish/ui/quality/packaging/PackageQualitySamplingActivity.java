@@ -61,6 +61,7 @@ import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.state.PackageQualityRecord;
+import io.agritrack.philosofish.fish.state.PackageStepsState;
 import io.agritrack.philosofish.sound.SoundUtil;
 import io.agritrack.philosofish.ui.adapter.SortingSampleAdapter;
 import io.agritrack.philosofish.ui.adapter.TonnageSampleAdapter;
@@ -138,6 +139,7 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
         if (txQuality == null) {
             tvCurrentLot.setText(lot);
             recQualityPackage.lot = currentLot;
+            updateNextButtonState();
             scanning = false;
         } else if (!txQuality.isSampleSynced) {
 
@@ -166,6 +168,7 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
     private void loadStatefromDB(PackageQualityTransaction txQuality) {
 
         recQualityPackage.lot = txQuality.lot;
+        updateNextButtonState();
         recQualityPackage.fishLot = txQuality.fishingLot;
 
         recQualityPackage.sortingSamples = txQuality.sortingSamples;
@@ -276,6 +279,7 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
             if (tx == null) {
                 CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot),Toast.LENGTH_LONG);
             }
+            PackageStepsState.completed[1] = true;
             LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverSample);
             unregisterReceiver(receiverSample);
 
@@ -370,8 +374,21 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
         configFooter();
     }
 
+    private void updateNextButtonState() {
+        ImageView ivNext = findViewById(R.id.ivToCongs);
+        boolean enabled = !Strings.isEmptyOrWhitespace(recQualityPackage.lot);
+        ivNext.setEnabled(enabled);
+        ivNext.setAlpha(enabled ? 1f : 0.3f);
+    }
+
+
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
+
+        ivNext.setEnabled(false);
+        ivNext.setAlpha(0.3f);
+
+
         ivNext.setOnClickListener(view -> {
             //Set scanning to false to stop running scan thread
             scanning = false;
@@ -412,12 +429,17 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
                     progressDialog.dismiss();
                 }
                 if (proceed) {
+                    PackageStepsState.completed[1] = true;
+                    PackageStepsState.updateParentQualityStep();   // <-- REQUIRED FOR GREEN BUTTON
+
                     LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverSample);
                     unregisterReceiver(receiverSample);
 
                     Intent i = new Intent(getApplicationContext(), PackageQualityMenuActivity.class);
                     startActivity(i);
                 }
+
+
             }
         });
 

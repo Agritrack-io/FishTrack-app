@@ -10,6 +10,8 @@ public class MenuItem {
     private int imgId;
     private Class clazz;
 
+    public boolean isDone = false;
+
     public MenuItem(String name, Class activityClass, int imgID) {
         this.name = name;
         this.clazz = activityClass;

@@ -197,36 +197,42 @@ public class WhMenuActivity extends AppCompatActivity {
         try {
             EnquiryApi syncService = APIServiceGenerator.createAPI(EnquiryApi.class);
             String token = LocalPreferences.getToken();
-            String deviceID = DeviceUtils.getIMEIDeviceId(this);
 
-            // sync sites for current cluster
-            Call<ConfigDevice> getStepCall = syncService.getCurrentEpcsByDevice(deviceID, "Bearer " + token);
+            Call<ConfigDevice> getStepCall =
+                    syncService.getCurrentEpcsByDevice("Bearer " + token);
+
             getStepCall.enqueue(new SyncStepCallBack(this.syncResult));
+
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-
         }
     }
+
 
     private void setCurrentEpcsDevice() {
         try {
             EnquiryApi syncService = APIServiceGenerator.createAPI(EnquiryApi.class);
             String token = LocalPreferences.getToken();
-            String deviceID = DeviceUtils.getIMEIDeviceId(this);
+
             ConfigDevice cDev = new ConfigDevice();
             List<EpcPerDevice> epcs = LocalPreferences.getCurrentEpcList();
             String prefix = LocalPreferences.getPrefix();
 
-            // sync sites for current cluster
-            Call<ReaderDTO> setCurrentEPcsCall = syncService.setCurrentEpcsByDevice(deviceID, cDev, "Bearer " + token);
+            // Build request object correctly using setters
+            cDev.setPrefix(prefix);
+            cDev.setEpcs(epcs);
+
+            Call<ReaderDTO> setCurrentEPcsCall =
+                    syncService.setCurrentEpcsByDevice(cDev, "Bearer " + token);
+
             setCurrentEPcsCall.enqueue(new SyncCurrentEpcsCallBack(this.syncResult));
+
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-
         }
     }
+
+
 
     private void invokeSyncAll() {
         try {

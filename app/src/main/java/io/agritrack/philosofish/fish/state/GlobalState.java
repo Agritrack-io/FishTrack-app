@@ -448,6 +448,7 @@ public class GlobalState {
             txQuality.endPacking = recQualityPackage.endPacking;
             txQuality.labelComments = recQualityPackage.labelComments;
             txQuality.disinfectedBins = recQualityPackage.disinfectedBins;
+            txQuality.totalKg = recQualityPackage.totalKg;
 //
 
             if (finalCommit && txQuality.labelCreatedAt == null) {
@@ -606,6 +607,8 @@ public class GlobalState {
             txQuality.corrAction = recQualityFinal.corrAction;
             txQuality.lotAccepted = recQualityFinal.lotAccepted;
             txQuality.discardedQty = recQualityFinal.discardedQty;
+            txQuality.standardType = recQualityFinal.standardType;
+            txQuality.standardOther = recQualityFinal.standardOther;
 
 //            txQuality.laundrySamples = recQualityPackage.laundrySamples;
 //            txQuality.tonneSamples = recQualityPackage.tonneSamples;

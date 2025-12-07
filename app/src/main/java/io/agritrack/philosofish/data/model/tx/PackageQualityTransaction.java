@@ -155,6 +155,9 @@ public class PackageQualityTransaction {
     @ColumnInfo(name = "disinfected_bins")
     public Integer disinfectedBins;
 
+    @ColumnInfo(name = "total_kg")
+    public Integer totalKg;
+
     @ColumnInfo(name = "fresh_created_at")
     public Long freshCreatedAt;
 

@@ -43,6 +43,7 @@ import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.state.PackageQualityRecord;
+import io.agritrack.philosofish.fish.state.PackageStepsState;
 import io.agritrack.philosofish.fish.state.QualityRecord;
 import io.agritrack.philosofish.sound.SoundUtil;
 import io.agritrack.philosofish.ui.custom.ToggleGroup;
@@ -118,8 +119,10 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
             tvCurrentLot.setText(lot);
             recQualityPackage.bestBefore = labelBB;
             recQualityPackage.lot = currentLot;
+            updateNextButtonState();
             scanning = false;
             return;
+
         } else if (!txQuality.isFreshSynced) {
             if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot))  {
                 int position = lotListAdapter.getPosition(txQuality.fishingLot);
@@ -149,6 +152,7 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
     private void loadStatefromDB(PackageQualityTransaction txQuality) {
 
         recQualityPackage.lot = txQuality.lot;
+        updateNextButtonState();
         recQualityPackage.fishLot = txQuality.fishingLot;
         if (txQuality.bestBefore != null) {
             recQualityPackage.bestBefore = txQuality.bestBefore.toString();
@@ -286,12 +290,23 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToPackageQualityDysmorphias);
+
+        // Disable NEXT button until LOT is scanned
+        ivNext.setEnabled(false);
+        ivNext.setAlpha(0.3f);
+
         ivNext.setOnClickListener(view -> {
-            //Set scanning to false to stop running scan thread
             scanning = false;
             stopScanning();
+
+            if (Strings.isEmptyOrWhitespace(recQualityPackage.lot)) {
+                CToast(getApplicationContext(), "Please scan a LOT before continuing.", Toast.LENGTH_LONG);
+                return;
+            }
+
             updateState();
             String v = validate();
+
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render(getString(R.string.invalid_inputs) + v), Toast.LENGTH_LONG);
             } else {
@@ -302,6 +317,7 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
                 startActivity(i);
             }
         });
+
 
         ImageView ivBack = findViewById(R.id.ivBackToPackageQualityMenu);
         ivBack.setOnClickListener(view -> {
@@ -531,6 +547,15 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
 
         return sb.toString();
     }
+
+
+    private void updateNextButtonState() {
+        ImageView ivNext = findViewById(R.id.ivToPackageQualityDysmorphias);
+        boolean enabled = !Strings.isEmptyOrWhitespace(recQualityPackage.lot);
+        ivNext.setEnabled(enabled);
+        ivNext.setAlpha(enabled ? 1f : 0.3f);
+    }
+
 
     @Override
     public void onCheckedChanged(ToggleGroup group, int checkedId) {

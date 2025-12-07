@@ -46,6 +46,8 @@ public class PackageQualityTxDTO {
     @JsonProperty
     public String plant;
 
+
+
     @JsonProperty
     public String user = LocalPreferences.getLoggedInUser("N/A");
 
@@ -166,6 +168,7 @@ public class PackageQualityTxDTO {
         packageQualityTxDTO.labelCheck.changePacking = qualityTx.changePacking;
         packageQualityTxDTO.labelCheck.endPacking = qualityTx.endPacking;
         packageQualityTxDTO.labelCheck.labelComments = qualityTx.labelComments;
+        packageQualityTxDTO.labelCheck.totalKg = qualityTx.totalKg;
         packageQualityTxDTO.labelCheck.disinfectedBins = qualityTx.disinfectedBins;
         packageQualityTxDTO.label_occurred_at = simpleDateTime.format(new Date(qualityTx.labelCreatedAt));
 

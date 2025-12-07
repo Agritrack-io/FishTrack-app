@@ -125,8 +125,8 @@
                     app:layout_constraintWidth_percent="0.6" />
 
                 <Spinner
-                    style="@style/spinner_style"
                     android:id="@+id/spStartpack"
+                    style="@style/spinner_style"
                     android:layout_width="110dp"
                     android:layout_height="40dp"
                     android:layout_marginTop="30dp"
@@ -145,20 +145,20 @@
                     android:textAlignment="viewStart"
                     android:textColor="@color/label_blue"
                     android:textSize="19sp"
-                    app:layout_constraintTop_toBottomOf="@id/tvStartPack"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintWidth_percent="0.65"/>
+                    app:layout_constraintTop_toBottomOf="@id/tvStartPack"
+                    app:layout_constraintWidth_percent="0.65" />
 
                 <Spinner
-                    style="@style/spinner_style"
                     android:id="@+id/spChangePack"
+                    style="@style/spinner_style"
                     android:layout_width="110dp"
                     android:layout_height="40dp"
                     android:layout_marginTop="20dp"
-                    app:layout_constraintHorizontal_bias="0.33"
                     app:layout_constraintEnd_toEndOf="@id/spStartpack"
+                    app:layout_constraintHorizontal_bias="0.33"
                     app:layout_constraintStart_toEndOf="@id/tvChangePackage"
-                    app:layout_constraintTop_toBottomOf="@id/spStartpack"/>
+                    app:layout_constraintTop_toBottomOf="@id/spStartpack" />
 
                 <TextView
                     android:id="@+id/tvMidPack"
@@ -172,9 +172,9 @@
                     android:textAlignment="viewStart"
                     android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvChangePackage"
-                    app:layout_constraintWidth_percent="0.6"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintWidth_percent="0.6" />
 
                 <Spinner
                     android:id="@+id/spMidPack"
@@ -184,7 +184,7 @@
                     android:layout_marginTop="20dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tvMidPack"
-                    app:layout_constraintTop_toBottomOf="@id/spChangePack"/>
+                    app:layout_constraintTop_toBottomOf="@id/spChangePack" />
 
                 <TextView
                     android:id="@+id/tvEndPack"
@@ -198,78 +198,109 @@
                     android:textAlignment="viewStart"
                     android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintWidth_percent="0.6"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/tvBinDisinfectLabel"
-                    app:layout_constraintTop_toBottomOf="@id/tvMidPack"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvMidPack"
+                    app:layout_constraintWidth_percent="0.6" />
 
                 <Spinner
                     android:id="@+id/spEndPack"
                     style="@style/spinner_style"
                     android:layout_width="110dp"
-                    android:textAlignment="viewStart"
                     android:layout_height="40dp"
                     android:layout_marginTop="20dp"
+                    android:textAlignment="viewStart"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tvEndPack"
-                    app:layout_constraintTop_toBottomOf="@id/spMidPack"/>
+                    app:layout_constraintTop_toBottomOf="@id/spMidPack" />
 
 
                 <TextView
                     android:id="@+id/tvBinDisinfectLabel"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_marginTop="20dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="20dp"
+
                     android:ems="10"
-                    android:paddingEnd="10dp"
+                    android:paddingEnd="20dp"
                     android:text="@string/bin_disinfection"
                     android:textAlignment="viewStart"
                     android:textColor="@color/label_blue"
                     android:textSize="@dimen/text_view_font_size_medium"
-                    app:layout_constraintBottom_toTopOf="@id/tvComments"
+                    app:layout_constraintBottom_toTopOf="@id/etBins"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvEndPack"/>
+                    app:layout_constraintTop_toBottomOf="@id/tvEndPack" />
 
                 <EditText
                     android:id="@+id/etBins"
                     android:layout_width="100dp"
                     android:layout_height="40dp"
                     android:background="@drawable/bg_rounded_dialog_input"
-                    android:maxLength="3"
-                    android:inputType="number"
                     android:hint="0"
+                    android:inputType="number"
+                    android:maxLength="3"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
                     android:textAlignment="center"
                     android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/etTotalKg"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="@id/tvBinDisinfectLabel"
-                    app:layout_constraintTop_toTopOf="@id/tvBinDisinfectLabel"
-                    app:layout_constraintStart_toEndOf="@id/tvBinDisinfectLabel"/>
+                    app:layout_constraintHorizontal_bias="0.508"
+                    app:layout_constraintStart_toEndOf="@id/tvBinDisinfectLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/spEndPack"
+                    app:layout_constraintVertical_bias="0.5" />
+
+                <TextView
+                    android:id="@+id/tvTotalKgLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Σύνολο / Total"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvBinDisinfectLabel"
+                    app:layout_constraintWidth_percent="0.6" />
 
 
                 <EditText
-                    android:id="@+id/tvComments"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:gravity="left|top"
-                    android:ems="10"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="3dp"
+                    android:id="@+id/etTotalKg"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/bg_rounded_dialog_input"
+                    android:hint="Kg"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="08dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toBottomOf="@id/tvTotalKgLabel"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.471"
+                    app:layout_constraintStart_toEndOf="@id/tvTotalKgLabel"
+                    app:layout_constraintTop_toTopOf="@id/tvTotalKgLabel"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <EditText
+                    android:id="@+id/etComments"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:gravity="top|start"
                     android:hint="Comments"
-                    android:textAlignment="gravity"
+                    android:padding="10dp"
                     android:textColor="@color/label_blue"
                     android:textSize="18sp"
-                    app:layout_constraintWidth_percent="0.8"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvBinDisinfectLabel"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/etTotalKg" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

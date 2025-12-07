@@ -88,6 +88,8 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
     private static final int PERMISSION_FINE_LOCATION = 23;
     private static final int PERMISSION_SCAN = 24;
     private static final int PERMISSION_CONNECT = 25;
+    private Handler autoStopHandler = new Handler();
+
 
     private ListView mListView;
     private LeDeviceListAdapter mDevListAdapter;
@@ -165,15 +167,31 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onStop() {
         super.onStop();
-        super.onStop();
 
-        mBeaconsMgr.stopScanning();
-        //unregister the receiver
-        if (keyReceiver != null) {
-            unregisterReceiver(keyReceiver);
+        // Stop scanning if running
+        if (mBeaconsMgr != null && mBeaconsMgr.isScanning()) {
+            mBeaconsMgr.stopScanning();
         }
 
+        // Unregister receiver safely
+        try { unregisterReceiver(keyReceiver); } catch (Exception ignored) {}
     }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Kill all pending callbacks
+        mScanHandler.removeCallbacksAndMessages(null);
+
+        // Stop scan to avoid background BLE overload
+        if (mBeaconsMgr != null && mBeaconsMgr.isScanning()) {
+            mBeaconsMgr.stopScanning();
+        }
+    }
+
+
 
     @Override
     protected void onStart() {
@@ -306,11 +324,15 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
         {
             mBeaconsDictory.put(pBeacons.getMac(), pBeacons);
         }
-        if (mBeaconsDictory.size() > 0) {
-            mBeaconsArray = new KBeacon[mBeaconsDictory.size()];
-            mBeaconsDictory.values().toArray(mBeaconsArray);
-            mDevListAdapter.notifyDataSetChanged();
+
+        // Prevent memory overload - CRASH FIX
+        if (mBeaconsDictory.size() > 300) {
+            mBeaconsDictory.clear();
         }
+
+        mBeaconsArray = new KBeacon[mBeaconsDictory.size()];
+        mBeaconsDictory.values().toArray(mBeaconsArray);
+        mDevListAdapter.notifyDataSetChanged();
         tvBinsCount.setText(getCount() + "");
     }
 
@@ -438,30 +460,41 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
     }
 
 
+
     @Override
     public void onClick(View view) {
-        if (mBeaconsMgr.isScanning()) {
-            btnScanBin.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
-            btnScanBin.setText(R.string.scan_all_bins);
 
-            progressBar.setVisibility(View.GONE);
-            mBeaconsMgr.stopScanning();
+        if (mBeaconsMgr.isScanning()) {
+            stopScanSafe();
         } else {
             handleStartScan();
             btnScanBin.setBackground(getResources().getDrawable(R.drawable.bg_rounded_button, null));
             btnScanBin.setText(R.string.stop_scan);
             progressBar.setVisibility(View.VISIBLE);
-        }
 
+            autoStopHandler.postDelayed(this::stopScanSafe, 30000); // auto stop in 30s
+        }
     }
+
+    private void stopScanSafe(){
+        if(mBeaconsMgr.isScanning()){
+            mBeaconsMgr.stopScanning();
+            progressBar.setVisibility(View.GONE);
+            btnScanBin.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
+            btnScanBin.setText(R.string.scan_all_bins);
+        }
+    }
+
 
     // ###################################################
     private void stopScanner() {
-        if (this.singleShot_runnable != null) {
-            this.singleShot_runnable.stopReading();
-            mScanHandler.removeCallbacks(this.singleShot_runnable);
+        if (singleShot_runnable != null) {
+            singleShot_runnable.stopReading();
+            mScanHandler.removeCallbacks(singleShot_runnable);
+            singleShot_runnable = null;      // avoid leaked runnable
         }
     }
+
 
     private class ScanHandler extends Handler {
         private final WeakReference<TestBinTempActivity> mActivity;

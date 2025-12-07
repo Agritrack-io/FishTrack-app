@@ -211,4 +211,11 @@ public class FinalQualityTransaction {
     @ColumnInfo(name = "signature_bytes", typeAffinity = ColumnInfo.BLOB)
     public byte[] signatureBytes;
 
+    @ColumnInfo(name = "standard_type")
+    public String standardType;
+
+    @ColumnInfo(name = "standard_other")
+    public String standardOther;
+
+
 }

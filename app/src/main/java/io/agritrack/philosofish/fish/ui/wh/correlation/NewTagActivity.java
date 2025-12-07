@@ -306,7 +306,7 @@ public class NewTagActivity extends LocationAwareActivity {
             cDev.setEpcs(epcs);
 
             // sync sites for current cluster
-            Call<ReaderDTO> setCurrentEPcsCall = syncService.setCurrentEpcsByDevice(deviceID, cDev, "Bearer " + token);
+            Call<ReaderDTO> setCurrentEPcsCall = syncService.setCurrentEpcsByDevice(cDev, "Bearer " + token);
             setCurrentEPcsCall.enqueue(new SyncCurrentEpcsCallBack(this.syncResult));
         } catch (Exception e) {
             e.printStackTrace();

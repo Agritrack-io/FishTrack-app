@@ -291,52 +291,38 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
             progressDialog.show();
             isScanning = true;
 
-            // fetch password
-            String pwd = LocalPreferences.getLoggerPassword();
-
-// if password missing → STOP
-            if (pwd == null || pwd.trim().isEmpty()) {
-                progressDialog.dismiss();
-                isScanning = false;
-                CToast(getAppContext(),
-                        "Δεν υπάρχει password για το Logger! Ρύθμισε το πρώτα.",
-                        Toast.LENGTH_LONG);
-                return;
-            }
-
-// fetch beacon
+            //connect to specific ble sensor
             mBeacon = mBeaconsMgr.getBeacon(loggerMac);
-            if (mBeacon == null) {
-                progressDialog.dismiss();
-                isScanning = false;
-                CToast(getAppContext(),
-                        "Δεν βρέθηκε το Logger BLE. Κάνε ξανά scan.",
-                        Toast.LENGTH_LONG);
-                return;
-            }
-
-// connect safely
-            mBeacon.connect(pwd, 20 * 1000, this);
+            mBeacon.connect(LocalPreferences.getLoggerPassword(),
+                    20 * 1000,
+                    this);
 
 
         }
     }
 
     private void loadBinsFromLocalDB(String assetType) {
-        // load assets for current Site and filter by asset type (if selected).
         this.rvBins.setAdapter(null);
         this.rvBins.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        List<Asset> assetsList = db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT));
-        Asset testBin = new Asset();
-        assetsList.add(testBin);
+
+        List<Asset> assetsList = sortAssetsSmart(
+                db.assetDAO().getAssetsForType(assetType.toUpperCase(Locale.ROOT))
+        );
+
         if (assetsList != null && !assetsList.isEmpty()) {
-            List<GenericListModel> selectedAssets = assetsList.stream().map(x -> new GenericListModel(x.id, x.rfid, x.code, x.netEyeGirth, x.perimeter)).collect(Collectors.toList());
+            List<GenericListModel> selectedAssets = assetsList.stream()
+                    .map(x -> new GenericListModel(x.id, x.rfid, x.code, x.netEyeGirth, x.perimeter))
+                    .collect(Collectors.toList());
+
             adapterAssets = new FilterableAdapter(this, (ArrayList<GenericListModel>) selectedAssets);
             adapterAssets.getFilter().filter("");
+
             adapterAssets.notifyDataSetChanged();
             this.rvBins.setAdapter(adapterAssets);
         }
     }
+
+
 
     private void stopScanner() {
         if (this.scanner_runnable != null) {
@@ -640,6 +626,49 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
     {
         Log.e(TAG, "centralBleStateChang：" + nNewState);
     }
+    private List<Asset> sortAssetsSmart(List<Asset> list) {
+        return list.stream()
+                .sorted((a, b) -> naturalCompare(a.code, b.code))
+                .collect(Collectors.toList());
+    }
+
+    private int naturalCompare(String a, String b) {
+        // handle nulls
+        if (a == null && b == null) return 0;
+        if (a == null) return 1;   // nulls go LAST
+        if (b == null) return -1;
+
+        int ia = 0, ib = 0;
+        int na = a.length(), nb = b.length();
+
+        while (ia < na && ib < nb) {
+            char ca = a.charAt(ia);
+            char cb = b.charAt(ib);
+
+            if (Character.isDigit(ca) && Character.isDigit(cb)) {
+                long va = 0, vb = 0;
+
+                while (ia < na && Character.isDigit(a.charAt(ia))) {
+                    va = va * 10 + (a.charAt(ia) - '0');
+                    ia++;
+                }
+                while (ib < nb && Character.isDigit(b.charAt(ib))) {
+                    vb = vb * 10 + (b.charAt(ib) - '0');
+                    ib++;
+                }
+
+                int cmp = Long.compare(va, vb);
+                if (cmp != 0) return cmp;
+
+            } else {
+                if (ca != cb) return Character.compare(ca, cb);
+                ia++; ib++;
+            }
+        }
+
+        return Integer.compare(na, nb);
+    }
+
 
     public void onScanFailed(int errorCode)
     {

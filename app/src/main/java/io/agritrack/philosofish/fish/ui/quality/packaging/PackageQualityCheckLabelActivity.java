@@ -51,6 +51,7 @@ import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
+import io.agritrack.philosofish.fish.state.PackageStepsState;
 import io.agritrack.philosofish.sound.SoundUtil;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
 import retrofit2.Call;
@@ -72,11 +73,10 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
     private ArrayAdapter<String> lotListAdapter;
     private SupportDialog supportDialog;
     private boolean scanning = false;
-    private YesNoDialogFragment confirmNewLotDialog,  confirmSaveDataDialog;
+    private YesNoDialogFragment confirmNewLotDialog, confirmSaveDataDialog;
     private String currentLot, bestBefore;
-    private EditText etComments, etBins;
+    private EditText etComments, etBins, etTotalKg;
     private Spinner spStart, spChange, spMid, spEnd;
-
 
 
     // BroadcastReceiver to receiver scan data
@@ -127,10 +127,11 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
 //            }
 //            recQualityPackage.bestBefore = labelBB;
             recQualityPackage.lot = currentLot;
+            updateNextButtonState();
             scanning = false;
         } else if (!txQuality.isLabelSynced) {
 
-            if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot))  {
+            if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot)) {
                 int position = lotListAdapter.getPosition(txQuality.fishingLot);
                 if (position != -1) {
                     spFishLot.setSelection(position);
@@ -147,7 +148,7 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
             loadStatefromDB(txQuality);
             scanning = false;
         } else {
-            CToast(getAppContext(),String.format(getResources().getString(R.string.lot_label_control_done), txQuality.lot), Toast.LENGTH_LONG );
+            CToast(getAppContext(), String.format(getResources().getString(R.string.lot_label_control_done), txQuality.lot), Toast.LENGTH_LONG);
             scanning = false;
         }
     }
@@ -155,6 +156,7 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
     private void loadStatefromDB(PackageQualityTransaction txQuality) {
 
         recQualityPackage.lot = txQuality.lot;
+        updateNextButtonState();
         recQualityPackage.fishLot = txQuality.fishingLot;
         if (txQuality.bestBefore != null) {
             recQualityPackage.bestBefore = txQuality.bestBefore.toString();
@@ -165,6 +167,7 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
         recQualityPackage.endPacking = txQuality.endPacking;
         recQualityPackage.labelComments = txQuality.labelComments;
         recQualityPackage.disinfectedBins = txQuality.disinfectedBins;
+        recQualityPackage.totalKg = txQuality.totalKg;
 
         initControlsFromState();
     }
@@ -242,7 +245,6 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
         spEnd.setAdapter(hrAdapter);
 
 
-
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
@@ -253,11 +255,11 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
         registerReceiver(receiverLabel, filter);
 
 
-        confirmNewLotDialog= YesNoDialogFragment.instance();
+        confirmNewLotDialog = YesNoDialogFragment.instance();
         confirmNewLotDialog.onConfirm(bundle -> {
             PackageQualityTransaction tx = commitPackageLabelCheckQuality(db, false);
             if (tx == null) {
-                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot),Toast.LENGTH_LONG);
+                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot), Toast.LENGTH_LONG);
             }
             loadBarcodeInfo(currentLot);
         });
@@ -265,13 +267,14 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
 
         });
 
-        confirmSaveDataDialog= YesNoDialogFragment.instance();
+        confirmSaveDataDialog = YesNoDialogFragment.instance();
         confirmSaveDataDialog.onConfirm(bundle -> {
             updateState();
             PackageQualityTransaction tx = commitPackageLabelCheckQuality(db, false);
             if (tx == null) {
-                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot),Toast.LENGTH_LONG);
+                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot), Toast.LENGTH_LONG);
             }
+            PackageStepsState.completed[2] = true;
             LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverLabel);
             unregisterReceiver(receiverLabel);
 
@@ -304,6 +307,8 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToCongs);
+        ivNext.setEnabled(false);
+        ivNext.setAlpha(0.3f);
         ivNext.setOnClickListener(view -> {
             //Set scanning to false to stop running scan thread
             scanning = false;
@@ -339,17 +344,23 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
-                    proceed =  false;
+                    proceed = false;
                 } finally {
                     progressDialog.dismiss();
                 }
                 if (proceed) {
+
+                    PackageStepsState.completed[2] = true;  // Label Check DONE
+                    PackageStepsState.updateParentQualityStep();  // REQUIRED FOR MAIN SCREEN GREEN BUTTON
+
                     LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverLabel);
                     unregisterReceiver(receiverLabel);
 
                     Intent i = new Intent(getApplicationContext(), PackageQualityMenuActivity.class);
                     startActivity(i);
                 }
+
+
             }
         });
 
@@ -382,7 +393,8 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
         spChange = findViewById(R.id.spChangePack);
         spMid = findViewById(R.id.spMidPack);
         spEnd = findViewById(R.id.spEndPack);
-        etComments = findViewById(R.id.tvComments);
+        etComments = findViewById(R.id.etComments);
+        etTotalKg = findViewById(R.id.etTotalKg);
 
         ivSupport = findViewById(R.id.ivSupport);
 
@@ -409,6 +421,10 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
                 spFishLot.setClickable(false);
             }
         }
+        if (recQualityPackage.totalKg != null) {
+            etTotalKg.setText(String.valueOf(recQualityPackage.totalKg));
+        }
+
 
         if (recQualityPackage.disinfectedBins != null) {
             etBins.setText(String.valueOf(recQualityPackage.disinfectedBins));
@@ -465,7 +481,7 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
 
     private void updateState() {
 
-       // recQualityPackage.lot = tvCurrentLot.getText().toString();
+        // recQualityPackage.lot = tvCurrentLot.getText().toString();
         recQualityPackage.lot = Strings.isEmptyOrWhitespace(tvCurrentLot.getText().toString()) ? null : tvCurrentLot.getText().toString();
         recQualityPackage.fishLot = spFishLot.getSelectedItem() == null ? null : spFishLot.getSelectedItem().toString();
         recQualityPackage.labelComments = Strings.isEmptyOrWhitespace(etComments.getText().toString()) ? null : etComments.getText().toString();
@@ -529,6 +545,10 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
         if (etBins.getText() != null && !Strings.isEmptyOrWhitespace(etBins.getText().toString())) {
             recQualityPackage.disinfectedBins = Integer.valueOf(etBins.getText().toString());
         }
+        if (etTotalKg.getText() != null && !Strings.isEmptyOrWhitespace(etTotalKg.getText().toString())) {
+            recQualityPackage.totalKg = Integer.valueOf(etTotalKg.getText().toString());
+        }
+
 
     }
 
@@ -606,6 +626,14 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
         }
     }
 
+    private void updateNextButtonState() {
+        ImageView ivNext = findViewById(R.id.ivToCongs);
+        boolean enabled = !Strings.isEmptyOrWhitespace(recQualityPackage.lot);
+        ivNext.setEnabled(enabled);
+        ivNext.setAlpha(enabled ? 1f : 0.3f);
+    }
+
+
     public class SyncTxCallBack implements Callback<PackageQualityTxDTO> {
         @Override
         public void onResponse(@NonNull Call<PackageQualityTxDTO> call, Response<PackageQualityTxDTO> response) {
@@ -617,6 +645,7 @@ public class PackageQualityCheckLabelActivity extends AppCompatActivity {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_postquality_update_failure), Toast.LENGTH_LONG));
             }
         }
+
 
         @Override
         public void onFailure(Call<PackageQualityTxDTO> call, Throwable error) {

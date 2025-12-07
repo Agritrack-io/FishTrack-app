@@ -19,6 +19,9 @@ public class PackageQualityRecord {
 
     public Integer disinfectedBins;
 
+    public Integer totalKg;
+
+
     public Integer freshGrade;
 
     public Integer skinGrade;

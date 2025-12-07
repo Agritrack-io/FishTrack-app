@@ -21,6 +21,10 @@ public class PackageLabelCheckDTO {
     @SerializedName("label_comments")
     public String labelComments;
 
+    @SerializedName("total_kg")
+    public Integer totalKg;
+
+
     @SerializedName("disinfected_bins")
     public Integer disinfectedBins;
 

@@ -3,7 +3,6 @@ package io.agritrack.philosofish.data.dto.common;
 import static io.agritrack.philosofish.caen.api.ICAEN_API.DefaultInterval;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;

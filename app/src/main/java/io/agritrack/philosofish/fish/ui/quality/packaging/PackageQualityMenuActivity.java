@@ -21,6 +21,7 @@ import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.fish.state.GlobalState;
+import io.agritrack.philosofish.fish.state.PackageStepsState;
 import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.fish.ui.binTurnover.BinTurnoverActivity;
 import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
@@ -73,7 +74,12 @@ public class PackageQualityMenuActivity extends AppCompatActivity {
         menuItemsList.add(new MenuItem(getString(R.string.label_check), "", PackageQualityCheckLabelActivity.class));
         // menuItemsList.add(new MenuItem(getString(R.string.quality_third_step_text), "PP-DOC-02", PostPackagingQualityActivity.class));
 
+        menuItemsList.get(0).isDone = PackageStepsState.completed[0]; // Freshness
+        menuItemsList.get(1).isDone = PackageStepsState.completed[1]; // Sampling
+        menuItemsList.get(2).isDone = PackageStepsState.completed[2]; // Label Check
+
         InventoryMenuAdapter adapter = new InventoryMenuAdapter(this, menuItemsList);
+
 
         gvQualityMenu.setAdapter(adapter);
         gvQualityMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {

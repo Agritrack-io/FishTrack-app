@@ -87,6 +87,13 @@ public class FinalQualityTxDTO {
     @SerializedName("discarded_quantity")
     public Double discardedQty;
 
+    @SerializedName("standard_type")
+    public String standardType;
+
+    @SerializedName("standard_other")
+    public String standardOther;
+
+
 
 
     public static FinalQualityTxDTO convert(FinalQualityTransaction qualityTx) {
@@ -156,6 +163,9 @@ public class FinalQualityTxDTO {
         finalQualityTxDTO.discardedQty = qualityTx.discardedQty;
         finalQualityTxDTO.foreignBody = qualityTx.foreignBody;
         finalQualityTxDTO.corrAction = qualityTx.corrAction;
+        finalQualityTxDTO.standardType = qualityTx.standardType;
+        finalQualityTxDTO.standardOther = qualityTx.standardOther;
+
 // Preferred: use raw bytes if available
         if (qualityTx.signatureBytes != null && qualityTx.signatureBytes.length > 0) {
             finalQualityTxDTO.signature =

@@ -4,6 +4,7 @@ import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
 import static io.agritrack.philosofish.FishTrackApplication.IsOnline;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 import static io.agritrack.philosofish.common.LargeString.render;
+import static io.agritrack.philosofish.fish.state.GlobalState.recFishing;
 import static io.agritrack.philosofish.fish.state.GlobalState.recQuality;
 import static io.agritrack.philosofish.fish.state.GlobalState.recQualityReceipt;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
@@ -40,6 +41,7 @@ import io.agritrack.philosofish.data.repo.TemperatureDataRepository;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
+import io.agritrack.philosofish.fish.state.QualityStepsState;
 import io.agritrack.philosofish.fish.state.ReceiptQualityRecord;
 import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.philosofish.ui.LocationAwareActivity;
@@ -113,16 +115,18 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
 
     private void moveToNextScreen() {
         if (proceedWithoutLocation) {
-            // Update state and proceed to next
             Boolean proceed = updateState();
 
             if (proceed) {
-                // move to next activity.
+
+                QualityStepsState.completed[1] = true; // Step 2 receipt quality completed
+
                 Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
                 startActivity(i);
             }
         }
     }
+
 
     protected void configFooter() {
         ivNext.setOnClickListener(v -> {
@@ -171,7 +175,7 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
         }
 
         if (!Strings.isEmptyOrWhitespace(qltRecord.fishSpecies)) {
-            tvSpecies.setText(qltRecord.fishSpecies);
+            tvSpecies.setText(recFishing.speciesName);
         }
 
         if (!Strings.isEmptyOrWhitespace(qltRecord.startTime)) {

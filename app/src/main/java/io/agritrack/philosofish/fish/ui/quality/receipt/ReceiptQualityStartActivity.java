@@ -55,6 +55,7 @@ import io.agritrack.philosofish.data.model.BinInfo;
 import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
+import io.agritrack.philosofish.fish.state.QualityStepsState;
 import io.agritrack.philosofish.fish.state.ReceiptQualityRecord;
 import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.philosofish.rfid.SingleShotScanner;

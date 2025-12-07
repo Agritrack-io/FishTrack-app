@@ -19,11 +19,12 @@ public interface AssetDAO {
     @Query("SELECT * from asset")
     List<Asset> getAll();
 
-    @Query("SELECT * from asset where upper(asset_type)=:assetType")
+    @Query("SELECT * FROM asset WHERE UPPER(asset_type) = :assetType ORDER BY code ASC")
     List<Asset> getAssetsForType(String assetType);
 
-    @Query("SELECT * from asset where upper(asset_type)=:assetType and rfid is not null")
+    @Query("SELECT * FROM asset WHERE UPPER(asset_type) = :assetType AND rfid IS NOT NULL ORDER BY code ASC")
     List<Asset> getAssetsByTypeForSearch(String assetType);
+
 
     @Query("SELECT * from asset where upper(asset_type)=:assetType and site_id=:siteId")
     List<Asset> getAssetsForTypeAndSite(String assetType, String siteId);

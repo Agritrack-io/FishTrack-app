@@ -39,7 +39,10 @@ public class Measurement {
     @ColumnInfo(name = "bottom_temp")
     public Double bottomTemp;
 
-    @ColumnInfo(name = "correction_action")
+    @ColumnInfo(name = "water_temp")   // REQUIRED
+    public Double waterTemp;
+
+    @ColumnInfo(name = "corrective_action")   // FIX NAME
     public String correctiveAction;
 
     @ColumnInfo(name = "is_init")

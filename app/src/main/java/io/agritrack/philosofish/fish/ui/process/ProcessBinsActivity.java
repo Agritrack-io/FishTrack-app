@@ -201,7 +201,7 @@ public class ProcessBinsActivity extends AppCompatActivity {
                 return;
             }
             if (response.size() == 1) {
-                if(response.get(0).equalsIgnoreCase("RECEIVED")) {
+                if (response.get(0).equalsIgnoreCase("RECEIVED")) {
                     for (int i = 0; i < 2; i++) {
                         CToast(getApplicationContext(), getString(R.string.all_bins_received), Toast.LENGTH_LONG);
                     }
@@ -413,15 +413,27 @@ public class ProcessBinsActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 1:
                     String epcStr = msg.getData().getString("epc");
-                    String rssi = msg.getData().getString("rssi");
                     try {
                         if (!Strings.isEmptyOrWhitespace(epcStr)) {
+
+                            // *** IMPORTANT: Reject EPC not belonging to harvest request ***
+                            if (recProcessing.expectedBins != null &&
+                                    !recProcessing.expectedBins.contains(epcStr)) {
+
+                                CToast(getAppContext(),
+                                        render("Η ετικέτα δεν ανήκει στο Harvest Request"),
+                                        Toast.LENGTH_LONG);
+
+                                return; // stop scan flow
+                            }
+
                             invokeEnquiryRfidBatch(epcStr);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     break;
+
                 case 100:
                     ArrayList<String> epcList = msg.getData().getStringArrayList("epc");
                     if (epcList != null && !epcList.isEmpty() && IsOnline && !scanAllBins) {
@@ -429,7 +441,18 @@ public class ProcessBinsActivity extends AppCompatActivity {
                         adapterBins.notifyDataSetChanged();
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                     } else {
-                        epcList.stream().forEach(x -> adapterBins.addUniqueItem(loadBinInfo(x)));
+                        epcList.stream()
+                                .filter(x -> recProcessing.expectedBins == null ||
+                                        recProcessing.expectedBins.contains(x))
+                                .forEach(x -> adapterBins.addUniqueItem(loadBinInfo(x)));
+
+                        epcList.stream()
+                                .filter(x -> recProcessing.expectedBins != null &&
+                                        !recProcessing.expectedBins.contains(x))
+                                .forEach(x -> CToast(getAppContext(),
+                                        render("Η ετικέτα " + x + " δεν ανήκει στο Harvest Request"),
+                                        Toast.LENGTH_LONG));
+
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         recProcessing.availBins = adapterBins.getValues();
                         adapterBins.notifyDataSetChanged();

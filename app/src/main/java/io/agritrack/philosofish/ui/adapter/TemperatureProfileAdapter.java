@@ -81,106 +81,71 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        //temperatureChart = itemView.findViewById(R.uid.tempChartIn);
-        double _highT = 0.0d, _avgT = 0.0d, _lowT = 0.0d;
-        String key = listOfEPCs.get(position);
 
-        LoggerDataRecord.TemperatureModel model = mapOfData!=null ? mapOfData.get(key) : null;
+        String epc = listOfEPCs.get(position);
+        LoggerDataRecord.TemperatureModel model = mapOfData.get(epc);
 
-        if (model != null) {
-            long measurementsCount = model.values.stream().filter(y -> !"N/A".equalsIgnoreCase(y.getSample())).count();
+        double high = 0, low = 0, avg = 0;
 
-            if (measurementsCount > 0) {
-                DoubleSummaryStatistics stats = model.values.stream().filter(y -> !"N/A".equalsIgnoreCase(y.getSample()) && y.isAfterFishing()).mapToDouble(x -> Double.valueOf(x.getSample().replace(',', '.'))).summaryStatistics();
+        if (model != null && !model.values.isEmpty()) {
 
-                _highT = stats.getMax();
-                _lowT = stats.getMin();
-                _avgT = stats.getAverage();
+            DoubleSummaryStatistics stats = model.values.stream()
+                    .filter(v -> !"N/A".equalsIgnoreCase(v.getSample()) && v.isAfterFishing())
+                    .mapToDouble(v -> Double.parseDouble(v.getSample().replace(',', '.')))
+                    .summaryStatistics();
 
-                holder.setMeasurements(key, model.values);
-                holder.tvBinEPC.setText(key.substring(key.length() - 10));
-                if (mLayoutInflater.getContext() instanceof BinTurnoverActivity) {
-                    holder.tvCageCode.setText(cageCode);
-                    holder.tvWeight.setText(String.valueOf(weight));
-                    holder.tvSurface.setText(surfaceT != null ? String.format(Locale.US,"%.1f", surfaceT) : "");
-                    holder.tvBottom.setText(bottomT != null ? String.valueOf(bottomT) : "");
-                    //holder.tvFish2.setText(fishT2 != null ? String.valueOf(fishT2) : "");
-                    List<TempSample> values = recLoggerData.getValues(key);
+            high = stats.getMax();
+            low  = stats.getMin();
+            avg  = stats.getAverage();
 
-                    if (values != null) {
-                        recLoggerData.addDataSetForBin(key, surfaceT, bottomT, corrAction);
-                    }
-                }
-                holder.tvHigh.setText(String.format("%.2f\u2103", _highT));
-                holder.tvAvg.setText(String.format("%.2f\u2103", _avgT));
-                holder.tvLow.setText(String.format("%.2f\u2103", _lowT));
-            } else {
-                holder.tvHigh.setText("N/A");
-                holder.tvAvg.setText("N/A");
-                holder.tvLow.setText("N/A");
-            }
-        } else {
-            if (mLayoutInflater.getContext() instanceof BinTurnoverActivity) {
-                holder.tvCageCode.setText(cageCode);
-                holder.tvWeight.setText(String.valueOf(weight));
-                holder.tvSurface.setText(surfaceT != null ? String.format(Locale.US,"%.1f", surfaceT) : "");
-                holder.tvBottom.setText(bottomT != null ? String.valueOf(bottomT) : "");
-                //holder.tvFish2.setText(fishT2 != null ? String.valueOf(fishT2) : "");
-                recLoggerData.addDataSetForBin(key, surfaceT, bottomT, corrAction);
-            }
+            holder.setMeasurements(epc, model.values);
+            holder.tvHigh.setText(String.format("%.2f°C", high));
+            holder.tvLow.setText(String.format("%.2f°C", low));
+            holder.tvAvg.setText(String.format("%.2f°C", avg));
         }
 
-        holder.infoLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String key = listOfEPCs.get(holder.getAdapterPosition());
-                LoggerDataRecord.TemperatureModel model = mapOfData!=null ? mapOfData.get(key) : null;
+        holder.tvBinEPC.setText(epc.substring(epc.length()-10));
 
-                List<TempSample> values = model != null ? model.values : null;
+        // existing UI
+        holder.tvCageCode.setText(cageCode);
+        holder.tvWeight.setText(String.valueOf(weight));
 
-                AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(context);
-                dlgBuilder.setTitle("Logger Data");
+        // READ values per EPC and display
+        holder.tvSurface.setText(model != null && model.surfaceT != null ? String.valueOf(model.surfaceT) : "");
+        holder.tvBottom.setText(model != null && model.bottomT != null ? String.valueOf(model.bottomT) : "");
 
-                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.agri_list_item_12dp);
 
-                if (values != null) {
-                    int idx = 1;
-                    for (TempSample value : values) {
-                        arrayAdapter.add(String.format("%04d. [%s] --> %s", idx++, value.getTimeStamp(), value.getSample()));
-                    }
-                    dlgBuilder.setAdapter(arrayAdapter, null);
-                    dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
-                    dlgBuilder.create().show();
-                }
-            }
-        });
+        // when item clicked → open dialog tied to THIS EPC only
+        holder.itemView.setOnClickListener(v -> {
 
-        if (context instanceof Activity) {
-            Activity activity = (Activity) context;
-            setTempDialog = new SetTempDataDialog(activity, surfaceT, bottomT, corrAction);
-            setTempDialog.setMyDialogListener(this);
-        }
+            Activity act = (Activity) context;
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String key = listOfEPCs.get(holder.getAdapterPosition());
-                setTempDialog.showDialog();
-//                AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(context);
-//                dlgBuilder.setTitle("Logger Data");
-//
-//                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, R.layout.agri_list_item_12dp);
-//
-//                int idx = 1;
-//                for (String[] value : values) {
-//                    arrayAdapter.add(String.format("%04d. [%s] --> %s", idx++, value[0], value[1]));
-//                }
-//                dlgBuilder.setAdapter(arrayAdapter, null);
-//                dlgBuilder.setNegativeButton("Close", (dialog, which) -> dialog.dismiss());
-//                dlgBuilder.create().show();
-            }
+            SetTempDataDialog dlg = new SetTempDataDialog(
+                    act,
+                    epc,
+                    model != null ? model.surfaceT : null,
+                    model != null ? model.bottomT : null,
+                    model != null ? model.corrAction : null
+            );
+
+
+            dlg.setMyDialogListener((binEPC, fishT, waterT, corrAct) -> {
+
+                LoggerDataRecord.TemperatureModel record = recLoggerData.data.get(binEPC);
+
+                record.surfaceT  = fishT;
+                record.bottomT   = waterT;
+                record.corrAction = corrAct;
+
+                notifyItemChanged(position); // updates only the clicked card
+            });
+
+
+            dlg.showDialog();
         });
     }
+
+
 
     @Override
     public void onDataPassed(Double fishT, Double waterT, String corrAction) {

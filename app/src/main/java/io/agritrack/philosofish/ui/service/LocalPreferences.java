@@ -98,6 +98,8 @@ public class LocalPreferences {
         return UUID.fromString(pref.getString(SelectedSiteId_Key, "2b830041-a558-4d42-bc26-6b32526f15a3"));
     }
 
+
+
     public static String getCurrentClusterId() {
         return pref.getString(SelectedCluster_Key, null);
     }

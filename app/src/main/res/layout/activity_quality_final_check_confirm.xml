@@ -39,8 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
             android:width="250sp"
             android:gravity="center|top|fill_vertical"
             android:text="@string/final_quality_check"
@@ -123,10 +123,10 @@
                     android:textAlignment="viewEnd"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintTop_toTopOf="@+id/tvPackagingLotLabel"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvPackagingLotLabel"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tvPackagingLotLabel"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvPackagingLotLabel" />
+                    app:layout_constraintTop_toTopOf="@+id/tvPackagingLotLabel" />
 
                 <TextView
                     android:id="@+id/tvEvaluationLabel"
@@ -197,20 +197,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
                     android:gravity="left|top"
+                    android:hint="@string/corrective_action"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="7dp"
-                    android:visibility="gone"
-                    android:background="@drawable/bg_rounded_dialog_input"
-                    android:hint="@string/corrective_action"
                     android:textAlignment="gravity"
                     android:textColor="@color/label_blue"
                     android:textSize="18sp"
-                    app:layout_constraintWidth_percent="0.8"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@id/tvLotAccepted"
-                    app:layout_constraintTop_toBottomOf="@id/tvStartTimeLabel"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvStartTimeLabel"
+                    app:layout_constraintWidth_percent="0.8" />
 
                 <TextView
                     android:id="@+id/tvLotAccepted"
@@ -228,9 +228,9 @@
                     android:id="@+id/swIsAccepted"
                     android:layout_width="81dp"
                     android:layout_height="51dp"
-                    android:layout_marginEnd="25dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
+                    android:layout_marginEnd="25dp"
                     android:checked="true"
                     android:scaleX="1"
                     android:scaleY="1.1"
@@ -255,18 +255,18 @@
                     android:id="@+id/tvNotAcceptedLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:ems="10"
                     android:layout_marginTop="4dp"
-                    android:text="@string/non_acceptable_quantity"
-                    android:visibility="gone"
+                    android:ems="10"
                     android:gravity="center|start"
+                    android:text="@string/non_acceptable_quantity"
                     android:textAlignment="viewStart"
                     android:textColor="@color/label_blue"
                     android:textSize="20sp"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/etNotAccepted"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvLotAccepted"
-                    app:layout_constraintEnd_toStartOf="@id/etNotAccepted"
                     app:layout_constraintWidth_percent="0.6" />
 
                 <EditText
@@ -279,13 +279,45 @@
                     android:maxLength="3"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:visibility="gone"
                     android:textAlignment="center"
                     android:textColorHint="@color/black"
                     android:textSize="@dimen/text_view_font_size_medium"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/tvNotAcceptedLabel"
                     app:layout_constraintStart_toEndOf="@+id/tvNotAcceptedLabel"
                     app:layout_constraintTop_toTopOf="@id/tvNotAcceptedLabel" />
+
+                <!-- STANDARD SELECTOR -->
+                <Spinner
+                    android:id="@+id/spStandardSelector"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_rounded_btn_labelled"
+                    android:paddingHorizontal="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/etNotAccepted"
+                    app:layout_constraintWidth_percent="0.55" />
+
+                <!-- VISIBLE ONLY IF "OTHER" is SELECTED -->
+                <EditText
+                    android:id="@+id/etStandardOther"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:hint="Other…"
+                    android:padding="10dp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spStandardSelector"
+                    app:layout_constraintWidth_percent="0.55" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -327,11 +359,10 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_rounded_dialog_input"
 
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -347,6 +378,7 @@
 
         </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/footerLayout"
         android:layout_width="0dp"

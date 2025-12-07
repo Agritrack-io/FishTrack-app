@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import io.agritrack.philosofish.data.model.TempSample;
+import io.agritrack.philosofish.fish.state.QualityStepsState;
 import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.data.db.MobileDB;
@@ -78,11 +79,15 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
         ArrayList<MenuItem> menuItemsList = new ArrayList<MenuItem>();
         menuItemsList.add(new MenuItem(getString(R.string.read_temperatures), "", BinTurnoverActivity.class));
         menuItemsList.add(new MenuItem(getString(R.string.quality_first_step_text), "", ReceiptQualityStartActivity.class));
-        //menuItemsList.add(new MenuItem(getString(R.string.quality_second_step_text), "", PackageQualityStartActivity.class));
         menuItemsList.add(new MenuItem(getString(R.string.quality_third_step_text), "", PackageQualityMenuActivity.class));
         menuItemsList.add(new MenuItem(getString(R.string.final_quality_check), "", QualityFinalCheckActivity.class));
-       // menuItemsList.add(new MenuItem(getString(R.string.quality_third_step_text), "PP-DOC-02", PostPackagingQualityActivity.class));
 
+// show green check if step completed
+        menuItemsList.get(First_Step_Idx).isDone = QualityStepsState.completed[0];
+        menuItemsList.get(Second_Step_Idx).isDone = QualityStepsState.completed[1];
+        menuItemsList.get(Third_Step_Idx).isDone = QualityStepsState.completed[2];
+        menuItemsList.get(Fourth_Step_Idx).isDone = QualityStepsState.completed[3];
+        boolean fullDone = allStepsCompleted();
         InventoryMenuAdapter adapter = new InventoryMenuAdapter(this, menuItemsList);
 
         gvQualityMenu.setAdapter(adapter);
@@ -129,6 +134,15 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
             }
         });
 
+
+        // =========================
+// MAIN BUTTON COLOR LOGIC
+// =========================
+
+        int total = QualityStepsState.completed.length;
+        int done = 0;
+        for (boolean step : QualityStepsState.completed) if (step) done++;
+
         ivSupport.setOnClickListener(view -> {
             supportDialog = new SupportDialog(QualitySelectStepsActivity.this);
             supportDialog.showDialog();
@@ -136,6 +150,14 @@ public class QualitySelectStepsActivity extends AppCompatActivity {
 
         configFooter();
     }
+
+    private boolean allStepsCompleted() {
+        for (boolean b : QualityStepsState.completed) {
+            if (!b) return false;
+        }
+        return true;
+    }
+
 
     protected void configFooter() {
         ImageView ivBack = (ImageView) findViewById(R.id.ivBackToMenu);

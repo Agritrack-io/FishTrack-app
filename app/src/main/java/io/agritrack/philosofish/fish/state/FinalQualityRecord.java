@@ -24,6 +24,9 @@ public class FinalQualityRecord {
     public Bitmap signature;
     public byte[] signatureBytes;
 
+    public String standardType;   // GGAP / FIG / ASC / OTHER
+    public String standardOther;  // Optional text when OTHER
+
     public FinalSample sample1 = new FinalSample();
     public FinalSample sample2 = new FinalSample();
     public FinalSample sample3 = new FinalSample();

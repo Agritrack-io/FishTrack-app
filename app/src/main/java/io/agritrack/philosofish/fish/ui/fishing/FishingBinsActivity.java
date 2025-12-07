@@ -4,6 +4,7 @@ import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.fish.state.GlobalState.recFishing;
+import static io.agritrack.philosofish.fish.ui.FishHomeActivity.uhfReader;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 import static io.agritrack.philosofish.ui.tools.caen.ILoggerDialog.StatesEnum.INIT;
 
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -51,6 +53,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
+import io.agritrack.philosofish.caen.api.BX6100Commander;
 import io.agritrack.philosofish.caen.common.CAENState;
 import io.agritrack.philosofish.common.AlphanumericComparator;
 import io.agritrack.philosofish.common.Constants;
@@ -62,6 +65,7 @@ import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.dialog.CageListDialog;
 import io.agritrack.philosofish.dialog.GetTempDataDialog;
 import io.agritrack.philosofish.dialog.InfoDialog;
+import io.agritrack.philosofish.dialog.PowerLevelDialog;
 import io.agritrack.philosofish.dialog.SimpleListDialog;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
@@ -76,7 +80,7 @@ import io.agritrack.philosofish.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.philosofish.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
 
-public class FishingBinsActivity extends AppCompatActivity {
+public class FishingBinsActivity extends AppCompatActivity implements PowerLevelDialog.PowerLevelListener {
 
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
@@ -101,9 +105,10 @@ public class FishingBinsActivity extends AppCompatActivity {
     private ImageView ivSupport, ivCheckLastTemp;
     private SupportDialog supportDialog;
     private InfoDialog infoDialog;
-    private ImageView ivInfo;
 
     private CageListDialog chooseCageDialog;
+
+    private ImageView ivPowerLevel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +131,21 @@ public class FishingBinsActivity extends AppCompatActivity {
         tvHeader.setText(LocalPreferences.HeaderMsg());
 
         // get  references of the controls
+        System.out.println("DEBUG BINS -> recFishing.availBins = " + recFishing.availBins);
         assignCtrlVars();
+
+        Integer pr = LocalPreferences.getCurrentPower();
+
+        if (pr < 25) {
+            ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.low_power_green));
+        } else if (pr < 30) {
+            ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.med_power_green));
+        } else {
+            ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.high_power_green));
+        }
+
+        ivPowerLevel.setOnClickListener(v -> showPowerLevelDialog());
+
 
         // initiate raw sound
         SoundUtil.initSoundPool(this);
@@ -210,10 +229,6 @@ public class FishingBinsActivity extends AppCompatActivity {
             supportDialog.showDialog();
         });
 
-        ivInfo.setOnClickListener(view -> {
-            infoDialog = new InfoDialog(FishingBinsActivity.this);
-            infoDialog.showDialog();
-        });
 
         loggerReading = new ViewModelProvider(this).get(LoggerReading.class);
         loggerReading.getReading().observe(this, reading -> {
@@ -292,11 +307,53 @@ public class FishingBinsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Listen for Fn key press/release;
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.rfid.FUN_KEY");
-        this.registerReceiver(keyReceiver, filter);
+        if (uhfReader == null) {
+            uhfReader = new BX6100Commander();
+            Integer pr = LocalPreferences.getCurrentPower();
+            if (pr < 25) {
+                uhfReader.LowPowerLevel();
+            } else if (pr < 30) {
+                uhfReader.MedPowerLevel();
+            } else {
+                uhfReader.HighPowerLevel();
+            }
+        }
     }
+
+
+    private void showPowerLevelDialog() {
+        new PowerLevelDialog().show(getSupportFragmentManager(), "PowerLevelDialog");
+    }
+
+
+    @Override
+    public void onPowerLevelSelected(int powerLevel) {
+        int saveValue = 33; // default High
+
+        switch (powerLevel) {
+            case 1:
+                saveValue = 10;
+                uhfReader.LowPowerLevel();
+                ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.low_power_green));
+                break;
+
+            case 2:
+                saveValue = 26;
+                uhfReader.MedPowerLevel();
+                ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.med_power_green));
+                break;
+
+            case 3:
+                saveValue = 33;
+                uhfReader.HighPowerLevel();
+                ivPowerLevel.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.high_power_green));
+                break;
+        }
+
+        LocalPreferences.setCurrentPower(saveValue);
+        CToast(getApplicationContext(), render("Power Level Updated"), Toast.LENGTH_SHORT);
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -305,13 +362,27 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (keyReceiver != null) {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("android.rfid.FUN_KEY");   // Example — replace with actual event
+            registerReceiver(keyReceiver, filter);
+        }
+    }
+
+
+    @Override
     protected void onStop() {
         super.onStop();
-        //unregister the receiver
-        if (keyReceiver != null)
-            unregisterReceiver(keyReceiver);
-        this.stopScanner();
+        if (keyReceiver != null) {
+            try {
+                unregisterReceiver(keyReceiver);
+            } catch (IllegalArgumentException ignored) { }
+        }
+        stopScanner();
     }
+
 
     protected void configFooter() {
         ImageView ivNext = findViewById(R.id.ivToTeam);
@@ -348,7 +419,8 @@ public class FishingBinsActivity extends AppCompatActivity {
         ivCheckLastTemp = findViewById(R.id.ivCheckLastTemp);
         ivAddBin = findViewById(R.id.ivAddBin);
         ivSupport = findViewById(R.id.ivSupport);
-        ivInfo = findViewById(R.id.ivInfo);
+        ivPowerLevel = findViewById(R.id.ivPowerLevel);
+
     }
 
     private void initControlsFromState() {
@@ -397,11 +469,27 @@ public class FishingBinsActivity extends AppCompatActivity {
     }
 
     private void updateState() {
-        recFishing.availBins = adapterBins.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
+
+        // Get current bins from adapter
+        List<String> newBins = adapterBins.getValues()
+                .stream()
+                .map(x -> x.epc)
+                .collect(Collectors.toList());
+
+        // Do not overwrite with empty list
+        if (newBins.isEmpty()) {
+            return; // nothing to update
+        }
+
+        // only update if user actually added bins
+        recFishing.availBins = newBins;
+
         for (String bin : recFishing.availBins) {
             recFishing.binWeightRecord.addRecord(bin, 0, null, null, null);
         }
-        GlobalState.commitFishing(db, Boolean.FALSE);
+
+        // Save state
+        GlobalState.commitFishing(db, false);
     }
 
     private String validate() {
